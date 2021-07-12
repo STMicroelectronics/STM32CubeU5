@@ -1,0 +1,40 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2018-2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "name": "TFM_APP_ROT",
+  "type": "APPLICATION-ROT",
+  "priority": "NORMAL",
+  "id": "0x00000102",
+  "entry_point": "app_rot_init",
+  "stack_size": "0x0400",
+  "services": [
+    {
+      "name": "TFM_APP_ROT_IOCTL",
+      "signal": "TFM_APP_ROT_IOCTL_SIG",
+      "sid": "0x00000100",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+     },
+  ],
+  "linker_pattern": {
+    "library_list": [
+      "*tfm_app_rot*"
+    ]
+  },
+  "secure_functions": [
+    {
+      "name": "TFM_APP_ROT_IOCTL",
+      "signal": "TFM_APP_ROT_IOCTL_SIG",
+      "sid": "0x00000100",
+      "non_secure_clients": true,
+      "version": 1,
+      "version_policy": "STRICT"
+    },
+  ]
+}

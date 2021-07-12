@@ -1,0 +1,10 @@
+[ProjectFiles]
+HeaderPath=..\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A
+[Others]
+Define=
+HALModule=EXTI
+[Groups]
+Application/User=../Src/main.c;../Src/stm32u5xx_hal_msp.c;../Src/stm32u5xx_it.c;../Src/prime256v1.c;../Src/SigGen.c;
+Doc=../README.md;
+Drivers/BSP/B-U585I-IOT02A=../../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c;
+Drivers/STM32U5xx_HAL_Driver=../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_exti.c;

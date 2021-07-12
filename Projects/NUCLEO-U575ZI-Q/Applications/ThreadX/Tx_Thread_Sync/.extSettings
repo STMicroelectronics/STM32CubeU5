@@ -1,0 +1,9 @@
+[ProjectFiles]
+HeaderPath=..\..\..\..\..\..\Drivers\BSP\STM32U5xx_Nucleo
+[Others]
+Define=
+HALModule=
+[Groups]
+Drivers/BSP/STM32U5xx_Nucleo=../../../../../../Drivers/BSP/STM32U5xx_Nucleo/stm32u5xx_nucleo.c;
+Doc=../README.md;
+

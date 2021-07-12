@@ -1,0 +1,44 @@
+#include "region_defs.h"
+
+define memory mem with size = 4G;
+
+define region BL2_CODE_region        = mem:[from BL2_CODE_START size BL2_CODE_SIZE];
+define region BL2_NOHDP_CODE_region  = mem:[from BL2_NOHDP_CODE_START size BL2_NOHDP_CODE_SIZE];
+define region S_CODE_region          = mem:[from S_CODE_START size S_CODE_SIZE];
+define region NS_CODE_region         = mem:[from NS_CODE_START size NS_CODE_SIZE];
+
+define region BL2_RAM_region         = mem:[from BL2_DATA_START size BL2_DATA_SIZE];
+define region S_RAM_region           = mem:[from S_DATA_START size S_DATA_SIZE];
+define region NS_RAM_region          = mem:[from NS_DATA_START size NS_DATA_SIZE];
+
+initialize by copy  with packing = none {  readwrite };
+do not initialize  { section .noinit };           
+define block ER_CODE  with fixed order, alignment = 8 {
+       readonly,
+       };
+place at address (BL2_BOOT_VTOR_ADDR) { readonly section .intvec };
+define block PERSO_AREA with fixed order {
+                                    readonly section .bootutil_key_cnt,
+                                    readonly section .bootutil_key,
+                                    readonly section .bootutil_enc_key,
+                                    readonly object keys.o};
+
+place at address (PERSO_START) {block PERSO_AREA};
+place in BL2_CODE_region {block ER_CODE };
+
+define block HDP_CODE  with fixed order, alignment = 8 {
+                                readonly section .BL2_NoHdp_Data,
+                                readonly section .BL2_NoHdp_Code,
+                                readonly object mpu_armv8m_drv.o,
+                                readonly section .BL2_Error_Code};
+
+place in BL2_NOHDP_CODE_region {block HDP_CODE};
+define block ER_DATA_NOINIT   with  alignment = 32 { section .noinit};
+define block ER_DATA        with  alignment = 32 { readwrite};
+    /* MSP */
+
+define block ARM_LIB_STACK with alignment = 32, size = BL2_MSP_STACK_SIZE { };
+define block HEAP   with alignment = 8, size = BL2_HEAP_SIZE { };
+
+define block DATA with fixed order {block ER_DATA_NOINIT, block ER_DATA, block ARM_LIB_STACK, block HEAP};
+place in BL2_RAM_region          { block DATA};

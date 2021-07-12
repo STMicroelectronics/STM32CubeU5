@@ -1,0 +1,430 @@
+# Copyright (c) 2017 Linaro Limited
+# Copyright (c) 2020 Arm Limited
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+mainmenu "MCUboot configuration"
+
+comment "MCUboot-specific configuration options"
+
+# Hidden option to mark a project as MCUboot
+config MCUBOOT
+	default y
+	bool
+	select MPU_ALLOW_FLASH_WRITE if ARM_MPU
+	select USE_DT_CODE_PARTITION if HAS_FLASH_LOAD_OFFSET
+
+config BOOT_USE_MBEDTLS
+	bool
+	# Hidden option
+	default n
+	help
+	  Use mbedTLS for crypto primitives.
+
+config BOOT_USE_TINYCRYPT
+	bool
+	# Hidden option
+	default n
+	# When building for ECDSA, we use our own copy of mbedTLS, so the
+	# Zephyr one must not be enabled or the MBEDTLS_CONFIG_FILE macros
+	# will collide.
+	depends on ! MBEDTLS
+	help
+	  Use TinyCrypt for crypto primitives.
+
+config BOOT_USE_CC310
+	bool
+	# Hidden option
+	default n
+	# When building for ECDSA, we use our own copy of mbedTLS, so the
+	# Zephyr one must not be enabled or the MBEDTLS_CONFIG_FILE macros
+	# will collide.
+	depends on ! MBEDTLS
+	help
+	  Use cc310 for crypto primitives.
+
+config BOOT_USE_NRF_CC310_BL
+	bool
+	default n
+
+config NRFXLIB_CRYPTO
+	bool
+	default n
+
+config NRF_CC310_BL
+	bool
+	default n
+
+menu "MCUBoot settings"
+
+choice
+	prompt "Signature type"
+	default BOOT_SIGNATURE_TYPE_RSA
+
+config BOOT_SIGNATURE_TYPE_RSA
+	bool "RSA signatures"
+	select BOOT_USE_MBEDTLS
+	select MBEDTLS
+
+if BOOT_SIGNATURE_TYPE_RSA
+config BOOT_SIGNATURE_TYPE_RSA_LEN
+	int "RSA signature length"
+	range 2048 3072
+	default 2048
+endif
+
+config BOOT_SIGNATURE_TYPE_ECDSA_P256
+	bool "Elliptic curve digital signatures with curve P-256"
+
+if BOOT_SIGNATURE_TYPE_ECDSA_P256
+choice
+	prompt "Ecdsa implementation"
+	default BOOT_ECDSA_TINYCRYPT
+config BOOT_ECDSA_TINYCRYPT
+	bool "Use tinycrypt"
+	select BOOT_USE_TINYCRYPT
+config BOOT_CC310
+	bool "Use CC310"
+	select BOOT_USE_NRF_CC310_BL if HAS_HW_NRF_CC310
+	select NRF_CC310_BL if HAS_HW_NRF_CC310
+	select NRFXLIB_CRYPTO if SOC_FAMILY_NRF
+	select BOOT_USE_CC310
+endchoice
+endif
+
+config BOOT_SIGNATURE_TYPE_ED25519
+	bool "Edwards curve digital signatures using ed25519"
+
+if BOOT_SIGNATURE_TYPE_ED25519
+choice
+	prompt "Ecdsa implementation"
+	default BOOT_ED25519_TINYCRYPT
+config BOOT_ED25519_TINYCRYPT
+	bool "Use tinycrypt"
+	select BOOT_USE_TINYCRYPT
+config BOOT_ED25519_MBEDTLS
+	bool "Use mbedTLS"
+	select BOOT_USE_MBEDTLS
+	select MBEDTLS
+endchoice
+endif
+
+endchoice
+
+config BOOT_SIGNATURE_KEY_FILE
+	string "PEM key file"
+	default ""
+	help
+	  The key file will be parsed by imgtool's getpub command and a .c source
+	  with the public key information will be written in a format expected by
+	  MCUboot.
+
+config MCUBOOT_CLEANUP_ARM_CORE
+	bool "Perform core cleanup before chain-load the application"
+	depends on CPU_CORTEX_M
+	default y
+
+config MBEDTLS_CFG_FILE
+	default "mcuboot-mbedtls-cfg.h"
+
+config BOOT_VALIDATE_SLOT0
+	bool "Validate image in the primary slot on every boot"
+	default y
+	help
+	  If y, the bootloader attempts to validate the signature of the
+	  primary slot every boot. This adds the signature check time to
+	  every boot, but can mitigate against some changes that are
+	  able to modify the flash image itself.
+
+config BOOT_UPGRADE_ONLY
+	bool "Overwrite image updates instead of swapping"
+	default n
+	help
+	  If y, overwrite the primary slot with the upgrade image instead
+	  of swapping them. This prevents the fallback recovery, but
+	  uses a much simpler code path.
+
+config BOOT_SWAP_USING_MOVE
+	bool "Swap mode that can run without a scratch partition"
+	default y if SOC_FAMILY_NRF
+	default n
+	help
+	  If y, the swap upgrade is done in two steps, where first every
+	  sector of the primary slot is moved up one sector, then for
+	  each sector X in the secondary slot, it is moved to index X in
+	  the primary slot, then the sector at X+1 in the primary is
+	  moved to index X in the secondary.
+	  This allows a swap upgrade without using a scratch partition,
+	  but is currently limited to all sectors in both slots being of
+	  the same size.
+
+config BOOT_BOOTSTRAP
+	bool "Bootstrap erased the primary slot from the secondary slot"
+	default n
+	help
+	  If y, enables bootstraping support. Bootstrapping allows an erased
+	  primary slot to be initialized from a valid image in the secondary slot.
+	  If unsure, leave at the default value.
+
+config BOOT_SWAP_SAVE_ENCTLV
+	bool "Save encrypted key TLVs instead of plaintext keys in swap metadata"
+	default n
+	help
+	  If y, instead of saving the encrypted image keys in plaintext in the
+	  swap resume metadata, save the encrypted image TLVs. This should be used
+	  when there is no security mechanism protecting the data in the primary
+	  slot from being dumped. If n is selected (default), the keys are written
+	  after being decrypted from the image TLVs and could be read by an
+	  attacker who has access to the flash contents of the primary slot (eg
+	  JTAG/SWD or primary slot in external flash).
+	  If unsure, leave at the default value.
+
+config BOOT_ENCRYPT_RSA
+	bool "Support for encrypted upgrade images using RSA"
+	default n
+	help
+	  If y, images in the secondary slot can be encrypted and are decrypted
+	  on the fly when upgrading to the primary slot, as well as encrypted
+	  back when swapping from the primary slot to the secondary slot. The
+	  encryption mechanism used in this case is RSA-OAEP (2048 bits).
+
+config BOOT_ENCRYPT_EC256
+	bool "Support for encrypted upgrade images using ECIES-P256"
+	default n
+	help
+	  If y, images in the secondary slot can be encrypted and are decrypted
+	  on the fly when upgrading to the primary slot, as well as encrypted
+	  back when swapping from the primary slot to the secondary slot. The
+	  encryption mechanism used in this case is ECIES using primitives
+	  described under "ECIES-P256 encryption" in docs/encrypted_images.md.
+
+config BOOT_MAX_IMG_SECTORS
+	int "Maximum number of sectors per image slot"
+	default 128
+	help
+	  This option controls the maximum number of sectors that each of
+	  the two image areas can contain. Smaller values reduce MCUboot's
+	  memory usage; larger values allow it to support larger images.
+	  If unsure, leave at the default value.
+
+config BOOT_ERASE_PROGRESSIVELY
+	bool "Erase flash progressively when receiving new firmware"
+	default y if SOC_NRF52840
+	help
+	 If enabled, flash is erased as necessary when receiving new firmware,
+	 instead of erasing the whole image slot at once. This is necessary
+	 on some hardware that has long erase times, to prevent long wait
+	 times at the beginning of the DFU process.
+
+config MEASURED_BOOT
+	bool "Store the boot state/measurements in shared memory"
+	default n
+	help
+	  If enabled, the bootloader will store certain boot measurements such as
+	  the hash of the firmware image in a shared memory area. This data can
+	  be used later by runtime services (e.g. by a device attestation service).
+
+config BOOT_SHARE_DATA
+	bool "Save application specific data in shared memory area"
+	default n
+
+config BOOT_WAIT_FOR_USB_DFU
+	bool "Wait for a prescribed duration to see if USB DFU is invoked"
+	default n
+	select USB
+	select USB_DFU_CLASS
+	select IMG_MANAGER
+	help
+	  If y, MCUboot waits for a prescribed duration of time to allow
+	  for USB DFU to be invoked. Please note DFU always updates the
+	  slot1 image.
+
+config ZEPHYR_TRY_MASS_ERASE
+	bool "Try to mass erase flash when flashing MCUboot image"
+	default y
+	help
+	  If y, attempt to configure the Zephyr build system's "flash"
+	  target to mass-erase the flash device before flashing the
+	  MCUboot image. This ensures the scratch and other partitions
+	  are in a consistent state.
+
+	  This is not available for all targets.
+
+config BOOT_USE_BENCH
+        bool "Enable benchmark code"
+        default n
+        help
+          If y, adds support for simple benchmarking that can record
+          time intervals between two calls.  The time printed depends
+          on the particular Zephyr target, and is generally ticks of a
+          specific board-specific timer.
+
+module = MCUBOOT
+module-str = MCUBoot bootloader
+source "subsys/logging/Kconfig.template.log_config"
+
+config MCUBOOT_LOG_THREAD_STACK_SIZE
+	int "Stack size for the MCUBoot log processing thread"
+	depends on LOG && !LOG_IMMEDIATE
+	default 2048 if COVERAGE_GCOV
+	default 1024 if NO_OPTIMIZATIONS
+	default 1024 if XTENSA
+	default 4096 if (X86 && X86_64)
+	default 4096 if ARM64
+	default 768
+	help
+	  Set the internal stack size for MCUBoot log processing thread.
+
+menuconfig MCUBOOT_SERIAL
+	bool "MCUboot serial recovery"
+	default n
+	select REBOOT
+	select GPIO
+	select SERIAL
+	select UART_INTERRUPT_DRIVEN
+	select BASE64
+	select TINYCBOR
+	help
+	  If y, enables a serial-port based update mode. This allows
+	  MCUboot itself to load update images into flash over a UART.
+	  If unsure, leave at the default value.
+
+if MCUBOOT_SERIAL
+
+choice
+	prompt "Serial device"
+	default BOOT_SERIAL_UART if !BOARD_NRF52840_PCA10059
+	default BOOT_SERIAL_CDC_ACM if BOARD_NRF52840_PCA10059
+
+config BOOT_SERIAL_UART
+	bool "UART"
+	# SERIAL and UART_INTERRUPT_DRIVEN already selected
+
+config BOOT_SERIAL_CDC_ACM
+	bool "CDC ACM"
+	select USB
+	select USB_DEVICE_STACK
+	select USB_CDC_ACM
+
+endchoice
+
+config BOOT_MAX_LINE_INPUT_LEN
+	int "Maximum command line length"
+	default 512
+	help
+	  Maximum length of commands transported over the serial port.
+
+config BOOT_SERIAL_DETECT_PORT
+	string "GPIO device to trigger serial recovery mode"
+	default GPIO_0 if SOC_FAMILY_NRF
+	help
+	  Zephyr GPIO device which contains the pin used to trigger
+	  serial recovery mode.
+
+config BOOT_SERIAL_DETECT_PIN
+	int "Pin to trigger serial recovery mode"
+	default 6 if BOARD_NRF9160_PCA10090
+	default 11 if BOARD_NRF52840DK_NRF52840
+	default 13 if BOARD_NRF52_PCA10040
+	default 23 if BOARD_NRF5340_DK_NRF5340_CPUAPP || BOARD_NRF5340_DK_NRF5340_CPUAPPNS
+	help
+	  Pin on the serial detect port which triggers serial recovery mode.
+
+config BOOT_SERIAL_DETECT_PIN_VAL
+	int "Serial detect pin trigger value"
+	default 0
+	range 0 1
+	help
+	  Logic value of the detect pin which triggers serial recovery
+	  mode.
+
+# Workaround for not being able to have commas in macro arguments
+DT_CHOSEN_Z_CONSOLE := zephyr,console
+
+config RECOVERY_UART_DEV_NAME
+	string "UART Device Name for Recovery UART"
+	default "$(dt_chosen_label,$(DT_CHOSEN_Z_CONSOLE))" if HAS_DTS
+	default "UART_0"
+	depends on BOOT_SERIAL_UART
+	help
+	  This option specifies the name of UART device to be used for
+	  serial recovery.
+
+endif # MCUBOOT_SERIAL
+
+endmenu
+
+config MCUBOOT_DEVICE_SETTINGS
+	# Hidden selector for device-specific settings
+	bool
+	default y
+        # CPU options
+	select MCUBOOT_DEVICE_CPU_CORTEX_M0 if CPU_CORTEX_M0
+        # Enable flash page layout if available
+	select FLASH_PAGE_LAYOUT if FLASH_HAS_PAGE_LAYOUT
+	# Enable flash_map module as flash I/O back-end
+	select FLASH_MAP
+
+config MCUBOOT_DEVICE_CPU_CORTEX_M0
+	# Hidden selector for Cortex-M0 settings
+	bool
+	default n
+	select SW_VECTOR_RELAY if !CPU_CORTEX_M0_HAS_VECTOR_TABLE_REMAP
+
+comment "Zephyr configuration options"
+
+# Disabling MULTITHREADING provides a code size advantage, but
+# it requires peripheral drivers (particularly a flash driver)
+# that works properly with the option enabled.
+#
+# If you know for sure that your hardware will work, you can default
+# it to n here. Otherwise, having it on by default makes the most
+# hardware work.
+config MULTITHREADING
+	default y if BOOT_SERIAL_CDC_ACM #usb driver requires MULTITHREADING
+	default n if SOC_FAMILY_NRF
+	default y
+
+config LOG_IMMEDIATE
+	default n if MULTITHREADING
+	default y
+
+config LOG_PROCESS_THREAD
+	default n # mcuboot has its own log processing thread
+
+# override USB device name
+config USB_DEVICE_PRODUCT
+	default "MCUBOOT"
+
+config UPDATEABLE_IMAGE_NUMBER
+	int "Number of updateable images"
+	default 1
+	help
+	  Enables support of multi image update.
+
+choice
+	prompt "Downgrade prevention"
+	optional
+
+config MCUBOOT_DOWNGRADE_PREVENTION
+	bool "SW based downgrade prevention"
+	depends on BOOT_UPGRADE_ONLY
+	help
+	  Prevent downgrades by enforcing incrementing version numbers.
+	  When this option is set, any upgrade must have greater major version
+	  or greater minor version with equal major version. This mechanism
+	  only protects against some attacks against version downgrades (for
+	  example, a JTAG could be used to write an older version).
+
+config MCUBOOT_HW_DOWNGRADE_PREVENTION
+	bool "HW based downgrade prevention"
+	help
+	  Prevent undesirable/malicious software downgrades. When this option is
+	  set, any upgrade must have greater or equal security counter value.
+	  Because of the acceptance of equal values it allows for software
+	  downgrade to some extent.
+
+endchoice
+
+source "Kconfig.zephyr"

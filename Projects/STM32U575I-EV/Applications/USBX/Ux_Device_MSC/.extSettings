@@ -1,0 +1,9 @@
+[ProjectFiles]
+HeaderPath=../../../../../../Drivers/BSP/STM32U575I-EV;
+[Others]
+Define=TCPP0203_SUPPORT
+HALModule=
+[Groups]
+Drivers\BSP\STM32U575I-EV=../../../../../../Drivers/BSP/STM32U575I-EV/stm32u575i_eval.c; ../../../../../../Drivers/BSP/STM32U575I-EV/stm32u575i_eval_usbpd_pwr.c; ../../../../../../Drivers/BSP/STM32U575I-EV/stm32u575i_eval_bus.c; ../../../../../../Drivers/BSP/STM32U575I-EV/stm32u575i_eval_sd.c;
+Drivers\BSP\Components=../../../../../../Drivers/BSP/Components/tcpp0203/tcpp0203.c; ../../../../../../Drivers/BSP/Components/tcpp0203/tcpp0203_reg.c;
+Doc=../README.md;

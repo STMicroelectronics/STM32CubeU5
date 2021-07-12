@@ -1,0 +1,202 @@
+/**
+  **********************************************************************************************************************
+  * @file    console.c
+  * @author  MCD Application Team
+  * @brief   This file implements the web server console services.
+  **********************************************************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  **********************************************************************************************************************
+  */
+
+/* Includes ----------------------------------------------------------------------------------------------------------*/
+#include "console.h"
+
+/** @addtogroup STM32U5xx_Demonstration
+  * @{
+  */
+
+/** @addtogroup IOT_HTTP_WebServer
+  * @{
+  */
+
+/* Private typedef ---------------------------------------------------------------------------------------------------*/
+/* Private define ----------------------------------------------------------------------------------------------------*/
+/* Private macro -----------------------------------------------------------------------------------------------------*/
+/* Private variables -------------------------------------------------------------------------------------------------*/
+/* Console handle declaration */
+UART_HandleTypeDef Console_UARTHandle;
+/* Console buffer declaration */
+char console_buffer[CONSOLE_BUFFER_SIZE];
+
+/* Private function prototypes ---------------------------------------------------------------------------------------*/
+
+/**
+  * @brief  Configure the console
+  * @param  None
+  * @retval Web Server status
+  */
+WebServer_StatusTypeDef webserver_console_config(void)
+{
+  /* Set parameter to be configured */
+  Console_UARTHandle.Instance                    = USART1;
+  Console_UARTHandle.Init.BaudRate               = 115200;
+  Console_UARTHandle.Init.WordLength             = UART_WORDLENGTH_8B;
+  Console_UARTHandle.Init.StopBits               = UART_STOPBITS_1;
+  Console_UARTHandle.Init.Parity                 = UART_PARITY_NONE;
+  Console_UARTHandle.Init.Mode                   = UART_MODE_TX_RX;
+  Console_UARTHandle.Init.HwFlowCtl              = UART_HWCONTROL_NONE;
+  Console_UARTHandle.Init.OverSampling           = UART_OVERSAMPLING_16;
+  Console_UARTHandle.Init.OneBitSampling         = UART_ONE_BIT_SAMPLE_DISABLE;
+  Console_UARTHandle.Init.ClockPrescaler         = UART_PRESCALER_DIV1;
+  Console_UARTHandle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+
+  /* Initialize the UART mode */
+  if (HAL_UART_Init(&Console_UARTHandle) != HAL_OK)
+  {
+    return CONSOLE_ERROR;
+  }
+
+  /* Disable the UART FIFO mode */
+  if (HAL_UARTEx_DisableFifoMode(&Console_UARTHandle) != HAL_OK)
+  {
+    return CONSOLE_ERROR;
+  }
+
+  return WEBSERVER_OK;
+}
+
+/**
+  * @brief  Print web server application header in hyperterminal
+  * @param  None
+  * @retval None
+  */
+void webserver_console_print_header(void)
+{
+  printf("\r\n");
+  printf("=======================================================================================================\r\n");
+  printf("============================       STM32U5 Webserver Demonstration        =============================\r\n");
+  printf("=======================================================================================================\r\n");
+}
+
+/**
+  * @brief  Get wifi SSID (LOGIN) via hyperterminal
+  * @param  None
+  * @retval Web Server status
+  */
+WebServer_StatusTypeDef webserver_console_get_ssid(ap_t *net_wifi_registred_hotspot,
+                                                   char *SSID)
+{
+  char ch;
+  uint32_t count = 0;
+
+  /* Print get SSID message */
+  printf("\r\n");
+  printf("*** Please enter your wifi ssid : =====================================================================\r\n");
+
+  /* Repeat receiving character until getting all SSID */
+  do
+  {
+    if (HAL_UART_Receive(&Console_UARTHandle, (uint8_t *) &ch, 1, HAL_MAX_DELAY) != HAL_OK)
+    {
+      return CONSOLE_ERROR;
+    }
+
+    SSID[count] = ch;
+    count++;
+
+  } while ((ch != '\n') && (ch != ' ') && (ch != 0));
+
+  /* Clear end of characters symbols */
+  do
+  {
+    SSID[count] = 0;
+    count--;
+
+  } while ((SSID[count] == '\n') || (SSID[count] == ' ') || (SSID[count] == '\r'));
+
+  /* Store user SSID */
+  net_wifi_registred_hotspot->ssid = SSID;
+
+  return WEBSERVER_OK;
+}
+
+/**
+  * @brief  Get wifi PWD (PASSWORD) via hyperterminal
+  * @param  None
+  * @retval Web Server status
+  */
+WebServer_StatusTypeDef webserver_console_get_password(ap_t *net_wifi_registred_hotspot,
+                                                       char *PassWord)
+{
+  char ch;
+  uint32_t count = 0;
+
+  /* Print get PWD message */
+  printf("\r\n");
+  printf("*** Please enter your wifi password : =================================================================\r\n");
+
+  /* Repeat receiving character until getting all SSID */
+  do
+  {
+    if (HAL_UART_Receive(&Console_UARTHandle, (uint8_t *) &ch, 1, HAL_MAX_DELAY) != HAL_OK)
+    {
+      return CONSOLE_ERROR;
+    }
+
+    PassWord[count] = ch;
+    count++;
+
+  }while ((ch != '\n') && (ch != ' ') && (ch != 0));
+
+  /* Clear end of characters symbols */
+  do
+  {
+    PassWord[count] = 0;
+    count--;
+
+  } while ((PassWord[count] == '\n') || (PassWord[count] == ' ') || (PassWord[count] == '\r'));
+
+  /* Store user PWD */
+  net_wifi_registred_hotspot->pwd = PassWord;
+
+  return WEBSERVER_OK;
+}
+
+/**
+  * @brief  Retargets the C library printf function to the USART.
+  * @param  None
+  * @retval None
+  */
+PUTCHAR_PROTOTYPE
+{
+  while (HAL_OK != HAL_UART_Transmit(&Console_UARTHandle, (uint8_t *) &ch, 1, 30000))
+  {
+    ;
+  }
+  return ch;
+}
+
+/**
+  * @brief  Retargets the C library scanf function to the USART.
+  * @param  None
+  * @retval None
+  */
+GETCHAR_PROTOTYPE
+{
+  char ch;
+
+  while (HAL_OK != HAL_UART_Receive(&Console_UARTHandle, (uint8_t *) &ch, 1, HAL_MAX_DELAY))
+  {
+    ;
+  }
+
+  return ch;
+}

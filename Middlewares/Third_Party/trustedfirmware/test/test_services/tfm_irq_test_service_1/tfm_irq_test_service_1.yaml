@@ -1,0 +1,69 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "name": "TFM_IRQ_TEST_1",
+  "type": "APPLICATION-ROT",
+  "priority": "NORMAL",
+  "id": "0x0000010B",
+  "entry_point": "tfm_irq_test_1_init",
+  "stack_size": "0x0400",
+  "heap_size": "0x0400",
+  "mmio_regions": [
+    {
+      "name": "TFM_PERIPHERAL_TIMER0",
+      "permission": "READ-WRITE"
+    }
+  ],
+  "secure_functions": [
+    {
+      "name": "SPM_IRQ_TEST_1_PREPARE_TEST_SCENARIO",
+      "signal": "SPM_IRQ_TEST_1_PREPARE_TEST_SCENARIO",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "name": "SPM_IRQ_TEST_1_EXECUTE_TEST_SCENARIO",
+      "signal": "SPM_IRQ_TEST_1_EXECUTE_TEST_SCENARIO",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    }
+  ],
+  "irqs": [
+    {
+      "line_name": "TFM_TIMER0_IRQ",
+      "signal": "SPM_CORE_IRQ_TEST_1_SIGNAL_TIMER_0_IRQ",
+      "tfm_irq_priority": 64,
+    }
+  ],
+  "linker_pattern": {
+    "object_list": [
+      "*tfm_irq_test_service_1.*",
+      "*timer_cmsdk*",
+    ]
+  },
+  "services": [
+    {
+    "name": "SPM_CORE_IRQ_TEST_1_PREPARE_TEST_SCENARIO",
+    "sid": "0x0000F0A0",
+    "signal": "SPM_CORE_IRQ_TEST_1_PREPARE_TEST_SCENARIO_SIGNAL",
+    "non_secure_clients": true,
+    "minor_version": 1,
+    "minor_policy": "STRICT"
+    },
+    {
+    "name": "SPM_CORE_IRQ_TEST_1_EXECUTE_TEST_SCENARIO",
+    "sid": "0x0000F0A1",
+    "signal": "SPM_CORE_IRQ_TEST_1_EXECUTE_TEST_SCENARIO_SIGNAL",
+    "non_secure_clients": true,
+    "minor_version": 1,
+    "minor_policy": "STRICT"
+    },
+  ]
+}

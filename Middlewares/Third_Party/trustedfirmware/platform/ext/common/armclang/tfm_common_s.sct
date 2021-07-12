@@ -1,0 +1,426 @@
+#! armclang --target=arm-arm-none-eabi -march=armv8-m.main -E -xc
+
+/*
+ * Copyright (c) 2017-2019 Arm Limited. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*********** WARNING: This is an auto-generated file. Do not edit! ***********/
+
+#include "region_defs.h"
+
+LR_CODE S_CODE_START {
+
+    /****  This initial section contains common code for secure binary */
+    ER_TFM_CODE S_CODE_START S_CODE_SIZE {
+        *.o (RESET +First)
+        * (+RO)
+    }
+
+    /**** Unprivileged Secure code start here */
+    TFM_UNPRIV_CODE +0 ALIGN 32 {
+        tfm_spm_services.o (+RO)
+        dummy_crypto_keys.o (+RO)
+        dummy_nv_counters.o (+RO)
+        dummy_boot_seed.o (+RO)
+        dummy_device_id.o (+RO)
+        platform_retarget_dev.o (+RO)
+        device_definition.o (+RO)
+        *(SFN)
+        *armlib*
+    }
+
+    /**** PSA RoT RO part (CODE + RODATA) start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of PSA RoT code.
+     */
+    TFM_PSA_CODE_START +0 ALIGN 32 EMPTY 0x0 {
+    }
+
+    TFM_SP_STORAGE +0 ALIGN 32 {
+        *tfm_storage* (+RO)
+        *(TFM_SP_STORAGE_ATTR_FN)
+    }
+
+    TFM_SP_ITS +0 ALIGN 32 {
+        *tfm_internal_trusted_storage* (+RO)
+        *(TFM_SP_ITS_ATTR_FN)
+    }
+
+#ifdef TFM_PARTITION_AUDIT_LOG
+    TFM_SP_AUDIT_LOG +0 ALIGN 32 {
+        *tfm_audit* (+RO)
+        *(TFM_SP_AUDIT_LOG_ATTR_FN)
+    }
+#endif /* TFM_PARTITION_AUDIT_LOG */
+
+    TFM_SP_CRYPTO +0 ALIGN 32 {
+        *tfm_crypto* (+RO)
+        *(TFM_SP_CRYPTO_ATTR_FN)
+    }
+
+#ifdef TFM_PARTITION_PLATFORM
+    TFM_SP_PLATFORM +0 ALIGN 32 {
+        *tfm_platform* (+RO)
+        *(TFM_SP_PLATFORM_ATTR_FN)
+    }
+#endif /* TFM_PARTITION_PLATFORM */
+
+    TFM_SP_INITIAL_ATTESTATION +0 ALIGN 32 {
+        *tfm_attest* (+RO)
+        *(TFM_SP_INITIAL_ATTESTATION_ATTR_FN)
+    }
+
+#ifdef TFM_PARTITION_TEST_CORE
+    TFM_SP_CORE_TEST +0 ALIGN 32 {
+        *tfm_ss_core_test.* (+RO)
+        *(TFM_SP_CORE_TEST_ATTR_FN)
+    }
+#endif /* TFM_PARTITION_TEST_CORE */
+
+#ifdef TFM_PARTITION_TEST_SECURE_SERVICES
+    TFM_SP_SECURE_TEST_PARTITION +0 ALIGN 32 {
+        *tfm_secure_client_service.* (+RO)
+        *test_framework* (+RO)
+        *uart_stdout.* (+RO)
+        *Driver_USART.* (+RO)
+        *arm_uart_drv.* (+RO)
+        *uart_pl011_drv.* (+RO)
+        *uart_cmsdk_drv* (+RO)
+        *secure_suites.* (+RO)
+        *attestation_s_interface_testsuite.* (+RO)
+        *(TFM_SP_SECURE_TEST_PARTITION_ATTR_FN)
+    }
+#endif /* TFM_PARTITION_TEST_SECURE_SERVICES */
+
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+    TFM_SP_IPC_SERVICE_TEST +0 ALIGN 32 {
+        *ipc_service_test.* (+RO)
+        *(TFM_SP_IPC_SERVICE_TEST_ATTR_FN)
+    }
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of PSA RoT code.
+     */
+    TFM_PSA_CODE_END +0 ALIGN 32 EMPTY 0x0 {
+    }
+
+    /**** APPLICATION RoT RO part (CODE + RODATA) start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of APP RoT code.
+     */
+    TFM_APP_CODE_START +0 ALIGN 32 EMPTY 0x0 {
+    }
+
+#ifdef TFM_PARTITION_TEST_CORE
+    TFM_SP_CORE_TEST_2 +0 ALIGN 32 {
+        *tfm_ss_core_test_2.* (+RO)
+        *(TFM_SP_CORE_TEST_2_ATTR_FN)
+    }
+#endif /* TFM_PARTITION_TEST_CORE */
+
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+    TFM_SP_IPC_CLIENT_TEST +0 ALIGN 32 {
+        *ipc_client_test.* (+RO)
+        *(TFM_SP_IPC_CLIENT_TEST_ATTR_FN)
+    }
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+
+#ifdef TFM_ENABLE_IRQ_TEST
+    TFM_IRQ_TEST_1 +0 ALIGN 32 {
+        *tfm_irq_test_service_1.* (+RO)
+        *timer_cmsdk* (+RO)
+        *(TFM_IRQ_TEST_1_ATTR_FN)
+    }
+#endif /* TFM_ENABLE_IRQ_TEST */
+
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of APP RoT code.
+     */
+    TFM_APP_CODE_END +0 ALIGN 32 EMPTY 0x0 {
+    }
+
+    /* Shared area between BL2 and runtime to exchange data */
+    TFM_SHARED_DATA S_DATA_START ALIGN 32 OVERLAY EMPTY BOOT_TFM_SHARED_DATA_SIZE {
+    }
+
+    /* MSP */
+    ARM_LIB_STACK_MSP S_DATA_START ALIGN 32 OVERLAY EMPTY S_MSP_STACK_SIZE {
+    }
+
+    /* PSP */
+    ARM_LIB_STACK +0 ALIGN 32 EMPTY S_PSP_STACK_SIZE {
+    }
+
+    ARM_LIB_HEAP +0 ALIGN 8 EMPTY S_HEAP_SIZE {
+    }
+
+    ER_TFM_DATA +0 {
+        * (+RW +ZI)
+    }
+
+#if !defined(TFM_PSA_API)
+    TFM_SECURE_STACK +0 ALIGN 128 EMPTY 0x2000 {
+    }
+#endif /* !defined(TFM_PSA_API) */
+
+    TFM_UNPRIV_DATA +0 ALIGN 32 {
+        tfm_spm_services.o (+RW +ZI)
+        dummy_crypto_keys.o (+RW +ZI)
+        dummy_nv_counters.o (+RW +ZI)
+        dummy_boot_seed.o (+RW +ZI)
+        dummy_device_id.o (+RW +ZI)
+        platform_retarget_dev.o (+RW +ZI)
+        device_definition.o (+RW +ZI)
+    }
+
+    /**** PSA RoT DATA start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of PSA RoT RW and Stack.
+     */
+    TFM_PSA_RW_STACK_START +0 ALIGN 32 EMPTY 0x0 {
+    }
+
+    TFM_SP_STORAGE_DATA +0 ALIGN 32 {
+        *tfm_storage* (+RW +ZI)
+        *(TFM_SP_STORAGE_ATTR_RW)
+        *(TFM_SP_STORAGE_ATTR_ZI)
+    }
+
+#if defined (TFM_PSA_API)
+    TFM_SP_STORAGE_STACK +0 ALIGN 128 EMPTY 0xA00 {
+    }
+#endif
+
+    TFM_SP_ITS_DATA +0 ALIGN 32 {
+        *tfm_internal_trusted_storage* (+RW +ZI)
+        *(TFM_SP_ITS_ATTR_RW)
+        *(TFM_SP_ITS_ATTR_ZI)
+    }
+
+#if defined (TFM_PSA_API)
+    TFM_SP_ITS_STACK +0 ALIGN 128 EMPTY 0x500 {
+    }
+#endif
+
+#ifdef TFM_PARTITION_AUDIT_LOG
+    TFM_SP_AUDIT_LOG_DATA +0 ALIGN 32 {
+        *tfm_audit* (+RW +ZI)
+        *(TFM_SP_AUDIT_LOG_ATTR_RW)
+        *(TFM_SP_AUDIT_LOG_ATTR_ZI)
+    }
+
+#if defined (TFM_PSA_API)
+    TFM_SP_AUDIT_LOG_STACK +0 ALIGN 128 EMPTY 0 {
+    }
+#endif
+#endif /* TFM_PARTITION_AUDIT_LOG */
+
+    TFM_SP_CRYPTO_DATA +0 ALIGN 32 {
+        *tfm_crypto* (+RW +ZI)
+        *(TFM_SP_CRYPTO_ATTR_RW)
+        *(TFM_SP_CRYPTO_ATTR_ZI)
+    }
+
+#if defined (TFM_PSA_API)
+    TFM_SP_CRYPTO_STACK +0 ALIGN 128 EMPTY 0x2000 {
+    }
+#endif
+
+#ifdef TFM_PARTITION_PLATFORM
+    TFM_SP_PLATFORM_DATA +0 ALIGN 32 {
+        *tfm_platform* (+RW +ZI)
+        *(TFM_SP_PLATFORM_ATTR_RW)
+        *(TFM_SP_PLATFORM_ATTR_ZI)
+    }
+
+#if defined (TFM_PSA_API)
+    TFM_SP_PLATFORM_STACK +0 ALIGN 128 EMPTY 0 {
+    }
+#endif
+#endif /* TFM_PARTITION_PLATFORM */
+
+    TFM_SP_INITIAL_ATTESTATION_DATA +0 ALIGN 32 {
+        *tfm_attest* (+RW +ZI)
+        *(TFM_SP_INITIAL_ATTESTATION_ATTR_RW)
+        *(TFM_SP_INITIAL_ATTESTATION_ATTR_ZI)
+    }
+
+#if defined (TFM_PSA_API)
+    TFM_SP_INITIAL_ATTESTATION_STACK +0 ALIGN 128 EMPTY 0x0A00 {
+    }
+#endif
+
+#ifdef TFM_PARTITION_TEST_CORE
+    TFM_SP_CORE_TEST_DATA +0 ALIGN 32 {
+        *tfm_ss_core_test.* (+RW +ZI)
+        *(TFM_SP_CORE_TEST_ATTR_RW)
+        *(TFM_SP_CORE_TEST_ATTR_ZI)
+    }
+
+#if defined (TFM_PSA_API)
+    TFM_SP_CORE_TEST_STACK +0 ALIGN 128 EMPTY 0x0300 {
+    }
+#endif
+#endif /* TFM_PARTITION_TEST_CORE */
+
+#ifdef TFM_PARTITION_TEST_SECURE_SERVICES
+    TFM_SP_SECURE_TEST_PARTITION_DATA +0 ALIGN 32 {
+        *tfm_secure_client_service.* (+RW +ZI)
+        *test_framework* (+RW +ZI)
+        *uart_stdout.* (+RW +ZI)
+        *Driver_USART.* (+RW +ZI)
+        *arm_uart_drv.* (+RW +ZI)
+        *uart_pl011_drv.* (+RW +ZI)
+        *uart_cmsdk_drv* (+RW +ZI)
+        *secure_suites.* (+RW +ZI)
+        *attestation_s_interface_testsuite.* (+RW +ZI)
+        *(TFM_SP_SECURE_TEST_PARTITION_ATTR_RW)
+        *(TFM_SP_SECURE_TEST_PARTITION_ATTR_ZI)
+    }
+
+#if defined (TFM_PSA_API)
+    TFM_SP_SECURE_TEST_PARTITION_STACK +0 ALIGN 128 EMPTY 0x0C00 {
+    }
+#endif
+#endif /* TFM_PARTITION_TEST_SECURE_SERVICES */
+
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+    TFM_SP_IPC_SERVICE_TEST_DATA +0 ALIGN 32 {
+        *ipc_service_test.* (+RW +ZI)
+        *(TFM_SP_IPC_SERVICE_TEST_ATTR_RW)
+        *(TFM_SP_IPC_SERVICE_TEST_ATTR_ZI)
+    }
+
+#if defined (TFM_PSA_API)
+    TFM_SP_IPC_SERVICE_TEST_STACK +0 ALIGN 128 EMPTY 0x0220 {
+    }
+#endif
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of PSA RoT RW and Stack.
+     */
+    TFM_PSA_RW_STACK_END +0 ALIGN 32 EMPTY 0x0 {
+    }
+
+    /**** APP RoT DATA start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of APP RoT RW and Stack.
+     */
+    TFM_APP_RW_STACK_START +0 ALIGN 32 EMPTY 0x0 {
+    }
+
+#ifdef TFM_PARTITION_TEST_CORE
+    TFM_SP_CORE_TEST_2_DATA +0 ALIGN 32 {
+        *tfm_ss_core_test_2.* (+RW +ZI)
+        *(TFM_SP_CORE_TEST_2_ATTR_RW)
+        *(TFM_SP_CORE_TEST_2_ATTR_ZI)
+    }
+
+#if defined (TFM_PSA_API)
+    TFM_SP_CORE_TEST_2_STACK +0 ALIGN 128 EMPTY 0x0200 {
+    }
+#endif
+#endif /* TFM_PARTITION_TEST_CORE */
+
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+    TFM_SP_IPC_CLIENT_TEST_DATA +0 ALIGN 32 {
+        *ipc_client_test.* (+RW +ZI)
+        *(TFM_SP_IPC_CLIENT_TEST_ATTR_RW)
+        *(TFM_SP_IPC_CLIENT_TEST_ATTR_ZI)
+    }
+
+#if defined (TFM_PSA_API)
+    TFM_SP_IPC_CLIENT_TEST_STACK +0 ALIGN 128 EMPTY 0x0220 {
+    }
+#endif
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+
+#ifdef TFM_ENABLE_IRQ_TEST
+    TFM_IRQ_TEST_1_DATA +0 ALIGN 32 {
+        *tfm_irq_test_service_1.* (+RW +ZI)
+        *timer_cmsdk* (+RW +ZI)
+        *(TFM_IRQ_TEST_1_ATTR_RW)
+        *(TFM_IRQ_TEST_1_ATTR_ZI)
+    }
+
+#if defined (TFM_PSA_API)
+    TFM_IRQ_TEST_1_STACK +0 ALIGN 128 EMPTY 0x0400 {
+    }
+#endif
+#endif /* TFM_ENABLE_IRQ_TEST */
+
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of APP RoT RW and Stack.
+     */
+    TFM_APP_RW_STACK_END +0 ALIGN 32 EMPTY 0x0 {
+    }
+
+    /* This empty, zero long execution region is here to mark the limit address
+     * of the last execution region that is allocated in SRAM.
+     */
+    SRAM_WATERMARK +0 EMPTY 0x0 {
+    }
+
+    /* Make sure that the sections allocated in the SRAM does not exceed the
+     * size of the SRAM available.
+     */
+    ScatterAssert(ImageLimit(SRAM_WATERMARK) <= S_DATA_START + S_DATA_SIZE)
+}
+
+#if !TFM_MULTI_CORE_TOPOLOGY
+LR_VENEER CMSE_VENEER_REGION_START {
+    /*
+     * Place the CMSE Veneers (containing the SG instruction) in a separate
+     * 32 bytes aligned region so that the SAU can be programmed to
+     * just set this region as Non-Secure Callable.
+     */
+    ER_CODE_CMSE_VENEER CMSE_VENEER_REGION_START CMSE_VENEER_REGION_SIZE {
+        *(Veneer$$CMSE)
+    }
+}
+#endif
+
+LR_NS_PARTITION NS_PARTITION_START {
+    /* Reserved place for NS application.
+     * No code will be placed here, just address of this region is used in the
+     * secure code to configure certain HW components. This generates an empty
+     * execution region description warning during linking.
+     */
+    ER_NS_PARTITION NS_PARTITION_START UNINIT NS_PARTITION_SIZE {
+    }
+}
+
+#ifdef BL2
+LR_SECONDARY_PARTITION SECONDARY_PARTITION_START {
+    /* Reserved place for new image in case of firmware upgrade.
+     * No code will be placed here, just address of this region is used in the
+     * secure code to configure certain HW components. This generates an empty
+     * execution region description warning during linking.
+     */
+    ER_SECONDARY_PARTITION SECONDARY_PARTITION_START \
+        UNINIT SECONDARY_PARTITION_SIZE {
+    }
+}
+#endif /* BL2 */

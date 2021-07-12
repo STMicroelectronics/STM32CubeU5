@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Release Notes for STM32 USB-C Power Delivery U5 Device Driver</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="_htmresc/mini-st_2020.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png" />
+</head>
+<body>
+<div class="row">
+<div class="col-sm-12 col-lg-4">
+<center>
+<h1 id="release-notes-for-stm32-usb-c-power-delivery-u5-device-driver">Release Notes for STM32 USB-C Power Delivery U5 Device Driver</h1>
+<p>Copyright © 2020 STMicroelectronics<br />
+</p>
+<a href="https://www.st.com" class="logo"><img src="_htmresc/st_logo_2020.png" alt="ST logo" /></a>
+</center>
+<h1 id="purpose">Purpose</h1>
+<p>The USB-PD device driver provides a set of functions to manage the physical layer (i.e. low level of the type C state machine and low level of message transport). This includes :</p>
+<ul>
+<li><p>Type C state machine: SRC, SNK or DRP</p></li>
+<li><p>Physical layer : message handling SOP, SOP’, SOP’’, HARDRESET, …</p></li>
+<li><p>Timer server to handle GOODCRC, PRL repetition timing</p></li>
+</ul>
+<p>The USB-PD library is developed following the Universal Serial Bus Power Delivery Specification Revision 3.0, V2.0 (August 29, 2019) and Universal Serial Bus type-C Cable and Connector Specification, Revision 2.0 (August, 2019).</p>
+</div>
+<section id="update-history" class="col-sm-12 col-lg-8">
+<h1>Update History</h1>
+<div class="collapse">
+<input type="checkbox" id="collapse-section4" checked aria-hidden="true"> <label for="collapse-section4" aria-hidden="true">v3.0.0 / 06-Apr-2020</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<h3 id="maintenance-release">Maintenance release</h3>
+<h2 id="contents">Contents</h2>
+<p><strong>Fixed bugs list</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Headline</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">[TCPP03] Alignment with new TCPP0203 API namings</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">[TCPP03] : Power mode update moved from device to BSP : on VBUSDeinit call, power mode is updated to Low power in case of SRC, or hibernate in case of SNK</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Remove temporary patch which impacts VBUS start (VBUS started too late on Ellisys, TD4.5.1)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MCUAstyle + Codespell corrections</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Issue in configuration _DRP and _SRC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">U5 Device configuration template update</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Correct Keil compilation warning in usbpd_hw_if_it.c</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Protection for not taking FRS signal into account during PRS sequence</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Implementation of OCP recovery procedure in case of recoverable errors</td>
+</tr>
+</tbody>
+</table>
+<h2 id="known-limitations">Known Limitations</h2>
+<p>Outstanding bugs list : None</p>
+<p>Requirements not met or planned in a forthcoming release : None</p>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.50.6</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.32</li>
+<li>STM32CubeIDE v1.7.0</li>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<p>All STM32U5xx devices embedding USBPD IP</p>
+<h2 id="backward-compatibility">Backward compatibility</h2>
+<p>No compatibility break with previous version</p>
+<h2 id="dependencies">Dependencies</h2>
+<p>This software release is compatible with USB-C Power Delivery Core Stack Library v3.3.0</p>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section3" aria-hidden="true"> <label for="collapse-section3" aria-hidden="true">v2.0.0 / 26-Nov-2020</label>
+<div>
+<h2 id="main-changes-1">Main Changes</h2>
+<h3 id="maintenance-release-1">Maintenance release</h3>
+<h2 id="contents-1">Contents</h2>
+<p><strong>Fixed bugs list</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Headline</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Ticket 96061 - Tests TD4.3.x failed on Lecroy with NO_PD Sink version</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">[FRS] confirm the FRS event by checking if an Rp resistor is still present</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ticket 96223 Avoid double definition with LE16 &amp; LE32 macros used in usbh.def</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Codespell corrections</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">U5 Device configuration template update</td>
+</tr>
+</tbody>
+</table>
+<h2 id="known-limitations-1">Known Limitations</h2>
+<p>Outstanding bugs list : None</p>
+<p>Requirements not met or planned in a forthcoming release : None</p>
+<h2 id="development-toolchains-and-compilers-1">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.32.3</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.27</li>
+<li>STM32CubeIDE v1.4.0</li>
+</ul>
+<h2 id="supported-devices-and-boards-1">Supported Devices and boards</h2>
+<p>All STM32U5xx devices embedding USBPD IP</p>
+<h2 id="backward-compatibility-1">Backward compatibility</h2>
+<p>No compatibility break with previous version</p>
+<h2 id="dependencies-1">Dependencies</h2>
+<p>This software release is compatible with USB-C Power Delivery Core Stack Library v3.3.0</p>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section2" aria-hidden="true"> <label for="collapse-section2" aria-hidden="true">v1.1.0 / 27-Oct-2020</label>
+<div>
+<h2 id="main-changes-2">Main Changes</h2>
+<h3 id="maintenance-release-2">Maintenance release</h3>
+<h2 id="contents-2">Contents</h2>
+<p><strong>Fixed bugs list</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Headline</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">[DEVICES][U5] : Add TCPP0203 support in U5 device (use of a dedicated GENERATOR define in xml)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">[USBPD][DEVICES][U5] : Merge part of U5 Device into reference code</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">[USBPD][DEVICES][U5] : Update GPDMA API used in USBPD Device for U5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">[USBPD][U5] Put CC line in analog mode + Update on the DMA enable</td>
+</tr>
+</tbody>
+</table>
+<h2 id="known-limitations-2">Known Limitations</h2>
+<p>Outstanding bugs list : None</p>
+<p>Requirements not met or planned in a forthcoming release : None</p>
+<h2 id="development-toolchains-and-compilers-2">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.32.3</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.26</li>
+<li>STM32CubeIDE v1.4.0</li>
+</ul>
+<h2 id="supported-devices-and-boards-2">Supported Devices and boards</h2>
+<p>All STM32U5xx devices embedding USBPD IP</p>
+<h2 id="backward-compatibility-2">Backward compatibility</h2>
+<p>No compatibility break with previous version</p>
+<h2 id="dependencies-2">Dependencies</h2>
+<p>This software release is compatible with USB-C Power Delivery Core Stack Library v3.2.0</p>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section1"  aria-hidden="true"> <label for="collapse-section1" aria-hidden="true">v1.0.0 / 11-Jun-2020</label>
+<div>
+<h2 id="main-changes-3">Main Changes</h2>
+<h3 id="initial-release">Initial release</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Headline</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">First official version for STM32U5xx device (source code available)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="known-limitations-3">Known Limitations</h2>
+<p>Outstanding bugs list : None</p>
+<p>Requirements not met or planned in a forthcoming release : None</p>
+<h2 id="development-toolchains-and-compilers-3">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.32.3</li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.26</li>
+<li>STM32CubeIDE v1.2.0</li>
+</ul>
+<h2 id="supported-devices-and-boards-3">Supported Devices and boards</h2>
+<p>All STM32U5xx devices embedding USBPD IP</p>
+<h2 id="backward-compatibility-3">Backward compatibility</h2>
+<p>No compatibility break with previous version</p>
+<h2 id="dependencies-3">Dependencies</h2>
+<p>This software release is compatible with USB-C Power Delivery Core Stack Library v3.0.0</p>
+</div>
+</div>
+</section>
+</div>
+<footer class="sticky">
+<p>For complete documentation on <strong>STM32 32-bit Arm Cortex MCUs</strong>, visit: <a href="http://www.st.com/STM32">http://www.st.com/STM32</a></p>
+This release note uses up to date web standards and, for this reason, should not be opened with Internet Explorer but preferably with popular browsers such as Google Chrome, Mozilla Firefox, Opera or Microsoft Edge.
+</footer>
+</body>
+</html>

@@ -1,0 +1,9 @@
+[ProjectFiles]
+HeaderPath=
+[Others]
+Define=
+HALModule=SRAM;GTZC
+[Groups]
+Doc=../README.md;
+Application/User/Secure=../Secure/Src/hal_sram_helper.c;
+Drivers/STM32U5xx_HAL_Driver=../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_sram.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_fmc.c;

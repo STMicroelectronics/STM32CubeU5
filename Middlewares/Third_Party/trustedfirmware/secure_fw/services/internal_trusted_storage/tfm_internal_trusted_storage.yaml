@@ -1,0 +1,84 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "name": "TFM_SP_ITS",
+  "type": "PSA-ROT",
+  "priority": "NORMAL",
+  "id": "0x00000104",
+  "entry_point": "tfm_its_req_mngr_init",
+  "stack_size": "0x500",
+  "heap_size": "0",
+  "secure_functions": [
+    {
+      "sfid": "TFM_ITS_SET",
+      "signal": "TFM_ITS_SET_REQ",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "sfid": "TFM_ITS_GET",
+      "signal": "TFM_ITS_GET_REQ",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "sfid": "TFM_ITS_GET_INFO",
+      "signal": "TFM_ITS_GET_INFO_REQ",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+    {
+      "sfid": "TFM_ITS_REMOVE",
+      "signal": "TFM_ITS_REMOVE_REQ",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    }
+  ],
+  "services" : [{
+    "name": "TFM_ITS_SET",
+    "sid": "0x00000070",
+    "signal": "TFM_ITS_SET_SIG",
+    "non_secure_clients": true,
+    "minor_version": 1,
+    "minor_policy": "STRICT"
+   },
+   {
+    "name": "TFM_ITS_GET",
+    "sid": "0x00000071",
+    "signal": "TFM_ITS_GET_SIG",
+    "non_secure_clients": true,
+    "minor_version": 1,
+    "minor_policy": "STRICT"
+   },
+   {
+    "name": "TFM_ITS_GET_INFO",
+    "sid": "0x00000072",
+    "signal": "TFM_ITS_GET_INFO_SIG",
+    "non_secure_clients": true,
+    "minor_version": 1,
+    "minor_policy": "STRICT"
+   },
+   {
+    "name": "TFM_ITS_REMOVE",
+    "sid": "0x00000073",
+    "signal": "TFM_ITS_REMOVE_SIG",
+    "non_secure_clients": true,
+    "minor_version": 1,
+    "minor_policy": "STRICT"
+   }
+  ],
+  "linker_pattern": {
+    "library_list": [
+      "*tfm_internal_trusted_storage*"
+    ]
+  }
+}

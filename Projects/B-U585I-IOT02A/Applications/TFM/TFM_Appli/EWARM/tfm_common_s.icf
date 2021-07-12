@@ -1,0 +1,644 @@
+/*
+ * Copyright (c) 2017-2020 Arm Limited. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This file is derivative of ../armclang/tfm_common_s.sct.template
+ */
+
+/*********** WARNING: This is an auto-generated file. Do not edit! ***********/
+
+#include "region_defs.h"
+
+define memory mem with size = 4G;
+
+define block ER_TFM_CODE          with fixed order, alignment = 8 {readonly section .intvec, readonly};
+    /**** PSA RoT RO part (CODE + RODATA) start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of PSA RoT code.
+     */
+define block TFM_PSA_CODE_START with alignment = 32, size = 0 { };
+
+define block TFM_SP_ITS with alignment = 32 {
+        ro object *internal_trusted_storage.*,
+        ro object *its*.*
+    };
+
+#ifdef TFM_PARTITION_AUDIT_LOG
+define block TFM_SP_AUDIT_LOG with alignment = 32 {
+        ro object *tfm_partition_audit.*,
+    };
+#endif /* TFM_PARTITION_AUDIT_LOG */
+
+define block TFM_SP_CRYPTO with alignment = 32 {
+        ro object crypto.*,
+        ro object platform.*,
+        ro object platform_util.*
+    };
+
+#ifdef TFM_PARTITION_PLATFORM
+define block TFM_SP_PLATFORM with alignment = 32 {
+        ro object platform_sp.*,
+        ro object tfm_plaform_system.*
+    };
+#endif /* TFM_PARTITION_PLATFORM */
+
+define block TFM_SP_INITIAL_ATTESTATION with alignment = 32 {
+        ro object *tfm_partition_attestation.*,
+    };
+
+#ifdef TFM_PARTITION_TEST_CORE
+define block TFM_SP_CORE_TEST with alignment = 32 {
+        ro object *tfm_ss_core_test.*,
+    };
+#endif /* TFM_PARTITION_TEST_CORE */
+
+#ifdef TFM_PARTITION_TEST_SECURE_SERVICES
+define block TFM_SP_SECURE_TEST_PARTITION with alignment = 32 {
+        ro object *tfm_secure_client_service.*,
+        ro object *test_framework*,
+        ro object *uart_stdout.*,
+        ro object *Driver_USART.*,
+        ro object *arm_uart_drv.*,
+        ro object *uart_pl011_drv.*,
+        ro object *uart_cmsdk_drv*,
+        ro object *secure_suites.*,
+        ro object *attestation_s_interface_testsuite.*,
+    };
+#endif /* TFM_PARTITION_TEST_SECURE_SERVICES */
+
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+define block TFM_SP_IPC_SERVICE_TEST with alignment = 32 {
+        ro object *ipc_service_test.*,
+    };
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+
+#ifdef TFM_PARTITION_TEST_PS
+define block TFM_SP_PS_TEST with alignment = 32 {
+        ro object *tfm_ps_test_service.*,
+    };
+#endif /* TFM_PARTITION_TEST_PS */
+
+define block TFM_UNPRIV_CODE with alignment = GTZC_FLASH_ALIGN {
+       ro object tfm_spm_services.o,
+       section SFN,
+       ro object tfm_*_secure_api.o,
+       ro object *6M_tl*.a,
+       ro object *7M_tl*.a,
+       ro object *libtfmsprt.a,
+
+       ro object stm32u5xx_hal*.o,
+       ro object tick.o
+       };
+
+#if defined (TFM_PARTITION_APP_ROT)
+define block TFM_APP_ROT with alignment = 32 {
+        ro object *app_rot*.*
+};
+#endif /* TFM_PARTITION_APP_ROT */
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of PSA RoT code.
+     */
+define block TFM_PSA_CODE_END with alignment = 32, size = 0 { };
+
+    /**** APPLICATION RoT RO part (CODE + RODATA) start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of APP RoT code.
+     */
+define block TFM_APP_CODE_START with alignment = 32, size = 0 { };
+
+define block TFM_SP_PS with alignment = 32 {
+        ro object *sst*.*,
+        ro object tfm_protected_storage*.*
+    };
+
+#ifdef TFM_PARTITION_TEST_CORE
+define block TFM_SP_CORE_TEST_2 with alignment = 32 {
+        ro object *tfm_ss_core_test_2.*,
+    };
+#endif /* TFM_PARTITION_TEST_CORE */
+
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+define block TFM_SP_IPC_CLIENT_TEST with alignment = 32 {
+        ro object *ipc_client_test.*,
+    };
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+
+#ifdef TFM_ENABLE_IRQ_TEST
+define block TFM_IRQ_TEST_1 with alignment = 32 {
+        ro object *tfm_irq_test_service_1.*,
+        ro object *timer_cmsdk*,
+    };
+#endif /* TFM_ENABLE_IRQ_TEST */
+
+#ifdef TFM_PARTITION_TEST_SECURE_SERVICES
+define block TFM_SP_SECURE_CLIENT_2 with alignment = 32 {
+        ro object *tfm_secure_client_2.*,
+    };
+#endif /* TFM_PARTITION_TEST_SECURE_SERVICES */
+
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of APP RoT code.
+     */
+define block TFM_APP_CODE_END with alignment = 32, size = 0 { };
+
+    /**** Base address of secure data area */
+define block TFM_SECURE_DATA_START with size = 0 { };
+
+
+    /* Shared area between BL2 and runtime to exchange data */
+define block TFM_SHARED_DATA with alignment = 32, size = BOOT_TFM_SHARED_DATA_SIZE { };
+define block ARM_LIB_STACK_MSP with alignment = 32, size = S_MSP_STACK_SIZE { };
+define overlay STACK_DATA {block TFM_SHARED_DATA};
+define overlay STACK_DATA {block ARM_LIB_STACK_MSP};
+/* GTZC alignment is 512 bytes */
+define block ARM_LIB_STACK with alignment = GTZC_RAM_ALIGN, size = S_PSP_STACK_SIZE { };
+
+
+#if !defined(TFM_PSA_API)
+define block TFM_SECURE_STACK   with size = 0x2000, alignment = 128 {};
+#endif /* !defined(TFM_PSA_API) */
+
+define block TFM_UNPRIV_DATA with alignment = 32 {
+       rw object tfm_spm_services.o,
+       rw object device_definition.o,
+       rw object stm32u5xx_hal*.o,
+       rw object tick.o
+       };
+#if defined (TFM_PARTITION_APP_ROT)
+define block TFM_APP_ROT_DATA with alignment = 32 {
+       rw object *app_rot*.*
+};
+#endif /* TFM_PARTITION_APP_ROT */
+define block TFM_APP_RW_STACK_START with alignment = 32, size = 0 { };
+
+define block TFM_SP_PS_DATA with alignment = 32 {
+        rw object *sst*.*,
+        rw object tfm_protected_storage*.*
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_STORAGE_STACK with alignment = 128, size = 0x800 { };
+#endif
+
+#ifdef TFM_PARTITION_TEST_CORE
+define block TFM_SP_CORE_TEST_2_DATA with alignment = 32 {
+        rw object *tfm_ss_core_test_2.*,
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_CORE_TEST_2_STACK with alignment = 128, size = 0x0280 { };
+#endif
+#endif /* TFM_PARTITION_TEST_CORE */
+
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+define block TFM_SP_IPC_CLIENT_TEST_DATA with alignment = 32 {
+        rw object *ipc_client_test.*,
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_IPC_CLIENT_TEST_STACK with alignment = 128, size = 0x0300 { };
+#endif
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+
+#ifdef TFM_ENABLE_IRQ_TEST
+define block TFM_IRQ_TEST_1_DATA with alignment = 32 {
+        rw object *tfm_irq_test_service_1.*,
+        rw object *timer_cmsdk*,
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_IRQ_TEST_1_STACK with alignment = 128, size = 0x0400 { };
+#endif
+#endif /* TFM_ENABLE_IRQ_TEST */
+
+#ifdef TFM_PARTITION_TEST_SECURE_SERVICES
+define block TFM_SP_SECURE_CLIENT_2_DATA with alignment = 32 {
+        rw object *tfm_secure_client_2.*,
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_SECURE_CLIENT_2_STACK with alignment = 128, size = 0x300 { };
+#endif
+#endif /* TFM_PARTITION_TEST_SECURE_SERVICES */
+
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of APP RoT RW and Stack.
+     */
+define block TFM_APP_RW_STACK_END with alignment = GTZC_RAM_ALIGN, size = 0 { };
+
+define block HEAP         with alignment = 8, size = S_HEAP_SIZE { };
+define block ARM_LIB_HEAP with alignment = 8, size = S_HEAP_SIZE { };
+define overlay HEAP_OVL {block HEAP};
+define overlay HEAP_OVL {block ARM_LIB_HEAP};
+
+define block ER_TFM_DATA          with alignment = 8 {readwrite};
+
+    /**** PSA RoT DATA start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of PSA RoT RW and Stack.
+     */
+define block TFM_PSA_RW_STACK_START with alignment = 32, size = 0 { };
+
+define block TFM_SP_ITS_DATA with alignment = 32 {
+        rw object *internal_trusted_storage.*,
+        rw object *its*.*
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_ITS_STACK with alignment = 128, size = 0x680 { };
+#endif
+
+#ifdef TFM_PARTITION_AUDIT_LOG
+define block TFM_SP_AUDIT_LOG_DATA with alignment = 32 {
+        rw object *tfm_partition_audit.*,
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_AUDIT_LOG_STACK with alignment = 128, size = 0 { };
+#endif
+#endif /* TFM_PARTITION_AUDIT_LOG */
+
+define block TFM_SP_CRYPTO_DATA with alignment = 32 {
+        rw object crypto.*,
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_CRYPTO_STACK with alignment = 128, size = 0x2000 { };
+#endif
+
+#ifdef TFM_PARTITION_PLATFORM
+define block TFM_SP_PLATFORM_DATA with alignment = 32 {
+        rw object platform_sp.*,
+        rw object tfm_platform_system.*,
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_PLATFORM_STACK with alignment = 128, size = 0x0400 { };
+#endif
+#endif /* TFM_PARTITION_PLATFORM */
+#if defined (TFM_PARTITION_APP_ROT)
+define block TFM_APP_ROT_STACK with alignment = 128, size = 0xA00 { };
+#endif /* TFM_PARTITION_APP_ROT */
+define block TFM_SP_INITIAL_ATTESTATION_DATA with alignment = 32 {
+        rw object *tfm_partition_attestation.*,
+        rw object *UsefulBuff.*
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_INITIAL_ATTESTATION_STACK with alignment = 128, size = 0x0A80 { };
+#endif
+
+#ifdef TFM_PARTITION_TEST_CORE
+define block TFM_SP_CORE_TEST_DATA with alignment = 32 {
+        rw object *tfm_ss_core_test.*,
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_CORE_TEST_STACK with alignment = 128, size = 0x0380 { };
+#endif
+#endif /* TFM_PARTITION_TEST_CORE */
+
+#ifdef TFM_PARTITION_TEST_SECURE_SERVICES
+define block TFM_SP_SECURE_TEST_PARTITION_DATA with alignment = 32 {
+        rw object *tfm_secure_client_service.*,
+        rw object *test_framework*,
+        rw object *uart_stdout.*,
+        rw object *Driver_USART.*,
+        rw object *arm_uart_drv.*,
+        rw object *uart_pl011_drv.*,
+        rw object *uart_cmsdk_drv*,
+        rw object *secure_suites.*,
+        rw object *attestation_s_interface_testsuite.*,
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_SECURE_TEST_PARTITION_STACK with alignment = 128, size = 0x0D00 { };
+#endif
+#endif /* TFM_PARTITION_TEST_SECURE_SERVICES */
+
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+define block TFM_SP_IPC_SERVICE_TEST_DATA with alignment = 32 {
+        rw object *ipc_service_test.*,
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_IPC_SERVICE_TEST_STACK with alignment = 128, size = 0x0220 { };
+#endif
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+
+#ifdef TFM_PARTITION_TEST_PS
+define block TFM_SP_PS_TEST_DATA with alignment = 32 {
+        rw object *sst*.*,
+        rw object tfm_protected_storage*.*
+    };
+
+#if defined (TFM_PSA_API)
+define block TFM_SP_PS_TEST_STACK with alignment = 128, size = 0x500 { };
+#endif
+#endif /* TFM_PARTITION_TEST_PS */
+
+
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of PSA RoT RW and Stack.
+     */
+define block TFM_PSA_RW_STACK_END with alignment = 32, size = 0x0 { };
+
+    /* This empty, zero long execution region is here to mark the limit address
+     * of the last execution region that is allocated in SRAM.
+     */
+define block SRAM_WATERMARK with size = 0 { };
+
+define block LR_CODE with fixed order {
+       block ER_TFM_CODE,
+       block TFM_PSA_CODE_START,
+       block TFM_SP_PS,
+       block TFM_SP_ITS,
+#ifdef TFM_PARTITION_AUDIT_LOG
+       block TFM_SP_AUDIT_LOG,
+#endif /* TFM_PARTITION_AUDIT_LOG */
+       block TFM_SP_CRYPTO,
+#ifdef TFM_PARTITION_PLATFORM
+       block TFM_SP_PLATFORM,
+#endif /* TFM_PARTITION_PLATFORM */
+       block TFM_SP_INITIAL_ATTESTATION,
+#ifdef TFM_PARTITION_TEST_CORE
+       block TFM_SP_CORE_TEST,
+#endif /* TFM_PARTITION_TEST_CORE */
+#ifdef TFM_PARTITION_TEST_SECURE_SERVICES
+       block TFM_SP_SECURE_TEST_PARTITION,
+#endif /* TFM_PARTITION_TEST_SECURE_SERVICES */
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+       block TFM_SP_IPC_SERVICE_TEST,
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+#ifdef TFM_PARTITION_TEST_PS
+       block TFM_SP_PS_TEST,
+#endif /* TFM_PARTITION_TEST_PS */
+
+       block TFM_PSA_CODE_END,
+/**** unpriv code ******/
+       block TFM_UNPRIV_CODE,
+/**** APPLICATION RoT RO part (CODE + RODATA) start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of APP RoT code.
+     */
+       block TFM_APP_CODE_START,
+
+#ifdef TFM_PARTITION_APP_ROT
+       block TFM_APP_ROT,
+#endif /* TFM_PARTITION_APP_ROT */
+
+#ifdef TFM_PARTITION_TEST_CORE
+       block TFM_SP_CORE_TEST_2,
+#endif /* TFM_PARTITION_TEST_CORE */
+
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+       block TFM_SP_IPC_CLIENT_TEST,
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+
+#ifdef TFM_ENABLE_IRQ_TEST
+       block TFM_IRQ_TEST_1,
+#endif /* TFM_ENABLE_IRQ_TEST */
+
+#ifdef TFM_PARTITION_TEST_SECURE_SERVICES
+       block TFM_SP_SECURE_CLIENT_2,
+#endif /* TFM_PARTITION_TEST_SECURE_SERVICES */
+
+#ifdef TFM_MULTI_CORE_TEST
+       block TFM_SP_MULTI_CORE_TEST,
+#endif /* TFM_MULTI_CORE_TEST */
+
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of APP RoT code.
+     */
+       block TFM_APP_CODE_END,
+       };
+
+do not initialize  { section .noinit };
+initialize by copy with packing = none { readwrite };
+if (isdefinedsymbol(__USE_DLIB_PERTHREAD))
+{
+  // Required in a multi-threaded application
+  initialize by copy with packing = none { section __DLIB_PERTHREAD };
+}
+
+place at address S_CODE_START         { block LR_CODE };
+
+define block DATA with fixed order, size = S_DATA_SIZE {
+   /* PSP is unprivileged in single-core topology */
+   block ARM_LIB_STACK,
+   block TFM_UNPRIV_DATA,
+   /**** APP RoT DATA start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of APP RoT RW and Stack.
+     */
+    block TFM_APP_RW_STACK_START,
+#ifdef TFM_PARTITION_APP_ROT
+    block TFM_APP_ROT_STACK,
+    block TFM_APP_ROT_DATA,
+#endif /* TFM_PARTITION_APP_ROT */
+
+#ifdef TFM_PARTITION_TEST_CORE
+    block TFM_SP_CORE_TEST_2_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_CORE_TEST_2_STACK,
+#endif
+#endif /* TFM_PARTITION_TEST_CORE */
+
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+    block TFM_SP_IPC_CLIENT_TEST_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_IPC_CLIENT_TEST_STACK,
+#endif
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+
+#ifdef TFM_ENABLE_IRQ_TEST
+    block TFM_IRQ_TEST_1_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_IRQ_TEST_1_STACK,
+#endif
+#endif /* TFM_ENABLE_IRQ_TEST */
+
+#ifdef TFM_PARTITION_TEST_SECURE_SERVICES
+    block TFM_SP_SECURE_CLIENT_2_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_SECURE_CLIENT_2_STACK,
+#endif
+#endif /* TFM_PARTITION_TEST_SECURE_SERVICES */
+
+#ifdef TFM_MULTI_CORE_TEST
+    block TFM_SP_MULTI_CORE_TEST_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_MULTI_CORE_TEST_STACK,
+#endif
+#endif /* TFM_MULTI_CORE_TEST */
+
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of APP RoT RW and Stack.
+     */
+    block TFM_APP_RW_STACK_END,
+
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of APP RoT RW and Stack.
+     */
+    /**** Base address of secure data area */
+    block  TFM_SECURE_DATA_START,
+
+#if !defined(TFM_PSA_API)
+    block TFM_SECURE_STACK,
+#endif /* !defined(TFM_PSA_API) */
+
+    overlay HEAP_OVL,
+
+    block ER_TFM_DATA,
+
+    /**** PSA RoT DATA start here */
+    /*
+     * This empty, zero long execution region is here to mark the start address
+     * of PSA RoT RW and Stack.
+     */
+    block TFM_PSA_RW_STACK_START,
+    block TFM_SP_PS_DATA,
+#if defined (TFM_PSA_API)
+    block TFM_SP_STORAGE_STACK,
+#endif
+    block TFM_SP_ITS_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_ITS_STACK,
+#endif
+
+#ifdef TFM_PARTITION_AUDIT_LOG
+    block TFM_SP_AUDIT_LOG_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_AUDIT_LOG_STACK,
+#endif
+#endif /* TFM_PARTITION_AUDIT_LOG */
+
+    block TFM_SP_CRYPTO_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_CRYPTO_STACK,
+#endif
+
+#ifdef TFM_PARTITION_PLATFORM
+    block TFM_SP_PLATFORM_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_PLATFORM_STACK,
+#endif
+#endif /* TFM_PARTITION_PLATFORM */
+
+    block TFM_SP_INITIAL_ATTESTATION_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_INITIAL_ATTESTATION_STACK,
+#endif
+
+#ifdef TFM_PARTITION_TEST_CORE
+    block TFM_SP_CORE_TEST_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_CORE_TEST_STACK,
+#endif
+#endif /* TFM_PARTITION_TEST_CORE */
+
+#ifdef TFM_PARTITION_TEST_SECURE_SERVICES
+    block TFM_SP_SECURE_TEST_PARTITION_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_SECURE_TEST_PARTITION_STACK,
+#endif
+#endif /* TFM_PARTITION_TEST_SECURE_SERVICES */
+
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+    block TFM_SP_IPC_SERVICE_TEST_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_IPC_SERVICE_TEST_STACK,
+#endif
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+
+#ifdef TFM_PARTITION_TEST_PS
+    block TFM_SP_PS_TEST_DATA,
+
+#if defined (TFM_PSA_API)
+    block TFM_SP_PS_TEST_STACK,
+#endif
+#endif /* TFM_PARTITION_TEST_PS */
+    overlay STACK_DATA,
+    /*
+     * This empty, zero long execution region is here to mark the end address
+     * of PSA RoT RW and Stack.
+     */
+    block TFM_PSA_RW_STACK_END,
+    /* This empty, zero long execution region is here to mark the limit address
+     * of the last execution region that is allocated in SRAM.
+     */
+    block SRAM_WATERMARK,
+
+    /* Make sure that the sections allocated in the SRAM does not exceed the
+     * size of the SRAM available.
+     */
+};
+
+place at address S_DATA_START          { block DATA };
+
+
+
+    /*
+     * Place the CMSE Veneers (containing the SG instruction) in a separate
+     * 32 bytes aligned region so that the SAU can be programmed to
+     * just set this region as Non-Secure Callable.
+     */
+define block LR_VENEER with alignment = 0x20, size = CMSE_VENEER_REGION_SIZE {section Veneer$$CMSE};
+place at address CMSE_VENEER_REGION_START {block LR_VENEER};
+
+
+    /* Reserved place for NS application.
+     * No code will be placed here, just address of this region is used in the
+     * secure code to configure certain HW components. This generates an empty
+     * execution region description warning during linking.
+     */
+define block LR_NS_PARTITION with size = NS_PARTITION_SIZE { };
+place at address NS_PARTITION_START { block LR_NS_PARTITION };
+
+#ifdef BL2
+    /* Reserved place for new image in case of firmware upgrade.
+     * No code will be placed here, just address of this region is used in the
+     * secure code to configure certain HW components. This generates an empty
+     * execution region description warning during linking.
+     */
+#if !defined(MCUBOOT_PRIMARY_ONLY)
+define block LR_SECONDARY_PARTITION with size = SECONDARY_PARTITION_SIZE { };
+place at address SECONDARY_PARTITION_START { block LR_SECONDARY_PARTITION };
+#endif /* !defined(MCUBOOT_PRIMARY_ONLY) */
+#endif /* BL2 */

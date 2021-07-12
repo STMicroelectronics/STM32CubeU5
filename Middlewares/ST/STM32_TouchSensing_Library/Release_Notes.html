@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Release Notes for STM32 Middleware Touch Sensing Library TSL</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="_htmresc/mini-st.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<div class="row">
+<div class="col-sm-12 col-lg-4">
+<div class="card fluid">
+<div class="sectione dark">
+<center>
+<h1 id="release-notes-for-stm32-middleware-touch-sensing-library-tsl"><small>Release Notes for</small> STM32 Middleware Touch Sensing Library TSL</h1>
+<p>Copyright © 2020 STMicroelectronics<br />
+</p>
+<a href="https://www.st.com" class="logo"><img src="_htmresc/st_logo.png" alt="ST logo" /></a>
+</center>
+</div>
+</div>
+<h1 id="license">License</h1>
+<p>This software component is licensed by ST under Ultimate Liberty license SLA0044, the “License”;</p>
+<p>You may not use this file except in compliance with the License.</p>
+<p>You may obtain a copy of the License at: <a href="http://www.st.com/SLA0044">SLA0044</a></p>
+<h1 id="purpose">Purpose</h1>
+<p>Touch Sensor is use in a one of HMI (Human Machine Interface).</p>
+<p>Instead of using mechanical switch, using the finger touch on the surface.</p>
+<p>STM32 Touch Sensing Library, TSL, is used to support Touch Sensors with:</p>
+<ul>
+<li><p>Touch Sensing Controller or TSC on:</p></li>
+<ul>
+<li><p>STM32L0, STM32L4, STM32F0, STM32F3, STM32WB</p></li>
+</ul>
+<li><p>Touch Sensing hardware assist on:</p></li>
+<ul>
+<li><p>STM32L1</p></li>
+</ul>
+</ul>
+
+<p>TSC and TSL overview:</p>
+<ul>
+<li><p>TSC is based on charge transfer mechanism:</p></li>
+<a href="https://www.st.com" class="logo"><img src="_htmresc/touchsensinglibrary_hardware.png" alt="TSC hardware logo" /></a>
+<li><p>TSL architecture and file organisation:</p></li>
+<a href="https://www.st.com" class="logo"><img src="_htmresc/touchsensinglibrary_layers.png" alt="TSL layers logo" /></a>
+<a href="https://www.st.com" class="logo"><img src="_htmresc/touchsensinglibrary_files.png" alt="TSL files logo" /></a>
+</ul>
+
+
+<p>Here is the list of references to user documents:</p>
+<ul>
+<li><a href="http://www.st.com/st-web-ui/static/active/en/resource/technical/document/application_note/DM00445657.pdf">AN5105</a> : Getting Started with Touch control.</li>
+<li><a href="http://www.st.com/st-web-ui/static/active/en/resource/technical/document/user_manual/DM00210526.pdf">UM1913</a> : Developing applications on STM32Cube with STMTouch touch sensing library.</li>
+<li><a href="http://www.st.com/st-web-ui/static/active/en/resource/technical/document/application_note/DM00088471.pdf">AN4316</a> : Tuning a STMTouch-based application.</li>
+<li><a href="http://www.st.com/st-web-ui/static/active/en/resource/technical/document/application_note/DM00087990.pdf">AN4312</a> : Guidelines for designing touch sensing applications with surface sensors.</li>
+<li><a href="http://www.st.com/st-web-ui/static/active/en/resource/technical/document/application_note/DM00085385.pdf">AN4299</a> : Guidelines to improve conducted noise robustness on STM32 series touch sensing applications.</li>
+<li><a href="http://www.st.com/st-web-ui/static/active/en/resource/technical/document/application_note/DM00087593.pdf">AN4310</a> : Sampling capacitor selection guide for MCU based touch sensing applications.</li>
+<li><a href="http://www.st.com/st-web-ui/static/active/en/resource/technical/document/application_note/DM00035396.pdf">AN3960</a> : ESD considerations for touch sensing applications.</li>
+</ul>
+</div>
+
+
+<div class="col-sm-12 col-lg-8">
+<h1 id="overview">Overview</h1>
+<ul>
+<li>The V2.x.x versions must be used only within the STM32Cube package. They are not compatible with the STMTouch Libraries</li>
+</ul>
+
+<h1 id="update-history">Update History</h1>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section22" aria-hidden="true"> <label for="collapse-section22" aria-hidden="true">V2.2.6 / 10-Dec-2020</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Spell check.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section22" aria-hidden="true"> <label for="collapse-section22" aria-hidden="true">V2.2.5 / 17-Dec-2019</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Update licences to SLA0044.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section21" aria-hidden="true"> <label for="collapse-section21" aria-hidden="true">V2.2.4 / 27-May-2019</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Wrong test on acquisition max value.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section20" aria-hidden="true"> <label for="collapse-section20" aria-hidden="true">V2.2.3 / 01-April-2019</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>IAR compilation issue.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section19" aria-hidden="true"> <label for="collapse-section19" aria-hidden="true">V2.2.2 / 29-March-2019</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Increase STM32L1 maximum bank number.</li>
+<li>Solved STM32L1 system workbench compilation error.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section18" aria-hidden="true"> <label for="collapse-section18" aria-hidden="true">V2.2.1 / 04-March-2019</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Remove notion of Raisonance.</li>
+<li>Minor compilation error when using more than 25 channels with STM32L1 MCUs.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section17" aria-hidden="true"> <label for="collapse-section17" aria-hidden="true">V2.2.0 / 01-February-2016</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Remove the "zone" feature (was only used on stm8tl5x devices).</li>
+<li>Minor change in SoftDelay function (in tsl_acq.c file): add "volatile" for variable idx.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section16" aria-hidden="true"> <label for="collapse-section16" aria-hidden="true">V2.1.2 / 03-August-2015</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Add TSL_acq_BankStartAcq_IT() function.</li>
+<li>Remove no more used tsl_time_stm32l1xx.c/h files.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section15" aria-hidden="true"> <label for="collapse-section15" aria-hidden="true">V2.1.1 / 25-August-2014</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Take into account the presence or not of GPIOE/F/G/H and HYSCR3/4 registers in STM32L1xx acquisition.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section14" aria-hidden="true"> <label for="collapse-section14" aria-hidden="true">V2.1.0 / 10-July-2014</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Add support of STM32L1xx hardware and software acquisitions:</li>
+<ul>
+<li>The systick must be initialized now in the user code.</li>
+</ul>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section13" aria-hidden="true"> <label for="collapse-section13" aria-hidden="true">V2.0.0 / 22-April-2014</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Change API to be compliant with STM32Cube package:</li>
+<ul>
+<li>Support of TSC acquisition only.</li>
+<li>The systick, the TSC peripheral and the touch-sensing IOs must be initialized now in the user code.</li>
+<li>The TSC parameters have been removed from the configuration file (renamed in tsl_conf.h).</li>
+</ul>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section12" aria-hidden="true"> <label for="collapse-section12" aria-hidden="true">V1.4.4 / 31-March-2014</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>STM32F3xx acquisition module:</li>
+<ul>
+<li>Add the declaration of STM32F30X in case it is not defined.</li>
+</ul>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Support of proximity, touchkey and linear/rotary touch sensors.</li>
+<li>Debounce mechanism for all states.</li>
+<li>Environment Change System (ECS).</li>
+<li>Detection Exclusion System (DXS).</li>
+<li>Detection Time Out (DTO).</li>
+<li>Noise filtering capability on measurement and delta.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>STM8 devices:</li>
+<ul>
+<li>ST Visual Develop (STVD).</li>
+<li>IAR Embedded Workbench for STM8.</li>
+<li>Cosmic STM8 C Compiler.</li>
+<li>Raisonance Ride7/RKit-STM8.</li>
+</ul>
+<li>STM32 devices:</li>
+<ul>
+<li>IAR Embedded Workbench for ARM.</li>
+<li>Keil MDK-ARM.</li>
+<li>Altium Tasking.</li>
+<li>Atollic TrueSTUDIO.</li>
+<li>Raisonance Ride7/RKit-Arm.</li>
+</ul>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Support of STM8L15x/16x/101 devices.</li>
+<li>Support of STM8TL5x devices.</li>
+<li>Support of STM32F0xx devices.</li>
+<li>Support of STM32F3xx devices.</li>
+<li>Support of STM32L1xx devices.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section11" aria-hidden="true"> <label for="collapse-section11" aria-hidden="true">V1.4.3 / 24-February-2014</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>STM8L acquisition module:</li>
+<ul>
+<li>Optimization of the acquisition loop.</li>
+<li>Typo corrections.</li>
+</ul>
+<li>STM32L1xx sw acquisition module:</li>
+<ul>
+<li>Bug correction with GPIOE declaration.</li>
+<li>Update the defines used to select the STM32L1xx XL devices.</li>
+</ul>
+<li>STM32F0xx acquisition module:</li>
+<ul>
+<li>Update the defines used to select the STM32F0xx devices.</li>
+</ul>
+<li>STM32F3xx acquisition module:</li>
+<ul>
+<li> Update the defines used to select the STM32F30x devices.</li>
+</ul>
+<li>Common modules:</li>
+<ul>
+<li>Bug correction with DTO: the debounce and DTO counters are now independent.</li>
+</ul>
+<li>Documentation (CHM user manual):</li>
+<ul>
+<li>Update the STM32F0xx and STM32L1xx available channels tables.</li>
+<li>Add "Tips and Tricks" chapter.</li>
+</ul>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Support of proximity, touchkey and linear/rotary touch sensors.</li>
+<li>Debounce mechanism for all states.</li>
+<li>Environment Change System (ECS).</li>
+<li>Detection Exclusion System (DXS).</li>
+<li>Detection Time Out (DTO).</li>
+<li>Noise filtering capability on measurement and delta.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>STM8 devices:</li>
+<ul>
+<li>ST Visual Develop (STVD).</li>
+<li>IAR Embedded Workbench for STM8.</li>
+<li>Cosmic STM8 C Compiler.</li>
+<li>Raisonance Ride7/RKit-STM8.</li>
+</ul>
+<li>STM32 devices:</li>
+<ul>
+<li>IAR Embedded Workbench for ARM.</li>
+<li>Keil MDK-ARM.</li>
+<li>Altium Tasking.</li>
+<li>Atollic TrueSTUDIO.</li>
+<li>Raisonance Ride7/RKit-Arm.</li>
+</ul>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Support of STM8L15x/16x/101 devices.</li>
+<li>Support of STM8TL5x devices.</li>
+<li>Support of STM32F0xx devices.</li>
+<li>Support of STM32F3xx devices.</li>
+<li>Support of STM32L1xx devices.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section10" aria-hidden="true"> <label for="collapse-section10" aria-hidden="true">V1.4.2 / 12-August-2013</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>STM8L acquisition module:</li>
+<ul>
+<li>Add management of IO default mode.</li>
+<li>Correction in the max count detection.</li>
+</ul>
+<li>STM32L1xx sw acquisition module:</li>
+<ul>
+<li>Delay length is now configurable for software acquisition mode.</li>
+<li>Spread spectrum added for software acquisition mode.</li>
+</ul>
+<li>STM32F0xx acquisition module:</li>
+<ul>
+<li>Add TSLPRM_DELAY_DISCHARGE_ALL parameter.</li>
+<li>Use the SystemCoreClock variable to adjust the discharge delay.</li>
+</ul>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Support of proximity, touchkey and linear/rotary touch sensors.</li>
+<li>Debounce mechanism for all states.</li>
+<li>Environment Change System (ECS).</li>
+<li>Detection Exclusion System (DXS).</li>
+<li>Detection Time Out (DTO).</li>
+<li>Noise filtering capability on measurement and delta.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>STM8 devices:</li>
+<ul>
+<li>ST Visual Develop (STVD).</li>
+<li>IAR Embedded Workbench for STM8.</li>
+<li>Cosmic STM8 C Compiler.</li>
+<li>Raisonance Ride7/RKit-STM8.</li>
+</ul>
+<li>STM32 devices:</li>
+<ul>
+<li>IAR Embedded Workbench for ARM.</li>
+<li>Keil MDK-ARM.</li>
+<li>Altium Tasking.</li>
+<li>Atollic TrueSTUDIO.</li>
+<li>Raisonance Ride7/RKit-Arm.</li>
+</ul>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Support of STM8L15x/16x/101 devices.</li>
+<li>Support of STM8TL5x devices.</li>
+<li>Support of STM32F0xx devices.</li>
+<li>Support of STM32F3xx devices.</li>
+<li>Support of STM32L1xx High-density and Medium-density Plus devices using hardware and software acquisition modes.</li>
+<li>Support of STM32L1xx Medium-density devices using software acquisition mode.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section9" aria-hidden="true"> <label for="collapse-section9" aria-hidden="true">V1.4.1 / 14-June-2013</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Add support of STM8L101 devices.</li>
+<li>Add spread spectrum feature in STM8L software acquisition mode.</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Support of proximity, touchkey and linear/rotary touch sensors.</li>
+<li>Debounce mechanism for all states.</li>
+<li>Environment Change System (ECS).</li>
+<li>Detection Exclusion System (DXS).</li>
+<li>Detection Time Out (DTO).</li>
+<li>Noise filtering capability on measurement and delta.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>STM8 devices:</li>
+<ul>
+<li>ST Visual Develop (STVD).</li>
+<li>IAR Embedded Workbench for STM8.</li>
+<li>Cosmic STM8 C Compiler.</li>
+<li>Raisonance Ride7/RKit-STM8.</li>
+</ul>
+<li>STM32 devices:</li>
+<ul>
+<li>IAR Embedded Workbench for ARM.</li>
+<li>Keil MDK-ARM.</li>
+<li>Altium Tasking.</li>
+<li>Atollic TrueSTUDIO.</li>
+<li>Raisonance Ride7/RKit-Arm.</li>
+</ul>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Support of STM8L15x/16x/101 devices (ALPHA).</li>
+<li>Support of STM8TL5x devices.</li>
+<li>Support of STM32F0xx devices.</li>
+<li>Support of STM32F3xx devices.</li>
+<li>Support of STM32L1xx High-density and Medium-density Plus devices using hardware and software acquisition modes.</li>
+<li>Support of STM32L1xx Medium-density devices using software acquisition mode.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section8" aria-hidden="true"> <label for="collapse-section8" aria-hidden="true">V1.4.0 / 17-May-2013</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Add support of STM32F0xx 128K flash devices.</li>
+<li>Add support of STM8L15x/16x devices.</li>
+<li>Add threshold coefficient on re-calibration threshold.</li>
+<li>Bug correction in STM32F3xx acquisition module:</li>
+<ul>
+<li>add the configuration of the PA15 synchro pin for STM32F37x devices.</li>
+</ul>
+<li> Bugs correction in ECS module:</li>
+<ul>
+<li>when the ECS was stopped (due to a sensor touched) in one group it also stops the ECS for all the other groups.</li>
+<li>sensors placed after a sensor in off or error state was not processed.</li>
+</ul>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Support of proximity, touchkey and linear/rotary touch sensors.</li>
+<li>Debounce mechanism for all states.</li>
+<li>Environment Change System (ECS).</li>
+<li>Detection Exclusion System (DXS).</li>
+<li>Detection Time Out (DTO).</li>
+<li>Noise filtering capability on measurement and delta.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>STM8 devices:</li>
+<ul>
+<li>ST Visual Develop (STVD).</li>
+<li>IAR Embedded Workbench for STM8.</li>
+<li>Cosmic STM8 C Compiler.</li>
+<li>Raisonance Ride7/RKit-STM8.</li>
+</ul>
+<li>STM32 devices:</li>
+<ul>
+<li>IAR Embedded Workbench for ARM.</li>
+<li>Keil MDK-ARM.</li>
+<li>Altium Tasking.</li>
+<li>Atollic TrueSTUDIO.</li>
+<li>Raisonance Ride7/RKit-Arm.</li>
+</ul>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Support of STM8L15x/16x/101 devices (ALPHA).</li>
+<li>Support of STM8TL5x devices.</li>
+<li>Support of STM32F0xx devices.</li>
+<li>Support of STM32F3xx devices.</li>
+<li>Support of STM32L1xx High-density and Medium-density Plus devices using hardware and software acquisition modes.</li>
+<li>Support of STM32L1xx Medium-density devices using software acquisition mode.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section7" aria-hidden="true"> <label for="collapse-section7" aria-hidden="true">V1.3.3 / 11-February-2013</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Update CHM documentation file.</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Support of proximity, touchkey and linear/rotary touch sensors.</li>
+<li>Debounce mechanism for all states.</li>
+<li>Environment Change System (ECS).</li>
+<li>Detection Exclusion System (DXS).</li>
+<li>Detection Time Out (DTO).</li>
+<li>Noise filtering capability on measurement and delta.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>STM8 devices:</li>
+<ul>
+<li>ST Visual Develop (STVD).</li>
+<li>IAR Embedded Workbench for STM8.</li>
+<li>Cosmic STM8 C Compiler.</li>
+<li>Raisonance Ride7/RKit-STM8.</li>
+</ul>
+<li>STM32 devices:</li>
+<ul>
+<li>IAR Embedded Workbench for ARM.</li>
+<li>Keil MDK-ARM.</li>
+<li>Altium Tasking.</li>
+<li>Atollic TrueSTUDIO.</li>
+<li>Raisonance Ride7/RKit-Arm.</li>
+</ul>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Support of STM8TL5x devices.</li>
+<li>Support of STM32F0xx devices.</li>
+<li>Support of STM32F3xx devices.</li>
+<li>Support of STM32L1xx High-density and Medium-density Plus devices using hardware and software acquisition modes.</li>
+<li>Support of STM32L1xx Medium-density devices using software acquisition mode.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section6" aria-hidden="true"> <label for="collapse-section6" aria-hidden="true">V1.3.2 / 22-January-2013</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Change in STM32L1xx acquisition:</li>
+<ul>
+<li>GPIOs speed configured to "Very Low" (400 kHz).</li>
+</ul>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Support of proximity, touchkey and linear/rotary touch sensors.</li>
+<li>Debounce mechanism for all states.</li>
+<li>Environment Change System (ECS).</li>
+<li>Detection Exclusion System (DXS).</li>
+<li>Detection Time Out (DTO).</li>
+<li>Noise filtering capability on measurement and delta.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>STM8 devices:</li>
+<ul>
+<li>ST Visual Develop (STVD).</li>
+<li>IAR Embedded Workbench for STM8.</li>
+<li>Cosmic STM8 C Compiler.</li>
+<li>Raisonance Ride7/RKit-STM8.</li>
+</ul>
+<li>STM32 devices:</li>
+<ul>
+<li>IAR Embedded Workbench for ARM.</li>
+<li>Keil MDK-ARM.</li>
+<li>Altium Tasking.</li>
+<li>Atollic TrueSTUDIO.</li>
+<li>Raisonance Ride7/RKit-Arm.</li>
+</ul>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Support of STM8TL5x devices.</li>
+<li>Support of STM32F0xx devices.</li>
+<li>Support of STM32F3xx devices.</li>
+<li>Support of STM32L1xx High-density and Medium-density Plus devices using hardware and software acquisition modes.</li>
+<li>Support of STM32L1xx Medium-density devices using software acquisition mode.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section5" aria-hidden="true"> <label for="collapse-section5" aria-hidden="true">V1.3.1 / 15-January-2013</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Improvement of STM32L1xx acquisition.</li>
+<li>Typo corrections.</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Support of proximity, touchkey and linear/rotary touch sensors.</li>
+<li>Debounce mechanism for all states.</li>
+<li>Environment Change System (ECS).</li>
+<li>Detection Exclusion System (DXS).</li>
+<li>Detection Time Out (DTO).</li>
+<li>Noise filtering capability on measurement and delta.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>STM8 devices:</li>
+<ul>
+<li>ST Visual Develop (STVD).</li>
+<li>IAR Embedded Workbench for STM8.</li>
+<li>Cosmic STM8 C Compiler.</li>
+<li>Raisonance Ride7/RKit-STM8.</li>
+</ul>
+<li>STM32 devices:</li>
+<ul>
+<li>IAR Embedded Workbench for ARM.</li>
+<li>Keil MDK-ARM.</li>
+<li>Altium Tasking.</li>
+<li>Atollic TrueSTUDIO.</li>
+<li>Raisonance Ride7/RKit-Arm.</li>
+</ul>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Support of STM8TL5x devices.</li>
+<li>Support of STM32F0xx devices.</li>
+<li>Support of STM32F3xx devices.</li>
+<li>Support of STM32L1xx High-density and Medium-density Plus devices using hardware and software acquisition modes.</li>
+<li>Support of STM32L1xx Medium-density devices using software acquisition mode.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section4" aria-hidden="true"> <label for="collapse-section4" aria-hidden="true">V1.3.0 / 10-December-2012</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Add support of STM32F30x and STM32F37x devices.</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Support of proximity, touchkey and linear/rotary touch sensors.</li>
+<li>Debounce mechanism for all states.</li>
+<li>Environment Change System (ECS).</li>
+<li>Detection Exclusion System (DXS).</li>
+<li>Detection Time Out (DTO).</li>
+<li>Noise filtering capability on measurement and delta.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>STM8 devices:</li>
+<ul>
+<li>ST Visual Develop (STVD).</li>
+<li>IAR Embedded Workbench for STM8.</li>
+<li>Cosmic STM8 C Compiler.</li>
+<li>Raisonance Ride7/RKit-STM8.</li>
+</ul>
+<li>STM32 devices:</li>
+<ul>
+<li>IAR Embedded Workbench for ARM.</li>
+<li>Keil MDK-ARM.</li>
+<li>Altium Tasking.</li>
+<li>Atollic TrueSTUDIO.</li>
+<li>Raisonance Ride7/RKit-Arm.</li>
+</ul>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Support of STM8TL5x devices.</li>
+<li>Support of STM32F0xx devices.</li>
+<li>Support of STM32F3xx devices (ALPHA).</li>
+<li>Support of STM32L1xx High-density and Medium-density Plus devices using hardware and software acquisition modes.</li>
+<li>Support of STM32L1xx Medium-density devices using software acquisition mode.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section3" aria-hidden="true"> <label for="collapse-section3" aria-hidden="true">V1.2.0 / 30-November-2012</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Common</li>
+<ul>
+<li>Change LinRot sensors position offset tables names (Mono, Half-ended, Dual).</li>
+<li>Add more LinRot sensors position offset tables with conditional compilation.</li>
+</ul>
+<li>STM8TL5x acquisition</li>
+<ul>
+<li>Increase TSLPRM_KEY_TARGET_REFERENCE max value to 2000.</li>
+</ul>
+<li>STM32F0xx acquisition</li>
+<ul>
+<li>Improvement of capacitors discharge processing.</li>
+<li>Add automatic GPIO configuration.</li>
+</ul>
+<li>STM32L1xx acquisition</li>
+<ul>
+<li>Add support of Medium-density Plus devices.</li>
+<li>Rename files ("hw/sw" put after "stm32l1xx").</li>
+<li>Software acquisition is now done if TSLPRM_STM32L1XX_SW_ACQ is defined (was previously TSLPRM_STM32L1XX_HD_SW or TSLPRM_STM32L1XX_MDP_SW).</li>
+</ul>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Support of proximity, touchkey and linear/rotary touch sensors (1, 3, 5 and 6 channels).</li>
+<li>Debounce mechanism for all states.</li>
+<li>Environment Change System (ECS).</li>
+<li>Detection Exclusion System (DXS).</li>
+<li>Detection Time Out (DTO).</li>
+<li>Noise filtering capability on measurement and delta.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>STM8 devices:</li>
+<ul>
+<li>ST Visual Develop (STVD).</li>
+<li>IAR Embedded Workbench for STM8.</li>
+<li>Cosmic STM8 C Compiler.</li>
+<li>Raisonance Ride7/RKit-STM8.</li>
+</ul>
+<li>STM32 devices:</li>
+<ul>
+<li>IAR Embedded Workbench for ARM.</li>
+<li>Keil MDK-ARM.</li>
+<li>Altium Tasking.</li>
+<li>Atollic TrueSTUDIO.</li>
+<li>Raisonance Ride7/RKit-Arm.</li>
+</ul>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Support of STM8TL5x devices.</li>
+<li>Support of STM32F0xx devices (BETA).</li>
+<li>Support of STM32L1xx High-density and Medium-density Plus devices using hardware and software acquisition modes (BETA).</li>
+<li>Support of STM32L1xx Medium-density devices using software acquisition mode (BETA).</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section2" aria-hidden="true"> <label for="collapse-section2" aria-hidden="true">V1.1.0 / 08-August-2012</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Improvement of hardware acquisition mode of STM32L1xx High-density devices:</li>
+<ul>
+<li>Disable hysteresis on sampling capacitor IOs to reduce acquisition noise level.</li>
+<li>Use of the timer TSUSP mode.</li>
+</ul>
+<li>Add support of Medium-density devices.</li>
+<li>Add software acquisition mode on STM32L1xx High and Medium density devices.</li>
+<li>Add TSLPRM_LINROT_USE_NORMDELTA parameter.</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Support of proximity, touchkey and linear/rotary touch sensors (1, 3, 5 and 6 channels).</li>
+<li>Debounce mechanism for all states.</li>
+<li>Environment Change System (ECS).</li>
+<li>Detection Exclusion System (DXS).</li>
+<li>Detection Time Out (DTO).</li>
+<li>Noise filtering capability on measurement and delta.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>STM8 devices:</li>
+<ul>
+<li>ST Visual Develop (STVD).</li>
+<li>IAR Embedded Workbench for STM8.</li>
+<li>Cosmic STM8 C Compiler.</li>
+<li>Raisonance Ride7/RKit-STM8.</li>
+</ul>
+<li>STM32 devices:</li>
+<ul>
+<li>IAR Embedded Workbench for ARM.</li>
+<li>Keil MDK-ARM.</li>
+</ul>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Support of STM8TL5x devices.</li>
+<li>Support of STM32F0xx devices (BETA).</li>
+<li>Support of STM32L1xx High-density and Medium-density Plus devices using hardware and software acquisition modes (BETA).</li>
+<li>Support of STM32L1xx Medium-density devices using software acquisition mode (BETA).</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section1" aria-hidden="true"> <label for="collapse-section1" aria-hidden="true">V1.0.0 / 25-June-2012</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>First official release.</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li>Support of proximity, touchkey and linear/rotary touch sensors (1, 3, 5 and 6 channels).</li>
+<li>Debounce mechanism for all states.</li>
+<li>Environment Change System (ECS).</li>
+<li>Detection Exclusion System (DXS).</li>
+<li>Detection Time Out (DTO).</li>
+<li>Noise filtering capability on measurement and delta.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>Use of Linear/Rotary sensors with STM32L1xx High-density devices:</li>
+<ul>
+<li>The hardware acquisition is too noisy to properly support Linear/Rotary sensors.</li>
+<li>This noise induces an important jitter of the reported position.</li>
+<li>As a workaround, the position resolution must be configured to 4 bits maximum.</li>
+<li>The Touchkey sensors are not impacted by this issue.</li>
+</ul>
+</ul>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>STM8 devices:</li>
+<ul>
+<li>ST Visual Develop (STVD).</li>
+<li>IAR Embedded Workbench for STM8.</li>
+<li>Cosmic STM8 C Compiler.</li>
+<li>Raisonance Ride7/RKit-STM8.</li>
+</ul>
+<li>STM32 devices:</li>
+<ul>
+<li>IAR Embedded Workbench for ARM.</li>
+<li>Keil MDK-ARM.</li>
+</ul>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Support of STM8TL5x devices.</li>
+<li>Support of STM32F0xx devices (BETA).</li>
+<li>Support of STM32L1xx High-density and Medium-density Plus devices using hardware and software acquisition modes (BETA).</li>
+</ul>
+</div>
+</div>
+
+
+
+
+
+</div>
+</div>
+
+
+
+<footer class="sticky">
+<p>For complete documentation on STM32, visit: [<a href="http://www.st.com/stm32">www.st.com/stm32</a>]</p>
+<em>This release note uses up to date web standards and, for this reason, should not be opened with Internet Explorer but preferably with popular browsers such as Google Chrome, Mozilla Firefox, Opera or Microsoft Edge.</em>
+</footer>
+
+
+</body>
+</html>

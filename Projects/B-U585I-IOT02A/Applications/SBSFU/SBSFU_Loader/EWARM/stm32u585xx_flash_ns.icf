@@ -1,0 +1,30 @@
+#include "region_defs.h"
+
+define memory mem with size = 4G;
+define symbol __ICFEDIT_size_cstack__ = LOADER_NS_MSP_STACK_SIZE;
+define symbol __ICFEDIT_size_heap__ = LOADER_NS_HEAP_SIZE;
+
+define region NS_CODE_region =   mem:[from LOADER_NS_CODE_START size LOADER_NS_CODE_SIZE];
+
+define region NS_RAM_region  =  mem:[from (LOADER_NS_DATA_START) size (LOADER_NS_DATA_SIZE)];
+
+define block CSTACK    with alignment = 8, size = __ICFEDIT_size_cstack__   { };
+define block HEAP      with alignment = 8, size = __ICFEDIT_size_heap__     { };
+
+
+define block ER_CODE		with alignment = 8 {readonly};
+define block ER_CODE_END with alignment = 32, size = 0 { };
+
+place at address mem:LOADER_NS_CODE_START { readonly section .intvec };
+define block ER_DATA with maximum size = 0x10000, alignment = 8 {readwrite};
+
+do not initialize  { section .noinit };
+initialize by copy { readwrite };
+if (isdefinedsymbol(__USE_DLIB_PERTHREAD))
+{
+  // Required in a multi-threaded application
+  initialize by copy with packing = none { section __DLIB_PERTHREAD };
+}
+
+place in NS_CODE_region  { block ER_CODE , last block ER_CODE_END,};
+place in NS_RAM_region   { block ER_DATA, block CSTACK, block HEAP };

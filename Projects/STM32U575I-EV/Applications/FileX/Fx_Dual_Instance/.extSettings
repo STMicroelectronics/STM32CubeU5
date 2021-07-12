@@ -1,0 +1,9 @@
+[ProjectFiles]
+HeaderPath=..\..\..\..\..\..\Drivers\BSP\STM32U575I-EV;..\..\..\..\..\..\Drivers\BSP\Components\mx25lm51245g;
+[Others]
+Define=
+HALModule=
+[Groups]
+Drivers/BSP/STM32U575I-EV=../../../../../../Drivers/BSP/STM32U575I-EV/stm32u575i_eval.c; ../../../../../../Drivers/BSP/STM32U575I-EV/stm32u575i_eval_sd.c; ../../../../../../Drivers/BSP/STM32U575I-EV/stm32u575i_eval_ospi.c;
+Drivers/BSP/Components=../../../../../../Drivers/BSP/Components/mx25lm51245g/mx25lm51245g.c;
+Doc=../README.md;

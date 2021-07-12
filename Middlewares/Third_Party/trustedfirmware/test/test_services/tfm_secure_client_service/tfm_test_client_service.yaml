@@ -1,0 +1,57 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2018-2019, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "name": "TFM_SP_SECURE_TEST_PARTITION",
+  "type": "PSA-ROT",
+  "priority": "NORMAL",
+  "id": "0x00000005",
+  "entry_point": "tfm_secure_client_service_init",
+  "stack_size": "0x0C00",
+  "heap_size": "0",
+  "mmio_regions": [
+    {
+      "name": "TFM_PERIPHERAL_STD_UART",
+      "permission": "READ-WRITE"
+    }
+  ],
+  "secure_functions": [
+    {
+      "name": "TFM_SECURE_CLIENT_SFN_RUN_TESTS",
+      "signal": "TFM_SECURE_CLIENT_SERVICE_SFN_RUN_TESTS",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    },
+  ],
+  "services": [
+    {
+      "name": "TFM_SECURE_CLIENT_SFN_RUN_TESTS",
+      "sid": "0x0000F000",
+      "signal": "TFM_SECURE_CLIENT_SFN_RUN_TESTS_SIG",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "STRICT"
+    }
+  ],
+# Currently there is no platform dependent section of the manifest file,
+# therefore all platform dependent files must be listed here which can be used
+# on any supported platform.
+  "linker_pattern": {
+    "object_list": [
+      "*tfm_secure_client_service.*",
+      "*test_framework*",
+      "*uart_stdout.*",
+      "*Driver_USART.*",
+      "*arm_uart_drv.*",   # MPS2-AN521, MPS2-AN519
+      "*uart_pl011_drv.*", # Musca-A, Musca-B1
+      "*uart_cmsdk_drv*",  # MPS3-AN524
+      "*secure_suites.*",
+      "*attestation_s_interface_testsuite.*"
+    ]
+  }
+}

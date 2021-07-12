@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Release Notes for STM32CubeU5 Firmware Package</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="_htmresc/mini-st_2020.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png" />
+</head>
+<body>
+<div class="row">
+<div class="col-sm-12 col-lg-4">
+<center>
+<h1 id="release-notes-for-stm32cubeu5-firmware-package">Release Notes for <mark> STM32CubeU5 Firmware Package </mark></h1>
+<p>Copyright © 2021 STMicroelectronics<br />
+</p>
+<a href="https://www.st.com" class="logo"><img src="_htmresc/st_logo_2020.png" alt="ST logo" /></a>
+</center>
+<h1 id="purpose">Purpose</h1>
+<p><span style="font-weight: bold;">STMCube is an STMicroelectronics original initiative to ease developers life by reducing development efforts, time and cost.</span></p>
+<p>STM32Cube covers STM32 portfolio.</p>
+<p>STM32Cube Version 1.x includes:</p>
+<ul>
+<li><p>The STM32CubeMX, a graphical software configuration tool that allows to generate C initialization code using graphical wizards.</p></li>
+<li><p>A comprehensive embedded software platform, delivered per series (such as STM32CubeU5 for STM32U5 series)</p>
+<ul>
+<li><p>The STM32Cube HAL, an STM32 abstraction layer embedded software, ensuring maximized portability across STM32 portfolio</p></li>
+<li><p>A consistent set of middleware components such as RTOS, USB, TCP/IP, Graphics]</p></li>
+</ul></li>
+</ul>
+<p>The STM32Cube firmware solution offers a straightforward API with a modular architecture, making it simple to fine tune custom applications and scalable to fit most requirements.</p>
+<p>Both the HAL and LL APIs are production–ready, checked with CodeSonar® static analysis tool, and developed in compliance with MISRA C® guidelines, following a process certified according to IEC 61508 systematic capability 2 level (SC2). Reports are available on demand.</p>
+<figure>
+<img src="_htmresc/STM32Cube.bmp" alt="STM32Cube" /><figcaption>STM32Cube</figcaption>
+</figure>
+<p>The <strong>drivers</strong> provided within this package <strong>support</strong> the <strong>STM32U575/STM32U585 lines.</strong></p>
+</div>
+<div class="col-sm-12 col-lg-8">
+<h2 id="update-history"><strong>Update History</strong></h2>
+<div class="collapse">
+<input type="checkbox" id="collapse-section1" checked aria-hidden="true"> <label for="collapse-section1" checked aria-hidden="true"><strong>V1.0.0 / 28-June-2021</strong></label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>First Official Release of <span style="font-weight: bold;">STM32CubeU5</span> Firmware Package</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<h3 id="projects"><strong>Projects</strong></h3>
+<p>The <strong>STM32CubeU5</strong> Firmware package comes with template running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains. The exhaustive list of projects is provided in this table <a href="Projects/STM32CubeProjectsList.html">STM32CubeProjectsList.html</a></p>
+<p>This release contains almost HAL drivers, LL drivers, BSP drivers, templates, projects and examples.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: center;">Version</th>
+<th style="text-align: center;">Release notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Projects</td>
+<td style="text-align: center;">V1.0.0</td>
+<td style="text-align: center;"><a href="Projects/Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<p>Notes</p>
+<ul>
+<li>The following sequence is needed to disable TrustZone:
+<ul>
+<li>Boot from user Flash memory:
+<ul>
+<li>Make sure that secure and non-secure applications are well loaded and executed (jump done on non-secure application).</li>
+<li>If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution.</li>
+<li>Use a power supply different from ST-LINK in order to be able to connect to the target.</li>
+<li>Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply.</li>
+</ul></li>
+<li>Boot from RSS:
+<ul>
+<li>Make sure to apply a high level on BOOT0 pin (make sure that nSWBOOT0 Option Byte is checked).</li>
+<li>If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution.</li>
+<li>Use a power supply different from ST-LINK in order to be able to connect to the target.</li>
+<li>Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply.</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>Please refer to AN5347 for more details.</p>
+<h3 id="components"><strong>Components</strong></h3>
+<p><small>The components flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
+<table>
+<caption><strong>Drivers</strong></caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: center;">Version</th>
+<th style="text-align: center;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Cortex-M CMSIS</td>
+<td style="text-align: center;">V5.6.0_cm33</td>
+<td style="text-align: center;"><a href="Drivers/CMSIS/docs/General/html/index.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32U5xx CMSIS</td>
+<td style="text-align: center;">V1.0.0</td>
+<td style="text-align: center;"><a href="Drivers/CMSIS/Device/ST/STM32U5xx/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32U5xx HAL</td>
+<td style="text-align: center;">V1.0.0</td>
+<td style="text-align: center;"><a href="Drivers/STM32U5xx_HAL_Driver/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32U5xx NUCLEO</td>
+<td style="text-align: center;">V1.0.0</td>
+<td style="text-align: center;"><a href="Drivers/BSP/STM32U5xx_Nucleo/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32U575I-EV</td>
+<td style="text-align: center;">V1.0.0</td>
+<td style="text-align: center;"><a href="Drivers/BSP/STM32U575I-EV/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP B-U585I-IOT02A</td>
+<td style="text-align: center;">V1.0.0</td>
+<td style="text-align: center;"><a href="Drivers/BSP/B-U585I-IOT02A/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP aps6408</td>
+<td style="text-align: center;">V1.0.0</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/aps6408/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP Common</td>
+<td style="text-align: center;">V7.1.0</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/Common/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP cs42l51</td>
+<td style="text-align: center;">V2.0.2</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/cs42l51/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP hts221</td>
+<td style="text-align: center;">V5.3.0</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/hts221/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP hx8347i</td>
+<td style="text-align: center;">V2.0.2</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/hx8347i/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP iis2mdc</td>
+<td style="text-align: center;">V1.1.0</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/iis2mdc/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP ism330dlc</td>
+<td style="text-align: center;">V1.2.0</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/ism330dlc/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP lps22hh</td>
+<td style="text-align: center;">V1.2.0</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/lps22hh/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP lsm6dso</td>
+<td style="text-align: center;">V1.5.1</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/lsm6dso/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP m24lr64</td>
+<td style="text-align: center;">V1.0.1</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/m24lr64/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP mfxstm32l152</td>
+<td style="text-align: center;">V3.0.3</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/mfxstm32l152/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP mx_wifi</td>
+<td style="text-align: center;">V2.1.11</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/mx_wifi/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP mx25lm51245g</td>
+<td style="text-align: center;">V2.0.6</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/mx25lm51245g/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP ov5640</td>
+<td style="text-align: center;">V3.2.1</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/ov5640/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP stm32wb_at</td>
+<td style="text-align: center;">V1.0.6</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/stm32wb_at/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP sx8651</td>
+<td style="text-align: center;">V1.0.0</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/sx8651/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP tcpp0203</td>
+<td style="text-align: center;">V1.2.1</td>
+<td style="text-align: center;"><a href="Drivers/BSP/Components/tcpp0203/Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><strong>Middlewares</strong></caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: center;">Version</th>
+<th style="text-align: center;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">STM32 TouchSensing Library</td>
+<td style="text-align: center;">V2.2.6</td>
+<td style="text-align: center;"><a href="Middlewares/ST/STM32_TouchSensing_Library/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32 USBPD Core Library</td>
+<td style="text-align: center;">V4.0.0</td>
+<td style="text-align: center;"><a href="Middlewares/ST/STM32_USBPD_Library/Core/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32 USBPD Device Library</td>
+<td style="text-align: center;">u5_v3.0.0</td>
+<td style="text-align: center;"><a href="Middlewares/ST/STM32_USBPD_Library/Devices/STM32U5XX/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mbed-crypto</td>
+<td style="text-align: center;">mbed-crypto-1.1.6</td>
+<td style="text-align: center;"><a href="Middlewares/Third_Party/mbed-crypto/st_readme.txt">ST release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mcuboot</td>
+<td style="text-align: center;">V1.0.13</td>
+<td style="text-align: center;"><a href="Middlewares/Third_Party/mcuboot/st_readme.txt">ST release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">trustedfirmware</td>
+<td style="text-align: center;">tfm/v1.0.15</td>
+<td style="text-align: center;"><a href="Middlewares/Third_Party/trustedfirmware/st_readme.txt">ST release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">OpenBootloader</td>
+<td style="text-align: center;">V5.0.0</td>
+<td style="text-align: center;"><a href="Middlewares/ST/OpenBootloader/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Network Library</td>
+<td style="text-align: center;">V2.2.0c</td>
+<td style="text-align: center;"><a href="Middlewares/ST/STM32_Network_Library/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ThreadX</td>
+<td style="text-align: center;">threadx-6.1.7.210621</td>
+<td style="text-align: center;"><a href="https://github.com/azure-rtos/threadx/releases/tag/v6.1.7_rel">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NetXduo</td>
+<td style="text-align: center;">netxduo-6.1.7.210621</td>
+<td style="text-align: center;"><a href="https://github.com/azure-rtos/netxduo/releases/tag/v6.1.7_rel">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">USBX</td>
+<td style="text-align: center;">usbx-6.1.7.210621</td>
+<td style="text-align: center;"><a href="https://github.com/azure-rtos/usbx/releases/tag/v6.1.7_rel">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FileX</td>
+<td style="text-align: center;">filex-6.1.7.210621</td>
+<td style="text-align: center;"><a href="https://github.com/azure-rtos/filex/releases/tag/v6.1.7_rel">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">LevelX</td>
+<td style="text-align: center;">levelx-6.1.7.210621</td>
+<td style="text-align: center;"><a href="https://github.com/azure-rtos/levelx/releases/tag/v6.1.7_rel">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><strong>Utilities</strong></caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: center;">Version</th>
+<th style="text-align: center;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Common</td>
+<td style="text-align: center;">V1.4.1</td>
+<td style="text-align: center;"><a href="Utilities/Common/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Fonts</td>
+<td style="text-align: center;">V2.0.2</td>
+<td style="text-align: center;"><a href="Utilities/Fonts/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GUI_INTERFACE</td>
+<td style="text-align: center;">GUI_V2.0.0</td>
+<td style="text-align: center;"><a href="Utilities/GUI_INTERFACE/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">lcd</td>
+<td style="text-align: center;">V2.0.1</td>
+<td style="text-align: center;"><a href="Utilities/lcd/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lpbam</td>
+<td style="text-align: center;">V1.0.0</td>
+<td style="text-align: center;"><a href="Utilities/lpbam/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TRACER_EMB</td>
+<td style="text-align: center;">V1.6.1</td>
+<td style="text-align: center;"><a href="Utilities/TRACER_EMB/Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="development-toolchains-and-compilers">Development Toolchains and Compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.50.6 + ST-LINK, patch available here:
+<ul>
+<li><a href="Utilities\PC_Software\IDEs_Patches\EWARM\EWARMv8_STM32U57x-58x_V1.0.zip">Utilities\PC_Software\IDEs_Patches\EWARM\EWARMv8_STM32U57x-58x_V1.0.zip</a></li>
+<li>This patch supports <strong>STM32U575/585</strong> devices</li>
+</ul></li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.32 + ST-LINK, patch available here:
+<ul>
+<li><a href="Utilities\PC_Software\IDEs_Patches\MDK-ARM\Keil.STM32U5xx_DFP.1.0.5.zip">Utilities\PC_Software\IDEs_Patches\MDK-ARM\Keil.STM32U5xx_DFP.1.0.5.zip</a></li>
+<li>This patch supports <strong>STM32U575/585</strong> devices</li>
+</ul></li>
+<li>STM32CubeIDE v1.7.0</li>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>STM32U575/STM32U585 devices</li>
+<li>NUCLEO-U575ZI-Q Nucleo board rev.C</li>
+<li>STM32U575I-EV Evaluation board rev.C</li>
+<li>B-U585I-IOT02A Discovery board rev.C</li>
+</ul>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>STM32CubeMX V6.3.0
+<ul>
+<li>Projects (Examples and Applications) are generated using STM32CubeMX version V6.3.0.</li>
+</ul></li>
+<li>The EMW3080B MXCHIP Wi-Fi module firmware and the way to update your board with it are available at <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">https://www.st.com/en/development-tools/x-wifi-emw3080b.html</a>. Before using the projects with Wi-Fi connectivity, you shall update your B-U585I-IOT02A RevC board with the EMW3080B firmware version 2.1.11. To achieve this, follow the instructions given at the above link, using the EMW3080updateV2.1.11RevC.bin flasher under the V2.1.11/SPI folder.</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>BSP MXCHIP: Access point mode with the TCP/IP mode on STM32 host is not functional. It works when TCP/IP runs on the EMW3080B module.</li>
+<li>When using STM32CubeIDE v1.7.0 with an STM32U575-EV Evaluation board, the user should either use ST-LINK(OpenOCD) or set the SWD frequency to 1MHz or 8 MHz manually if using STLINK(GDB server).</li>
+<li>Some projects are not generated with STM32CubeMX tool for the exhaustive list please refer to this table <a href="Projects/STM32CubeProjectsList.html">STM32CubeProjectsList.html</a></li>
+<li>The following projects are not provided with MDK-ARM and/or STM32CubeIDE:
+<ul>
+<li>ADF_AudioSoundDetector</li>
+<li>BLE_AT_Client</li>
+<li>BSP Examples</li>
+<li>CRC_CalculateAndCheck</li>
+<li>CRC_UserDefinedPolynomial</li>
+<li>DLYB_OSPI_PSRAM_ExhaustiveTuning</li>
+<li>DMA_LinkedList</li>
+<li>EXTI_ToggleLedOnIT_Init</li>
+<li>FLASH_ChangeOptionBytes</li>
+<li>FLASH_EraseProgram_TrustZone</li>
+<li>Fx_SRAM__File_Edit_Standalone</li>
+<li>GPIO_IOToggle_TrustZone</li>
+<li>GTZC_TZSC_MPCBB_TrustZone</li>
+<li>I2C_TwoBoards_RestartAdvComIT</li>
+<li>ICACHE_Memory_Remap</li>
+<li>LPBAM_COMP_InputSwitch</li>
+<li>LPBAM_DAC_OPAMP_ContinuousConversion</li>
+<li>LPBAM_I2C_SequentialTransfer</li>
+<li>LPBAM_LPGPIO_IOToggle</li>
+<li>LPBAM_LPUART_TransmitReceive</li>
+<li>LPBAM_SPI_FullDuplex_Simplex</li>
+<li>Open Bootloader</li>
+<li>OSPI_NOR_AutoPolling_DTR</li>
+<li>OSPI_NOR_ReadWrite_DMA_DTR</li>
+<li>OTFDEC_Data_Decrypt</li>
+<li>RCC_OutputSystemClockOnMCO</li>
+<li>RCC_UseHSI_PLLasSystemClock</li>
+<li>RTC_TrustZone</li>
+<li>SPI_OneBoard_HalfDuplex_IT_Init</li>
+<li>SPI_TwoBoards_FullDuplex_IT_Master_Init</li>
+<li>SPI_TwoBoards_FullDuplex_IT_Slave_Init</li>
+<li>Tx_MPU</li>
+<li>UART_ReceptionToIdle_CircularDMA</li>
+<li>UART_TwoBoards_ComDMA</li>
+<li>UART_TwoBoards_ComDMAlinkedlist</li>
+<li>USART_SlaveMode</li>
+<li>USART_SlaveMode_DMA</li>
+<li>USBPD_SINK_Ux_Device_HID_CDC_ACM</li>
+<li>USBPD_SNK_UX_Device_HID_CDC_ACM</li>
+<li>USBPD_SRC_Ux_Host_MSC</li>
+<li>All AzureRTOS Applications are not provided with MDK-ARM</li>
+</ul></li>
+</ul>
+<h2 id="backward-compatibility">Backward Compatibility</h2>
+<ul>
+<li>Not applicable</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<footer class="sticky">
+<p>For complete documentation on STM32 Microcontrollers </mark> , visit: <span style="font-color: blue;"><a href="http://www.st.com/stm32">www.st.com/stm32</a></span></p>
+This release note uses up to date web standards and, for this reason, should not be opened with Internet Explorer but preferably with popular browsers such as Google Chrome, Mozilla Firefox, Opera or Microsoft Edge.
+</footer>
+</body>
+</html>

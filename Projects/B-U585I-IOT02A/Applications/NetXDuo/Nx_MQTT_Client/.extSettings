@@ -1,0 +1,11 @@
+[ProjectFiles]
+HeaderPath=../../../../../../Drivers/BSP/Components/mx_wifi; ../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip;../../../../../../Drivers/BSP/B-U585I-IOT02A; ../NetXDuo/Target
+[Others]
+Define=
+HALModule=
+[Groups]
+Drivers/BSP/B-U585I-IOT02A=..\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a.c;
+Drivers/BSP/Components/mx_wifi=..\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\mx_wifi.c;
+Drivers/BSP/Components/mx_wifi/io_pattern=..\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\io_pattern\mx_wifi_spi.c;
+Drivers/BSP/Components/mx_wifi/core=..\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\core\mx_wifi_hci.c;..\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\core\mx_wifi_ipc.c
+Middlewares/Interfaces/Network/wifi =..\..\..\..\..\..\Middlewares\ST\netxduo\common\drivers\wifi\mxchip\nx_driver_emw3080.c;..\..\..\..\..\..\Middlewares\ST\netxduo\common\drivers\wifi\mxchip\mx_wifi_azure_rtos.c;

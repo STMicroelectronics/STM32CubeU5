@@ -1,0 +1,9 @@
+[ProjectFiles]
+HeaderPath=..\..\..\..\..\..\Drivers\BSP\STM32U5xx_Nucleo
+[Others]
+Define=
+HALModule=TIM;EXTI
+[Groups]
+Doc=../README.md;
+Drivers/BSP/STM32U5xx_Nucleo=../../../../../../Drivers/BSP/STM32U5xx_Nucleo/stm32u5xx_nucleo.c;
+Drivers/STM32U5xx_HAL_Driver=../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_exti.c;

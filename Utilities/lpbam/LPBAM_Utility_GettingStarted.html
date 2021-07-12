@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>LPBAM utility getting started</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="./_htmresc/mini-st_2020.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png" />
+</head>
+<body>
+<center>
+<h1 id="lpbam-utility-getting-started"><mark>LPBAM utility getting started</mark></h1>
+<p>Copyright © 2021 STMicroelectronics<br />
+</p>
+<a href="https://www.st.com" class="logo"><img src="_htmresc/st_logo_2020.png" alt="ST logo" /></a>
+</center>
+<div class="row">
+<div class="collapse">
+<input type="checkbox" id="collapse-section1" checked aria-hidden="true"> <label for="collapse-section1" aria-hidden="true">LPBAM introduction</label>
+<div>
+<h1 id="lpbam-introduction">LPBAM introduction</h1>
+<h2 id="overview">1. Overview</h2>
+<div class="row">
+<div class="col-sm-12 col-lg-6">
+<ul>
+<li><strong>Naming</strong>
+<ul>
+<li><strong>LPBAM</strong>: <strong>L</strong>ow <strong>P</strong>ower <strong>B</strong>ackground <strong>A</strong>utonomous <strong>M</strong>ode</li>
+</ul></li>
+<li><strong>Definition</strong>
+<ul>
+<li>LPBAM is an operating mode that allows peripherals to be functional and autonomous independently from power modes and without any software running. It is performed thanks to a hardware subsystem embedded in the STM32 microcontroller.<br />
+</li>
+<li>The LPBAM subsystem can chain various operations thanks to DMA linked-list transfers. The DMA operations can be:
+<ul>
+<li>Autonomous peripheral configuration<br />
+</li>
+<li>Data transfer from / to autonomous peripherals<br />
+</li>
+</ul></li>
+<li>Optionally, the LPBAM subsystem can generate asynchronous events / interrupts that can be used to:
+<ul>
+<li>notify the system at the end of a subprocess or of the whole process (for example chaining another task),<br />
+</li>
+<li>wake up the system from low-power mode,<br />
+</li>
+<li>notify the system when a functional error occurred while an LPBAM task was running.</li>
+</ul></li>
+</ul></li>
+<li><strong>Benefits</strong>
+<ul>
+<li>Two major advantages result from using LPBAM subsystem mechanisms:
+<ul>
+<li>Power consumption is optimized:
+<ul>
+<li>Bus and kernel clocks are distributed only when needed.<br />
+</li>
+<li>Most of the product can be shut down.<br />
+</li>
+<li>Analog peripherals / oscillators are powered on only when necessary.<br />
+</li>
+</ul></li>
+<li>CPU bandwidth is offloaded:
+<ul>
+<li>Peripheral configurations are done by DMA instead of CPU.<br />
+</li>
+<li>Data transfers are done by DMA instead of CPU.<br />
+</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div class="col-sm-12 col-lg-6">
+<center>
+<img src="_htmresc/lpbam_overview.jpg" alt="LPBAM OVERVIEW" style="width:60.0%" />
+</center>
+</div>
+</div>
+<h2 id="principles">2. Principles</h2>
+<div class="row">
+<div class="col-sm-12 col-lg-6">
+<ul>
+<li><p><strong>Sequence of operations</strong><br />
+Thanks to DMA transfers (memory-to-memory, peripheral-to-memory and memory-to-peripheral) in Linked-list mode, the LPBAM subsystem can chain different actions to build a useful functionality (peripheral configurations and transfers).</p></li>
+<li><strong>Actions handled by DMA</strong><br />
+DMA transfers can handle three different actions according to configuration setup:
+<ul>
+<li>Configuration transfers (DMA memory-to-memory direction)</li>
+<li>Data transfers (DMA memory-to-peripheral or peripheral-to-memory direction)</li>
+<li>Clear flag transfers (DMA memory-to-memory direction)</li>
+</ul></li>
+<li><strong>Hardware signals</strong><br />
+The LPBAM subsystem operates without any CPU intervention. As a result, polling a peripheral flag and conditioning a peripheral start are not possible. Most autonomous peripherals come with a set of synchronous and asynchronous hardware signals meant to ensure the synchronization between LPBAM subsystem contributors.<br />
+These signals can be the following:
+<ul>
+<li><p>DMA requests:<br />
+Hardware signals sent by the peripheral to notify the DMA that ready data are available or new data can be retrieved.</p></li>
+<li>DMA triggers:<br />
+Hardware signals sent by the DMA to:
+<ul>
+<li>a peripheral to condition a start operation, or<br />
+</li>
+<li>another DMA instance to condition the next transfer.</li>
+</ul></li>
+<li>Peripheral triggers:<br />
+Hardware signals sent by the peripheral to:
+<ul>
+<li>a DMA channel to condition the next transfer, or<br />
+</li>
+<li>another peripheral to condition a start operation.</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>It is possible to mix requests and trigger signals to perform advanced use case scenario.</p>
+</div>
+<div class="col-sm-12 col-lg-6">
+<ul>
+<li><strong>LPBAM tasks</strong><br />
+Depending on the use case scenario, an LPBAM task can be linear or circular:
+<ul>
+<li><p>Linear task:<br />
+Executed in a fixed period of time and stops autonomously.</p></li>
+<li>Circular task:<br />
+Executed in an infinite loop and stops only by aborting the DMA operation.<br />
+</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section2" checked aria-hidden="true"> <label for="collapse-section2" aria-hidden="true">LPBAM features</label>
+<div>
+<h1 id="lpbam-features">LPBAM features</h1>
+<h2 id="linked-list-mode">1. Linked-list mode</h2>
+<div class="row">
+<div class="col-sm-12 col-lg-6">
+<ul>
+<li>The linked-list capability allows the DMA peripheral to chain a list of DMA transfers.<br />
+Each DMA transfer has its own configuration stored in an SRAM area named node.<br />
+Each node is linked to another node to define the next transfer configuration.<br />
+A set of DMA transfer nodes linked to each other builds a queue.<br />
+</li>
+<li>When started, the DMA channel fetches the first linked-list node from SRAM (known as head node).<br />
+When executed, the next linked list node is fetched and executed.<br />
+This operation is repeated until the last queue node (known as tail node) is executed.<br />
+</li>
+<li>When the linked-list queue is circular, the DMA repeats node execution in an infinite loop (from the first circular nodes to tail node).<br />
+</li>
+<li>This feature is used to chain elementary DMA transfers (Configuration transfers, Data transfers and Clear flag transfers) to perform an LPBAM task.<br />
+</li>
+<li>The linked-list feature is functional independently from power mode. It enables the chaining of DMA transfers when devices are in low-power mode.</li>
+</ul>
+</div>
+<div class="col-sm-12 col-lg-6">
+<center>
+<img src="_htmresc/lpbam_linked-list.jpg" alt="LPBAM LINKED-LIST" style="width:60.0%" />
+</center>
+</div>
+</div>
+<h2 id="bus-clock-requests">2. Bus clock requests</h2>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<ul>
+<li>Several peripherals operate thanks to a bus clock propagated through a device interconnect structure (for example DMA peripherals). To limit clock availability according to peripheral operation, these peripherals support bus clock requesting capability.<br />
+</li>
+<li>When an LPBAM subsystem in low-power mode is not active, the bus clock is released to reduce power consumption.<br />
+When it is active, the bus clock is maintained until the operation completes, and then released.<br />
+</li>
+</ul>
+</div>
+</div>
+<h2 id="kernel-clock-requests">3. Kernel clock requests</h2>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<ul>
+<li>Similarly as bus clock, the kernel clock is requested and released according to peripheral operation.</li>
+<li>While in idle state, the peripheral releases the kernel clock. Otherwise, it is requested and maintained until the current task completes.<br />
+</li>
+</ul>
+</div>
+</div>
+<h2 id="automatic-start">4. Automatic start</h2>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<ul>
+<li>Several peripherals can start operating autonomously thanks to their sensitivity to trigger signals.<br />
+</li>
+<li>Each peripheral, depending on its application use cases, can be triggered by a set of signals that can define the starting time.<br />
+</li>
+</ul>
+</div>
+</div>
+<h2 id="event-interrupt-generation">5. Event / Interrupt generation</h2>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<ul>
+<li>Autonomous peripherals can report end-of-operation and errors via events (through the EXTI peripheral) or interrupts (through the NVIC).<br />
+</li>
+<li>This capability can be used to:
+<ul>
+<li>wake up the whole system from low-power mode.</li>
+<li>notify the system about error events / interrupts handling.</li>
+<li>notify the system about end-of-operation event / interrupt handling.<br />
+</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section3" checked aria-hidden="true"> <label for="collapse-section3" aria-hidden="true">LPBAM firmware solution</label>
+<div>
+<h1 id="lpbam-firmware-solution">LPBAM firmware solution</h1>
+<h2 id="overview-1">1. Overview</h2>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<ul>
+<li>The LPBAM utility is a set of modular drivers located under the <i>Utilities</i> folder of the STM32Cube firmware package.<br />
+It provides the user with two levels of abstraction:
+<ul>
+<li>Basic level.<br />
+</li>
+<li>Advanced level.<br />
+</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12 col-lg-6">
+<ul>
+<li><strong>Layers</strong>
+<ul>
+<li>The first level of abstraction is a hardware agnostic layer, named Basic LPBAM layer.<br />
+It offers a full granularity of scenario creation via transversal APIs.<br />
+</li>
+<li>The second level of abstraction is a hardware agnostic layer named Advanced LPBAM layer.<br />
+It provides predefined scenario (set of elementary nodes) that can be customized and concatenated to build an end-application.<br />
+</li>
+<li>The Platform layer contains device specific constants to be used on application side.<br />
+</li>
+<li>The low-level LPBAM layer (LL LPBAM layer) is used by the Basic and the Advanced LPBAM layers. It contains the device specific mechanisms for each supported peripheral.</li>
+</ul></li>
+</ul>
+</div>
+<div class="col-sm-12 col-lg-6">
+<center>
+<img src="_htmresc/lpbam_layers.jpg" alt="LPBAM LINKED-LIST" style="width:80.0%" />
+</center>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12 col-lg-6">
+<ul>
+<li><strong>Modularity</strong>
+<ul>
+<li>The LPBAM utility contains a set of independent modules, each module being a pair of basic and advanced files that provides the APIs needed to build application scenario.<br />
+The files are named as follows:
+<ul>
+<li>Basic module: stm32_lpbam_{Peripheral}.c / stm32_lpbam_{Peripheral}.h.<br />
+</li>
+<li>Advanced module: stm32_adv_lpbam_{Peripheral}.c / stm32_adv_lpbam_{Peripheral}.h.<br />
+</li>
+</ul></li>
+<li>Each module manages the configurability and the data transfers for a given peripheral.</li>
+</ul></li>
+<li><strong>Configurability</strong>
+<ul>
+<li>The LPBAM utility is designed to be compatible with any STM32 devices supporting LPBAM subsystem mechanisms through a configuration module. The configuration file is named stm32_lpbam_conf_template.h.</li>
+<li>The configuration file must be copied to the application folder, renamed into stm32_lpbam_conf.h, and modified according to application needs.</li>
+</ul></li>
+<li><strong>Inclusion model and entry point</strong>
+<ul>
+<li>The LPBAM utility has a single application entry point: stm32_lpbam.h file.<br />
+</li>
+<li>The user has to include the stm32_lpbam.h file in her/his LPBAM software project that includes all basic, advanced, platform and common functionalities.</li>
+</ul></li>
+<li><strong>Flexibility</strong>
+<ul>
+<li>The LPBAM utility gives the full flexibility to use only Basic layer, only Advanced layer or to mix Basic and Advanced functionalities in the same application.<br />
+When an LPBAM module is enabled, the application entry point allows basic and advanced functionalities of used module to be included.</li>
+</ul></li>
+<li><strong>Status mechanism</strong>
+<ul>
+<li>The LPBAM utility contains a common status mechanism that reports the issues detected during scenario creation.<br />
+The values reported can be:
+<ul>
+<li>LPBAM_OK: no error occurred.<br />
+</li>
+<li>LPBAM_ERROR: an error occurred.<br />
+</li>
+<li>LPBAM_INVALID_ID: the chosen node ID is not valid.<br />
+</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div class="col-sm-12 col-lg-6">
+<center>
+<img src="_htmresc/lpbam_modularity_entrypoint.jpg" alt="LPBAM LINKED-LIST" style="width:80.0%" />
+</center>
+</div>
+</div>
+<h2 id="basic-layer">2. Basic layer</h2>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<ul>
+<li><strong>Principles</strong><br />
+The Basic layer is designed to manage LPBAM functionalities at node level (elementary entity). The principle is to prepare and fill a DMA node according to the user configuration structure that describes the DMA transfer to be started.<br />
+</li>
+</ul>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<ul>
+<li><strong>API model</strong><br />
+Each LPBAM basic module provides an LPBAM_{Peripheral}_FillNodeConfig() API that respects the prototype shown in the figure below:</li>
+</ul>
+<center>
+<img src="_htmresc/lpbam_basic_fillnode_config_prototype.jpg" alt="LPBAM BASIC FILL NODE CONFIG" style="width:60.0%" />
+</center>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<ul>
+<li><strong>Data transfer configuration common service</strong>
+<ul>
+<li>Update DMA transfer node configuration<br />
+After building a DMA linked-list node with default configuration values, customizing the default configuration can be done through LPBAM_SetDMATransferConfig() API.</li>
+</ul></li>
+</ul>
+<center>
+<img src="_htmresc/lpbam_basic_transfer_config_prototype.jpg" alt="LPBAM BASIC TRANSFER CONFIG" style="width:60.0%" />
+</center>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<ul>
+<li><strong>Trigger configuration common service</strong>
+<ul>
+<li>Update DMA trigger node configuration<br />
+After building a DMA linked-list node with default configuration values (no trigger), customizing the default configuration can be done through LPBAM_SetDMATriggerConfig() API.</li>
+</ul></li>
+</ul>
+<center>
+<img src="_htmresc/lpbam_basic_trigger_config_prototype.jpg" alt="LPBAM BASIC TRIGGER CONFIG" style="width:60.0%" />
+</center>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<ul>
+<li><strong>User sequence</strong>
+<ul>
+<li>The user sequence is based on three steps:
+<ul>
+<li>Peripheral initialization<br />
+</li>
+<li>Scenario build<br />
+</li>
+<li>Scenario start<br />
+</li>
+</ul></li>
+<li>Each of these steps is based on mandatory tasks and optional ones.</li>
+</ul></li>
+</ul>
+<center>
+<img src="_htmresc/lpbam_basic_user_sequence.jpg" alt="LPBAM LINKED-LIST" style="width:60.0%" />
+</center>
+</div>
+</div>
+<h2 id="advanced-layer">3. Advanced layer</h2>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<ul>
+<li><p><strong>Principles</strong><br />
+The advanced layer is designed to manage LPBAM functionalities at queue level.<br />
+The principle is to prepare, fill, then build a DMA linked-list queue according to the user configuration structure that describes the peripheral operation and behavior to be performed.</p></li>
+<li><strong>API model</strong><br />
+Three models of APIs are systematically provided by an advanced LPBAM module for a given peripheral:<br />
+
+<center>
+<img src="_htmresc/lpbam_advanced_api_model.jpg" alt="LPBAM ADVANCED API MODEL" style="width:40.0%" />
+</center>
+<ul>
+<li><strong>Configuration APIs</strong><br />
+Set of APIs that contains only peripheral configuration nodes (no data nodes). These APIs are used to update the peripheral configuration for next operation.<br />
+
+<center>
+<img src="_htmresc/lpbam_advanced_config_api_prototype.jpg" alt="LPBAM ADVANCED CONFIG API MODEL" style="width:60.0%" />
+</center></li>
+<li><strong>Data APIs</strong><br />
+Set of APIs that contains only peripheral data nodes (transmit data, convert data). These APIs are used to process data for next operation.<br />
+
+<center>
+<img src="_htmresc/lpbam_advanced_data_api_prototype.jpg" alt="LPBAM ADVANCED DATA API MODEL" style="width:60.0%" />
+</center></li>
+<li><strong>Full APIs</strong><br />
+Set of APIs that contains both peripheral configuration and peripheral data nodes. These APIs are used to update the peripheral configuration, then process data for next operation.<br />
+
+<center>
+<img src="_htmresc/lpbam_advanced_full_api_prototype.jpg" alt="LPBAM ADVANCED FULL API MODEL" style="width:60.0%" />
+</center></li>
+</ul></li>
+<li><strong>API exceptions</strong><br />
+<em>APIs supporting peripheral features:</em>
+<ul>
+<li>The three API model rules can be transgressed:
+<ul>
+<li>Only full prototype APIs are provided for peripherals that do not support data nodes or configuration nodes (such as VREFBUF or GPIO).<br />
+</li>
+</ul></li>
+<li>Full-duplex APIs
+<ul>
+<li>Advanced LPBAM APIs have only one output queue as configuration, and data transfer are performed sequentially at runtime.<br />
+Exception is made for peripherals supporting full-duplex transfers (synchronous protocol) requiring two output queues that reflect the transmit and receive processes performed simultaneously (such as SPI).<br />
+</li>
+</ul></li>
+<li>DMA requests APIs
+<ul>
+<li>Helper API called at peripheral initialization level to enable peripheral DMA requests. This API should be used for modules that generate DMA requests during data transfers.</li>
+</ul></li>
+</ul>
+<p><em>APIs customizing default queue configuration:</em></p>
+<ul>
+<li>Update data transfer configuration
+<ul>
+<li>After building a DMA linked-list queue with default configuration values, customizing the default data node configuration can be done through ADV_LPBAM_Q_SetDataConfig() API.
+<center>
+<img src="_htmresc/lpbam_advanced_transfer_config_prototype.jpg" alt="LPBAM ADVANCED UPDATE DATA TRANSFER" style="width:60.0%" />
+</center></li>
+</ul></li>
+<li>Update queue trigger configuration
+<ul>
+<li>After building a DMA linked-list queue with default configuration values (no trigger), customizing the default configuration can be done through<br />
+ADV_LPBAM_Q_SetTriggerConfig() API. The trigger signal can be set to trigger the execution of an advanced API or can cadence a DMA data transfer.<br />
+
+<center>
+<img src="_htmresc/lpbam_advanced_trigger_config_prototype.jpg" alt="LPBAM ADVANCED UPDATE QUEUE TRIGGER CONFIGURATION" style="width:60.0%" />
+</center></li>
+</ul></li>
+<li>Update queue circularity configuration
+<ul>
+<li>After building a DMA linked-list queue with default configuration values (linear queue), circularizing the scenario queue configuration can be done through ADV_LPBAM_Q_SetCircularMode() API.<br />
+
+<center>
+<img src="_htmresc/lpbam_advanced_circular_config_prototype.jpg" alt="LPBAM ADVANCED UPDATE QUEUE CIRCULARITY CONFIGURATION" style="width:60.0%" />
+</center></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<ul>
+<li><strong>User sequence</strong>
+<ul>
+<li>The user sequence is based on three steps:
+<ul>
+<li>Peripheral initialization<br />
+</li>
+<li>Scenario build<br />
+</li>
+<li>Scenario start<br />
+</li>
+</ul></li>
+<li>Each of these steps are based on mandatory tasks and optional ones.</li>
+</ul></li>
+</ul>
+<center>
+<img src="_htmresc/lpbam_advanced_user_sequence.jpg" alt="LPBAM ADVANCED USER SEQUENCE" style="width:60.0%" />
+</center>
+</div>
+</div>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section4" checked aria-hidden="true"> <label for="collapse-section4" aria-hidden="true">LPBAM applications</label>
+<div>
+<h1 id="lpbam-applications">LPBAM applications</h1>
+<h2 id="typical-use-cases">1. Typical use cases</h2>
+<div class="row">
+<div class="col-sm-12 col-lg-6">
+<ul>
+<li><strong>Communication peripherals</strong>
+<ul>
+<li>I2C slave reception or transmission, SPI reception, UART reception
+<ul>
+<li>Wakeup is possible at the end of the transfer, at DMA half buffer event.<br />
+</li>
+</ul></li>
+<li>I2C master transfer, SPI / UART transmission, triggered by asynchronous event
+<ul>
+<li>Asynchronous triggers can be an I/O edge, or a periodic trigger from LPTIM or comparator output.</li>
+</ul></li>
+</ul></li>
+<li><strong>Analog peripherals</strong>
+<ul>
+<li>ADC or DAC sequence of conversions triggered by low-power timer (or any trigger)
+<ul>
+<li>Wakeup possible from ADC analog watchdog (conversion result out of programmed thresholds)<br />
+</li>
+</ul></li>
+<li>Voice activity detection with MCU wake-up (thanks to ADF audio digital filter)
+<ul>
+<li>Data transferred in SRAM during Stop mode<br />
+</li>
+</ul></li>
+<li>Change of comparator thresholds<br />
+</li>
+</ul></li>
+</ul>
+</div>
+<div class="col-sm-12 col-lg-6">
+<ul>
+<li><strong>System peripherals</strong>
+<ul>
+<li>I/O control (input, output)
+<ul>
+<li>to control external components<br />
+</li>
+<li>to manage slow communications such as SPI protocol<br />
+</li>
+</ul></li>
+<li>Data transfer between SRAMs on trigger event</li>
+</ul></li>
+<li><strong>Timer peripherals</strong>
+<ul>
+<li>Pulse counter
+<ul>
+<li>LPDMA triggered periodically to store in SRAM the value of an LPTIM counter clocked by an I/O.<br />
+</li>
+</ul></li>
+<li>Input Capture DMA transfers<br />
+</li>
+<li>PWM ratio update in Stop mode<br />
+</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<h2 id="getting-started">2. Getting started</h2>
+<div class="row">
+<div class="col-sm-12 col-lg-12">
+<center>
+<img src="_htmresc/lpbam_how_to_start.jpg" alt="LPBAM HOW TO START" style="width:60.0%" />
+</center>
+</div>
+</div>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section5" checked aria-hidden="true"> <label for="collapse-section5" aria-hidden="true">Product specificities</label>
+<div>
+<h1 id="product-specificities">Product specificities</h1>
+<h2 id="stm32u5">1. STM32U5</h2>
+<ul>
+<li><strong>DMA accessibility</strong>
+<ul>
+<li>STM32U5 devices contain two DMA instances:
+<ul>
+<li>GPDMA, a general purpose DMA that can access any available address.<br />
+</li>
+<li>LPDMA, a low-power DMA that can access only SRD resources.</li>
+</ul></li>
+</ul></li>
+<li><strong>Memory usage</strong>
+<ul>
+<li>Generally, low-power STM32 lines embed memories of limited size that shall be managed with optimum memory usage.<br />
+</li>
+<li>The LPBAM utility includes two types of variables:
+<ul>
+<li>Variables used by the program executed by CPU. They can be placed at any available SRAM address.<br />
+</li>
+<li>Variables used by the DMA in order to execute linked-list queue. They must be placed at SRAM addresses accessible by the DMA instance. These variables are LPBAM descriptors and data buffers.<br />
+=&gt; To optimize memory usage, it is recommended to place only the variables used during linked-list queue execution in SRAM4 when the LPBAM scenario is built to be executed by the LPDMA.</li>
+</ul></li>
+</ul></li>
+<li><strong>TrustZone<sup>®</sup> compliance</strong>
+<ul>
+<li>The LPBAM firmware solution is compliant with TrustZone software architecture.<br />
+</li>
+<li>As the DMA is a TrustZone-aware peripheral, configuring the source and the destination access attributes are possible.<br />
+</li>
+<li>In the basic layer, configuring DMA access attributes can be done at each node level.<br />
+</li>
+<li>In the advanced layer, configuring DMA accesses attributes is possible only for the data nodes where the user can perform data transfer as follows:
+<ul>
+<li>from secure to secure addresses.</li>
+<li>from secure to non-secure addresses.</li>
+<li>from non-secure to secure addresses.</li>
+<li>from non-secure to non-secure addresses.</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section5" checked aria-hidden="true"> <label for="collapse-section5" aria-hidden="true">FAQ</label>
+<div>
+<h2 id="faq">FAQ</h2>
+<ul>
+<li><strong>What’s an LPBAM mechanism ?</strong>
+<ul>
+<li>The LPBAM mechanism is a subsystem that operates independently from low power mode and without any software running (CPU intervention). The low power mode depends on products integration.</li>
+</ul></li>
+<li><strong>Does LPBAM layer suppose that the peripheral is already initialized and do only partial configuration or performs a full initialization ?</strong>
+<ul>
+<li>The LPBAM layer targets only partial reconfiguration.</li>
+</ul></li>
+<li><strong>Is the LPBAM based on DMA “tasks” used to configure the peripherals ?</strong>
+<ul>
+<li>The LPBAM is based on DMA transfers stored on linked-list nodes to configure partially autonomous peripherals.</li>
+</ul></li>
+<li><strong>How are managed the peripheral errors in LPBAM ?</strong>
+<ul>
+<li>The peripheral errors can generate interrupts that wake up the system for issue recovery.</li>
+</ul></li>
+<li><strong>How is the DMA triggered if there is neither peripheral nor CPU running ?</strong>
+<ul>
+<li>DMA triggers are hardware generated signals.</li>
+</ul></li>
+<li><strong>Are we able to handle timeout with LPBAM ?</strong>
+<ul>
+<li>Yes. A timeout can be emulated by the LPTIM compare match feature. When the selected counter value is reached, a timeout event can be generated.</li>
+</ul></li>
+<li><strong>where is stored the LPBAM configuration ?</strong>
+<ul>
+<li>The LPBAM configuration shall be stored in an accessible SRAM by the DMA to fetch configuration nodes and execute them.</li>
+</ul></li>
+<li><strong>Is the DMA used for LPBAM specific ?</strong>
+<ul>
+<li>The LPBAM DMA shall support the linked-list feature and bus clock requests.</li>
+</ul></li>
+<li><strong>How are managed the priorities between LPBAM and others DMA transfer ?</strong>
+<ul>
+<li>The LPBAM is based on DMA transfer, the same DMA channels priority arbitration principle applies.</li>
+</ul></li>
+<li><strong>Does LPBAM node/queue number are limited ?</strong>
+<ul>
+<li>Yes. The number of nodes and queues are limited by product SRAM size.</li>
+</ul></li>
+<li><strong>How many LPBAM transfer queue can be executed simultaneously ?</strong>
+<ul>
+<li>The number of simultaneously executed of LPBAM transfer queue, is limited by the number of available DMA channels.<br />
+</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section5" checked aria-hidden="true"> <label for="collapse-section5" aria-hidden="true">Acronyms</label>
+<div>
+<h1 id="acronyms">Acronyms</h1>
+<table>
+<thead>
+<tr class="header">
+<th><strong>Acronyms</strong></th>
+<th><strong>Definition</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>SRD</strong></td>
+<td><strong>S</strong>mart <strong>R</strong>un <strong>D</strong>omain</td>
+</tr>
+<tr class="even">
+<td><strong>GPDMA</strong></td>
+<td><strong>G</strong>eneral <strong>P</strong>urpose <strong>D</strong>irect <strong>M</strong>emory <strong>A</strong>ccess</td>
+</tr>
+<tr class="odd">
+<td><strong>LPDMA</strong></td>
+<td><strong>L</strong>ow <strong>P</strong>ower <strong>D</strong>irect <strong>M</strong>emory <strong>A</strong>ccess</td>
+</tr>
+<tr class="even">
+<td><strong>CPU</strong></td>
+<td><strong>C</strong>entral <strong>P</strong>rocessing <strong>U</strong>nit</td>
+</tr>
+<tr class="odd">
+<td><strong>EXTI</strong></td>
+<td><strong>EXT</strong>ended <strong>I</strong>nterrupts and event controller</td>
+</tr>
+<tr class="even">
+<td><strong>NVIC</strong></td>
+<td><strong>N</strong>ested <strong>V</strong>ectored <strong>I</strong>nterrupt <strong>C</strong>ontroller</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<footer class="sticky">
+<p>For complete documentation on STM32,visit: [<a href="http://www.st.com">www.st.com/stm32</a>]</p>
+This release note uses up to date web standards and, for this reason, should not be opened with Internet Explorer but preferably with popular browsers such as Google Chrome, Mozilla Firefox, Opera or Microsoft Edge.
+</footer>
+</body>
+</html>

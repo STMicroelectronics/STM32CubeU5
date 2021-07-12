@@ -1,0 +1,80 @@
+/*********** WARNING: This is an auto-generated file. Do not edit! ***********/
+
+#include "region_defs.h"
+
+define memory mem with size = 4G;
+
+define region S_CODE_region  =    mem:[from S_CODE_START size S_CODE_SIZE];
+define region NS_CODE_region =    mem:[from NS_PARTITION_START size NS_PARTITION_SIZE];
+
+define region S_RAM_region   =    mem:[from S_DATA_START size S_DATA_SIZE];
+define region NS_RAM_region  =    mem:[from NS_DATA_START size NS_DATA_SIZE];
+
+define block ARM_LIB_STACK_MSP	  with alignment = 8, size = S_MSP_STACK_SIZE { };
+define block ARM_LIB_STACK	  with alignment = 8, size = S_PSP_STACK_SIZE { };
+define block HEAP		  with alignment = 8, size = S_HEAP_SIZE { };
+
+define block ER_TFM_CODE          with fixed order, size = 0x30000, alignment = 8 {readonly section .intvec, readonly};
+define block ER_TFM_DATA          with maximum size = 0x10000, alignment = 8 {readwrite};
+
+define block TFM_SP_STORAGE       with maximum size = 0x10000, alignment = 8 {};
+define block TFM_SP_STORAGE_DATA  with maximum size = 0x10000, alignment = 8 {};
+define block TFM_SP_STORAGE_STACK with size = 0x1800, alignment = 8 {};
+
+define block TFM_SP_CRYPTO     	  with maximum size = 0x10000, alignment = 8 {};
+define block TFM_SP_CRYPTO_DATA   with maximum size = 0x10000, alignment = 8 {};
+define block TFM_SP_CRYPTO_STACK  with size = 0x2000, alignment = 8 {};
+
+define block TFM_SP_PLATFORM       with maximum size = 0x10000, alignment = 8 {};
+define block TFM_SP_PLATFORM_DATA  with maximum size = 0x10000, alignment = 8 {};
+define block TFM_SP_PLATFORM_STACK with maximum size = 0x10000, alignment = 8 {};
+
+define block TFM_SP_INITIAL_ATTESTATION       with maximum size = 0x10000, alignment = 8 {};
+define block TFM_SP_INITIAL_ATTESTATION_DATA  with maximum size = 0x10000, alignment = 8 {};
+define block TFM_SP_INITIAL_ATTESTATION_STACK with size = 0xa00, alignment = 8 {};
+
+// ----------
+#ifdef TFM_PARTITION_AUDIT_LOG
+#endif /* TFM_PARTITION_AUDIT_LOG */
+#ifdef TFM_PARTITION_PLATFORM
+#endif /* TFM_PARTITION_PLATFORM */
+#ifdef TFM_PARTITION_TEST_CORE
+#endif /* TFM_PARTITION_TEST_CORE */
+#ifdef TFM_PARTITION_TEST_CORE
+#endif /* TFM_PARTITION_TEST_CORE */
+#ifdef TFM_PARTITION_TEST_SECURE_SERVICES
+#endif /* TFM_PARTITION_TEST_SECURE_SERVICES */
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+#ifdef TFM_PARTITION_TEST_CORE_IPC
+#endif /* TFM_PARTITION_TEST_CORE_IPC */
+#ifdef TFM_PARTITION_TEST_CORE
+#endif /* TFM_PARTITION_TEST_CORE */
+///----------
+
+define block TFM_SECURE_STACK   with size = 0x2000, alignment = 0x1000 {};
+define block TFM_UNPRIV_SCRATCH with size = 0x400,  alignment = 0x1000 {};
+define block LR_VENEER          with alignment = 0x20 {section Veneer$$CMSE};
+define block LR_NS_PARTITION    with size = 0x20000, alignment = 8 {};
+
+keep {block LR_NS_PARTITION};
+
+do not initialize  { section .noinit };
+initialize by copy { readwrite };
+if (isdefinedsymbol(__USE_DLIB_PERTHREAD))
+{
+  // Required in a multi-threaded application
+  initialize by copy { section __DLIB_PERTHREAD };
+}
+
+place in S_CODE_region         { block ER_TFM_CODE };
+place at end of S_CODE_region  { block LR_VENEER };
+place in S_RAM_region          { block ARM_LIB_STACK_MSP, block ARM_LIB_STACK, block HEAP,
+                                 block ER_TFM_DATA,
+				 block TFM_SP_STORAGE, block TFM_SP_STORAGE_DATA, block TFM_SP_STORAGE_STACK,
+				 block TFM_SP_CRYPTO, block TFM_SP_CRYPTO_DATA, block TFM_SP_CRYPTO_STACK,
+				 block TFM_SP_PLATFORM, block TFM_SP_PLATFORM_DATA, block TFM_SP_PLATFORM_STACK,
+				 block TFM_SP_INITIAL_ATTESTATION, block TFM_SP_INITIAL_ATTESTATION_DATA, block TFM_SP_INITIAL_ATTESTATION_STACK,
+				 block TFM_SECURE_STACK, block TFM_UNPRIV_SCRATCH };
+                                 
+place in NS_CODE_region        { block LR_NS_PARTITION };

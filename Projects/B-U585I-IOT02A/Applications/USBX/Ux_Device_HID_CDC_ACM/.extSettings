@@ -1,0 +1,9 @@
+[ProjectFiles]
+HeaderPath=..\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A;
+[Others]
+Define=TCPP0203_SUPPORT
+HALModule=
+[Groups]
+Drivers/BSP/B-U585I-IOT02A=../../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c; ../../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_bus.c; ../../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_usbpd_pwr.c;
+Drivers/BSP/Components=../../../../../../Drivers/BSP/Components/tcpp0203/tcpp0203.c; ../../../../../../Drivers/BSP/Components/tcpp0203/tcpp0203_reg.c;
+Doc=../README.md;
