@@ -19,6 +19,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "net_connect.h"
 #include "net_internals.h"
+#include "net_errors.h"
+#include "net_core.h"
+
 #include <inttypes.h>
 
 #ifndef NET_BYPASS_NET_SOCKET
@@ -66,7 +69,7 @@ static bool is_valid_socket(int32_t socketnum)
 
 /**
   * @brief  function description
-  * @param  Params
+  * @param  sock
   * @retval socket status
   */
 static int32_t create_low_level_socket(int32_t sock)

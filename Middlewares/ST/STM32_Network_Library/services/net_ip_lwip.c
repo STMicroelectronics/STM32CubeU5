@@ -17,15 +17,34 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "net_connect.h"
-#include "net_internals.h"
+
+/* Prevent redefinition of macros defined by the LwIP stack. */
+#define LWIP_REDIFINITIONS_ARE_FORBIDDEN
+
 #include "net_ip_lwip.h"
+#include "net_connect.h"
+#include "net_mem.h"
+#include "net_errors.h"
+
+#ifndef NET_BYPASS_NET_SOCKET
+#include "lwip/tcpip.h"
+#include "lwip/dhcp.h"
+#include "lwip/dhcp6.h"
+#include "lwip/netdb.h"
+#include "lwip/etharp.h"
+#include "lwip/ethip6.h"
+#endif /* NET_BYPASS_NET_SOCKET */
+
+#include "lwip/errno.h"
+
+#include "net_internals.h"
 #include "net_buffers.h"
 
 #define YES (u8_t)1
 #define NO (u8_t)0
 
 static void link_socket_to_lwip(net_if_drv_t *drv);
+
 #ifndef NET_BYPASS_NET_SOCKET
 static int32_t net_lwip_socket(int32_t domain, int32_t type, int32_t protocol);
 static int32_t net_lwip_bind(int32_t sock, const net_sockaddr_t *addr, uint32_t addrlen);
@@ -48,11 +67,12 @@ static int32_t net_lwip_shutdown(int32_t sock, int32_t mode);
 
 static int32_t net_lwip_gethostbyname(net_if_handle_t *pnetif, net_sockaddr_t *addr, char_t *name);
 
-#define NETIF_IS_LINK_UP(netif) (((netif)->flags & NETIF_FLAG_LINK_UP)!=0U)
+#define NETIF_IS_LINK_UP(netif) (((netif)->flags & NETIF_FLAG_LINK_UP) != 0U)
+
 /* Manage init of LWIP library as a singleton */
 void net_ip_init(void)
 {
-  static  bool tcpip_init_done = 0;
+  static bool tcpip_init_done = 0;
   if (false == tcpip_init_done)
   {
     tcpip_init(NULL, NULL);
@@ -82,6 +102,7 @@ int32_t net_ip_add_if(net_if_handle_t *pnetif, err_t (*if_init)(struct netif *ne
 
     /* link current network interface to LWIP library */
     link_socket_to_lwip(pnetif->pdrv);
+
 #if NET_USE_IPV6
     /* Set the IPv6 linklocal address using our MAC */
     NET_DBG_PRINT("Setting IPv6 link-local address\n");
@@ -98,12 +119,11 @@ int32_t net_ip_add_if(net_if_handle_t *pnetif, err_t (*if_init)(struct netif *ne
   return ret;
 }
 
+
 static inline ip4_addr_t const *ip4_addr(net_ip_addr_t *ipaddr)
 {
   return (ip4_addr_t const *) ipaddr;
-
 }
-
 
 
 /*          CONNECTION      */
@@ -353,14 +373,14 @@ static int32_t net_lwip_socket(int32_t domain, int32_t type, int32_t protocol)
   * @param  Params
   * @retval socket status
   */
-static struct sockaddr   *getsockaddr(const net_sockaddr_t *addr)
+static struct sockaddr *getsockaddr(const net_sockaddr_t *addr)
 {
   return (struct sockaddr *) addr;
 }
 
 static int32_t net_lwip_bind(int32_t sock, const net_sockaddr_t *addr, uint32_t addrlen)
 {
-  int32_t   ret = lwip_bind(sock, getsockaddr(addr),  addrlen);
+  int32_t ret = lwip_bind(sock, getsockaddr(addr),  addrlen);
   return ret;
 }
 
@@ -463,7 +483,7 @@ static int32_t net_lwip_recvfrom(int32_t sock, uint8_t *buf, int32_t len, int32_
   */
 static int32_t net_lwip_setsockopt(int32_t sock, int32_t level, int32_t optname, const void *optvalue, uint32_t optlen)
 {
-  int32_t   ret = lwip_setsockopt(sock, level, optname, optvalue, optlen);
+  int32_t ret = lwip_setsockopt(sock, level, optname, optvalue, optlen);
   return ret;
 }
 
@@ -509,7 +529,7 @@ static int32_t net_lwip_getpeername(int32_t sock, net_sockaddr_t *name, uint32_t
 static int32_t net_lwip_close(int32_t sock, bool clone)
 {
   (void) clone;
-  int32_t   ret = lwip_close(sock);
+  int32_t ret = lwip_close(sock);
   return ret;
 }
 
@@ -520,7 +540,7 @@ static int32_t net_lwip_close(int32_t sock, bool clone)
   */
 static int32_t net_lwip_shutdown(int32_t sock, int32_t mode)
 {
-  int32_t   ret = lwip_shutdown(sock, mode);
+  int32_t ret = lwip_shutdown(sock, mode);
   return ret;
 }
 

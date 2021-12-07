@@ -5,5 +5,5 @@ Define=
 HALModule=
 [Groups]
 Drivers/BSP/B-U585I-IOT02A=../../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c; ../../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_ospi.c;
-Drivers/BSP/Components=../../../../../../Drivers/BSP/Components/mx25lm51245g/mx25lm51245g.c;
+Drivers/BSP/Components=../../../../../../Drivers/BSP/Components/mx25lm51245g/mx25lm51245g.c; ../../../../../../Drivers/BSP/Components/aps6408/aps6408.c;
 Doc=../README.md;

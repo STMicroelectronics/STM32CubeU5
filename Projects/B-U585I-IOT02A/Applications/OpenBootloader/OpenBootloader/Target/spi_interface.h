@@ -32,13 +32,20 @@ void OPENBL_SPI_Configuration(void);
 void OPENBL_SPI_DeInit(void);
 uint8_t OPENBL_SPI_ProtocolDetection(void);
 uint8_t OPENBL_SPI_GetCommandOpcode(void);
-uint8_t OPENBL_SPI_ReadByte(void);
-void OPENBL_SPI_SendByte(uint8_t Byte);
 void OPENBL_SPI_SendAcknowledgeByte(uint8_t Byte);
-
 void OPENBL_SPI_EnableBusyState(void);
 void OPENBL_SPI_DisableBusyState(void);
-__ramfunc void OPENBL_SPI_IRQHandler(void);
+
+#if defined (__ICCARM__)
+__ramfunc uint8_t OPENBL_SPI_ReadByte(void);
+__ramfunc void OPENBL_SPI_SendByte(uint8_t Byte);
+__ramfunc void OPENBL_SPI_IRQHandler();
 __ramfunc void OPENBL_SPI_SendBusyByte(void);
+#else
+__attribute__ ((section (".ramfunc"))) uint8_t OPENBL_SPI_ReadByte(void);
+__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_SendByte(uint8_t Byte);
+__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_IRQHandler();
+__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_SendBusyByte(void);
+#endif /* (__ICCARM__) */
 
 #endif /* SPI_INTERFACE_H */

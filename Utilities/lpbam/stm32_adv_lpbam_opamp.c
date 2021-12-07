@@ -19,8 +19,8 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the GettingStarted.html document before starting developing an LPBAM
-      application.
+      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
+      developing an LPBAM application.
 
     *** Driver description ***
     ==========================
@@ -50,7 +50,7 @@
     [..]
       Use ADV_LPBAM_OPAMP_Start_SetFullQ() API to build a linked-list queue that configures and starts the opamp and
       start execution according to parameters in LPBAM_OPAMP_StartFullAdvConf_t structure.
-      Configured parameters are :
+      Configuration parameters are :
           (+) NonInvertingInput : Specifies the opamp non inverting input.
           (+) InvertingInput    : Specifies the opamp inverting input.
           (+) Mode              : Specifies the opamp mode.
@@ -89,8 +89,8 @@
               (++) DMA_IT_USE : user setting error.
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
 
-    *** Constraints ***
-    ===================
+    *** Recommendation ***
+    ======================
     [..]
       It's strongly not recommended to call ADV_LPBAM_OPAMP_Start_SetFullQ() with the same instance by more than one
       linked-list queue. When the opamp nodes will be executed simultaneously unexpected behavior will appear.

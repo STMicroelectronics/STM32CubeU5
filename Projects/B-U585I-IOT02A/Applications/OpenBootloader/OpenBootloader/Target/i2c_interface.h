@@ -37,14 +37,14 @@ void OPENBL_I2C_SendByte(uint8_t Byte);
 void OPENBL_I2C_WaitAddress(void);
 void OPENBL_I2C_SendAcknowledgeByte(uint8_t Byte);
 
-#if defined (__CC_ARM)
-void OPENBL_I2C_WaitNack(void);
-void OPENBL_I2C_WaitStop(void);
-void OPENBL_I2C_SendBusyByte(void);
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_I2C_WaitNack(void);
 __ramfunc void OPENBL_I2C_WaitStop(void);
 __ramfunc void OPENBL_I2C_SendBusyByte(void);
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) void OPENBL_I2C_WaitNack(void);
+__attribute__ ((section (".ramfunc"))) void OPENBL_I2C_WaitStop(void);
+__attribute__ ((section (".ramfunc"))) void OPENBL_I2C_SendBusyByte(void);
+#endif /* (__ICCARM__) */
 
 #endif /* I2C_INTERFACE_H */

@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file    net_ethernet_driver.c
+  * @file    net_cypress_whd_driver.c
   * @author  MCD Application Team
-  * @brief   Ethernet specific BSD-like socket wrapper
+  * @brief   Wi-Fi specific BSD-like socket wrapper
   ******************************************************************************
   * @attention
   *
@@ -20,6 +20,8 @@
 #include "net_connect.h"
 #include "net_internals.h"
 #include "net_ip_lwip.h"
+#include "lwip/etharp.h"
+#include "lwip/tcpip.h"
 
 #include "whd.h"
 #include "whd_debug.h"

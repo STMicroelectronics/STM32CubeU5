@@ -1,8 +1,8 @@
 ## <b>BLE_AT_Client Example Description</b>
 
-This example demonstrates BLE connectivity on STM32WB5M module for the B-U585-IOT02A board.
+This example demonstrates BLE connectivity on STM32WB5MMG module for the B-U585-IOT02A board.
 
-The example allows to control STM32WB5M module running BLE AT server application.  
+The example allows to control STM32WB5MMG module running BLE AT server application.  
 The application allows to toggle between 2 BLE services, Heart Rate sensor and P2P server.  
 The user needs to use a smartphone running ST BLE Sensor application.  
 The user can perform the following actions:  
@@ -23,7 +23,7 @@ Instructions and logs are printed over ST-LINK UART.
 
 ### <b>Keywords</b>
 
-BLE, STM32WB5M, AT
+BLE, STM32WB5MMG, AT
 
 ### <b>Directory contents</b>
 
@@ -41,15 +41,25 @@ BLE, STM32WB5M, AT
 ### <b>Hardware and Software environment</b>
 
   - This example runs on STM32U585xx devices without security enabled (TZEN=0).
+  
+  - This example has been tested with STMicroelectronics B-U585I-IOT02A (MB1551)
+    board and can be easily tailored to any other supported device and development board.
 
   - This example requires a smartphone running ST BLE Sensor application.
+  
+  - This example requires to have STM32WB5MMG module flashed with latest FUS, BLE full wireless stack and BLE_AT_Server application from STM32CubeWB package.
 
-  - This example requires to have STM32WB5M module flashed with latest 
-    BLE_AT_Server application from STM32CubeWB package.
-
-  - This example has been tested with STMicroelectronics B-U585I-IOT02A (MB1551)
-    board and can be easily tailored to any other supported device
-    and development board.
+  - To flash BLE module you have to connect an STLINK dongle on CN5 connector.
+    * CN5 pinout is from squared pin 1 at bottom: target_VDD, SWCLK, GND, SWDIO
+    * Place SW3 on left position and plug USB on CN12 at the back. When done, unplug USB on CN12 and place back SW3 on right position.
+    
+  - Flash FUS and BLE stack using STM32CubeProgrammer wireless tab. Full detailled instructions are into STM32CubeWB package release note.
+    * @0x080EC000 .\STM32Cube_FW_WB_V1.x.x\Projects\STM32WB_Copro_Wireless_Binaries\STM32WB5x\stm32wb5x_FUS_fw.bin
+    * @0x080CA000 .\STM32Cube_FW_WB_V1.x.x\Projects\STM32WB_Copro_Wireless_Binaries\STM32WB5x\stm32wb5x_BLE_Stack_full_fw.bin
+    
+  - Flash BLE_AT_Server module application using STM32CubeProgrammer, file BLE_AT_Server.hex.
+    * present in this application Module Binary folder 
+    * or in .\STM32Cube_FW_WB_V1.x.x\Projects\P-NUCLEO-WB55.Nucleo\Applications\BLE\BLE_AT_Server\Binary\BLE_AT_Server.hex
 
 ### <b>How to use it ?</b>
 

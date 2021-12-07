@@ -27,6 +27,8 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+/* #define DEBUG_CONFIGURATION */
+
 /* Uncomment this line to use the board as transmitter, otherwise as receiver */
 #define TRANSMITTER_BOARD
 

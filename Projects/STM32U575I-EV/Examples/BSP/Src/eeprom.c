@@ -263,13 +263,13 @@ static void EEPROM_Show_Feature(uint8_t feature)
           UTIL_LCD_DisplayStringAt(0, 115, (uint8_t*)"String writes", CENTER_MODE);
           UTIL_LCD_DisplayStringAt(0, 130, (uint8_t*)"in the current EEPROM selected:", CENTER_MODE);
 
-          sprintf(text,"READ/WRITE PAGE %lu  SUCCEEDED", i);
+          sprintf(text,"READ/WRITE PAGE %u  SUCCEEDED", i);
           UTIL_LCD_DisplayStringAt(0, 160, (uint8_t*)text, CENTER_MODE);
         }
         else
         {
           UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_RED);
-          sprintf(text,"READ/WRITE PAGE %lu  FAILED", i);
+          sprintf(text,"READ/WRITE PAGE %u  FAILED", i);
           UTIL_LCD_DisplayStringAt(0, 160, (uint8_t*)text, CENTER_MODE);
           UTIL_LCD_DisplayStringAt(0, 130, (uint8_t*)"Press USER button to end test", CENTER_MODE);
         }

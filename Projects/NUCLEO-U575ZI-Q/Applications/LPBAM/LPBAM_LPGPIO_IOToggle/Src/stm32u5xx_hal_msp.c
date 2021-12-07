@@ -93,8 +93,6 @@ void HAL_MspInit(void)
 */
 void HAL_LPTIM_MspInit(LPTIM_HandleTypeDef *hlptim)
 {
-  GPIO_InitTypeDef     GPIO_InitStruct;
-
   /* ## - 1 - Enable LPTIM clock ############################################ */
   __HAL_RCC_LPTIM1_CLK_ENABLE();
 
@@ -105,15 +103,16 @@ void HAL_LPTIM_MspInit(LPTIM_HandleTypeDef *hlptim)
   /* Release the LPTIM Periheral Clock Reset */
   __HAL_RCC_LPTIM1_RELEASE_RESET();
 
+#if defined (DEBUG_CONFIGURATION)
+  GPIO_InitTypeDef GPIO_InitStruct;
+
   /* ## - 3 - Enable & Configure LPTIM Ultra Low Power ################# */
   /* Configure PB.2 (LPTIM1_OUT) in alternate function (AF1), Medium speed
   push-pull mode and pull-up enabled.
   Note: In order to reduce power consumption: GPIO Speed is configured in
   MediumSpeed */
-
   /* Enable GPIO PORT */
   __HAL_RCC_GPIOB_CLK_ENABLE();
-
   /* Configure PB.2 */
   GPIO_InitStruct.Pin = GPIO_PIN_2;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -121,6 +120,7 @@ void HAL_LPTIM_MspInit(LPTIM_HandleTypeDef *hlptim)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   GPIO_InitStruct.Alternate = GPIO_AF1_LPTIM1;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#endif /* defined (DEBUG_CONFIGURATION) */
 }
 /**
   * @}

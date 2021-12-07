@@ -17,8 +17,11 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "net_state.h"
 #include "net_connect.h"
 #include "net_internals.h"
+#include "net_errors.h"
+
 #include "stdarg.h"
 
 #ifdef DEBUGSTATE

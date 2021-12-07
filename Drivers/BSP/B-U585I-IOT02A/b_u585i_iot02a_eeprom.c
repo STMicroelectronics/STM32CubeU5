@@ -451,7 +451,7 @@ static int32_t M24LR64_Probe(void)
   M24LR64_IO_t              IOCtx;
   static M24LR64_Object_t   M24LR64Obj;
 
-  /* Configure the audio driver */
+  /* Configure the EEPROM driver */
   IOCtx.Init        = BSP_I2C2_Init;
   IOCtx.DeInit      = BSP_I2C2_DeInit;
   IOCtx.Read        = BSP_I2C2_ReadReg16;

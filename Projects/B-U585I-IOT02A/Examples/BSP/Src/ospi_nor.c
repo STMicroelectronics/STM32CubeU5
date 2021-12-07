@@ -77,8 +77,6 @@ int32_t OSPI_NOR_demo(void)
 {
   printf("\n******OSPI NOR EXAMPLE******\n");
 
-  StartExample();
-
   /* Fill the buffer for write operation *************************************/
   Fill_Buffer(ospi_aTxBuffer, BUFFER_SIZE, TEST_VALUE_START);
 

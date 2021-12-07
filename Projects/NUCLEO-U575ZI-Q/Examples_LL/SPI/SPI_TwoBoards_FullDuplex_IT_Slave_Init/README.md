@@ -1,8 +1,4 @@
-<<<<<<< HEAD   (4ef5cf delete useless .txt FILES)
-## **SPI_TwoBoards_FullDuplex_IT_Slave_Init Example Description**
-=======
 ## <b>SPI_TwoBoards_FullDuplex_IT_Slave_Init Example Description</b>
->>>>>>> CHANGE (22b2e3 fix readmes)
 
 Data buffer transmission and receptionvia SPI using Interrupt mode.
 

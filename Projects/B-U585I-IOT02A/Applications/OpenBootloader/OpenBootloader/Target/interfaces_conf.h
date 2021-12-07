@@ -33,6 +33,9 @@
 #define USARTx_RX_GPIO_PORT               GPIOD
 #define USARTx_ALTERNATE                  GPIO_AF7_USART3
 
+#define USARTx_FORCE_RESET()              __HAL_RCC_USART3_FORCE_RESET()
+#define USARTx_RELEASE_RESET()            __HAL_RCC_USART3_RELEASE_RESET()
+
 /* ------------------------- Definitions for I2C -------------------------- */
 #define I2Cx                              I2C2
 #define I2Cx_CLK_ENABLE()                 __HAL_RCC_I2C2_CLK_ENABLE()
@@ -46,6 +49,9 @@
 #define I2C_ADDRESS                       0x000000B4U
 #define OPENBL_I2C_TIMEOUT                0xFFFFF000U
 #define I2C_TIMING                        0x00800000U
+
+#define I2Cx_FORCE_RESET()                __HAL_RCC_I2C2_FORCE_RESET()
+#define I2Cx_RELEASE_RESET()              __HAL_RCC_I2C2_RELEASE_RESET()
 
 /* ------------------------- Definitions for FDCAN -------------------------- */
 #define FDCANx                            FDCAN1
@@ -82,5 +88,8 @@
 #define SPIx_NSS_PIN                      GPIO_PIN_4
 #define SPIx_NSS_PIN_PORT                 GPIOA
 #define SPIx_ALTERNATE                    GPIO_AF5_SPI1
+
+#define SPIx_FORCE_RESET()                __HAL_RCC_SPI1_FORCE_RESET()
+#define SPIx_RELEASE_RESET()              __HAL_RCC_SPI1_RELEASE_RESET()
 
 #endif /* INTERFACES_CONF_H */

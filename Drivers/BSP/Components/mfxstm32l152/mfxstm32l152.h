@@ -7,13 +7,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2018-2021 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -131,18 +130,62 @@ typedef struct
 } MFXSTM32L152_Object_t;
 
 /* Touch screen driver structure initialization */
+
+#define MFXSTM32L152_MAX_NB_TOUCH             1U
+
+#define MFXSTM32L152_MAX_X_LENGTH          3800U
+#define MFXSTM32L152_MAX_Y_LENGTH          3800U
+
+typedef struct
+{
+  uint32_t  Radian;
+  uint32_t  OffsetLeftRight;
+  uint32_t  OffsetUpDown;
+  uint32_t  DistanceLeftRight;
+  uint32_t  DistanceUpDown;
+  uint32_t  DistanceZoom;
+} MFXSTM32L152_Gesture_Init_t;
+
+typedef struct
+{
+  uint32_t  TouchDetected;
+  uint32_t  TouchX;
+  uint32_t  TouchY;
+} MFXSTM32L152_State_t;
+
+typedef struct
+{
+  uint32_t  TouchDetected;
+  uint32_t  TouchX[MFXSTM32L152_MAX_NB_TOUCH];
+  uint32_t  TouchY[MFXSTM32L152_MAX_NB_TOUCH];
+  uint32_t  TouchWeight[MFXSTM32L152_MAX_NB_TOUCH];
+  uint32_t  TouchEvent[MFXSTM32L152_MAX_NB_TOUCH];
+  uint32_t  TouchArea[MFXSTM32L152_MAX_NB_TOUCH];
+} MFXSTM32L152_MultiTouch_State_t;
+
+typedef struct
+{
+  uint8_t   MultiTouch;
+  uint8_t   Gesture;
+  uint8_t   MaxTouch;
+  uint32_t  MaxXl;
+  uint32_t  MaxYl;
+} MFXSTM32L152_Capabilities_t;
+
 typedef struct
 {
   int32_t (*Init)(MFXSTM32L152_Object_t *);
+  int32_t (*DeInit)(MFXSTM32L152_Object_t *);
+  int32_t (*GestureConfig)(MFXSTM32L152_Object_t *, MFXSTM32L152_Gesture_Init_t *);
   int32_t (*ReadID)(MFXSTM32L152_Object_t *, uint32_t *);
-  int32_t (*Reset)(MFXSTM32L152_Object_t *);
-  int32_t (*TS_Start)(MFXSTM32L152_Object_t *);
-  int32_t (*TS_DetectTouch)(MFXSTM32L152_Object_t *);
-  int32_t (*TS_GetXY)(MFXSTM32L152_Object_t *, uint16_t *, uint16_t *);
-  int32_t (*TS_EnableIT)(MFXSTM32L152_Object_t *);
-  int32_t (*TS_ClearIT)(MFXSTM32L152_Object_t *);
-  int32_t (*TS_ITStatus)(MFXSTM32L152_Object_t *);
-  int32_t (*TS_DisableIT)(MFXSTM32L152_Object_t *);
+  int32_t (*GetState)(MFXSTM32L152_Object_t *, MFXSTM32L152_State_t*);
+  int32_t (*GetMultiTouchState)(MFXSTM32L152_Object_t *, MFXSTM32L152_MultiTouch_State_t *);
+  int32_t (*GetGesture)(MFXSTM32L152_Object_t *, uint8_t* );
+  int32_t (*GetCapabilities)(MFXSTM32L152_Object_t *, MFXSTM32L152_Capabilities_t *);
+  int32_t (*EnableIT)(MFXSTM32L152_Object_t *);
+  int32_t (*DisableIT)(MFXSTM32L152_Object_t *);
+  int32_t (*ClearIT)(MFXSTM32L152_Object_t *);
+  int32_t (*ITStatus)(MFXSTM32L152_Object_t *);
 } MFXSTM32L152_TS_Mode_t;
 
 /* IO driver structure initialization */
@@ -407,9 +450,12 @@ int32_t MFXSTM32L152_IO_EnablePinIT(MFXSTM32L152_Object_t *pObj, uint32_t IO_Pin
 int32_t MFXSTM32L152_IO_DisablePinIT(MFXSTM32L152_Object_t *pObj, uint32_t IO_Pin);
 
 /* MFXSTM32L152 Touch screen functionalities functions */
-int32_t MFXSTM32L152_TS_Start(MFXSTM32L152_Object_t *pObj);
-int32_t MFXSTM32L152_TS_DetectTouch(MFXSTM32L152_Object_t *pObj);
-int32_t MFXSTM32L152_TS_GetXY(MFXSTM32L152_Object_t *pObj, uint16_t *X, uint16_t *Y);
+int32_t MFXSTM32L152_TS_Init(MFXSTM32L152_Object_t *pObj);
+int32_t MFXSTM32L152_TS_GestureConfig(MFXSTM32L152_Object_t *pObj, MFXSTM32L152_Gesture_Init_t *GestureInit);
+int32_t MFXSTM32L152_TS_GetState(MFXSTM32L152_Object_t *pObj, MFXSTM32L152_State_t *State);
+int32_t MFXSTM32L152_TS_GetMultiTouchState(MFXSTM32L152_Object_t *pObj, MFXSTM32L152_MultiTouch_State_t *State);
+int32_t MFXSTM32L152_TS_GetGesture(MFXSTM32L152_Object_t *pObj, uint8_t *GestureId);
+int32_t MFXSTM32L152_TS_GetCapabilities(MFXSTM32L152_Object_t *pObj, MFXSTM32L152_Capabilities_t *Capabilities);
 int32_t MFXSTM32L152_TS_EnableIT(MFXSTM32L152_Object_t *pObj);
 int32_t MFXSTM32L152_TS_DisableIT(MFXSTM32L152_Object_t *pObj);
 int32_t MFXSTM32L152_TS_ITStatus(MFXSTM32L152_Object_t *pObj);
@@ -465,4 +511,3 @@ extern MFXSTM32L152_IDD_Mode_t MFXSTM32L152_IDD_Driver;
 /**
   * @}
   */
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -22,7 +22,7 @@ Please remember that on system with security enabled:
 - The system always boots in secure and the secure application is responsible for
 launching the non-secure application.
 - The SystemInit() function in secure application sets up the SAU/IDAU, FPU and
-secure/non-secure interrupts allocations defined in partition_stm32u575xx.h file.
+secure/non-secure interrupts allocations defined in partition_stm32u585xx.h file.
 
 This project shows how to switch from secure application to non-secure application
 thanks to the system isolation performed to split the internal Flash and internal SRAM memories
@@ -103,9 +103,9 @@ System, GPIO, GTZC, Output, Alternate function, Push-pull, TrustZone.
 
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on STM32U575xx devices with security enabled (TZEN=1).
+  - This example runs on STM32U585xx devices with security enabled (TZEN=1).
 
-  - This example has been tested with STMicroelectronics NUCLEO-U575ZI-Q (MB1549)
+  - This example has been tested with STMicroelectronics B-U585I-IOT02A
     board and can be easily tailored to any other supported device
     and development board.
 

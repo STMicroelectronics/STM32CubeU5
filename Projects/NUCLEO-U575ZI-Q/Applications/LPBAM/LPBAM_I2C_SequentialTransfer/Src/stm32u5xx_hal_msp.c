@@ -73,12 +73,22 @@ void HAL_MspInit(void)
   */
 void HAL_I2C_MspInit (I2C_HandleTypeDef *hi2c)
 {
-  GPIO_InitTypeDef  GPIO_InitStruct                = {0};
+  GPIO_InitTypeDef         GPIO_InitStruct         = {0};
   RCC_PeriphCLKInitTypeDef RCC_PeriphCLKInitStruct = {0};
+  RCC_OscInitTypeDef       RCC_OscInitStruct       = {0};
+
+  /* Enable MSIK clock */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSIK;
+  RCC_OscInitStruct.MSIKClockRange = RCC_MSIKRANGE_4;
+  RCC_OscInitStruct.MSIKState      = RCC_MSIK_ON;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
   /* Re-target the HSI to Clock the I2C3 peripheral */
   RCC_PeriphCLKInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2C3;
-  RCC_PeriphCLKInitStruct.I2c3ClockSelection   = RCC_I2C3CLKSOURCE_HSI;
+  RCC_PeriphCLKInitStruct.I2c3ClockSelection   = RCC_I2C3CLKSOURCE_MSIK;
   /* Initialize the RCC extended peripherals clocks */
   if (HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphCLKInitStruct) != HAL_OK)
   {
@@ -102,7 +112,11 @@ void HAL_I2C_MspInit (I2C_HandleTypeDef *hi2c)
   /* I2C SCL GPIO pin configuration  */
   GPIO_InitStruct.Pin       = GPIO_PIN_0;
   GPIO_InitStruct.Mode      = GPIO_MODE_AF_OD;
+#ifdef MASTER_BOARD
+  GPIO_InitStruct.Pull      = GPIO_NOPULL;
+#else
   GPIO_InitStruct.Pull      = GPIO_PULLUP;
+#endif /* MASTER_BOARD */
   GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
   GPIO_InitStruct.Alternate = GPIO_AF4_I2C3;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);

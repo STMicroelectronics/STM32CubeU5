@@ -76,15 +76,15 @@ typedef struct
 } LPBAM_LPTIM_ICFullAdvConf_t;
 
 /**
-  * @brief LPBAM LPTIM compare match advanced information structure definition.
+  * @brief LPBAM LPTIM update event detection advanced information structure definition.
   */
 typedef struct
 {
-  uint16_t Period;    /*!< Specifies the capture compare period                   */
+  uint16_t Period;    /*!< Specifies the period value             */
 
-  uint8_t Repetition; /*!< Specifies the capture compare period repetition number */
+  uint8_t Repetition; /*!< Specifies the period repetition number */
 
-} LPBAM_LPTIM_CMFullAdvConf_t;
+} LPBAM_LPTIM_UEFullAdvConf_t;
 
 /**
   * @brief LPBAM LPTIM start advanced information structure definition.
@@ -105,7 +105,7 @@ typedef struct
 typedef struct
 {
   uint32_t Mode; /*!< Specifies the LPTIM Mode.
-                      This parameter can be a value of @ref LPBAM_LPTIM_Mode */
+                      This parameter can be a value of @ref LPBAM_LPTIM_Stop_Mode */
 
 } LPBAM_LPTIM_StopFullAdvConf_t;
 
@@ -133,7 +133,7 @@ typedef struct
 } LPBAM_LPTIM_ICFullDesc_t;
 
 /**
-  * @brief LPBAM LPTIM compare match descriptor structure definition.
+  * @brief LPBAM LPTIM update event detection descriptor structure definition.
   */
 typedef struct
 {
@@ -141,7 +141,7 @@ typedef struct
 
   uint32_t pReg[2U];          /*!< Specifies the content of register to be updated : 2 value is needed                */
 
-} LPBAM_LPTIM_CMFullDesc_t;
+} LPBAM_LPTIM_UEFullDesc_t;
 
 /**
   * @brief LPBAM LPTIM start descriptor structure definition.
@@ -193,13 +193,12 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_IC_SetFullQ(LPTIM_TypeDef               *const pI
                                            LPBAM_LPTIM_ICFullDesc_t    *const pDescriptor,
                                            DMA_QListTypeDef            *const pQueue);
 /**
-  * @brief ADV_LPBAM_LPTIM_CM_SetFullQ.
+  * @brief ADV_LPBAM_LPTIM_UE_SetFullQ.
   */
-LPBAM_Status_t ADV_LPBAM_LPTIM_CM_SetFullQ(LPTIM_TypeDef              *const pInstance,
-                                           uint32_t                    Channel,
+LPBAM_Status_t ADV_LPBAM_LPTIM_UE_SetFullQ(LPTIM_TypeDef              *const pInstance,
                                            LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                           LPBAM_LPTIM_CMFullAdvConf_t const *const pCMFull,
-                                           LPBAM_LPTIM_CMFullDesc_t    *const pDescriptor,
+                                           LPBAM_LPTIM_UEFullAdvConf_t const *const pUEFull,
+                                           LPBAM_LPTIM_UEFullDesc_t    *const pDescriptor,
                                            DMA_QListTypeDef            *const pQueue);
 /**
   * @brief ADV_LPBAM_LPTIM_Start_SetFullQ.

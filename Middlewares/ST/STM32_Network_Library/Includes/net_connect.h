@@ -116,8 +116,7 @@ typedef enum
   NET_SO_TLS_PASSWORD       =      13,/**< to define password (if any) used to encrypt the device key, option type is pointer to a null terminated string */
   NET_SO_TLS_CERT_PROF      =      14,/**< to set the X509 security profile, option type is pointer to mbedtls_x509_crt_profile structure */
   NET_SO_BROADCAST          =  0x0020 /* permit to send and to receive broadcast messages (see IP_SOF_BROADCAST option) */
-}
-net_socketoption_t;
+} net_socketoption_t;
 
 
 /** @defgroup Socket
@@ -129,7 +128,8 @@ typedef struct pbuf net_buf_t;
 
 
 /**
-  *  TOPPP transition are requested by application. "ING" state are transitioning state, meaning that application has required a transition and the transition is ongoing. "ED" states are stable state.
+  *  TOPPP transition are requested by application. "ING" state are transitioning state, meaning that application has required a transition and
+  *  the transition is ongoing. "ED" states are stable state.
   */
 
 
@@ -157,12 +157,12 @@ typedef enum enum_state
   NET_STATE_READY,          /**< Network interface interface is started, MAC address can be retrieved */
 
   NET_STATE_CONNECTING,     /**< Network interface interface is connecting */
-  NET_STATE_CONNECTED,      /**< Network interface interface is connected, IP address can be retrieved , socket operation can be performed*/
+  NET_STATE_CONNECTED,      /**< Network interface interface is connected, IP address can be retrieved, socket operation can be performed*/
 
   NET_STATE_STOPPING,       /**< Network interface interface is stopping */
 
   NET_STATE_DISCONNECTING,  /**< Network interface interface is disconnecting */
-  NET_STATE_CONNECTION_LOST /**< Network interface connection is lost , this can be a transient state , it can return to connected state without application specific action*/
+  NET_STATE_CONNECTION_LOST /**< Network interface connection is lost, this can be a transient state, it can return to connected state without application specific action*/
 } net_state_t;
 
 
@@ -201,10 +201,10 @@ typedef enum
   DHCP_CLIENT_V6
 } dhcp_client_ver_t;
 
-typedef struct net_if_drv_s             net_if_drv_t;
-typedef struct net_ip_if_s              net_ip_if_t;
+typedef struct net_if_drv_s net_if_drv_t;
+typedef struct net_ip_if_s net_ip_if_t;
 
-typedef void(*  net_if_notify_func)(void *context, uint32_t event_class, uint32_t event_id, void  *event_data);
+typedef void(* net_if_notify_func)(void *context, uint32_t event_class, uint32_t event_id, void  *event_data);
 
 typedef struct
 {
@@ -342,11 +342,11 @@ int32_t net_getpeername(int32_t sock, net_sockaddr_t *name, uint32_t *namelen);
 #endif /* NET_BYPASS_NET_SOCKET */
 
 extern const int32_t net_tls_sizeof_suite_structure;
-extern const void    *net_tls_user_suite0;
-extern const void    *net_tls_user_suite1;
-extern const void    *net_tls_user_suite2;
-extern const void    *net_tls_user_suite3;
-extern const void    *net_tls_user_suite4;
+extern const void *net_tls_user_suite0;
+extern const void *net_tls_user_suite1;
+extern const void *net_tls_user_suite2;
+extern const void *net_tls_user_suite3;
+extern const void *net_tls_user_suite4;
 
 #ifdef __cplusplus
 }

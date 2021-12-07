@@ -143,10 +143,21 @@ void HAL_OPAMP_MspDeInit(OPAMP_HandleTypeDef *hopamp)
 void HAL_DAC_MspInit(DAC_HandleTypeDef *hdac)
 {
   RCC_PeriphCLKInitTypeDef RCC_PeriphCLKInitStruct = {0};
+  RCC_OscInitTypeDef       RCC_OscInitStruct;
+
+  /* Enable MSIK clock */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSIK;
+  RCC_OscInitStruct.MSIKState      = RCC_MSIK_ON;
+  RCC_OscInitStruct.MSIKClockRange = RCC_MSIKRANGE_4;
+  RCC_OscInitStruct.PLL.PLLState   = RCC_PLL_NONE;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
   /* Select kernel peripheral clock */
   RCC_PeriphCLKInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADCDAC;
-  RCC_PeriphCLKInitStruct.AdcDacClockSelection = RCC_ADCDACCLKSOURCE_HCLK;
+  RCC_PeriphCLKInitStruct.AdcDacClockSelection = RCC_ADCDACCLKSOURCE_MSIK;
   if (HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphCLKInitStruct) != HAL_OK)
   {
     Error_Handler();

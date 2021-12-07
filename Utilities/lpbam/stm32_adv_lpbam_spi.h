@@ -69,7 +69,8 @@ typedef struct
                                                     stm32_platform_lpbam_spi.h for more information.                  */
 
   uint32_t WakeupIT;                           /*!< Specifies the wake up source interrupt.
-                                                    This parameter can be a value of @ref LPBAM_SPI_Wakeup_Interrupt  */
+                                                    This parameter can be one or a combination of
+                                                    @ref LPBAM_SPI_Wakeup_Interrupt                                   */
 
 } LPBAM_SPI_ConfigAdvConf_t;
 
@@ -271,81 +272,81 @@ typedef struct
   */
 
 /**
-  * @brief  ADV_LPBAM_SPI_Transmit_SetConfigQ.
+  * @brief  ADV_LPBAM_SPI_Tx_SetConfigQ.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_Transmit_SetConfigQ(SPI_TypeDef               *const pInstance,
-                                                 LPBAM_DMAListInfo_t       const *const pDMAListInfo,
-                                                 LPBAM_SPI_ConfigAdvConf_t const *const pTxConfig,
-                                                 LPBAM_SPI_TxConfigDesc_t  *const pDescriptor,
-                                                 DMA_QListTypeDef          *const pQueue);
+LPBAM_Status_t ADV_LPBAM_SPI_Tx_SetConfigQ(SPI_TypeDef               *const pInstance,
+                                           LPBAM_DMAListInfo_t       const *const pDMAListInfo,
+                                           LPBAM_SPI_ConfigAdvConf_t const *const pTxConfig,
+                                           LPBAM_SPI_TxConfigDesc_t  *const pDescriptor,
+                                           DMA_QListTypeDef          *const pQueue);
 /**
-  * @brief  ADV_LPBAM_SPI_Transmit_SetDataQ.
+  * @brief  ADV_LPBAM_SPI_Tx_SetDataQ.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_Transmit_SetDataQ(SPI_TypeDef             *const pInstance,
-                                               LPBAM_DMAListInfo_t     const *const pDMAListInfo,
-                                               LPBAM_SPI_DataAdvConf_t const *const pTxData,
-                                               LPBAM_SPI_TxDataDesc_t  *const pDescriptor,
-                                               DMA_QListTypeDef        *const pQueue);
+LPBAM_Status_t ADV_LPBAM_SPI_Tx_SetDataQ(SPI_TypeDef             *const pInstance,
+                                         LPBAM_DMAListInfo_t     const *const pDMAListInfo,
+                                         LPBAM_SPI_DataAdvConf_t const *const pTxData,
+                                         LPBAM_SPI_TxDataDesc_t  *const pDescriptor,
+                                         DMA_QListTypeDef        *const pQueue);
 /**
-  * @brief  ADV_LPBAM_SPI_Transmit_SetFullQ.
+  * @brief  ADV_LPBAM_SPI_Tx_SetFullQ.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_Transmit_SetFullQ(SPI_TypeDef             *const pInstance,
-                                               LPBAM_DMAListInfo_t     const *const pDMAListInfo,
-                                               LPBAM_SPI_FullAdvConf_t const *const pTxFull,
-                                               LPBAM_SPI_TxFullDesc_t  *const pDescriptor,
-                                               DMA_QListTypeDef        *const pQueue);
+LPBAM_Status_t ADV_LPBAM_SPI_Tx_SetFullQ(SPI_TypeDef             *const pInstance,
+                                         LPBAM_DMAListInfo_t     const *const pDMAListInfo,
+                                         LPBAM_SPI_FullAdvConf_t const *const pTxFull,
+                                         LPBAM_SPI_TxFullDesc_t  *const pDescriptor,
+                                         DMA_QListTypeDef        *const pQueue);
 /**
-  * @brief  ADV_LPBAM_SPI_Receive_SetConfigQ.
+  * @brief  ADV_LPBAM_SPI_Rx_SetConfigQ.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_Receive_SetConfigQ(SPI_TypeDef               *const pInstance,
-                                                LPBAM_DMAListInfo_t       const *const pDMAListInfo,
-                                                LPBAM_SPI_ConfigAdvConf_t const *const pRxConfig,
-                                                LPBAM_SPI_RxConfigDesc_t  *const pDescriptor,
-                                                DMA_QListTypeDef          *const pQueue);
+LPBAM_Status_t ADV_LPBAM_SPI_Rx_SetConfigQ(SPI_TypeDef               *const pInstance,
+                                           LPBAM_DMAListInfo_t       const *const pDMAListInfo,
+                                           LPBAM_SPI_ConfigAdvConf_t const *const pRxConfig,
+                                           LPBAM_SPI_RxConfigDesc_t  *const pDescriptor,
+                                           DMA_QListTypeDef          *const pQueue);
 /**
-  * @brief  ADV_LPBAM_SPI_Receive_SetDataQ.
+  * @brief  ADV_LPBAM_SPI_Rx_SetDataQ.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_Receive_SetDataQ(SPI_TypeDef             *const pInstance,
-                                              LPBAM_DMAListInfo_t     const *const pDMAListInfo,
-                                              LPBAM_SPI_DataAdvConf_t const *const pRxData,
-                                              LPBAM_SPI_RxDataDesc_t  *const pDescriptor,
-                                              DMA_QListTypeDef        *const pQueue);
+LPBAM_Status_t ADV_LPBAM_SPI_Rx_SetDataQ(SPI_TypeDef             *const pInstance,
+                                         LPBAM_DMAListInfo_t     const *const pDMAListInfo,
+                                         LPBAM_SPI_DataAdvConf_t const *const pRxData,
+                                         LPBAM_SPI_RxDataDesc_t  *const pDescriptor,
+                                         DMA_QListTypeDef        *const pQueue);
 /**
-  * @brief  ADV_LPBAM_SPI_Receive_SetFullQ.
+  * @brief  ADV_LPBAM_SPI_Rx_SetFullQ.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_Receive_SetFullQ(SPI_TypeDef             *const pInstance,
-                                              LPBAM_DMAListInfo_t     const *const pDMAListInfo,
-                                              LPBAM_SPI_FullAdvConf_t const *const pRxFull,
-                                              LPBAM_SPI_RxFullDesc_t  *const pDescriptor,
-                                              DMA_QListTypeDef        *const pQueue);
+LPBAM_Status_t ADV_LPBAM_SPI_Rx_SetFullQ(SPI_TypeDef             *const pInstance,
+                                         LPBAM_DMAListInfo_t     const *const pDMAListInfo,
+                                         LPBAM_SPI_FullAdvConf_t const *const pRxFull,
+                                         LPBAM_SPI_RxFullDesc_t  *const pDescriptor,
+                                         DMA_QListTypeDef        *const pQueue);
 /**
-  * @brief  ADV_LPBAM_SPI_TransmitReceive_SetConfigQ.
+  * @brief  ADV_LPBAM_SPI_TxRx_SetConfigQ.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_TransmitReceive_SetConfigQ(SPI_TypeDef                 *const pInstance,
-                                                        LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                        LPBAM_SPI_ConfigAdvConf_t   const *const pTxRxConfig,
-                                                        LPBAM_SPI_TxRx_ConfigDesc_t *const pDescriptor,
-                                                        DMA_QListTypeDef            *const pQueue);
+LPBAM_Status_t ADV_LPBAM_SPI_TxRx_SetConfigQ(SPI_TypeDef                 *const pInstance,
+                                             LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                             LPBAM_SPI_ConfigAdvConf_t   const *const pTxRxConfig,
+                                             LPBAM_SPI_TxRx_ConfigDesc_t *const pDescriptor,
+                                             DMA_QListTypeDef            *const pQueue);
 /**
-  * @brief  ADV_LPBAM_SPI_TransmitReceive_SetDataQ.
+  * @brief  ADV_LPBAM_SPI_TxRx_SetDataQ.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_TransmitReceive_SetDataQ(SPI_TypeDef                 *const pInstance,
-                                                      LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                      LPBAM_SPI_DataAdvConf_t     const *const pTxRxData,
-                                                      LPBAM_SPI_TxRx_TxDataDesc_t *const pTxDescriptor,
-                                                      LPBAM_SPI_TxRx_RxDataDesc_t *const pRxDescriptor,
-                                                      DMA_QListTypeDef            *const pTxQueue,
-                                                      DMA_QListTypeDef            *const pRxQueue);
+LPBAM_Status_t ADV_LPBAM_SPI_TxRx_SetDataQ(SPI_TypeDef                 *const pInstance,
+                                           LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                           LPBAM_SPI_DataAdvConf_t     const *const pTxRxData,
+                                           LPBAM_SPI_TxRx_TxDataDesc_t *const pTxDescriptor,
+                                           LPBAM_SPI_TxRx_RxDataDesc_t *const pRxDescriptor,
+                                           DMA_QListTypeDef            *const pTxQueue,
+                                           DMA_QListTypeDef            *const pRxQueue);
 /**
-  * @brief  ADV_LPBAM_SPI_TransmitReceive_SetFullQ.
+  * @brief  ADV_LPBAM_SPI_TxRx_SetFullQ.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_TransmitReceive_SetFullQ(SPI_TypeDef                 *const pInstance,
-                                                      LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                      LPBAM_SPI_FullAdvConf_t     const *const pTxRxFull,
-                                                      LPBAM_SPI_TxRx_TxFullDesc_t *const pTxDescriptor,
-                                                      LPBAM_SPI_TxRx_RxFullDesc_t *const pRxDescriptor,
-                                                      DMA_QListTypeDef            *const pTxQueue,
-                                                      DMA_QListTypeDef            *const pRxQueue);
+LPBAM_Status_t ADV_LPBAM_SPI_TxRx_SetFullQ(SPI_TypeDef                 *const pInstance,
+                                           LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                           LPBAM_SPI_FullAdvConf_t     const *const pTxRxFull,
+                                           LPBAM_SPI_TxRx_TxFullDesc_t *const pTxDescriptor,
+                                           LPBAM_SPI_TxRx_RxFullDesc_t *const pRxDescriptor,
+                                           DMA_QListTypeDef            *const pTxQueue,
+                                           DMA_QListTypeDef            *const pRxQueue);
 /**
   * @brief  ADV_LPBAM_SPI_EnableDMARequests.
   */

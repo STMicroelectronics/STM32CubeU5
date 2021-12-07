@@ -26,6 +26,7 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "main.h"
 #include "usbpd_def.h"
 
 /* USER CODE BEGIN Includes */

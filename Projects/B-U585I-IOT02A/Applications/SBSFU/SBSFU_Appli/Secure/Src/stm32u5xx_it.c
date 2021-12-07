@@ -27,8 +27,6 @@
 
 
 /* Private define ------------------------------------------------------------*/
-#define SECURE_IO_TOGGLE_DELAY           1000U   /* Toggle every second */
-
 
 
 /* Private macro -------------------------------------------------------------*/

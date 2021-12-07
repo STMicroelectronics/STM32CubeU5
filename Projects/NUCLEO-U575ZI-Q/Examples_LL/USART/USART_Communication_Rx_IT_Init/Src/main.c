@@ -140,6 +140,13 @@ void SystemClock_Config(void)
   }
 
   LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
+
+  /* Switch to SMPS regulator instead of LDO */
+  LL_PWR_SetRegulatorSupply(LL_PWR_SMPS_SUPPLY);
+  while(LL_PWR_IsActiveFlag_REGULATOR() != 1)
+  {
+  }
+
   LL_RCC_MSIS_Enable();
 
    /* Wait till MSIS is ready */

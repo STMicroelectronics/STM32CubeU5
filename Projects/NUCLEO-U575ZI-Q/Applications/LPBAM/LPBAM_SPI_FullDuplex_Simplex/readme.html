@@ -43,8 +43,8 @@
 <ul>
 <li>Master Board
 <ul>
-<li>Communication n°1 : Transmit &amp; Receive Data in FullDuplex mode The ADV_LPBAM_SPI_TransmitReceive_SetDataQ() function is used to establish a full duplex communication using DMA linked-list in low power mode.</li>
-<li>Communication n°2 : Transmit data in Simplex mode The ADV_LPBAM_SPI_Transmit_SetFullQ() function is used to establish a simplex transmission.</li>
+<li>Communication n°1 : Transmit &amp; Receive Data in FullDuplex mode The ADV_LPBAM_SPI_TxRx_SetDataQ() function is used to establish a full duplex communication using DMA linked-list in low power mode.</li>
+<li>Communication n°2 : Transmit data in Simplex mode The ADV_LPBAM_SPI_Tx_SetFullQ() function is used to establish a simplex transmission.</li>
 </ul></li>
 <li>Slave Board
 <ul>
@@ -55,7 +55,7 @@
 <li><p>In the “main.h” file: If the Master board is used, the “#define MASTER_BOARD” must be uncommented, and the “#define MASTER_BOARD” commented in the Slave board.</p></li>
 <li>SPI Master Sequence :
 <ul>
-<li><p>In a first step, the MASTER_BOARD application calls ADV_LPBAM_SPI_TransmitReceive_SetDataQ() function to to configure the SPI instance, send TXBUFFERSIZE1 data and receive RXBUFFERSIZE1 data. Then, after the changeset of data width and the BaudRate, the MASTER_BOARD application calls again calls ADV_LPBAM_SPI_Transmit_SetFullQ() to reconfigure the SPI instance and send TXBUFFERSIZE2 data.</p></li>
+<li><p>In a first step, the MASTER_BOARD application calls ADV_LPBAM_SPI_TxRx_SetDataQ() function to to configure the SPI instance, send TXBUFFERSIZE1 data and receive RXBUFFERSIZE1 data. Then, after the changeset of data width and the BaudRate, the MASTER_BOARD application calls again calls ADV_LPBAM_SPI_Tx_SetFullQ() to reconfigure the SPI instance and send TXBUFFERSIZE2 data.</p></li>
 <li><p>After that, two linked-list queues are created and placed in the SRAM. Each queue will be executed by a specific DMA channel in STOP 2 low power mode. The Tx queue contains the configuration nodes to set-up the master SPI, and contains data nodes to ensure data transmission in DMA mode. The Rx queue contains data nodes to ensure data reception in DMA mode. When the queues are well created in SRAM, the application waits for the user to press the user push-button. Then, LPTIM is configured to be used as a trigger for the first configuration node of each full duplex communication. After that, the whole system enters in STOP 2 mode.</p></li>
 <li><p>A simple press on the push-button wakes up the system from low power mode.</p></li>
 </ul></li>
@@ -67,6 +67,12 @@
 <ul>
 <li>Finally, aTxBuffer1, aRxBuffer1 and aTxBuffer2, aRxBuffer2 are compared through Buffercmp() in order to check buffers correctness.</li>
 </ul></li>
+<li>This project contains two configuration :
+<ul>
+<li>Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.</li>
+<li>Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.</li>
+</ul></li>
+<li><p>The typical average power consumption of the system performing SPI transfers is 18.7uA.</p></li>
 <li>NUCLEO-U575ZI-Q’s LEDs can be used to monitor the transfer status:
 <ul>
 <li>LED_BLUE toggles waiting for any press on User push-button to start the communication.</li>

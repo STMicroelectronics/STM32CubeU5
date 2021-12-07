@@ -70,7 +70,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.50.6.28611</state>
+                    <state>8.50.9.33458</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -483,7 +483,7 @@
             <name>AARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>10</version>
+                <version>11</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -638,6 +638,10 @@
                 <option>
                     <name>AsmNoLiteralPool</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>PreInclude</name>
+                    <state></state>
                 </option>
             </data>
         </settings>
@@ -1083,9 +1087,6 @@
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a_audio.c</name>
-                </file>
-                <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a_bus.c</name>
                 </file>
                 <file>
@@ -1096,6 +1097,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a_env_sensors.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a_light_sensor.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a_motion_sensors.c</name>
@@ -1122,10 +1126,10 @@
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\iis2mdc\iis2mdc_reg.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\ism330dlc\ism330dlc.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\ism330dhcx\ism330dhcx.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\ism330dlc\ism330dlc_reg.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\ism330dhcx\ism330dhcx_reg.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\lps22hh\lps22hh.c</name>
@@ -1144,6 +1148,12 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\ov5640\ov5640_reg.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\veml6030\veml6030.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\veml6030\veml6030_reg.c</name>
                 </file>
             </group>
         </group>
@@ -1243,9 +1253,6 @@
         <group>
             <name>User</name>
             <file>
-                <name>$PROJ_DIR$\..\Src\audio_record.c</name>
-            </file>
-            <file>
                 <name>$PROJ_DIR$\..\Src\button.c</name>
             </file>
             <file>
@@ -1259,6 +1266,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Src\led.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Src\light_sensor.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Src\main.c</name>

@@ -86,7 +86,7 @@ KMODULE_RETURN _SystemInfoDemoExec(void)
 void SystemInfoDemo(void)
 {
   static  uint32_t joyState = JOY_NONE;
-  static TS_State_t TS_State;
+
   user_action = 0;
   UTIL_LCD_SetFont(&Font24);
   UTIL_LCD_Clear(UTIL_LCD_COLOR_ST_BLUE_DARK);
@@ -112,17 +112,12 @@ void SystemInfoDemo(void)
   
   HAL_Delay(500);
   joyState = JOY_NONE;
-  TS_State.TouchDetected=0;
-  TS_State.TouchX=0;
-  TS_State.TouchY=0;
-  
-  BSP_TS_GetState(0, &TS_State);
-  BSP_TS_GetState(0, &TS_State);
+
   /* Polling on joystick event */
-  while(( joyState == JOY_NONE) && (TS_State.TouchDetected == 0))
+  while (joyState == JOY_NONE)
   {
     joyState = BSP_JOY_GetState(JOY1);
-    BSP_TS_GetState(0, &TS_State);
+
   }
  
     HAL_Delay(200);

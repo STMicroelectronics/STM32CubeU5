@@ -19,12 +19,18 @@
 /* Includes ------------------------------------------------------------------*/
 #include "net_connect.h"
 #include "net_internals.h"
+#include "net_errors.h"
+#include "net_mem.h"
+#include "net_perf.h"
+
 #include "mx_wifi.h"
 #include "core/mx_wifi_hci.h"
 #include <inttypes.h>
 
 #if (MX_WIFI_NETWORK_BYPASS_MODE == 1)
 #include "net_ip_lwip.h"
+#include "lwip/etharp.h"
+#include "lwip/tcpip.h"
 #endif /* MX_WIFI_NETWORK_BYPASS_MODE */
 
 /* mxchip wifi api header file and configuration*/

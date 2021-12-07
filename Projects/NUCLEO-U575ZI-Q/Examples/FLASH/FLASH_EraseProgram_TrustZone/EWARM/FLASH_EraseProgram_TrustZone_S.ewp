@@ -356,7 +356,7 @@
                     <state>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy</state>
                     <state>$PROJ_DIR$/../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include</state>
                     <state>$PROJ_DIR$/../../../../../../Drivers/CMSIS/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../Drivers/BSP/STM32U5xx_nucleo</state>
+                    <state>$PROJ_DIR$/../../../../../../Drivers/BSP/STM32U5xx_Nucleo</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1094,6 +1094,12 @@
                 </file>
             </group>
         </group>
+    </group>
+    <group>
+        <name>Doc</name>
+        <file>
+            <name>$PROJ_DIR$\..\README.md</name>
+        </file>
     </group>
     <group>
         <name>Drivers</name>

@@ -55,7 +55,7 @@ DMA_QListTypeDef TxQueue;
 DMA_QListTypeDef RxQueue;
 
 /* Buffers used for transmission */
-uint8_t  aTxBuffer1[]   = " ############### LPBAM SPI Application ############### ";
+uint8_t  aTxBuffer1[]   = " ################ LPBAM SPI Application ############### ";
 uint8_t  aDummyBuffer[] = " ################ SPI Full Duplex then Simplex Transfer ############### ";
 uint16_t aTxBuffer2[TXBUFFERSIZE2];
 
@@ -73,6 +73,9 @@ __IO uint32_t wTransferState = TRANSFER_WAIT;
 /* Private function prototypes -----------------------------------------------*/
 /* System configuration APIs */
 static void SystemClock_Config(void);
+#if !defined (DEBUG_CONFIGURATION)
+static void SystemPower_Config(void);
+#endif /* !defined (DEBUG_CONFIGURATION) */
 static void CACHE_Enable(void);
 
 /* LPTIM configuration API */
@@ -109,6 +112,11 @@ int main(void)
 
   /* Configure the System clock to have a frequency of 160 MHz */
   SystemClock_Config();
+
+#if !defined (DEBUG_CONFIGURATION)
+  /* Configure the system power */
+  SystemPower_Config();
+#endif /* defined (DEBUG_CONFIGURATION) */
 
   /* Initialize LED1, LED2 and LED3 : GREEN, BLUE and RED leds */
   BSP_LED_Init(LED1);
@@ -148,7 +156,7 @@ int main(void)
   DataAdvConf.Size                      = RXBUFFERSIZE1;
 
   /* Advanced LPBAM SPI Receive */
-  if (ADV_LPBAM_SPI_TransmitReceive_SetDataQ(SPIx, &DMAListInfo, &DataAdvConf, &TxRx_TxDataDesc, &TxRx_RxDataDesc, &TxQueue, &RxQueue) != LPBAM_OK)
+  if (ADV_LPBAM_SPI_TxRx_SetDataQ(SPIx, &DMAListInfo, &DataAdvConf, &TxRx_TxDataDesc, &TxRx_RxDataDesc, &TxQueue, &RxQueue) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -176,7 +184,7 @@ int main(void)
   FullAdvConf.Size              = TXBUFFERSIZE2;
 
   /* Advanced LPBAM SPI Transmit */
-  if (ADV_LPBAM_SPI_Transmit_SetFullQ(SPIx, &DMAListInfo, &FullAdvConf, &TxFullDesc, &TxQueue) != LPBAM_OK)
+  if (ADV_LPBAM_SPI_Tx_SetFullQ(SPIx, &DMAListInfo, &FullAdvConf, &TxFullDesc, &TxQueue) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -432,7 +440,7 @@ void BSP_PB_Callback(Button_TypeDef Button)
 static void SPI_Config (void)
 {
   /* Configure the SPI peripheral */
-  SPIHandle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
+  SPIHandle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
   SPIHandle.Init.Direction         = SPI_DIRECTION_2LINES;
   SPIHandle.Init.CLKPhase          = SPI_PHASE_1EDGE;
   SPIHandle.Init.CLKPolarity       = SPI_POLARITY_LOW;
@@ -445,6 +453,7 @@ static void SPI_Config (void)
   SPIHandle.Init.NSS               = SPI_NSS_SOFT;
   SPIHandle.Init.NSSPMode          = SPI_NSS_PULSE_DISABLE;
   SPIHandle.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_ENABLE;
+  SPIHandle.Init.FifoThreshold     = SPI_FIFO_THRESHOLD_08DATA;
 
   /* Initializes the SPI according to the specified parameters */
   if(HAL_SPI_Init(&SPIHandle) != HAL_OK)
@@ -477,13 +486,13 @@ void LPTIM_Config (void)
   /*
      Set period value :
      LSE = 32KH
-     (1/32) * (10^-3) * 16 = 2 mS.
+     (1/32) * (10^-3) * 16 = 0.2 mS.
   */
-  uint32_t Period = 32000 / 100;
+  uint32_t Period = 32000 / 5;
   /*
      Set pulse value :
      LSE = 32KH
-     (1/32) * (10^-3) * 16 = 2 mS.
+     (1/32) * (10^-3) * 16 = 0.1 mS.
   */
   uint32_t Pulse  = Period / 2U;
 
@@ -561,21 +570,20 @@ void SystemClock_Config(void)
   HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /* MSI Oscillator enabled at reset (4Mhz), activate PLL with MSI as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI | RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
-  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_4;
+  RCC_OscInitStruct.OscillatorType      = RCC_OSCILLATORTYPE_MSI;
+  RCC_OscInitStruct.MSIState            = RCC_MSI_ON;
+  RCC_OscInitStruct.MSIClockRange       = RCC_MSIRANGE_7;
   RCC_OscInitStruct.MSICalibrationValue = RCC_MSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_MSI;
-  RCC_OscInitStruct.PLL.PLLMBOOST = RCC_PLLMBOOST_DIV1;
-  RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 80;
-  RCC_OscInitStruct.PLL.PLLR = 2;
-  RCC_OscInitStruct.PLL.PLLP = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 2;
-  RCC_OscInitStruct.PLL.PLLFRACN= 0;
-  RCC_OscInitStruct.PLL.PLLRGE = RCC_PLLVCIRANGE_0;
+  RCC_OscInitStruct.PLL.PLLState        = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource       = RCC_PLLSOURCE_MSI;
+  RCC_OscInitStruct.PLL.PLLMBOOST       = RCC_PLLMBOOST_DIV1;
+  RCC_OscInitStruct.PLL.PLLM            = 1;
+  RCC_OscInitStruct.PLL.PLLN            = 80;
+  RCC_OscInitStruct.PLL.PLLR            = 2;
+  RCC_OscInitStruct.PLL.PLLP            = 2;
+  RCC_OscInitStruct.PLL.PLLQ            = 2;
+  RCC_OscInitStruct.PLL.PLLFRACN        = 0;
+  RCC_OscInitStruct.PLL.PLLRGE          = RCC_PLLVCIRANGE_0;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     /* Initialization Error */
@@ -583,10 +591,10 @@ void SystemClock_Config(void)
   }
 
   /* Select PLL as system clock source and configure bus clocks dividers */
-  RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | \
-                                 RCC_CLOCKTYPE_PCLK2  | RCC_CLOCKTYPE_PCLK3);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.ClockType      = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | \
+                                      RCC_CLOCKTYPE_PCLK2  | RCC_CLOCKTYPE_PCLK3);
+  RCC_ClkInitStruct.SYSCLKSource   = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider  = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB3CLKDivider = RCC_HCLK_DIV1;
@@ -596,6 +604,75 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 }
+
+#if !defined (DEBUG_CONFIGURATION)
+/**
+  * @brief  System Power Configuration for LPBAM
+  * @param  None
+  * @retval None
+  */
+static void SystemPower_Config(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* Enable PWR CLK */
+  __HAL_RCC_PWR_CLK_ENABLE();
+
+  /* Switch to SMPS regulator */
+  if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Keep ICache and SRAM4 retention */
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM1_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM2_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM3_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_DCACHE1_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_DMA2DRAM_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_PERIPHRAM_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_PKA32RAM_FULL_STOP_RETENTION);
+
+  /* Enable all GPIO clocks */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOI_CLK_ENABLE();
+
+  /* Set parameters to be configured */
+  GPIO_InitStruct.Mode  = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Pull  = GPIO_NOPULL;
+  GPIO_InitStruct.Pin   = GPIO_PIN_ALL;
+
+  /* Initialize all GPIO pins */
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+
+  /* Disable all GPIO clocks */
+  __HAL_RCC_GPIOA_CLK_DISABLE();
+  __HAL_RCC_GPIOB_CLK_DISABLE();
+  __HAL_RCC_GPIOC_CLK_DISABLE();
+  __HAL_RCC_GPIOD_CLK_DISABLE();
+  __HAL_RCC_GPIOE_CLK_DISABLE();
+  __HAL_RCC_GPIOF_CLK_DISABLE();
+  __HAL_RCC_GPIOG_CLK_DISABLE();
+  __HAL_RCC_GPIOH_CLK_DISABLE();
+  __HAL_RCC_GPIOI_CLK_DISABLE();
+}
+#endif /* !defined (DEBUG_CONFIGURATION) */
 
 /**
   * @brief  Exchange buffer data

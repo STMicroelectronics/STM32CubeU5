@@ -349,7 +349,7 @@ static void  gtzc_config_sram(uint32_t base, uint32_t max_size, uint32_t off_sta
   uint32_t privilege_regwrite = 0xffffffff;
   uint32_t index;
   uint32_t block_start = (off_start) / (MPCBB_BLOCK_SIZE);
-  uint32_t block_end = block_start + ((off_end) + 1) / (MPCBB_BLOCK_SIZE);
+  uint32_t block_end = (off_end + 1) / (MPCBB_BLOCK_SIZE);
 
   /*  Check alignment to avoid further problem  */
   if ((off_start & (MPCBB_BLOCK_SIZE - 1)) ||

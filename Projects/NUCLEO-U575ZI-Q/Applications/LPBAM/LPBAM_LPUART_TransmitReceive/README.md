@@ -6,9 +6,6 @@ DMA linked-list feature in low power mode through LPBAM utility.
     -   Tx Pin: PB11
     -   Rx Pin: PB10
 
-
-
-
 -   The user presses the User push-button on board 1. Then the system enter stop2 mode and the LPTIM start generating a
 PWM signal to trig the LPUART.
 AT each rising edge of the PWM signal, the LPUART send a packet of 8 bytes to the board 2.
@@ -37,6 +34,11 @@ disabled.
     -   Hardware flow control disabled (RTS and CTS signals)
     -   Reception and transmission are enabled in the time
 
+-   This project contains two configuration :
+    -   Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+    -   Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+
+-   The typical average power consumption of the system performing LPUART transfers is 24.7uA.
 
 -   At the beginning of the main program the HAL_Init() function is called to reset
 all the peripherals, initialize the Flash interface and the systick.

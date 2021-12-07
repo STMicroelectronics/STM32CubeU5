@@ -52,9 +52,11 @@ typedef struct
 
   LPBAM_UART_AutonomousModeConf_t AutoModeConf; /*!< Specifies the autonomous mode configuration
                                                      Please refer to LPBAM_UART_AutonomousModeConf_t definition in
-                                                     stm32_platform_lpbam_uart.h for more information.             */
+                                                     stm32_platform_lpbam_uart.h for more information.
+                                                     This field is used only for transmit APIs.                    */
 
-  uint32_t WakeupIT;                            /*!< Specifies the wake up source interrupt                        */
+  uint32_t WakeupIT;                            /*!< This parameter can be one or a combination of
+                                                     @ref LPBAM_UART_Wakeup_Interrupt                              */
 
 } LPBAM_UART_ConfigAdvConf_t;
 
@@ -80,7 +82,8 @@ typedef struct
 
   LPBAM_UART_AutonomousModeConf_t AutoModeConf; /*!< Specifies the autonomous mode configuration
                                                      Please refer to LPBAM_UART_AutonomousModeConf_t definition in
-                                                     stm32_platform_lpbam_uart.h for more information.             */
+                                                     stm32_platform_lpbam_uart.h for more information.
+                                                     This field is used only for transmit APIs.                    */
 
   uint32_t WakeupIT;                            /*!< Specifies the wake up source interrupt                        */
 

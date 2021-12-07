@@ -1724,7 +1724,7 @@ osTimerId_t osTimerNew(osTimerFunc_t func, osTimerType_t type, void *argument, c
   /* The name_ptr as null-terminated string */
   CHAR *name_ptr = NULL;
   /* The timer expiration input */
-  ULONG *expiration_input = NULL;
+  ULONG expiration_input = 0U;
   /* The timer reschedule ticks */
   ULONG reschedule_ticks = 0U;
   /* The size of control block */
@@ -1803,11 +1803,11 @@ osTimerId_t osTimerNew(osTimerFunc_t func, osTimerType_t type, void *argument, c
     if (argument != NULL)
     {
       /* Set the expiration_input */
-      expiration_input = (ULONG *)argument;
+      expiration_input = (ULONG)argument;
     }
 
     /* Call the tx_timer_create function to create the new timer */
-    if (tx_timer_create(timer_ptr, name_ptr, (void(*)(ULONG))func, *expiration_input, 1, reschedule_ticks,
+    if (tx_timer_create(timer_ptr, name_ptr, (void(*)(ULONG))func, expiration_input, 1, reschedule_ticks,
                         TX_NO_ACTIVATE) != TX_SUCCESS)
     {
       /* Check if the memory for timer control block has been internally

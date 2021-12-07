@@ -68,14 +68,11 @@ void HAL_LPTIM_MspInit (LPTIM_HandleTypeDef *hlptim)
 
   /* Select MSIK as LPTIM1 clock source */
   RCC_PeriphCLKInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LPTIM1;
-  RCC_PeriphCLKInitStruct.Lptim1ClockSelection = RCC_LPTIM1CLKSOURCE_MSIK;
+  RCC_PeriphCLKInitStruct.Lptim1ClockSelection = RCC_LPTIM1CLKSOURCE_LSE;
   if (HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphCLKInitStruct) != HAL_OK)
   {
     while(1);
   }
-
-  /* Enable MSIK in stop mode */
-  __HAL_RCC_MSIKSTOP_ENABLE();
 
   /* PWR clock enable */
   __HAL_RCC_PWR_CLK_ENABLE();
@@ -140,16 +137,16 @@ void HAL_COMP_MspInit(COMP_HandleTypeDef *hcomp)
 
   /*##-2- Configure peripheral GPIO ##########################################*/
   /* COMP GPIO pin configuration */
-  GPIO_InitStruct.Pin = GPIO_PIN_2;
+  GPIO_InitStruct.Pin  = GPIO_PIN_2;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  GPIO_InitStruct.Pin = GPIO_PIN_0;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pin       = GPIO_PIN_0;
+  GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Alternate = GPIO_AF12_COMP1;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 

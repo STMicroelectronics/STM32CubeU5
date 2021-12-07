@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbpd.h"
+#include "gui_api.h"
 
 /* USER CODE BEGIN 0 */
 /* USER CODE END 0 */
@@ -28,6 +29,8 @@
 /* USER CODE END 1 */
 
 /* Private variables ---------------------------------------------------------*/
+#define BSP_BOARD_NAME  "B-U585I-IOT2A";
+#define BSP_BOARD_ID    "MB1551";
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -42,6 +45,10 @@ unsigned int USBPD_PreInitOs(void)
   {
     return USBPD_ERROR;
   }
+#if defined(_GUI_INTERFACE)
+  /* Initialize GUI before retrieving PDO from RAM */
+  GUI_Init(BSP_GetBoardName, BSP_GetBoardID, HW_IF_PWR_GetVoltage, HW_IF_PWR_GetCurrent);
+#endif /* _GUI_INTERFACE */
 
   return USBPD_OK;
 }
@@ -65,6 +72,24 @@ unsigned int MX_USBPD_Init(void *memory_ptr)
     return USBPD_ERROR;
   }
   return result;
+}
+
+/**
+  * @brief  This method returns the board name
+  * @retval pointer to the board name string
+  */
+__weak const uint8_t* BSP_GetBoardName(void)
+{
+  return (const uint8_t*)BSP_BOARD_NAME;
+}
+
+/**
+  * @brief  This method returns the board ID
+  * @retval pointer to the board ID string
+  */
+__weak const uint8_t* BSP_GetBoardID(void)
+{
+  return (const uint8_t*)BSP_BOARD_ID;
 }
 
 /* USER CODE BEGIN 4 */

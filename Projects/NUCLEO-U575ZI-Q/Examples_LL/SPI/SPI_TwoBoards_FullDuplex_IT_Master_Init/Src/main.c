@@ -54,7 +54,7 @@ __IO uint8_t ubTransmitIndex = 0;
 
 /* Buffer used for reception */
 uint8_t aRxBuffer[sizeof(aTxBuffer)];
-uint8_t ubNbDataToReceive = sizeof(aTxBuffer);
+uint8_t ubNbDataToReceive = sizeof(aTxBuffer) - 1;
 __IO uint8_t ubReceiveIndex = 0;
 
 /* USER CODE END PV */
@@ -170,6 +170,13 @@ void SystemClock_Config(void)
   }
 
   LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
+
+  /* Switch to SMPS regulator instead of LDO */
+  LL_PWR_SetRegulatorSupply(LL_PWR_SMPS_SUPPLY);
+  while(LL_PWR_IsActiveFlag_REGULATOR() != 1)
+  {
+  }
+
   LL_RCC_MSIS_Enable();
 
    /* Wait till MSIS is ready */

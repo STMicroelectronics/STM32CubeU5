@@ -452,9 +452,9 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_audio.c</name>
+			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_light_sensor.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_audio.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_light_sensor.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_bus.c</name>
@@ -517,14 +517,14 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/iis2mdc/iis2mdc_reg.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/ism330dlc.c</name>
+			<name>Drivers/BSP/Components/ism330dhcx.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/ism330dlc/ism330dlc.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/ism330dhcx/ism330dhcx.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/ism330dlc_reg.c</name>
+			<name>Drivers/BSP/Components/ism330dhcx_reg.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/ism330dlc/ism330dlc_reg.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/ism330dhcx/ism330dhcx_reg.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/Components/lps22hh.c</name>
@@ -585,6 +585,16 @@
 			<name>Drivers/BSP/Components/tcpp0203_reg.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/tcpp0203/tcpp0203_reg.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/veml6030.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/veml6030/veml6030.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/veml6030_reg.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/veml6030/veml6030_reg.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

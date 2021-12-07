@@ -142,6 +142,7 @@ void OpenBootloader_Init(void)
 
   /* Register USB interfaces */
   USB_Handle.p_Ops = &USB_Ops;
+  USB_Handle.p_Cmd = NULL;
 
   OPENBL_RegisterInterface(&USB_Handle);
 

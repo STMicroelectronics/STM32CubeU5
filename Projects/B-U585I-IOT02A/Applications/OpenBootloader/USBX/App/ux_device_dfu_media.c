@@ -474,7 +474,7 @@ void DFU_Jump(void)
   HAL_PCD_Stop(&hpcd_USB_OTG_FS);
 
   /* Jump to address */
-  if (Address_ptr != NULL)
+  if (Address_ptr != 0)
   {
     OPENBL_USB_Jump(Address_ptr);
   }

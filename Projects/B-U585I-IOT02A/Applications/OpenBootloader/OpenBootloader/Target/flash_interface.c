@@ -44,15 +44,15 @@ static FLASH_ProcessTypeDef FlashProcess = {.Lock = HAL_UNLOCKED, \
 static void OPENBL_FLASH_ProgramQuadWord(uint32_t Address, uint32_t Data);
 static ErrorStatus OPENBL_FLASH_EnableWriteProtection(uint8_t *ListOfPages, uint32_t Length);
 static ErrorStatus OPENBL_FLASH_DisableWriteProtection(void);
-#if defined (__CC_ARM)
-static HAL_StatusTypeDef OPENBL_FLASH_SendBusyState(uint32_t Timeout);
-static HAL_StatusTypeDef OPENBL_FLASH_WaitForLastOperation(uint32_t Timeout);
-static HAL_StatusTypeDef OPENBL_FLASH_ExtendedErase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t *pPageError);
-#else
+#if defined (__ICCARM__)
 __ramfunc static HAL_StatusTypeDef OPENBL_FLASH_SendBusyState(uint32_t Timeout);
 __ramfunc static HAL_StatusTypeDef OPENBL_FLASH_WaitForLastOperation(uint32_t Timeout);
 __ramfunc static HAL_StatusTypeDef OPENBL_FLASH_ExtendedErase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t *pPageError);
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) static HAL_StatusTypeDef OPENBL_FLASH_SendBusyState(uint32_t Timeout);
+__attribute__ ((section (".ramfunc"))) static HAL_StatusTypeDef OPENBL_FLASH_WaitForLastOperation(uint32_t Timeout);
+__attribute__ ((section (".ramfunc"))) static HAL_StatusTypeDef OPENBL_FLASH_ExtendedErase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t *pPageError);
+#endif /* (__ICCARM__) */
 
 /* Exported variables --------------------------------------------------------*/
 OPENBL_MemoryTypeDef FLASH_Descriptor =
@@ -344,7 +344,7 @@ ErrorStatus OPENBL_FLASH_Erase(uint8_t *p_Data, uint32_t DataLength)
   uint32_t counter;
   uint32_t pages_number;
   uint32_t page_error;
-  uint32_t errors;
+  uint32_t errors = 0U;
   ErrorStatus status = SUCCESS;
   FLASH_EraseInitTypeDef erase_init_struct;
 
@@ -583,11 +583,11 @@ static ErrorStatus OPENBL_FLASH_DisableWriteProtection(void)
   * @param  Timeout maximum flash operation timeout.
   * @retval HAL_Status
   */
-#if defined (__CC_ARM)
-static HAL_StatusTypeDef OPENBL_FLASH_SendBusyState(uint32_t Timeout)
-#else
+#if defined (__ICCARM__)
 __ramfunc static HAL_StatusTypeDef OPENBL_FLASH_SendBusyState(uint32_t Timeout)
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) static HAL_StatusTypeDef OPENBL_FLASH_SendBusyState(uint32_t Timeout)
+#endif /* (__ICCARM__) */
 {
   uint32_t tick = 0;
   uint32_t error;
@@ -648,11 +648,11 @@ __ramfunc static HAL_StatusTypeDef OPENBL_FLASH_SendBusyState(uint32_t Timeout)
   * @param  Timeout maximum flash operation timeout.
   * @retval HAL_Status
   */
-#if defined (__CC_ARM)
-static HAL_StatusTypeDef OPENBL_FLASH_WaitForLastOperation(uint32_t Timeout)
-#else
+#if defined (__ICCARM__)
 __ramfunc static HAL_StatusTypeDef OPENBL_FLASH_WaitForLastOperation(uint32_t Timeout)
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) static HAL_StatusTypeDef OPENBL_FLASH_WaitForLastOperation(uint32_t Timeout)
+#endif /* (__ICCARM__) */
 {
   uint32_t tick = 0;
   uint32_t error;
@@ -715,11 +715,11 @@ __ramfunc static HAL_StatusTypeDef OPENBL_FLASH_WaitForLastOperation(uint32_t Ti
   *         the pages have been correctly erased).
   * @retval HAL_Status
   */
-#if defined (__CC_ARM)
-static HAL_StatusTypeDef OPENBL_FLASH_ExtendedErase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t *PageError)
-#else
+#if defined (__ICCARM__)
 __ramfunc static HAL_StatusTypeDef OPENBL_FLASH_ExtendedErase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t *PageError)
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) static HAL_StatusTypeDef OPENBL_FLASH_ExtendedErase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t *PageError)
+#endif /* (__ICCARM__) */
 {
   HAL_StatusTypeDef status;
   uint32_t errors = 0U;

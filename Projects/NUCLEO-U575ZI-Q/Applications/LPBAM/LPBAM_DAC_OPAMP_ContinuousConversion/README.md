@@ -14,6 +14,13 @@ When the application starts DMA peripheral, the whole system goes to Stop2 mode.
 After amplifying the signal period, The OPAMP gain is modified and the next DAC conversion is started. This sequence is
 repeated in an infinite loop.
 
+-   This project contains two configuration :
+    -   Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+    -   Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+
+-   The typical average power consumption of the system performing DAC conversion with 1ms period and signal
+amplification is 70uA.
+
 -   NUCLEO-U575ZI-Q board LEDs are used to monitor the transfer status:
     -   LED3 (red led) is turned on when any error is occurred.
 

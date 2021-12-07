@@ -364,7 +364,7 @@ VOID fx_thread_two_entry(ULONG thread_input)
   }
 
   /* Print the absolute size of the NOR chip*/
-  printf("Total NOR Flash Chip size is: %lu bytes.\n", ospi_info.FlashSize);
+  printf("Total NOR Flash Chip size is: %lu bytes.\n", (unsigned long)ospi_info.FlashSize);
 
   /* Format the NOR flash as FAT */
   status =  fx_media_format(&nor_flash_disk,

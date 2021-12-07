@@ -35,19 +35,32 @@
 <li>Camera</li>
 <li>Motion sensors (Acc, Gyro and Magno)</li>
 <li>Environmental sensors (Temperature, Humidity and Pressure)</li>
-<li>Audio IN</li>
 <li>EEPROM memory</li>
 <li>USBPD Type C port</li>
+<li>Light sensor</li>
 </ul>
 <p><em>Note that b_u585i_iot02a_conf_template.h file must be copied in user application as b_u585i_iot02a_conf.h with optional configuration update.</em></p>
 </div>
 <div class="col-sm-12 col-lg-8">
 <h1 id="update-history">Update History</h1>
 <div class="collapse">
-<input type="checkbox" id="collapse-section5" checked aria-hidden="true"> <label for="collapse-section1" aria-hidden="true"><strong>V1.0.0 / 28-June-2021</strong></label>
+<input type="checkbox" id="collapse-section2" checked aria-hidden="true"> <label for="collapse-section2" aria-hidden="true"><strong>V1.0.1 / 01-October-2021</strong></label>
 <div>
 <h2 id="main-changes">Main Changes</h2>
-<p>First official release of <strong>B-U585I-IOT02A</strong> BSP drivers in line with STM32Cube BSP drivers development guidelines (UM2298)</p>
+<ul>
+<li>b_u585i_iot02a_audio: remove Audio IN functionality (Under rework, to be re-integrated in the next release)</li>
+<li>b_u585i_iot02a_light_sensor: add new driver</li>
+<li>b_u585i_iot02a_motion_sensors: Replace ISM330DLC with ISM330DHCX</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section1" aria-hidden="true"> <label for="collapse-section1" aria-hidden="true"><strong>V1.0.0 / 28-June-2021</strong></label>
+<div>
+<h2 id="main-changes-1">Main Changes</h2>
+<ul>
+<li>First official release of <strong>B-U585I-IOT02A</strong> BSP drivers in line with STM32Cube BSP drivers development guidelines (UM2298)</li>
+</ul>
 </div>
 </div>
 </div>

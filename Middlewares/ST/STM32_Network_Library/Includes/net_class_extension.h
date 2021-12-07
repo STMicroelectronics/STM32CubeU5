@@ -25,6 +25,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#include "net_address.h"
+#include "net_wifi.h"
+#include "net_cellular.h"
+
 typedef struct net_if_wifi_class_extension_s
 {
   int32_t (*scan)(net_if_handle_t *pnetif, net_wifi_scan_mode_t mode, char *ssid);

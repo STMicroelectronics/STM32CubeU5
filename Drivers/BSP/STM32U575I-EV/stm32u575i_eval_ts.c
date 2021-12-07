@@ -101,7 +101,12 @@ IRQn_Type          Ts_IRQn[TS_INSTANCES_NBR] = {EXTI15_IRQn};
 /** @defgroup STM32U575I_EVAL_TS_Private_FunctionPrototypes TS Private Function Prototypes
   * @{
   */
+#if (USE_BSP_TS_SX > 0)
 static int32_t SX8651_Probe(uint32_t Instance);
+#endif /* USE_BSP_TS_MFX */
+#if (USE_BSP_TS_MFX > 0)
+static int32_t MFX_Probe(uint32_t Instance);
+#endif /* USE_BSP_TS_MFX */
 static void    TS_EXTI_Callback(void);
 
 /**
@@ -119,7 +124,7 @@ static void    TS_EXTI_Callback(void);
   */
 int32_t BSP_TS_Init(uint32_t Instance, TS_Init_t *TS_Init)
 {
-  int32_t status = BSP_ERROR_NONE;
+  int32_t status = BSP_ERROR_UNKNOWN_COMPONENT;
 
   if ((TS_Init == NULL) || (Instance >= TS_INSTANCES_NBR))
   {
@@ -128,17 +133,35 @@ int32_t BSP_TS_Init(uint32_t Instance, TS_Init_t *TS_Init)
   else
   {
     /* Probe the TS driver */
-    if (SX8651_Probe(Instance) != BSP_ERROR_NONE)
+
+#if (USE_BSP_TS_SX > 0)
+    status =   SX8651_Probe(Instance);
+#endif /* USE_BSP_TS_SX*/
+
+#if (USE_BSP_TS_MFX > 0)
+    if (status != BSP_ERROR_NONE)
     {
-      status = BSP_ERROR_COMPONENT_FAILURE;
+      status = MFX_Probe(Instance);
     }
-    else
+#endif /* USE_BSP_TS_MFX */
+
+    if (status ==  BSP_ERROR_NONE)
     {
       TS_Capabilities_t Capabilities;
       uint32_t          i;
       /* Store parameters on TS context */
-      Ts_Ctx[Instance].Width       = TS_Init->Width;
-      Ts_Ctx[Instance].Height      = TS_Init->Height;
+      if ((TS_Init->Orientation == TS_ORIENTATION_LANDSCAPE ) ||
+          (TS_Init->Orientation == TS_ORIENTATION_LANDSCAPE_ROT180) )
+      {
+        Ts_Ctx[Instance].Width       = TS_Init->Width;
+        Ts_Ctx[Instance].Height      = TS_Init->Height;
+      }
+      else /* TS_ORIENTATION_PORTRAIT */
+      {
+        Ts_Ctx[Instance].Width       = TS_Init->Height;
+        Ts_Ctx[Instance].Height      = TS_Init->Width;
+      }
+
       Ts_Ctx[Instance].Orientation = TS_Init->Orientation;
       Ts_Ctx[Instance].Accuracy    = TS_Init->Accuracy;
       /* Get capabilities to retrieve maximum values of X and Y */
@@ -289,7 +312,7 @@ int32_t BSP_TS_Set_Orientation(uint32_t Instance, uint32_t Orientation)
   uint32_t tmp;
   uint32_t i;
 
-  if ((Instance >= TS_INSTANCES_NBR) || (Orientation > TS_ORIENTATION_LANDSCAPE_ROT180))
+  if ((Instance >= TS_INSTANCES_NBR) || (Orientation > TS_ORIENTATION_LANDSCAPE_MIRROR))
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
@@ -386,19 +409,29 @@ int32_t BSP_TS_GetState(uint32_t Instance, TS_State_t *TS_State)
 
       else if (Ts_Ctx[Instance].Orientation == TS_ORIENTATION_LANDSCAPE)
       {
+#if (USE_BSP_TS_SX > 0)
         x_oriented = Ts_Ctx[Instance].MaxX - state.TouchY;
         y_oriented = state.TouchX;
+#endif /* USE_BSP_TS_SX */
+#if (USE_BSP_TS_MFX > 0)
+        x_oriented = Ts_Ctx[Instance].MaxX - state.TouchX;
+        y_oriented = state.TouchY;
+#endif /* USE_BSP_TS_MFX */
       }
       else if (Ts_Ctx[Instance].Orientation == TS_ORIENTATION_PORTRAIT)
       {
-        x_oriented = state.TouchX;
-        y_oriented = state.TouchY;
+        x_oriented = state.TouchY;
+        y_oriented = state.TouchX;
       }
-
-      else /* (Ts_Ctx[Instance].Orientation == TS_ORIENTATION_PORTRAIT_ROT180) */
+      else if (Ts_Ctx[Instance].Orientation == TS_ORIENTATION_PORTRAIT_ROT180)
       {
         x_oriented = Ts_Ctx[Instance].MaxX - state.TouchX;
         y_oriented = Ts_Ctx[Instance].MaxY - state.TouchY;
+      }
+      else /* TS_ORIENTATION_LANDSCAPE_MIRROR */
+      {
+        x_oriented = Ts_Ctx[Instance].MaxX - state.TouchX;
+        y_oriented = state.TouchY;
       }
 
       /* Apply boundary */
@@ -576,6 +609,7 @@ void BSP_TS_IRQHandler(uint32_t Instance)
   * @}
   */
 
+#if (USE_BSP_TS_SX > 0)
 /** @defgroup STM32U575I_EVAL_TS_Private_Functions TS Private Functions
   * @{
   */
@@ -623,12 +657,71 @@ static int32_t SX8651_Probe(uint32_t Instance)
     }
     else
     {
+      if (Ts_Drv[Instance]->Init(Ts_CompObj[Instance]) < 0)
+      {
+        status = BSP_ERROR_COMPONENT_FAILURE;
+      }
+      else
+      {
+        status = BSP_ERROR_NONE;
+      }
+    }
+  }
+
+  return status;
+}
+#endif /* #if USE_BSP_TS_SX */
+
+#if (USE_BSP_TS_MFX > 0)
+/**
+  * @brief  Probe the MFX TS driver.
+  * @param  Instance TS Instance.
+  * @retval BSP status.
+  */
+static int32_t MFX_Probe(uint32_t Instance)
+{
+  int32_t                  status;
+  MFXSTM32L152_IO_t        IOCtx;
+  uint32_t                 mfx_id;
+  static MFXSTM32L152_Object_t MFXSTM32L152Obj;
+
+  /* Configure the TS driver */
+  IOCtx.Address     = MFX_I2C_ADDRESS;
+  IOCtx.Init        = BSP_I2C2_Init;
+  IOCtx.DeInit      = BSP_I2C2_DeInit;
+  IOCtx.ReadReg     = BSP_I2C2_ReadReg;
+  IOCtx.WriteReg    = BSP_I2C2_WriteReg;
+  IOCtx.GetTick     = BSP_GetTick;
+
+  if (MFXSTM32L152_RegisterBusIO(&MFXSTM32L152Obj, &IOCtx) != MFXSTM32L152_OK)
+  {
+    status = BSP_ERROR_BUS_FAILURE;
+  }
+  else if (MFXSTM32L152_ReadID(&MFXSTM32L152Obj, &mfx_id) != MFXSTM32L152_OK)
+  {
+    status = BSP_ERROR_COMPONENT_FAILURE;
+  }
+  else if ((mfx_id != MFXSTM32L152_ID) && (mfx_id != MFXSTM32L152_ID_2))
+  {
+    status = BSP_ERROR_UNKNOWN_COMPONENT;
+  }
+  else
+  {
+    Ts_CompObj[Instance] = &MFXSTM32L152Obj;
+    Ts_Drv[Instance]     = (TS_Drv_t *) &MFXSTM32L152_TS_Driver;
+    if (Ts_Drv[Instance]->Init(Ts_CompObj[Instance]) < 0)
+    {
+      status = BSP_ERROR_COMPONENT_FAILURE;
+    }
+    else
+    {
       status = BSP_ERROR_NONE;
     }
   }
 
   return status;
 }
+#endif /*USE_BSP_TS_MFX */
 
 /**
   * @brief  TS EXTI callback.

@@ -85,8 +85,8 @@ KMODULE_RETURN _UsbPdDemoExec(void)
   */
 void UsbPdDemo(void)
 {
-  static  uint32_t joyState = JOY_NONE;
-  static TS_State_t TS_State;
+  uint32_t joyState = JOY_NONE;
+
   user_action = 0;
   UTIL_LCD_SetFont(&Font24);
   UTIL_LCD_Clear(UTIL_LCD_COLOR_ST_BLUE_DARK);
@@ -100,22 +100,13 @@ void UsbPdDemo(void)
                            
   UTIL_LCD_DisplayStringAt(0,200, (uint8_t *) "<< RETURN >>", CENTER_MODE);
 
-
-    joyState = JOY_NONE;
-    TS_State.TouchDetected=0;
-    TS_State.TouchX=0;
-    TS_State.TouchY=0;
-    
-    BSP_TS_GetState(0, &TS_State);
-    BSP_TS_GetState(0, &TS_State);    
     /* Polling on joystick event */
-    while(( joyState == JOY_NONE) && (TS_State.TouchDetected == 0))
-    {
-      joyState = BSP_JOY_GetState(JOY1);
-      BSP_TS_GetState(0, &TS_State);
-    }
- 
-    HAL_Delay(200);
+  while (joyState == JOY_NONE)
+  {
+    joyState = BSP_JOY_GetState(JOY1);
+  }
+  
+  HAL_Delay(200);
 }
 
 

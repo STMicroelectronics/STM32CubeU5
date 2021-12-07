@@ -108,31 +108,6 @@
 #error "HDP area must be aligned on FLASH_AREA_IMAGE_SECTOR_SIZE"
 #endif /* (FLASH_AREA_BL2_NOHDP_OFFSET % FLASH_AREA_IMAGE_SECTOR_SIZE) != 0 */
 
-/* Non Volatile Counters definitions */
-#define FLASH_NV_COUNTER_AREA_SIZE      (FLASH_AREA_IMAGE_SECTOR_SIZE+FLASH_AREA_IMAGE_SECTOR_SIZE)
-#define FLASH_NV_COUNTERS_AREA_OFFSET   (FLASH_AREA_BL2_NOHDP_OFFSET+FLASH_AREA_BL2_NOHDP_SIZE)
-/* Control Non Volatile Counters definitions */
-#if (FLASH_NV_COUNTER_AREA_SIZE % FLASH_AREA_IMAGE_SECTOR_SIZE) != 0
-#error "FLASH_NV_COUNTER_AREA_SIZE not aligned on FLASH_AREA_IMAGE_SECTOR_SIZE"
-#endif /*  (FLASH_NV_COUNTER_AREA_SIZE % FLASH_AREA_IMAGE_SECTOR_SIZE) != 0 */
-
-/* Secure Storage (SST) Service definitions */
-#define FLASH_SST_AREA_SIZE             (FLASH_AREA_IMAGE_SECTOR_SIZE+FLASH_AREA_IMAGE_SECTOR_SIZE)
-#define FLASH_SST_AREA_OFFSET           (FLASH_NV_COUNTERS_AREA_OFFSET+FLASH_NV_COUNTER_AREA_SIZE)
-
-/* Control Secure Storage (SST) Service definitions*/
-#if (FLASH_SST_AREA_OFFSET % FLASH_AREA_IMAGE_SECTOR_SIZE) != 0
-#error "FLASH_SST_AREA_OFFSET not aligned on FLASH_AREA_IMAGE_SECTOR_SIZE"
-#endif /*  (FLASH_SST_AREA_OFFSET % FLASH_AREA_IMAGE_SECTOR_SIZE) != 0 */
-
-/* Internal Trusted Storage (ITS) Service definitions */
-#define FLASH_ITS_AREA_OFFSET           (FLASH_SST_AREA_OFFSET+FLASH_SST_AREA_SIZE)
-#define FLASH_ITS_AREA_SIZE             (FLASH_AREA_IMAGE_SECTOR_SIZE+FLASH_AREA_IMAGE_SECTOR_SIZE)
-
-/*Control  Internal Trusted Storage (ITS) Service definitions */
-#if (FLASH_ITS_AREA_OFFSET % FLASH_AREA_IMAGE_SECTOR_SIZE) != 0
-#error "FLASH_ITS_AREA_OFFSET not aligned on FLASH_AREA_IMAGE_SECTOR_SIZE"
-#endif /*  (FLASH_ITS_AREA_OFFSET % FLASH_AREA_IMAGE_SECTOR_SIZE) != 0 */
 
 #define FLASH_S_PARTITION_SIZE          (0x06000) /* 24K KB for S partition */
 #if !defined(MCUBOOT_PRIMARY_ONLY)
@@ -150,7 +125,7 @@
 /* Secure image primary slot */
 #define FLASH_AREA_0_ID                 (1)
 #define FLASH_AREA_0_DEVICE_ID          (FLASH_DEVICE_ID-FLASH_DEVICE_ID)
-#define FLASH_AREA_0_OFFSET             (FLASH_ITS_AREA_OFFSET+FLASH_ITS_AREA_SIZE)
+#define FLASH_AREA_0_OFFSET             (FLASH_AREA_BL2_NOHDP_OFFSET+FLASH_AREA_BL2_NOHDP_SIZE)
 /* Control  Secure image primary slot */
 #if (FLASH_AREA_0_OFFSET  % FLASH_AREA_IMAGE_SECTOR_SIZE) != 0
 #error "FLASH_AREA_0_OFFSET  not aligned on FLASH_AREA_IMAGE_SECTOR_SIZE"
@@ -199,7 +174,7 @@
 /*  Secure and Non-Secure image primary slot */
 #define FLASH_AREA_0_ID                 (1)
 #define FLASH_AREA_0_DEVICE_ID          (FLASH_DEVICE_ID-FLASH_DEVICE_ID)
-#define FLASH_AREA_0_OFFSET             (FLASH_ITS_AREA_OFFSET+FLASH_ITS_AREA_SIZE)
+#define FLASH_AREA_0_OFFSET             (FLASH_AREA_BL2_NOHDP_OFFSET+FLASH_AREA_BL2_NOHDP_SIZE)
 #define FLASH_AREA_0_SIZE               (FLASH_PARTITION_SIZE)
 /* Non-secure image primary slot */
 
@@ -238,7 +213,6 @@
 #define MCUBOOT_MAX_IMG_SECTORS           ((FLASH_MAX_PARTITION_SIZE) / \
                                            FLASH_AREA_IMAGE_SECTOR_SIZE)
 
-#define FLASH_NV_COUNTERS_AREA_SIZE     (0x18)     /* 16 Bytes */
 
 #define SECURE_IMAGE_OFFSET             (0x0)
 #define SECURE_IMAGE_MAX_SIZE           FLASH_S_PARTITION_SIZE
@@ -260,46 +234,6 @@
 #define  FLASH_PRIMARY_NONSECURE_DEV_NAME      TFM_Driver_FLASH0
 #define FLASH_DEV_NAME                  TFM_Driver_FLASH0
 
-/* Secure Storage (SST) Service definitions
- * Note: Further documentation of these definitions can be found in the
- * TF-M SST Integration Guide.
- */
-#define SST_FLASH_DEV_NAME              TFM_Driver_FLASH0
-
-/* Secure Storage (SST) Service definitions */
-/* In this target the CMSIS driver requires only the offset from the base
- * address instead of the full memory address.
- */
-#define SST_FLASH_AREA_ADDR             FLASH_SST_AREA_OFFSET
-#define SST_SECTOR_SIZE                 FLASH_AREA_IMAGE_SECTOR_SIZE
-/* The sectors must be in consecutive memory location */
-#define SST_NBR_OF_SECTORS              (FLASH_SST_AREA_SIZE / SST_SECTOR_SIZE)
-/* Specifies the smallest flash programmable unit in bytes */
-#define SST_FLASH_PROGRAM_UNIT          (0x10)
-/* The maximum asset size to be stored in the SST area */
-#define SST_MAX_ASSET_SIZE              (0x800)
-/* The maximum number of assets to be stored in the SST area */
-#define SST_NUM_ASSETS                  (10)
-
-
-#define ITS_FLASH_DEV_NAME              TFM_Driver_FLASH0
-
-#define ITS_FLASH_AREA_ADDR             FLASH_ITS_AREA_OFFSET
-#define ITS_SECTOR_SIZE                 FLASH_AREA_IMAGE_SECTOR_SIZE
-/* The sectors must be in consecutive memory location */
-#define ITS_NBR_OF_SECTORS              (FLASH_ITS_AREA_SIZE / ITS_SECTOR_SIZE)
-/* Specifies the smallest flash programmable unit in bytes */
-#define ITS_FLASH_PROGRAM_UNIT          (0x10)
-/* The maximum asset size to be stored in the ITS area */
-#define ITS_MAX_ASSET_SIZE              (0x800)
-/* The maximum number of assets to be stored in the ITS area */
-#define ITS_NUM_ASSETS                  (10)
-
-/* NV Counters definitions */
-#define TFM_NV_COUNTERS_AREA_ADDR        FLASH_NV_COUNTERS_AREA_OFFSET
-#define TFM_NV_COUNTERS_AREA_SIZE        (0x18)/* 24 Bytes */
-#define TFM_NV_COUNTERS_SECTOR_ADDR      FLASH_NV_COUNTERS_AREA_OFFSET
-#define TFM_NV_COUNTERS_SECTOR_SIZE      FLASH_AREA_IMAGE_SECTOR_SIZE
 
 /* BL2 NV Counters definitions  */
 #define BL2_NV_COUNTERS_AREA_ADDR        FLASH_BL2_NVCNT_AREA_OFFSET

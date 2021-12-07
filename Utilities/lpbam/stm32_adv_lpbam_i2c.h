@@ -49,14 +49,15 @@ typedef struct
   LPBAM_I2C_AutonomousModeConf_t AutoModeConf; /*!< Specifies the master autonomous mode configuration.
                                                     Please refer to LPBAM_I2C_AutonomousModeConf_t definition in
                                                     stm32_platform_lpbam_i2c.h for more information.
-                                                    This field is useless for slave device                           */
+                                                    This field is useless for slave device                       */
 
   uint32_t Timing;                             /*!< Specifies the I2C_TIMINGR_register value.
                                                     This parameter calculated by referring to I2C initialization
-                                                    section in Reference manual                                      */
+                                                    section in Reference manual                                  */
 
   uint32_t WakeupIT;                           /*!< Specifies the wake up source interrupt.
-                                                    This parameter can be a value of @ref LPBAM_I2C_Wakeup_Interrupt */
+                                                    This parameter can be one or a combination of
+                                                    @ref LPBAM_I2C_Wakeup_Interrupt                              */
 
 } LPBAM_I2C_ConfigAdvConf_t;
 
@@ -286,101 +287,101 @@ typedef struct
   */
 
 /**
-  * @brief ADV_LPBAM_I2C_MasterTransmit_SetConfigQ.
+  * @brief ADV_LPBAM_I2C_MasterTx_SetConfigQ.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterTransmit_SetConfigQ(I2C_TypeDef                    *const pInstance,
-                                                       LPBAM_DMAListInfo_t            const *const pDMAListInfo,
-                                                       LPBAM_I2C_ConfigAdvConf_t      const *const pTxConfig,
-                                                       LPBAM_I2C_MasterTxConfigDesc_t *const pDescriptor,
-                                                       DMA_QListTypeDef               *const pQueue);
+LPBAM_Status_t ADV_LPBAM_I2C_MasterTx_SetConfigQ(I2C_TypeDef                    *const pInstance,
+                                                 LPBAM_DMAListInfo_t            const *const pDMAListInfo,
+                                                 LPBAM_I2C_ConfigAdvConf_t      const *const pTxConfig,
+                                                 LPBAM_I2C_MasterTxConfigDesc_t *const pDescriptor,
+                                                 DMA_QListTypeDef               *const pQueue);
 /**
-  * @brief ADV_LPBAM_I2C_MasterTransmit_SetDataQ.
+  * @brief ADV_LPBAM_I2C_MasterTx_SetDataQ.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterTransmit_SetDataQ(I2C_TypeDef                  *const pInstance,
-                                                     LPBAM_DMAListInfo_t          const *const pDMAListInfo,
-                                                     LPBAM_I2C_DataAdvConf_t      const *const pTxData,
-                                                     LPBAM_I2C_MasterTxDataDesc_t *const pDescriptor,
-                                                     DMA_QListTypeDef             *const pQueue);
+LPBAM_Status_t ADV_LPBAM_I2C_MasterTx_SetDataQ(I2C_TypeDef                  *const pInstance,
+                                               LPBAM_DMAListInfo_t          const *const pDMAListInfo,
+                                               LPBAM_I2C_DataAdvConf_t      const *const pTxData,
+                                               LPBAM_I2C_MasterTxDataDesc_t *const pDescriptor,
+                                               DMA_QListTypeDef             *const pQueue);
 /**
-  * @brief ADV_LPBAM_I2C_MasterTransmit_SetFullQ.
+  * @brief ADV_LPBAM_I2C_MasterTx_SetFullQ.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterTransmit_SetFullQ(I2C_TypeDef                  *const pInstance,
-                                                     LPBAM_DMAListInfo_t          const *const pDMAListInfo,
-                                                     LPBAM_I2C_FullAdvConf_t      const *const pTxFull,
-                                                     LPBAM_I2C_MasterTxFullDesc_t *const pDescriptor,
-                                                     DMA_QListTypeDef             *const pQueue);
+LPBAM_Status_t ADV_LPBAM_I2C_MasterTx_SetFullQ(I2C_TypeDef                  *const pInstance,
+                                               LPBAM_DMAListInfo_t          const *const pDMAListInfo,
+                                               LPBAM_I2C_FullAdvConf_t      const *const pTxFull,
+                                               LPBAM_I2C_MasterTxFullDesc_t *const pDescriptor,
+                                               DMA_QListTypeDef             *const pQueue);
 /**
-  * @brief ADV_LPBAM_I2C_SlaveTransmit_SetConfigQ.
+  * @brief ADV_LPBAM_I2C_SlaveTx_SetConfigQ.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_SlaveTransmit_SetConfigQ(I2C_TypeDef                   *const pInstance,
-                                                      LPBAM_DMAListInfo_t           const *const pDMAListInfo,
-                                                      LPBAM_I2C_ConfigAdvConf_t     const *const pTxConfig,
-                                                      LPBAM_I2C_SlaveTxConfigDesc_t *const pDescriptor,
-                                                      DMA_QListTypeDef              *const pQueue);
+LPBAM_Status_t ADV_LPBAM_I2C_SlaveTx_SetConfigQ(I2C_TypeDef                   *const pInstance,
+                                                LPBAM_DMAListInfo_t           const *const pDMAListInfo,
+                                                LPBAM_I2C_ConfigAdvConf_t     const *const pTxConfig,
+                                                LPBAM_I2C_SlaveTxConfigDesc_t *const pDescriptor,
+                                                DMA_QListTypeDef              *const pQueue);
 /**
-  * @brief ADV_LPBAM_I2C_SlaveTransmit_SetDataQ.
+  * @brief ADV_LPBAM_I2C_SlaveTx_SetDataQ.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_SlaveTransmit_SetDataQ(I2C_TypeDef                 *const pInstance,
-                                                    LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                    LPBAM_I2C_DataAdvConf_t     const *const pTxData,
-                                                    LPBAM_I2C_SlaveTxDataDesc_t *const pDescriptor,
-                                                    DMA_QListTypeDef            *const pQueue);
+LPBAM_Status_t ADV_LPBAM_I2C_SlaveTx_SetDataQ(I2C_TypeDef                 *const pInstance,
+                                              LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                              LPBAM_I2C_DataAdvConf_t     const *const pTxData,
+                                              LPBAM_I2C_SlaveTxDataDesc_t *const pDescriptor,
+                                              DMA_QListTypeDef            *const pQueue);
 /**
-  * @brief ADV_LPBAM_I2C_SlaveTransmit_SetFullQ.
+  * @brief ADV_LPBAM_I2C_SlaveTx_SetFullQ.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_SlaveTransmit_SetFullQ(I2C_TypeDef                 *const pInstance,
-                                                    LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                    LPBAM_I2C_FullAdvConf_t     const *const pTxFull,
-                                                    LPBAM_I2C_SlaveTxFullDesc_t *const pDescriptor,
-                                                    DMA_QListTypeDef            *const pQueue);
+LPBAM_Status_t ADV_LPBAM_I2C_SlaveTx_SetFullQ(I2C_TypeDef                 *const pInstance,
+                                              LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                              LPBAM_I2C_FullAdvConf_t     const *const pTxFull,
+                                              LPBAM_I2C_SlaveTxFullDesc_t *const pDescriptor,
+                                              DMA_QListTypeDef            *const pQueue);
 /**
-  * @brief ADV_LPBAM_I2C_MasterReceive_SetConfigQ.
+  * @brief ADV_LPBAM_I2C_MasterRx_SetConfigQ.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterReceive_SetConfigQ(I2C_TypeDef                    *const pInstance,
-                                                      LPBAM_DMAListInfo_t            const *const pDMAListInfo,
-                                                      LPBAM_I2C_ConfigAdvConf_t      const *const pRxConfig,
-                                                      LPBAM_I2C_MasterRxConfigDesc_t *const pDescriptor,
-                                                      DMA_QListTypeDef               *const pQueue);
+LPBAM_Status_t ADV_LPBAM_I2C_MasterRx_SetConfigQ(I2C_TypeDef                    *const pInstance,
+                                                 LPBAM_DMAListInfo_t            const *const pDMAListInfo,
+                                                 LPBAM_I2C_ConfigAdvConf_t      const *const pRxConfig,
+                                                 LPBAM_I2C_MasterRxConfigDesc_t *const pDescriptor,
+                                                 DMA_QListTypeDef               *const pQueue);
 /**
-  * @brief ADV_LPBAM_I2C_MasterReceive_SetDataQ.
+  * @brief ADV_LPBAM_I2C_MasterRx_SetDataQ.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterReceive_SetDataQ(I2C_TypeDef                  *const pInstance,
-                                                    LPBAM_DMAListInfo_t          const *const pDMAListInfo,
-                                                    LPBAM_I2C_DataAdvConf_t      const *const pRxData,
-                                                    LPBAM_I2C_MasterRxDataDesc_t *const pDescriptor,
-                                                    DMA_QListTypeDef             *const pQueue);
+LPBAM_Status_t ADV_LPBAM_I2C_MasterRx_SetDataQ(I2C_TypeDef                  *const pInstance,
+                                               LPBAM_DMAListInfo_t          const *const pDMAListInfo,
+                                               LPBAM_I2C_DataAdvConf_t      const *const pRxData,
+                                               LPBAM_I2C_MasterRxDataDesc_t *const pDescriptor,
+                                               DMA_QListTypeDef             *const pQueue);
 /**
-  * @brief ADV_LPBAM_I2C_MasterReceive_SetFullQ.
+  * @brief ADV_LPBAM_I2C_MasterRx_SetFullQ.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterReceive_SetFullQ(I2C_TypeDef                  *const pInstance,
-                                                    LPBAM_DMAListInfo_t          const *const pDMAListInfo,
-                                                    LPBAM_I2C_FullAdvConf_t      const *const pRxFull,
-                                                    LPBAM_I2C_MasterRxFullDesc_t *const pDescriptor,
-                                                    DMA_QListTypeDef             *const pQueue);
+LPBAM_Status_t ADV_LPBAM_I2C_MasterRx_SetFullQ(I2C_TypeDef                  *const pInstance,
+                                               LPBAM_DMAListInfo_t          const *const pDMAListInfo,
+                                               LPBAM_I2C_FullAdvConf_t      const *const pRxFull,
+                                               LPBAM_I2C_MasterRxFullDesc_t *const pDescriptor,
+                                               DMA_QListTypeDef             *const pQueue);
 /**
-  * @brief ADV_LPBAM_I2C_SlaveReceive_SetConfigQ.
+  * @brief ADV_LPBAM_I2C_SlaveRx_SetConfigQ.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_SlaveReceive_SetConfigQ(I2C_TypeDef                   *const pInstance,
-                                                     LPBAM_DMAListInfo_t           const *const pDMAListInfo,
-                                                     LPBAM_I2C_ConfigAdvConf_t     const *const pRxConfig,
-                                                     LPBAM_I2C_SlaveRxConfigDesc_t *const pDescriptor,
-                                                     DMA_QListTypeDef              *const pQueue);
+LPBAM_Status_t ADV_LPBAM_I2C_SlaveRx_SetConfigQ(I2C_TypeDef                   *const pInstance,
+                                                LPBAM_DMAListInfo_t           const *const pDMAListInfo,
+                                                LPBAM_I2C_ConfigAdvConf_t     const *const pRxConfig,
+                                                LPBAM_I2C_SlaveRxConfigDesc_t *const pDescriptor,
+                                                DMA_QListTypeDef              *const pQueue);
 /**
-  * @brief ADV_LPBAM_I2C_SlaveReceive_SetDataQ.
+  * @brief ADV_LPBAM_I2C_SlaveRx_SetDataQ.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_SlaveReceive_SetDataQ(I2C_TypeDef                 *const pInstance,
-                                                   LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                   LPBAM_I2C_DataAdvConf_t     const *const pRxData,
-                                                   LPBAM_I2C_SlaveRxDataDesc_t *const pDescriptor,
-                                                   DMA_QListTypeDef            *const pQueue);
+LPBAM_Status_t ADV_LPBAM_I2C_SlaveRx_SetDataQ(I2C_TypeDef                 *const pInstance,
+                                              LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                              LPBAM_I2C_DataAdvConf_t     const *const pRxData,
+                                              LPBAM_I2C_SlaveRxDataDesc_t *const pDescriptor,
+                                              DMA_QListTypeDef            *const pQueue);
 /**
-  * @brief ADV_LPBAM_I2C_SlaveReceive_SetFullQ.
+  * @brief ADV_LPBAM_I2C_SlaveRx_SetFullQ.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_SlaveReceive_SetFullQ(I2C_TypeDef                 *const pInstance,
-                                                   LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                   LPBAM_I2C_FullAdvConf_t     const *const pRxFull,
-                                                   LPBAM_I2C_SlaveRxFullDesc_t *const pDescriptor,
-                                                   DMA_QListTypeDef            *const pQueue);
+LPBAM_Status_t ADV_LPBAM_I2C_SlaveRx_SetFullQ(I2C_TypeDef                 *const pInstance,
+                                              LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                              LPBAM_I2C_FullAdvConf_t     const *const pRxFull,
+                                              LPBAM_I2C_SlaveRxFullDesc_t *const pDescriptor,
+                                              DMA_QListTypeDef            *const pQueue);
 /**
   * @brief ADV_LPBAM_I2C_MasterStopGeneration_SetFullQ.
   */

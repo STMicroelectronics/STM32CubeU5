@@ -1,3 +1,4 @@
+
 ## <b>LPBAM_DMA_MultiQueueExecution Application Description</b>
 -   How to handle multi queue execution with DMA linked-list feature in low power mode through LPBAM utility.
 
@@ -36,6 +37,14 @@ push-button is pressed, wakeup event is generated and green led is turned on.
 
 -   The LPBAM mechanism operating is not impacted when the system enters and exit STOP 2 mode.
 
+-   This project contains two configuration :
+    -   Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+        - LPTIM1 and LPTIM3 output signals are mapped respectively on PB.2 and PB.0 pins.
+    -   Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+        - LPTIM1 and LPTIM3 output signals are not mapped.
+
+-   The typical average power consumption of the system performing DMA master trasnfers with a 1s period and DMA slave
+transfers with 100ms period is 4.2uA.
 
 -   NUCLEO-U575ZI-Q board LEDs are used to monitor the transfer status:
     -   LED1 (green led) is turned on after wake up from STOP 2 mode and no error is detected.
@@ -75,10 +84,10 @@ System, DMA transfer, DMA, GPIO, LPBAM, Signal, Low power, Stop2
     board and can be easily tailored to any other supported device
     and development board.
 
--   Connect PB.2 (Pin 19 in CN12 connector) to an oscilloscope to visualize the LPTIM1 channel 1 output waveform.
--   Connect PB.0 (Pin 31 in CN11 connector) to an oscilloscope to visualize the LPTIM3 channel 1 output waveform.
--   Connect PA.1 (Pin 27 in CN11 connector) to an oscilloscope to visualize the LPGPIO1 Pin 0 output waveform.
--   Connect PA.3 (Pin 36 in CN12 connector) to an oscilloscope to visualize the LPGPIO1 Pin 1 output waveform.
+-   Connect PB.2 (Pin 22 in CN12 connector) to an oscilloscope to visualize the LPTIM1 channel 1 output waveform.
+-   Connect PB.0 (Pin 34 in CN11 connector) to an oscilloscope to visualize the LPTIM3 channel 1 output waveform.
+-   Connect PA.1 (Pin 30 in CN11 connector) to an oscilloscope to visualize the LPGPIO1 Pin 0 output waveform.
+-   Connect PA.3 (Pin 37 in CN12 connector) to an oscilloscope to visualize the LPGPIO1 Pin 1 output waveform.
 
 ### <b>How to use it ?</b>
 
@@ -86,4 +95,3 @@ System, DMA transfer, DMA, GPIO, LPBAM, Signal, Low power, Stop2
     -   Open your preferred toolchain
     -   Rebuild all files and load your image into target memory
     -   Run the example
-

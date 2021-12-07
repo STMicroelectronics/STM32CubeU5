@@ -31,6 +31,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#if defined(__GNUC__) && !defined(__ARMCC_VERSION)
+extern void initialise_monitor_handles(void);
+#endif
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -65,8 +68,7 @@ static void MX_DCACHE1_Init(void);
 static void MX_GPIO_Init(void);
 static void MX_OCTOSPI1_Init(void);
 /* USER CODE BEGIN PFP */
-void StartTest(void);
-static void Flush_scanf(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -81,6 +83,11 @@ static void Flush_scanf(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+#if defined(__GNUC__) && !defined(__ARMCC_VERSION)
+  initialise_monitor_handles();	/*rtt*/
+  printf("Semihosting Test...\n\r");
+#endif
+
   /* STM32U5xx HAL library initialization:
        - Configure the Flash prefetch
        - Configure the Systick to generate an interrupt each 1 msec
@@ -154,7 +161,7 @@ int main(void)
   }
 
   /*  Tuning Sequence ------------------------------------------------ */
-  StartTest();
+  //StartTest();
   printf(" ###################### Start Tuning ######################### \n");
   for( jj=0; jj<(DLYB_MAX_SELECT*DLYB_MAX_UNIT); jj++ )
   {
@@ -224,11 +231,11 @@ int main(void)
     /* Print Result --------------------------------------------------------- */
     if (ko>0)
     {
-      printf (" delay= %1d, Sel = %1d , Unit = %1d , Test FAILED \n",jj, sel, unit);
+      printf (" delay= %u, Sel = %u , Unit = %u , Test FAILED \n",jj, sel, unit);
     }
     else
     {
-      printf (" delay= %1d, Sel = %1d , Unit = %1d , Test PASSED \n",jj, sel, unit);
+      printf (" delay= %u, Sel = %u , Unit = %u , Test PASSED \n",jj, sel, unit);
     }
   }
 
@@ -263,6 +270,13 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
+  /* Switch to SMPS regulator instead of LDO */
+  if(HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
   /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
@@ -439,34 +453,6 @@ static void MX_GPIO_Init(void)
 
 }
 
-/* USER CODE BEGIN 4 */
-/**
-  * @brief  Ask user to start the test.
-  * @param  None
-  * @retval None
-  */
-void StartTest(void)
-{
-  uint8_t tmp = 0;
-  do {
-    printf("Press s to start the test\n");
-    scanf("%c", &tmp);
-    Flush_scanf();
-  } while (tmp != 's');
-}
-
-/**
-  * @brief  Flush scanf buffer until "\n".
-  * @param  None
-  * @retval None
-  */
-static void Flush_scanf(void)
-{
-  while ( getchar() != '\n' );
-}
-
-/* USER CODE END 4 */
-
 /**
   * @brief  This function is executed in case of error occurrence.
   * @retval None
@@ -500,3 +486,5 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

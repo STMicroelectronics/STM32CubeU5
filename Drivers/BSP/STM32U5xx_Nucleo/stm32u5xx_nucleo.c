@@ -148,7 +148,7 @@ int32_t BSP_LED_Init(Led_TypeDef Led)
 {
   int32_t ret = BSP_ERROR_NONE;
   GPIO_InitTypeDef  gpio_init_structure;
-  uint32_t pwrenabled = 0;
+  uint32_t pwrenabled = 0U;
 
   if ((Led != LED1) && (Led != LED2) && (Led != LED3))
   {
@@ -171,12 +171,12 @@ int32_t BSP_LED_Init(Led_TypeDef Led)
       if (__HAL_RCC_PWR_IS_CLK_DISABLED())
       {
         __HAL_RCC_PWR_CLK_ENABLE();
-        pwrenabled = 1;
+        pwrenabled = 1U;
       }
 
       HAL_PWREx_EnableVddIO2();
 
-      if(pwrenabled == 1)
+      if(pwrenabled == 1U)
       {
         __HAL_RCC_PWR_CLK_DISABLE();
       }

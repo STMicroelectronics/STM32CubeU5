@@ -13,6 +13,18 @@ LED_GREEN toggles as soon as Tuning is precessing.
 LED_GREEN is ON at the end of Tuning.  
 LED_RED toggles as soon as an error is returned by HAL API.
 
+It uses the Terminal I/O to display information : 
+
+ - When resorting to EWARM IAR IDE:
+   Command Code is displayed on debugger as follows: View --> Terminal I/O
+
+ - When resorting to MDK-ARM KEIL IDE:
+   Command Code is displayed on debugger as follows: View --> Serial Windows --> Debug (printf) Viewer
+ 
+ - When resorting to STM32CubeIDE:
+   In Debug configuration window\ Startup, in addition to "monitor reset halt" add the command "monitor arm semihosting enable"
+   Command Code is displayed on debugger as follows: Window--> Show View--> Console.
+   
 The project configures the maximum system clock frequency at 160Mhz.
 
 #### <b>Notes</b>

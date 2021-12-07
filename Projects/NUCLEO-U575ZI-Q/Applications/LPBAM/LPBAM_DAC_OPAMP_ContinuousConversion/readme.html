@@ -25,6 +25,12 @@
 <li><p>The application permits to generate a triangle signal by the DAC peripheral, then amplified by the OPAMP with several gains.</p></li>
 <li><p>The configuration of DAC is done via HAL and the conversion start is done via ADV_LPBAM_DAC_Conversion_SetDataQ() function. The changing of OPAMP gain is done via ADV_LPBAM_OPAMP_Start_SetFullQ() function.</p></li>
 <li><p>The DAC signal output is connected internally to the OPAMP input in order to amplify the DAC signal with programmed gains. The DAC signal generation is triggered by the LPTIM PWM signal. When the application starts DMA peripheral, the whole system goes to Stop2 mode. After amplifying the signal period, The OPAMP gain is modified and the next DAC conversion is started. This sequence is repeated in an infinite loop.</p></li>
+<li>This project contains two configuration :
+<ul>
+<li>Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.</li>
+<li>Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.</li>
+</ul></li>
+<li><p>The typical average power consumption of the system performing DAC conversion with 1ms period and signal amplification is 70uA.</p></li>
 <li>NUCLEO-U575ZI-Q board LEDs are used to monitor the transfer status:
 <ul>
 <li>LED3 (red led) is turned on when any error is occurred.</li>

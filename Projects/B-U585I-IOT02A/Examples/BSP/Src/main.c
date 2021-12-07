@@ -26,12 +26,14 @@
 /** @addtogroup BSP
   * @{
   */
-
 /* Private variables --------------------------------------------------------*/
 __IO FlagStatus UserButtonPressed = RESET;
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
+#if defined(__GNUC__) && !defined(__ARMCC_VERSION)
+extern void initialise_monitor_handles(void);
+#endif
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 BSP_DemoTypedef  BSP_examples[]=
@@ -41,9 +43,9 @@ BSP_DemoTypedef  BSP_examples[]=
   {Camera_demo, "CAMERA"},
   {Ms_demo,     "MotionSensor"},
   {Es_demo,     "EnvSensor"},
+  {Ls_demo,     "LightSensor"},
   {OSPI_NOR_demo, "OSPI NOR"},
   {OSPI_RAM_demo, "OSPI RAM"},
-  {AudioRecord_demo, "Audio"},
   {EEPROM_demo, "EEPROM"}
 };
 uint8_t DemoIndex = 0;
@@ -51,7 +53,6 @@ uint8_t DemoIndex = 0;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void CACHE_Enable(void);
-static void Flush_scanf(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -62,6 +63,12 @@ static void Flush_scanf(void);
   */
 int main(void)
 {
+
+#if defined(__GNUC__) && !defined(__ARMCC_VERSION)
+  initialise_monitor_handles();	/*rtt*/
+  printf("Semihosting Test...\n\r");
+#endif
+
   /* STM32U5xx HAL library initialization:
        - Configure the Flash prefetch
        - Configure the Systick to generate an interrupt each 1 msec
@@ -69,7 +76,6 @@ int main(void)
        - Low Level Initialization
      */
   HAL_Init();
-
   /* Enable the Instruction Cache */
   CACHE_Enable();
 
@@ -119,6 +125,10 @@ void SystemClock_Config(void)
   /* Enable voltage range 1 for frequency above 100 Mhz */
   __HAL_RCC_PWR_CLK_ENABLE();
   HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+  /* Switch to SMPS regulator instead of LDO */
+  HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY);
+
   __HAL_RCC_PWR_CLK_DISABLE();
 
   /* MSI Oscillator enabled at reset (4Mhz), activate PLL with MSI as source */
@@ -192,44 +202,9 @@ void Error_Handler(void)
   */
 uint32_t CheckResult(void)
 {
-  uint8_t tmp = 0;
-
-  do
-  {
-  printf("Type 'p' to go to the next step.\n");
-  scanf("%c", &tmp);
-  } while(tmp != 'p');
-  if (tmp != 'p')
-
-  Flush_scanf();
   printf("Next step loading..\n\n");
 
   return 0;
-}
-
-/**
-  * @brief  Ask user to start the example.
-  * @param  None
-  * @retval None
-  */
-void StartExample(void)
-{
-  uint8_t tmp = 0;
-  do {
-    printf("Type s to start the example\n");
-    scanf("%c", &tmp);
-    Flush_scanf();
-  } while (tmp != 's');
-}
-
-/**
-  * @brief  Flush scanf buffer until "\n".
-  * @param  None
-  * @retval None
-  */
-static void Flush_scanf(void)
-{
-  while ( getchar() != '\n' );
 }
 
 #ifdef  USE_FULL_ASSERT

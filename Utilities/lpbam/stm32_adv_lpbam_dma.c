@@ -19,8 +19,8 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the GettingStarted.html document before starting developing an LPBAM
-      application.
+      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
+      developing an LPBAM application.
 
     *** Driver description ***
     ==========================
@@ -55,7 +55,7 @@
       Use ADV_LPBAM_DMA_Start_SetFullQ() API to build a linked-list queue (to be executed by master DMA channel) that
       links a built linked-list queue (to be executed by slave DMA channel) to a DMA channel and start execution
       according to configured parameters in LPBAM_DMA_StartFullAdvConf_t structure.
-      Configured parameters are :
+      Configuration parameters are :
           (+) HeadQAddress : Specifies the head node address of queue to be executed.
           (+) WakeupIT     : Specifies the wake up source interrupt.
                              This parameter can be one or a combination of @ref LPBAM_DMA_Wakeup_Interrupt.
@@ -86,8 +86,8 @@
           (+) Call HAL_DMAEx_List_Link() to link the output queue to a master DMA channel.
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution.
 
-    *** Constraints ***
-    ===================
+    *** Recommendation ***
+    ======================
     [..]
       Access to DMA slave channel must be done, only by one DMA channel master at the same time.
       When called to build a linked-list queue scenario, recalling ADV_LPBAM_DMA_Start_SetFullQ() in another queue shall

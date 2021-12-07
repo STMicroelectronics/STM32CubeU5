@@ -13,12 +13,18 @@ LPGPIO1 register (LPGPIO1_ODR register).
 When queue is well created, the whole system enters in STOP 2 mode.
 
 -   Each transmitted state is triggered by LPTIM1 rising edge PWM signal.
-When DMA node is completed (2 LPGPIO pin state), a transfer complete interrupt is generated to wakeup the
-system and toggles the green led.
 
 -   The example exits STOP2 mode when the user press the user push-button.
 
 -   The LPBAM operating scenario is not impacted when the system exits from STOP 2 mode.
+
+-   This project contains two configurations :
+    -   Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+        - LPTIM1 output signal is mapped on PB2 pin.
+    -   Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+        - LPTIM1 output signal is not mapped.
+		
+-   The typical average power consumption of the system performing LPGPIO pin toggling with a 1s period is 4uA.
 
 -   NUCLEO-U575ZI-Q (MB1549) board's LEDs can be used to monitor the LPGPIO Pin status:
     -   LED1 is ON when no error detected.
@@ -58,8 +64,8 @@ System, LPGPIO, LPDMA, LPBAM, Output, Alternate function, Push-pull, Toggle
     easily tailored to any other supported device and development board.
 
 -   NUCLEO-U575ZI-Q set-up
-    -   Connect the pin PB2 to an oscilloscope (LPTIM Channel 1 output).
-    -   Connect the pin PA1 to an oscilloscope (LPGPIO1 pin 0 output).
+    -   Connect the pin PB2 (pin 13 CN9) to an oscilloscope (LPTIM Channel 1 output).
+    -   Connect the pin PA1 (pin 11 CN10)to an oscilloscope (LPGPIO1 pin 0 output).
 
 ### <b>How to use it ?</b>
 

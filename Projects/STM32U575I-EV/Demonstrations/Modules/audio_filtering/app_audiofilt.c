@@ -52,10 +52,10 @@ static KMODULE_RETURN _AudiofiltDemoExec(void);
 /* AudioFiltering menu */
 static const tMenuItem AudiofiltMenuMenuItems[] =
 {
-    {"Signal Audio Detector"               , X1_POS, Y1_POS, SEL_EXEC,    MODULE_NONE,Sad_Demo , Sad_UserAction, NULL, (char*)  IconAudioSad0 , (char*)  IconAudioSad1 },
-    {"Audio Record/Play" , X2_POS, Y1_POS, SEL_EXEC,    MODULE_NONE,     Audio_Recplay_Demo      ,     Audio_Recplay_UserAction      , NULL, (char*) IconAudioPlay0, (char*)IconAudioPlay1 },
-    {"Signal Filtering"  , X3_POS, Y1_POS, SEL_EXEC,    MODULE_NONE, Sig_Filtering_Demo, Sig_Filtering_UserAction, NULL, (char*)IconDataFltr0 , (char*)IconDataFltr1 },
-    {"Return"            , X2_POS, Y2_POS, SEL_EXIT,    MODULE_NONE, NULL              , NULL                    , NULL, (char*)IconReturn0      , (char*)IconReturn1     },
+    {"Sound Detector" , X1_POS, Y1_POS, SEL_EXEC,    MODULE_NONE,Sad_Demo , Sad_UserAction, NULL, (char*)  IconAudioSad0 , (char*)  IconAudioSad1 },
+    {"Audio Record/Play"     , X2_POS, Y1_POS, SEL_EXEC,    MODULE_NONE,     Audio_Recplay_Demo      ,     Audio_Recplay_UserAction      , NULL, (char*) IconAudioPlay0, (char*)IconAudioPlay1 },
+    {"Signal Filtering"      , X3_POS, Y1_POS, SEL_EXEC,    MODULE_NONE, Sig_Filtering_Demo, Sig_Filtering_UserAction, NULL, (char*)IconDataFltr0 , (char*)IconDataFltr1 },
+    {"Return"                , X2_POS, Y2_POS, SEL_EXIT,    MODULE_NONE, NULL              , NULL                    , NULL, (char*)IconReturn0      , (char*)IconReturn1     },
 };
 
 static const tMenu AudiofiltMenu = {

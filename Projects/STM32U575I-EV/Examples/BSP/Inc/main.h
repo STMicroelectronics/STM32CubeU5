@@ -45,7 +45,6 @@
 /* Exported variables --------------------------------------------------------*/
 extern __IO FlagStatus UserButtonPressed;
 extern __IO JOYPin_TypeDef JoyPinPressed;
-extern __IO FlagStatus TouchDetected;
 extern const unsigned char stlogo[];
 extern uint32_t CameraTest;
 

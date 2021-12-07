@@ -59,6 +59,9 @@ uint32_t Expected_CompOutput_Buffer[OUTPUT_BUFFERSIZE] = {INPUTMINUS_ABOVE_INPUT
 
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config        (void);
+#if !defined (DEBUG_CONFIGURATION)
+static void SystemPower_Config        (void);
+#endif /* !defined (DEBUG_CONFIGURATION) */
 static void Error_Handler             (void);
 static void Cache_Enable              (void);
 static void LPTIM_Config              (void);
@@ -87,6 +90,11 @@ int main(void)
 
   /* Configure the System clock to have a frequency of 160 MHz */
   SystemClock_Config();
+
+#if !defined (DEBUG_CONFIGURATION)
+  /* Configure the system power */
+  SystemPower_Config();
+#endif /* defined (DEBUG_CONFIGURATION) */
 
   /* Initialize LED1 and LED3 : GREEN and RED leds */
   BSP_LED_Init(LED1);
@@ -317,25 +325,28 @@ void SystemClock_Config(void)
   /* Enable voltage range 1 for frequency above 100 Mhz */
   __HAL_RCC_PWR_CLK_ENABLE();
   HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+  /* Switch to SMPS regulator instead of LDO */
+  HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY);
+
   __HAL_RCC_PWR_CLK_DISABLE();
 
   /* MSI Oscillator enabled at reset (4Mhz), activate PLL with MSI as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI | RCC_OSCILLATORTYPE_MSIK;
-  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
-  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_4;
+  RCC_OscInitStruct.OscillatorType      = RCC_OSCILLATORTYPE_MSI | RCC_OSCILLATORTYPE_LSE;
+  RCC_OscInitStruct.LSEState            = RCC_LSE_ON;
+  RCC_OscInitStruct.MSIState            = RCC_MSI_ON;
+  RCC_OscInitStruct.MSIClockRange       = RCC_MSIRANGE_4;
   RCC_OscInitStruct.MSICalibrationValue = RCC_MSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.MSIKState = RCC_MSIK_ON;
-  RCC_OscInitStruct.MSIKClockRange = RCC_MSIKRANGE_15;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_MSI;
-  RCC_OscInitStruct.PLL.PLLMBOOST = RCC_PLLMBOOST_DIV1;
-  RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 80;
-  RCC_OscInitStruct.PLL.PLLR = 2;
-  RCC_OscInitStruct.PLL.PLLP = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 2;
-  RCC_OscInitStruct.PLL.PLLFRACN= 0;
-  RCC_OscInitStruct.PLL.PLLRGE = RCC_PLLVCIRANGE_0;
+  RCC_OscInitStruct.PLL.PLLState        = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource       = RCC_PLLSOURCE_MSI;
+  RCC_OscInitStruct.PLL.PLLMBOOST       = RCC_PLLMBOOST_DIV1;
+  RCC_OscInitStruct.PLL.PLLM            = 1;
+  RCC_OscInitStruct.PLL.PLLN            = 80;
+  RCC_OscInitStruct.PLL.PLLR            = 2;
+  RCC_OscInitStruct.PLL.PLLP            = 2;
+  RCC_OscInitStruct.PLL.PLLQ            = 2;
+  RCC_OscInitStruct.PLL.PLLFRACN        = 0;
+  RCC_OscInitStruct.PLL.PLLRGE          = RCC_PLLVCIRANGE_0;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     /* Initialization Error */
@@ -343,9 +354,10 @@ void SystemClock_Config(void)
   }
 
   /* Select PLL as system clock source and confisgure bus clocks dividers */
-  RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.ClockType      = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 |
+                                      RCC_CLOCKTYPE_PCLK2);
+  RCC_ClkInitStruct.SYSCLKSource   = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider  = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
   if(HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
@@ -355,6 +367,74 @@ void SystemClock_Config(void)
   }
 }
 
+#if !defined (DEBUG_CONFIGURATION)
+/**
+  * @brief  System Power Configuration for LPBAM
+  * @param  None
+  * @retval None
+  */
+static void SystemPower_Config(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* Enable PWR CLK */
+  __HAL_RCC_PWR_CLK_ENABLE();
+
+  /* Switch to SMPS regulator */
+  if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Keep ICache and SRAM4 retention */
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM1_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM2_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM3_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_DCACHE1_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_DMA2DRAM_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_PERIPHRAM_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_PKA32RAM_FULL_STOP_RETENTION);
+
+  /* Enable all GPIO clocks */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOI_CLK_ENABLE();
+
+  /* Set parameters to be configured */
+  GPIO_InitStruct.Mode  = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Pull  = GPIO_NOPULL;
+  GPIO_InitStruct.Pin   = GPIO_PIN_ALL;
+
+  /* Initialize all GPIO pins */
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+
+  /* Disable all GPIO clocks */
+  __HAL_RCC_GPIOA_CLK_DISABLE();
+  __HAL_RCC_GPIOB_CLK_DISABLE();
+  __HAL_RCC_GPIOC_CLK_DISABLE();
+  __HAL_RCC_GPIOD_CLK_DISABLE();
+  __HAL_RCC_GPIOE_CLK_DISABLE();
+  __HAL_RCC_GPIOF_CLK_DISABLE();
+  __HAL_RCC_GPIOG_CLK_DISABLE();
+  __HAL_RCC_GPIOH_CLK_DISABLE();
+  __HAL_RCC_GPIOI_CLK_DISABLE();
+}
+#endif /* !defined (DEBUG_CONFIGURATION) */
 
 /**
 * @brief  LPTIM configuration.
@@ -374,7 +454,7 @@ static void LPTIM_Config (void)
   LptimHandle.Init.CounterSource                 = LPTIM_COUNTERSOURCE_INTERNAL;
   LptimHandle.Init.UpdateMode                    = LPTIM_UPDATE_IMMEDIATE;
   LptimHandle.Init.Clock.Source                  = LPTIM_CLOCKSOURCE_APBCLOCK_LPOSC;
-  LptimHandle.Init.Clock.Prescaler               = LPTIM_PRESCALER_DIV2;
+  LptimHandle.Init.Clock.Prescaler               = LPTIM_PRESCALER_DIV1;
   LptimHandle.Init.UltraLowPowerClock.Polarity   = LPTIM_CLOCKPOLARITY_RISING;
   LptimHandle.Init.UltraLowPowerClock.SampleTime = LPTIM_CLOCKSAMPLETIME_DIRECTTRANSITION;
   LptimHandle.Init.Trigger.Source                = LPTIM_TRIGSOURCE_SOFTWARE;
@@ -410,16 +490,15 @@ static void LPTIM_Config (void)
 void COMP_Config(void)
 {
   /* Set COMP instance */
-  CompHandle.Instance = COMP1;
-
+  CompHandle.Instance          = COMP1;
   /* Set COMP configuration */
-  CompHandle.Init.InputMinus        = COMP_INPUT_MINUS_VREFINT;
-  CompHandle.Init.InputPlus         = COMP_INPUT_PLUS_IO1;
-  CompHandle.Init.OutputPol         = COMP_OUTPUTPOL_NONINVERTED;
-  CompHandle.Init.Mode              = COMP_POWERMODE_HIGHSPEED;
-  CompHandle.Init.Hysteresis        = COMP_HYSTERESIS_NONE;
-  CompHandle.Init.BlankingSrce      = COMP_BLANKINGSRC_NONE;
-  CompHandle.Init.WindowMode        = COMP_WINDOWMODE_DISABLE;
+  CompHandle.Init.InputMinus   = COMP_INPUT_MINUS_VREFINT;
+  CompHandle.Init.InputPlus    = COMP_INPUT_PLUS_IO1;
+  CompHandle.Init.OutputPol    = COMP_OUTPUTPOL_NONINVERTED;
+  CompHandle.Init.Mode         = COMP_POWERMODE_ULTRALOWPOWER;
+  CompHandle.Init.Hysteresis   = COMP_HYSTERESIS_NONE;
+  CompHandle.Init.BlankingSrce = COMP_BLANKINGSRC_NONE;
+  CompHandle.Init.WindowMode   = COMP_WINDOWMODE_DISABLE;
 
   /* Initialize COMP */
   if(HAL_COMP_Init(&CompHandle) != HAL_OK)
@@ -437,14 +516,14 @@ void COMP_Config(void)
 static void DMA_LinkedListConfig (void)
 {
   /* Set DMA instance */
-  DMAHandle.Instance                               = LPDMA1_Channel0;
+  DMAHandle.Instance                         = LPDMA1_Channel0;
 
   /* Set parameters to be configured */
-  DMAHandle.InitLinkedList.Priority                = DMA_LOW_PRIORITY_LOW_WEIGHT;
-  DMAHandle.InitLinkedList.LinkStepMode            = DMA_LSM_FULL_EXECUTION;
-  DMAHandle.InitLinkedList.LinkAllocatedPort       = DMA_LINK_ALLOCATED_PORT1;
-  DMAHandle.InitLinkedList.TransferEventMode       = DMA_TCEM_LAST_LL_ITEM_TRANSFER;
-  DMAHandle.InitLinkedList.LinkedListMode          = DMA_LINKEDLIST_NORMAL;
+  DMAHandle.InitLinkedList.Priority          = DMA_LOW_PRIORITY_LOW_WEIGHT;
+  DMAHandle.InitLinkedList.LinkStepMode      = DMA_LSM_FULL_EXECUTION;
+  DMAHandle.InitLinkedList.LinkAllocatedPort = DMA_LINK_ALLOCATED_PORT1;
+  DMAHandle.InitLinkedList.TransferEventMode = DMA_TCEM_LAST_LL_ITEM_TRANSFER;
+  DMAHandle.InitLinkedList.LinkedListMode    = DMA_LINKEDLIST_NORMAL;
 
   /* Initialize DMA linked list */
   if (HAL_DMAEx_List_Init(&DMAHandle) != HAL_OK)

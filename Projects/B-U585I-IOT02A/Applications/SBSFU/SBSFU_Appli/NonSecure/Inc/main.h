@@ -26,13 +26,6 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
-/* User can use this section to tailor UARTx instance used and associated
-   resources */
-
-#define BUTTON_INIT()         BSP_PB_Init(BUTTON_USER,BUTTON_MODE_GPIO);
-#define BUTTON_PUSHED()      (BSP_PB_GetState(BUTTON_USER) == GPIO_PIN_SET)
-
-
 /* Exported macros -----------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/

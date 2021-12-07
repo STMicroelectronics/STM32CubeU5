@@ -84,7 +84,6 @@ KMODULE_RETURN _LowPowerDemoExec(void)
 /* Used to exit application */
 static __IO uint8_t UserEvent=0;
 static __IO uint8_t UserEntry=0;
-static TS_State_t TS_State;
 static uint8_t LowPowerIndex = 0;
 static uint8_t count=0;
 /* RTC handler declaration */
@@ -98,6 +97,8 @@ void EnterLowPowerMode(uint8_t lowpower_index);
 /* Exported functions --------------------------------------------------------*/
 void LowPowerDemo(void)
 {
+  uint32_t joyState = JOY_NONE;
+  uint32_t Button   = 0;
   /* IMPLEMENT APPLICATION HERE */
   
   UTIL_LCD_SetFont(&Font24);
@@ -129,7 +130,8 @@ void LowPowerDemo(void)
   /* Button*/
   UTIL_LCD_DrawRect(110, 76, 100, 26,UTIL_LCD_COLOR_RED); 
   
-  UTIL_LCD_DrawRect(60, 80, 42, 20,UTIL_LCD_COLOR_BLACK);
+  UTIL_LCD_DrawRect(60, 80, 42, 20,UTIL_LCD_COLOR_RED);
+  UTIL_LCD_DrawRect(59, 79, 44, 22,UTIL_LCD_COLOR_RED);
   UTIL_LCD_FillRect(61, 81, 40, 18,UTIL_LCD_COLOR_ST_YELLOW); 
   UTIL_LCD_FillRect(62, 82, 38, 16,UTIL_LCD_COLOR_BLACK);  
   
@@ -190,14 +192,13 @@ void LowPowerDemo(void)
   
   /* Use Joystick interrupt for Wakeup*/
   BSP_JOY_Init(JOY1, JOY_MODE_EXTI, JOY_ALL);
-
   
   do 
   {
-    BSP_TS_GetState(0, &TS_State); 
-    while(TS_State.TouchDetected == 0)
+    joyState = JOY_NONE;
+    while (joyState == JOY_NONE)
     {  
-      BSP_TS_GetState(0, &TS_State);
+      joyState = BSP_JOY_GetState(JOY1);
       UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
       UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_MAGENTA);
       
@@ -229,64 +230,112 @@ void LowPowerDemo(void)
       HAL_Delay(200);
       
     }
-    HAL_Delay(10);
-    while(TS_State.TouchDetected == 1)
-    {  
-      BSP_TS_GetState(0, &TS_State);
-    }
-    HAL_Delay(100);    
-    if ((TS_State.TouchX > 60) && (TS_State.TouchX < 90) && (TS_State.TouchY > 60) && (TS_State.TouchY < 110)) 
-    {
-      if (LowPowerIndex > 0)
+    
+    /* anti bounding assert */ 
+    while ( BSP_JOY_GetState(JOY1) != JOY_NONE);
+    HAL_Delay(100);
+    
+    if (joyState != JOY_SEL)
+    {    
+      Button++;
+      if (Button == 4)
       {
-        LowPowerIndex--;
+        Button = 0;
+      }
+      UTIL_LCD_DrawRect(60, 80, 42, 20,UTIL_LCD_COLOR_BLACK);
+      UTIL_LCD_DrawRect(59, 79, 44, 22,UTIL_LCD_COLOR_WHITE);
+      UTIL_LCD_DrawRect(220, 80, 42, 20,UTIL_LCD_COLOR_BLACK);
+      UTIL_LCD_DrawRect(219, 79, 44, 22,UTIL_LCD_COLOR_WHITE);
+      UTIL_LCD_DrawRect(60, 186, 190, 26,UTIL_LCD_COLOR_BLACK);
+      UTIL_LCD_DrawRect(59, 185, 192, 28,UTIL_LCD_COLOR_WHITE);
+      UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_BLACK);
+      UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_WHITE);
+      
+      switch(Button)
+      {
+      case 0 :
+        UTIL_LCD_DrawRect(60, 80, 42, 20,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(59, 79, 44, 22,UTIL_LCD_COLOR_RED);
+        break;
+      case 1 :
+        UTIL_LCD_DrawRect(220, 80, 42, 20,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(219, 79, 44, 22,UTIL_LCD_COLOR_RED);
+        break;
+      case 2 :
+        UTIL_LCD_DrawRect(60, 186, 190, 26,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(59, 185, 192, 28,UTIL_LCD_COLOR_RED);
+        break;
+      case 3 :
+        UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_RED);
+        break;        
+      default:
+        break;
+      }
+    }
+    
+    
+    
+    if (joyState == JOY_SEL) 
+    {
+      
+      
+      if (Button == 0)
+      {
+        
+        if (LowPowerIndex > 0)
+        {
+          LowPowerIndex--;
+          
+        }
+        UTIL_LCD_SetFont(&Font16);
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
+        UTIL_LCD_DisplayStringAt(4, 82, LowpowerStrTab[LowPowerIndex], CENTER_MODE); 
+        HAL_Delay(100);
         
       }
-      UTIL_LCD_SetFont(&Font16);
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
-      UTIL_LCD_DisplayStringAt(4, 82, LowpowerStrTab[LowPowerIndex], CENTER_MODE); 
-      
-      
-    }
-    if ((TS_State.TouchX > 220) && (TS_State.TouchX < 250) && (TS_State.TouchY > 60) && (TS_State.TouchY <110)) 
-    {
-      
-      if (LowPowerIndex < 6)
+      if (Button == 1)
       {
-        LowPowerIndex++;
+        
+        if (LowPowerIndex < 6)
+        {
+          LowPowerIndex++;
+        }
+        
+        UTIL_LCD_SetFont(&Font16);
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
+        UTIL_LCD_DisplayStringAt(4, 82, LowpowerStrTab[LowPowerIndex], CENTER_MODE); 
+        HAL_Delay(100);
       }
       
-      UTIL_LCD_SetFont(&Font16);
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
-      UTIL_LCD_DisplayStringAt(4, 82, LowpowerStrTab[LowPowerIndex], CENTER_MODE); 
-      
-    }
-    
-    if ((TS_State.TouchX > 40) && (TS_State.TouchX < 200) && (TS_State.TouchY > 180) && (TS_State.TouchY < 210)) 
-    {
- 
-      
-      UTIL_LCD_SetFont(&Font16);
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_RED);
-      UTIL_LCD_DisplayStringAt(40, 220, (uint8_t *) "System in Low Power ", LEFT_MODE);
-      
-      EnterLowPowerMode(LowPowerIndex); 
-
-     
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_GREEN);
-      
-      UTIL_LCD_DisplayStringAt(40, 220, (uint8_t *) "System in Run mode ", LEFT_MODE); 
-      
-      HAL_Delay(10);
+      if (Button == 2)
+      {
+        
+        
+        UTIL_LCD_SetFont(&Font16);
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DisplayStringAt(40, 220, (uint8_t *) "System in Low Power ", LEFT_MODE);
+        
+        EnterLowPowerMode(LowPowerIndex); 
+        
+        
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_GREEN);
+        
+        UTIL_LCD_DisplayStringAt(40, 220, (uint8_t *) "System in Run mode ", LEFT_MODE); 
+        
+      }
+      if (Button == 3)
+      {
+        break;  
+      }
     }
     
     
-    
-  } while (( TS_State.TouchX < 270) || (TS_State.TouchY < 210)); 
+  } while (1); 
 }
 
 /**

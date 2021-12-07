@@ -99,6 +99,8 @@ void OPENBL_USB_DeInit(void)
 {
   __HAL_RCC_USB_CLK_DISABLE();
   HAL_NVIC_DisableIRQ(OTG_FS_IRQn);
+  __HAL_RCC_USB_FORCE_RESET();
+  __HAL_RCC_USB_RELEASE_RESET();
 }
 
 /**

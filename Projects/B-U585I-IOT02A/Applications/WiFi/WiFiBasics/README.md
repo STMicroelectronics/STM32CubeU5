@@ -47,12 +47,8 @@ WiFi, Wireless, Ping, Scan, Connectivity, Network Library, WPA , WPA2, WiFi modu
 
 ### <b>Hardware and Software environment</b>
 
- - The EMW3080B MXCHIP Wi-Fi module firmware and the way to update your board with it
+ - The EMW3080B MXCHIP Wi-Fi module firmware used version is V2.1.11 and the way to update your board with it
    are available at [x-wifi-emw3080b](https://www.st.com/en/development-tools/x-wifi-emw3080b.html).
-
- - Before using this project, you shall update your B-U585I-IOT02A RevC board with the EMW3080B firmware version 2.1.11.  
-   To achieve this, follow the instructions given at the above link, using the EMW3080updateV2.1.11RevC.bin flasher under the V2.1.11/SPI folder.
-
 
  - This application runs on STM32U585xx devices without security enabled (TZEN=0).
 

@@ -49,9 +49,6 @@ int32_t Es_demo(void)
   float                     value;
 
   printf("\n******ENV SENSOR******\n");
-  
-  StartExample();
-
   printf("Press user button for next step\n");
 
   /* Initialize user button */

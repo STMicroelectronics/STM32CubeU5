@@ -61,8 +61,8 @@ typedef struct
                                      value 'LPBAM_ADC_ANALOGWATCHDOG_ALL_REG' to monitor all channels, value
                                      'LPBAM_ADC_ANALOGWATCHDOG_NONE' to monitor no channel.
                                      This parameter can be a value of @ref LPBAM_ADC_AnalogWatchDog_Mode.
-                                     Note: For Analog Watchdog 2 and 3 and when using 
-                                           'LPBAM_ADC_ANALOGWATCHDOG_SINGLE_REG' several channels can be monitored by 
+                                     Note: For Analog Watchdog 2 and 3 and when using
+                                           'LPBAM_ADC_ANALOGWATCHDOG_SINGLE_REG' several channels can be monitored by
                                            combinate several channels.                                                */
 
   uint32_t Channel;             /*!< Select which ADC channel to monitor by analog watchdog.

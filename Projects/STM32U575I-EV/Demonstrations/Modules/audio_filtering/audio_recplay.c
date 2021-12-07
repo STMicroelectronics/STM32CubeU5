@@ -56,7 +56,6 @@ __IO int16_t UpdatePointer = -1;
 
 static __IO uint8_t UserEvent=0;
 static __IO uint8_t UserEntry=0;
-static TS_State_t TS_State;
 static uint8_t FilterModeIndex = 4,  PrevIndex = 4;
 static uint8_t FilterModeStrTab[6][10]={"FASTSINC"," SINC1  "," SINC2  "," SINC3  "," SINC4  ","SINC5  "};
 
@@ -75,6 +74,8 @@ static int32_t CS42L51_PowerDown(void);
 /* Exported functions --------------------------------------------------------*/
 void Audio_Recplay_Demo(void)
 {
+  uint32_t joyState = JOY_NONE;
+  uint32_t Button   = 0;
   /* IMPLEMENT APPLICATION HERE */
   
   Digital_filter_module = 1;
@@ -108,7 +109,8 @@ void Audio_Recplay_Demo(void)
   /* Button*/
   UTIL_LCD_DrawRect(110, 76, 100, 26,UTIL_LCD_COLOR_RED); 
   
-  UTIL_LCD_DrawRect(60, 80, 42, 20,UTIL_LCD_COLOR_BLACK);
+  UTIL_LCD_DrawRect(60, 80, 42, 20,UTIL_LCD_COLOR_RED);
+  UTIL_LCD_DrawRect(59, 79, 44, 22,UTIL_LCD_COLOR_RED);
   UTIL_LCD_FillRect(61, 81, 40, 18,UTIL_LCD_COLOR_ST_YELLOW); 
   UTIL_LCD_FillRect(62, 82, 38, 16,UTIL_LCD_COLOR_BLACK);  
   
@@ -130,9 +132,9 @@ void Audio_Recplay_Demo(void)
   UTIL_LCD_SetFont(&Font16);  
   UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_PURPLE);
-  UTIL_LCD_DisplayStringAt(4, 140, (uint8_t *)"Please hear the audio", CENTER_MODE);
-  UTIL_LCD_DisplayStringAt(4, 160, (uint8_t *)"quality when modify ", CENTER_MODE);
-  UTIL_LCD_DisplayStringAt(4, 180, (uint8_t *)"MDF Filters Mode", CENTER_MODE);
+  UTIL_LCD_DisplayStringAt(4, 140, (uint8_t *)"Please modify MDF ", CENTER_MODE);
+  UTIL_LCD_DisplayStringAt(4, 160, (uint8_t *)"filters mode and hear", CENTER_MODE);
+  UTIL_LCD_DisplayStringAt(4, 180, (uint8_t *)"the audio quality", CENTER_MODE);
 
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_RED);
   UTIL_LCD_DisplayStringAt(4, 200, (uint8_t *)"! Sound maybe very high !", CENTER_MODE);
@@ -179,77 +181,119 @@ void Audio_Recplay_Demo(void)
    PrevIndex = FilterModeIndex;
   do 
   {
-    BSP_TS_GetState(0, &TS_State); 
-    while(TS_State.TouchDetected == 0)
+    joyState = JOY_NONE;
+    while( joyState == JOY_NONE)
     {  
-      BSP_TS_GetState(0, &TS_State);
+      joyState = BSP_JOY_GetState(JOY1);
+      
     }
-    HAL_Delay(200);  
-    while(TS_State.TouchDetected != 0)
-    {  
-      BSP_TS_GetState(0, &TS_State);
-    }   
-    HAL_Delay(200);  
-    if ((TS_State.TouchX > 60) && (TS_State.TouchX < 90) && (TS_State.TouchY > 60) && (TS_State.TouchY < 110)) 
-    {
-      if (FilterModeIndex > 0)
+    
+    /* anti bounding assert */ 
+    while( BSP_JOY_GetState(JOY1) != JOY_NONE);
+    HAL_Delay(100);
+    
+    if ( joyState != JOY_SEL)
+    {    
+      Button++;
+      if (Button == 3)
       {
-        FilterModeIndex--;
+        Button = 0;
+      }
+      UTIL_LCD_DrawRect(60, 80, 42, 20,UTIL_LCD_COLOR_BLACK);
+      UTIL_LCD_DrawRect(59, 79, 44, 22,UTIL_LCD_COLOR_WHITE);
+      UTIL_LCD_DrawRect(220, 80, 42, 20,UTIL_LCD_COLOR_BLACK);
+      UTIL_LCD_DrawRect(219, 79, 44, 22,UTIL_LCD_COLOR_WHITE);
+      UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_BLACK);
+      UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_WHITE);
+      switch(Button)
+      {
+      case 0 :
+        UTIL_LCD_DrawRect(60, 80, 42, 20,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(59, 79, 44, 22,UTIL_LCD_COLOR_RED);
+        break;
+      case 1 :
+        UTIL_LCD_DrawRect(220, 80, 42, 20,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(219, 79, 44, 22,UTIL_LCD_COLOR_RED);
+        break;
+      case 2 :
+        UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_RED);
+        break;
+      default:
+        break;
+      }
+      
+    }
+    
+    if ( joyState == JOY_SEL) 
+    {
+      
+      if (Button == 0)
+      {
+        if (FilterModeIndex > 0)
+        {
+          FilterModeIndex--;
+          
+        }
+        UTIL_LCD_SetFont(&Font16);
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
+        UTIL_LCD_DisplayStringAt(4, 82, FilterModeStrTab[FilterModeIndex], CENTER_MODE); 
+        
         
       }
-      UTIL_LCD_SetFont(&Font16);
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
-      UTIL_LCD_DisplayStringAt(4, 82, FilterModeStrTab[FilterModeIndex], CENTER_MODE); 
-      
-      
-    }
-    if ((TS_State.TouchX > 220) && (TS_State.TouchX < 250) && (TS_State.TouchY > 60) && (TS_State.TouchY <110)) 
-    {
-      
-      if (FilterModeIndex < 5)
+      if (Button == 1)
       {
-        FilterModeIndex++;
+        
+        if (FilterModeIndex < 5)
+        {
+          FilterModeIndex++;
+        }
+        
+        UTIL_LCD_SetFont(&Font16);
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
+        UTIL_LCD_DisplayStringAt(4, 82, FilterModeStrTab[FilterModeIndex], CENTER_MODE); 
+        
+      }  
+      
+      if ( PrevIndex != FilterModeIndex)
+      {
+        if(HAL_OK != HAL_SAI_DMAStop(&SaiHandle))
+        {
+          Error_Handler();
+        }   
+        if (HAL_MDF_AcqStop_DMA(&MDFHandle) != HAL_OK)
+        {
+          Error_Handler();
+        }      
+        
+        MDF_FilterConfig(FilterModeTab[FilterModeIndex]);
+        
+        /* Configure MDF DMA */
+        MDF_DMAConfig();
+        
+        if (HAL_MDF_AcqStart_DMA(&MDFHandle, &MDFFilterConfig, &DMAConfig) != HAL_OK)
+        {
+          Error_Handler();
+        }
+        /* Audio play*/
+        if(HAL_OK != HAL_SAI_Transmit_DMA(&SaiHandle, (uint8_t *) &RecBuff[0], (REC_BUFF_SIZE * 2U)))
+        {
+          Error_Handler();
+        }
+        PrevIndex = FilterModeIndex;
+      }
+      if (Button == 2)
+      {
+        break;  
       }
       
-      UTIL_LCD_SetFont(&Font16);
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
-      UTIL_LCD_DisplayStringAt(4, 82, FilterModeStrTab[FilterModeIndex], CENTER_MODE); 
-      
-    }  
-    
-    if ( PrevIndex != FilterModeIndex)
-    {
-       if(HAL_OK != HAL_SAI_DMAStop(&SaiHandle))
-       {
-         Error_Handler();
-       }   
-       if (HAL_MDF_AcqStop_DMA(&MDFHandle) != HAL_OK)
-       {
-         Error_Handler();
-       }      
-       
-       MDF_FilterConfig(FilterModeTab[FilterModeIndex]);
-       
-       /* Configure MDF DMA */
-       MDF_DMAConfig();
-       
-       if (HAL_MDF_AcqStart_DMA(&MDFHandle, &MDFFilterConfig, &DMAConfig) != HAL_OK)
-       {
-         Error_Handler();
-       }
-       /* Audio play*/
-       if(HAL_OK != HAL_SAI_Transmit_DMA(&SaiHandle, (uint8_t *) &RecBuff[0], (REC_BUFF_SIZE * 2U)))
-       {
-         Error_Handler();
-       }
-       PrevIndex = FilterModeIndex;
     }
 
  
     
-  } while (( TS_State.TouchX < 270) || (TS_State.TouchY < 210));
+  } while (1);
   
   
     /* Enable SAI to generate clock used by audio driver */
@@ -261,10 +305,7 @@ void Audio_Recplay_Demo(void)
   }  
   CS42L51_PowerDown();
 
- 
-
-  
-  
+   
   HAL_SAI_DMAStop(&SaiHandle);
   
   

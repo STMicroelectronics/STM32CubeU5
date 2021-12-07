@@ -63,9 +63,9 @@ extern "C" {
 #define LPBAM_DAC_TRIGGER_T7_TRGO    (0x06) /*!< TIM7 TRGO selected as external conversion trigger for DAC channel  */
 #define LPBAM_DAC_TRIGGER_T8_TRGO    (0x07) /*!< TIM8 TRGO selected as external conversion trigger for DAC channel  */
 #define LPBAM_DAC_TRIGGER_T15_TRGO   (0x08) /*!< TIM15 TRGO selected as external conversion trigger for DAC channel */
-#define LPBAM_DAC_TRIGGER_LPTIM1_OUT (0x0B) /*!< LPTIM1 OUT TRGO selected as external conversion trigger for DAC
+#define LPBAM_DAC_TRIGGER_LPTIM1_CH1 (0x0B) /*!< LPTIM1 CH1 selected as external conversion trigger for DAC
                                                  channel                                                            */
-#define LPBAM_DAC_TRIGGER_LPTIM3_OUT (0x0C) /*!< LPTIM3 OUT TRGO selected as external conversion trigger for DAC
+#define LPBAM_DAC_TRIGGER_LPTIM3_CH1 (0x0C) /*!< LPTIM3 CH1 selected as external conversion trigger for DAC
                                                  channel                                                            */
 #define LPBAM_DAC_TRIGGER_EXT_IT9    (0x0D) /*!< EXTI Line9 event selected as external conversion trigger for DAC
                                                  channel                                                            */

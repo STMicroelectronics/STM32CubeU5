@@ -11,7 +11,7 @@ basic GUI interface. It is based on the STM32Cube HAL BSP and several middleware
 ### <b>Demonstration Overview</b>
 
 At startup once the STMicroelectronics logo display is completed, the supported demos
-will be viewed per icon. Use the JOYSTICK or the Touch Screen to navigate through the icons and select the 
+will be viewed per icon. Use the JOYSTICK to navigate through the icons and select the 
 demonstration modules.
 
 Below you find an overview of the different modules present in the demonstration:
@@ -76,7 +76,7 @@ Below you find an overview of the different modules present in the demonstration
  + Camera viewer
  --------------
  The Camera viewer module allows to display pictures captured by the camera. To return to the main menu, you have 
- to use the joystick or touch the screen.
+ to use the joystick.
 
  + Calendar
  --------------

@@ -4,6 +4,7 @@ HeaderPath=../../../../../../Drivers/BSP/Components/mx_wifi; ../../../../../../M
 Define=
 HALModule=
 [Groups]
+Doc=../README.md;
 Drivers/BSP/B-U585I-IOT02A=..\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a.c;
 Drivers/BSP/Components/mx_wifi=..\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\mx_wifi.c;
 Drivers/BSP/Components/mx_wifi/io_pattern=..\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\io_pattern\mx_wifi_spi.c;

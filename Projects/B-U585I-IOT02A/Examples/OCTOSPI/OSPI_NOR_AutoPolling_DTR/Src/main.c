@@ -46,10 +46,10 @@ OSPI_HandleTypeDef hospi2;
 
 /* USER CODE BEGIN PV */
 /* Buffer used for transmission */
-uint8_t aTxBuffer[BUFFERSIZE];
+     uint8_t aTxBuffer[BUFFERSIZE];
 
 /* Buffer used for reception */
-uint8_t aRxBuffer[BUFFERSIZE];
+__IO uint8_t aRxBuffer[BUFFERSIZE];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -180,7 +180,7 @@ int main(void)
     Error_Handler();
   }
 
-  if (HAL_OSPI_Receive(&hospi2, aRxBuffer, HAL_OSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_OSPI_Receive(&hospi2, (uint8_t *)aRxBuffer, HAL_OSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     Error_Handler();
   }
@@ -231,6 +231,13 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
+  /* Switch to SMPS regulator instead of LDO */
+  if(HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
   /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;

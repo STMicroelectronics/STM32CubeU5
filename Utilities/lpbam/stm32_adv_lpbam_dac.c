@@ -19,8 +19,8 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the GettingStarted.html document before starting developing an LPBAM
-      application.
+      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
+      developing an LPBAM application.
 
     *** Driver description ***
     ==========================
@@ -56,7 +56,7 @@
     [..]
       Use ADV_LPBAM_DAC_Conversion_SetConfigQ() API to build a linked-list queue that configures the DAC
       peripheral according to parameters in the LPBAM_DAC_ConfigAdvConf_t structure.
-      Configured parameters are :
+      Configuration parameters are :
           (+) DAC_Trigger : Specifies the DAC source trigger selection.
                             This parameter can be a value of @ref DAC_trigger_selection.
 
@@ -72,7 +72,7 @@
           (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
-      Configured parameters are :
+      Configuration parameters are :
           (+) Alignment : Specifies the DAC alignment.
                           This parameter can be a value of @ref LPBAM_DAC_DataAlignment.
           (+) pData     : Specifies the source buffer of data .
@@ -90,7 +90,7 @@
           (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
-      Configured parameters are :
+      Configuration parameters are :
           (+) DAC_Trigger : Specifies the DAC source trigger selection.
                             This parameter can be a value of @ref DAC_trigger_selection.
           (+) Alignment   : Specifies the DAC alignment.
@@ -153,8 +153,8 @@
               (++) DMA_IT_USE : user setting error.
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
 
-    *** Constraints ***
-    ===================
+    *** Recommendation ***
+    ======================
     [..]
       It's strongly not recommended to call ADV_LPBAM_DAC_Conversion_SetConfigQ() consecutively.
 

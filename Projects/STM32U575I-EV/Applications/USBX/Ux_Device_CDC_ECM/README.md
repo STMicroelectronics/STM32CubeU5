@@ -109,9 +109,10 @@ It is mandatory to check that the Jumpers bellow are fitted:
     JP6  (UCPD_SNK03).
     JP7  (USBPD_SNK01).
     JP14 (UCPD_FTL).
+    JP25 (5V_STLK)
 
-Also check that the jumpers bellow are disconnected:
-    JP25 and JP6.
+Also check that the jumper bellow is disconnected:
+    JP8.
 
 ### <b>How to use it ?</b>
 

@@ -589,14 +589,14 @@
               <FilePath>../../../../../Drivers/BSP/Components/hts221/hts221_reg.c</FilePath>
             </File>
             <File>
-              <FileName>ism330dlc.c</FileName>
+              <FileName>ism330dhcx.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../Drivers/BSP/Components/ism330dlc/ism330dlc.c</FilePath>
+              <FilePath>../../../../../Drivers/BSP/Components/ism330dhcx/ism330dhcx.c</FilePath>
             </File>
             <File>
-              <FileName>ism330dlc_reg.c</FileName>
+              <FileName>ism330dhcx_reg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../Drivers/BSP/Components/ism330dlc/ism330dlc_reg.c</FilePath>
+              <FilePath>../../../../../Drivers/BSP/Components/ism330dhcx/ism330dhcx_reg.c</FilePath>
             </File>
             <File>
               <FileName>lps22hh.c</FileName>

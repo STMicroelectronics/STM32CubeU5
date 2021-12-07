@@ -44,7 +44,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 extern UX_HOST_CLASS_STORAGE        *storage;
-extern FX_MEDIA                      media;
+extern FX_MEDIA                     *media;
 extern TX_QUEUE                     ux_app_MsgQueue_msc;
 /* USER CODE END PV */
 
@@ -72,10 +72,10 @@ void  msc_process_thread_entry(ULONG arg)
   while (1)
   {
     status = tx_queue_receive(&ux_app_MsgQueue_msc, &media, TX_WAIT_FOREVER);
-    if ((storage != NULL) && (&media != NULL))
+    if ((storage != NULL) && (media != NULL))
     {
       /* Create a file */
-      status = App_File_Create(&media);
+      status = App_File_Create(media);
 
       /* check status */
       if (status == UX_SUCCESS)
@@ -90,7 +90,7 @@ void  msc_process_thread_entry(ULONG arg)
 
       /* Start write File Operation */
       USBH_UsrLog("Write Process ...... \n");
-      status = App_File_Write(&media);
+      status = App_File_Write(media);
 
       /* check status */
       if (status == UX_SUCCESS)
@@ -105,7 +105,7 @@ void  msc_process_thread_entry(ULONG arg)
 
       /* Start Read File Operation and comparison operation */
       USBH_UsrLog("Read Process  ...... \n");
-      status = App_File_Read(&media);
+      status = App_File_Read(media);
 
       /* check status */
       if (status == UX_SUCCESS)

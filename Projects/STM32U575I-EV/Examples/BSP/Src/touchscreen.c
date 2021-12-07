@@ -62,97 +62,90 @@ void Touchscreen_demo(void)
   while (1)
   {
     /* Check in interrupt in touch screen the touch status and coordinates    */
-      /* if touch occurred                                                      */
-    if (TouchDetected == SET)
+    /* if touch occurred                                                      */
+    BSP_TS_GetState(0, &TS_State);
+    if(TS_State.TouchDetected)
     {
-      TouchDetected = RESET;
+      /* Get X and Y position of the touch */
+      x = TS_State.TouchX;
+      y = TS_State.TouchY;
       
-      if (BSP_TS_GetState(0, &TS_State) != BSP_ERROR_NONE)
+      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
+      sprintf((char*)text, "Nb touch detected = %lu", (unsigned long)TS_State.TouchDetected);
+      UTIL_LCD_DisplayStringAt(15, 200, (uint8_t *)&text, LEFT_MODE);
+      
+      /* Display 1st touch detected coordinates */
+      sprintf((char*)text, "1[%d,%d]    ", x, y);
+      UTIL_LCD_DisplayStringAt(15, 215, (uint8_t *)&text, LEFT_MODE);
+      
+      /* Weight not supported so radius maximum */
+      radius = CIRCLE_RADIUS;
+      
+      if ((y > (CIRCLE_YPOS(1) - CIRCLE_RADIUS)) &&
+          (y < (CIRCLE_YPOS(1) + CIRCLE_RADIUS)))
       {
-        Error_Handler();
-      }
-      if(TS_State.TouchDetected)
-      {
-        /* Get X and Y position of the touch post calibrated */
-        x = TS_State.TouchX;
-        y = TS_State.TouchY;
-
-        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
-        sprintf((char*)text, "Nb touch detected = %lu", (unsigned long)TS_State.TouchDetected);
-        UTIL_LCD_DisplayStringAt(15, 200, (uint8_t *)&text, LEFT_MODE);
-
-        /* Display 1st touch detected coordinates */
-        sprintf((char*)text, "1[%d,%d]    ", x, y);
-        UTIL_LCD_DisplayStringAt(15, 215, (uint8_t *)&text, LEFT_MODE);
         
-        /* Weight not supported so radius maximum */
-        radius = CIRCLE_RADIUS;
-
-        if ((y > (CIRCLE_YPOS(1) - CIRCLE_RADIUS)) &&
-            (y < (CIRCLE_YPOS(1) + CIRCLE_RADIUS)))
+        if ((x > (CIRCLE_XPOS(1) - CIRCLE_RADIUS)) &&
+            (x < (CIRCLE_XPOS(1) + CIRCLE_RADIUS)))
         {
-
-          if ((x > (CIRCLE_XPOS(1) - CIRCLE_RADIUS)) &&
-              (x < (CIRCLE_XPOS(1) + CIRCLE_RADIUS)))
+          if ((radius != radius_previous) || (state != 1))
           {
-            if ((radius != radius_previous) || (state != 1))
+            if (state != 1) /* Erase previous filled circle */
             {
-              if (state != 1) /* Erase previous filled circle */
-              {
-                Touchscreen_DrawBackground(state);
-              }
-              UTIL_LCD_FillCircle(CIRCLE_XPOS(1), CIRCLE_YPOS(1), radius, UTIL_LCD_COLOR_ST_BLUE_DARK);
-              radius_previous = radius;
-              state = 1;
+              Touchscreen_DrawBackground(state);
             }
+            UTIL_LCD_FillCircle(CIRCLE_XPOS(1), CIRCLE_YPOS(1), radius, UTIL_LCD_COLOR_ST_BLUE_DARK);
+            radius_previous = radius;
+            state = 1;
           }
-          if ((x > (CIRCLE_XPOS(2) - CIRCLE_RADIUS)) &&
-              (x < (CIRCLE_XPOS(2) + CIRCLE_RADIUS)))
+        }
+        if ((x > (CIRCLE_XPOS(2) - CIRCLE_RADIUS)) &&
+            (x < (CIRCLE_XPOS(2) + CIRCLE_RADIUS)))
+        {
+          if ((radius != radius_previous) || (state != 2))
           {
-            if ((radius != radius_previous) || (state != 2))
+            if (state != 2) /* Erase previous filled circle */
             {
-              if (state != 2) /* Erase previous filled circle */
-              {
-                Touchscreen_DrawBackground(state);
-              }
-              UTIL_LCD_FillCircle(CIRCLE_XPOS(2), CIRCLE_YPOS(2), radius, UTIL_LCD_COLOR_RED);
-              radius_previous = radius;
-              state = 2;
+              Touchscreen_DrawBackground(state);
             }
+            UTIL_LCD_FillCircle(CIRCLE_XPOS(2), CIRCLE_YPOS(2), radius, UTIL_LCD_COLOR_RED);
+            radius_previous = radius;
+            state = 2;
           }
-
-          if ((x > (CIRCLE_XPOS(3) - CIRCLE_RADIUS)) &&
-              (x < (CIRCLE_XPOS(3) + CIRCLE_RADIUS)))
+        }
+        
+        if ((x > (CIRCLE_XPOS(3) - CIRCLE_RADIUS)) &&
+            (x < (CIRCLE_XPOS(3) + CIRCLE_RADIUS)))
+        {
+          if ((radius != radius_previous) || (state != 4))
           {
-            if ((radius != radius_previous) || (state != 4))
+            if (state != 4) /* Erase previous filled circle */
             {
-              if (state != 4) /* Erase previous filled circle */
-              {
-                Touchscreen_DrawBackground(state);
-              }
-              UTIL_LCD_FillCircle(CIRCLE_XPOS(3), CIRCLE_YPOS(3), radius, UTIL_LCD_COLOR_YELLOW);
-              radius_previous = radius;
-              state = 4;
+              Touchscreen_DrawBackground(state);
             }
+            UTIL_LCD_FillCircle(CIRCLE_XPOS(3), CIRCLE_YPOS(3), radius, UTIL_LCD_COLOR_YELLOW);
+            radius_previous = radius;
+            state = 4;
           }
-
-          if ((x > (CIRCLE_XPOS(4) - CIRCLE_RADIUS)) &&
-              (x < (CIRCLE_XPOS(4) + CIRCLE_RADIUS)))
+        }
+        
+        if ((x > (CIRCLE_XPOS(4) - CIRCLE_RADIUS)) &&
+            (x < (CIRCLE_XPOS(4) + CIRCLE_RADIUS)))
+        {
+          if ((radius != radius_previous) || (state != 8))
           {
-            if ((radius != radius_previous) || (state != 8))
+            if (state != 8) /* Erase previous filled circle */
             {
-              if (state != 8) /* Erase previous filled circle */
-              {
-                Touchscreen_DrawBackground(state);
-              }
-              UTIL_LCD_FillCircle(CIRCLE_XPOS(4), CIRCLE_YPOS(3), radius, UTIL_LCD_COLOR_GREEN);
-              radius_previous = radius;
-              state = 8;
+              Touchscreen_DrawBackground(state);
             }
+            UTIL_LCD_FillCircle(CIRCLE_XPOS(4), CIRCLE_YPOS(3), radius, UTIL_LCD_COLOR_GREEN);
+            radius_previous = radius;
+            state = 8;
           }
         }
       }
+      
     }
 
     if (UserButtonPressed == SET)

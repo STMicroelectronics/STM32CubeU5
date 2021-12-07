@@ -214,34 +214,6 @@ void SystemInit(void)
 
     SCB_NS->CPACR |= ((3UL << 20U)|(3UL << 22U));  /* set CP10 and CP11 Full Access */
 #endif
-
-  /* Reset the RCC clock configuration to the default reset state ------------*/
-  /* Set MSION bit */
-  RCC->CR = RCC_CR_MSISON;
-
-  /* Reset CFGR register */
-  RCC->CFGR1 = 0U;
-  RCC->CFGR2 = 0U;
-  RCC->CFGR3 = 0U;
-
-  /* Reset HSEON, CSSON , HSION, PLLxON bits */
-  RCC->CR &= ~(RCC_CR_HSEON | RCC_CR_CSSON | RCC_CR_PLL1ON | RCC_CR_PLL2ON | RCC_CR_PLL3ON);
-
-  /* Reset PLLCFGR register */
-  RCC->PLL1CFGR = 0U;
-
-  /* Reset HSEBYP bit */
-  RCC->CR &= ~(RCC_CR_HSEBYP);
-
-  /* Disable all interrupts */
-  RCC->CIER = 0U;
-
-  /* Configure the Vector Table location add offset address ------------------*/
-#ifdef VECT_TAB_SRAM
-    SCB->VTOR = SRAM1_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM */
-#else
-    SCB->VTOR = FLASH_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal FLASH */
-#endif
 }
 
 /**

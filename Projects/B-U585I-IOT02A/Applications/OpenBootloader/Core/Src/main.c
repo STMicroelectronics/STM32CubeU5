@@ -91,6 +91,10 @@ static void SystemClock_Config(void)
   /* Enable voltage range 1 for frequency above 100 Mhz */
   __HAL_RCC_PWR_CLK_ENABLE();
   HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+  /* Switch to SMPS regulator instead of LDO */
+  HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY);
+
   __HAL_RCC_PWR_CLK_DISABLE();
 
   /* Activate PLL with HSI as source */

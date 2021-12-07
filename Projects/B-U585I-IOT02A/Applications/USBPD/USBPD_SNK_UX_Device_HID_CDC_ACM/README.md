@@ -151,6 +151,7 @@ USB_PD_Lib, UCPD, Type C, USBPD
 <b>Note</b>
 
  - When we configure the VCP baudrate under 9600 the USART1 baudrate shall be set to 9600.
+ - _TRACE and _GUI_INTERFACE compilation switches are now disabled to allow proper execution of CDC_ACM application over VCP. If user wants to use STM32CUbeMonitorUCPD, those 2 flags need to be enabled in project compilation options. 
 
 ### <b>How to use it ?</b>
 

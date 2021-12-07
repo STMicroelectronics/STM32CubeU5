@@ -183,14 +183,14 @@
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/hts221/hts221_reg.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/ism330dlc.c</name>
+			<name>Drivers/BSP/Components/ism330dhcx.c</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/ism330dlc/ism330dlc.c</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/ism330dhcx/ism330dhcx.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/ism330dlc_reg.c</name>
+			<name>Drivers/BSP/Components/ism330dhcx_reg.c</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/ism330dlc/ism330dlc_reg.c</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/ism330dhcx/ism330dhcx_reg.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/Components/lps22hh.c</name>

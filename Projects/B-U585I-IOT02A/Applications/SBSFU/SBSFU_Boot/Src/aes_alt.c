@@ -420,7 +420,7 @@ int mbedtls_aes_crypt_cbc(mbedtls_aes_context *ctx,
         }
 
         /* current output is the IV vector for the next call */
-        memcpy(iv, output, 16);
+        memcpy(iv, &output[length - 16], 16);
     }
 
     /* Save the internal IV vector for multi context purpose */

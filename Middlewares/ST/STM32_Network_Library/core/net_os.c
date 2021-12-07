@@ -19,11 +19,15 @@
 /* Includes ------------------------------------------------------------------*/
 #include "net_connect.h"
 #include "net_internals.h"
+#include "net_perf.h"
+#include "net_mem.h"
+
 #include "stdarg.h"
 #include <inttypes.h>
 
 #ifdef NET_USE_RTOS
 #include "task.h"
+
 
 #if defined(NET_PERF_TASK)
 static const char_t *GetTaskName(TaskHandle_t xHandle);

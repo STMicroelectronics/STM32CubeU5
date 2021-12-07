@@ -45,6 +45,12 @@
 <li>Hardware flow control disabled (RTS and CTS signals)</li>
 <li>Reception and transmission are enabled in the time</li>
 </ul></li>
+<li>This project contains two configuration :
+<ul>
+<li>Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.</li>
+<li>Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.</li>
+</ul></li>
+<li><p>The typical average power consumption of the system performing LPUART transfers is 24.7uA.</p></li>
 <li><p>At the beginning of the main program the HAL_Init() function is called to reset all the peripherals, initialize the Flash interface and the systick. The SystemClock_Config() function is used to configure the system clock for STM32U575xx Devices : The CPU at 160 MHz. The HCLK for AHB peripherals to run at 160 MHz. The APB clock dividers APB1, APB2, APB3 peripherals to run at 160 MHz.</p></li>
 </ul>
 <h4 id="notes"><b>Notes</b></h4>

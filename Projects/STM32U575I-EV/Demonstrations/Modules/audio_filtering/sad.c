@@ -32,7 +32,6 @@ RCC_TypeDef *RCC_DEBUG;
 /* Used to exit application */
 static __IO uint8_t UserEvent=0;
 static __IO uint8_t UserEntry=0;
-static TS_State_t TS_State;
 static uint32_t count=0;
 extern  MDF_HandleTypeDef           MDFHandle;
 static MDF_FilterConfigTypeDef      MDFFilterConfig;
@@ -80,6 +79,8 @@ static void EnterLowPowerMode(void);
 /* Exported functions --------------------------------------------------------*/
 void Sad_Demo(void)
 {
+  uint32_t joyState = JOY_NONE;
+  uint32_t Button   = 0;
   /* IMPLEMENT APPLICATION HERE */
   Digital_filter_module = 0;
   UTIL_LCD_SetFont(&Font20);
@@ -111,7 +112,8 @@ void Sad_Demo(void)
   /* Button*/
   UTIL_LCD_DrawRect(110, 76, 100, 26,UTIL_LCD_COLOR_RED); 
   
-  UTIL_LCD_DrawRect(60, 80, 42, 20,UTIL_LCD_COLOR_BLACK);
+  UTIL_LCD_DrawRect(60, 80, 42, 20,UTIL_LCD_COLOR_RED);
+  UTIL_LCD_DrawRect(59, 79, 44, 22,UTIL_LCD_COLOR_RED);
   UTIL_LCD_FillRect(61, 81, 40, 18,UTIL_LCD_COLOR_ST_YELLOW); 
   UTIL_LCD_FillRect(62, 82, 38, 16,UTIL_LCD_COLOR_BLACK);  
   
@@ -135,9 +137,9 @@ void Sad_Demo(void)
   UTIL_LCD_SetFont(&Font16);  
   UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_PURPLE);
-  UTIL_LCD_DisplayStringAt(4, 130, (uint8_t *)"When Detected Sound is above", CENTER_MODE);
+  UTIL_LCD_DisplayStringAt(4, 130, (uint8_t *)"When detected sound is above", CENTER_MODE);
   UTIL_LCD_DisplayStringAt(4, 150, (uint8_t *)"the threshold, the system will", CENTER_MODE);
-  UTIL_LCD_DisplayStringAt(4, 170, (uint8_t *)"wakeup and return running ", CENTER_MODE);
+  UTIL_LCD_DisplayStringAt(4, 170, (uint8_t *)"wakeup and resume running", CENTER_MODE);
   
   UTIL_LCD_DrawRect(60, 186, 190, 26,UTIL_LCD_COLOR_BLACK);
   UTIL_LCD_FillRect(61, 187, 188, 24,UTIL_LCD_COLOR_ST_YELLOW); 
@@ -170,139 +172,187 @@ void Sad_Demo(void)
   
   do 
   {
-    BSP_TS_GetState(0, &TS_State); 
-    while(TS_State.TouchDetected == 0)
+    
+    joyState = JOY_NONE;
+    while( joyState == JOY_NONE)
     {  
-      BSP_TS_GetState(0, &TS_State);
-    UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-    UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_MAGENTA);
-    
-    if (count%4 == 0)
-    {
-      UTIL_LCD_DisplayStringAt(20, 222, (uint8_t *) "/", LEFT_MODE);      
-      UTIL_LCD_DisplayStringAt(260, 222,  (uint8_t *) "/", LEFT_MODE);      
-
-    }
-    if (count%4 == 1)
-    {
-      UTIL_LCD_DisplayStringAt(20, 222, (uint8_t *) "-", LEFT_MODE);      
-      UTIL_LCD_DisplayStringAt(260, 222, (uint8_t *) "-", LEFT_MODE);      
-    }
-    if (count%4 == 2)
-    {
-      UTIL_LCD_DisplayStringAt(20, 222, (uint8_t *) "\\", LEFT_MODE);      
-      UTIL_LCD_DisplayStringAt(260, 222, (uint8_t *) "\\", LEFT_MODE);      
-
-    }
-    if (count%4 == 3)
-    {
-      UTIL_LCD_DisplayStringAt(20, 222, (uint8_t *) "|", LEFT_MODE);      
-      UTIL_LCD_DisplayStringAt(260, 222, (uint8_t *) "|", LEFT_MODE);      
-    }
-
-    
-    count++;
-    HAL_Delay(200);
-    
-    }
-    HAL_Delay(10);
-    while(TS_State.TouchDetected == 1)
-    {  
-      BSP_TS_GetState(0, &TS_State);
-    }
-    HAL_Delay(100);    
-    if ((TS_State.TouchX > 60) && (TS_State.TouchX < 90) && (TS_State.TouchY > 60) && (TS_State.TouchY < 110)) 
-    {
-      if (ThresholdIndex > 0)
+      joyState = BSP_JOY_GetState(JOY1);
+      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_MAGENTA);
+      
+      if (count%4 == 0)
       {
-        ThresholdIndex--;
+        UTIL_LCD_DisplayStringAt(20, 222, (uint8_t *) "/", LEFT_MODE);      
+        UTIL_LCD_DisplayStringAt(260, 222, (uint8_t *) "/", LEFT_MODE);      
         
       }
-      UTIL_LCD_SetFont(&Font16);
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
-      UTIL_LCD_DisplayStringAt(4, 82, ThresholdStrTab[ThresholdIndex], CENTER_MODE); 
+      if (count%4 == 1)
+      {
+        UTIL_LCD_DisplayStringAt(20, 222, (uint8_t *) "-", LEFT_MODE);      
+        UTIL_LCD_DisplayStringAt(260, 222, (uint8_t *) "-", LEFT_MODE);      
+      }
+      if (count%4 == 2)
+      {
+        UTIL_LCD_DisplayStringAt(20, 222, (uint8_t *) "\\", LEFT_MODE);      
+        UTIL_LCD_DisplayStringAt(260, 222, (uint8_t *) "\\", LEFT_MODE);      
+        
+      }
+      if (count%4 == 3)
+      {
+        UTIL_LCD_DisplayStringAt(20, 222, (uint8_t *) "|", LEFT_MODE);      
+        UTIL_LCD_DisplayStringAt(260, 222, (uint8_t *) "|", LEFT_MODE);      
+      }
       
+      
+      count++;
+      HAL_Delay(200);
       
     }
-    if ((TS_State.TouchX > 220) && (TS_State.TouchX < 250) && (TS_State.TouchY > 60) && (TS_State.TouchY < 110)) 
+    
+    /* anti bounding assert */ 
+    while( BSP_JOY_GetState(JOY1) != JOY_NONE);
+    HAL_Delay(100);
+    
+    if ( joyState != JOY_SEL)
+    {    
+      Button++;
+      if (Button == 4)
+      {
+        Button = 0;
+      }
+      UTIL_LCD_DrawRect(60, 80, 42, 20,UTIL_LCD_COLOR_BLACK);
+      UTIL_LCD_DrawRect(59, 79, 44, 22,UTIL_LCD_COLOR_WHITE);
+      UTIL_LCD_DrawRect(220, 80, 42, 20,UTIL_LCD_COLOR_BLACK);
+      UTIL_LCD_DrawRect(219, 79, 44, 22,UTIL_LCD_COLOR_WHITE);
+      UTIL_LCD_DrawRect(60, 186, 190, 26,UTIL_LCD_COLOR_BLACK);
+      UTIL_LCD_DrawRect(59, 185, 192, 28,UTIL_LCD_COLOR_WHITE);
+      UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_BLACK);
+      UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_WHITE);
+      switch(Button)
+      {
+      case 0 :
+        UTIL_LCD_DrawRect(60, 80, 42, 20,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(59, 79, 44, 22,UTIL_LCD_COLOR_RED);
+        break;
+      case 1 :
+        UTIL_LCD_DrawRect(220, 80, 42, 20,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(219, 79, 44, 22,UTIL_LCD_COLOR_RED);
+        break;
+      case 2 :
+        UTIL_LCD_DrawRect(60, 186, 190, 26,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(59, 185, 192, 28,UTIL_LCD_COLOR_RED);
+        break;
+      case 3 :
+        UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_RED);
+        break;        
+      default:
+        break;
+      }
+      
+    }
+    
+
+    
+    if ( joyState == JOY_SEL) 
     {
       
-      if (ThresholdIndex < 9)
+      if (Button == 0)
       {
-        ThresholdIndex++;
+        if (ThresholdIndex > 0)
+        {
+          ThresholdIndex--;
+          
+        }
+        UTIL_LCD_SetFont(&Font16);
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
+        UTIL_LCD_DisplayStringAt(4, 82, ThresholdStrTab[ThresholdIndex], CENTER_MODE); 
+        
+        
+      }
+      if (Button == 1)
+      {
+        
+        if (ThresholdIndex < 9)
+        {
+          ThresholdIndex++;
+        }
+        
+        UTIL_LCD_SetFont(&Font16);
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
+        UTIL_LCD_DisplayStringAt(4, 82, ThresholdStrTab[ThresholdIndex], CENTER_MODE); 
+        
       }
       
-      UTIL_LCD_SetFont(&Font16);
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
-      UTIL_LCD_DisplayStringAt(4, 82, ThresholdStrTab[ThresholdIndex], CENTER_MODE); 
-      
+      if (Button == 2)
+      {
+        HAL_Delay(200);
+        
+        /* Initialize MDF */
+        MDF_Init();
+        
+        /* Configure MDF Filter */
+        MDF_FilterConfig();
+        
+        
+        /* Configure MDF DMA */
+        MDF_DMAConfig();
+        
+        /* Start MDF Acquisition */
+        if (HAL_MDF_AcqStart_DMA(&MDFHandle, &MDFFilterConfig, &DMAConfig) != HAL_OK)
+        {
+          Error_Handler();
+        }
+        
+        UTIL_LCD_SetFont(&Font16);
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DisplayStringAt(40, 222, (uint8_t *)"System in Stop mode ", LEFT_MODE);
+        HAL_Delay(10);        
+        EnterLowPowerMode();
+        
+        /* Check that the system was resumed from stop 2 */
+        if (__HAL_PWR_GET_FLAG(PWR_FLAG_STOPF) == 0U)
+        {
+          Error_Handler();
+        }
+        
+        /* Clear stop flag */
+        __HAL_PWR_CLEAR_FLAG(PWR_FLAG_STOPF);
+        
+        /* Check that stop flag is cleared */
+        if (__HAL_PWR_GET_FLAG(PWR_FLAG_STOPF) != 0U)
+        {
+          Error_Handler();
+        }
+        SystemClock_Config();
+        
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_GREEN);
+        
+        UTIL_LCD_DisplayStringAt(40, 222, (uint8_t *)"System in Run mode ", LEFT_MODE); 
+        
+        if (HAL_MDF_AcqStop_DMA(&MDFHandle) != HAL_OK)
+        {
+          Error_Handler();
+        }
+        
+        if (HAL_MDF_DeInit(&MDFHandle) != HAL_OK)
+        {
+          Error_Handler();
+        }
+        HAL_Delay(10);
+      }
+
+      if (Button == 3)
+      {
+        break;  
+      }
     }
     
-    if ((TS_State.TouchX > 40) && (TS_State.TouchX < 200) && (TS_State.TouchY > 180) && (TS_State.TouchY < 210)) 
-    {
-      
-      
-      /* Initialize MDF */
-      MDF_Init();
-      
-      /* Configure MDF Filter */
-      MDF_FilterConfig();
-
-      
-      /* Configure MDF DMA */
-      MDF_DMAConfig();
-    
-      /* Start MDF Acquisition */
-      if (HAL_MDF_AcqStart_DMA(&MDFHandle, &MDFFilterConfig, &DMAConfig) != HAL_OK)
-      {
-        Error_Handler();
-      }
-      
-      UTIL_LCD_SetFont(&Font16);
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_RED);
-      UTIL_LCD_DisplayStringAt(40, 222, (uint8_t *)"System in Stop mode ", LEFT_MODE);
-      HAL_Delay(10);        
-      EnterLowPowerMode();
-      
-      /* Check that the system was resumed from stop 2 */
-      if (__HAL_PWR_GET_FLAG(PWR_FLAG_STOPF) == 0U)
-      {
-        Error_Handler();
-      }
-      
-      /* Clear stop flag */
-      __HAL_PWR_CLEAR_FLAG(PWR_FLAG_STOPF);
-      
-      /* Check that stop flag is cleared */
-      if (__HAL_PWR_GET_FLAG(PWR_FLAG_STOPF) != 0U)
-      {
-        Error_Handler();
-      }
-      SystemClock_Config();
-      
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_GREEN);
-      
-      UTIL_LCD_DisplayStringAt(40, 222, (uint8_t *)"System in Run mode ", LEFT_MODE); 
-
-      if (HAL_MDF_AcqStop_DMA(&MDFHandle) != HAL_OK)
-      {
-        Error_Handler();
-      }
-
-      if (HAL_MDF_DeInit(&MDFHandle) != HAL_OK)
-      {
-        Error_Handler();
-      }
-      HAL_Delay(10);
-    }
-    
-
-    
-  } while (( TS_State.TouchX < 270) || (TS_State.TouchY < 200)); 
+  } while (1); 
   
 
 }

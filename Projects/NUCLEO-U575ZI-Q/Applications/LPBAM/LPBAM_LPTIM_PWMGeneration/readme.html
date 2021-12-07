@@ -58,6 +58,18 @@
 </ul></li>
 <li><p>To minimize the power consumption, after starting generating the PWM signal, the MCU enters in Stop 2 mode.</p></li>
 <li><p>User push-button pin (PC.13) is configured as input with external interrupt (EXTI_Line13), falling edge. When User push-button is pressed, wakeup event is generated and green led is turned on.</p></li>
+<li>This project contains two configuration :
+<ul>
+<li>Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+<ul>
+<li>LPTIM1 output signal is mapped on PB.2 pin.</li>
+</ul></li>
+<li>Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+<ul>
+<li>LPTIM1 output signal is not mapped.</li>
+</ul></li>
+</ul></li>
+<li><p>The typical average power consumption of the system performing LPTIM PWM ganeration with changing 5 times signal characteristics is 4.1uA.</p></li>
 <li>NUCLEO-U575ZI-Q board LEDs are used to monitor the transfer status:
 <ul>
 <li>LED1 (green led) is turned on when no error is detected.</li>
@@ -88,7 +100,7 @@
 <ul>
 <li><p>This application runs on STM32U575xx devices without security enabled (TZEN=0).</p></li>
 <li><p>This application has been tested with STMicroelectronics NUCLEO-U575ZI-Q (MB1549) board and can be easily tailored to any other supported device and development board.</p></li>
-<li><p>Connect PB.2 (Pin 19 in CN12 connector) to an oscilloscope to monitor the LPTIM1 output waveform.</p></li>
+<li><p>Connect PB.2 (Pin 22 in CN12 connector) to an oscilloscope to monitor the LPTIM1 output waveform.</p></li>
 </ul>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>
 <ul>

@@ -143,6 +143,7 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <p><b>Note</b></p>
 <ul>
 <li>When we configure the VCP baudrate under 9600 the USART1 baudrate shall be set to 9600.</li>
+<li>_TRACE and _GUI_INTERFACE compilation switches are now disabled to allow proper execution of CDC_ACM application over VCP. If user wants to use STM32CUbeMonitorUCPD, those 2 flags need to be enabled in project compilation options.</li>
 </ul>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>
 <p>In order to make the program work, you must do the following :</p>

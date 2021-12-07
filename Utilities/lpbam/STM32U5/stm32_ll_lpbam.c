@@ -999,6 +999,9 @@ LPBAM_Status_t LPBAM_I2C_FillStructInfo(LPBAM_I2C_ConfNode_t const *const pConfN
 
   uint32_t dummy = 0U;
 
+  /* Automatic end mode state */
+  static LPBAM_FunctionalState xfer_cplt_it_state = DISABLE;
+
   /* Set DMA software request by default */
   pDescInfo->Request   = DMA_REQUEST_SW;
   pDescInfo->Direction = DMA_MEMORY_TO_MEMORY;
@@ -1033,6 +1036,16 @@ LPBAM_Status_t LPBAM_I2C_FillStructInfo(LPBAM_I2C_ConfNode_t const *const pConfN
         {
           /* Disable automatic clear of address match */
           dummy &= ~(I2C_CR1_ADDRACLR);
+        }
+
+        if ((pConfNode->Config.WakeupIT & LPBAM_I2C_IT_TC) == LPBAM_I2C_IT_TC)
+        {
+          /* Software end mode will be used as TC interrupt is enabled */
+          xfer_cplt_it_state = ENABLE;
+        }
+        else
+        {
+          xfer_cplt_it_state = DISABLE;
         }
       }
       else
@@ -1083,7 +1096,7 @@ LPBAM_Status_t LPBAM_I2C_FillStructInfo(LPBAM_I2C_ConfNode_t const *const pConfN
             (pConfNode->Config.Mode == LPBAM_I2C_MASTER_RECEIVE_MODE))
         {
           /* Set default I2C configuration */
-          dummy |= I2C_CR2_START | I2C_CR2_RELOAD | I2C_CR2_RD_WRN | pConfNode->Config.DevAddress |
+          dummy |= I2C_CR2_START | I2C_CR2_RELOAD | I2C_CR2_AUTOEND | I2C_CR2_RD_WRN | pConfNode->Config.DevAddress |
                    ((uint32_t)pConfNode->Config.Size << I2C_CR2_NBYTES_Pos);
 
           /* Sequential data transfer is enabled */
@@ -1128,23 +1141,75 @@ LPBAM_Status_t LPBAM_I2C_FillStructInfo(LPBAM_I2C_ConfNode_t const *const pConfN
             {
               /* Set maximum data to be transferred */
               dummy |= (LPBAM_I2C_MAX_DATA_SIZE << I2C_CR2_NBYTES_Pos);
-              /* Enable auto-end condition */
-              dummy |= I2C_CR2_AUTOEND;
             }
             else
             {
               /* Disable reload data transfer generation */
               dummy &= ~I2C_CR2_RELOAD;
-              /* Remove auto-end condition generation */
-              dummy &= ~(I2C_CR2_AUTOEND);
+
+              if (pConfNode->Config.SequentialDataState == DISABLE)
+              {
+                /* When transfer complete interrupt is requested => use Software end mode */
+                /* Check if TC interrupt is request by LPBAM or by HAL/LL layer  */
+                if (((pConfNode->pInstance->CR1 & I2C_CR1_TCIE) == I2C_CR1_TCIE) || (xfer_cplt_it_state == ENABLE))
+                {
+                  /* activate Software end mode */
+                  dummy &= ~(I2C_CR2_AUTOEND);
+                }
+              }
+              else /* Sequential data state is enabled */
+              {
+                if (pConfNode->Config.IsLastSequentialData == LPBAM_I2C_IS_NOT_LAST_SEQUENTIAL_DATA)
+                {
+                  /* activate Software end mode */
+                  dummy &= ~(I2C_CR2_AUTOEND);
+                }
+                else /* last sequence and last transfer */
+                {
+                  /* When transfer complete interrupt is requested => use Software end mode */
+                  /* Check if TC interrupt is request by LPBAM or by HAL/LL layer  */
+                  if (((pConfNode->pInstance->CR1 & I2C_CR1_TCIE) == I2C_CR1_TCIE) || (xfer_cplt_it_state == ENABLE))
+                  {
+                    /* activate Software end mode */
+                    dummy &= ~(I2C_CR2_AUTOEND);
+                  }
+                }
+              }
             }
           }
           else
           {
             /* Disable reload data transfer generation */
             dummy &= ~I2C_CR2_RELOAD;
-            /* Remove auto-end condition generation */
-            dummy &= ~(I2C_CR2_AUTOEND);
+
+            if (pConfNode->Config.SequentialDataState == DISABLE)
+            {
+              /* When transfer complete interrupt is requested => use Software end mode */
+              /* Check if TC interrupt is request by LPBAM or by HAL/LL layer  */
+              if (((pConfNode->pInstance->CR1 & I2C_CR1_TCIE) == I2C_CR1_TCIE) || (xfer_cplt_it_state == ENABLE))
+              {
+                /* activate Software end mode */
+                dummy &= ~(I2C_CR2_AUTOEND);
+              }
+            }
+            else /* Sequential data state is enabled */
+            {
+              if (pConfNode->Config.IsLastSequentialData == LPBAM_I2C_IS_NOT_LAST_SEQUENTIAL_DATA)
+              {
+                /* activate Software end mode */
+                dummy &= ~(I2C_CR2_AUTOEND);
+              }
+              else
+              {
+                /* When transfer complete interrupt is requested => use Software end mode */
+                /* Check if TC interrupt is request by LPBAM or by HAL/LL layer  */
+                if (((pConfNode->pInstance->CR1 & I2C_CR1_TCIE) == I2C_CR1_TCIE) || (xfer_cplt_it_state == ENABLE))
+                {
+                  /* activate Software end mode */
+                  dummy &= ~(I2C_CR2_AUTOEND);
+                }
+              }
+            }
           }
 
           /* Check for master receive */
@@ -1389,17 +1454,17 @@ LPBAM_Status_t LPBAM_LPTIM_FillStructInfo(LPBAM_LPTIM_ConfNode_t const *const pC
         dummy &= ~(LPTIM_CR_ENABLE);
 
         /* Check LPTIM mode */
-        if (pConfNode->Config.Mode == LPBAM_LPTIM_CM_MODE)
+        if (pConfNode->Config.Mode == LPBAM_LPTIM_UE_MODE)
         {
           /* Check LPTIM instance */
           if (pConfNode->pInstance == LPTIM1)
           {
-            /* Set LPTIM update event request */
+            /* Set LPTIM1 update event request */
             pDescInfo->Request = LPDMA1_REQUEST_LPTIM1_UE;
           }
           else
           {
-            /* Set LPTIM update event request */
+            /* Set LPTIM3 update event request */
             pDescInfo->Request = LPDMA1_REQUEST_LPTIM3_UE;
           }
         }
@@ -1435,7 +1500,7 @@ LPBAM_Status_t LPBAM_LPTIM_FillStructInfo(LPBAM_LPTIM_ConfNode_t const *const pC
       }
 
       /* Check LPTIM mode */
-      if (pConfNode->Config.Mode == LPBAM_LPTIM_CM_MODE)
+      if (pConfNode->Config.Mode == LPBAM_LPTIM_UE_MODE)
       {
         /* Set DMA SW request */
         pDescInfo->Request  = DMA_REQUEST_SW;
@@ -1524,7 +1589,7 @@ LPBAM_Status_t LPBAM_LPTIM_FillStructInfo(LPBAM_LPTIM_ConfNode_t const *const pC
       }
 
       /* Check LPTIM mode */
-      if (pConfNode->Config.Mode == LPBAM_LPTIM_CM_MODE)
+      if (pConfNode->Config.Mode == LPBAM_LPTIM_UE_MODE)
       {
         /* Set DMA SW request */
         pDescInfo->Request = DMA_REQUEST_SW;

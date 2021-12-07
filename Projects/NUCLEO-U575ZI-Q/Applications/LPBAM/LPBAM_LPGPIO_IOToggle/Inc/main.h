@@ -29,7 +29,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include <string.h>
 #include "stm32u5xx_hal.h"
-#include "stm32_lpbam_gpio.h"
+#include "stm32_lpbam.h"
 
 /* Exported constants --------------------------------------------------------*/
 #define GPIO_STATE_BUFFER_SIZE 2U /* GPIO state buffer size */
@@ -46,6 +46,8 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+/* #define DEBUG_CONFIGURATION */
+
 /* LPTIM pulse and period defines */
 #define LPTIM_PWM_PERIOD (uint32_t) (32000 - 1)
 #define LPTIM_PWM_PULSE  LPTIM_PWM_PERIOD / 2U

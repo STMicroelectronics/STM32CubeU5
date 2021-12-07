@@ -22,7 +22,7 @@
 <body>
 <div class="row">
 <section id="usbx_src_ux_host_msc-application-description" class="col-sm-12 col-lg-8">
-<h2><b>USBX_SRC_Ux_Host_MSC Application Description</b></h2>
+<h2><b>USBPD_SRC_UX_Host_MSC Application Description</b></h2>
 <p>This application is a USBPD type C Provider and USB Host using Azure RTOS USBX stack. It shows how to develop a USBPD type C Provider in the case of an USB host application based on Mass Storage “MSC” which is able to enumerate and communicates with a removable usb flash disk.</p>
 <pre><code>USB MSC : The application is designed to behave as an USB MSC Host able to operate with an USB flash disk using the Bulk Only Transfer (BOT) and Small Computer System Interface (SCSI) transparent commands combined with a file system Azure RTOS FileX.
 
@@ -92,15 +92,22 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <p>Connectivity, USBXHost, USBPD, FILEX, ThreadX, MSC, Mass Storage, BOT, SCSI, Removable drive, UART/USART USB_PD_Lib, UCPD, Type C, USBPD</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
-<li><p>This application runs on STM32U575xx devices</p></li>
+<li>This application runs on STM32U575xx devices</li>
 <li><p>This application has been tested with STMicroelectronics STM32U575I-EV MB1550-U575AIQ-C01. and can be easily tailored to any other supported device and development board.</p></li>
-<li><p>STM32U575I-EV Set-up</p>
+<li>STM32U575I-EV Set-up
 <ul>
 <li>Plug the USB key into the STM32U575I-EV board through ‘Type C to A-Female’ cable to the connector:</li>
 <li>Connect ST-Link cable to the PC USB port to display data on the CubeMx Monitor.</li>
 </ul></li>
 </ul>
-<p><b>Note</b> It is mandatory to check that the Jumpers bellow are fitted: JP25 : UCPD_5V Jumper is fitted in order to provide Vbus 5V. JP6 (UCPD_SRC) : This application initialize the type C port in source mode with only one PDO at 5V. JP14 and JP15 : To ensure the correct functionality of TCPP03(Protection IC).</p>
+<p><b>Note</b> It is mandatory to check that the Jumpers below are fitted:</p>
+<ul>
+<li>JP25 : UCPD_5V Jumper is fitted in order to provide Vbus 5V.</li>
+<li>JP25 : 5V_EXT  Jumper is fitted, the board must be powered using the power adaptor not STLIK cable.</li>
+<li>JP6 (UCPD_SNK03) : Not fitted</li>
+<li>JP8 (UCPD_SRC) : Fitted. This application initialize the type C port in source mode with only one PDO at 5V.</li>
+<li>JP14 and JP15 : To ensure the correct functionality of TCPP03 (Protection IC).</li>
+</ul>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>
 <p>In order to make the program work, you must do the following :</p>
 <ul>

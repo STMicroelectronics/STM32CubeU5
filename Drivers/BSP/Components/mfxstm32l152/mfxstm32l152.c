@@ -7,13 +7,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2018-2021 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -41,16 +40,18 @@
 /* Touch screen driver structure initialization */
 MFXSTM32L152_TS_Mode_t MFXSTM32L152_TS_Driver =
 {
-  MFXSTM32L152_Init,
+  MFXSTM32L152_TS_Init,
+  MFXSTM32L152_DeInit,
+  MFXSTM32L152_TS_GestureConfig,
   MFXSTM32L152_ReadID,
-  MFXSTM32L152_Reset,
-  MFXSTM32L152_TS_Start,
-  MFXSTM32L152_TS_DetectTouch,
-  MFXSTM32L152_TS_GetXY,
+  MFXSTM32L152_TS_GetState,
+  MFXSTM32L152_TS_GetMultiTouchState,
+  MFXSTM32L152_TS_GetGesture,
+  MFXSTM32L152_TS_GetCapabilities,
   MFXSTM32L152_TS_EnableIT,
+  MFXSTM32L152_TS_DisableIT,
   MFXSTM32L152_TS_ClearIT,
   MFXSTM32L152_TS_ITStatus,
-  MFXSTM32L152_TS_DisableIT,
 };
 
 /* IO driver structure initialization */
@@ -106,6 +107,9 @@ static int32_t MFXSTM32L152_reg24_setPinValue(MFXSTM32L152_Object_t *pObj, uint8
                                               uint8_t PinValue);
 static int32_t MFXSTM32L152_ReadRegWrap(void *handle, uint16_t Reg, uint8_t *Data, uint16_t Length);
 static int32_t MFXSTM32L152_WriteRegWrap(void *handle, uint16_t Reg, uint8_t *Data, uint16_t Length);
+static int32_t MFXSTM32L152_TS_Start(MFXSTM32L152_Object_t *pObj);
+static int32_t MFXSTM32L152_TS_DetectTouch(MFXSTM32L152_Object_t *pObj);
+static int32_t MFXSTM32L152_TS_GetXY(MFXSTM32L152_Object_t *pObj, uint16_t *X, uint16_t *Y);
 /**
   * @}
   */
@@ -156,6 +160,8 @@ int32_t MFXSTM32L152_DeInit(MFXSTM32L152_Object_t *pObj)
 {
   if (pObj->IsInitialized == 1U)
   {
+    /* De-Initialize IO BUS layer */
+    pObj->IO.DeInit();
     pObj->IsInitialized = 0U;
   }
   return MFXSTM32L152_OK;
@@ -1025,7 +1031,41 @@ int32_t MFXSTM32L152_IO_DisableAF(MFXSTM32L152_Object_t *pObj)
 /* ------------------------------------------------------------------ */
 /* --------------------- TOUCH SCREEN ------------------------------- */
 /* ------------------------------------------------------------------ */
+/**
+  * @brief  Initialize the mfxstm32l152 and start the Touch Screen feature
+  * @param  pObj   Pointer to component object.
+  * @retval Component status
+  */
+int32_t MFXSTM32L152_TS_Init(MFXSTM32L152_Object_t *pObj)
+{
+  int32_t ret = MFXSTM32L152_OK;
 
+  if(pObj->IsInitialized == 0U)
+  {
+    /* Initialize IO BUS layer */
+    pObj->IO.Init();
+
+    if (MFXSTM32L152_SetIrqOutPinPolarity(pObj, MFXSTM32L152_OUT_PIN_POLARITY_HIGH) != MFXSTM32L152_OK)
+    {
+      ret = MFXSTM32L152_ERROR;
+    }
+    else if (MFXSTM32L152_SetIrqOutPinType(pObj, MFXSTM32L152_OUT_PIN_TYPE_PUSHPULL) != MFXSTM32L152_OK)
+    {
+      ret = MFXSTM32L152_ERROR;
+    }
+    else
+    {
+      pObj->IsInitialized = 1U;
+    }
+  }
+  /* Start the Touch Screen controller */
+  if (ret == MFXSTM32L152_OK)
+  {
+    ret = MFXSTM32L152_TS_Start(pObj);
+  }
+
+  return ret;
+}
 /**
   * @brief  Configures the touch Screen Controller (Single point detection)
   * @param  pObj   Pointer to component object.
@@ -1152,6 +1192,98 @@ int32_t MFXSTM32L152_TS_GetXY(MFXSTM32L152_Object_t *pObj, uint16_t *X, uint16_t
   }
 
   return ret;
+}
+
+/**
+  * @brief  Get the touch screen X and Y positions values
+  * @param  pObj Component object pointer
+  * @param  State Single Touch stucture pointer
+  * @retval Component status
+  */
+int32_t MFXSTM32L152_TS_GetState(MFXSTM32L152_Object_t *pObj, MFXSTM32L152_State_t *State)
+{
+  int32_t ret = MFXSTM32L152_OK;
+
+  State->TouchDetected = 0;
+  State->TouchX = 0;
+  State->TouchY = 0;
+
+  if (MFXSTM32L152_TS_DetectTouch(pObj) == 1)
+  {
+    State->TouchDetected = 1;
+    MFXSTM32L152_TS_GetXY(pObj, (uint16_t *)&(State->TouchX), (uint16_t *)&(State->TouchY));
+  }
+
+  return ret;
+}
+
+/**
+  * @brief  Configure the MFXSTM32L152 gesture
+  * @param  pObj  Component object pointer
+  * @param  GestureInit Gesture init structure
+  * @retval MFXSTM32L152_OK
+  */
+int32_t MFXSTM32L152_TS_GestureConfig(MFXSTM32L152_Object_t *pObj, MFXSTM32L152_Gesture_Init_t *GestureInit)
+{
+  /* Prevent unused argument(s) compilation warning */
+  (void)(pObj);
+  (void)(GestureInit);
+
+  /* Always return MFXSTM32L152_OK as feature not supported */
+  return MFXSTM32L152_OK;
+}
+
+/**
+  * @brief  Get the touch screen Xn and Yn positions values in multi-touch mode
+  * @param  pObj Component object pointer
+  * @param  State Multi Touch structure pointer
+  * @retval MFXSTM32L152_OK
+  */
+int32_t MFXSTM32L152_TS_GetMultiTouchState(MFXSTM32L152_Object_t *pObj, MFXSTM32L152_MultiTouch_State_t *State)
+{
+  /* Prevent unused argument(s) compilation warning */
+  (void)(pObj);
+  (void)(State);
+
+  /* Always return MFXSTM32L152_OK as feature not supported */
+  return MFXSTM32L152_OK;
+}
+
+/**
+  * @brief  Get Gesture ID
+  * @param  pObj Component object pointer
+  * @param  GestureId: gesture ID
+  * @retval MFXSTM32L152_OK
+  */
+int32_t MFXSTM32L152_TS_GetGesture(MFXSTM32L152_Object_t *pObj, uint8_t *GestureId)
+{
+  /* Prevent unused argument(s) compilation warning */
+  (void)(pObj);
+  (void)(GestureId);
+
+  /* Always return MFXSTM32L152_OK as feature not supported */
+  return MFXSTM32L152_OK;
+}
+
+/**
+  * @brief  Get MFXSTM32L152 sensor capabilities
+  * @param  pObj Component object pointer
+  * @param  Capabilities pointer to MFXSTM32L152 sensor capabilities
+  * @retval Component status
+  */
+int32_t MFXSTM32L152_TS_GetCapabilities(MFXSTM32L152_Object_t *pObj, MFXSTM32L152_Capabilities_t *Capabilities)
+{
+  /* Prevent unused argument(s) compilation warning */
+  (void)(pObj);
+
+  /* Store component's capabilities */
+  Capabilities->MultiTouch = 1;
+  Capabilities->Gesture    = 1;
+  Capabilities->MaxTouch   = MFXSTM32L152_MAX_NB_TOUCH;
+  Capabilities->MaxXl      = MFXSTM32L152_MAX_X_LENGTH;
+  Capabilities->MaxYl      = MFXSTM32L152_MAX_Y_LENGTH;
+
+  return MFXSTM32L152_OK;
 }
 
 /**
@@ -1798,4 +1930,3 @@ static int32_t MFXSTM32L152_WriteRegWrap(void *handle, uint16_t Reg, uint8_t *pD
 /**
   * @}
   */
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

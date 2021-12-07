@@ -142,25 +142,6 @@ void SysTick_Handler(void)
 /*  available peripheral interrupt handler's name please refer to the startup */
 /*  file (startup_stm32u5xx.s).                                               */
 /******************************************************************************/
-/**
-  * @brief  This function handles GPDMA_Channel0 interrupt request.
-  * @param  None
-  * @retval None
-  */
-void GPDMA1_Channel0_IRQHandler(void)
-{
-  BSP_AUDIO_IN_IRQHandler(0, AUDIO_IN_DEVICE_DIGITAL_MIC2);
-}
-
-/**
-  * @brief  This function handles GPDMA_Channel6 interrupt request.
-  * @param  None
-  * @retval None
-  */
-void GPDMA1_Channel6_IRQHandler(void)
-{
-  BSP_AUDIO_IN_IRQHandler(0, AUDIO_IN_DEVICE_DIGITAL_MIC1);
-} 
 
 /**
   * @brief  This function handles EXTI13 interrupt request.

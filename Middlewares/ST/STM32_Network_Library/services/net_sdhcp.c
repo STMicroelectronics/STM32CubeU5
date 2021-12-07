@@ -25,6 +25,9 @@
 
 #include "net_connect.h"
 #include "net_internals.h"
+#include "net_mem.h"
+#include "net_errors.h"
+
 #include "lwip/tcpip.h"
 
 

@@ -35,6 +35,19 @@
 
 /* Private constants ----------------------------------------------------------*/
 /* Private Variables ---------------------------------------------------------*/
+/* Touch Calibration */
+
+typedef struct
+{
+  uint16_t x;
+  uint16_t y;
+}TouchOffsetTypeDef;
+TouchOffsetTypeDef TouchOffset_MFX[2]=
+{
+  {20,33},   /* MIN_X, MIN_Y */
+  {277,220}, /* MAX_X, MAX_Y */
+};
+
 static TS_State_t TS_State;
 
 #if defined ( __ICCARM__ )
@@ -45,6 +58,7 @@ __attribute__((section("DrawBuffersection")))
 uint8_t DrawBuffer[320*240];
 
 /* Private function prototypes -----------------------------------------------*/
+static int32_t DEMO_TS_GetState(uint32_t Instance, TS_State_t *TS_State);
 /* Private Variable ----------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/
 /* Private typedef -----------------------------------------------------------*/
@@ -88,7 +102,8 @@ void Memory_Access_Demo(void)
   /* Log Panel */
   UTIL_LCD_FillRect(2, 220, 316, 18,UTIL_LCD_COLOR_WHITE);    
   
-  UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_BLACK);
+  UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_RED);
+  UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_RED);
   UTIL_LCD_FillRect(281, 221, 38, 16,UTIL_LCD_COLOR_ST_YELLOW); 
   UTIL_LCD_FillRect(282, 222, 36, 14,UTIL_LCD_COLOR_BLACK);   
 
@@ -102,16 +117,22 @@ void Memory_Access_Demo(void)
   UTIL_LCD_DisplayStringAt(286, 224, (uint8_t *)"BCK", LEFT_MODE);
   
   do {
-    BSP_TS_GetState(0, &TS_State); 
-    while(TS_State.TouchDetected == 0) 
+    DEMO_TS_GetState(0, &TS_State); 
+    while (TS_State.TouchDetected == 0) 
     { 
-      if( BSP_JOY_GetState(JOY1) != JOY_NONE)
+      if (BSP_JOY_GetState(JOY1) != JOY_NONE)
       {
         while ( BSP_JOY_GetState(JOY1) != JOY_NONE);
         return; 
       }
-         
-      BSP_TS_GetState(0, &TS_State);
+      
+      DEMO_TS_GetState(0, &TS_State);
+    }
+    
+    HAL_Delay(10);
+    while (TS_State.TouchDetected == 1)
+    {  
+      DEMO_TS_GetState(0, &TS_State);
     }
     
     if ((TS_State.TouchY > 100) && (TS_State.TouchY < 160)) 
@@ -129,12 +150,12 @@ void Memory_Access_Demo(void)
     }
     else if (((TS_State.TouchY > 30) && (TS_State.TouchY < 92)) || ((TS_State.TouchY > 168) && (TS_State.TouchY < 210)) )
     {
-      /* Autorized access */
+      /* Authorized access */
 
       UTIL_LCD_SetFont(&Font12);
       UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
       UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_GREEN);
-      sprintf(tmp,"Autorized Access: 0x%p ",&DrawBuffer[(320* TS_State.TouchY)+TS_State.TouchX]);
+      sprintf(tmp,"Authorized Access: 0x%p",&DrawBuffer[(320* TS_State.TouchY)+TS_State.TouchX]);
       UTIL_LCD_DisplayStringAt(40, 224, (uint8_t *)tmp, LEFT_MODE);
 
       DrawBuffer[(320* TS_State.TouchY)+TS_State.TouchX] = 0xA5; 
@@ -148,7 +169,27 @@ void Memory_Access_Demo(void)
                                                         
 }
                                                         
-                                                        
+ static int32_t DEMO_TS_GetState(uint32_t Instance, TS_State_t *TS_State)
+{
+  
+  if ( BSP_TS_GetState(Instance, TS_State) != BSP_ERROR_NONE)
+      return BSP_ERROR_UNKNOWN_FAILURE;
+ /* Manual Calibration */
+  if(TS_State->TouchX < TouchOffset_MFX[0].x)
+    TS_State->TouchX = 0;
+  else if(TS_State->TouchX > TouchOffset_MFX[1].x)
+    TS_State->TouchX = 320;
+  else
+    TS_State->TouchX = 320 * (TS_State->TouchX - TouchOffset_MFX[0].x) / (TouchOffset_MFX[1].x - TouchOffset_MFX[0].x);
+  if(TS_State->TouchY < TouchOffset_MFX[0].y)
+    TS_State->TouchY = 0;
+  else if(TS_State->TouchY > TouchOffset_MFX[1].y)
+    TS_State->TouchY = 240;
+  else
+    TS_State->TouchY = 240 * (TS_State->TouchY - TouchOffset_MFX[0].y) / (TouchOffset_MFX[1].y - TouchOffset_MFX[0].y);
+
+  return BSP_ERROR_NONE;
+}
                                                         
                                                         
                                                         

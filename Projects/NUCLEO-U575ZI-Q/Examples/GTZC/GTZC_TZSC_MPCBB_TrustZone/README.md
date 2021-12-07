@@ -138,4 +138,29 @@ In order to make the program work, you must do the following :
  - Load the secure and non-secures images into target memory (Ctrl + D)
  - Run the example
 
+<b>MDK-ARM</b>
 
+ - Open your toolchain
+ - Open Multi-projects workspace file Project.uvmpw
+ - Select the xxxxx_S project as Active Project (Set as Active Project)
+ - Build xxxxx_S project
+ - Select the xxxxx_NS project as Active Project (Set as Active Project)
+ - Build xxxxx_NS project
+ - Load the non-secure binary (F8)
+   (this shall download the \MDK-ARM\xxxxx_ns\Exe\Project_ns.axf to flash memory)
+ - Select the xxxxx_S project as Active Project (Set as Active Project)
+ - Load the secure binary (F8)
+   (this shall download the \MDK-ARM\xxxxx_s\Exe\Project_s.axf to flash memory)
+ - Run the example
+
+<b>STM32CubeIDE</b>
+
+ - Open STM32CubeIDE
+ - File > Import. Point to the STM32CubeIDE folder of the example project. Click Finish.
+ - Select and build the xxxxx_NS project, this will automatically trigger build of xxxxx_S project
+ - Select the xxxxx_S project and select “Debug configuration”
+ - Double click on “STM32 Cortex-M C/C++ Application”
+ - Select  “Startup” >  “Add” >
+ - Select the xxxxx_NS project
+ - Build configuration : Select Release/Debug
+ - Click Debug to debug the example

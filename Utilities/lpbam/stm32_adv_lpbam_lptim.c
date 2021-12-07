@@ -19,8 +19,8 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is recommended to read carefully the GettingStarted.html document before starting developing an LPBAM
-      application.
+      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
+      developing an LPBAM application.
 
     *** Driver description ***
     ==========================
@@ -38,8 +38,8 @@
     =======================
     [..]
       This driver provides the following list of features :
-          (+) Starts the LPTIM channel for PWM, input capture and compare match modes.
-          (+) Stops the LPTIM peripheral for PWM, input capture and compare match modes.
+          (+) Starts the LPTIM channel for PWM, input capture and update event detection modes.
+          (+) Stops the LPTIM peripheral for PWM, input capture and update event detection modes.
           (+) Update the pulse, the period and the repetition values for PWM waveform.
           (+) Get capture values for LPTIM input signal.
           (+) Update the period and the repetition values and starts the LPTIM counter to generate an update event.
@@ -51,11 +51,11 @@
       three different mode :
           (+) PWM mode where the LPTIM channel is configured as output.
           (+) Input capture mode where the LPTIM channel is configured as input.
-          (+) Compare match mode where the LPTIM channel is configured as output.
+          (+) update event detection mode where the LPTIM is initialized (No need for channel configuration).
       The PWM Waveform can be changed by updating the period, pulse and the repetition thanks to a build DMA linked-list
       queue.
       A input capture of external signal can be read and stored in a buffer thanks to a build DMA linked-list queue.
-      A compare match can be configured and started thanks to a build DMA linked-list queue.
+      An update event detection can be configured and started thanks to a build DMA linked-list queue.
 
       The output of this driver is a queue to be executed by the DMA channel.
 
@@ -76,14 +76,14 @@
       in continuous mode according to parameters in the LPBAM_LPTIM_StopFullAdvConf_t structure.
       Configured parameters are :
           (+) Mode  : Specifies the LPTIM Mode.
-                      This parameter can be a value of @ref LPBAM_LPTIM_Mode.
+                      This parameter can be a value of @ref LPBAM_LPTIM_Stop_Mode.
       This API must be called when the LPTIM is enabled for each mode in start a new operation.
 
     [..]
       Use ADV_LPBAM_LPTIM_PWM_SetFullQ() API to build a linked-list queue that updates at each update event request
       generated the the period or/and the pulse or/and the repetition values according to parameters in the
       LPBAM_LPTIM_StartFullAdvConf_t structure.
-      Configured parameters are :
+      Configuration parameters are :
           (+) UpdatePeriod     : Specifies the period update state
                                  This parameter can be ENABLE or DISABLE.
           (+) PeriodValue      : Specifies the period values.
@@ -126,7 +126,7 @@
           (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
-      Configured parameters are :
+      Configuration parameters are :
           (+) pData  : Specifies the address of data buffer.
           (+) Size   : Specifies the size of data to be read.
       This API must be called when the LPTIM Instance is initialized in input mode.
@@ -159,12 +159,12 @@
                    (+++) LPTIM_IT_CC2O : Capture/compare 2 over-capture interrupt enable.
 
     [..]
-      Use ADV_LPBAM_LPTIM_CM_SetFullQ() API to build a linked-list queue that starts the LPTIM compare match according
-      to parameters in the LPBAM_LPTIM_CMFullAdvConf_t structure.
-      Configured parameters are :
-          (+) Period     : Specifies the capture compare period.
-          (+) Repetition : Specifies the capture compare period repetition number.
-      This API must be called when the LPTIM Instance is well initialized Capture compare mode.
+      Use ADV_LPBAM_LPTIM_UE_SetFullQ() API to build a linked-list queue that starts the LPTIM update event detection
+      according to parameters in the LPBAM_LPTIM_UEFullAdvConf_t structure.
+      Configuration parameters are :
+          (+) Period     : Specifies the period value.
+          (+) Repetition : Specifies the period repetition number.
+      This API must be called when the LPTIM Instance is well initialized as follow.
           (+) Recommended LPTIM initialization sequence
               (++) Call HAL_LPTIM_Init() to initialize LPTIM Instance. (Mandatory)
                    Initialization parameters can be :
@@ -180,8 +180,10 @@
                    (+++) Period                        : Initial period value.
                    (+++) RepetitionCounter             : Initial period repetition value.
 
-      The purpose of this API is generating events that can be used for trigger and system wake up purpose. So, the
-      channels output is not enabled and no LPTIM channel signal is propagated.
+      The purpose of this API is to generate an update event after (Period * Repetition) delay that can be used for
+      trigger and system wake up purpose.
+      This API is used to implement a delay between 2 successives LPBAM APIs execution.
+      The channels outputs are not enabled and no LPTIM channel signal is propagated.
 
     *** Driver user sequence ***
     ============================
@@ -226,11 +228,11 @@
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
 
     [..]
-      Compare match user sequence is :
-          (+) Initialize LPTIM channel in output mode (Using HAL/LL). (Mandatory)
+      Update event user sequence is :
+          (+) Initialize the LPTIM (Using HAL/LL). (Mandatory)
           (+) Call ADV_LPBAM_LPTIM_EnableDMARequests() to enable DMA requests and enable channel. (Mandatory)
           (+) Call ADV_LPBAM_LPTIM_Start_SetFullQ() to start the LPTIM channel. (Mandatory)
-          (+) Call ADV_LPBAM_LPTIM_CM_SetFullQ() API according to application.
+          (+) Call ADV_LPBAM_LPTIM_UE_SetFullQ() API according to application.
           (+) Call ADV_LPBAM_LPTIM_Stop_SetFullQ(). (Mandatory)
           (+) Call ADV_LPBAM_Q_SetCircularMode() to circularize your linked-list queue for infinite scenarios cases.
               (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
@@ -244,33 +246,37 @@
               (++) DMA_IT_USE : user setting error.
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
 
-    *** Constraints ***
-    ===================
+    *** Recommendation ***
+    ======================
     [..]
-      After LPTIM initialization, only one mode is supported.
-          (+) PWM mode.
-          (+) Input capture mode.
-          (+) Compare match mode.
+      The period and repetition parameters are common for all LPTIM channels.
+      Case 1: An LPTIM channel is configured in PWM mode:
+          (+) When configuring another channel in PWM mode, it's mandatory to ensure that the same period and repetition
+              are applied for all LPTIM channels when channels operates simultaneously.
+          (+) There are no constraints when configuring another channel in IC mode.
+          (+) When configuring the LPTIM to generate an update event, it's mandatory to ensure that the same period and
+              repetition are applied for all LPTIM channels.
+
+      Case 2: An LPTIM channel is configured in IC mode:
+          (+) There are no constraints when configuring another LPTIM channel in PWM mode.
+          (+) There are no constraints when configuring another LPTIM channel in IC mode.
+          (+) There are no constraints when configuring the LPTIM to generate an update event.
+
+      Case 3: The LPTIM is configured to generate an update event:
+          (+) When configuring a channel in PWM mode, it's mandatory to ensure that the same period and repetition used
+              for update event generation are applied for the LPTIM channels.
+          (+) There are no constraints when configuring another LPTIM channel in IC mode.
 
     [..]
-      When calling ADV_LPBAM_DMA_Stop_SetFullQ(), all LPTIM channels are disabled. So, disabling one LPTIM channel is
+      When calling ADV_LPBAM_LPTIM_Stop_SetFullQ(), all LPTIM channels are disabled. So, disabling one LPTIM channel is
       not possible.
-
-    [..]
-      When configuring more then one LPTIM channel in PWM mode, take into consideration that the LPTIM period and
-      repetition values are shared  between all channels.
-
-    [..]
-      When configuring the LPTIM in compare match mode, it's strongly not recommended to configure another functionality
-      as the period and the repetition valuers are shared between all channels.
+      If the LPTIM is used to generate an update event, Mode field in the LPBAM_LPTIM_StopFullAdvConf_t structure must
+      be configured as LPBAM_LPTIM_UE_MODE independently of channels mode configuration otherwise LPBAM_LPTIM_NO_UE_MODE
+      value for Mode field must be configured.
 
     [..]
       It's strongly not recommended to call any LPTIM API with the same channel by more than one linked-list queue. When
       the LPTIM nodes will be executed simultaneously unexpected behavior will appear.
-
-    [..]
-      It's strongly not recommended to execute the same linked-list queue that contains LPTIM configuration by two
-      different DMA channels simultaneously as unexpected behavior can appear.
 
     *** Driver status description ***
     =================================
@@ -347,7 +353,7 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM_TypeDef                *const 
   config_node.NodeDesc.NodeInfo.NodeType = pDMAListInfo->QueueType;
 
   /* Set LPTIM configuration */
-  config_node.Config.Mode                = LPBAM_LPTIM_PWM_MODE;
+  config_node.Config.Mode                = LPBAM_LPTIM_NO_UE_MODE;
   config_node.Config.Size                = 1U;
 
   if (pPWMFull->UpdatePeriod == ENABLE)
@@ -554,7 +560,7 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_IC_SetFullQ(LPTIM_TypeDef               *const pI
   config_node.NodeDesc.pBuff             = (uint32_t *)buffer_address;
 
   /* Set LPTIM configuration */
-  config_node.Config.Mode                = (uint32_t)LPBAM_LPTIM_IC_MODE;
+  config_node.Config.Mode                = (uint32_t)LPBAM_LPTIM_NO_UE_MODE;
   config_node.Config.CaptureCount        = pICFull->Size;
 
   /* Fill node configuration */
@@ -579,26 +585,23 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_IC_SetFullQ(LPTIM_TypeDef               *const pI
 }
 
 /**
-  * @brief  Build the LPTIM compare match full DMA linked-list queue according to configured parameters in
-  *         LPBAM_LPTIM_CMFullAdvConf_t.
+  * @brief  Build the LPTIM update event detection full DMA linked-list queue according to configured parameters in
+  *         LPBAM_LPTIM_UEFullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a LPTIM_TypeDef structure that selects LPTIM instance.
-  * @param  Channel      : [IN]  Specifies the LPTIM channel.
-  *                              This parameter can be a value of @ref LPBAM_LPTIM_Channel.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
   *                              queue type information.
-  * @param  pCMFull      : [IN]  Pointer to a LPBAM_LPTIM_CMFullAdvConf_t structure that contains compare match
+  * @param  pUEFull      : [IN]  Pointer to a LPBAM_LPTIM_UEFullAdvConf_t structure that contains update event detection
   *                              information.
-  * @param  pDescriptor  : [IN]  Pointer to a LPBAM_LPTIM_CMFullDesc_t structure that contains compare match descriptor
-  *                              information.
+  * @param  pDescriptor  : [IN]  Pointer to a LPBAM_LPTIM_UEFullDesc_t structure that contains update event detection
+  *                              descriptor information.
   * @param  pQueue       : [OUT] Pointer to a DMA_QListTypeDef structure that contains DMA linked-list queue
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_LPTIM_CM_SetFullQ(LPTIM_TypeDef              *const pInstance,
-                                           uint32_t                    Channel,
+LPBAM_Status_t ADV_LPBAM_LPTIM_UE_SetFullQ(LPTIM_TypeDef              *const pInstance,
                                            LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                           LPBAM_LPTIM_CMFullAdvConf_t const *const pCMFull,
-                                           LPBAM_LPTIM_CMFullDesc_t    *const pDescriptor,
+                                           LPBAM_LPTIM_UEFullAdvConf_t const *const pUEFull,
+                                           LPBAM_LPTIM_UEFullDesc_t    *const pDescriptor,
                                            DMA_QListTypeDef            *const pQueue)
 {
   LPBAM_LPTIM_ConfNode_t config_node;
@@ -607,9 +610,8 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_CM_SetFullQ(LPTIM_TypeDef              *const pIn
   uint32_t node_idx = 0U;
   uint32_t reg_idx  = 0U;
 
-  /* Set LPTIM instance and channel */
+  /* Set LPTIM instance */
   config_node.pInstance                   = pInstance;
-  config_node.Config.Channel              = Channel;
 
   /* Set node descriptor */
   config_node.NodeDesc.NodeInfo.NodeType  = pDMAListInfo->QueueType;
@@ -619,7 +621,7 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_CM_SetFullQ(LPTIM_TypeDef              *const pIn
    */
 
   /* Set period value */
-  pDescriptor->pReg[reg_idx]           = pCMFull->Period;
+  pDescriptor->pReg[reg_idx]           = pUEFull->Period;
 
   /* Set node descriptor */
   config_node.NodeDesc.NodeInfo.NodeID = (uint32_t)LPBAM_LPTIM_UPDATE_PERIOD_ID;
@@ -627,7 +629,7 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_CM_SetFullQ(LPTIM_TypeDef              *const pIn
   config_node.NodeDesc.pBuff           = NULL;
 
   /* Set LPTIM configuration */
-  config_node.Config.Mode              = LPBAM_LPTIM_CM_MODE;
+  config_node.Config.Mode              = LPBAM_LPTIM_UE_MODE;
   config_node.Config.Size              = 1U;
 
   /* Fill node configuration */
@@ -658,7 +660,7 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_CM_SetFullQ(LPTIM_TypeDef              *const pIn
    */
 
   /* Set repetition value */
-  pDescriptor->pReg[reg_idx]           = pCMFull->Repetition;
+  pDescriptor->pReg[reg_idx]           = pUEFull->Repetition;
 
   /* Set node descriptor */
   config_node.NodeDesc.NodeInfo.NodeID = (uint32_t)LPBAM_LPTIM_UPDATE_REPETITION_ID;

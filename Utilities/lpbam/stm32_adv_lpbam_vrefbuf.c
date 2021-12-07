@@ -19,8 +19,8 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the GettingStarted.html document before starting developing an LPBAM
-      application.
+      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
+      developing an LPBAM application.
 
     *** Driver description ***
     ==========================
@@ -73,8 +73,8 @@
               (++) DMA_IT_USE : user setting error.
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
 
-    *** Constraints ***
-    ===================
+    *** Recommendation ***
+    ======================
     [..]
       It's strongly not recommended to call ADV_LPBAM_VREFBUF_BufferMode_SetFullQ() with the same instance by more than
       one linked-list queue. When the VREFBUF nodes will be executed simultaneously unexpected behavior will appear.

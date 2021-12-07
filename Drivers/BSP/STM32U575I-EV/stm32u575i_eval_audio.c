@@ -148,13 +148,13 @@
   * @{
   */
 #define MDF_DECIMATION_RATIO(__FREQUENCY__) \
-  ((__FREQUENCY__) == (AUDIO_FREQUENCY_8K))  ? (88U) \
-  : ((__FREQUENCY__) == (AUDIO_FREQUENCY_11K)) ? (64U) \
-  : ((__FREQUENCY__) == (AUDIO_FREQUENCY_16K)) ? (44u) \
-  : ((__FREQUENCY__) == (AUDIO_FREQUENCY_22K)) ? (32U) \
-  : ((__FREQUENCY__) == (AUDIO_FREQUENCY_32K)) ? (22U) \
-  : ((__FREQUENCY__) == (AUDIO_FREQUENCY_44K)) ? (16U) \
-  : ((__FREQUENCY__) == (AUDIO_FREQUENCY_48K)) ? (11U) : (64U)
+  ((__FREQUENCY__) == (AUDIO_FREQUENCY_8K))  ? (352U) \
+  : ((__FREQUENCY__) == (AUDIO_FREQUENCY_11K)) ? (256U) \
+  : ((__FREQUENCY__) == (AUDIO_FREQUENCY_16K)) ? (176U) \
+  : ((__FREQUENCY__) == (AUDIO_FREQUENCY_22K)) ? (64U) \
+  : ((__FREQUENCY__) == (AUDIO_FREQUENCY_32K)) ? (88U) \
+  : ((__FREQUENCY__) == (AUDIO_FREQUENCY_44K)) ? (64U) \
+  : ((__FREQUENCY__) == (AUDIO_FREQUENCY_48K)) ? (44U) : (128U)
 
 /**
   * @}
@@ -1919,7 +1919,7 @@ int32_t BSP_AUDIO_IN_Record(uint32_t Instance, uint8_t *pData, uint32_t NbrOfByt
         /* Initialize filter configuration parameters */
         filterConfig.DataSource      = MDF_DATA_SOURCE_BSMX;
         filterConfig.Delay           = 0U;
-        filterConfig.CicMode         = MDF_ONE_FILTER_SINC5;
+        filterConfig.CicMode         = MDF_ONE_FILTER_SINC4;
         filterConfig.DecimationRatio = MDF_DECIMATION_RATIO(Audio_In_Ctx[Instance].SampleRate);
         filterConfig.Offset          = 0;
         filterConfig.Gain            = 0;
@@ -2981,7 +2981,7 @@ __weak HAL_StatusTypeDef MX_ADF1_Init(MDF_HandleTypeDef *hAdfBlock, MX_ADF_InitT
   hAdfBlock->Init.CommonParam.ProcClockDivider       = 1U;
   hAdfBlock->Init.CommonParam.OutputClock.Activation = ENABLE;
   hAdfBlock->Init.CommonParam.OutputClock.Pins       = MDF_OUTPUT_CLOCK_0;
-  hAdfBlock->Init.CommonParam.OutputClock.Divider    = 16U; /* ADF_CCK = 11.428MHz/16 = 714 KHz */
+  hAdfBlock->Init.CommonParam.OutputClock.Divider    = 4U; /* ADF_CCK = 11.428MHz/4 = 2,856 MHz */
   hAdfBlock->Init.CommonParam.OutputClock.Trigger.Activation = DISABLE;
   hAdfBlock->Init.CommonParam.OutputClock.Trigger.Source     = MDF_CLOCK_TRIG_TRGO;
   hAdfBlock->Init.CommonParam.OutputClock.Trigger.Edge       = MDF_CLOCK_TRIG_RISING_EDGE;

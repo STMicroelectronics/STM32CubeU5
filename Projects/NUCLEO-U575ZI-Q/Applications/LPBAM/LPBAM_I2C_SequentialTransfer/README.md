@@ -17,14 +17,14 @@ This HAL_I2C_MspInit() function allows the user to configure the needed I2C reso
 
 -   The project is split in two parts via compilation flags :
     -   Master Board
-    The ADV_LPBAM_I2C_MasterTransmit_SetDataQ() function allow the transmission of a predefined data buffers in
+    The ADV_LPBAM_I2C_MasterTx_SetDataQ() function allow the transmission of a predefined data buffers in
     Master mode using DMA linked-list.
-    The ADV_LPBAM_I2C_MasterReceive_SetDataQ() function allow the reception of a predefined data buffers in
+    The ADV_LPBAM_I2C_MasterRx_SetDataQ() function allow the reception of a predefined data buffers in
     Master mode using DMA linked-list.
     -   Slave Board
-    The ADV_LPBAM_I2C_SlaveTransmit_SetDataQ() function allow the transmission of a predefined data buffers in
+    The ADV_LPBAM_I2C_SlaveTx_SetDataQ() function allow the transmission of a predefined data buffers in
     Slave mode using DMA linked-list.
-    The ADV_LPBAM_I2C_SlaveReceive_SetDataQ() functions allow the reception of a predefined data buffers in
+    The ADV_LPBAM_I2C_SlaveRx_SetDataQ() functions allow the reception of a predefined data buffers in
     Slave mode using DMA linked-list.
 
 -   In the "main.h" file:
@@ -32,8 +32,8 @@ If the Master board is used, the "#define MASTER_BOARD" must be uncommented, and
 the Slave board.
 
 -   I2C Master Sequence
-    -   In a first step, the MASTER_BOARD application calls ADV_LPBAM_I2C_MasterTransmit_SetDataQ() to send N1 data less
-    than 255 bytes, then calls ADV_LPBAM_I2C_MasterReceive_SetDataQ() to receive N2 data more than 255 bytes (Reload Data).
+    -   In a first step, the MASTER_BOARD application calls ADV_LPBAM_I2C_Masterx_SetDataQ() to send N1 data less
+    than 255 bytes, then calls ADV_LPBAM_I2C_MasterRx_SetDataQ() to receive N2 data more than 255 bytes (Reload Data).
     After that, a linked-list queue is created and placed in the SRAM that will be executed by a DMA channel in STOP 2 low
     power mode.
     This queue contains configuration nodes to set-up the master I2C each time a transfer sequence is achieved and contains
@@ -43,8 +43,8 @@ the Slave board.
     After that, the whole system enters in STOP 2 mode.
 
 -   I2C Slave Sequence
-    -   In a first step, The SLAVE_BOARD application calls ADV_LPBAM_I2C_SlaveReceive_SetDataQ() to receive N1 data less
-    than 255 bytes, then calls ADV_LPBAM_I2C_SlaveTransmit_SetDataQ() to send N2 data more than 255 bytes (Reload Data).
+    -   In a first step, The SLAVE_BOARD application calls ADV_LPBAM_I2C_SlaveRx_SetDataQ() to receive N1 data less
+    than 255 bytes, then calls ADV_LPBAM_I2C_SlaveTx_SetDataQ() to send N2 data more than 255 bytes (Reload Data).
     After that, a linked-list queue is created and placed in the SRAM that will be executed by a DMA channel in STOP 2 low
     power mode.
     This queue contains configuration nodes to set-up the slave I2C each time a transfer sequence is achieved
@@ -65,9 +65,16 @@ the Slave board.
 -   Finally, aTxBuffer1, aRxBuffer1 and aTxBuffer2, aRxBuffer2 are compared through Buffercmp() in order to check buffers
 correctness.
 
+-   This project contains two configuration :
+    -   Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+    -   Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+
+-   The typical average power consumption of the system performing I2C master transmit then receive with reloading data
+is 20.4uA.
+
 -   NUCLEO-U575ZI-Q's LEDs can be used to monitor the transfer status:
     -   LED_GREEN toggles when the transfer process is complete.
-    -   LED_BLUE is ON when the application waits pressing User push-button.
+    -   LED_BLUE toggles when the application waits pressing User push-button.
     -   LED_RED is ON when any error occurred.
 
 #### <b>Notes</b>
@@ -108,8 +115,8 @@ Connectivity, I2C, LPDMA, LPBAM, STOP2, Low power, half-duplex, 7-bit addressing
     and development board.
 
 -   NUCLEO-U575ZI-Q Set-up
-    -   Connect I2C_SCL line of Master board (PC0) to I2C_SCL line of Slave Board (PC0).
-    -   Connect I2C_SDA line of Master board (PC1) to I2C_SDA line of Slave Board (PC1).
+    -   Connect I2C_SCL line of Master board (PC0, CN9, A5) to I2C_SCL line of Slave Board (PC0, CN9, A5).
+    -   Connect I2C_SDA line of Master board (PC1, CN9, A4) to I2C_SDA line of Slave Board (PC1, CN9, A4).
     -   Connect GND of Master board to GND of Slave Board.
 
 ### <b>How to use it ?</b>

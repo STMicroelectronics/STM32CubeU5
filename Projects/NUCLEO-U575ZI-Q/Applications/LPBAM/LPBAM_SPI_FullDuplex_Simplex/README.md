@@ -14,7 +14,6 @@ feature in low power mode through LPBAM utility.
         - MISO Pin: PA6 (CN7.D12)
         - MOSI Pin: PA7 (CN7.D11)
 
-
 -   At the beginning of the main program the HAL_Init() function is called to reset
 all the peripherals, initialize the Flash interface and the systick. The SystemClock_Config()
 function is used to configure the system clock for STM32U575 Devices :
@@ -27,10 +26,10 @@ This HAL_SPI_MspInit() function allows the user to configure the needed SPI reso
 -   The project is split in two parts:
     -   Master Board
         - Communication n°1 : Transmit & Receive Data in FullDuplex mode
-        The ADV_LPBAM_SPI_TransmitReceive_SetDataQ() function is used to establish a full duplex communication
+        The ADV_LPBAM_SPI_TxRx_SetDataQ() function is used to establish a full duplex communication
         using DMA linked-list in low power mode.
         - Communication n°2 : Transmit data in Simplex mode
-        The ADV_LPBAM_SPI_Transmit_SetFullQ() function is used to establish a simplex transmission.
+        The ADV_LPBAM_SPI_Tx_SetFullQ() function is used to establish a simplex transmission.
     -   Slave Board
         - Communication n°1 :
         The HAL_SPI_TransmitReceive_IT function is used to establish a full duplex communication.
@@ -42,10 +41,10 @@ If the Master board is used, the "#define MASTER_BOARD" must be uncommented, and
 the Slave board.
 
 -   SPI Master Sequence :
-    -   In a first step, the MASTER_BOARD application calls ADV_LPBAM_SPI_TransmitReceive_SetDataQ() function to to configure the
+    -   In a first step, the MASTER_BOARD application calls ADV_LPBAM_SPI_TxRx_SetDataQ() function to to configure the
     SPI instance, send  TXBUFFERSIZE1 data and receive RXBUFFERSIZE1 data.
     Then, after the changeset of data width and the BaudRate, the MASTER_BOARD application calls again calls
-    ADV_LPBAM_SPI_Transmit_SetFullQ() to reconfigure the SPI instance and send TXBUFFERSIZE2 data.
+    ADV_LPBAM_SPI_Tx_SetFullQ() to reconfigure the SPI instance and send TXBUFFERSIZE2 data.
 
     -   After that, two linked-list queues are created and placed in the SRAM. Each queue will be executed by a specific DMA
     channel in STOP 2 low power mode.
@@ -67,6 +66,12 @@ the Slave board.
 -   Check after the two communications :
     -   Finally, aTxBuffer1, aRxBuffer1 and aTxBuffer2, aRxBuffer2 are compared through Buffercmp() in order to check buffers
     correctness.
+
+-   This project contains two configuration :
+    -   Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+    -   Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+
+-   The typical average power consumption of the system performing SPI transfers is 18.7uA.
 
 -   NUCLEO-U575ZI-Q's LEDs can be used to monitor the transfer status:
     -   LED_BLUE toggles waiting for any press on User push-button to start the communication.

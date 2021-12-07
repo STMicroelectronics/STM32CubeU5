@@ -18,9 +18,9 @@
   ======================================================================================================================
                                  ############### How to use this driver ###############
   ======================================================================================================================
-  [..]
-      It is strongly recommended to read carefully the GettingStarted.html document before starting developing an LPBAM
-      application.
+    [..]
+      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
+      developing an LPBAM application.
 
     *** Driver description ***
     ==========================
@@ -67,26 +67,26 @@
 
     [..]
       When sequential transfer is activated (SequenceNumber > 1), a transfer with data size greater than 255 bytes is
-      considered as one sequence and ADV_LPBAM_I2C_[Master/Slave][Transmit/Receive]_SetDataQ() should be called x time
-      where x = SequenceNumber.
-      The same when using ADV_LPBAM_I2C_[Master/Slave][Transmit/Receive]_SetFullQ() API. Refer to Driver user sequence
-      for further information about APIs usage.
+      considered as one sequence and ADV_LPBAM_I2C_[Master/Slave][Tx/Rx]_SetDataQ() should be called x time where
+      x = SequenceNumber.
+      The same when using ADV_LPBAM_I2C_[Master/Slave][Tx/Rx]_SetFullQ() API. Refer to Driver user sequence for further
+      information about APIs usage.
 
     [..]
       The maximum data size could be sent at each call is 255 bytes. Consequently when data size is greater than 255,
-      the ADV_LPBAM_I2C_[Master/Slave][Transmit/Receive]_SetDataQ() API should be called y time where y is the integer
-      part of ((Size)/255) + 1 (same when using ADV_LPBAM_I2C_[Master/Slave][Transmit/Receive]_SetFullQ() API).
+      the ADV_LPBAM_I2C_[Master/Slave][Tx/Rx]_SetDataQ() API should be called y time where y is the integer part of
+      ((Size)/255) + 1 (same when using ADV_LPBAM_I2C_[Master/Slave][Tx/Rx]_SetFullQ() API).
       Refer to Driver user sequence for further information about APIs usage.
 
     *** Driver APIs description ***
     ===============================
     [..]
-      Use ADV_LPBAM_I2C_MasterTransmit_SetConfigQ() API to build a linked-list queue that setup the I2C master
-      configuration transmission operation according to parameters in the LPBAM_I2C_ConfigAdvConf_t structure.
+      Use ADV_LPBAM_I2C_MasterTx_SetConfigQ() API to build a linked-list queue that setup the I2C master configuration
+      transmission operation according to parameters in the LPBAM_I2C_ConfigAdvConf_t structure.
 
     [..]
-      Use ADV_LPBAM_I2C_MasterTransmit_SetDataQ() API to build a linked-list queue that setup the I2C master
-      transmission starting operation according to parameters in the LPBAM_I2C_DataAdvConf_t structure.
+      Use ADV_LPBAM_I2C_MasterTx_SetDataQ() API to build a linked-list queue that setup the I2C master transmission
+      starting operation according to parameters in the LPBAM_I2C_DataAdvConf_t structure.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
           (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
@@ -97,9 +97,8 @@
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Use ADV_LPBAM_I2C_MasterTransmit_SetFullQ() API to build a linked-list queue that setup the I2C master
-      configuration and transmission starting operation according to parameters in the LPBAM_I2C_FullAdvConf_t
-      structure.
+      Use ADV_LPBAM_I2C_MasterTx_SetFullQ() API to build a linked-list queue that setup the I2C master configuration and
+      transmission starting operation according to parameters in the LPBAM_I2C_FullAdvConf_t structure.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
           (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
@@ -110,12 +109,12 @@
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Use ADV_LPBAM_I2C_SlaveTransmit_SetConfigQ() API to build a linked-list queue that setup the I2C slave
-      configuration transmission operation according to parameters in the LPBAM_I2C_ConfigAdvConf_t structure.
+      Use ADV_LPBAM_I2C_SlaveTx_SetConfigQ() API to build a linked-list queue that setup the I2C slave configuration
+      transmission operation according to parameters in the LPBAM_I2C_ConfigAdvConf_t structure.
 
     [..]
-      Use ADV_LPBAM_I2C_SlaveTransmit_SetDataQ() API to build a linked-list queue that setup the I2C slave
-      transmission starting operation according to parameters in the LPBAM_I2C_DataAdvConf_t structure.
+      Use ADV_LPBAM_I2C_SlaveTx_SetDataQ() API to build a linked-list queue that setup the I2C slave transmission
+      starting operation according to parameters in the LPBAM_I2C_DataAdvConf_t structure.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
           (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
@@ -126,9 +125,8 @@
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Use ADV_LPBAM_I2C_SlaveTransmit_SetFullQ() API to build a linked-list queue that setup the I2C slave
-      configuration and transmission starting operation according to parameters in the LPBAM_I2C_FullAdvConf_t
-      structure.
+      Use ADV_LPBAM_I2C_SlaveTx_SetFullQ() API to build a linked-list queue that setup the I2C slave configuration and
+      transmission starting operation according to parameters in the LPBAM_I2C_FullAdvConf_t structure.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
           (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
@@ -139,59 +137,57 @@
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Use ADV_LPBAM_I2C_MasterReceive_SetConfigQ() API to build a linked-list queue that setup the I2C master
-      configuration reception operation according to parameters in the LPBAM_I2C_ConfigAdvConf_t structure.
+      Use ADV_LPBAM_I2C_MasterRx_SetConfigQ() API to build a linked-list queue that setup the I2C master configuration
+      reception operation according to parameters in the LPBAM_I2C_ConfigAdvConf_t structure.
 
     [..]
-      Use ADV_LPBAM_I2C_MasterReceive_SetDataQ() API to build a linked-list queue that setup the I2C master
-      reception starting operation according to parameters in the LPBAM_I2C_DataAdvConf_t structure.
+      Use ADV_LPBAM_I2C_MasterRx_SetDataQ() API to build a linked-list queue that setup the I2C master reception
+      starting operation according to parameters in the LPBAM_I2C_DataAdvConf_t structure.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
           (+) DestInc           : DMA_DINC_INCREMENTED.
-          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE.
-          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE. (Mandatory)
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE. (Mandatory)
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE.
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
           (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Use ADV_LPBAM_I2C_MasterReceive_SetFullQ() API to build a linked-list queue that setup the I2C master
-      configuration and reception starting operation according to parameters in the LPBAM_I2C_FullAdvConf_t
-      structure.
+      Use ADV_LPBAM_I2C_MasterRx_SetFullQ() API to build a linked-list queue that setup the I2C master configuration and
+      reception starting operation according to parameters in the LPBAM_I2C_FullAdvConf_t structure.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
           (+) DestInc           : DMA_DINC_INCREMENTED.
-          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE.
-          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE. (Mandatory)
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE. (Mandatory)
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE.
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
           (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Use ADV_LPBAM_I2C_SlaveReceive_SetConfigQ() API to build a linked-list queue that setup the I2C slave
-      configuration reception operation according to parameters in the LPBAM_I2C_ConfigAdvConf_t structure.
+      Use ADV_LPBAM_I2C_SlaveRx_SetConfigQ() API to build a linked-list queue that setup the I2C slave configuration
+      reception operation according to parameters in the LPBAM_I2C_ConfigAdvConf_t structure.
 
     [..]
-      Use ADV_LPBAM_I2C_SlaveReceive_SetDataQ() API to build a linked-list queue that setup the I2C slave
-      reception starting operation according to parameters in the LPBAM_I2C_DataAdvConf_t structure.
+      Use ADV_LPBAM_I2C_SlaveRx_SetDataQ() API to build a linked-list queue that setup the I2C slave reception starting
+      operation according to parameters in the LPBAM_I2C_DataAdvConf_t structure.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
           (+) DestInc           : DMA_DINC_INCREMENTED.
-          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE.
-          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE. (Mandatory)
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE. (Mandatory)
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE.
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
           (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Use ADV_LPBAM_I2C_SlaveReceive_SetFullQ() API to build a linked-list queue that setup the I2C slave
-      configuration and reception starting operation according to parameters in the LPBAM_I2C_FullAdvConf_t
-      structure.
+      Use ADV_LPBAM_I2C_SlaveRx_SetFullQ() API to build a linked-list queue that setup the I2C slave configuration and
+      reception starting operation according to parameters in the LPBAM_I2C_FullAdvConf_t structure.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
           (+) DestInc           : DMA_DINC_INCREMENTED.
-          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE.
-          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE. (Mandatory)
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE. (Mandatory)
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE.
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
           (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
@@ -201,7 +197,7 @@
       stop condition generating.
 
     [..]
-      Configured parameters through LPBAM_I2C_ConfigAdvConf_t are :
+      Configuration parameters through LPBAM_I2C_ConfigAdvConf_t are :
           (+) AutoModeConf : Specifies the autonomous mode parameters.
               (++) TriggerState     : Specifies the trigger state.
                                       This parameter can be a value of @ref LPBAM_I2CEx_AutonomousMode_FunctionalState.
@@ -215,7 +211,7 @@
                              This parameter can be a value of @ref LPBAM_I2C_Wakeup_Interrupt.
 
     [..]
-      Configured parameters through LPBAM_I2C_DataAdvConf_t are :
+      Configuration parameters through LPBAM_I2C_DataAdvConf_t are :
           (+) AutoModeConf   : Specifies the autonomous mode parameters.
               (++) TriggerState : Specifies the trigger state.
                                   This parameter can be a value of @ref LPBAM_I2CEx_AutonomousMode_FunctionalState.
@@ -227,7 +223,7 @@
           (+) pData          : Specifies the transfer buffer address.
 
     [..]
-      Configured parameters through LPBAM_I2C_FullAdvConf_t are :
+      Configuration parameters through LPBAM_I2C_FullAdvConf_t are :
           (+) AutoModeConf : Specifies the autonomous mode parameters.
               (++) TriggerState     : Specifies the trigger state.
                                       This parameter can be a value of @ref LPBAM_I2CEx_AutonomousMode_FunctionalState.
@@ -285,15 +281,16 @@
           (+) Call ADV_LPBAM_I2C_EnableDMARequests() to enable the I2C DMA requests. (Mandatory)
           (+) There are two possibilities to call advanced API:
               (++) Transfer with full APIs :
-                   (+++) For transmission mode, call ADV_LPBAM_I2C_[Mode]Transmit_SetFullQ(). (Mandatory)
-                   (+++) For reception mode, call ADV_LPBAM_I2C_[Mode]Receive_SetFullQ(). (Mandatory)
+                   (+++) For transmission mode, call ADV_LPBAM_I2C_[Mode]Tx_SetFullQ(). (Mandatory)
+                   (+++) For reception mode, call ADV_LPBAM_I2C_[Mode]Rx_SetFullQ(). (Mandatory)
               (++) Transfer with configuration and data APIs :
-                   (+++) For a transmission mode call ADV_LPBAM_I2C_[Mode]Transmit_SetConfigQ() then
-                         ADV_LPBAM_I2C_[Mode]Transmit_SetDataQ(). (Mandatory)
-                   (+++) For a reception mode call ADV_LPBAM_I2C_[Mode]Receive_SetConfigQ() then
-                         ADV_LPBAM_I2C_[Mode]Receive_SetDataQ(). (Mandatory)
+                   (+++) For a transmission mode call ADV_LPBAM_I2C_[Mode]Tx_SetConfigQ() then
+                         ADV_LPBAM_I2C_[Mode]Tx_SetDataQ(). (Mandatory)
+                   (+++) For a reception mode call ADV_LPBAM_I2C_[Mode]Rx_SetConfigQ() then
+                         ADV_LPBAM_I2C_[Mode]Rx_SetDataQ(). (Mandatory)
           (+) In master mode, call ADV_LPBAM_I2C_MasterStopGeneration_SetFullQ() to stop the current transfer and free
-              the I2C bus.
+              the I2C bus when the transfer complete interrupt has been activated.
+
           (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode (Using HAL/LL). (Mandatory)
           (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
@@ -310,17 +307,17 @@
           (+) Call ADV_LPBAM_I2C_EnableDMARequests() to enable the I2C DMA requests. (Mandatory)
           (+) There are two possibilities to call advanced API:
               (++) Transfer with full APIs :
-                   (+++) For transmission mode, call ADV_LPBAM_I2C_[Mode]Transmit_SetFullQ() x times where
-                         x = SequenceNumber. (Mandatory)
-                   (+++) For reception mode, call ADV_LPBAM_I2C_[Mode]Receive_SetFullQ() x times where
-                         x = SequenceNumber. (Mandatory). (Mandatory)
+                   (+++) For transmission mode, call ADV_LPBAM_I2C_[Mode]Tx_SetFullQ() x times where x = SequenceNumber.
+                         (Mandatory)
+                   (+++) For reception mode, call ADV_LPBAM_I2C_[Mode]Rx_SetFullQ() x times where x = SequenceNumber.
+                         (Mandatory)
               (++) Transfer with configuration and data APIs :
-                   (+++) For a transmission mode call ADV_LPBAM_I2C_[Mode]Transmit_SetConfigQ() only one time then
-                         call ADV_LPBAM_I2C_[Mode]Transmit_SetDataQ() x times where x = SequenceNumber. (Mandatory).
-                   (+++) For a reception mode call ADV_LPBAM_I2C_[Mode]Receive_SetConfigQ() only one time then
-                         call ADV_LPBAM_I2C_[Mode]Receive_SetDataQ() x times where x = SequenceNumber. (Mandatory)
+                   (+++) For a transmission mode call ADV_LPBAM_I2C_[Mode]Tx_SetConfigQ() only one time then call
+                         ADV_LPBAM_I2C_[Mode]Tx_SetDataQ() x times where x = SequenceNumber. (Mandatory).
+                   (+++) For a reception mode call ADV_LPBAM_I2C_[Mode]Rx_SetConfigQ() only one time then call
+                         ADV_LPBAM_I2C_[Mode]Rx_SetDataQ() x times where x = SequenceNumber. (Mandatory)
           (+) In master mode, call ADV_LPBAM_I2C_MasterStopGeneration_SetFullQ() to stop the current transfer and free
-              the I2C bus.
+              the I2C bus when the transfer complete interrupt has been activated.
           (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode (Using HAL/LL). (Mandatory)
           (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
@@ -337,19 +334,19 @@
           (+) Call ADV_LPBAM_I2C_EnableDMARequests() to enable the I2C DMA requests. (Mandatory)
           (+) There are two possibilities to call advanced API:
               (++) Transfer with full APIs :
-                   (+++) For transmission mode, call ADV_LPBAM_I2C_[Mode]Transmit_SetFullQ() y time where
-                         y is the integer part of ((Size)/255) + 1. (Mandatory)
-                   (+++) For reception mode, call ADV_LPBAM_I2C_[Mode]Receive_SetFullQ() y times where
-                         y is the integer part of ((Size)/255) + 1. (Mandatory)
+                   (+++) For transmission mode, call ADV_LPBAM_I2C_[Mode]Tx_SetFullQ() y time where y is the integer
+                         part of ((Size)/255) + 1. (Mandatory)
+                   (+++) For reception mode, call ADV_LPBAM_I2C_[Mode]Rx_SetFullQ() y times where y is the integer part
+                         of ((Size)/255) + 1. (Mandatory)
               (++) Transfer with configuration and data APIs :
-                   (+++) For a transmission mode call ADV_LPBAM_I2C_[Mode]Transmit_SetConfigQ() only one time then
-                         call ADV_LPBAM_I2C_[Mode]Transmit_SetDataQ() y times where y is the integer part of
-                         ((Size)/255) + 1. (Mandatory).
-                   (+++) For a reception mode call ADV_LPBAM_I2C_[Mode]Receive_SetConfigQ() only one time then
-                         call ADV_LPBAM_I2C_[Mode]Receive_SetDataQ() y times where y is the integer part of
-                         ((Size)/255) + 1. (Mandatory)
+                   (+++) For a transmission mode call ADV_LPBAM_I2C_[Mode]Tx_SetConfigQ() only one time then call
+                         ADV_LPBAM_I2C_[Mode]Tx_SetDataQ() y times where y is the integer part of ((Size)/255) + 1.
+                         (Mandatory)
+                   (+++) For a reception mode call ADV_LPBAM_I2C_[Mode]Rx_SetConfigQ() only one time then call
+                         ADV_LPBAM_I2C_[Mode]Rx_SetDataQ() y times where y is the integer part of ((Size)/255) + 1.
+                         (Mandatory)
           (+) In master mode, call ADV_LPBAM_I2C_MasterStopGeneration_SetFullQ() to stop the current transfer and free
-              the I2C bus.
+              the I2C bus when the transfer complete interrupt has been activated.
           (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode (Using HAL/LL). (Mandatory)
           (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
@@ -368,23 +365,23 @@
           (+) Call ADV_LPBAM_I2C_EnableDMARequests() to enable the I2C DMA requests. (Mandatory)
           (+) There are two possibilities to call advanced API:
               (++) Transfer with full APIs :
-                   (+++) For transmission mode, call ADV_LPBAM_I2C_[Mode]Transmit_SetFullQ() x times where
-                         x = SequenceNumber. Each sequence with data size > 255 should be called y times where y is the
-                         integer part of ((Size)/255) + 1. (Mandatory)
-                   (+++) For reception mode, call ADV_LPBAM_I2C_[Mode]Receive_SetFullQ() x times where
-                         x = SequenceNumber.  Each sequence with data size > 255 should be called y times where y is the
-                         integer part of ((Size)/255) + 1. (Mandatory)
+                   (+++) For transmission mode, call ADV_LPBAM_I2C_[Mode]Tx_SetFullQ() x times where x = SequenceNumber.
+                         Each sequence with data size > 255 should be called y times where y is the integer part of
+                         ((Size)/255) + 1. (Mandatory)
+                   (+++) For reception mode, call ADV_LPBAM_I2C_[Mode]Rx_SetFullQ() x times where x = SequenceNumber.
+                         Each sequence with data size > 255 should be called y times where y is the integer part of
+                         ((Size)/255) + 1. (Mandatory)
               (++) Transfer with configuration and data APIs :
-                   (+++) For a transmission mode call ADV_LPBAM_I2C_[Mode]Transmit_SetConfigQ() only one time then
-                         call ADV_LPBAM_I2C_[Mode]Transmit_SetDataQ() x times where x = SequenceNumber. Each data
-                         sequence with data size > 255 should be called y times where y is the integer part of
-                         ((Size)/255) + 1. (Mandatory)
-                   (+++) For a reception mode call ADV_LPBAM_I2C_[Mode]Receive_SetConfigQ() only one time then
-                         call ADV_LPBAM_I2C_[Mode]Receive_SetDataQ() x times where x = SequenceNumber. Each data
-                         sequence with data size > 255 should be called y times where y is the integer part of
-                         ((Size)/255) + 1. (Mandatory)
+                   (+++) For a transmission mode call ADV_LPBAM_I2C_[Mode]Tx_SetConfigQ() only one time then call
+                         ADV_LPBAM_I2C_[Mode]Tx_SetDataQ() x times where x = SequenceNumber. Each data sequence with
+                         data size > 255 should be called y times where y is the integer part of ((Size)/255) + 1.
+                         (Mandatory)
+                   (+++) For a reception mode call ADV_LPBAM_I2C_[Mode]Rx_SetConfigQ() only one time then call
+                         ADV_LPBAM_I2C_[Mode]Rx_SetDataQ() x times where x = SequenceNumber. Each data sequence with
+                         data size > 255 should be called y times where y is the integer part of ((Size)/255) + 1.
+                         (Mandatory)
           (+) In master mode, call ADV_LPBAM_I2C_MasterStopGeneration_SetFullQ() to stop the current transfer and free
-              the I2C bus.
+              the I2C bus when the transfer complete interrupt has been activated.
           (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode (Using HAL/LL). (Mandatory)
           (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
@@ -395,16 +392,16 @@
               (++) DMA_IT_USE : user setting error.
           (+) Call HAL_DMAEx_List_Start() or HAL_DMAEx_List_Start_IT() to start DMA linked list. (Mandatory)
 
-    *** Constraints ***
-    ===================
+    *** Recommendation ***
+    ======================
     [..]
       It's mandatory to set properly DataSize, TriggerState, TriggerSelection and TriggerPolarity while configuring
       LPBAM_I2C_ConfigAdvConf_t or LPBAM_SPI_FullAdvConf_t because their update can be only done with
       ADV_LPBAM_I2C_{Operation}_SetConfigQ() or ADV_LPBAM_I2C_{Operation}_SetFullQ().
 
     [..]
-      It's strongly not allowed to repeat calling ADV_LPBAM_I2C_(Master/Slave)(Transmit/Receive)_SetConfigQ() before
-      starting the LPBAM scenario as it deactivates then activates the I2C.
+      It's strongly not allowed to repeat calling ADV_LPBAM_I2C_(Master/Slave)(Tx/Rx)_SetConfigQ() before starting the
+      LPBAM scenario as it deactivates then activates the I2C.
 
     [..]
       It's strongly not recommended to use full APIs in a sequential transaction for better memory optimisation usage.
@@ -481,11 +478,11 @@ static uint32_t SequentialIdx = 1U;
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterTransmit_SetConfigQ(I2C_TypeDef                    *const pInstance,
-                                                       LPBAM_DMAListInfo_t            const *const pDMAListInfo,
-                                                       LPBAM_I2C_ConfigAdvConf_t      const *const pTxConfig,
-                                                       LPBAM_I2C_MasterTxConfigDesc_t *const pDescriptor,
-                                                       DMA_QListTypeDef               *const pQueue)
+LPBAM_Status_t ADV_LPBAM_I2C_MasterTx_SetConfigQ(I2C_TypeDef                    *const pInstance,
+                                                 LPBAM_DMAListInfo_t            const *const pDMAListInfo,
+                                                 LPBAM_I2C_ConfigAdvConf_t      const *const pTxConfig,
+                                                 LPBAM_I2C_MasterTxConfigDesc_t *const pDescriptor,
+                                                 DMA_QListTypeDef               *const pQueue)
 {
   LPBAM_I2C_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
@@ -642,11 +639,11 @@ LPBAM_Status_t ADV_LPBAM_I2C_MasterTransmit_SetConfigQ(I2C_TypeDef              
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterTransmit_SetDataQ(I2C_TypeDef                  *const pInstance,
-                                                     LPBAM_DMAListInfo_t          const *const pDMAListInfo,
-                                                     LPBAM_I2C_DataAdvConf_t      const *const pTxData,
-                                                     LPBAM_I2C_MasterTxDataDesc_t *const pDescriptor,
-                                                     DMA_QListTypeDef             *const pQueue)
+LPBAM_Status_t ADV_LPBAM_I2C_MasterTx_SetDataQ(I2C_TypeDef                  *const pInstance,
+                                               LPBAM_DMAListInfo_t          const *const pDMAListInfo,
+                                               LPBAM_I2C_DataAdvConf_t      const *const pTxData,
+                                               LPBAM_I2C_MasterTxDataDesc_t *const pDescriptor,
+                                               DMA_QListTypeDef             *const pQueue)
 {
   LPBAM_I2C_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
@@ -855,11 +852,11 @@ LPBAM_Status_t ADV_LPBAM_I2C_MasterTransmit_SetDataQ(I2C_TypeDef                
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterTransmit_SetFullQ(I2C_TypeDef                  *const pInstance,
-                                                     LPBAM_DMAListInfo_t          const *const pDMAListInfo,
-                                                     LPBAM_I2C_FullAdvConf_t      const *const pTxFull,
-                                                     LPBAM_I2C_MasterTxFullDesc_t *const pDescriptor,
-                                                     DMA_QListTypeDef             *const pQueue)
+LPBAM_Status_t ADV_LPBAM_I2C_MasterTx_SetFullQ(I2C_TypeDef                  *const pInstance,
+                                               LPBAM_DMAListInfo_t          const *const pDMAListInfo,
+                                               LPBAM_I2C_FullAdvConf_t      const *const pTxFull,
+                                               LPBAM_I2C_MasterTxFullDesc_t *const pDescriptor,
+                                               DMA_QListTypeDef             *const pQueue)
 {
   LPBAM_I2C_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
@@ -1219,11 +1216,11 @@ LPBAM_Status_t ADV_LPBAM_I2C_MasterTransmit_SetFullQ(I2C_TypeDef                
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_SlaveTransmit_SetConfigQ(I2C_TypeDef                   *const pInstance,
-                                                      LPBAM_DMAListInfo_t           const *const pDMAListInfo,
-                                                      LPBAM_I2C_ConfigAdvConf_t     const *const pTxConfig,
-                                                      LPBAM_I2C_SlaveTxConfigDesc_t *const pDescriptor,
-                                                      DMA_QListTypeDef              *const pQueue)
+LPBAM_Status_t ADV_LPBAM_I2C_SlaveTx_SetConfigQ(I2C_TypeDef                   *const pInstance,
+                                                LPBAM_DMAListInfo_t           const *const pDMAListInfo,
+                                                LPBAM_I2C_ConfigAdvConf_t     const *const pTxConfig,
+                                                LPBAM_I2C_SlaveTxConfigDesc_t *const pDescriptor,
+                                                DMA_QListTypeDef              *const pQueue)
 {
   LPBAM_I2C_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
@@ -1346,11 +1343,11 @@ LPBAM_Status_t ADV_LPBAM_I2C_SlaveTransmit_SetConfigQ(I2C_TypeDef               
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_SlaveTransmit_SetDataQ(I2C_TypeDef                 *const pInstance,
-                                                    LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                    LPBAM_I2C_DataAdvConf_t     const *const pTxData,
-                                                    LPBAM_I2C_SlaveTxDataDesc_t *const pDescriptor,
-                                                    DMA_QListTypeDef            *const pQueue)
+LPBAM_Status_t ADV_LPBAM_I2C_SlaveTx_SetDataQ(I2C_TypeDef                 *const pInstance,
+                                              LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                              LPBAM_I2C_DataAdvConf_t     const *const pTxData,
+                                              LPBAM_I2C_SlaveTxDataDesc_t *const pDescriptor,
+                                              DMA_QListTypeDef            *const pQueue)
 {
   LPBAM_I2C_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
@@ -1557,11 +1554,11 @@ LPBAM_Status_t ADV_LPBAM_I2C_SlaveTransmit_SetDataQ(I2C_TypeDef                 
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_SlaveTransmit_SetFullQ(I2C_TypeDef                 *const pInstance,
-                                                    LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                    LPBAM_I2C_FullAdvConf_t     const *const pTxFull,
-                                                    LPBAM_I2C_SlaveTxFullDesc_t *const pDescriptor,
-                                                    DMA_QListTypeDef            *const pQueue)
+LPBAM_Status_t ADV_LPBAM_I2C_SlaveTx_SetFullQ(I2C_TypeDef                 *const pInstance,
+                                              LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                              LPBAM_I2C_FullAdvConf_t     const *const pTxFull,
+                                              LPBAM_I2C_SlaveTxFullDesc_t *const pDescriptor,
+                                              DMA_QListTypeDef            *const pQueue)
 {
   LPBAM_I2C_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
@@ -1884,11 +1881,11 @@ LPBAM_Status_t ADV_LPBAM_I2C_SlaveTransmit_SetFullQ(I2C_TypeDef                 
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterReceive_SetConfigQ(I2C_TypeDef                    *const pInstance,
-                                                      LPBAM_DMAListInfo_t            const *const pDMAListInfo,
-                                                      LPBAM_I2C_ConfigAdvConf_t      const *const pRxConfig,
-                                                      LPBAM_I2C_MasterRxConfigDesc_t *const pDescriptor,
-                                                      DMA_QListTypeDef               *const pQueue)
+LPBAM_Status_t ADV_LPBAM_I2C_MasterRx_SetConfigQ(I2C_TypeDef                    *const pInstance,
+                                                 LPBAM_DMAListInfo_t            const *const pDMAListInfo,
+                                                 LPBAM_I2C_ConfigAdvConf_t      const *const pRxConfig,
+                                                 LPBAM_I2C_MasterRxConfigDesc_t *const pDescriptor,
+                                                 DMA_QListTypeDef               *const pQueue)
 {
   LPBAM_I2C_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
@@ -2047,11 +2044,11 @@ LPBAM_Status_t ADV_LPBAM_I2C_MasterReceive_SetConfigQ(I2C_TypeDef               
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterReceive_SetDataQ(I2C_TypeDef                  *const pInstance,
-                                                    LPBAM_DMAListInfo_t          const *const pDMAListInfo,
-                                                    LPBAM_I2C_DataAdvConf_t      const *const pRxData,
-                                                    LPBAM_I2C_MasterRxDataDesc_t *const pDescriptor,
-                                                    DMA_QListTypeDef             *const pQueue)
+LPBAM_Status_t ADV_LPBAM_I2C_MasterRx_SetDataQ(I2C_TypeDef                  *const pInstance,
+                                               LPBAM_DMAListInfo_t          const *const pDMAListInfo,
+                                               LPBAM_I2C_DataAdvConf_t      const *const pRxData,
+                                               LPBAM_I2C_MasterRxDataDesc_t *const pDescriptor,
+                                               DMA_QListTypeDef             *const pQueue)
 {
   LPBAM_I2C_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
@@ -2260,11 +2257,11 @@ LPBAM_Status_t ADV_LPBAM_I2C_MasterReceive_SetDataQ(I2C_TypeDef                 
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterReceive_SetFullQ(I2C_TypeDef                  *const pInstance,
-                                                    LPBAM_DMAListInfo_t          const *const pDMAListInfo,
-                                                    LPBAM_I2C_FullAdvConf_t      const *const pRxFull,
-                                                    LPBAM_I2C_MasterRxFullDesc_t *const pDescriptor,
-                                                    DMA_QListTypeDef             *const pQueue)
+LPBAM_Status_t ADV_LPBAM_I2C_MasterRx_SetFullQ(I2C_TypeDef                  *const pInstance,
+                                               LPBAM_DMAListInfo_t          const *const pDMAListInfo,
+                                               LPBAM_I2C_FullAdvConf_t      const *const pRxFull,
+                                               LPBAM_I2C_MasterRxFullDesc_t *const pDescriptor,
+                                               DMA_QListTypeDef             *const pQueue)
 {
   LPBAM_I2C_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
@@ -2624,11 +2621,11 @@ LPBAM_Status_t ADV_LPBAM_I2C_MasterReceive_SetFullQ(I2C_TypeDef                 
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_SlaveReceive_SetConfigQ(I2C_TypeDef                   *const pInstance,
-                                                     LPBAM_DMAListInfo_t           const *const pDMAListInfo,
-                                                     LPBAM_I2C_ConfigAdvConf_t     const *const pRxConfig,
-                                                     LPBAM_I2C_SlaveRxConfigDesc_t *const pDescriptor,
-                                                     DMA_QListTypeDef              *const pQueue)
+LPBAM_Status_t ADV_LPBAM_I2C_SlaveRx_SetConfigQ(I2C_TypeDef                   *const pInstance,
+                                                LPBAM_DMAListInfo_t           const *const pDMAListInfo,
+                                                LPBAM_I2C_ConfigAdvConf_t     const *const pRxConfig,
+                                                LPBAM_I2C_SlaveRxConfigDesc_t *const pDescriptor,
+                                                DMA_QListTypeDef              *const pQueue)
 {
   LPBAM_I2C_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
@@ -2752,11 +2749,11 @@ LPBAM_Status_t ADV_LPBAM_I2C_SlaveReceive_SetConfigQ(I2C_TypeDef                
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_SlaveReceive_SetDataQ(I2C_TypeDef                 *const pInstance,
-                                                   LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                   LPBAM_I2C_DataAdvConf_t     const *const pRxData,
-                                                   LPBAM_I2C_SlaveRxDataDesc_t *const pDescriptor,
-                                                   DMA_QListTypeDef            *const pQueue)
+LPBAM_Status_t ADV_LPBAM_I2C_SlaveRx_SetDataQ(I2C_TypeDef                 *const pInstance,
+                                              LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                              LPBAM_I2C_DataAdvConf_t     const *const pRxData,
+                                              LPBAM_I2C_SlaveRxDataDesc_t *const pDescriptor,
+                                              DMA_QListTypeDef            *const pQueue)
 {
   LPBAM_I2C_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
@@ -2963,11 +2960,11 @@ LPBAM_Status_t ADV_LPBAM_I2C_SlaveReceive_SetDataQ(I2C_TypeDef                 *
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_I2C_SlaveReceive_SetFullQ(I2C_TypeDef                 *const pInstance,
-                                                   LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                   LPBAM_I2C_FullAdvConf_t     const *const pRxFull,
-                                                   LPBAM_I2C_SlaveRxFullDesc_t *const pDescriptor,
-                                                   DMA_QListTypeDef            *const pQueue)
+LPBAM_Status_t ADV_LPBAM_I2C_SlaveRx_SetFullQ(I2C_TypeDef                 *const pInstance,
+                                              LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                              LPBAM_I2C_FullAdvConf_t     const *const pRxFull,
+                                              LPBAM_I2C_SlaveRxFullDesc_t *const pDescriptor,
+                                              DMA_QListTypeDef            *const pQueue)
 {
   LPBAM_I2C_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;

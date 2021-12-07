@@ -90,7 +90,7 @@ void HAL_SPI_MspInit (SPI_HandleTypeDef *hspi)
     /* SPIy SCK GPIO pin configuration  */
     GPIO_InitStruct.Pin       = SPIy_SCK_PIN;
     GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull      = GPIO_PULLDOWN;
+    GPIO_InitStruct.Pull      = GPIO_NOPULL;
     GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_HIGH;
     GPIO_InitStruct.Alternate = SPIy_SCK_AF;
     HAL_GPIO_Init(SPIy_SCK_GPIO_PORT, &GPIO_InitStruct);
@@ -113,10 +113,20 @@ void HAL_SPI_MspInit (SPI_HandleTypeDef *hspi)
   else
   {
     RCC_PeriphCLKInitTypeDef RCC_PeriphCLKInitStruct = {0};
+    RCC_OscInitTypeDef       RCC_OscInitStruct       = {0};
+
+    /* Enable MSIK clock */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSIK;
+    RCC_OscInitStruct.MSIKClockRange = RCC_MSIKRANGE_7;
+    RCC_OscInitStruct.MSIKState      = RCC_MSIK_ON;
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    {
+      Error_Handler();
+    }
 
     /* Re-target the HSI to Clock the SPI3 peripheral */
     RCC_PeriphCLKInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI3;
-    RCC_PeriphCLKInitStruct.Spi3ClockSelection   = RCC_SPI3CLKSOURCE_HSI;
+    RCC_PeriphCLKInitStruct.Spi3ClockSelection   = RCC_SPI3CLKSOURCE_MSIK;
     /* Initialize the RCC extended peripherals clocks */
     if (HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphCLKInitStruct) != HAL_OK)
     {
@@ -144,9 +154,8 @@ void HAL_SPI_MspInit (SPI_HandleTypeDef *hspi)
     GPIO_InitStruct.Pin       = SPIx_SCK_PIN;
     GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull      = GPIO_NOPULL;
-    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = SPIx_MOSI_AF;
-
     HAL_GPIO_Init(SPIx_SCK_GPIO_PORT, &GPIO_InitStruct);
 
     /* SPIx MISO GPIO pin configuration  */
@@ -215,7 +224,6 @@ void HAL_LPTIM_MspInit (LPTIM_HandleTypeDef *hlptim)
 {
   RCC_OscInitTypeDef       RCC_OscInitStruct       = {0};
   RCC_PeriphCLKInitTypeDef RCC_PeriphCLKInitStruct = {0};
-  GPIO_InitTypeDef         GPIO_InitStruct;
 
   /* Enable LSI clock */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI;
@@ -247,16 +255,20 @@ void HAL_LPTIM_MspInit (LPTIM_HandleTypeDef *hlptim)
   /* Release the LPTIMx Peripheral Clock Reset */
   __HAL_RCC_LPTIM1_RELEASE_RESET();
 
+#if defined (DEBUG_CONFIGURATION)
+    GPIO_InitTypeDef GPIO_InitStruct;
+
   /* Enable GPIO PORT */
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /* Configure PB.2 */
   GPIO_InitStruct.Pin       = GPIO_PIN_2;
   GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull      = GPIO_PULLUP;
+  GPIO_InitStruct.Pull      = GPIO_NOPULL;
   GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_MEDIUM;
   GPIO_InitStruct.Alternate = GPIO_AF1_LPTIM1;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#endif /* defined (DEBUG_CONFIGURATION) */
 
   /* Disable LPTIM1 Interrupt */
   HAL_NVIC_DisableIRQ (LPTIM1_IRQn);

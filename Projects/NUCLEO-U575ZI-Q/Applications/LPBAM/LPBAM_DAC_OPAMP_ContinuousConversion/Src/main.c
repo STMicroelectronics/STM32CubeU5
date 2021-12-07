@@ -18,6 +18,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "TriangularSignal.h"
 
 
 /** @addtogroup STM32U5xx_Application
@@ -59,8 +60,12 @@ DMA_QListTypeDef OPAMP_ConfigQueue;
 
 /* Private function prototypes -----------------------------------------------*/
 /* System static APIs */
-static void SystemClock_Config        (void);
 static void Cache_Enable              (void);
+static void SystemClock_Config        (void);
+#if !defined (DEBUG_CONFIGURATION)
+static void SystemPower_Config        (void);
+#endif /* !defined (DEBUG_CONFIGURATION) */
+
 
 /* LPTIM static API */
 static void LPTIM_Config              (void);
@@ -93,6 +98,11 @@ int main(void)
 
   /* Configure the System clock to have a frequency of 160 MHz */
   SystemClock_Config();
+
+#if !defined (DEBUG_CONFIGURATION)
+  /* Configure the system power */
+  SystemPower_Config();
+#endif /* defined (DEBUG_CONFIGURATION) */
 
   /* Initialize LED1 and LED3 : GREEN and RED leds */
   BSP_LED_Init(LED1);
@@ -335,6 +345,75 @@ void SystemClock_Config(void)
   }
 }
 
+#if !defined (DEBUG_CONFIGURATION)
+/**
+  * @brief  System Power Configuration for LPBAM
+  * @param  None
+  * @retval None
+  */
+static void SystemPower_Config(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* Enable PWR CLK */
+  __HAL_RCC_PWR_CLK_ENABLE();
+
+  /* Switch to SMPS regulator */
+  if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Keep ICache and SRAM4 retention */
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM1_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM2_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM3_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_DCACHE1_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_DMA2DRAM_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_PERIPHRAM_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_PKA32RAM_FULL_STOP_RETENTION);
+
+  /* Enable all GPIO clocks */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOI_CLK_ENABLE();
+
+  /* Set parameters to be configured */
+  GPIO_InitStruct.Mode  = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Pull  = GPIO_NOPULL;
+  GPIO_InitStruct.Pin   = GPIO_PIN_ALL;
+
+  /* Initialize all GPIO pins */
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+
+  /* Disable all GPIO clocks */
+  __HAL_RCC_GPIOA_CLK_DISABLE();
+  __HAL_RCC_GPIOB_CLK_DISABLE();
+  __HAL_RCC_GPIOC_CLK_DISABLE();
+  __HAL_RCC_GPIOD_CLK_DISABLE();
+  __HAL_RCC_GPIOE_CLK_DISABLE();
+  __HAL_RCC_GPIOF_CLK_DISABLE();
+  __HAL_RCC_GPIOG_CLK_DISABLE();
+  __HAL_RCC_GPIOH_CLK_DISABLE();
+  __HAL_RCC_GPIOI_CLK_DISABLE();
+}
+#endif /* !defined (DEBUG_CONFIGURATION) */
+
 /**
   * @brief  OPAMP configuration.
   * @param  None
@@ -423,7 +502,7 @@ static void LPTIM_Config(void)
   LPTIMHandle.Init.Trigger.SampleTime            = LPTIM_TRIGSAMPLETIME_DIRECTTRANSITION;
   LPTIMHandle.Init.Input1Source                  = LPTIM_INPUT1SOURCE_GPIO;
   LPTIMHandle.Init.Input2Source                  = LPTIM_INPUT2SOURCE_GPIO;
-  LPTIMHandle.Init.Period                        = 2U;
+  LPTIMHandle.Init.Period                        = 32U;
 
   /* Init LPTIM peripheral */
   if (HAL_LPTIM_Init(&LPTIMHandle) != HAL_OK)

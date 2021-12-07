@@ -27,6 +27,8 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+/* #define DEBUG_CONFIGURATION */
+
 #define PWM_FORM_NUM (0x05U)
 
 #define PWM_CONFIG_1 (0x00U)

@@ -59,8 +59,6 @@ int32_t OSPI_RAM_demo(void)
 {
   printf("\n******OSPI RAM EXAMPLE******\n");
 
-  StartExample();
-
   /* OSPI Read/Write operation *************************************/
   OSPI_RAM_ReadWrite();
 

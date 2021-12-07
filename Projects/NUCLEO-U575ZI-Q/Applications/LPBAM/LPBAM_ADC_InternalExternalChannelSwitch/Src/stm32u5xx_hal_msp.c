@@ -32,9 +32,6 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-/* DMA handler declaration */
-extern DMA_HandleTypeDef DMAHandle;
-
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -82,7 +79,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
   /* Enable MSIK clock source */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSIK;
   RCC_OscInitStruct.MSIKState      = RCC_MSIK_ON;
-  RCC_OscInitStruct.MSIKClockRange = RCC_MSIKRANGE_0;
+  RCC_OscInitStruct.MSIKClockRange = RCC_MSIKRANGE_4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -147,58 +144,28 @@ void HAL_LPTIM_MspInit (LPTIM_HandleTypeDef *hlptim)
     Error_Handler();
   }
 
-  /* LPTIM1 MSP initialization */
-  if (hlptim->Instance == LPTIM1)
+  /* Re-target the LSI to Clock the LPTIM1 Counter */
+  /* Select the LSI clock as LPTIM1 peripheral clock */
+  RCC_PeriphCLKInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LPTIM1;
+  RCC_PeriphCLKInitStruct.Lptim1ClockSelection = RCC_LPTIM1CLKSOURCE_LSI;
+  /* Initialize the RCC extended peripherals clocks */
+  if (HAL_RCCEx_PeriphCLKConfig (&RCC_PeriphCLKInitStruct) != HAL_OK)
   {
-    /* Re-target the LSI to Clock the LPTIM1 Counter */
-    /* Select the LSI clock as LPTIM1 peripheral clock */
-    RCC_PeriphCLKInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LPTIM1;
-    RCC_PeriphCLKInitStruct.Lptim1ClockSelection = RCC_LPTIM1CLKSOURCE_LSI;
-    /* Initialize the RCC extended peripherals clocks */
-    if (HAL_RCCEx_PeriphCLKConfig (&RCC_PeriphCLKInitStruct) != HAL_OK)
-    {
-      Error_Handler();
-    }
-
-    /* Enable LPTIM1 clock */
-    __HAL_RCC_LPTIM1_CLK_ENABLE();
-
-    /* Force & Release the LPTIM1 Periheral Clock Reset */
-    /* Force the LPTIM1 Peripheral Clock Reset */
-    __HAL_RCC_LPTIM1_FORCE_RESET();
-
-    /* Release the LPTIM1 Peripheral Clock Reset */
-    __HAL_RCC_LPTIM1_RELEASE_RESET();
-
-    /* Disable LPTIM1 Interrupt */
-    HAL_NVIC_DisableIRQ (LPTIM1_IRQn);
+    Error_Handler();
   }
-  /* LPTIM3 MSP initialization */
-  else
-  {
-    /* Re-target the LSI to Clock the LPTIM3 Counter */
-    /* Select the LSI clock as LPTIM3 peripheral clock */
-    RCC_PeriphCLKInitStruct.PeriphClockSelection  = RCC_PERIPHCLK_LPTIM34;
-    RCC_PeriphCLKInitStruct.Lptim34ClockSelection = RCC_LPTIM34CLKSOURCE_LSI;
-    /* Initialize the RCC extended peripherals clocks */
-    if (HAL_RCCEx_PeriphCLKConfig (&RCC_PeriphCLKInitStruct) != HAL_OK)
-    {
-      Error_Handler();
-    }
 
-    /* Enable LPTIM3 clock */
-    __HAL_RCC_LPTIM3_CLK_ENABLE();
+  /* Enable LPTIM1 clock */
+  __HAL_RCC_LPTIM1_CLK_ENABLE();
 
-    /* Force & Release the LPTIM3 Periheral Clock Reset */
-    /* Force the LPTIM3 Peripheral Clock Reset */
-    __HAL_RCC_LPTIM3_FORCE_RESET();
+  /* Force & Release the LPTIM1 Periheral Clock Reset */
+  /* Force the LPTIM1 Peripheral Clock Reset */
+  __HAL_RCC_LPTIM1_FORCE_RESET();
 
-    /* Release the LPTIM3 Peripheral Clock Reset */
-    __HAL_RCC_LPTIM3_RELEASE_RESET();
+  /* Release the LPTIM1 Peripheral Clock Reset */
+  __HAL_RCC_LPTIM1_RELEASE_RESET();
 
-    /* Disable LPTIM3 Interrupt */
-    HAL_NVIC_DisableIRQ (LPTIM3_IRQn);
-  }
+  /* Disable LPTIM1 Interrupt */
+  HAL_NVIC_DisableIRQ (LPTIM1_IRQn);
 }
 
 /**
@@ -209,36 +176,18 @@ void HAL_LPTIM_MspInit (LPTIM_HandleTypeDef *hlptim)
 void HAL_LPTIM_MspDeInit (LPTIM_HandleTypeDef *hlptim)
 {
   /* LPTIM1 MSP de-initialization */
-  if (hlptim->Instance == LPTIM1)
-  {
-    /* Force & Release the LPTIM1 Periheral Clock Reset */
-    /* Force the LPTIM1 Peripheral Clock Reset */
-    __HAL_RCC_LPTIM1_FORCE_RESET();
+  /* Force & Release the LPTIM1 Periheral Clock Reset */
+  /* Force the LPTIM1 Peripheral Clock Reset */
+  __HAL_RCC_LPTIM1_FORCE_RESET();
 
-    /* Release the LPTIM1 Peripheral Clock Reset */
-    __HAL_RCC_LPTIM1_RELEASE_RESET();
+  /* Release the LPTIM1 Peripheral Clock Reset */
+  __HAL_RCC_LPTIM1_RELEASE_RESET();
 
-    /* Disable LPTIM1 clock */
-    __HAL_RCC_LPTIM1_CLK_DISABLE();
+  /* Disable LPTIM1 clock */
+  __HAL_RCC_LPTIM1_CLK_DISABLE();
 
-    /* Disable LPTIM1 Interrupt */
-    HAL_NVIC_DisableIRQ(LPTIM1_IRQn);
-  }
-  else
-  {
-    /* Force & Release the LPTIM3 Periheral Clock Reset */
-    /* Force the LPTIM3 Peripheral Clock Reset */
-    __HAL_RCC_LPTIM3_FORCE_RESET();
-
-    /* Release the LPTIM3 Peripheral Clock Reset */
-    __HAL_RCC_LPTIM3_RELEASE_RESET();
-
-    /* Disable LPTIM3 clock */
-    __HAL_RCC_LPTIM3_CLK_DISABLE();
-
-    /* Disable LPTIM3 Interrupt */
-    HAL_NVIC_DisableIRQ(LPTIM3_IRQn);
-  }
+  /* Disable LPTIM1 Interrupt */
+  HAL_NVIC_DisableIRQ(LPTIM1_IRQn);
 }
 
 /**

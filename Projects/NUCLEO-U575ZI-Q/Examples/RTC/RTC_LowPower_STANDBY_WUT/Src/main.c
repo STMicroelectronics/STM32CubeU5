@@ -189,6 +189,13 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
+  /* Switch to SMPS regulator instead of LDO */
+  if(HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
   /** Configure LSE Drive Capability
   */
   HAL_PWR_EnableBkUpAccess();

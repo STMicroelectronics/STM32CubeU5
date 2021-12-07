@@ -6,13 +6,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under Ultimate Liberty license
-  * SLA0044, the "License"; You may not use this file except in compliance with
-  * the License. You may obtain a copy of the License at:
-  *                             www.st.com/SLA0044
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -58,5 +57,3 @@ const int32_t net_tls_sizeof_suite_structure = sizeof(mbedtls_x509_crt_profile);
 const void    *net_tls_user_suite0 = (void *) &mbedtls_x509_crt_amazon_suite;
 
 #endif /* GENERATOR_AWS_CLOUD */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

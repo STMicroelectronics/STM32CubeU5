@@ -27,6 +27,7 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+/* #define DEBUG_CONFIGURATION */
 
 #define COMP_OUTPUT_VALUE_MASK      0x40000000U
 #define OUTPUT_BUFFERSIZE           4U

@@ -27,6 +27,8 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+/* #define DEBUG_CONFIGURATION */
+
 #define DMA_TOGGLEIO_QUEUES_NUM   (0x02U)
 #define TOGGLEIO_0_IDX            (0x00U)
 #define TOGGLEIO_1_IDX            (0x01U)

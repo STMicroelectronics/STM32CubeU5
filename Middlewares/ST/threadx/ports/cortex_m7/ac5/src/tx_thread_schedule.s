@@ -233,7 +233,9 @@ __tx_ts_wait
     CBNZ    r1, __tx_ts_ready                       // If non-NULL, a new thread is ready!
 
 #ifdef TX_LOW_POWER
+    PUSH    {r0-r3}
     BL      tx_low_power_enter                      // Possibly enter low power mode
+    POP     {r0-r3}
 #endif
 
 #ifdef TX_ENABLE_WFI
@@ -243,7 +245,9 @@ __tx_ts_wait
 #endif
 
 #ifdef TX_LOW_POWER
+    PUSH    {r0-r3}
     BL      tx_low_power_exit                       // Exit low power mode
+    POP     {r0-r3}
 #endif
 
     CPSIE   i                                       // Enable interrupts

@@ -7,13 +7,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -2348,7 +2347,7 @@ static void Request_MessageReq(uint8_t PortNum, uint8_t *instruction, uint8_t *p
       break;
     case GUI_MSG_GET_MANU_INFO :
     {
-      uint16_t manu_info;
+      uint8_t manu_info[2];
       uint8_t nb_expected_tag = 0U;
       uint8_t sop = (uint8_t)USBPD_SOPTYPE_SOP;
       if (length > TLV_SIZE_MAX)
@@ -2356,16 +2355,20 @@ static void Request_MessageReq(uint8_t PortNum, uint8_t *instruction, uint8_t *p
         break;
       }
       (void)TLV_get(&process_tlv, &tag, &length, &value);
-      while ((0U != length) && (TLV_SIZE_MAX > length) && (nb_expected_tag < 2U))
+      while ((0U != length) && (TLV_SIZE_MAX > length) && (nb_expected_tag < 3U))
       {
         nb_expected_tag++;
         if (GUI_PARAM_MSG_SOPTYPE == (USBPD_GUI_Tag_ParamMsg)tag)
         {
           sop = value[0];
         }
+        else if (GUI_PARAM_MSG_BATTERYREF == (USBPD_GUI_Tag_ParamMsg)tag)
+        {
+          manu_info[1] = value[0];
+        }
         else if (GUI_PARAM_MSG_MANUINFODATA == (USBPD_GUI_Tag_ParamMsg)tag)
         {
-          manu_info = USBPD_LE16(&value[0]);
+          manu_info[0] = value[0];
         }
         else
         {
@@ -2374,7 +2377,7 @@ static void Request_MessageReq(uint8_t PortNum, uint8_t *instruction, uint8_t *p
 
         (void)TLV_get(&process_tlv, &tag, &length, &value);
       }
-      if (2U == nb_expected_tag)
+      if (3U == nb_expected_tag)
       {
         status = USBPD_DPM_RequestGetManufacturerInfo(PortNum, (USBPD_SOPType_TypeDef)sop, (uint8_t *)&manu_info);
       }
@@ -3567,4 +3570,3 @@ static void UpdateSNKPowerPort1(void)
   */
 #endif /* _GUI_INTERFACE */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

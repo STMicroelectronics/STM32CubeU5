@@ -31,7 +31,7 @@ WIFI, Ethernet and Cellular. Different WIFI modules are supported from third par
 # Documentation
 
 [Doxygen documentation](./NetworkLib.chm)
-
+:::
 ::: {.col-sm-12 .col-lg-8}
 
 # Update History
@@ -69,7 +69,7 @@ WIFI, Ethernet and Cellular. Different WIFI modules are supported from third par
 
 ## Supported Devices and Boards
 
-  - B-U585I-IOT02A board (MB1551 rev A).
+  - B-U585I-IOT02A board (MB1551 rev A and rev C).
   - B-L475E-IOT01A board (MB1297 rev D).
   - 32F413HDISCOVERY board (MB1274 rev B).
   - 32F769IDISCOVERY board (MB1225 rev B).

@@ -196,11 +196,11 @@ static void EEPROM_Show_Feature(uint8_t feature)
         if(TransferStatus1 != FAILED)
         {
           printf("String writes in the current EEPROM selected:\n");
-          printf("READ/WRITE PAGE %lu  SUCCEEDED\n", i);
+          printf("READ/WRITE PAGE %u  SUCCEEDED\n", i);
         }
         else
         {
-          printf("READ/WRITE PAGE %lu  FAILED\n", i);
+          printf("READ/WRITE PAGE %u  FAILED\n", i);
         }
       }
     }

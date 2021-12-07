@@ -97,7 +97,10 @@ void OPENBL_I2C_Configuration(void)
 void OPENBL_I2C_DeInit(void)
 {
   LL_I2C_DeInit(I2Cx);
-  LL_I2C_Enable(I2Cx);
+  LL_I2C_Disable(I2Cx);
+
+  I2Cx_FORCE_RESET();
+  I2Cx_RELEASE_RESET();
 }
 
 /**
@@ -224,11 +227,11 @@ void OPENBL_I2C_WaitAddress(void)
   * @brief  This function is used to wait until NACK is detected.
   * @retval None.
   */
-#if defined (__CC_ARM)
-void OPENBL_I2C_WaitNack(void)
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_I2C_WaitNack(void)
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) void OPENBL_I2C_WaitNack(void)
+#endif /* (__ICCARM__) */
 {
   uint32_t timeout = 0U;
 
@@ -256,11 +259,11 @@ __ramfunc void OPENBL_I2C_WaitNack(void)
   * @brief  This function is used to wait until STOP is detected.
   * @retval None.
   */
-#if defined (__CC_ARM)
-void OPENBL_I2C_WaitStop(void)
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_I2C_WaitStop(void)
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) void OPENBL_I2C_WaitStop(void)
+#endif /* (__ICCARM__) */
 {
   uint32_t timeout = 0U;
 
@@ -308,11 +311,11 @@ void OPENBL_I2C_SendAcknowledgeByte(uint8_t Byte)
   * @param
   * @retval None.
   */
-#if defined (__CC_ARM)
-void OPENBL_I2C_SendBusyByte(void)
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_I2C_SendBusyByte(void)
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) void OPENBL_I2C_SendBusyByte(void)
+#endif /* (__ICCARM__) */
 {
   uint32_t timeout = 0;
 

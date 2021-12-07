@@ -32,7 +32,7 @@
 <p>Please remember that on system with security enabled:</p>
 <ul>
 <li>The system always boots in secure and the secure application is responsible for launching the non-secure application.</li>
-<li>The SystemInit() function in secure application sets up the SAU/IDAU, FPU and secure/non-secure interrupts allocations defined in partition_stm32u575xx.h file.</li>
+<li>The SystemInit() function in secure application sets up the SAU/IDAU, FPU and secure/non-secure interrupts allocations defined in partition_stm32u585xx.h file.</li>
 </ul>
 <p>This project shows how to switch from secure application to non-secure application thanks to the system isolation performed to split the internal Flash and internal SRAM memories into two halves:</p>
 <ul>
@@ -94,8 +94,8 @@
 </ul>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
-<li><p>This example runs on STM32U575xx devices with security enabled (TZEN=1).</p></li>
-<li><p>This example has been tested with STMicroelectronics NUCLEO-U575ZI-Q (MB1549) board and can be easily tailored to any other supported device and development board.</p></li>
+<li><p>This example runs on STM32U585xx devices with security enabled (TZEN=1).</p></li>
+<li><p>This example has been tested with STMicroelectronics B-U585I-IOT02A board and can be easily tailored to any other supported device and development board.</p></li>
 <li><p>User Option Bytes requirement (with STM32CubeProgrammer tool)</p>
 <pre><code>- TZEN = 1                            System with TrustZone-M enabled
 - SECWM1_PSTRT=0x0  SECWM1_PEND=0x7F  All 128 pages of internal Flash Bank1 set as secure

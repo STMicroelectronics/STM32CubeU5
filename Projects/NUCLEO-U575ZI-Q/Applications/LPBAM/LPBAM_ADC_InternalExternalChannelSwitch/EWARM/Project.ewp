@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.50.6.28950</state>
+                    <state>8.50.4.26131</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -1171,9 +1171,6 @@
             <name>$PROJ_DIR$\..\..\..\..\..\..\Utilities\lpbam\stm32_adv_lpbam_common.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Utilities\lpbam\stm32_adv_lpbam_lptim.c</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Utilities\lpbam\STM32U5\stm32_ll_lpbam.c</name>
         </file>
         <file>
@@ -1181,9 +1178,6 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\..\Utilities\lpbam\stm32_lpbam_common.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\..\..\Utilities\lpbam\stm32_lpbam_lptim.c</name>
         </file>
     </group>
 </project>

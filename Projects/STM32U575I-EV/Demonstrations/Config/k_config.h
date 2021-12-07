@@ -30,8 +30,8 @@
 /* Exported constants --------------------------------------------------------*/
 /* Exported macros -----------------------------------------------------------*/
 #define EVAL_BOARD   "STM32U575I-EV"
-#define DEMO_VERSION "Demo V1.0.0"
-#define DEMO_DATE    "10 - June - 2021"
+#define DEMO_VERSION "Demo V1.1.0"
+#define DEMO_DATE    "7 - Sept - 2021"
 
 #define DEMO_INFO1   "MCD Application Team"
 #define DEMO_INFO2   "(C) COPYRIGHT 2021"

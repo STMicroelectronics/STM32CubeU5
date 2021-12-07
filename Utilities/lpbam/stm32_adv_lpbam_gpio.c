@@ -19,25 +19,25 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the GettingStarted.html document before starting developing an LPBAM
-      application.
+      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
+      developing an LPBAM application.
 
     *** Driver description ***
     ==========================
     [..]
-      This driver is dedicated for GPIO that supports Low power feature.
-      This advanced LPBAM module counts 3 files :
+      This driver is dedicated for GPIO instance that supports low power feature.
+      This advanced LPBAM module counts 3 files:
           (+) stm32_adv_lpbam_gpio.c
               (++) This file provides the GPIO advanced files body.
           (+) stm32_adv_lpbam_gpio.h
-              (++) This file is the header file of stm32_adv_lpbam_gpio.c. It provides used types
+              (++) This file is the header file of stm32_adv_lpbam_gpio.c. It provides used types.
           (+) stm32_platform_lpbam_gpio.h
               (++) This header file contains all defines to be used in applicative side.
 
     *** Driver features ***
     =======================
     [..]
-      This driver provides the following list of features :
+      This driver provides the following list of features:
              (+) Write a single state to GPIO pin(s).
              (+) Write a sequence of states to GPIO pin(s).
              (+) Read a sequence of states from GPIO pin(s).
@@ -56,9 +56,9 @@
     ===============================
     [..]
       Use ADV_LPBAM_GPIO_WritePin_SetFullQ() API to build a linked-list queue that writes single state to a GPIO pin
-     (set of pins) according to parameters in the LPBAM_GPIO_WritePinAdvConf_t structure.
-      Configured parameters are :
-          (+) Pin      : Specifies the LPGPIO pin to be configured.
+      (set of pins) according to parameters in the LPBAM_GPIO_WritePinAdvConf_t structure.
+      Configuration parameters are :
+          (+) Pin      : Specifies the LPGPIO pin(s) to write.
                          This parameter can be a value or a combination of @ref LPBAM_GPIO_pins.
           (+) PinState : Specifies the value to be written to the selected pin(s).
                          This parameter can be one of the LPBAM_GPIO_PinState.
@@ -74,11 +74,11 @@
     [..]
       Use ADV_LPBAM_GPIO_WritePinSequence_SetFullQ() API to build a linked-list queue that writes a sequence of states
       to a GPIO pin (set of pins) according to parameters in the LPBAM_GPIO_PinSeqFullAdvConf_t structure.
-      Configured parameters are :
-          (+) Pin   : Specifies the LPGPIO pin to be configured.
+      Configuration parameters are :
+          (+) Pin   : Specifies the LPGPIO pin(s) to write.
                       This parameter can be a value or a combination of @ref LPBAM_GPIO_pins.
-          (+) Size  : Specifies the data buffer address.
-          (+) pData : Specifies the amount of data to be written.
+          (+) Size  : Specifies the amount of data to be written.
+          (+) pData : Specifies the data buffer address.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
           (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
@@ -90,12 +90,14 @@
 
     [..]
       Use ADV_LPBAM_GPIO_ReadPinSequence_SetFullQ() API to build a linked-list queue that reads a sequence of states
-      to a GPIO pin (set of pins) according to parameters in the LPBAM_GPIO_PinSeqFullAdvConf_t structure.
-      Configured parameters are :
-          (+) Pin   : Specifies the LPGPIO pin to be configured.
+      of GPIO pin(s) according to the specified parameters in the LPBAM_GPIO_PinSeqFullAdvConf_t structure.
+      This API allow to read the state of one or multiple pin(s). The pin(s) state can be read oneshot or several times
+      according to the number of times programmed in the Size field.
+      Configuration parameters are :
+          (+) Pin   : Specifies the LPGPIO pin(s) to read.
                       This parameter can be a value or a combination of @ref LPBAM_GPIO_pins.
-          (+) Size  : Specifies the data buffer address.
-          (+) pData : Specifies the amount of data to be written.
+          (+) Size  : Specifies how may times, the pin(s) state will be read.
+          (+) pData : Specifies the data buffer address, where the pin(s) state(s) will be stored.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
           (+) DestInc           : DMA_DINC_INCREMENTED.
@@ -104,6 +106,10 @@
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
           (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
+
+      When reading more then one pin, each data contains the state of all selected pins. Within each data, use
+      __LPBAM_GPIO_STATE() macro to get the state of each selected pin.
+
 
       These APIs must be called when the GPIO is well initialized.
           (+) Recommended GPIO initialization sequence
@@ -138,8 +144,8 @@
                        (++++) DMA_IT_USE : user setting error.
                   (+++) Call HAL_DMAEx_List_Start() to start the DMA execution.
 
-    *** Constraints ***
-    ===================
+    *** Recommendation ***
+    ======================
     [..]
       It's strongly not recommended to call any driver API with the same GPIO pin by more than one linked-list queue.
       When the GPIO nodes will be executed simultaneously unexpected behavior will appear.

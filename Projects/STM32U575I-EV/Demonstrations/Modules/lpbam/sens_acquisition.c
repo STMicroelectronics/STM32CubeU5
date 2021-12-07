@@ -32,7 +32,6 @@
 /* Used to exit application */
 static __IO uint8_t UserEvent=0;
 static __IO uint8_t UserEntry=0;
-static TS_State_t TS_State;
 static uint32_t count=0;;
 
 DMA_HandleTypeDef        DMAHandle1;
@@ -95,6 +94,8 @@ static void DMA_LinkedListConfig (void);
 /* Exported functions --------------------------------------------------------*/
 void Sens_Acquisition_Demo(void)
 {
+    uint32_t joyState = JOY_NONE;
+    uint32_t Button   = 0;
   /* IMPLEMENT APPLICATION HERE */
   
   UTIL_LCD_SetFont(&Font24);
@@ -127,7 +128,8 @@ void Sens_Acquisition_Demo(void)
   
   UTIL_LCD_DisplayStringAt(4, 170, (uint8_t *)"(Use Joystick for wakeup)", CENTER_MODE);
   
-  UTIL_LCD_DrawRect(66, 186, 194, 26,UTIL_LCD_COLOR_BLACK);
+  UTIL_LCD_DrawRect(66, 186, 194, 26,UTIL_LCD_COLOR_RED);
+  UTIL_LCD_DrawRect(65, 185, 196, 28,UTIL_LCD_COLOR_RED);
   UTIL_LCD_FillRect(67, 187, 192, 24,UTIL_LCD_COLOR_ST_YELLOW);
   UTIL_LCD_FillRect(68, 188, 190, 22,UTIL_LCD_COLOR_BLACK);
   
@@ -159,10 +161,12 @@ void Sens_Acquisition_Demo(void)
   
   do 
   {
-    BSP_TS_GetState(0, &TS_State); 
-    while(TS_State.TouchDetected == 0)
+
+    joyState = JOY_NONE;
+    while (joyState == JOY_NONE)
     {  
-      BSP_TS_GetState(0, &TS_State);
+      joyState = BSP_JOY_GetState(JOY1);
+      
       UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
       UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_MAGENTA);
       
@@ -195,33 +199,61 @@ void Sens_Acquisition_Demo(void)
       
     }
     
-    while(TS_State.TouchDetected == 1)
-    {  
-      BSP_TS_GetState(0, &TS_State);
+    /* anti bounding assert */ 
+    while (BSP_JOY_GetState(JOY1) != JOY_NONE);
+    HAL_Delay(100);
+
+    if ( joyState != JOY_SEL)
+    {    
+      if (Button == 0)
+      {
+        Button =1;
+        
+        UTIL_LCD_DrawRect(66, 186, 194, 26,UTIL_LCD_COLOR_BLACK);
+        UTIL_LCD_DrawRect(65, 185, 196, 28,UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_RED);
+      }
+      else
+      {
+        Button =0;
+        UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_BLACK);
+        UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_DrawRect(66, 186, 194, 26,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(65, 185, 196, 28,UTIL_LCD_COLOR_RED);
+      }
     }
-    HAL_Delay(100);    
+ 
     
-    if ((TS_State.TouchX > 40) && (TS_State.TouchX < 200) && (TS_State.TouchY > 180) && (TS_State.TouchY < 210)) 
+    if (joyState == JOY_SEL) 
     {
       
-      UTIL_LCD_SetFont(&Font16);
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_RED);
-      UTIL_LCD_DisplayStringAt(40, 222, (uint8_t *)"System in Stop mode ", LEFT_MODE);
-      
-      Sensors_Aquisition();     
-      HAL_Delay(100);
-      EnterLowPowerMode(); 
-
-      Show_Results();
-      HAL_Delay(10);
+      if (Button == 0)
+      {
+        
+        UTIL_LCD_SetFont(&Font16);
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DisplayStringAt(40, 222, (uint8_t *)"System in Stop mode ", LEFT_MODE);
+        
+        Sensors_Aquisition();     
+        HAL_Delay(100);
+        EnterLowPowerMode(); 
+        
+        Show_Results();
+        HAL_Delay(10);
+        HAL_NVIC_SystemReset();
+      }
+      else
+      {
+        break;
+      }
     }
+ 
     
-    
-    
-  } while (( TS_State.TouchX < 270) || (TS_State.TouchY < 200)); 
+  } while (1); 
   
-  HAL_NVIC_SystemReset();
+
 }
 
 
@@ -298,7 +330,7 @@ static void Sensors_Aquisition(void)
   I2C_DataAdvConf.AutoModeConf.TriggerState       = LPBAM_I2C_AUTO_MODE_ENABLE;
 
   /* Advanced lpbam I2C master transmit set data */
-  if (ADV_LPBAM_I2C_MasterTransmit_SetDataQ(I2C3, &DMAListInfo, &I2C_DataAdvConf, &MasterTxDataDesc, &I2C_TransmitQueue[0]) != LPBAM_OK)
+  if (ADV_LPBAM_I2C_MasterTx_SetDataQ(I2C3, &DMAListInfo, &I2C_DataAdvConf, &MasterTxDataDesc, &I2C_TransmitQueue[0]) != LPBAM_OK)
   {
     Error_Handler();
   }  
@@ -308,7 +340,7 @@ static void Sensors_Aquisition(void)
   I2C_DataAdvConf.pData = (uint8_t *)&tmp_pData;
 
   /* Advanced lpbam I2C master receive set data*/
-  if (ADV_LPBAM_I2C_MasterReceive_SetDataQ(I2C3, &DMAListInfo, &I2C_DataAdvConf, &MasterRxDataDesc, &I2C_TransmitQueue[0]) != LPBAM_OK)
+  if (ADV_LPBAM_I2C_MasterRx_SetDataQ(I2C3, &DMAListInfo, &I2C_DataAdvConf, &MasterRxDataDesc, &I2C_TransmitQueue[0]) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -551,6 +583,8 @@ static void Sensors_Aquisition(void)
 
 void Show_Results(void)
 {
+  uint32_t joyState = JOY_NONE;
+
   
   if (HAL_LPTIM_PWM_Stop(&LPTIMHandle, LPTIM_CHANNEL_1) != HAL_OK)
   {
@@ -582,7 +616,7 @@ void Show_Results(void)
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_MAGENTA);
   
   /* Return button */  
-  UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_BLACK);
+  UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_RED);
   UTIL_LCD_FillRect(281, 221, 38, 16,UTIL_LCD_COLOR_ST_YELLOW); 
   UTIL_LCD_FillRect(282, 222, 36, 14,UTIL_LCD_COLOR_BLACK);  
   
@@ -612,23 +646,17 @@ void Show_Results(void)
   }
   
   
-  do 
-  {
-    BSP_TS_GetState(0, &TS_State); 
-    while(TS_State.TouchDetected == 0)
-    {  
-      BSP_TS_GetState(0, &TS_State);
-    }
-    while(TS_State.TouchDetected == 1)
-    {  
-      BSP_TS_GetState(0, &TS_State);
-    }
-    HAL_Delay(100);    
-    
-    
-  } while (( TS_State.TouchX < 270) || (TS_State.TouchY < 210)); 
+
+  HAL_Delay(200); 
   
-  HAL_Delay(100);
+  while( joyState == JOY_NONE)
+  {
+    joyState = BSP_JOY_GetState(JOY1);
+  }
+  /* anti bounding assert */ 
+  while( BSP_JOY_GetState(JOY1) != JOY_NONE);
+  
+  
 }
 
 /**

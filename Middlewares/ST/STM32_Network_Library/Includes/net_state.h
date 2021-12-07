@@ -19,7 +19,10 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef NET_STATE_H
 #define NET_STATE_H
+
 /* Includes ------------------------------------------------------------------*/
+#include "net_address.h"
+#include "net_connect.h"
 
 int32_t net_state_manage_event(net_if_handle_t *pnetif, net_state_event_t state_to);
 void net_state_transition_done(net_if_handle_t *pnetif, net_state_t state_to);

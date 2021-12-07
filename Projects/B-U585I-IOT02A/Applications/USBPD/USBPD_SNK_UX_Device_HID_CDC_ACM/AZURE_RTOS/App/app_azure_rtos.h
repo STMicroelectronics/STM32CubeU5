@@ -32,6 +32,7 @@
 
 #include "app_usbx_device.h"
 #include "usbpd.h"
+#include "gui_api.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

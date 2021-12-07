@@ -45,8 +45,6 @@ int32_t Led_demo(void)
   int32_t  result = 0;
 
   printf("\n******LEDs EXAMPLE******\n");
-  
-  StartExample();
 
   /* Initialize the LEDs */
   if (BSP_LED_Init(LED6) != BSP_ERROR_NONE) result--;
@@ -63,7 +61,7 @@ int32_t Led_demo(void)
   if (BSP_LED_GetState(LED7) != 1) result--;
   
   /* Check result */
-  if (CheckResult() != 0U) result--;
+ if (CheckResult() != 0U) result--;
   
   /* Toggle the LEDs */
   printf("Switch off LED6\n");
@@ -76,7 +74,7 @@ int32_t Led_demo(void)
   if (BSP_LED_GetState(LED7) != 0) result--;
   
   /* Check result */
-  if (CheckResult() != 0U) result--;
+ if (CheckResult() != 0U) result--;
 
   /* Toggle the LEDs */
   printf("Switch on LED6\n");
@@ -94,7 +92,7 @@ int32_t Led_demo(void)
   if (BSP_LED_Off(LED7) != BSP_ERROR_NONE) result--;
 
   /* Check result */
-  if (CheckResult() != 0U) result--;
+ if (CheckResult() != 0U) result--;
 
   /* De-Initialize the LEDs */
   if (BSP_LED_DeInit(LED6) != BSP_ERROR_NONE) result--;

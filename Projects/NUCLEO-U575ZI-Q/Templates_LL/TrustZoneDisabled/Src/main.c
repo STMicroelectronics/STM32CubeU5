@@ -90,6 +90,12 @@ static void SystemClock_Config(void)
   {
   }
 
+  /* Switch to SMPS regulator instead of LDO */
+  LL_PWR_SetRegulatorSupply(LL_PWR_SMPS_SUPPLY);
+  while(LL_PWR_IsActiveFlag_REGULATOR() != 1)
+  {
+  }
+
   /* Enable MSI oscillator */
   LL_RCC_MSIS_SetRange(LL_RCC_MSISRANGE_4);
   LL_RCC_MSI_SetCalibTrimming(10, LL_RCC_MSI_OSCILLATOR_0);

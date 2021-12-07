@@ -25,10 +25,11 @@
 #include "stm32u5xx_nucleo.h"
 #include "stm32_lpbam.h"
 
-#include "TriangularSignal.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+/* #define DEBUG_CONFIGURATION */
+
 /* Exported functions ------------------------------------------------------- */
 /* Error API */
 void Error_Handler(void);

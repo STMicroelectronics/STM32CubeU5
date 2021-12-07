@@ -47,21 +47,26 @@
 
 #if (USE_MEMORY_POOL_ALLOCATION == 1)
 /* USER CODE BEGIN TX_Pool_Buffer */
+__attribute__((aligned(4)))
+ 
 /* USER CODE END TX_Pool_Buffer */
 static UCHAR tx_byte_pool_buffer[TX_APP_MEM_POOL_SIZE];
 static TX_BYTE_POOL tx_app_byte_pool;
 
 /* USER CODE BEGIN FX_Pool_Buffer */
+ __attribute__((aligned(4)))
 /* USER CODE END FX_Pool_Buffer */
 static UCHAR  fx_byte_pool_buffer[FX_APP_MEM_POOL_SIZE];
 static TX_BYTE_POOL fx_app_byte_pool;
 
 /* USER CODE BEGIN UX_HOST_Pool_Buffer */
+__attribute__((aligned(4)))
 /* USER CODE END UX_HOST_Pool_Buffer */
 static UCHAR  ux_host_byte_pool_buffer[UX_HOST_APP_MEM_POOL_SIZE];
 static TX_BYTE_POOL ux_host_app_byte_pool;
 
 /* USER CODE BEGIN USBPD_Pool_Buffer */
+__attribute__((aligned(4)))
 /* USER CODE END USBPD_Pool_Buffer */
 static UCHAR  usbpd_byte_pool_buffer[USBPD_DEVICE_APP_MEM_POOL_SIZE];
 static TX_BYTE_POOL usbpd_app_byte_pool;

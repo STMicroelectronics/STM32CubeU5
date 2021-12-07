@@ -10,7 +10,18 @@ This example shows how to use the different functionalities of components availa
 
 Red LED toggles every 500ms whenever any error is detected.
 
-It uses the hyperterminal to display information and to get instructions from user. 
+It uses the Terminal I/O to display information : 
+
+ - When resorting to EWARM IAR IDE:
+   Command Code is displayed on debugger as follows: View --> Terminal I/O
+
+ - When resorting to MDK-ARM KEIL IDE:
+   Command Code is displayed on debugger as follows: View --> Serial Windows --> Debug (printf) Viewer
+ 
+ - When resorting to STM32CubeIDE:
+   In Debug configuration window\ Startup, in addition to "monitor reset halt" add the command "monitor arm semihosting enable"
+   Command Code is displayed on debugger as follows: Window--> Show View--> Console.
+   
 At the beginning, the example waits until the User Button is pressed. Once 
 this is done, it goes to run the following tests:
 
@@ -30,9 +41,6 @@ available on the board. (STR and DTR in Normal mode and MemoryMapped)
  ** OSPI RAM **
 This example shows how to write and read data available on the Octal Sram memory
 available on the board. (Normal mode and MemoryMapped)
-
- ** AUDIO RECORD **
-This example will record sound via digital microphones on the board (U6/U7).
 
  ** MOTION SENSOR **
 This example shows how to use the accelerometer and gyroscope of the motion sensor.
@@ -58,7 +66,6 @@ This example shows how to read and write data usint the EEPROM I2C M24256(U22)
 
 ### <b>Directory contents</b>
 
-  - BSP/Src/audio_record.c         AUDIO RECORD features
   - BSP/Src/camera.c               CAMERA features
   - BSP/Src/eeprom.c               EEPROM feature
   - BSP/Src/led.c                  Led display features

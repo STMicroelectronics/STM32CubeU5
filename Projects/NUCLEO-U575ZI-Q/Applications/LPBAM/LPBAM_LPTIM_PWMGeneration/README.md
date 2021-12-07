@@ -98,6 +98,15 @@ data transfer in DMA mode.
 -   User push-button pin (PC.13) is configured as input with external interrupt (EXTI_Line13), falling edge. When User
 push-button is pressed, wakeup event is generated and green led is turned on.
 
+-   This project contains two configuration :
+    -   Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+        - LPTIM1 output signal is mapped on PB.2 pin.
+    -   Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+        - LPTIM1 output signal is not mapped.
+
+-   The typical average power consumption of the system performing LPTIM PWM ganeration with changing 5 times signal
+characteristics is 4.1uA.
+
 -   NUCLEO-U575ZI-Q board LEDs are used to monitor the transfer status:
     -   LED1 (green led) is turned on when no error is detected.
     -   LED3 (red led) is turned on when any error is occurred.
@@ -137,7 +146,7 @@ Timer, Watchdog, Motor control, LPTIM, LPBAM, PWM, Signal, Low power, Stop2
     board and can be easily tailored to any other supported device
     and development board.
 
--   Connect PB.2 (Pin 19 in CN12 connector) to an oscilloscope to monitor the LPTIM1 output waveform.
+-   Connect PB.2 (Pin 22 in CN12 connector) to an oscilloscope to monitor the LPTIM1 output waveform.
 
 ### <b>How to use it ?</b>
 

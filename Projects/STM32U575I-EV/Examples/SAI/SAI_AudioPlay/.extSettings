@@ -2,7 +2,7 @@
 HeaderPath=..\..\..\..\..\..\Drivers\BSP\Components\cs42l51;..\..\..\..\..\..\Drivers\BSP\Components\mfxstm32l152;..\..\..\..\..\..\Drivers\BSP\Components\Common;..\..\..\..\..\..\Drivers\BSP\STM32U575I-EV
 [Others]
 Define=
-HALModule=ADC;DMA;I2C;ICACHE;EXTI;SPI;UART;SAI;DFSDM
+HALModule=ADC;DMA;I2C;ICACHE;EXTI;SPI;UART;SAI;MDF
 [Groups]
 Doc=../README.md;
 Drivers/BSP/Components=../../../../../../Drivers/BSP/Components/cs42l51/cs42l51_reg.c;../../../../../../Drivers/BSP/Components/cs42l51/cs42l51.c;../../../../../../Drivers/BSP/Components/mfxstm32l152/mfxstm32l152_reg.c;../../../../../../Drivers/BSP/Components/mfxstm32l152/mfxstm32l152.c;

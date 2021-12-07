@@ -46,8 +46,6 @@ int32_t Button_demo(void)
   
   printf("\n******BUTTON EXAMPLE******\n");
 
-  StartExample();
-  
   /* ------------------- */
   /* Button in GPIO mode */
   /* ------------------- */

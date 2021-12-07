@@ -19,8 +19,8 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the GettingStarted.html document before starting developing an LPBAM
-      application.
+      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
+      developing an LPBAM application.
 
     *** Driver description ***
     ==========================
@@ -91,7 +91,7 @@
       transfer to SRAM).
 
     [..]
-      Configured parameters through ADV_LPBAM_ADC_Conversion_SetConfigQ are :
+      Configuration parameters through ADV_LPBAM_ADC_Conversion_SetConfigQ are :
           (+) ScanConvMode          : Configure the sequencer of ADC groups regular.
                                       This parameter can be a value of @ref LPBAM_ADC_Sequence_Scan_Mode.
           (+) ContinuousConvMode    : Specify whether the conversion is performed in single or continuous mode.
@@ -125,11 +125,11 @@
               (++) HighThreshold        : Specifies the ADC watchdog high threshold.
                                           This parameter can be a value from 0 to 0xFFF.
 
-      Configured parameters through ADV_ADC_Conversion_SetDataQ() are :
+      Configuration parameters through ADV_ADC_Conversion_SetDataQ() are :
           (+) pData : Specifies the address of data buffer
           (+) Size  : Specifies the size of data to be read.
 
-    Configured parameters through ADV_LPBAM_ADC_Conversion_SetFullQ() are :
+      Configuration parameters through ADV_LPBAM_ADC_Conversion_SetFullQ() are :
           (+) ScanConvMode          : Configure the sequencer of ADC groups regular.
                                       This parameter can be a value of @ref LPBAM_ADC_Sequence_Scan_Mode.
           (+) ContinuousConvMode    : Specify whether the conversion is performed in single or continuous mode.
@@ -165,7 +165,7 @@
           (+) pData                 : Specifies the address of data buffer.
           (+) Size                  : Specifies DMA transfer number of ADC conversion data.
 
-      Configured parameters through ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() are :
+      Configuration parameters through ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() are :
           (+) WatchdogNumber : Select which ADC analog watchdog is monitoring the selected channel.
           (+) WatchdogMode   : Configure the ADC analog watchdog mode.
           (+) Channel        : Select which ADC channel to monitor by analog watchdog.
@@ -173,7 +173,7 @@
           (+) LowThreshold   : Specifies the ADC watchdog low threshold.
           (+) HighThreshold  : Specifies the ADC watchdog high threshold.
 
-      Configured parameters through ADV_LPBAM_ADC_ChannelConfig() are :
+      Configuration parameters through ADV_LPBAM_ADC_ChannelConfig() are :
           (+) Channel : Specify the channel to configure into ADC regular group.
           (+) Rank    : Specify the rank in the regular group sequencer.
 
@@ -292,7 +292,7 @@
               cases. (Optional)
               (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
           (+) Call ADV_LPBAM_Q_SetTriggerConfig() to add hardware trigger condition for executing
-              ADV_LPBAM_OPAMP_Start_SetFullQ() output queue. (Optional)
+              ADV_LPBAM_ADC_Conversion_SetFullQ() output queue. (Optional)
               (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
           (+) Call HAL_DMAEx_List_Init() to initialize the DMA in linked-list mode. (Mandatory)
           (+) Call HAL_DMAEx_List_LinkQ() to link the built queue to the DMA channel. (Mandatory)
@@ -318,8 +318,8 @@
       calling ADV_LPBAM_ADC_Conversion_SetConfigQ() or ADV_LPBAM_ADC_Conversion_SetFullQ() for memory optimization
       purpose if the ADC configuration matches with application needs (channels).
 
-    *** Constraints ***
-    ===================
+    *** Recommendation ***
+    ======================
     [..]
       It's useless to call ADV_LPBAM_ADC_Conversion_SetConfigQ() consecutively as the first configuration will be
       overwritten.
@@ -329,7 +329,7 @@
       ADV_LPBAM_ADC_Conversion_SetFullQ() API contains configuration process.
 
     [..]
-      It's mandatory to call ADV_LPBAM_ADC_ChannelConfig() after ADV_LPBAM_ADC_Start_SetFullQ()
+      It's mandatory to call ADV_LPBAM_ADC_ChannelConfig() after ADV_LPBAM_ADC_Conversion_SetFullQ()
       or ADV_LPBAM_ADC_Conversion_SetConfigQ() to configure ADC channels to be used.
 
     [..]
@@ -337,7 +337,7 @@
       incrementally to LPBAM_ADC_REGULAR_RANK_8 in case of "ScanConvMode" is set to LPBAM_ADC_SCAN_ENABLE.
 
     [..]
-      It's strongly not recommended to call ADV_LPBAM_ADC_Start_SetFullQ() with the same instance by more than one
+      It's strongly not recommended to call ADV_LPBAM_ADC_Conversion_SetFullQ() with the same instance by more than one
       linked-list queue. When the ADC nodes will be executed simultaneously unexpected behavior will appear.
 
     [..]
@@ -345,12 +345,8 @@
       nodes by two different DMA channels as unexpected behavior can appear.
 
     [..]
-      When current ADC configuration matches with application needs, it's strongly recommended to use
-      ADV_LPBAM_ADC_Conversion_SetDataQ() for memory optimization purpose.
-
-    [..]
-      When using ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() with LPBAM_ADC_ANALOGWATCHDOG_NONE value, it's worth to mention
-      that registers will be reset to default values and the Analog Watchdog will be disabled.
+      When using ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() with LPBAM_ADC_ANALOGWATCHDOG_NONE value, it's worth to
+      mention that registers will be reset to default values and the Analog Watchdog will be disabled.
 
     [..]
       When using ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ(), it's worth to mention that previous settings will be
@@ -1238,9 +1234,9 @@ LPBAM_Status_t ADV_LPBAM_ADC_Conversion_SetFullQ(ADC_TypeDef              *const
   reg_idx++;
 
 
-   /*
-    *               ######## ADC clock prescaler node ########
-    */
+  /*
+   *               ######## ADC clock prescaler node ########
+   */
 
   /* Set node descriptor */
   config_node.NodeDesc.NodeInfo.NodeID = (uint32_t)LPBAM_ADC_CLKPRESCALER_ID;

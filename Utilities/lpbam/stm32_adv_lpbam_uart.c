@@ -19,8 +19,8 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the GettingStarted.html document before starting developing an LPBAM
-      application.
+      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
+      developing an LPBAM application.
 
     *** Driver description ***
     ==========================
@@ -62,7 +62,7 @@
     [..]
       Use ADV_LPBAM_UART_Transmit_SetConfigQ() API to build a linked-list queue that setup the UART transmission
       configuration operation according to parameters in the LPBAM_UART_ConfigAdvConf_t structure.
-      Configured parameters are :
+      Configuration parameters are :
           (+) Mode         : Specifies the UART mode.
                              This parameter can be a value of @ref LPBAM_UART_Mode.
           (+) AutoModeConf : Specifies the autonomous mode parameters.
@@ -98,7 +98,7 @@
           (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
-      Configured parameters are :
+      Configuration parameters are :
           (+) pData : Specifies the data source buffer.
           (+) Size  : Specifies the data number of bytes to be sent.
 
@@ -114,7 +114,7 @@
           (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
-      Configured parameters are :
+      Configuration parameters are :
           (+) Mode         : Specifies the UART mode.
                              This parameter can be a value of @ref LPBAM_UART_Mode.
           (+) AutoModeConf : Specifies the autonomous mode parameters.
@@ -143,7 +143,7 @@
     [..]
       Use ADV_LPBAM_UART_Receive_SetConfigQ() API to build a linked-list queue that setup the UART reception
       configuration operation according to parameters in the LPBAM_UART_ConfigAdvConf_t structure.
-      Configured parameters are :
+      Configuration parameters are :
           (+) Mode     : Specifies the UART mode.
                          This parameter can be a value of @ref LPBAM_UART_Mode.
           (+) WakeupIT : Specifies the wake up source.
@@ -164,7 +164,7 @@
           (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
-      Configured parameters are :
+      Configuration parameters are :
           (+) pData : Specifies the data source buffer.
           (+) Size  : Specifies the data number of bytes to be sent.
 
@@ -180,7 +180,7 @@
           (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
-      Configured parameters are :
+      Configuration parameters are :
           (+) Mode     : Specifies the UART mode.
                          This parameter can be a value of @ref LPBAM_UART_Mode.
           (+) WakeupIT : Specifies the wake up source.
@@ -279,8 +279,8 @@
           (+) Call HAL_DMAEx_List_Start() to start the transmit DMA channel linked-list execution. (Mandatory)
 
 
-    *** Constraints ***
-    ===================
+    *** Recommendation ***
+    ======================
     [..]
       It's useless to call ADV_LPBAM_UART_{Transfer}_SetConfigQ() consecutively as the first configuration will be
       overwritten.

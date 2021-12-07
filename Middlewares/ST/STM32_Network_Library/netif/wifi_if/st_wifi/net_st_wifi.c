@@ -22,6 +22,9 @@
 #include "net_buffers.h"
 #include "net_wifi.h"
 #include "net_ip_lwip.h"
+#include "lwip/etharp.h"
+#include "lwip/tcpip.h"
+
 #include "wifi.h"
 
 

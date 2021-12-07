@@ -235,6 +235,8 @@
                     <state>USE_HAL_DRIVER</state>
                     <state>STM32U585xx</state>
                     <state>TCPP0203_SUPPORT</state>
+                    <state>_TRACE_NA</state>
+                    <state>_GUI_INTERFACE_NA</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -380,6 +382,7 @@
                     <state>$PROJ_DIR$\..\..\..\..\..\..\Utilities\TRACER_EMB</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\BSP\Components\tcpp0203</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A</state>
+                    <state>$PROJ_DIR$/../../../../../../Utilities/GUI_INTERFACE</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2239,6 +2242,18 @@
     </group>
     <group>
         <name>Utilities</name>
+        <group>
+            <name>GUI_INTERFACE</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\Utilities\GUI_INTERFACE\bsp_gui.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\Utilities\GUI_INTERFACE\data_struct_tlv.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\Utilities\GUI_INTERFACE\gui_api.c</name>
+            </file>
+        </group>
         <group>
             <name>TRACER_EMB</name>
             <file>

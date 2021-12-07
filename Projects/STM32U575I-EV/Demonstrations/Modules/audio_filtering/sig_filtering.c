@@ -31,7 +31,6 @@
 /* Used to exit application */
 static __IO uint8_t UserEvent=0;
 static __IO uint8_t UserEntry=0;
-static  TS_State_t  TS_State;
 uint32_t voltage [140];
 uint32_t current [140];
 
@@ -60,6 +59,8 @@ static void MDF_DeInit(void);
 /* Exported functions --------------------------------------------------------*/
 void Sig_Filtering_Demo(void)
 {
+  uint32_t joyState = JOY_NONE;
+  uint32_t Button   = 0;
   /* IMPLEMENT APPLICATION HERE */
   Digital_filter_module = 2;
   UTIL_LCD_SetFont(&Font24);
@@ -73,12 +74,13 @@ void Sig_Filtering_Demo(void)
   
   UTIL_LCD_DisplayStringAt(0, 0, (uint8_t *)"Power Metering", CENTER_MODE);
   
- /* Guide Panel */
+  /* Guide Panel */
   UTIL_LCD_FillRect(2, 30, 316, 184,UTIL_LCD_COLOR_WHITE);    
-
+  
   UTIL_LCD_FillRect(2, 220, 316, 18,UTIL_LCD_COLOR_WHITE);    
   
-  UTIL_LCD_DrawRect(66, 220, 154, 18,UTIL_LCD_COLOR_BLACK);
+  UTIL_LCD_DrawRect(66, 220, 154, 18,UTIL_LCD_COLOR_RED);
+  UTIL_LCD_DrawRect(65, 219, 156, 20,UTIL_LCD_COLOR_RED);
   UTIL_LCD_FillRect(67, 221, 152, 16,UTIL_LCD_COLOR_ST_YELLOW); 
   UTIL_LCD_FillRect(68, 222, 150, 14,UTIL_LCD_COLOR_BLACK);  
   
@@ -86,8 +88,8 @@ void Sig_Filtering_Demo(void)
   UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLACK);
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_YELLOW);
   UTIL_LCD_DisplayStringAt(80, 224, (uint8_t *)"Start Measurement", LEFT_MODE); 
-
-
+  
+  
   
   /* Return button */  
   UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_BLACK);
@@ -99,9 +101,9 @@ void Sig_Filtering_Demo(void)
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_YELLOW);
   UTIL_LCD_DisplayStringAt(286, 224, (uint8_t *)"BCK", LEFT_MODE);  
   
-
   
- /* Results Panel */
+  
+  /* Results Panel */
   
   UTIL_LCD_SetFont(&Font12);  
   UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_WHITE);
@@ -109,89 +111,117 @@ void Sig_Filtering_Demo(void)
   UTIL_LCD_DisplayStringAt(2, 30, (uint8_t *)"Voltage", LEFT_MODE);
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_GREEN);
   UTIL_LCD_DisplayStringAt(2, 42, (uint8_t *)"Current", LEFT_MODE);
-
-
+  
+  
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
  
   UTIL_LCD_DisplayStringAt(280, 202, (uint8_t *)"Time ", LEFT_MODE);
-
+  
   UTIL_LCD_DrawLine(20, 201, 280,201,UTIL_LCD_COLOR_BLACK);
   UTIL_LCD_DrawLine(29, 40, 29,210,UTIL_LCD_COLOR_BLACK);
-
-    
+  
+  
   UTIL_LCD_SetFont(&Font12);  
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_MAGENTA);
-
+  
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
   UTIL_LCD_DisplayStringAt(94, 30, (uint8_t *)"(Connect JP21_Pin1 to CN24_Pin1)", LEFT_MODE);
   UTIL_LCD_DisplayStringAt(94, 42, (uint8_t *)"(Move the Potentiometer RV1)", LEFT_MODE);  
- /* Initialize MDF */
+  /* Initialize MDF */
   MDF_Init();
-
-
+  
+  
   measuremnt_start = 0;
   do 
   {
-    BSP_TS_GetState(0, &TS_State); 
-    while(TS_State.TouchDetected == 0)
+    joyState = JOY_NONE;
+    while( joyState == JOY_NONE)
     {  
-      BSP_TS_GetState(0, &TS_State);
+      joyState = BSP_JOY_GetState(JOY1);
     }
     
-    while(TS_State.TouchDetected == 1)
-    {  
-      BSP_TS_GetState(0, &TS_State);
-    }
-    HAL_Delay(100);    
+    /* anti bounding assert */ 
+    while(BSP_JOY_GetState(JOY1) != JOY_NONE);
+    HAL_Delay(100);
     
-    if ((TS_State.TouchX > 40) && (TS_State.TouchX < 200) && (TS_State.TouchY > 200) && (TS_State.TouchY < 240)) 
-    {
-      
-      measuremnt_start ++;
-      
-      HAL_Delay(100);
- 
-      HAL_Delay(10);
-    }
-    if (measuremnt_start %2== 1)
-    {
-
-      UTIL_LCD_SetFont(&Font12); 
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLACK);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_YELLOW);
-      UTIL_LCD_DisplayStringAt(80, 224, (uint8_t *)"Stop  Measurement", LEFT_MODE); 
-  
-      while (TS_State.TouchDetected == 0)
-      {  
+    if (joyState != JOY_SEL)
+    {    
+      if (Button == 0)
+      {
+        Button =1;
         
-        if (flt_index ++ >140)
-        {
-          flt_index = 0;
-          UTIL_LCD_FillRect(30, 60, 300, 141,UTIL_LCD_COLOR_WHITE);
-          UTIL_LCD_DrawLine(20, 201, 280,201,UTIL_LCD_COLOR_BLACK);
-          UTIL_LCD_DrawLine(29, 40, 29,210,UTIL_LCD_COLOR_BLACK);
+        UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(66, 220, 154, 18,UTIL_LCD_COLOR_BLACK);
+        UTIL_LCD_DrawRect(65, 219, 156, 20,UTIL_LCD_COLOR_WHITE);
+      }
+      else
+      {
+        Button =0;
+        UTIL_LCD_DrawRect(66, 220, 154, 18,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(65, 219, 156, 20,UTIL_LCD_COLOR_RED);
+        UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_BLACK);
+        UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_WHITE);
+      }
+    }
+    
+    
+    if (joyState == JOY_SEL) 
+    {
+      
+      if (Button == 0)
+        
+      {
+        
+        measuremnt_start ++;
+        
+        HAL_Delay(100);
+        
+        HAL_Delay(10);
+      }
+      if (Button == 1)
+        
+      {
+        
+        break;
+      }
+      
+      if (measuremnt_start %2== 1)
+      {
+        
+        UTIL_LCD_SetFont(&Font12); 
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLACK);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_YELLOW);
+        UTIL_LCD_DisplayStringAt(80, 224, (uint8_t *)"Stop  Measurement", LEFT_MODE); 
+        
+        while( BSP_JOY_GetState(JOY1) != JOY_SEL)
+        {  
+          
+          if (flt_index ++ >140)
+          {
+            flt_index = 0;
+            UTIL_LCD_FillRect(30, 60, 300, 141,UTIL_LCD_COLOR_WHITE);
+            UTIL_LCD_DrawLine(20, 201, 280,201,UTIL_LCD_COLOR_BLACK);
+            UTIL_LCD_DrawLine(29, 40, 29,210,UTIL_LCD_COLOR_BLACK);
+          }
+          
+          Show_Results( flt_index,(int)voltageValue, (int)currentValue);
+          HAL_Delay(100);
         }
         
-        Show_Results( flt_index,(int)voltageValue, (int)currentValue);
-        BSP_TS_GetState(0, &TS_State);
+      }
+      else
+      {
+        UTIL_LCD_SetFont(&Font12); 
+        UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLACK);
+        UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_YELLOW);
+        UTIL_LCD_DisplayStringAt(80, 224, (uint8_t *)"Start Measurement", LEFT_MODE); 
         HAL_Delay(100); 
-        BSP_TS_GetState(0, &TS_State);
-      } 
-
-    }
-    else
-    {
-      UTIL_LCD_SetFont(&Font12); 
-      UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLACK);
-      UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_YELLOW);
-      UTIL_LCD_DisplayStringAt(80, 224, (uint8_t *)"Start Measurement", LEFT_MODE); 
-      BSP_TS_GetState(0, &TS_State);
-      HAL_Delay(100); 
-      BSP_TS_GetState(0, &TS_State);
+      }
+      
     }
     
-    
-  } while (( TS_State.TouchX < 270) || (TS_State.TouchY < 210));
+  } while (1);
   MDF_DeInit();
 }
 

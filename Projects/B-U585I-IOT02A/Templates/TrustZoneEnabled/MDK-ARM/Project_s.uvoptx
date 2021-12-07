@@ -73,7 +73,7 @@
         <LExpSel>0</LExpSel>
       </OPTXL>
       <OPTFL>
-        <tvExp>1</tvExp>
+        <tvExp>0</tvExp>
         <tvExpOptDlg>0</tvExpOptDlg>
         <IsCurrentTarget>1</IsCurrentTarget>
       </OPTFL>
@@ -219,8 +219,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_audio.c</PathWithFileName>
-      <FilenameWithoutPath>b_u585i_iot02a_audio.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_light_sensor.c</PathWithFileName>
+      <FilenameWithoutPath>b_u585i_iot02a_light_sensor.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -383,8 +383,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../Drivers/BSP/Components/ism330dlc/ism330dlc.c</PathWithFileName>
-      <FilenameWithoutPath>ism330dlc.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../Drivers/BSP/Components/ism330dhcx/ism330dhcx.c</PathWithFileName>
+      <FilenameWithoutPath>ism330dhcx.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -395,8 +395,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../Drivers/BSP/Components/ism330dlc/ism330dlc_reg.c</PathWithFileName>
-      <FilenameWithoutPath>ism330dlc_reg.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../Drivers/BSP/Components/ism330dhcx/ism330dhcx_reg.c</PathWithFileName>
+      <FilenameWithoutPath>ism330dhcx_reg.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

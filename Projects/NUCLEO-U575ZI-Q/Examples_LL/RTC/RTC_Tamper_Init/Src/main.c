@@ -107,6 +107,8 @@ int main(void)
   LL_PWR_DisableUCPDDeadBattery();
 
   /* USER CODE BEGIN Init */
+  /* Enables access to the backup domain */
+  LL_PWR_EnableBkUpAccess();
 
   /* USER CODE END Init */
 
@@ -174,6 +176,13 @@ void SystemClock_Config(void)
   }
 
   LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
+
+  /* Switch to SMPS regulator instead of LDO */
+  LL_PWR_SetRegulatorSupply(LL_PWR_SMPS_SUPPLY);
+  while(LL_PWR_IsActiveFlag_REGULATOR() != 1)
+  {
+  }
+
   LL_RCC_LSI_Enable();
 
    /* Wait till LSI is ready */

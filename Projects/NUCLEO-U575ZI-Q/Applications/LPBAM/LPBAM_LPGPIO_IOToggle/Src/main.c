@@ -72,6 +72,9 @@ uint32_t LPGPIOBufferState[GPIO_STATE_BUFFER_SIZE] =
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PM */
 static void SystemClock_Config(void);
+#if !defined (DEBUG_CONFIGURATION)
+static void SystemPower_Config(void);
+#endif /* !defined (DEBUG_CONFIGURATION) */
 static void CACHE_Enable(void);
 void HAL_TransferError(DMA_HandleTypeDef *DMAHandle);
 
@@ -110,8 +113,11 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 
-  /* Enable PWR CLK */
-  __HAL_RCC_PWR_CLK_ENABLE();
+#if !defined (DEBUG_CONFIGURATION)
+  /* Configure the system power */
+  SystemPower_Config();
+#endif /* defined (DEBUG_CONFIGURATION) */
+
   /* USER CODE END SysInit */
 
   /* -1- Initialize LEDs mounted on NUCLEO-U575ZI-Q (MB1549) board */
@@ -210,7 +216,7 @@ int main(void)
   * @param  None
   * @retval None
   */
-void SystemClock_Config(void)
+static void SystemClock_Config(void)
 {
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -221,30 +227,30 @@ void SystemClock_Config(void)
   __HAL_RCC_PWR_CLK_DISABLE();
 
   /* MSI Oscillator enabled at reset (4Mhz), activate PLL with MSI as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
-  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
-  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_4;
+  RCC_OscInitStruct.OscillatorType      = RCC_OSCILLATORTYPE_MSI;
+  RCC_OscInitStruct.MSIState            = RCC_MSI_ON;
+  RCC_OscInitStruct.MSIClockRange       = RCC_MSIRANGE_4;
   RCC_OscInitStruct.MSICalibrationValue = RCC_MSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_MSI;
-  RCC_OscInitStruct.PLL.PLLMBOOST = RCC_PLLMBOOST_DIV1;
-  RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 80;
-  RCC_OscInitStruct.PLL.PLLR = 2;
-  RCC_OscInitStruct.PLL.PLLP = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 2;
-  RCC_OscInitStruct.PLL.PLLFRACN= 0;
-  RCC_OscInitStruct.PLL.PLLRGE = RCC_PLLVCIRANGE_0;
+  RCC_OscInitStruct.PLL.PLLState        = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource       = RCC_PLLSOURCE_MSI;
+  RCC_OscInitStruct.PLL.PLLMBOOST       = RCC_PLLMBOOST_DIV1;
+  RCC_OscInitStruct.PLL.PLLM            = 1;
+  RCC_OscInitStruct.PLL.PLLN            = 80;
+  RCC_OscInitStruct.PLL.PLLR            = 2;
+  RCC_OscInitStruct.PLL.PLLP            = 2;
+  RCC_OscInitStruct.PLL.PLLQ            = 2;
+  RCC_OscInitStruct.PLL.PLLFRACN        = 0;
+  RCC_OscInitStruct.PLL.PLLRGE          = RCC_PLLVCIRANGE_0;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
   }
 
   /* Select PLL as system clock source and configure bus clocks dividers */
-  RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | \
-                                 RCC_CLOCKTYPE_PCLK2  | RCC_CLOCKTYPE_PCLK3);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.ClockType      = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | \
+                                     RCC_CLOCKTYPE_PCLK2  | RCC_CLOCKTYPE_PCLK3);
+  RCC_ClkInitStruct.SYSCLKSource   = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider  = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB3CLKDivider = RCC_HCLK_DIV1;
@@ -253,6 +259,75 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 }
+
+#if !defined (DEBUG_CONFIGURATION)
+/**
+  * @brief  System Power Configuration for LPBAM
+  * @param  None
+  * @retval None
+  */
+static void SystemPower_Config(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* Enable PWR CLK */
+  __HAL_RCC_PWR_CLK_ENABLE();
+
+  /* Switch to SMPS regulator */
+  if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Keep ICache and SRAM4 retention */
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM1_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM2_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM3_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_DCACHE1_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_DMA2DRAM_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_PERIPHRAM_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_PKA32RAM_FULL_STOP_RETENTION);
+
+  /* Enable all GPIO clocks */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOI_CLK_ENABLE();
+
+  /* Set parameters to be configured */
+  GPIO_InitStruct.Mode  = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Pull  = GPIO_NOPULL;
+  GPIO_InitStruct.Pin   = GPIO_PIN_ALL;
+
+  /* Initialize all GPIO pins */
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+
+  /* Disable all GPIO clocks */
+  __HAL_RCC_GPIOA_CLK_DISABLE();
+  __HAL_RCC_GPIOB_CLK_DISABLE();
+  __HAL_RCC_GPIOC_CLK_DISABLE();
+  __HAL_RCC_GPIOD_CLK_DISABLE();
+  __HAL_RCC_GPIOE_CLK_DISABLE();
+  __HAL_RCC_GPIOF_CLK_DISABLE();
+  __HAL_RCC_GPIOG_CLK_DISABLE();
+  __HAL_RCC_GPIOH_CLK_DISABLE();
+  __HAL_RCC_GPIOI_CLK_DISABLE();
+}
+#endif /* !defined (DEBUG_CONFIGURATION) */
 
 /**
   * @brief  Enable External Low Speed Clock (LSI)
@@ -288,7 +363,7 @@ static void MX_LPGPIO_Config(void)
   /*Configure the LPGPIO PIN as output*/
   GPIO_InitStruct.Pin       = GPIO_PIN_0;
   GPIO_InitStruct.Mode      = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull      = GPIO_PULLUP;
+  GPIO_InitStruct.Pull      = GPIO_NOPULL;
   GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(LPGPIO1, &GPIO_InitStruct);
 }
@@ -376,7 +451,7 @@ void MX_LPTIM_Config(void)
    *                    write access)
    */
 
-  LPTIMHandle.Instance = LPTIM1;
+  LPTIMHandle.Instance                           = LPTIM1;
 
   LPTIMHandle.Init.Clock.Source                  = LPTIM_CLOCKSOURCE_APBCLOCK_LPOSC;
   LPTIMHandle.Init.Clock.Prescaler               = LPTIM_PRESCALER_DIV1;

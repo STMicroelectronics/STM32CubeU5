@@ -8,13 +8,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics International N.V.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under Ultimate Liberty license
-  * SLA0044, the "License"; You may not use this file except in compliance with
-  * the License. You may obtain a copy of the License at:
-  *                             www.st.com/SLA0044
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -85,6 +84,7 @@ void debug_print(int8_t *prefix, uint8_t *data, uint16_t len)
 
 
 void HWInterfaceReceivedPollTask(void const *argument);
+THREAD_DECLARE(MX_WIFI_UARTRecvThreadId);
 
 
 
@@ -127,8 +127,6 @@ static int8_t MX_WIFI_UART_Init(uint16_t mode)
     HAL_UART_Receive_IT(mx_uart, &ch, 1);
 
     SEM_INIT(uart_recv_sem, 1);
-
-    THREAD_DECLARE(MX_WIFI_UARTRecvThreadId);
 
     if (THREAD_OK == THREAD_INIT(MX_WIFI_UARTRecvThreadId,
                                  HWInterfaceReceivedPollTask, NULL, 200, osPriorityAboveNormal))
@@ -316,4 +314,3 @@ MX_WIFIObject_t *wifi_obj_get(void)
   return &MxWifiObj;
 }
 #endif /* MX_WIFI_USE_SPI */
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

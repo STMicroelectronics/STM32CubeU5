@@ -56,6 +56,9 @@ extern "C" {
 #define USE_BSP_IO_CLASS    0U
 
 /* TS defines */
+
+#define USE_BSP_TS_MFX      1U /* MFX TS Controller */
+#define USE_BSP_TS_SX       0U /* SX TS Controller */
 #define TS_TOUCH_NBR        1U
 
 /* Default EEPROM max trials */

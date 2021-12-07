@@ -19,6 +19,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "net_connect.h"
 #include "net_internals.h"
+#include "net_perf.h"
+
 #include "lwip/tcpip.h"
 #include "lwip/icmp.h"
 #include "lwip/inet_chksum.h"

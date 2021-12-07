@@ -61,7 +61,7 @@ MOTION_SENSOR_FuncDrv_t   *Motion_Sensor_FuncDrv[MOTION_SENSOR_INSTANCES_NBR][MO
   * @{
   */
 /* Components probe functions prototypes */
-static int32_t ISM330DLC_Probe(uint32_t Functions);
+static int32_t ISM330DHCX_Probe(uint32_t Functions);
 static int32_t IIS2MDC_Probe(uint32_t Functions);
 /**
   * @}
@@ -99,8 +99,8 @@ int32_t BSP_MOTION_SENSOR_Init(uint32_t Instance, uint32_t Functions)
     /* Probe the motion sensor */
     if (Instance == 0U)
     {
-      /* Probe the ISM330DLC sensor */
-      if (ISM330DLC_Probe(Functions) != BSP_ERROR_NONE)
+      /* Probe the ISM330DHCX sensor */
+      if (ISM330DHCX_Probe(Functions) != BSP_ERROR_NONE)
       {
         status = BSP_ERROR_COMPONENT_FAILURE;
       }
@@ -620,21 +620,21 @@ int32_t BSP_MOTION_SENSOR_SetFullScale(uint32_t Instance, uint32_t Function, int
   * @{
   */
 /**
-  * @brief  Probe the ISM330DLC motion sensor driver.
+  * @brief  Probe the ISM330DHCX motion sensor driver.
   * @param  Functions Motion sensor functions. Could be :
   *         - MOTION_GYRO and/or MOTION_ACCELERO
   * @retval BSP status.
   */
-static int32_t ISM330DLC_Probe(uint32_t Functions)
+static int32_t ISM330DHCX_Probe(uint32_t Functions)
 {
   int32_t                 status = BSP_ERROR_NONE;
-  ISM330DLC_IO_t            IOCtx;
+  ISM330DHCX_IO_t            IOCtx;
   uint8_t                 ism330dlc_id;
-  static ISM330DLC_Object_t ISM330DLC_Obj;
+  static ISM330DHCX_Object_t ISM330DHCX_Obj;
 
   /* Configure the motion sensor driver */
-  IOCtx.BusType     = ISM330DLC_I2C_BUS;
-  IOCtx.Address     = ISM330DLC_I2C_ADD_H;
+  IOCtx.BusType     = ISM330DHCX_I2C_BUS;
+  IOCtx.Address     = ISM330DHCX_I2C_ADD_H;
   IOCtx.Init        = BSP_I2C2_Init;
   IOCtx.DeInit      = BSP_I2C2_DeInit;
   IOCtx.ReadReg     = BSP_I2C2_ReadReg;
@@ -642,24 +642,24 @@ static int32_t ISM330DLC_Probe(uint32_t Functions)
   IOCtx.GetTick     = BSP_GetTick;
 
   /* Register Component Bus IO operations */
-  if (ISM330DLC_RegisterBusIO(&ISM330DLC_Obj, &IOCtx) != ISM330DLC_OK)
+  if (ISM330DHCX_RegisterBusIO(&ISM330DHCX_Obj, &IOCtx) != ISM330DHCX_OK)
   {
     status = BSP_ERROR_BUS_FAILURE;
   }
   /* Read the sensor ID */
-  else if (ISM330DLC_ReadID(&ISM330DLC_Obj, &ism330dlc_id) != ISM330DLC_OK)
+  else if (ISM330DHCX_ReadID(&ISM330DHCX_Obj, &ism330dlc_id) != ISM330DHCX_OK)
   {
     status = BSP_ERROR_COMPONENT_FAILURE;
   }
   /* Check if the returned sensor ID is correct */
-  else if ((ism330dlc_id != ISM330DLC_ID) && (ism330dlc_id !=ISM330DLC_ID_2))
+  else if (ism330dlc_id != ISM330DHCX_ID)
   {
     status = BSP_ERROR_UNKNOWN_COMPONENT;
   }
   else
   {
-    Motion_Sensor_CompObj[0] = &ISM330DLC_Obj;
-    Motion_Sensor_Drv[0]     = (MOTION_SENSOR_CommonDrv_t *) &ISM330DLC_COMMON_Driver;
+    Motion_Sensor_CompObj[0] = &ISM330DHCX_Obj;
+    Motion_Sensor_Drv[0]     = (MOTION_SENSOR_CommonDrv_t *) &ISM330DHCX_COMMON_Driver;
     /* Initialize the component */
     if (Motion_Sensor_Drv[0]->Init(Motion_Sensor_CompObj[0]) < 0)
     {
@@ -670,11 +670,11 @@ static int32_t ISM330DLC_Probe(uint32_t Functions)
       /* Link the MS driver with the component driver */
       if ((Functions & MOTION_GYRO) != 0U)
       {
-        Motion_Sensor_FuncDrv[0][GYRO_ID] = (MOTION_SENSOR_FuncDrv_t *) &ISM330DLC_GYRO_Driver;
+        Motion_Sensor_FuncDrv[0][GYRO_ID] = (MOTION_SENSOR_FuncDrv_t *) &ISM330DHCX_GYRO_Driver;
       }
       if ((Functions & MOTION_ACCELERO) != 0U)
       {
-        Motion_Sensor_FuncDrv[0][ACCELERO_ID] = (MOTION_SENSOR_FuncDrv_t *) &ISM330DLC_ACC_Driver;
+        Motion_Sensor_FuncDrv[0][ACCELERO_ID] = (MOTION_SENSOR_FuncDrv_t *) &ISM330DHCX_ACC_Driver;
       }
     }
   }

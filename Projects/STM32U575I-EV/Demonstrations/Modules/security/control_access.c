@@ -92,6 +92,7 @@ void Control_Access_Demo(void)
   UTIL_LCD_DisplayStringAt(4, 90, (uint8_t *)"LED :   S          NS", LEFT_MODE);  
   
   UTIL_LCD_DrawRect(140, 56, 120, 26,UTIL_LCD_COLOR_RED); 
+  UTIL_LCD_DrawRect(139, 55, 122, 28,UTIL_LCD_COLOR_RED); 
   UTIL_LCD_FillRect(141, 57, 118, 24,UTIL_LCD_COLOR_ST_YELLOW); 
   UTIL_LCD_FillRect(200, 58, 58, 22,UTIL_LCD_COLOR_BLACK); 
   
@@ -167,27 +168,17 @@ void Control_Access_Demo(void)
   { 
     
     joyState = JOY_NONE;
-    TS_State.TouchDetected=0;
-    TS_State.TouchX=0;
-    TS_State.TouchY=0;
-    
-    BSP_TS_GetState(0, &TS_State);
-    BSP_TS_GetState(0, &TS_State);    
+   
     /* Polling on joystick event */
-    while(( joyState == JOY_NONE) && (TS_State.TouchDetected == 0))
+    while (joyState == JOY_NONE)
     {
       joyState = BSP_JOY_GetState(JOY1);
-      BSP_TS_GetState(0, &TS_State);
     }
     
     /* anti bounding assert */ 
-    while( BSP_JOY_GetState(JOY1) != JOY_NONE);
-    
-    while(TS_State.TouchDetected != 0)
-    {
-      BSP_TS_GetState(0, &TS_State);
-    }
-    
+    while (BSP_JOY_GetState(JOY1) != JOY_NONE);
+
+
     HAL_Delay(100);
     
     if (joyState == JOY_NONE)
@@ -211,7 +202,7 @@ void Control_Access_Demo(void)
       
       next = 0;    
       
-      switch(joyState)
+      switch (joyState)
       {
       case JOY_SEL :
         selected = sel;
@@ -246,35 +237,49 @@ void Control_Access_Demo(void)
       }
     }
     
-    UTIL_LCD_DrawRect(140, 56, 120, 26,UTIL_LCD_COLOR_BLACK); 
+    UTIL_LCD_DrawRect(140, 56, 120, 26,UTIL_LCD_COLOR_BLACK);
+    UTIL_LCD_DrawRect(139, 55, 122, 28,UTIL_LCD_COLOR_WHITE);    
     UTIL_LCD_DrawRect(140, 86, 120, 26,UTIL_LCD_COLOR_BLACK); 
+    UTIL_LCD_DrawRect(139, 85, 122, 28,UTIL_LCD_COLOR_WHITE); 
     UTIL_LCD_DrawRect( 90, 152, 110, 26,UTIL_LCD_COLOR_BLACK); 
+    UTIL_LCD_DrawRect( 89, 151, 112, 28,UTIL_LCD_COLOR_WHITE); 
     UTIL_LCD_DrawRect( 90, 186, 110, 26,UTIL_LCD_COLOR_BLACK); 
+    UTIL_LCD_DrawRect( 89, 185, 112, 28,UTIL_LCD_COLOR_WHITE);
     UTIL_LCD_DrawRect(240, 152, 70, 26,UTIL_LCD_COLOR_BLACK); 
+    UTIL_LCD_DrawRect(239, 151, 72, 28,UTIL_LCD_COLOR_WHITE); 
     UTIL_LCD_DrawRect(240, 186, 70, 26,UTIL_LCD_COLOR_BLACK); 
+    UTIL_LCD_DrawRect(239, 185, 72, 28,UTIL_LCD_COLOR_WHITE); 
     UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_BLACK);  
+    UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_WHITE);  
     switch(sel)
     {
     case 0 :
       UTIL_LCD_DrawRect(140, 56, 120, 26,UTIL_LCD_COLOR_RED); 
+      UTIL_LCD_DrawRect(139, 55, 122, 28,UTIL_LCD_COLOR_RED);
       break;
     case 1 :
       UTIL_LCD_DrawRect(140, 86, 120, 26,UTIL_LCD_COLOR_RED); 
+      UTIL_LCD_DrawRect(139, 85, 122, 28,UTIL_LCD_COLOR_RED);
       break;
     case 2 :
-      UTIL_LCD_DrawRect( 90, 152, 110, 26,UTIL_LCD_COLOR_RED); 
+      UTIL_LCD_DrawRect( 90, 152, 110, 26,UTIL_LCD_COLOR_RED);
+      UTIL_LCD_DrawRect( 89, 151, 112, 28,UTIL_LCD_COLOR_RED);
       break;
     case 3 :
-      UTIL_LCD_DrawRect(240, 152, 70, 26,UTIL_LCD_COLOR_RED); 
+      UTIL_LCD_DrawRect(240, 152, 70, 26,UTIL_LCD_COLOR_RED);
+      UTIL_LCD_DrawRect(239, 151, 72, 28,UTIL_LCD_COLOR_RED); 
       break;        
     case 4 :
-      UTIL_LCD_DrawRect( 90, 186, 110, 26,UTIL_LCD_COLOR_RED); 
+      UTIL_LCD_DrawRect( 90, 186, 110, 26,UTIL_LCD_COLOR_RED);
+      UTIL_LCD_DrawRect( 89, 185, 112, 28,UTIL_LCD_COLOR_RED);
       break;
     case 5 :
-      UTIL_LCD_DrawRect(240, 186, 70, 26,UTIL_LCD_COLOR_RED); 
+      UTIL_LCD_DrawRect(240, 186, 70, 26,UTIL_LCD_COLOR_RED);
+      UTIL_LCD_DrawRect(239, 185, 72, 28,UTIL_LCD_COLOR_RED);
       break;
     case 6 :
-      UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_RED);   
+      UTIL_LCD_DrawRect(280, 220, 40, 18,UTIL_LCD_COLOR_RED);
+      UTIL_LCD_DrawRect(279, 219, 41, 20,UTIL_LCD_COLOR_RED);
       break;
     default:
       break;

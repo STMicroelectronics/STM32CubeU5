@@ -38,7 +38,9 @@
 #define USE_BSP_IO_CLASS 1U
 
 /* TS defines */
-#define TS_TOUCH_NBR                  1U
+#define USE_BSP_TS_MFX      1U /* MFX TS Controller */
+#define USE_BSP_TS_SX       0U /* SX TS Controller */
+#define TS_TOUCH_NBR        1U
    
 /* LCD defines */
 #define LCD_LAYER_0_ADDRESS                 0xD0000000U

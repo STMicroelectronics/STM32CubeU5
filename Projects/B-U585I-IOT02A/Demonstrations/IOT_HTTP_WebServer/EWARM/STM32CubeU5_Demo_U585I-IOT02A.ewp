@@ -1237,10 +1237,10 @@
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\hts221\hts221_reg.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\ism330dlc\ism330dlc.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\ism330dhcx\ism330dhcx.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\ism330dlc\ism330dlc_reg.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\ism330dhcx\ism330dhcx_reg.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\lps22hh\lps22hh.c</name>

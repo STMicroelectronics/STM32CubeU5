@@ -24,6 +24,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#include <stdint.h>
+
 #define NET_WIFI_MAC_ADDRESS_SIZE  6
 #define NET_WIFI_MAX_SSID_SIZE     32
 #define NET_WEP_ENABLED            0x0001U  /**< Flag to enable WEP Security        */
@@ -71,17 +73,17 @@ extern "C" {
 #define NET_WIFI_SM_WPA_AES_ENT       (NET_ENTERPRISE_ENABLED | NET_WPA_SECURITY | NET_AES_ENABLED)
 /**< WPA Enterprise Security with AES                      */
 #define NET_WIFI_SM_WPA_MIXED_ENT     (NET_ENTERPRISE_ENABLED\
-                                          | NET_WPA_SECURITY | NET_AES_ENABLED | NET_TKIP_ENABLED)
+                                       | NET_WPA_SECURITY | NET_AES_ENABLED | NET_TKIP_ENABLED)
 /**< WPA Enterprise Security with AES & TKIP               */
 #define NET_WIFI_SM_WPA2_TKIP_ENT     (NET_ENTERPRISE_ENABLED | NET_WPA2_SECURITY | NET_TKIP_ENABLED)
 /**< WPA2 Enterprise Security with TKIP                    */
 #define NET_WIFI_SM_WPA2_AES_ENT      (NET_ENTERPRISE_ENABLED | NET_WPA2_SECURITY | NET_AES_ENABLED)
 /**< WPA2 Enterprise Security with AES                     */
 #define NET_WIFI_SM_WPA2_MIXED_ENT    (NET_ENTERPRISE_ENABLED\
-                                          | NET_WPA2_SECURITY | NET_AES_ENABLED | NET_TKIP_ENABLED)
+                                       | NET_WPA2_SECURITY | NET_AES_ENABLED | NET_TKIP_ENABLED)
 /**< WPA2 Enterprise Security with AES & TKIP              */
 #define NET_WIFI_SM_WPA2_FBT_ENT      (NET_ENTERPRISE_ENABLED\
-                                          | NET_WPA2_SECURITY | NET_AES_ENABLED | NET_FBT_ENABLED)
+                                       | NET_WPA2_SECURITY | NET_AES_ENABLED | NET_FBT_ENABLED)
 /**< WPA2 Enterprise Security with AES & FBT               */
 
 #define NET_WIFI_SM_IBSS_OPEN         (NET_IBSS_ENABLED)

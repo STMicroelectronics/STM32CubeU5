@@ -41,7 +41,7 @@ extern "C" {
 /* #define LPBAM_DMA_MODULE_ENABLED     */
 /* #define LPBAM_GPIO_MODULE_ENABLED    */
 /* #define LPBAM_I2C_MODULE_ENABLED     */
-#define LPBAM_LPTIM_MODULE_ENABLED
+/* #define LPBAM_LPTIM_MODULE_ENABLED   */
 /* #define LPBAM_OPAMP_MODULE_ENABLED   */
 /* #define LPBAM_SPI_MODULE_ENABLED     */
 /* #define LPBAM_UART_MODULE_ENABLED    */

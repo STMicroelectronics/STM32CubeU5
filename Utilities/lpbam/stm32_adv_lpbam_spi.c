@@ -19,8 +19,8 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the GettingStarted.html document before starting developing an LPBAM
-      application.
+      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
+      developing an LPBAM application.
 
     *** Driver description ***
     ==========================
@@ -57,11 +57,11 @@
     *** Driver APIs description ***
     ===============================
     [..]
-      Use ADV_LPBAM_SPI_Transmit_SetConfigQ() API to build a linked-list queue that setup the SPI simplex configuration
+      Use ADV_LPBAM_SPI_Tx_SetConfigQ() API to build a linked-list queue that setup the SPI simplex configuration
       transmission operation according to parameters in the LPBAM_SPI_ConfigAdvConf_t structure.
 
     [..]
-      Use ADV_LPBAM_SPI_Transmit_SetDataQ() API to build a linked-list queue that setup the SPI simplex transmission
+      Use ADV_LPBAM_SPI_Tx_SetDataQ() API to build a linked-list queue that setup the SPI simplex transmission
       starting operation according to parameters in the LPBAM_SPI_DataAdvConf_t structure.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
@@ -75,8 +75,8 @@
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Use ADV_LPBAM_SPI_Transmit_SetFullQ() API to build a linked-list queue that setup the SPI simplex configuration
-      and transmission starting operation according to parameters in the LPBAM_SPI_FullAdvConf_t structure.
+      Use ADV_LPBAM_SPI_Tx_SetFullQ() API to build a linked-list queue that setup the SPI simplex configuration and
+      transmission starting operation according to parameters in the LPBAM_SPI_FullAdvConf_t structure.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
           (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
@@ -89,12 +89,12 @@
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Use ADV_LPBAM_SPI_Receive_SetConfigQ() API to build a linked-list queue that setup the SPI simplex configuration
+      Use ADV_LPBAM_SPI_Rx_SetConfigQ() API to build a linked-list queue that setup the SPI simplex configuration
       reception operation according to parameters in the LPBAM_SPI_ConfigAdvConf_t structure.
 
     [..]
-      Use ADV_LPBAM_SPI_Receive_SetDataQ() API to build a linked-list queue that setup the SPI simplex reception
-      starting operation according to parameters in the LPBAM_SPI_DataAdvConf_t structure.
+      Use ADV_LPBAM_SPI_Rx_SetDataQ() API to build a linked-list queue that setup the SPI simplex reception starting
+      operation according to parameters in the LPBAM_SPI_DataAdvConf_t structure.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
           (+) DestInc           : DMA_DINC_INCREMENTED.
@@ -107,8 +107,8 @@
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Use ADV_LPBAM_SPI_Receive_SetFullQ() API to build a linked-list queue that setup the SPI simplex configuration
-      and reception starting operation according to parameters in the LPBAM_SPI_FullAdvConf_t structure.
+      Use ADV_LPBAM_SPI_Rx_SetFullQ() API to build a linked-list queue that setup the SPI simplex configuration and
+      reception starting operation according to parameters in the LPBAM_SPI_FullAdvConf_t structure.
       The data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
           (+) DestInc           : DMA_DINC_INCREMENTED.
@@ -121,12 +121,12 @@
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Use ADV_LPBAM_SPI_TransmitReceive_SetConfigQ() API to build a linked-list queue that setup the SPI full duplex
-      configuration transmission and reception operation according to parameters in the LPBAM_SPI_ConfigAdvConf_t
-      structure. The output of this API is one queue that must be executed by the DMA transmit channel.
+      Use ADV_LPBAM_SPI_TxRx_SetConfigQ() API to build a linked-list queue that setup the SPI full duplex configuration
+      transmission and reception operation according to parameters in the LPBAM_SPI_ConfigAdvConf_t structure.
+      The output of this API is one queue that must be executed by the DMA transmit channel.
 
     [..]
-      Use ADV_LPBAM_SPI_TransmitReceive_SetDataQ() API to build a linked-list queue that setup the SPI full duplex
+      Use ADV_LPBAM_SPI_TxRx_SetDataQ() API to build a linked-list queue that setup the SPI full duplex
       transmission and reception starting operation according to parameters in the LPBAM_SPI_DataAdvConf_t structure.
       The output of this API is two queues that must be executed by two different DMA channel.
       The transmit data node default configuration is as follow:
@@ -151,10 +151,9 @@
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Use ADV_LPBAM_SPI_TransmitReceive_SetFullQ() API to build a linked-list queue that setup the SPI full duplex
-      configuration, transmission and reception starting operation according to parameters in the
-      LPBAM_SPI_FullAdvConf_t structure. The output of this API is two queues that must be executed by two different DMA
-      channel.
+      Use ADV_LPBAM_SPI_TxRx_SetFullQ() API to build a linked-list queue that setup the SPI full duplex configuration,
+      transmission and reception starting operation according to parameters in the LPBAM_SPI_FullAdvConf_t structure.
+      The output of this API is two queues that must be executed by two different DMA channel.
       The transmit data node default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
           (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
@@ -177,7 +176,7 @@
           (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
 
     [..]
-      Configured parameters through LPBAM_SPI_ConfigAdvConf_t are :
+      Configuration parameters through LPBAM_SPI_ConfigAdvConf_t are :
           (+) CLKPolarity       : Specifies the serial clock steady state.
                                   This parameter can be a value of @ref SPI_Clock_Polarity.
           (+) CLKPhase          : Specifies the clock active edge for the bit capture.
@@ -199,7 +198,7 @@
           (+) WakeupIT          : Specifies the wake up source interrupt.
                                   This parameter can be a value of @ref LPBAM_SPI_Wakeup_Interrupt.
 
-      Configured parameters through LPBAM_SPI_DataAdvConf_t are :
+      Configuration parameters through LPBAM_SPI_DataAdvConf_t are :
           (+) AutoModeConf      : Specifies the autonomous mode configuration.
               (++) TriggerState     : Specifies the trigger state.
                                       This parameter can be a value of @ref LPBAM_SPI_TriggerState.
@@ -211,7 +210,7 @@
           (+) pRxData           : Specifies the Rx transfer data buffer address (Used only for simplex reception
                                   and full duplex operations.
 
-      Configured parameters through LPBAM_SPI_FullAdvConf_t are :
+      Configuration parameters through LPBAM_SPI_FullAdvConf_t are :
           (+) CLKPolarity       : Specifies the serial clock steady state.
                                   This parameter can be a value of @ref SPI_Clock_Polarity.
           (+) CLKPhase          : Specifies the clock active edge for the bit capture.
@@ -283,22 +282,19 @@
           (+) Initialize the SPI (Using HAL/LL). (Mandatory)
           (+) There are two possibilities to call advanced API:
               (++) Transfer with full API :
-                   (+++) For a transmission mode repeat calling ADV_LPBAM_SPI_Transmit_SetFullQ()
-                         until complete LPBAM scenario. (Mandatory)
-                   (+++) For a reception mode repeat calling ADV_LPBAM_I2C_MasterReceive_SetFullQ()
-                         until complete LPBAM scenario. (Mandatory)
-                   (+++) For a full duplex mode repeat calling ADV_LPBAM_SPI_TransmitReceive_SetFullQ()
-                         until complete LPBAM scenario. (Mandatory)
+                   (+++) For a transmission mode repeat calling ADV_LPBAM_SPI_Tx_SetFullQ() until complete LPBAM
+                         scenario. (Mandatory)
+                   (+++) For a reception mode repeat calling ADV_LPBAM_SPI_Rx_SetFullQ() until complete LPBAM scenario.
+                         (Mandatory)
+                   (+++) For a full duplex mode repeat calling ADV_LPBAM_SPI_TxRx_SetFullQ() until complete LPBAM
+                         scenario. (Mandatory)
               (++) Transfer with configuration and data APIs :
-                   (+++) For a transmission mode call ADV_LPBAM_SPI_Transmit_SetConfigQ only one time
-                         and repeat calling ADV_LPBAM_I2C_MasterTransmit_SetDataQ() until complete
-                         LPBAM scenario. (Mandatory)
-                   (+++) For a reception mode call ADV_LPBAM_SPI_Receive_SetConfigQ only one time
-                         and repeat calling ADV_LPBAM_SPI_Receive_SetDataQ() until complete
-                         LPBAM scenario. (Mandatory)
-                   (+++) For a full duplex mode call ADV_LPBAM_SPI_TransmitReceive_SetConfigQ only one time
-                         and repeat calling ADV_LPBAM_SPI_TransmitReceive_SetDataQ() until complete
-                         LPBAM scenario. (Mandatory)
+                   (+++) For a transmission mode call ADV_LPBAM_SPI_Tx_SetConfigQ only one time and repeat calling
+                         ADV_LPBAM_SPI_Tx_SetDataQ() until complete LPBAM scenario. (Mandatory)
+                   (+++) For a reception mode call ADV_LPBAM_SPI_Rx_SetConfigQ only one time and repeat calling
+                         ADV_LPBAM_SPI_Rx_SetDataQ() until complete LPBAM scenario. (Mandatory)
+                   (+++) For a full duplex mode call ADV_LPBAM_SPI_TxRx_SetConfigQ only one time and repeat calling
+                         ADV_LPBAM_SPI_TxRx_SetDataQ() until complete LPBAM scenario. (Mandatory)
           (+) Call HAL_DMAEx_List_Init() to initialize the DMA in linked-list mode. (Mandatory)
           (+) Call HAL_DMAEx_List_LinkQ() to link the built queue to the DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
@@ -317,10 +313,10 @@
       ADV_LPBAM_SPI_{Operation}_SetConfigQ() then ADV_LPBAM_SPI_{Operation}_SetDataQ() for memory optimization purpose.
 
     [..]
-      When using ADV_LPBAM_SPI_TransmitReceive_SetConfigQ() ensure that the Tx queue is passed as parameter.
+      When using ADV_LPBAM_SPI_TxRx_SetConfigQ() ensure that the Tx queue is passed as parameter.
 
-    *** Constraints ***
-    ===================
+    *** Recommendation ***
+    ======================
     [..]
       It's mandatory to set properly DataSize, TriggerSelection and TriggerPolarity while configuring
       LPBAM_SPI_ConfigAdvConf_t or LPBAM_SPI_FullAdvConf_t because their update can be only done with
@@ -405,11 +401,11 @@
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_Transmit_SetConfigQ(SPI_TypeDef               *const pInstance,
-                                                 LPBAM_DMAListInfo_t       const *const pDMAListInfo,
-                                                 LPBAM_SPI_ConfigAdvConf_t const *const pTxConfig,
-                                                 LPBAM_SPI_TxConfigDesc_t  *const pDescriptor,
-                                                 DMA_QListTypeDef          *const pQueue)
+LPBAM_Status_t ADV_LPBAM_SPI_Tx_SetConfigQ(SPI_TypeDef               *const pInstance,
+                                           LPBAM_DMAListInfo_t       const *const pDMAListInfo,
+                                           LPBAM_SPI_ConfigAdvConf_t const *const pTxConfig,
+                                           LPBAM_SPI_TxConfigDesc_t  *const pDescriptor,
+                                           DMA_QListTypeDef          *const pQueue)
 {
   LPBAM_SPI_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_config;
@@ -674,11 +670,11 @@ LPBAM_Status_t ADV_LPBAM_SPI_Transmit_SetConfigQ(SPI_TypeDef               *cons
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_Transmit_SetDataQ(SPI_TypeDef             *const pInstance,
-                                               LPBAM_DMAListInfo_t     const *const pDMAListInfo,
-                                               LPBAM_SPI_DataAdvConf_t const *const pTxData,
-                                               LPBAM_SPI_TxDataDesc_t  *const pDescriptor,
-                                               DMA_QListTypeDef        *const pQueue)
+LPBAM_Status_t ADV_LPBAM_SPI_Tx_SetDataQ(SPI_TypeDef             *const pInstance,
+                                         LPBAM_DMAListInfo_t     const *const pDMAListInfo,
+                                         LPBAM_SPI_DataAdvConf_t const *const pTxData,
+                                         LPBAM_SPI_TxDataDesc_t  *const pDescriptor,
+                                         DMA_QListTypeDef        *const pQueue)
 {
   LPBAM_SPI_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_config;
@@ -906,11 +902,11 @@ LPBAM_Status_t ADV_LPBAM_SPI_Transmit_SetDataQ(SPI_TypeDef             *const pI
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_Transmit_SetFullQ(SPI_TypeDef             *const pInstance,
-                                               LPBAM_DMAListInfo_t     const *const pDMAListInfo,
-                                               LPBAM_SPI_FullAdvConf_t const *const pTxFull,
-                                               LPBAM_SPI_TxFullDesc_t  *const pDescriptor,
-                                               DMA_QListTypeDef        *const pQueue)
+LPBAM_Status_t ADV_LPBAM_SPI_Tx_SetFullQ(SPI_TypeDef             *const pInstance,
+                                         LPBAM_DMAListInfo_t     const *const pDMAListInfo,
+                                         LPBAM_SPI_FullAdvConf_t const *const pTxFull,
+                                         LPBAM_SPI_TxFullDesc_t  *const pDescriptor,
+                                         DMA_QListTypeDef        *const pQueue)
 {
   LPBAM_SPI_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_config;
@@ -1277,11 +1273,11 @@ LPBAM_Status_t ADV_LPBAM_SPI_Transmit_SetFullQ(SPI_TypeDef             *const pI
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_Receive_SetConfigQ(SPI_TypeDef               *const pInstance,
-                                                LPBAM_DMAListInfo_t       const *const pDMAListInfo,
-                                                LPBAM_SPI_ConfigAdvConf_t const *const pRxConfig,
-                                                LPBAM_SPI_RxConfigDesc_t  *const pDescriptor,
-                                                DMA_QListTypeDef          *const pQueue)
+LPBAM_Status_t ADV_LPBAM_SPI_Rx_SetConfigQ(SPI_TypeDef               *const pInstance,
+                                           LPBAM_DMAListInfo_t       const *const pDMAListInfo,
+                                           LPBAM_SPI_ConfigAdvConf_t const *const pRxConfig,
+                                           LPBAM_SPI_RxConfigDesc_t  *const pDescriptor,
+                                           DMA_QListTypeDef          *const pQueue)
 {
   LPBAM_SPI_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_config;
@@ -1546,11 +1542,11 @@ LPBAM_Status_t ADV_LPBAM_SPI_Receive_SetConfigQ(SPI_TypeDef               *const
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_Receive_SetDataQ(SPI_TypeDef             *const pInstance,
-                                              LPBAM_DMAListInfo_t     const *const pDMAListInfo,
-                                              LPBAM_SPI_DataAdvConf_t const *const pRxData,
-                                              LPBAM_SPI_RxDataDesc_t  *const pDescriptor,
-                                              DMA_QListTypeDef        *const pQueue)
+LPBAM_Status_t ADV_LPBAM_SPI_Rx_SetDataQ(SPI_TypeDef             *const pInstance,
+                                         LPBAM_DMAListInfo_t     const *const pDMAListInfo,
+                                         LPBAM_SPI_DataAdvConf_t const *const pRxData,
+                                         LPBAM_SPI_RxDataDesc_t  *const pDescriptor,
+                                         DMA_QListTypeDef        *const pQueue)
 {
   LPBAM_SPI_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_config;
@@ -1778,11 +1774,11 @@ LPBAM_Status_t ADV_LPBAM_SPI_Receive_SetDataQ(SPI_TypeDef             *const pIn
   *                              information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_Receive_SetFullQ(SPI_TypeDef             *const pInstance,
-                                              LPBAM_DMAListInfo_t     const *const pDMAListInfo,
-                                              LPBAM_SPI_FullAdvConf_t const *const pRxFull,
-                                              LPBAM_SPI_RxFullDesc_t  *const pDescriptor,
-                                              DMA_QListTypeDef        *const pQueue)
+LPBAM_Status_t ADV_LPBAM_SPI_Rx_SetFullQ(SPI_TypeDef             *const pInstance,
+                                         LPBAM_DMAListInfo_t     const *const pDMAListInfo,
+                                         LPBAM_SPI_FullAdvConf_t const *const pRxFull,
+                                         LPBAM_SPI_RxFullDesc_t  *const pDescriptor,
+                                         DMA_QListTypeDef        *const pQueue)
 {
   LPBAM_SPI_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_config;
@@ -2149,11 +2145,11 @@ LPBAM_Status_t ADV_LPBAM_SPI_Receive_SetFullQ(SPI_TypeDef             *const pIn
   *                              configuration nodes DMA linked-list queue information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_TransmitReceive_SetConfigQ(SPI_TypeDef                 *const pInstance,
-                                                        LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                        LPBAM_SPI_ConfigAdvConf_t   const *const pTxRxConfig,
-                                                        LPBAM_SPI_TxRx_ConfigDesc_t *const pDescriptor,
-                                                        DMA_QListTypeDef            *const pQueue)
+LPBAM_Status_t ADV_LPBAM_SPI_TxRx_SetConfigQ(SPI_TypeDef                 *const pInstance,
+                                             LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                             LPBAM_SPI_ConfigAdvConf_t   const *const pTxRxConfig,
+                                             LPBAM_SPI_TxRx_ConfigDesc_t *const pDescriptor,
+                                             DMA_QListTypeDef            *const pQueue)
 {
   LPBAM_SPI_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_config;
@@ -2422,13 +2418,13 @@ LPBAM_Status_t ADV_LPBAM_SPI_TransmitReceive_SetConfigQ(SPI_TypeDef             
   *                              linked-list queue information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_TransmitReceive_SetDataQ(SPI_TypeDef                 *const pInstance,
-                                                      LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                      LPBAM_SPI_DataAdvConf_t     const *const pTxRxData,
-                                                      LPBAM_SPI_TxRx_TxDataDesc_t *const pTxDescriptor,
-                                                      LPBAM_SPI_TxRx_RxDataDesc_t *const pRxDescriptor,
-                                                      DMA_QListTypeDef            *const pTxQueue,
-                                                      DMA_QListTypeDef            *const pRxQueue)
+LPBAM_Status_t ADV_LPBAM_SPI_TxRx_SetDataQ(SPI_TypeDef                 *const pInstance,
+                                           LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                           LPBAM_SPI_DataAdvConf_t     const *const pTxRxData,
+                                           LPBAM_SPI_TxRx_TxDataDesc_t *const pTxDescriptor,
+                                           LPBAM_SPI_TxRx_RxDataDesc_t *const pRxDescriptor,
+                                           DMA_QListTypeDef            *const pTxQueue,
+                                           DMA_QListTypeDef            *const pRxQueue)
 {
   LPBAM_SPI_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_config;
@@ -2690,13 +2686,13 @@ LPBAM_Status_t ADV_LPBAM_SPI_TransmitReceive_SetDataQ(SPI_TypeDef               
   *                              linked-list queue information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
-LPBAM_Status_t ADV_LPBAM_SPI_TransmitReceive_SetFullQ(SPI_TypeDef                 *const pInstance,
-                                                      LPBAM_DMAListInfo_t         const *const pDMAListInfo,
-                                                      LPBAM_SPI_FullAdvConf_t     const *const pTxRxFull,
-                                                      LPBAM_SPI_TxRx_TxFullDesc_t *const pTxDescriptor,
-                                                      LPBAM_SPI_TxRx_RxFullDesc_t *const pRxDescriptor,
-                                                      DMA_QListTypeDef            *const pTxQueue,
-                                                      DMA_QListTypeDef            *const pRxQueue)
+LPBAM_Status_t ADV_LPBAM_SPI_TxRx_SetFullQ(SPI_TypeDef                 *const pInstance,
+                                           LPBAM_DMAListInfo_t         const *const pDMAListInfo,
+                                           LPBAM_SPI_FullAdvConf_t     const *const pTxRxFull,
+                                           LPBAM_SPI_TxRx_TxFullDesc_t *const pTxDescriptor,
+                                           LPBAM_SPI_TxRx_RxFullDesc_t *const pRxDescriptor,
+                                           DMA_QListTypeDef            *const pTxQueue,
+                                           DMA_QListTypeDef            *const pRxQueue)
 {
   LPBAM_SPI_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_config;

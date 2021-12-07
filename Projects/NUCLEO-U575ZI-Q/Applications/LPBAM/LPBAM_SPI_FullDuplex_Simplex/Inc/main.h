@@ -34,6 +34,8 @@ enum
 };
 
 /* Exported constants --------------------------------------------------------*/
+/* #define DEBUG_CONFIGURATION */
+
 /* Uncomment this line to use the board as master, if not it is used as slave */
 #define MASTER_BOARD
 

@@ -122,6 +122,9 @@ void OPENBL_USART_DeInit(void)
 {
   LL_USART_DeInit(USARTx);
   LL_USART_Disable(USARTx);
+
+  USARTx_FORCE_RESET();
+  USARTx_RELEASE_RESET();  
 }
 
 /**

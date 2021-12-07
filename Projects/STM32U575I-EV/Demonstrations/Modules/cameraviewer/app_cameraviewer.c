@@ -92,12 +92,6 @@ void CameraBrowserdemo(void)
 {
   uint32_t y_size;
 
-  /* Configure TS interrupt */
-  if (BSP_TS_EnableIT(0) != BSP_ERROR_NONE)
-  {
-    Error_Handler();
-  }
-
   BSP_LCD_GetYSize(0, &y_size);
 
   UTIL_LCD_Clear(UTIL_LCD_COLOR_WHITE);

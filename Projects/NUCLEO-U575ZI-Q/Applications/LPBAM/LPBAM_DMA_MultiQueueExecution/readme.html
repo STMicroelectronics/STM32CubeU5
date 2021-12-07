@@ -34,6 +34,18 @@
 <li><p>To minimize the power consumption, after starting generating the PWM signals, the MCU enters in Stop 2 mode.</p></li>
 <li><p>User push-button pin (PC.13) is configured as input with external interrupt (EXTI_Line13), falling edge. When User push-button is pressed, wakeup event is generated and green led is turned on.</p></li>
 <li><p>The LPBAM mechanism operating is not impacted when the system enters and exit STOP 2 mode.</p></li>
+<li>This project contains two configuration :
+<ul>
+<li>Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+<ul>
+<li>LPTIM1 and LPTIM3 output signals are mapped respectively on PB.2 and PB.0 pins.</li>
+</ul></li>
+<li>Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+<ul>
+<li>LPTIM1 and LPTIM3 output signals are not mapped.</li>
+</ul></li>
+</ul></li>
+<li><p>The typical average power consumption of the system performing DMA master trasnfers with a 1s period and DMA slave transfers with 100ms period is 4.2uA.</p></li>
 <li>NUCLEO-U575ZI-Q board LEDs are used to monitor the transfer status:
 <ul>
 <li>LED1 (green led) is turned on after wake up from STOP 2 mode and no error is detected.</li>
@@ -63,10 +75,10 @@
 <ul>
 <li><p>This application runs on STM32U575xx devices without security enabled (TZEN=0).</p></li>
 <li><p>This application has been tested with STMicroelectronics NUCLEO-U575ZI-Q (MB1549) board and can be easily tailored to any other supported device and development board.</p></li>
-<li>Connect PB.2 (Pin 19 in CN12 connector) to an oscilloscope to visualize the LPTIM1 channel 1 output waveform.</li>
-<li>Connect PB.0 (Pin 31 in CN11 connector) to an oscilloscope to visualize the LPTIM3 channel 1 output waveform.</li>
-<li>Connect PA.1 (Pin 27 in CN11 connector) to an oscilloscope to visualize the LPGPIO1 Pin 0 output waveform.</li>
-<li><p>Connect PA.3 (Pin 36 in CN12 connector) to an oscilloscope to visualize the LPGPIO1 Pin 1 output waveform.</p></li>
+<li>Connect PB.2 (Pin 22 in CN12 connector) to an oscilloscope to visualize the LPTIM1 channel 1 output waveform.</li>
+<li>Connect PB.0 (Pin 34 in CN11 connector) to an oscilloscope to visualize the LPTIM3 channel 1 output waveform.</li>
+<li>Connect PA.1 (Pin 30 in CN11 connector) to an oscilloscope to visualize the LPGPIO1 Pin 0 output waveform.</li>
+<li><p>Connect PA.3 (Pin 37 in CN12 connector) to an oscilloscope to visualize the LPGPIO1 Pin 1 output waveform.</p></li>
 </ul>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>
 <ul>

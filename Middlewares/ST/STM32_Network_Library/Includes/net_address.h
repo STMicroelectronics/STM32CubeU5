@@ -164,8 +164,10 @@ typedef in_addr_t                net_in_addr_t;
 /** IPv4 only: get the IP address as an u32_t */
 #define ip4_addr_get_u32(src_ipaddr) ((src_ipaddr)->addr)
 
+#if !defined (LWIP_REDIFINITIONS_ARE_FORBIDDEN)
 #define inet_addr_from_ip4addr(target_inaddr, source_ipaddr) ((target_inaddr)->s_addr = ip4_addr_get_u32(source_ipaddr))
 #define inet_addr_to_ip4addr(target_ipaddr, source_inaddr)   (ip4_addr_set_u32((target_ipaddr), (source_inaddr)->s_addr))
+#endif /* LWIP_REDIFINITIONS_ARE_FORBIDDEN */
 
 /* ATTENTION: the next define only works because both s_addr and ip4_addr_t are an u32_t effectively! */
 #define inet_addr_to_ip4addr_p(target_ip4addr_p, source_inaddr) \
@@ -235,4 +237,5 @@ uint16_t      net_get_port(net_sockaddr_t *addr);
 net_ip_addr_t net_get_ip_addr(net_sockaddr_t *addr);
 
 typedef struct net_if_handle_s net_if_handle_t;
+
 #endif /* NET_ADDRESS_H */

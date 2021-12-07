@@ -28,8 +28,6 @@
 #include "main.h"
 #include "resources.h"
 /* External variables --------------------------------------------------------*/
-static TS_State_t TS_State;
-
 /* Private typedef -----------------------------------------------------------*/
 #define USER_EXPERIENCE_DELAY  250    /* 250ms */
 
@@ -83,9 +81,6 @@ void kMenu_Init(void) {
 void kMenu_HandleSelection(tMenu MainMenu, uint8_t *sel)
 {
   uint8_t exit = 0;
-  uint8_t tsState = 0;
-  uint8_t IconTouched;
-  uint16_t   x = 0, y = 0;
   uint32_t joyState = JOY_NONE;
   tMenu psCurrentMenu = MainMenu;
   uint8_t index;
@@ -102,9 +97,6 @@ void kMenu_HandleSelection(tMenu MainMenu, uint8_t *sel)
       
       
       do{
-        /* Polling on TS event */
-        BSP_TS_GetState(0, &TS_State);
-        tsState = TS_State.TouchDetected;
  
         /* Polling on joystick event */
         joyState = BSP_JOY_GetState(JOY1);
@@ -187,41 +179,7 @@ void kMenu_HandleSelection(tMenu MainMenu, uint8_t *sel)
           /* Prevent a single key press being interpreted as multi press */
           HAL_Delay(USER_EXPERIENCE_DELAY);
         }
-        else if (tsState != 0)
-        {
-          /* Detect the icon touch */
-          IconTouched = kMenu_IconTouched(TS_State.TouchX, TS_State.TouchY, psCurrentMenu);
 
-          if (IconTouched == 0)
-          {
-            /* No icon is touched */
-          }
-          else
-          {
-            if ((x == TS_State.TouchX) && (y == TS_State.TouchY))
-            {
-              exit = 1;
-              break;
-            }
-
-            /* Get X and Y position of the touch post calibrated */
-            x = TS_State.TouchX;
-            y = TS_State.TouchY;
-
-            /* Remove previous selection */
-            BSP_LCD_FillRGBRect(0, (uint32_t)psCurrentMenu.psItems[*sel].x+1, (uint32_t)psCurrentMenu.psItems[*sel].y+1, (uint8_t *)psCurrentMenu.psItems[*sel].pIconPath, 64, 64);
-            
-            
-            /* Wait to have good MMI behavior */
-            HAL_Delay(USER_EXPERIENCE_DELAY);
-
-            *sel = IconTouched - 1;
-
-            /* display the new selection */
-            BSP_LCD_FillRGBRect(0, (uint32_t)psCurrentMenu.psItems[*sel].x+1, (uint32_t)psCurrentMenu.psItems[*sel].y+1, (uint8_t *)psCurrentMenu.psItems[*sel].pIconSelectedPath, 64, 64);
-
-          }
-        }
       } while(exit == 0);
     }
     break;

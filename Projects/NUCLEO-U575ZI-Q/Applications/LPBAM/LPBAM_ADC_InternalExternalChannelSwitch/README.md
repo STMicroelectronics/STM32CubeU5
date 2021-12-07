@@ -19,7 +19,7 @@ The APB clock dividers APB1, APB2, APB3 peripherals to run at 160 MHz.
     -   ScanConvMode          : Scan Direction is Forward.
     -   Signal trigger        : LPTIM1 Channel1 PWM (Rising Edge).
     -   Trigger low frequency : Disabled.
-    -   ContinuousConvMode    : Enabled.
+    -   ContinuousConvMode    : Disabled.
     -   DiscontinuousConvMode : Disabled.
     -   Analog watchdog       : Disabled.
     -   DMAContinuousRequests : Disabled.
@@ -27,30 +27,43 @@ The APB clock dividers APB1, APB2, APB3 peripherals to run at 160 MHz.
 -   Then the ADC converts 32 data samples that are transferred by DMA to SRAM (aADCConvDataSeq1 buffer).
     Only conversion start and data storage is handled by LPBAM.
 
--   LPTIM3 is used to make a delay between ADC start and DMA samples transfer.
-    LPTIM3 PWM signal period is equal to 1ms repeated 4 times so, the delay 4ms.
-
 -   The sequence 2 configures the ADC peripheral using LPBAM as follow :
     -   Channel               : External (Channel 4).
     -   ScanConvMode          : Scan Direction is Forward.
     -   Signal trigger        : LPTIM1 Channel1 PWM (Rising Edge).
     -   Trigger low frequency : Disabled.
-    -   ContinuousConvMode    : Enabled.
+    -   ContinuousConvMode    : Disabled.
     -   DiscontinuousConvMode : Disabled.
-    -   Analog watchdog       : Disabled.
+    -   Analog watchdog       : AWD1 is enabled for single channel (Channel 4).
     -   DMAContinuousRequests : Enabled (Circular Mode).
 
 -   Then the ADC converts data continuously that are transferred by DMA to SRAM (aADCConvDataSeq2 buffer).
 
+- Analog watchdog 1 is configured to monitor all channels on ADC group regular(therefore, including the selected channel).
+Analog watchdog thresholds values are:
+   - high threshold is set to Vref+/2 (3.3V/2=1.65V on NUCLEO-U575ZI-Q), refer to literal LPBAM_ADC_AWD_THRESHOLD_HIGH.
+   - low threshold is set to 0V, refer to literal LPBAM_ADC_AWD_THRESHOLD_LOW.
+
+-   The ADC analog watchdog 1 interruption is enabled to wake up the system.
+
 -   LPTIM1 PWM trigger signal period is equal to 2ms.
 
 -   To minimize the power consumption, after starting generating the PWM signals, the MCU enters in STOP 2 mode.
+
+-   Use an external power supply to generate a voltage in range [0V : 3.3V] and connect it to analog input pin (PC.3).
+When conversion data is out of analog watchdog window, ADC interruption occurs and the system is wakeup from STOP2 mode.
 
 -   User push-button pin (PC.13) is configured as input with external interrupt (EXTI_Line13), falling edge. When it
 is pressed, a wakeup event is generated and green led is turned on.
 
 -   The operating LPBAM mechanism is not impacted when the system enters and exit STOP 2 mode.
 
+-   This project contains two configuration :
+    -   Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+    -   Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+
+-   The typical average power consumption of the system performing ADC conversion and voltage monitoring with a 2 ms
+period is 21uA.
 
 -   NUCLEO-U575ZI-Q board LEDs are used to monitor the transfer status:
     -   LED1 (green led) is turned on after wake up from STOP 2 mode and no error is detected.

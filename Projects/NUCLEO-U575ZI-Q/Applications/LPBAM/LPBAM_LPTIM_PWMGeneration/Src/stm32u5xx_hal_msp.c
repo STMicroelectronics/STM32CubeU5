@@ -63,7 +63,6 @@ void HAL_MspInit(void)
 void HAL_LPTIM_MspInit (LPTIM_HandleTypeDef *hlptim)
 {
   RCC_PeriphCLKInitTypeDef RCC_PeriphCLKInitStruct = {0};
-  GPIO_InitTypeDef         GPIO_InitStruct;
 
   /* Select LSE as LPTIM1 clock source */
   RCC_PeriphCLKInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LPTIM1;
@@ -83,6 +82,9 @@ void HAL_LPTIM_MspInit (LPTIM_HandleTypeDef *hlptim)
   /* Release the LPTIM1 Peripheral Clock Reset */
   __HAL_RCC_LPTIM1_RELEASE_RESET();
 
+#if defined (DEBUG_CONFIGURATION)
+  GPIO_InitTypeDef GPIO_InitStruct;
+
   /* Enable GPIO PORT */
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
@@ -93,6 +95,7 @@ void HAL_LPTIM_MspInit (LPTIM_HandleTypeDef *hlptim)
   GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_MEDIUM;
   GPIO_InitStruct.Alternate = GPIO_AF1_LPTIM1;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#endif /* defined (DEBUG_CONFIGURATION) */
 
   /* Disable LPTIM1 Interrupt */
   HAL_NVIC_DisableIRQ (LPTIM1_IRQn);

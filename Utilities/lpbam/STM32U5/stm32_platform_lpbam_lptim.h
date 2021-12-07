@@ -59,12 +59,11 @@ extern "C" {
   * @}
   */
 
-/** @defgroup LPBAM_LPTIM_Mode LPBAM LPTIM Mode
+/** @defgroup LPBAM_LPTIM_Stop_Mode LPBAM LPTIM Stop Mode
   * @{
   */
-#define LPBAM_LPTIM_PWM_MODE (0x00UL) /*!< LPBAM LPTIM PWM mode            */
-#define LPBAM_LPTIM_IC_MODE  (0x01UL) /*!< LPBAM LPTIM Input Capture mode  */
-#define LPBAM_LPTIM_CM_MODE  (0x02UL) /*!< LPBAM LPTIM Compare Match mode  */
+#define LPBAM_LPTIM_NO_UE_MODE (0x00UL) /*!< LPBAM LPTIM NO Update Event detection mode  */
+#define LPBAM_LPTIM_UE_MODE    (0x01UL) /*!< LPBAM LPTIM Update Event detection mode     */
 /**
   * @}
   */

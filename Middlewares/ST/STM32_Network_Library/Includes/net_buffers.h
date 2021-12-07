@@ -26,6 +26,6 @@
 #define NET_BUF_ALLOC(n)        (net_buf_t*)pbuf_alloc(PBUF_RAW, (n), PBUF_POOL)
 #define NET_BUF_REF_ALLOC()     (net_buf_t*)pbuf_alloc(PBUF_RAW, 0, PBUF_REF);
 #define NET_BUF_FREE(p)         pbuf_free((struct pbuf*)(p));
-#define  NET_BUF_REF(p)         pbuf_ref((struct pbuf*)(p));
+#define NET_BUF_REF(p)          pbuf_ref((struct pbuf*)(p));
 
 #endif /* NET_BUFFERS_H */

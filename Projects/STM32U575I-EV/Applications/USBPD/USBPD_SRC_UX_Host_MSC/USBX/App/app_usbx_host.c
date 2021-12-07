@@ -55,7 +55,7 @@ TX_QUEUE                                  ux_app_MsgQueue_msc;
 TX_QUEUE                                  ux_app_MsgQueue_UCPD;
 UX_HOST_CLASS_STORAGE                     *storage;
 UX_HOST_CLASS_STORAGE_MEDIA               *storage_media;
-FX_MEDIA                                  media;
+FX_MEDIA                                  *media;
 USB_MODE_STATE                            USB_Host_State_Msg;
 #if defined ( __ICCARM__ ) /* IAR Compiler */
   #pragma data_alignment=4
@@ -176,7 +176,7 @@ UINT MX_USBX_Host_Init(VOID *memory_ptr)
 
   /* Create the MsgQueue for msc_app_thread   */
   if (tx_queue_create(&ux_app_MsgQueue_msc, "Message Queue msc", sizeof(FX_MEDIA *),
-                      pointer, APP_QUEUE_SIZE * sizeof(FX_MEDIA)) != TX_SUCCESS)
+                      pointer, APP_QUEUE_SIZE * sizeof(FX_MEDIA*)) != TX_SUCCESS)
   {
     return TX_QUEUE_ERROR;
   }
@@ -315,7 +315,7 @@ void  usbx_app_thread_entry(ULONG arg)
       switch (ux_dev_info.Device_Type)
       {
         case MSC_Device :
-          if (&media == NULL)
+          if (media == NULL)
           {
             break;
           }
@@ -351,6 +351,7 @@ void  usbx_app_thread_entry(ULONG arg)
     {
       /*clear storage instance*/
       storage_media  = NULL;
+      media = NULL;
       tx_thread_sleep(MS_TO_TICK(50));
     }
    }
@@ -396,7 +397,7 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *Current_class, VOID *Cur
           {
             /* get the storage media */
             storage_media = (UX_HOST_CLASS_STORAGE_MEDIA *)msc_class->ux_host_class_media;
-            media = storage_media->ux_host_class_storage_media;
+            media = &storage_media->ux_host_class_storage_media;
           }
 
           if (storage->ux_host_class_storage_state != (ULONG) UX_HOST_CLASS_INSTANCE_LIVE)

@@ -1,4 +1,3 @@
-
 ## <b>Tx_SecureLEDToggle_TrustZone Application Description</b>
 
 This application provides an example of Azure RTOS ThreadX stack usage, it shows how to develop an application using the ThreadX when the TrustZone feature is enabled (TZEN=1).

@@ -68,6 +68,9 @@ uint32_t TransferIdx = 0U, data_size;
 
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
+#if !defined (DEBUG_CONFIGURATION)
+static void SystemPower_Config   (void);
+#endif /* !defined (DEBUG_CONFIGURATION) */
 static void CACHE_Enable(void);
 static void TransferComplete(DMA_HandleTypeDef *hdma);
 static void TransferError(DMA_HandleTypeDef *hdma);
@@ -100,6 +103,11 @@ int main(void)
   /* Configure the System clock to have a frequency of 160 MHz */
   SystemClock_Config();
 
+#if !defined (DEBUG_CONFIGURATION)
+  /* Configure the system power */
+  SystemPower_Config();
+#endif /* defined (DEBUG_CONFIGURATION) */
+
   /* Initialize LED1, LED2 and LED3 : GREEN, BLUE and RED leds */
   BSP_LED_Init(LED1);
   BSP_LED_Init(LED2);
@@ -122,7 +130,7 @@ int main(void)
   I2C_DataAdvConf.AutoModeConf.TriggerState       = LPBAM_I2C_AUTO_MODE_ENABLE;
 
   /* Advanced lpbam I2C master transmit set data */
-  if (ADV_LPBAM_I2C_MasterTransmit_SetDataQ(I2C3, &DMAListInfo, &I2C_DataAdvConf, &MasterTxDataDesc, &I2C_TransmitQueue) != LPBAM_OK)
+  if (ADV_LPBAM_I2C_MasterTx_SetDataQ(I2C3, &DMAListInfo, &I2C_DataAdvConf, &MasterTxDataDesc, &I2C_TransmitQueue) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -138,7 +146,7 @@ int main(void)
   while (I2C_DataAdvConf.Size != 0U)
   {
     /* Advanced lpbam I2C master receive set data*/
-    if (ADV_LPBAM_I2C_MasterReceive_SetDataQ(I2C3, &DMAListInfo, &I2C_DataAdvConf, &MasterRxDataDesc[TransferIdx], &I2C_TransmitQueue) != LPBAM_OK)
+    if (ADV_LPBAM_I2C_MasterRx_SetDataQ(I2C3, &DMAListInfo, &I2C_DataAdvConf, &MasterRxDataDesc[TransferIdx], &I2C_TransmitQueue) != LPBAM_OK)
     {
       Error_Handler();
     }
@@ -199,7 +207,7 @@ int main(void)
   I2C_DataAdvConf.pData          = aRxBuffer1;
 
   /* Advanced lpbam I2C slave receive set data */
-  if (ADV_LPBAM_I2C_SlaveReceive_SetDataQ(I2C3, &DMAListInfo, &I2C_DataAdvConf, &SlaveRxDataDesc, &I2C_TransmitQueue) != LPBAM_OK)
+  if (ADV_LPBAM_I2C_SlaveRx_SetDataQ(I2C3, &DMAListInfo, &I2C_DataAdvConf, &SlaveRxDataDesc, &I2C_TransmitQueue) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -213,7 +221,7 @@ int main(void)
   while (I2C_DataAdvConf.Size != 0U)
   {
     /* Advanced lpbam I2C slave transmit set data*/
-    if (ADV_LPBAM_I2C_SlaveTransmit_SetDataQ(I2C3, &DMAListInfo, &I2C_DataAdvConf, &SlaveTxDataDesc[TransferIdx], &I2C_TransmitQueue) != LPBAM_OK)
+    if (ADV_LPBAM_I2C_SlaveTx_SetDataQ(I2C3, &DMAListInfo, &I2C_DataAdvConf, &SlaveTxDataDesc[TransferIdx], &I2C_TransmitQueue) != LPBAM_OK)
     {
       Error_Handler();
     }
@@ -514,21 +522,20 @@ void SystemClock_Config(void)
   __HAL_RCC_PWR_CLK_DISABLE();
 
   /* MSI Oscillator enabled at reset (4Mhz), activate PLL with MSI as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI | RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
-  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_4;
+  RCC_OscInitStruct.OscillatorType      = RCC_OSCILLATORTYPE_MSI;
+  RCC_OscInitStruct.MSIState            = RCC_MSI_ON;
+  RCC_OscInitStruct.MSIClockRange       = RCC_MSIRANGE_4;
   RCC_OscInitStruct.MSICalibrationValue = RCC_MSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_MSI;
-  RCC_OscInitStruct.PLL.PLLMBOOST = RCC_PLLMBOOST_DIV1;
-  RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 80;
-  RCC_OscInitStruct.PLL.PLLR = 2;
-  RCC_OscInitStruct.PLL.PLLP = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 2;
-  RCC_OscInitStruct.PLL.PLLFRACN= 0;
-  RCC_OscInitStruct.PLL.PLLRGE = RCC_PLLVCIRANGE_0;
+  RCC_OscInitStruct.PLL.PLLState        = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource       = RCC_PLLSOURCE_MSI;
+  RCC_OscInitStruct.PLL.PLLMBOOST       = RCC_PLLMBOOST_DIV1;
+  RCC_OscInitStruct.PLL.PLLM            = 1;
+  RCC_OscInitStruct.PLL.PLLN            = 80;
+  RCC_OscInitStruct.PLL.PLLR            = 2;
+  RCC_OscInitStruct.PLL.PLLP            = 2;
+  RCC_OscInitStruct.PLL.PLLQ            = 2;
+  RCC_OscInitStruct.PLL.PLLFRACN        = 0;
+  RCC_OscInitStruct.PLL.PLLRGE          = RCC_PLLVCIRANGE_0;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     /* Initialization Error */
@@ -549,6 +556,75 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 }
+
+#if !defined (DEBUG_CONFIGURATION)
+/**
+  * @brief  System Power Configuration for LPBAM
+  * @param  None
+  * @retval None
+  */
+static void SystemPower_Config(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* Enable PWR CLK */
+  __HAL_RCC_PWR_CLK_ENABLE();
+
+  /* Switch to SMPS regulator */
+  if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Keep ICache and SRAM4 retention */
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM1_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM2_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_SRAM3_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_DCACHE1_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_DMA2DRAM_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_PERIPHRAM_FULL_STOP_RETENTION);
+  HAL_PWREx_DisableRAMsContentStopRetention(PWR_PKA32RAM_FULL_STOP_RETENTION);
+
+  /* Enable all GPIO clocks */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOI_CLK_ENABLE();
+
+  /* Set parameters to be configured */
+  GPIO_InitStruct.Mode  = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Pull  = GPIO_NOPULL;
+  GPIO_InitStruct.Pin   = GPIO_PIN_ALL;
+
+  /* Initialize all GPIO pins */
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+
+  /* Disable all GPIO clocks */
+  __HAL_RCC_GPIOA_CLK_DISABLE();
+  __HAL_RCC_GPIOB_CLK_DISABLE();
+  __HAL_RCC_GPIOC_CLK_DISABLE();
+  __HAL_RCC_GPIOD_CLK_DISABLE();
+  __HAL_RCC_GPIOE_CLK_DISABLE();
+  __HAL_RCC_GPIOF_CLK_DISABLE();
+  __HAL_RCC_GPIOG_CLK_DISABLE();
+  __HAL_RCC_GPIOH_CLK_DISABLE();
+  __HAL_RCC_GPIOI_CLK_DISABLE();
+}
+#endif /* !defined (DEBUG_CONFIGURATION) */
 
 /**
   * @brief  DMA transfer complete callback

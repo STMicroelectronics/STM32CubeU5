@@ -639,8 +639,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../Drivers/BSP/Components/ism330dlc/ism330dlc.c</PathWithFileName>
-      <FilenameWithoutPath>ism330dlc.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../Drivers/BSP/Components/ism330dhcx/ism330dhcx.c</PathWithFileName>
+      <FilenameWithoutPath>ism330dhcx.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -651,8 +651,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../Drivers/BSP/Components/ism330dlc/ism330dlc_reg.c</PathWithFileName>
-      <FilenameWithoutPath>ism330dlc_reg.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../Drivers/BSP/Components/ism330dhcx/ism330dhcx_reg.c</PathWithFileName>
+      <FilenameWithoutPath>ism330dhcx_reg.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

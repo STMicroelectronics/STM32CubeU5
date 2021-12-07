@@ -399,9 +399,9 @@
               <FilePath>../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</FilePath>
             </File>
             <File>
-              <FileName>b_u585i_iot02a_audio.c</FileName>
+              <FileName>b_u585i_iot02a_light_sensor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_audio.c</FilePath>
+              <FilePath>../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_light_sensor.c</FilePath>
             </File>
             <File>
               <FileName>b_u585i_iot02a_bus.c</FileName>
@@ -469,14 +469,14 @@
               <FilePath>../../../../../Drivers/BSP/Components/iis2mdc/iis2mdc_reg.c</FilePath>
             </File>
             <File>
-              <FileName>ism330dlc.c</FileName>
+              <FileName>ism330dhcx.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../Drivers/BSP/Components/ism330dlc/ism330dlc.c</FilePath>
+              <FilePath>../../../../../Drivers/BSP/Components/ism330dhcx/ism330dhcx.c</FilePath>
             </File>
             <File>
-              <FileName>ism330dlc_reg.c</FileName>
+              <FileName>ism330dhcx_reg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../Drivers/BSP/Components/ism330dlc/ism330dlc_reg.c</FilePath>
+              <FilePath>../../../../../Drivers/BSP/Components/ism330dhcx/ism330dhcx_reg.c</FilePath>
             </File>
             <File>
               <FileName>lps22hh.c</FileName>
@@ -537,6 +537,16 @@
               <FileName>tcpp0203_reg.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../Drivers/BSP/Components/tcpp0203/tcpp0203_reg.c</FilePath>
+            </File>
+            <File>
+              <FileName>veml6030.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\Components\veml6030\veml6030.c</FilePath>
+            </File>
+            <File>
+              <FileName>veml6030_reg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\Components\veml6030\veml6030_reg.c</FilePath>
             </File>
           </Files>
         </Group>

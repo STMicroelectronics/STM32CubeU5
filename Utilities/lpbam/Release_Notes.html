@@ -55,10 +55,61 @@
 <div class="col-sm-12 col-lg-8">
 <h1 id="update-history">Update History</h1>
 <div class="collapse">
-<input type="checkbox" id="collapse-section1" checked aria-hidden="true"> <label for="collapse-section1" aria-hidden="true">V1.0.0 / 28-June-2021</label>
+<input type="checkbox" id="collapse-section2" checked aria-hidden="true"> <label for="collapse-section2" aria-hidden="true">V1.0.1 / 24-Sept-2021</label>
 <div>
 <h2 id="main-changes">Main Changes</h2>
 <h3 id="component-release">Component release</h3>
+<p><strong>Fixed bugs list</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>Headline</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>I2C : Fix stop condition generation for not sequential transfers.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Module changes</strong></p>
+<ul>
+<li>DAC
+<ul>
+<li>Rename LPBAM_DAC_TRIGGER_LPTIM1_OUT to LPBAM_DAC_TRIGGER_LPTIM1_CH1.</li>
+<li>Rename LPBAM_DAC_TRIGGER_LPTIM3_OUT to LPBAM_DAC_TRIGGER_LPTIM3_CH1.</li>
+</ul></li>
+<li>LPTIM
+<ul>
+<li>Replace all compare match occurrence by update event in the documentation.</li>
+<li>Replace all CM with UE suffix in APIs, types and defines.</li>
+</ul></li>
+<li>SPI
+<ul>
+<li>Replace all Transmit wording by Tx in all APIs.</li>
+<li>Replace all Receive wording by Rx in all APIs.</li>
+</ul></li>
+<li>I2C
+<ul>
+<li>Replace all Transmit wording by Tx in all APIs.</li>
+<li>Replace all Receive wording by Rx in all APIs.</li>
+</ul></li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>None</li>
+</ul>
+<h2 id="backward-compatibility">Backward Compatibility</h2>
+<ul>
+<li>This version breaks the compatibility with previous versions for DAC, LPTIM, I2C and SPI modules.</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section1" aria-hidden="true"> <label for="collapse-section1" aria-hidden="true">V1.0.0 / 28-June-2021</label>
+<div>
+<h2 id="main-changes-1">Main Changes</h2>
+<h3 id="component-release-1">Component release</h3>
 <ul>
 <li>First Official release of LPBAM utility drivers</li>
 </ul>

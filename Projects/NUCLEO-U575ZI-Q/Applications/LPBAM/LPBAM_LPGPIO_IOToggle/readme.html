@@ -24,9 +24,21 @@
 <li><p>How to toggle a LPGPIO Pin with DMA linked-list feature in low power mode through LPBAM utility every 1s.</p></li>
 <li><p>At the beginning of the main program the HAL_Init() function is called to reset all the peripherals, initialize the Flash interface and the systick. Then the SystemClock_Config() function is used to configure the system clock (SYSCLK) to run at 160 MHz.</p></li>
 <li><p>LPGPIO_PIN_0 is configured as output. LPBAM GPIO layer is used to configure write pin node to set and reset the selected LPGPIO pin every 1s. LPDMA1_Channel0 is configured to transfer the contents of user buffer (LPGPIOBufferState) stored in SRAM4 memory to the LPGPIO1 register (LPGPIO1_ODR register). When queue is well created, the whole system enters in STOP 2 mode.</p></li>
-<li><p>Each transmitted state is triggered by LPTIM1 rising edge PWM signal. When DMA node is completed (2 LPGPIO pin state), a transfer complete interrupt is generated to wakeup the system and toggles the green led.</p></li>
+<li><p>Each transmitted state is triggered by LPTIM1 rising edge PWM signal.</p></li>
 <li><p>The example exits STOP2 mode when the user press the user push-button.</p></li>
 <li><p>The LPBAM operating scenario is not impacted when the system exits from STOP 2 mode.</p></li>
+<li>This project contains two configurations :
+<ul>
+<li>Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+<ul>
+<li>LPTIM1 output signal is mapped on PB2 pin.</li>
+</ul></li>
+<li>Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+<ul>
+<li>LPTIM1 output signal is not mapped.</li>
+</ul></li>
+</ul></li>
+<li><p>The typical average power consumption of the system performing LPGPIO pin toggling with a 1s period is 4uA.</p></li>
 <li>NUCLEO-U575ZI-Q (MB1549) board’s LEDs can be used to monitor the LPGPIO Pin status:
 <ul>
 <li>LED1 is ON when no error detected.</li>
@@ -58,8 +70,8 @@
 <li><p>This application has been tested with NUCLEO-U575ZI-Q (MB1549) board and can be easily tailored to any other supported device and development board.</p></li>
 <li>NUCLEO-U575ZI-Q set-up
 <ul>
-<li>Connect the pin PB2 to an oscilloscope (LPTIM Channel 1 output).</li>
-<li>Connect the pin PA1 to an oscilloscope (LPGPIO1 pin 0 output).</li>
+<li>Connect the pin PB2 (pin 13 CN9) to an oscilloscope (LPTIM Channel 1 output).</li>
+<li>Connect the pin PA1 (pin 11 CN10)to an oscilloscope (LPGPIO1 pin 0 output).</li>
 </ul></li>
 </ul>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>

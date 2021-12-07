@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    motion_sensor.c
   * @author  MCD Application Team
-  * @brief   This example code shows how to use the motion sensor feature in the 
+  * @brief   This example code shows how to use the motion sensor feature in the
   *          b_u585i_iot02_motion_sensors  driver
   ******************************************************************************
   * @attention
@@ -51,9 +51,6 @@ int32_t Ms_demo(void)
   int32_t fullScale;
 
   printf("\n******MOTION SENSORS EXAMPLE******\n");
-  
-  StartExample();
-
   printf("Press user button for next step\n");
 
   /* Initialize user button */
@@ -78,7 +75,7 @@ int32_t Ms_demo(void)
 
   /* Enable function */
   if (BSP_MOTION_SENSOR_Enable(0, MOTION_ACCELERO) != BSP_ERROR_NONE) result--;
-  
+
   /* GetFullScale and SetFullScale functions */
   if (BSP_MOTION_SENSOR_SetFullScale(0, MOTION_ACCELERO, 16) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetFullScale(0, MOTION_ACCELERO, &fullScale) != BSP_ERROR_NONE) result--;
@@ -87,11 +84,11 @@ int32_t Ms_demo(void)
   if (BSP_MOTION_SENSOR_SetFullScale(0, MOTION_ACCELERO, 2) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetFullScale(0, MOTION_ACCELERO, &fullScale) != BSP_ERROR_NONE) result--;
   if (fullScale != 2) result--;
-  
+
   /* GetOutputDataRate and SetOutputDataRate functions */
-  if (BSP_MOTION_SENSOR_SetOutputDataRate(0, MOTION_ACCELERO, 3330.0f) != BSP_ERROR_NONE) result--;
+  if (BSP_MOTION_SENSOR_SetOutputDataRate(0, MOTION_ACCELERO, 3333.0f) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetOutputDataRate(0, MOTION_ACCELERO, &outputDataRate) != BSP_ERROR_NONE) result--;
-  if (outputDataRate != 3330.0f) result--;
+  if (outputDataRate != 3333.0f) result--;
 
   if (BSP_MOTION_SENSOR_SetOutputDataRate(0, MOTION_ACCELERO, 208.0f) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetOutputDataRate(0, MOTION_ACCELERO, &outputDataRate) != BSP_ERROR_NONE) result--;
@@ -105,7 +102,7 @@ int32_t Ms_demo(void)
   while (UserButtonPressed == 0)
   {
     if (BSP_MOTION_SENSOR_GetAxes(0, MOTION_ACCELERO, &axes) != BSP_ERROR_NONE) result--;
-    printf("X = %ld, Y = %ld, , Z = %ld\n", axes.x, axes.y, axes.z);
+    printf("X = %d, Y = %d, , Z = %d\n", axes.x, axes.y, axes.z);
     HAL_Delay(500);
   }
   HAL_Delay(1000);
@@ -124,7 +121,7 @@ int32_t Ms_demo(void)
 
   /* Disable function */
   if (BSP_MOTION_SENSOR_Disable(0, MOTION_ACCELERO) != BSP_ERROR_NONE) result--;
-  
+
   /* De-initialize function */
   if (BSP_MOTION_SENSOR_DeInit(0) != BSP_ERROR_NONE) result--;
 
@@ -138,7 +135,7 @@ int32_t Ms_demo(void)
 
   /* Enable function */
   if (BSP_MOTION_SENSOR_Enable(0, MOTION_GYRO) != BSP_ERROR_NONE) result--;
-  
+
   /* GetFullScale and SetFullScale functions */
   if (BSP_MOTION_SENSOR_SetFullScale(0, MOTION_GYRO, 2000) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetFullScale(0, MOTION_GYRO, &fullScale) != BSP_ERROR_NONE) result--;
@@ -147,11 +144,11 @@ int32_t Ms_demo(void)
   if (BSP_MOTION_SENSOR_SetFullScale(0, MOTION_GYRO, 500) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetFullScale(0, MOTION_GYRO, &fullScale) != BSP_ERROR_NONE) result--;
   if (fullScale != 500) result--;
-  
+
   /* GetOutputDataRate and SetOutputDataRate functions */
-  if (BSP_MOTION_SENSOR_SetOutputDataRate(0, MOTION_GYRO, 3330.0f) != BSP_ERROR_NONE) result--;
+  if (BSP_MOTION_SENSOR_SetOutputDataRate(0, MOTION_GYRO, 3333.0f) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetOutputDataRate(0, MOTION_GYRO, &outputDataRate) != BSP_ERROR_NONE) result--;
-  if (outputDataRate != 3330.0f) result--;
+  if (outputDataRate != 3333.0f) result--;
 
   if (BSP_MOTION_SENSOR_SetOutputDataRate(0, MOTION_GYRO, 208.0f) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetOutputDataRate(0, MOTION_GYRO, &outputDataRate) != BSP_ERROR_NONE) result--;
@@ -165,7 +162,7 @@ int32_t Ms_demo(void)
   while (UserButtonPressed == 0)
   {
     if (BSP_MOTION_SENSOR_GetAxes(0, MOTION_GYRO, &axes) != BSP_ERROR_NONE) result--;
-    printf("X = %ld, Y = %ld, , Z = %ld\n", axes.x, axes.y, axes.z);
+    printf("X = %d, Y = %d, , Z = %d\n", axes.x, axes.y, axes.z);
     HAL_Delay(500);
   }
   HAL_Delay(1000);
@@ -184,18 +181,18 @@ int32_t Ms_demo(void)
 
   /* Disable function */
   if (BSP_MOTION_SENSOR_Disable(0, MOTION_GYRO) != BSP_ERROR_NONE) result--;
-  
+
   /* De-initialize function */
   if (BSP_MOTION_SENSOR_DeInit(0) != BSP_ERROR_NONE) result--;
-  
+
   /* --------------- */
-  /* TEST of ISM330DLC */
+  /* TEST of ISM330DHCX */
   /* --------------- */
 
   /************************/
   /* Test of Magnetometer */
   /************************/
-  printf("TEST OF ISM330DLC MAGNETOMETER\n");
+  printf("TEST OF ISM330DHCX MAGNETOMETER\n");
 
   /* Initialize function */
   if (BSP_MOTION_SENSOR_Init(1, MOTION_MAGNETO) != BSP_ERROR_NONE) result--;
@@ -207,11 +204,11 @@ int32_t Ms_demo(void)
 
   /* Enable function */
   if (BSP_MOTION_SENSOR_Enable(1, MOTION_MAGNETO) != BSP_ERROR_NONE) result--;
-  
+
   /* GetFullScale functions */
   if (BSP_MOTION_SENSOR_GetFullScale(1, MOTION_MAGNETO, &fullScale) != BSP_ERROR_NONE) result--;
   if (fullScale != 50) result--;
-  
+
   /* GetOutputDataRate and SetOutputDataRate functions */
   if (BSP_MOTION_SENSOR_SetOutputDataRate(1, MOTION_MAGNETO, 80.0f) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetOutputDataRate(1, MOTION_MAGNETO, &outputDataRate) != BSP_ERROR_NONE) result--;
@@ -229,7 +226,7 @@ int32_t Ms_demo(void)
   while (UserButtonPressed == 0)
   {
     if (BSP_MOTION_SENSOR_GetAxes(1, MOTION_MAGNETO, &axes) != BSP_ERROR_NONE) result--;
-    printf("X = %ld, Y = %ld, , Z = %ld\n", axes.x, axes.y, axes.z);
+    printf("X = %d, Y = %d, , Z = %d\n", axes.x, axes.y, axes.z);
     HAL_Delay(500);
   }
   HAL_Delay(1000);
@@ -248,7 +245,7 @@ int32_t Ms_demo(void)
 
   /* Disable function */
   if (BSP_MOTION_SENSOR_Disable(1, MOTION_MAGNETO) != BSP_ERROR_NONE) result--;
-  
+
   /* De-initialize function */
   if (BSP_MOTION_SENSOR_DeInit(1) != BSP_ERROR_NONE) result--;
 
@@ -266,9 +263,9 @@ int32_t Ms_demo(void)
 
 /**
   * @}
-  */ 
+  */
 
 /**
   * @}
-  */ 
-  
+  */
+

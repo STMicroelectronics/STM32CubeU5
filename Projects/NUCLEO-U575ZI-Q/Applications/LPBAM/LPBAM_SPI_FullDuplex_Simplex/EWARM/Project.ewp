@@ -1110,6 +1110,9 @@
         <group>
             <name>CMSIS</name>
             <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_uart_ex.c</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\..\Src\system_stm32u5xx.c</name>
             </file>
         </group>
@@ -1171,6 +1174,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_spi_ex.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_uart.c</name>
             </file>
         </group>
     </group>

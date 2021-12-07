@@ -41,11 +41,11 @@ static volatile uint8_t SpiRxNotEmpty = 0U;
 /* Exported variables --------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 static void OPENBL_SPI_Init(void);
-#if defined (__CC_ARM)
-void OPENBL_SPI_ClearFlag_OVR(void);
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_ClearFlag_OVR(void);
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_ClearFlag_OVR(void);
+#endif /* (__ICCARM__) */
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -143,7 +143,10 @@ void OPENBL_SPI_Configuration(void)
 void OPENBL_SPI_DeInit(void)
 {
   LL_SPI_DeInit(SPIx);
-  LL_SPI_Enable(SPIx);
+  LL_SPI_Disable(SPIx);
+
+  SPIx_FORCE_RESET();
+  SPIx_RELEASE_RESET();
 }
 
 /**
@@ -212,11 +215,11 @@ uint8_t OPENBL_SPI_GetCommandOpcode(void)
   *         Read operation is synchronized on SPI Rx buffer not empty interrupt.
   * @retval Returns the read byte.
   */
-#if defined (__CC_ARM)
-uint8_t OPENBL_SPI_ReadByte(void)
-#else
+#if defined (__ICCARM__)
 __ramfunc uint8_t OPENBL_SPI_ReadByte(void)
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) uint8_t OPENBL_SPI_ReadByte(void)
+#endif /* (__ICCARM__) */
 {
   uint8_t data;
 
@@ -244,11 +247,11 @@ __ramfunc uint8_t OPENBL_SPI_ReadByte(void)
   *         Read operation is synchronized on SPI Rx buffer not empty interrupt.
   * @retval Returns the read byte.
   */
-#if defined (__CC_ARM)
-void OPENBL_SPI_SendBusyByte(void)
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_SendBusyByte(void)
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_SendBusyByte(void)
+#endif /* (__ICCARM__) */
 {
   /* Wait until SPI Rx buffer not empty interrupt */
   while (SpiRxNotEmpty == 0U)
@@ -274,11 +277,11 @@ __ramfunc void OPENBL_SPI_SendBusyByte(void)
   * @brief  This function is used to send one byte through SPI pipe.
   * @retval None.
   */
-#if defined (__CC_ARM)
-void OPENBL_SPI_SendByte(uint8_t Byte)
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_SendByte(uint8_t Byte)
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_SendByte(uint8_t Byte)
+#endif /* (__ICCARM__) */
 {
   /* Wait until SPI transmit buffer is empty */
   while ((SPIx->SR & SPI_SR_TXP) == 0)
@@ -315,11 +318,11 @@ void OPENBL_SPI_SendAcknowledgeByte(uint8_t Byte)
   * @brief  Handle SPI interrupt request.
   * @retval None.
   */
-#if defined (__CC_ARM)
-void OPENBL_SPI_IRQHandler()
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_IRQHandler()
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_IRQHandler()
+#endif /* (__ICCARM__) */
 {
   /* Check that SPI Rx buffer not empty interrupt has been raised */
   if (((SPIx->SR & SPI_SR_OVR) == RESET)
@@ -370,11 +373,11 @@ void OPENBL_SPI_DisableBusyState(void)
   *         register followed by a read access to the SPIx_SR register
   * @retval None
   */
-#if defined (__CC_ARM)
-void OPENBL_SPI_ClearFlag_OVR(void)
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_ClearFlag_OVR(void)
-#endif /* (__CC_ARM) */
+#else
+__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_ClearFlag_OVR(void)
+#endif /* (__ICCARM__) */
 {
   SET_BIT(SPIx->IFCR, SPI_IFCR_OVRC);
 }

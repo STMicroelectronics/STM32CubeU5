@@ -25,6 +25,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#include "net_conf.h"
+#include "net_connect.h"
 #include "net_state.h"
 #include "net_wifi.h"
 #include "net_class_extension.h"
@@ -78,12 +80,11 @@ typedef enum
   NET_ACCESS_RECVFROM,
   NET_ACCESS_CLOSE,
   NET_ACCESS_SETSOCKOPT
-}
-net_access_t;
+} net_access_t;
 
 struct net_if_drv_s
 {
-  net_interface_class_t     if_class;
+  net_interface_class_t if_class;
   /* Interface APIs */
   int32_t (* if_init)(net_if_handle_t *pnetif);
   int32_t (* if_deinit)(net_if_handle_t *pnetif);
@@ -160,7 +161,7 @@ typedef struct net_socket_s
   int32_t          read_timeout;
   int32_t          write_timeout;
   bool             blocking;
-  int32_t         idx;
+  int32_t          idx;
 } net_socket_t;
 
 #ifdef  NET_MBEDTLS_HOST_SUPPORT

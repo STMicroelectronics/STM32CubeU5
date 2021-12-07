@@ -48,8 +48,16 @@ uint32_t extsram_size;
 FMC_NORSRAM_TimingTypeDef SRAM_Timing;
 ICACHE_RegionConfigTypeDef region_config;
 
+#if defined(__ARMCC_VERSION)
+extern uint32_t Load$$EXTSRAM_REGION$$Base;
+extern uint32_t Load$$EXTSRAM_REGION$$Length;
+#elif defined(__ICCARM__)
 #pragma section =".extsram_region"
 #pragma section =".extsram_region_init"
+#elif defined(__GNUC__)
+extern uint32_t _extsram_region_init_base;
+extern uint32_t _extsram_region_init_length;
+#endif
 
 /* Function pointer declaration used to call remapped function */
 typedef void (*funcptr)(void);
@@ -111,8 +119,16 @@ int main(void)
   MX_FMC_Init();
   /* USER CODE BEGIN 2 */
   /* Memory copy from ROM to external SRAM */
+#if defined(__ARMCC_VERSION)
+  extsram_size = (uint32_t)(&Load$$EXTSRAM_REGION$$Length);
+  flash_addr = (uint8_t *)(&Load$$EXTSRAM_REGION$$Base);
+#elif defined(__ICCARM__)
   extsram_size = __section_size(".extsram_region_init");
   flash_addr = (uint8_t *)(__section_begin(".extsram_region_init"));
+#elif defined(__GNUC__)
+  extsram_size = (uint32_t)((uint8_t *)(&_extsram_region_init_length));
+  flash_addr = (uint8_t *)(&_extsram_region_init_base);
+#endif
 
   if(HAL_SRAM_Write_8b(&hsram1, (uint32_t *)0x60000000, (uint8_t *)flash_addr, extsram_size) != HAL_OK)
   {
@@ -130,7 +146,7 @@ int main(void)
   region_config.RemapAddress    = 0x60000000;
 
   /* Set remap Toggle function pointer */
-  IO_Toggle_extSRAM_Remapped = (funcptr)(0x10000010 + 1);
+  IO_Toggle_extSRAM_Remapped = (funcptr)(IO_Toggle_extSRAM);
 
   /* Disable Instruction cache */
   HAL_ICACHE_Disable();
@@ -172,6 +188,13 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
+  /* Switch to SMPS regulator instead of LDO */
+  if(HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
   /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
@@ -320,7 +343,12 @@ static void MX_GPIO_Init(void)
   * @param  None
   * @retval None
   */
+#if defined(__ICCARM__)
 __root static void IO_Toggle_extSRAM(void) @ ".extsram_region"
+
+#elif defined(__ARMCC_VERSION)|| defined(__GNUC__)
+ static void __attribute__((section(".extsram_region"), noinline)) IO_Toggle_extSRAM(void)
+#endif
 {
     BSP_LED_Toggle(LED_GREEN);
     HAL_Delay(500);

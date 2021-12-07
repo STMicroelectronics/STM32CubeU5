@@ -30,6 +30,7 @@ extern "C" {
 #include "stm32u575i_eval_errno.h"
 #include "../Components/Common/ts.h"
 #include "../Components/sx8651/sx8651.h"
+#include "../Components/mfxstm32l152/mfxstm32l152.h"
 
 /** @addtogroup BSP
   * @{
@@ -54,8 +55,10 @@ extern "C" {
 #define TS_ORIENTATION_LANDSCAPE         1U
 #define TS_ORIENTATION_PORTRAIT_ROT180   2U
 #define TS_ORIENTATION_LANDSCAPE_ROT180  3U
+#define TS_ORIENTATION_LANDSCAPE_MIRROR  4U
 
 /* TS I2C address */
+#define MFX_I2C_ADDRESS             0x84U
 #define TS_I2C_ADDRESS              0x90U
 
 /* TS EXTI Line */

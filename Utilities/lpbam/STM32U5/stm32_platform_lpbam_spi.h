@@ -69,8 +69,8 @@ typedef struct
 /** @defgroup LPBAM_SPI_ClockPolarity LPBAM SPI Clock Polarity
   * @{
   */
-#define LPBAM_SPI_POLALITY_LOW  (0x00U) /*!< LPBAM SPI Clock Polarity Low  */
-#define LPBAM_SPI_POLALITY_HIGH (0x01U) /*!< LPBAM SPI Clock Polarity High */
+#define LPBAM_SPI_POLARITY_LOW  (0x00U) /*!< LPBAM SPI Clock Polarity Low  */
+#define LPBAM_SPI_POLARITY_HIGH (0x01U) /*!< LPBAM SPI Clock Polarity High */
 /**
   * @}
   */

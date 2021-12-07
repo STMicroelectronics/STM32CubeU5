@@ -33,7 +33,6 @@
 /* Private variables --------------------------------------------------------*/
 __IO FlagStatus UserButtonPressed   = RESET;
 __IO JOYPin_TypeDef JoyPinPressed   = JOY_NONE;
-__IO FlagStatus TouchDetected       = RESET;
 
 /* Private typedef -----------------------------------------------------------*/
 typedef struct
@@ -164,6 +163,10 @@ void SystemClock_Config(void)
   /* Enable voltage range 1 for frequency above 100 Mhz */
   __HAL_RCC_PWR_CLK_ENABLE();
   HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+  /* Switch to SMPS regulator instead of LDO */
+  HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY);
+
   __HAL_RCC_PWR_CLK_DISABLE();
 
   /* MSI Oscillator enabled at reset (4Mhz), activate PLL with MSI as source */
@@ -445,18 +448,6 @@ void BSP_JOY_Callback(JOY_TypeDef JOY, uint32_t JoyPin)
   }
 }
 
-/**
-  * @brief  TS Callback.
-  * @param  Instance TS Instance.
-  * @retval None.
-  */
-void BSP_TS_Callback(uint32_t Instance)
-{  
-  if (Instance == 0)
-  {
-    TouchDetected = SET;
-  }
-}
 
 #ifdef  USE_FULL_ASSERT
 /**

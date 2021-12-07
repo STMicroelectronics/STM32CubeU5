@@ -5,7 +5,7 @@ DMA linked-list feature in low power mode through LPBAM utility.
 -   The application consists on the switch of comparator inputs in low power mode, followed by a read operation on the
 output value and storing it into a buffer.
 
--   The system enter stop2 mode and the LPTIM start generating a PWM signal with a period of 1s to trig the DMA.
+-   The system enter stop2 mode and the LPTIM start generating a PWM signal with a period of 1,5s to trig the DMA.
 -   Each LPTIM PWM rising edge a new comparator configuration is applied :
     -   Config 1: set input plus 1 to comparator
     -   Read value 1: read output 1 value,
@@ -18,6 +18,12 @@ output value and storing it into a buffer.
 -   At the end the DMA will generate an interrupt to wake up the system.
 -   Finally, a comparison is done between the obtained and the expected values.
 
+-   This project contains two configuration :
+    -   Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+    -   Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+
+-   The typical average power consumption of the system performing 4 comparisons and 4 output reading with a 1.5s period
+between each operation is 4.9uA.
 
 -   NUCLEO-U575ZI-Q board LEDs are used to monitor the transfer status:
     -   LED1 (green led) is turned on when no error is detected.

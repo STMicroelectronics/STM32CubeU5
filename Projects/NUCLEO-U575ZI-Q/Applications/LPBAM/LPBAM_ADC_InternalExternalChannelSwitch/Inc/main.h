@@ -27,6 +27,8 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+/* #define DEBUG_CONFIGURATION */
+
 /* Definition of ADC conversions data table size */
 #define ADC_CONVERTED_DATA_BUFFER_SIZE   (32U)
 

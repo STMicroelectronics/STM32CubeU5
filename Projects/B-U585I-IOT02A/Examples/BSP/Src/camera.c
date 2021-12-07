@@ -50,8 +50,6 @@ int32_t Camera_demo(void)
   
   printf("\n******CAMERA EXAMPLE******\n");
 
-  StartExample();
-
   /* Initialize the Camera */
   if(BSP_CAMERA_Init(0, CAMERA_R320x240, CAMERA_PF_RGB565) != BSP_ERROR_NONE)
   {
@@ -81,7 +79,7 @@ int32_t Camera_demo(void)
   BSP_CAMERA_Stop(0);
   BSP_CAMERA_DeInit(0);
 
-  if (CheckResult() != 0U) result--;
+ if (CheckResult() != 0U) result--;
 
   printf("Camera Example Ended\n");
   return result;

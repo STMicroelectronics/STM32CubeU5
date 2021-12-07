@@ -29,14 +29,14 @@ Details about the content of this release are available in the release note [her
 
 In this table, you can find the successive versions of this CMSIS Device component, in-line with the corresponding versions of the full MCU package:
 
-CMSIS Device U5 | CMSIS Core | Was delivered in the full MCU package
---------------- | ---------- | -------------------------------------
-Tag v1.0.0 | Tag v5.6.0_cm33 | Tag v1.0.0
+CMSIS Device U5 | CMSIS Core      | Was delivered in the full MCU package
+--------------- | --------------- | -------------------------------------
+Tag v1.0.0      | Tag v5.6.0_cm33 | Tag v1.0.0 (and following, if any, till next CMSIS tag)
+Tag v1.0.1      | Tag v5.6.0_cm33 | Tag v1.0.1 (and following, if any, till next CMSIS tag)
 
 
 The full **STM32CubeU5** MCU package is available [here](https://github.com/STMicroelectronics/STM32CubeU5).
 
 ## Troubleshooting
-If you have any issue with the **Software content** of this repo, you can [file an issue on Github](https://github.com/STMicroelectronics/cmsis_device_u5/issues/new).
 
-For any other question related to the product, the tools, the environment, you can submit a topic on the [ST Community/STM32 MCUs forum](https://community.st.com/s/topic/0TO0X000000BSqSWAW/stm32-mcus).
+Please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) guide.
