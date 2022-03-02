@@ -3,7 +3,7 @@
 This project is used to generate the SBSFU loader image file.
 The SBSFU_Loader application consists in two distinct projects: the SBSFU_Loader
 Secure and Non Secure projects.
-It has to be compiled after all SBSFU other ptojects.
+It has to be compiled after all SBSFU other projects.
 
 In order to ease the development process, prebuild and postbuild commands are
 integrated in each toolchain project.
