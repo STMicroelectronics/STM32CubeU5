@@ -1,10 +1,19 @@
-### Port of MCUBoot library to be used with Cypress targets
+### Port of MCUBoot library for evaluation with Cypress PSoC 6 chips
 
-**Solution Description**
+### Disclaimer
 
-Given solution demonstrates operation of MCUBoot on Cypress' PSoC6 device.
+Given solution is included in `mcuboot` repository with purpose to demonstrate basic consepts and features of MCUBoot library on Cypress PSoC 6 device. Applications are created per mcuboot library maintainers requirements. Implemetation differs from conventional and recomended by Cypress Semiconductors development flow for PSoC 6 devices. These applications are not recomended as a starting point for development and should not be considered as supported examples for PSoC 6 devices.
 
-There are four applications implemented:
+Examples provided to use with **ModusToolbox® Software Environment** are a recommended reference point to start development of MCUBoot based bootloaders for PSoC 6 devices.
+
+Refer to **Cypress Semiconductors** [github](https://github.com/cypresssemiconductorco) page to find examples.
+
+1. MCUboot-Based Basic Bootloader [mtb-example-psoc6-mcuboot-basic](https://github.com/cypresssemiconductorco/mtb-example-psoc6-mcuboot-basic)
+2. MCUboot-Based Bootloader with Rollback to Factory App in External Flash [mtb-example-anycloud-mcuboot-rollback](https://github.com/cypresssemiconductorco/mtb-example-anycloud-mcuboot-rollback)
+
+### Solution Description
+
+There are two applications implemented:
 * MCUBootApp - PSoC6 MCUBoot-based bootloading application;
 * BlinkyApp - simple PSoC6 blinking LED application which is a target of BOOT/UPGRADE;
 
@@ -17,9 +26,12 @@ The default flash map for MCUBootApp implemented is next:
 
 The flash map is defined through sysflash.h and cy_flash_map.c.
 
+It is also possible to place secondary (upgrade) slots in external memory module so resulting image size can be doubled.
+For more details about External Memory usage, please refer to separate guiding document `MCUBootApp/ExternalMemory.md`.
+
 MCUBootApp checks image integrity with SHA256, image authenticity with EC256 digital signature verification and uses completely SW implementation of cryptographic functions based on mbedTLS Library.
 
-**Downloading Solution's Assets**
+### Downloading Solution's Assets
 
 There is a set assets required:
 
@@ -31,7 +43,7 @@ Those are represented as submodules.
 
 To retrieve source code with subsequent submodules pull:
 
-    git clone --recursive https://github.com/JuulLabs-OSS/mcuboot.git
+    git clone --recursive https://github.com/mcu-tools/mcuboot.git
 
 Submodules can also be updated and initialized separately:
 
@@ -40,7 +52,7 @@ Submodules can also be updated and initialized separately:
 
 
 
-**Building Solution**
+### Building Solution
 
 Root directory for build is **boot/cypress.**
 
@@ -48,11 +60,11 @@ This folder contains make files infrastructure for building both MCUBoot Bootloa
 
 Instructions on how to build and upload MCUBootApp bootloader application and sample user applocation are located in `Readme.md` files in corresponding folders.
 
-**Currently supported platforms:**
+Currently supported platforms:
 
 * PSOC_062_2M - for MCUBoot, BlinkyApp;
 
-**Build environment troubleshooting:**
+### Build environment troubleshooting
 
 Following CLI / IDE are supported for project build:
 

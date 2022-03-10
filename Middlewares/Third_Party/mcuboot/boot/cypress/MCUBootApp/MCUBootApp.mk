@@ -1,9 +1,9 @@
 ################################################################################
-# \file targets.mk
+# \file MCUBootApp.mk
 # \version 1.0
 #
 # \brief
-# Makefile to describe supported boards and platforms for Cypress MCUBoot based applications.
+# Makefile for Cypress MCUBoot-based application.
 #
 ################################################################################
 # \copyright
@@ -28,6 +28,7 @@
 COMPILER ?= GCC_ARM
 
 USE_CRYPTO_HW ?= 1
+USE_EXTERNAL_FLASH ?= 0
 MCUBOOT_IMAGE_NUMBER ?= 1
 
 ifneq ($(COMPILER), GCC_ARM)
@@ -40,31 +41,42 @@ include $(CUR_APP_PATH)/platforms.mk
 include $(CUR_APP_PATH)/libs.mk
 include $(CUR_APP_PATH)/toolchains.mk
 
+# default slot size is 0x10000, 512bytes per row/sector, so 128 sectors
+MAX_IMG_SECTORS ?= 128
+
 # Application-specific DEFINES
 DEFINES_APP := -DMBEDTLS_CONFIG_FILE="\"mcuboot_crypto_config.h\""
 DEFINES_APP += -DECC256_KEY_FILE="\"keys/$(SIGN_KEY_FILE).pub\""
 DEFINES_APP += -DCORE=$(CORE)
 DEFINES_APP += -DMCUBOOT_IMAGE_NUMBER=$(MCUBOOT_IMAGE_NUMBER)
-
+ifeq ($(USE_EXTERNAL_FLASH), 1)
+DEFINES_APP += -DCY_BOOT_USE_EXTERNAL_FLASH
+endif
+DEFINES_APP += -DMCUBOOT_MAX_IMG_SECTORS=$(MAX_IMG_SECTORS)
 
 ifeq ($(USE_CRYPTO_HW), 1)
 DEFINES_APP += -DMBEDTLS_USER_CONFIG_FILE="\"mcuboot_crypto_acc_config.h\""
+DEFINES_APP += -DCY_CRYPTO_HAL_DISABLE
 endif
 # Collect MCUBoot sourses
 SOURCES_MCUBOOT := $(wildcard $(CURDIR)/../bootutil/src/*.c)
 # Collect MCUBoot Application sources
 SOURCES_APP_SRC := $(wildcard $(CUR_APP_PATH)/*.c)
+
 # Collect Flash Layer port sources
 SOURCES_FLASH_PORT := $(wildcard $(CURDIR)/cy_flash_pal/*.c)
+SOURCES_FLASH_PORT += $(wildcard $(CURDIR)/cy_flash_pal/flash_qspi/*.c)
 # Collect all the sources
 SOURCES_APP := $(SOURCES_MCUBOOT)
 SOURCES_APP += $(SOURCES_APP_SRC)
 SOURCES_APP += $(SOURCES_FLASH_PORT)
 
-INCLUDES_DIRS_MCUBOOT := $(addprefix -I, $(CURDIR)/../bootutil/include)
-INCLUDES_DIRS_MCUBOOT += $(addprefix -I, $(CURDIR)/../bootutil/src)
+INCLUDE_DIRS_MCUBOOT := $(addprefix -I, $(CURDIR)/../bootutil/include)
+INCLUDE_DIRS_MCUBOOT += $(addprefix -I, $(CURDIR)/../bootutil/src)
+INCLUDE_DIRS_MCUBOOT += $(addprefix -I, $(CURDIR)/..)
 
 INCLUDE_DIRS_APP := $(addprefix -I, $(CURDIR))
+INCLUDE_DIRS_APP += $(addprefix -I, $(CURDIR)/cy_flash_pal/flash_qspi)
 INCLUDE_DIRS_APP += $(addprefix -I, $(CURDIR)/cy_flash_pal/include)
 INCLUDE_DIRS_APP += $(addprefix -I, $(CURDIR)/cy_flash_pal/include/flash_map_backend)
 INCLUDE_DIRS_APP += $(addprefix -I, $(CUR_APP_PATH))
@@ -80,7 +92,7 @@ OUT_TARGET := $(OUT)/$(PLATFORM)
 
 OUT_CFG := $(OUT_TARGET)/$(BUILDCFG)
 
-# Overwite path to linker script if custom is required, otherwise default from BSP is used
+# Overwite path to linker script if custom is required
 ifeq ($(COMPILER), GCC_ARM)
 LINKER_SCRIPT := $(subst /cygdrive/c,c:,$(CUR_APP_PATH)/$(APP_NAME).ld)
 else

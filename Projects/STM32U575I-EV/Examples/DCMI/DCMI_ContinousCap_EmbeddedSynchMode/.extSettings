@@ -2,7 +2,7 @@
 HeaderPath=..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Inc;..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Inc\Legacy;..\..\..\..\..\..\Drivers\CMSIS\Include;..\..\..\..\..\..\Drivers\CMSIS\Device\ST\STM32U5xx\Include;..\..\..\..\..\..\Drivers\BSP\STM32U575I-EV;..\..\..\..\..\..\Drivers\BSP\Components\Common;..\..\..\..\..\..\Utilities\lcd
 [Others]
 Define=USE_IOEXPANDER
-HALModule=UART;I2C;FMC;SRAM;DMA2D;DCMI;DSI
+HALModule=UART;I2C;FMC;SRAM;DMA2D;DCMI
 [Groups]
 Doc=../README.md;
 Drivers/BSP/Components=../../../../../../Drivers/BSP/Components/ov5640/ov5640_reg.c;../../../../../../Drivers/BSP/Components/ov5640/ov5640.c;../../../../../../Drivers/BSP/Components/hx8347i/hx8347i_reg.c;../../../../../../Drivers/BSP/Components/hx8347i/hx8347i.c;../../../../../../Drivers/BSP/Components/mfxstm32l152/mfxstm32l152_reg.c;../../../../../../Drivers/BSP/Components/mfxstm32l152/mfxstm32l152.c;

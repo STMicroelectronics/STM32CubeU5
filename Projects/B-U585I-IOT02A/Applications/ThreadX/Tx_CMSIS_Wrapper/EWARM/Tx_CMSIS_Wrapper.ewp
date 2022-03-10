@@ -359,8 +359,7 @@
                     <state>$PROJ_DIR$/../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include</state>
                     <state>$PROJ_DIR$/../../../../../../Middlewares/ST/threadx/ports/cortex_m33/iar/inc</state>
                     <state>$PROJ_DIR$/../../../../../../Drivers/CMSIS/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../Drivers/BSP/B-U585I-IOT02A</state>
-                    <state>$PROJ_DIR$/../../../../../../Drivers/CMSIS/RTOS2/Include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\CMSIS\RTOS2\Include</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1098,7 +1097,7 @@
                 <name>$PROJ_DIR$\..\Src\stm32u5xx_it.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\Src\tx_initialize_low_level.s</name>
+                <name>$PROJ_DIR$\..\Src\tx_initialize_low_level.S</name>
             </file>
         </group>
     </group>
@@ -1110,15 +1109,6 @@
     </group>
     <group>
         <name>Drivers</name>
-        <group>
-            <name>BSP</name>
-            <group>
-                <name>STM32U5xx_Nucleo</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a.c</name>
-                </file>
-            </group>
-        </group>
         <group>
             <name>CMSIS</name>
             <file>

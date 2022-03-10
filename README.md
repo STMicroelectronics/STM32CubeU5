@@ -2,13 +2,13 @@
 
 ![latest tag](https://img.shields.io/github/v/tag/STMicroelectronics/STM32CubeU5.svg?color=brightgreen)
 
-**STM32Cube** is an STMicroelectronics original initiative to ease the developers life by reducing efforts, time and cost.
+**STM32Cube** is a STMicroelectronics original initiative to ease the developers life by reducing efforts, time and cost.
 
 **STM32Cube** covers the overall STM32 products portfolio. It includes a comprehensive embedded software platform (this repo), delivered for each series (such as the STM32CubeU5 for the STM32U5 series).
    * The CMSIS modules (core and device) corresponding to the ARM(tm) core implemented in this STM32 product.
    * The STM32 HAL-LL drivers, an abstraction layer offering a set of APIs ensuring maximized portability across the STM32 portfolio.
    * The BSP drivers of each evaluation, demonstration or nucleo board provided for this STM32 series.
-   * A consistent set of middleware libraries such as ThreadX, FileX, USBX, NetDuoX, OpenBootloader, USBPD, trustedfirmware, mbed-crypto, mbedTLS, Network Library...
+   * A consistent set of middleware libraries such as ThreadX, FileX, USBX, NetDuoX, OpenBootloader, USBPD, trustedfirmware, mbed-crypto, Network Library...
    * A full set of software projects (basic examples, applications, and demonstrations) for each board provided for this STM32 series.
    * A new LPBAM utility which is a software helper that assists STM32U5 users in the elaboration of LPBAM scenarios.
    * A development with three Toolchains and Compilers (IAR Embedded Workbench for ARM (EWARM), RealView Microcontroller Development Kit (MDK-ARM), and STM32CubeIDE).

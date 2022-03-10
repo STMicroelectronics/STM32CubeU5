@@ -100,7 +100,7 @@ typedef struct
 
   uint32_t Timing;                             /*!< Specifies the I2C_TIMINGR_register value.
                                                     This parameter calculated by referring to I2C initialization
-                                                    section in Reference manual */
+                                                    section in Reference manual                                      */
 
   uint32_t WakeupIT;                           /*!< Specifies the wake up source interrupt.
                                                     This parameter can be a value of @ref LPBAM_I2C_Wakeup_Interrupt */
@@ -110,12 +110,13 @@ typedef struct
 
   uint32_t SequenceNumber;                     /*!< Specifies the number of frames to be transferred when sequential
                                                     transfer is activated.
-                                                    This parameter is equal to zero when sequential transfer
+                                                    This parameter is equal to 1 when sequential transfer
                                                     is not activated.                                                */
 
   uint8_t *pData;                              /*!< Specifies the transfer data buffer.                              */
 
-  uint16_t DevAddress;                         /*!< Specifies the target device address.                             */
+  uint16_t DevAddress;                         /*!< Specifies the target device address.                             
+                                                    This field is useless for slave device                           */
 
   uint16_t Size;                               /*!< Specifies the I2C data number of bytes to transfer               */
 
@@ -141,7 +142,7 @@ typedef struct
   DMA_NodeTypeDef pNodes[2U]; /*!< Specifies the content of nodes required for I2C transfers : 2 different nodes are
                                    needed                                                                             */
 
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : 1 different values are needed    */
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
 
 } LPBAM_I2C_MasterTxDataDesc_t;
 
@@ -177,7 +178,7 @@ typedef struct
   DMA_NodeTypeDef pNodes[2U]; /*!< Specifies the content of nodes required for I2C transfers : 2 different nodes are
                                    needed                                                                             */
 
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : 1 different values are needed    */
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
 
 } LPBAM_I2C_SlaveTxDataDesc_t;
 
@@ -213,7 +214,7 @@ typedef struct
   DMA_NodeTypeDef pNodes[2U]; /*!< Specifies the content of nodes required for I2C transfers : 2 different nodes are
                                    needed                                                                             */
 
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : 1 different values are needed    */
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
 
 } LPBAM_I2C_MasterRxDataDesc_t;
 
@@ -249,7 +250,7 @@ typedef struct
   DMA_NodeTypeDef pNodes[2U]; /*!< Specifies the content of nodes required for I2C transfers : 2 different nodes are
                                    needed                                                                             */
 
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : 1 different values are needed    */
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
 
 } LPBAM_I2C_SlaveRxDataDesc_t;
 
@@ -264,18 +265,6 @@ typedef struct
   uint32_t pReg[4U];          /*!< Specifies the content of register to be updated : 4 different values are needed    */
 
 } LPBAM_I2C_SlaveRxFullDesc_t;
-
-/**
-  * @brief LPBAM I2C master stop condition generation descriptor structure definition.
-  */
-typedef struct
-{
-  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for I2C transfers : 1 different nodes are
-                                   needed                                                                             */
-
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : 1 different values are needed    */
-
-} LPBAM_I2C_MasterStopGenDesc_t;
 /**
   * @}
   */
@@ -383,19 +372,19 @@ LPBAM_Status_t ADV_LPBAM_I2C_SlaveRx_SetFullQ(I2C_TypeDef                 *const
                                               LPBAM_I2C_SlaveRxFullDesc_t *const pDescriptor,
                                               DMA_QListTypeDef            *const pQueue);
 /**
-  * @brief ADV_LPBAM_I2C_MasterStopGeneration_SetFullQ.
-  */
-LPBAM_Status_t ADV_LPBAM_I2C_MasterStopGeneration_SetFullQ(I2C_TypeDef                   *const pInstance,
-                                                           LPBAM_DMAListInfo_t           const *const pDMAListInfo,
-                                                           LPBAM_I2C_MasterStopGenDesc_t *const pDescriptor,
-                                                           DMA_QListTypeDef              *const pQueue);
-/**
   * @brief ADV_LPBAM_I2C_EnableDMARequests.
   */
 LPBAM_Status_t ADV_LPBAM_I2C_EnableDMARequests(I2C_TypeDef *const pInstance);
+
+#if defined (HAL_I2C_MODULE_ENABLED)
+/**
+  * @brief ADV_LPBAM_I2C_RegisterISR.
+  */
+LPBAM_Status_t ADV_LPBAM_I2C_RegisterISR(I2C_HandleTypeDef *const hi2c);
 /**
   * @}
   */
+#endif /* defined (HAL_I2C_MODULE_ENABLED) */
 
 /**
   * @}

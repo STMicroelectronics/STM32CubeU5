@@ -1,12 +1,29 @@
 #!/usr/bin/env python3
-'''Test the program psa_constant_names.
+"""Test the program psa_constant_names.
 Gather constant names from header files and test cases. Compile a C program
 to print out their numerical values, feed these numerical values to
 psa_constant_names, and check that the output is the original name.
 Return 0 if all test cases pass, 1 if the output was not always as expected,
-or 1 (with a Python backtrace) if there was an operational error.'''
+or 1 (with a Python backtrace) if there was an operational error.
+"""
+
+# Copyright The Mbed TLS Contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import argparse
+from collections import namedtuple
 import itertools
 import os
 import platform
@@ -23,47 +40,65 @@ class ReadFileLineException(Exception):
         self.line_number = line_number
 
 class read_file_lines:
-    '''Context manager to read a text file line by line.
-with read_file_lines(filename) as lines:
-    for line in lines:
-        process(line)
-is equivalent to
-with open(filename, 'r') as input_file:
-    for line in input_file:
-        process(line)
-except that if process(line) raises an exception, then the read_file_lines
-snippet annotates the exception with the file name and line number.'''
-    def __init__(self, filename):
+    # Dear Pylint, conventionally, a context manager class name is lowercase.
+    # pylint: disable=invalid-name,too-few-public-methods
+    """Context manager to read a text file line by line.
+
+    ```
+    with read_file_lines(filename) as lines:
+        for line in lines:
+            process(line)
+    ```
+    is equivalent to
+    ```
+    with open(filename, 'r') as input_file:
+        for line in input_file:
+            process(line)
+    ```
+    except that if process(line) raises an exception, then the read_file_lines
+    snippet annotates the exception with the file name and line number.
+    """
+    def __init__(self, filename, binary=False):
         self.filename = filename
         self.line_number = 'entry'
+        self.generator = None
+        self.binary = binary
     def __enter__(self):
-        self.generator = enumerate(open(self.filename, 'r'))
+        self.generator = enumerate(open(self.filename,
+                                        'rb' if self.binary else 'r'))
         return self
     def __iter__(self):
         for line_number, content in self.generator:
             self.line_number = line_number
             yield content
         self.line_number = 'exit'
-    def __exit__(self, type, value, traceback):
-        if type is not None:
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        if exc_type is not None:
             raise ReadFileLineException(self.filename, self.line_number) \
-                from value
+                from exc_value
 
 class Inputs:
-    '''Accumulate information about macros to test.
-This includes macro names as well as information about their arguments
-when applicable.'''
+    # pylint: disable=too-many-instance-attributes
+    """Accumulate information about macros to test.
+
+    This includes macro names as well as information about their arguments
+    when applicable.
+    """
+
     def __init__(self):
+        self.all_declared = set()
         # Sets of names per type
         self.statuses = set(['PSA_SUCCESS'])
         self.algorithms = set(['0xffffffff'])
-        self.ecc_curves = set(['0xffff'])
-        self.key_types = set(['0xffffffff'])
+        self.ecc_curves = set(['0xff'])
+        self.dh_groups = set(['0xff'])
+        self.key_types = set(['0xffff'])
         self.key_usage_flags = set(['0x80000000'])
         # Hard-coded value for unknown algorithms
-        self.hash_algorithms = set(['0x010000fe'])
-        self.mac_algorithms = set(['0x02ff00ff'])
-        self.kdf_algorithms = set(['0x300000ff', '0x310000ff'])
+        self.hash_algorithms = set(['0x020000fe'])
+        self.mac_algorithms = set(['0x0300ffff'])
+        self.ka_algorithms = set(['0x09fc0000'])
+        self.kdf_algorithms = set(['0x080000ff'])
         # For AEAD algorithms, the only variability is over the tag length,
         # and this only applies to known algorithms, so don't test an
         # unknown algorithm.
@@ -72,9 +107,33 @@ when applicable.'''
         self.table_by_prefix = {
             'ERROR': self.statuses,
             'ALG': self.algorithms,
-            'CURVE': self.ecc_curves,
+            'ECC_CURVE': self.ecc_curves,
+            'DH_GROUP': self.dh_groups,
             'KEY_TYPE': self.key_types,
             'KEY_USAGE': self.key_usage_flags,
+        }
+        # Test functions
+        self.table_by_test_function = {
+            # Any function ending in _algorithm also gets added to
+            # self.algorithms.
+            'key_type': [self.key_types],
+            'block_cipher_key_type': [self.key_types],
+            'stream_cipher_key_type': [self.key_types],
+            'ecc_key_family': [self.ecc_curves],
+            'ecc_key_types': [self.ecc_curves],
+            'dh_key_family': [self.dh_groups],
+            'dh_key_types': [self.dh_groups],
+            'hash_algorithm': [self.hash_algorithms],
+            'mac_algorithm': [self.mac_algorithms],
+            'cipher_algorithm': [],
+            'hmac_algorithm': [self.mac_algorithms],
+            'aead_algorithm': [self.aead_algorithms],
+            'key_derivation_algorithm': [self.kdf_algorithms],
+            'key_agreement_algorithm': [self.ka_algorithms],
+            'asymmetric_signature_algorithm': [],
+            'asymmetric_signature_wildcard': [self.algorithms],
+            'asymmetric_encryption_algorithm': [],
+            'other_algorithm': [],
         }
         # macro name -> list of argument names
         self.argspecs = {}
@@ -84,24 +143,43 @@ when applicable.'''
             'tag_length': ['1', '63'],
         }
 
+    def get_names(self, type_word):
+        """Return the set of known names of values of the given type."""
+        return {
+            'status': self.statuses,
+            'algorithm': self.algorithms,
+            'ecc_curve': self.ecc_curves,
+            'dh_group': self.dh_groups,
+            'key_type': self.key_types,
+            'key_usage': self.key_usage_flags,
+        }[type_word]
+
     def gather_arguments(self):
-        '''Populate the list of values for macro arguments.
-Call this after parsing all the inputs.'''
+        """Populate the list of values for macro arguments.
+
+        Call this after parsing all the inputs.
+        """
         self.arguments_for['hash_alg'] = sorted(self.hash_algorithms)
         self.arguments_for['mac_alg'] = sorted(self.mac_algorithms)
+        self.arguments_for['ka_alg'] = sorted(self.ka_algorithms)
         self.arguments_for['kdf_alg'] = sorted(self.kdf_algorithms)
         self.arguments_for['aead_alg'] = sorted(self.aead_algorithms)
         self.arguments_for['curve'] = sorted(self.ecc_curves)
+        self.arguments_for['group'] = sorted(self.dh_groups)
 
-    def format_arguments(self, name, arguments):
-        '''Format a macro call with arguments..'''
+    @staticmethod
+    def _format_arguments(name, arguments):
+        """Format a macro call with arguments.."""
         return name + '(' + ', '.join(arguments) + ')'
 
     def distribute_arguments(self, name):
-        '''Generate macro calls with each tested argument set.
-If name is a macro without arguments, just yield "name".
-If name is a macro with arguments, yield a series of "name(arg1,...,argN)"
-where each argument takes each possible value at least once.'''
+        """Generate macro calls with each tested argument set.
+
+        If name is a macro without arguments, just yield "name".
+        If name is a macro with arguments, yield a series of
+        "name(arg1,...,argN)" where each argument takes each possible
+        value at least once.
+        """
         try:
             if name not in self.argspecs:
                 yield name
@@ -112,92 +190,113 @@ where each argument takes each possible value at least once.'''
                 return
             argument_lists = [self.arguments_for[arg] for arg in argspec]
             arguments = [values[0] for values in argument_lists]
-            yield self.format_arguments(name, arguments)
+            yield self._format_arguments(name, arguments)
+            # Dear Pylint, enumerate won't work here since we're modifying
+            # the array.
+            # pylint: disable=consider-using-enumerate
             for i in range(len(arguments)):
                 for value in argument_lists[i][1:]:
                     arguments[i] = value
-                    yield self.format_arguments(name, arguments)
+                    yield self._format_arguments(name, arguments)
                 arguments[i] = argument_lists[0][0]
         except BaseException as e:
             raise Exception('distribute_arguments({})'.format(name)) from e
 
+    def generate_expressions(self, names):
+        return itertools.chain(*map(self.distribute_arguments, names))
+
+    _argument_split_re = re.compile(r' *, *')
+    @classmethod
+    def _argument_split(cls, arguments):
+        return re.split(cls._argument_split_re, arguments)
+
     # Regex for interesting header lines.
     # Groups: 1=macro name, 2=type, 3=argument list (optional).
-    header_line_re = \
+    _header_line_re = \
         re.compile(r'#define +' +
-                   r'(PSA_((?:KEY_)?[A-Z]+)_\w+)' +
+                   r'(PSA_((?:(?:DH|ECC|KEY)_)?[A-Z]+)_\w+)' +
                    r'(?:\(([^\n()]*)\))?')
     # Regex of macro names to exclude.
-    excluded_name_re = re.compile('_(?:GET|IS|OF)_|_(?:BASE|FLAG|MASK)\Z')
+    _excluded_name_re = re.compile(r'_(?:GET|IS|OF)_|_(?:BASE|FLAG|MASK)\Z')
     # Additional excluded macros.
-    # PSA_ALG_ECDH and PSA_ALG_FFDH are excluded for now as the script
-    # currently doesn't support them. Deprecated errors are also excluded.
-    excluded_names = set(['PSA_ALG_AEAD_WITH_DEFAULT_TAG_LENGTH',
-                          'PSA_ALG_FULL_LENGTH_MAC',
-                          'PSA_ALG_ECDH',
-                          'PSA_ALG_FFDH',
-                          'PSA_ERROR_UNKNOWN_ERROR',
-                          'PSA_ERROR_OCCUPIED_SLOT',
-                          'PSA_ERROR_EMPTY_SLOT',
-                          'PSA_ERROR_INSUFFICIENT_CAPACITY',
-                          ])
-    argument_split_re = re.compile(r' *, *')
+    _excluded_names = set([
+        # Macros that provide an alternative way to build the same
+        # algorithm as another macro.
+        'PSA_ALG_AEAD_WITH_DEFAULT_TAG_LENGTH',
+        'PSA_ALG_FULL_LENGTH_MAC',
+        # Auxiliary macro whose name doesn't fit the usual patterns for
+        # auxiliary macros.
+        'PSA_ALG_AEAD_WITH_DEFAULT_TAG_LENGTH_CASE',
+    ])
     def parse_header_line(self, line):
-        '''Parse a C header line, looking for "#define PSA_xxx".'''
-        m = re.match(self.header_line_re, line)
+        """Parse a C header line, looking for "#define PSA_xxx"."""
+        m = re.match(self._header_line_re, line)
         if not m:
             return
         name = m.group(1)
-        if re.search(self.excluded_name_re, name) or \
-           name in self.excluded_names:
+        self.all_declared.add(name)
+        if re.search(self._excluded_name_re, name) or \
+           name in self._excluded_names:
             return
         dest = self.table_by_prefix.get(m.group(2))
         if dest is None:
             return
         dest.add(name)
         if m.group(3):
-            self.argspecs[name] = re.split(self.argument_split_re, m.group(3))
+            self.argspecs[name] = self._argument_split(m.group(3))
 
+    _nonascii_re = re.compile(rb'[^\x00-\x7f]+')
     def parse_header(self, filename):
-        '''Parse a C header file, looking for "#define PSA_xxx".'''
-        with read_file_lines(filename) as lines:
+        """Parse a C header file, looking for "#define PSA_xxx"."""
+        with read_file_lines(filename, binary=True) as lines:
             for line in lines:
+                line = re.sub(self._nonascii_re, rb'', line).decode('ascii')
                 self.parse_header_line(line)
 
+    _macro_identifier_re = re.compile(r'[A-Z]\w+')
+    def generate_undeclared_names(self, expr):
+        for name in re.findall(self._macro_identifier_re, expr):
+            if name not in self.all_declared:
+                yield name
+
+    def accept_test_case_line(self, function, argument):
+        #pylint: disable=unused-argument
+        undeclared = list(self.generate_undeclared_names(argument))
+        if undeclared:
+            raise Exception('Undeclared names in test case', undeclared)
+        return True
+
     def add_test_case_line(self, function, argument):
-        '''Parse a test case data line, looking for algorithm metadata tests.'''
+        """Parse a test case data line, looking for algorithm metadata tests."""
+        sets = []
         if function.endswith('_algorithm'):
-            # As above, ECDH and FFDH algorithms are excluded for now.
-            # Support for them will be added in the future.
-            if 'ECDH' in argument or 'FFDH' in argument:
-                return
-            self.algorithms.add(argument)
-            if function == 'hash_algorithm':
-                self.hash_algorithms.add(argument)
-            elif function in ['mac_algorithm', 'hmac_algorithm']:
-                self.mac_algorithms.add(argument)
-            elif function == 'aead_algorithm':
-                self.aead_algorithms.add(argument)
-        elif function == 'key_type':
-            self.key_types.add(argument)
-        elif function == 'ecc_key_types':
-            self.ecc_curves.add(argument)
+            sets.append(self.algorithms)
+            if function == 'key_agreement_algorithm' and \
+               argument.startswith('PSA_ALG_KEY_AGREEMENT('):
+                # We only want *raw* key agreement algorithms as such, so
+                # exclude ones that are already chained with a KDF.
+                # Keep the expression as one to test as an algorithm.
+                function = 'other_algorithm'
+        sets += self.table_by_test_function[function]
+        if self.accept_test_case_line(function, argument):
+            for s in sets:
+                s.add(argument)
 
     # Regex matching a *.data line containing a test function call and
     # its arguments. The actual definition is partly positional, but this
     # regex is good enough in practice.
-    test_case_line_re = re.compile('(?!depends_on:)(\w+):([^\n :][^:\n]*)')
+    _test_case_line_re = re.compile(r'(?!depends_on:)(\w+):([^\n :][^:\n]*)')
     def parse_test_cases(self, filename):
-        '''Parse a test case file (*.data), looking for algorithm metadata tests.'''
+        """Parse a test case file (*.data), looking for algorithm metadata tests."""
         with read_file_lines(filename) as lines:
             for line in lines:
-                m = re.match(self.test_case_line_re, line)
+                m = re.match(self._test_case_line_re, line)
                 if m:
                     self.add_test_case_line(m.group(1), m.group(2))
 
-def gather_inputs(headers, test_suites):
-    '''Read the list of inputs to test psa_constant_names with.'''
-    inputs = Inputs()
+def gather_inputs(headers, test_suites, inputs_class=Inputs):
+    """Read the list of inputs to test psa_constant_names with."""
+    inputs = inputs_class()
     for header in headers:
         inputs.parse_header(header)
     for test_cases in test_suites:
@@ -206,17 +305,19 @@ def gather_inputs(headers, test_suites):
     return inputs
 
 def remove_file_if_exists(filename):
-    '''Remove the specified file, ignoring errors.'''
+    """Remove the specified file, ignoring errors."""
     if not filename:
         return
     try:
         os.remove(filename)
-    except:
+    except OSError:
         pass
 
-def run_c(options, type, names):
-    '''Generate and run a program to print out numerical values for names.'''
-    if type == 'status':
+def run_c(type_word, expressions, include_path=None, keep_c=False):
+    """Generate and run a program to print out numerical values for expressions."""
+    if include_path is None:
+        include_path = []
+    if type_word == 'status':
         cast_to = 'long'
         printf_format = '%ld'
     else:
@@ -225,7 +326,7 @@ def run_c(options, type, names):
     c_name = None
     exe_name = None
     try:
-        c_fd, c_name = tempfile.mkstemp(prefix='tmp-{}-'.format(type),
+        c_fd, c_name = tempfile.mkstemp(prefix='tmp-{}-'.format(type_word),
                                         suffix='.c',
                                         dir='programs/psa')
         exe_suffix = '.exe' if platform.system() == 'Windows' else ''
@@ -233,27 +334,27 @@ def run_c(options, type, names):
         remove_file_if_exists(exe_name)
         c_file = os.fdopen(c_fd, 'w', encoding='ascii')
         c_file.write('/* Generated by test_psa_constant_names.py for {} values */'
-                     .format(type))
+                     .format(type_word))
         c_file.write('''
 #include <stdio.h>
 #include <psa/crypto.h>
 int main(void)
 {
 ''')
-        for name in names:
+        for expr in expressions:
             c_file.write('    printf("{}\\n", ({}) {});\n'
-                         .format(printf_format, cast_to, name))
+                         .format(printf_format, cast_to, expr))
         c_file.write('''    return 0;
 }
 ''')
         c_file.close()
         cc = os.getenv('CC', 'cc')
         subprocess.check_call([cc] +
-                              ['-I' + dir for dir in options.include] +
+                              ['-I' + dir for dir in include_path] +
                               ['-o', exe_name, c_name])
-        if options.keep_c:
+        if keep_c:
             sys.stderr.write('List of {} tests kept at {}\n'
-                             .format(type, c_name))
+                             .format(type_word, c_name))
         else:
             os.remove(c_name)
         output = subprocess.check_output([exe_name])
@@ -261,72 +362,113 @@ int main(void)
     finally:
         remove_file_if_exists(exe_name)
 
-normalize_strip_re = re.compile(r'\s+')
+NORMALIZE_STRIP_RE = re.compile(r'\s+')
 def normalize(expr):
-    '''Normalize the C expression so as not to care about trivial differences.
-Currently "trivial differences" means whitespace.'''
-    expr = re.sub(normalize_strip_re, '', expr, len(expr))
-    return expr.strip().split('\n')
+    """Normalize the C expression so as not to care about trivial differences.
 
-def do_test(options, inputs, type, names):
-    '''Test psa_constant_names for the specified type.
-Run program on names.
-Use inputs to figure out what arguments to pass to macros that take arguments.'''
-    names = sorted(itertools.chain(*map(inputs.distribute_arguments, names)))
-    values = run_c(options, type, names)
-    output = subprocess.check_output([options.program, type] + values)
-    outputs = output.decode('ascii').strip().split('\n')
-    errors = [(type, name, value, output)
-              for (name, value, output) in zip(names, values, outputs)
-              if normalize(name) != normalize(output)]
-    return len(names), errors
+    Currently "trivial differences" means whitespace.
+    """
+    return re.sub(NORMALIZE_STRIP_RE, '', expr)
 
-def report_errors(errors):
-    '''Describe each case where the output is not as expected.'''
-    for type, name, value, output in errors:
-        print('For {} "{}", got "{}" (value: {})'
-              .format(type, name, output, value))
+def collect_values(inputs, type_word, include_path=None, keep_c=False):
+    """Generate expressions using known macro names and calculate their values.
 
-def run_tests(options, inputs):
-    '''Run psa_constant_names on all the gathered inputs.
-Return a tuple (count, errors) where count is the total number of inputs
-that were tested and errors is the list of cases where the output was
-not as expected.'''
-    count = 0
-    errors = []
-    for type, names in [('status', inputs.statuses),
-                        ('algorithm', inputs.algorithms),
-                        ('ecc_curve', inputs.ecc_curves),
-                        ('key_type', inputs.key_types),
-                        ('key_usage', inputs.key_usage_flags)]:
-        c, e = do_test(options, inputs, type, names)
-        count += c
-        errors += e
-    return count, errors
+    Return a list of pairs of (expr, value) where expr is an expression and
+    value is a string representation of its integer value.
+    """
+    names = inputs.get_names(type_word)
+    expressions = sorted(inputs.generate_expressions(names))
+    values = run_c(type_word, expressions,
+                   include_path=include_path, keep_c=keep_c)
+    return expressions, values
 
-if __name__ == '__main__':
+class Tests:
+    """An object representing tests and their results."""
+
+    Error = namedtuple('Error',
+                       ['type', 'expression', 'value', 'output'])
+
+    def __init__(self, options):
+        self.options = options
+        self.count = 0
+        self.errors = []
+
+    def run_one(self, inputs, type_word):
+        """Test psa_constant_names for the specified type.
+
+        Run the program on the names for this type.
+        Use the inputs to figure out what arguments to pass to macros that
+        take arguments.
+        """
+        expressions, values = collect_values(inputs, type_word,
+                                             include_path=self.options.include,
+                                             keep_c=self.options.keep_c)
+        output = subprocess.check_output([self.options.program, type_word] +
+                                         values)
+        outputs = output.decode('ascii').strip().split('\n')
+        self.count += len(expressions)
+        for expr, value, output in zip(expressions, values, outputs):
+            if self.options.show:
+                sys.stdout.write('{} {}\t{}\n'.format(type_word, value, output))
+            if normalize(expr) != normalize(output):
+                self.errors.append(self.Error(type=type_word,
+                                              expression=expr,
+                                              value=value,
+                                              output=output))
+
+    def run_all(self, inputs):
+        """Run psa_constant_names on all the gathered inputs."""
+        for type_word in ['status', 'algorithm', 'ecc_curve', 'dh_group',
+                          'key_type', 'key_usage']:
+            self.run_one(inputs, type_word)
+
+    def report(self, out):
+        """Describe each case where the output is not as expected.
+
+        Write the errors to ``out``.
+        Also write a total.
+        """
+        for error in self.errors:
+            out.write('For {} "{}", got "{}" (value: {})\n'
+                      .format(error.type, error.expression,
+                              error.output, error.value))
+        out.write('{} test cases'.format(self.count))
+        if self.errors:
+            out.write(', {} FAIL\n'.format(len(self.errors)))
+        else:
+            out.write(' PASS\n')
+
+HEADERS = ['psa/crypto.h', 'psa/crypto_extra.h', 'psa/crypto_values.h']
+TEST_SUITES = ['tests/suites/test_suite_psa_crypto_metadata.data']
+
+def main():
     parser = argparse.ArgumentParser(description=globals()['__doc__'])
     parser.add_argument('--include', '-I',
                         action='append', default=['include'],
                         help='Directory for header files')
-    parser.add_argument('--program',
-                        default='programs/psa/psa_constant_names',
-                        help='Program to test')
     parser.add_argument('--keep-c',
                         action='store_true', dest='keep_c', default=False,
                         help='Keep the intermediate C file')
     parser.add_argument('--no-keep-c',
                         action='store_false', dest='keep_c',
                         help='Don\'t keep the intermediate C file (default)')
+    parser.add_argument('--program',
+                        default='programs/psa/psa_constant_names',
+                        help='Program to test')
+    parser.add_argument('--show',
+                        action='store_true',
+                        help='Keep the intermediate C file')
+    parser.add_argument('--no-show',
+                        action='store_false', dest='show',
+                        help='Don\'t show tested values (default)')
     options = parser.parse_args()
-    headers = [os.path.join(options.include[0], 'psa', h)
-               for h in ['crypto.h', 'crypto_extra.h', 'crypto_values.h']]
-    test_suites = ['tests/suites/test_suite_psa_crypto_metadata.data']
-    inputs = gather_inputs(headers, test_suites)
-    count, errors = run_tests(options, inputs)
-    report_errors(errors)
-    if errors == []:
-        print('{} test cases PASS'.format(count))
-    else:
-        print('{} test cases, {} FAIL'.format(count, len(errors)))
-        exit(1)
+    headers = [os.path.join(options.include[0], h) for h in HEADERS]
+    inputs = gather_inputs(headers, TEST_SUITES)
+    tests = Tests(options)
+    tests.run_all(inputs)
+    tests.report(sys.stdout)
+    if tests.errors:
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()

@@ -7,7 +7,7 @@ def intparse(text):
 
     Accepts 0x and other prefixes to allow other bases to be used."""
     return int(text, 0)
-    
+
 def do_boot(args):
     print("boot")
     big_binary=b''
@@ -15,19 +15,19 @@ def do_boot(args):
         big_binary=f.read()
         big_binary=big_binary[0x2000:]
     with open(args.outfile, 'wb') as f:
-       f.write(big_binary)        
+       f.write(big_binary)
 def do_ass(args):
     print("boot")
     big_binary=b''
     with open(args.infile, 'rb') as f:
-        binary=f.read()       
+        binary=f.read()
         binary+=(args.input_size-len(binary))*pack("B",0xff)
     with open(args.file, 'rb') as f:
        outbinary=f.read()
        outbinary+=(args.output_size-len(outbinary))*pack("B",0xff)
     with open(args.outfile, 'wb') as f:
        big_binary=binary+outbinary
-       f.write(big_binary)   
+       f.write(big_binary)
 
 def do_cbor(args):
     print("cbor")
@@ -35,8 +35,8 @@ def do_cbor(args):
     with open(args.infile, 'rb') as f:
         all_line=f.readlines()
         for line in all_line:
-            
-            for i in range(0,len(line)>>1):  
+
+            for i in range(0,len(line)>>1):
                 hexavalue=line[2*i:2*i+2];
                 try:
                     byte=int(hexavalue,16)
@@ -44,7 +44,7 @@ def do_cbor(args):
                 except:
                     endline=True
     with open(args.outfile, 'wb') as f:
-       f.write(big_binary)        
+       f.write(big_binary)
 
 subcmds = {
         'cbor':do_cbor,

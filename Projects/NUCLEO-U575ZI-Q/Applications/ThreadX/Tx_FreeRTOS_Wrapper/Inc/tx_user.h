@@ -187,14 +187,6 @@
 
 /*#define TX_TIMER_ENABLE_PERFORMANCE_INFO*/
 
-/* Define the clock source for trace event entry time stamp. */
-
-/*#define TX_TRACE_TIME_SOURCE  *((ULONG *) 0xE0001004)*/
-
-/* Define the clock source for trace mask. */
-
-/*#define TX_TRACE_TIME_MASK  0xFFFFFFFFUL*/
-
 /* Define if the execution change notify is enabled. */
 
 /*#define TX_ENABLE_EXECUTION_CHANGE_NOTIFY*/
@@ -211,6 +203,14 @@
 /* Define the common timer tick reference for use by other middleware components. */
 
 /*#define TX_TIMER_TICKS_PER_SECOND                100*/
+
+/* Determine if there is a FileX pointer in the thread control block.
+   By default, the pointer is there for legacy/backwards compatibility.
+   The pointer must also be there for applications using FileX.
+   Define this to save space in the thread control block.
+*/
+
+/*#define TX_NO_FILEX_POINTER*/
 
 /* Determinate if the basic alignment type is defined. */
 
@@ -232,4 +232,3 @@
 #define TX_THREAD_USER_EXTENSION VOID *txfr_thread_ptr;
 
 #endif
-

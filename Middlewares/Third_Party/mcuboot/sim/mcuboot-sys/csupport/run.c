@@ -42,7 +42,7 @@ extern int sim_flash_read(uint8_t flash_id, uint32_t offset, uint8_t *dest,
         uint32_t size);
 extern int sim_flash_write(uint8_t flash_id, uint32_t offset, const uint8_t *src,
         uint32_t size);
-extern uint8_t sim_flash_align(uint8_t flash_id);
+extern uint16_t sim_flash_align(uint8_t flash_id);
 extern uint8_t sim_flash_erased_val(uint8_t flash_id);
 
 struct sim_context {
@@ -202,7 +202,7 @@ done:
 #endif
 }
 
-uint8_t flash_area_align(const struct flash_area *area)
+uint16_t flash_area_align(const struct flash_area *area)
 {
     return sim_flash_align(area->fa_device_id);
 }
@@ -332,29 +332,6 @@ int flash_area_erase(const struct flash_area *area, uint32_t off, uint32_t len)
         longjmp(ctx->boot_jmpbuf, 1);
     }
     return sim_flash_erase(area->fa_device_id, area->fa_off + off, len);
-}
-
-int flash_area_read_is_empty(const struct flash_area *area, uint32_t off,
-        void *dst, uint32_t len)
-{
-    uint8_t i;
-    uint8_t *u8dst;
-    int rc;
-
-    BOOT_LOG_SIM("%s: area=%d, off=%x, len=%x", __func__, area->fa_id, off, len);
-
-    rc = sim_flash_read(area->fa_device_id, area->fa_off + off, dst, len);
-    if (rc) {
-        return -1;
-    }
-
-    for (i = 0, u8dst = (uint8_t *)dst; i < len; i++) {
-        if (u8dst[i] != sim_flash_erased_val(area->fa_device_id)) {
-            return 0;
-        }
-    }
-
-    return 1;
 }
 
 int flash_area_to_sectors(int idx, int *cnt, struct flash_area *ret)

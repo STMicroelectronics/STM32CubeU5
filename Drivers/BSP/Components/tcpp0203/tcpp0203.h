@@ -45,7 +45,6 @@
 typedef int32_t (*TCPP0203_Init_Func)(void);
 typedef int32_t (*TCPP0203_DeInit_Func)(void);
 typedef int32_t (*TCPP0203_GetTick_Func)(void);
-typedef int32_t (*TCPP0203_Delay_Func)(uint32_t);
 typedef int32_t (*TCPP0203_WriteReg_Func)(uint16_t, uint16_t, uint8_t *, uint16_t);
 typedef int32_t (*TCPP0203_ReadReg_Func)(uint16_t, uint16_t, uint8_t *, uint16_t);
 
@@ -328,7 +327,7 @@ int32_t TCPP0203_GetOTPFlag(TCPP0203_Object_t *pObj, uint8_t *pOTPFlag);
 int32_t TCPP0203_GetVBusOkFlag(TCPP0203_Object_t *pObj, uint8_t *pVBusOkFlag);
 int32_t TCPP0203_ReadTCPPType(TCPP0203_Object_t *pObj, uint8_t *pTCPPType);
 int32_t TCPP0203_ReadVCONNPower(TCPP0203_Object_t *pObj, uint8_t *pVCONNPower);
-int32_t TCPP0203_WriteCtrlRegister(TCPP0203_Object_t *pObj, uint8_t *pAckRegister);
+int32_t TCPP0203_WriteCtrlRegister(TCPP0203_Object_t *pObj, uint8_t *pCtrlRegister);
 int32_t TCPP0203_ReadAckRegister(TCPP0203_Object_t *pObj, uint8_t *pAckRegister);
 int32_t TCPP0203_ReadFlagRegister(TCPP0203_Object_t *pObj, uint8_t *pFlagRegister);
 

@@ -41,13 +41,13 @@ struct line_input {
 	char line[CONFIG_BOOT_MAX_LINE_INPUT_LEN];
 };
 
-static struct device *uart_dev;
+static struct device const *uart_dev;
 static struct line_input line_bufs[2];
 
 static sys_slist_t avail_queue;
 static sys_slist_t lines_queue;
 
-static u16_t cur;
+static uint16_t cur;
 
 static int boot_uart_fifo_getline(char **line);
 static int boot_uart_fifo_init(void);
@@ -115,10 +115,10 @@ boot_console_init(void)
 }
 
 static void
-boot_uart_fifo_callback(struct device *dev)
+boot_uart_fifo_callback(const struct device *dev, void *user_data)
 {
 	static struct line_input *cmd;
-	u8_t byte;
+	uint8_t byte;
 	int rx;
 
 	uart_irq_update(uart_dev);
@@ -203,7 +203,7 @@ boot_uart_fifo_init(void)
 		}
 	}
 #endif
-	u8_t c;
+	uint8_t c;
 
 	if (!uart_dev) {
 		return (-1);

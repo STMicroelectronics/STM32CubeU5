@@ -27,7 +27,7 @@
 #include "psa/initial_attestation.h"
 #include "psa/internal_trusted_storage.h"
 #include "com.h"
-
+#include "region_defs.h"
 
 /** @defgroup  TFM_App_Private_Defines Private Defines
   * @{
@@ -39,7 +39,8 @@
 #define TEST_DATA_SIZE     (sizeof(TEST_DATA) - 1)
 #define TEST_READ_DATA     "############################################"
 
-#define ATTEST_TOKEN_MAX_SIZE  0x200
+#define KEY_ID        1U
+
 #define TOKEN_TEST_NONCE_BYTES \
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
@@ -61,19 +62,30 @@
   * @}
   */
 
+static psa_key_handle_t key_handle = {0};
+
+
 /** @defgroup  TFM_App_Private_Functions Private Functions
   * @{
   */
 static void tfm_app_print_menu(void);
-static void tfm_sst_set_uid(struct test_result_t *ret);
-static void tfm_sst_remove_uid(struct test_result_t *ret);
-static void tfm_sst_read_uid(struct test_result_t *ret);
+static void tfm_ps_set_uid(struct test_result_t *ret);
+static void tfm_ps_remove_uid(struct test_result_t *ret);
+static void tfm_ps_read_uid(struct test_result_t *ret);
 static void tfm_its_set_uid(struct test_result_t *ret);
 static void tfm_its_remove_uid(struct test_result_t *ret);
 static void tfm_its_read_uid(struct test_result_t *ret);
+static void tfm_crypto_persistent_key_import(struct test_result_t *ret);
+static void tfm_crypto_persistent_key_destroy(struct test_result_t *ret);
+static void tfm_crypto_persistent_key_export(struct test_result_t *ret);
+#ifdef PSA_USE_SE_ST
+static void print_data(uint8_t *data, size_t size, size_t line);
+static void tfm_stsafe_test(struct test_result_t *ret);
+#endif
+
 void dump_eat_token(struct q_useful_buf_c *token);
 static void tfm_eat_test_circuit_sig(uint32_t encode_options, struct test_result_t *ret);
-static  enum psa_attest_err_t token_main_alt(uint32_t option_flags,
+static  psa_status_t token_main_alt(uint32_t option_flags,
                                              struct q_useful_buf_c nonce,
                                              struct q_useful_buf buffer,
                                              struct q_useful_buf_c *completed_token);
@@ -98,6 +110,7 @@ void tfm_app_menu(void)
   uint8_t tests_executed;
   uint8_t tests_success;
   struct test_result_t ret;
+
   tfm_app_print_menu();
 
   while (exit == 0U)
@@ -132,16 +145,16 @@ void tfm_app_menu(void)
           printf("AES CCM test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
           tests_executed++;
           tests_success += (ret.val == TEST_PASSED) ? 1 : 0;
-          tfm_sst_set_uid(&ret);
-          printf("SST set UID test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tfm_ps_set_uid(&ret);
+          printf("PS set UID test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
           tests_executed++;
           tests_success += (ret.val == TEST_PASSED) ? 1 : 0;
-          tfm_sst_read_uid(&ret);
-          printf("SST read / check UID test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tfm_ps_read_uid(&ret);
+          printf("PS read / check UID test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
           tests_executed++;
           tests_success += (ret.val == TEST_PASSED) ? 1 : 0;
-          tfm_sst_remove_uid(&ret);
-          printf("SST remove UID test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tfm_ps_remove_uid(&ret);
+          printf("PS remove UID test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
           tests_executed++;
           tests_success += (ret.val == TEST_PASSED) ? 1 : 0;
           ret.val = TEST_FAILED;
@@ -171,6 +184,28 @@ void tfm_app_menu(void)
           printf("SHA256 test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
           tests_executed++;
           tests_success += (ret.val == TEST_PASSED) ? 1 : 0;
+          ret.val = TEST_FAILED;
+          tfm_crypto_persistent_key_import(&ret);
+          printf("Persistent key import test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tests_executed++;
+          tests_success += (ret.val == TEST_PASSED) ? 1 : 0;
+          ret.val = TEST_FAILED;
+          tfm_crypto_persistent_key_export(&ret);
+          printf("Persistent key export test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tests_executed++;
+          tests_success += (ret.val == TEST_PASSED) ? 1 : 0;
+          ret.val = TEST_FAILED;
+          tfm_crypto_persistent_key_destroy(&ret);
+          printf("Persistent key destroy test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tests_executed++;
+          tests_success += (ret.val == TEST_PASSED) ? 1 : 0;
+#ifdef PSA_USE_SE_ST
+          ret.val = TEST_FAILED;
+          tfm_stsafe_test(&ret);
+          printf("STSAFE test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tests_executed++;
+          tests_success += (ret.val == TEST_PASSED) ? 1 : 0;
+#endif
 
           printf("CUMULATIVE RESULT: %d/%d success\r\n", tests_success, tests_executed);
           tfm_app_print_menu();
@@ -199,20 +234,20 @@ void tfm_app_menu(void)
           break;
         case '4' :
           ret.val = TEST_FAILED;
-          tfm_sst_set_uid(&ret);
-          printf("SST set UID test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tfm_ps_set_uid(&ret);
+          printf("PS set UID test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
           tfm_app_print_menu();
           break;
         case '5' :
           ret.val = TEST_FAILED;
-          tfm_sst_read_uid(&ret);
-          printf("SST read / check UID test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tfm_ps_read_uid(&ret);
+          printf("PS read / check UID test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
           tfm_app_print_menu();
           break;
         case '6' :
           ret.val = TEST_FAILED;
-          tfm_sst_remove_uid(&ret);
-          printf("SST remove UID test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tfm_ps_remove_uid(&ret);
+          printf("PS remove UID test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
           tfm_app_print_menu();
           break;
         case '7' :
@@ -251,7 +286,32 @@ void tfm_app_menu(void)
           printf("SHA256 test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
           tfm_app_print_menu();
           break;
-
+        case 'd' :
+          ret.val = TEST_FAILED;
+          tfm_crypto_persistent_key_import(&ret);
+          printf("Persistent key import test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tfm_app_print_menu();
+          break;
+        case 'e' :
+          ret.val = TEST_FAILED;
+          tfm_crypto_persistent_key_export(&ret);
+          printf("Persistent key export test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tfm_app_print_menu();
+          break;
+        case 'f' :
+          ret.val = TEST_FAILED;
+          tfm_crypto_persistent_key_destroy(&ret);
+          printf("Persistent key destroy test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tfm_app_print_menu();
+          break;
+#ifdef PSA_USE_SE_ST
+        case 's' :
+          ret.val = TEST_FAILED;
+          tfm_stsafe_test(&ret);
+          printf("STSAFE Test %s\r\n", (ret.val == TEST_PASSED) ? "SUCCESSFUL" : "FAILED");
+          tfm_app_print_menu();
+          break;
+#endif
         case 'x':
           exit = 1;
           break;
@@ -284,27 +344,33 @@ static void tfm_app_print_menu(void)
   printf("  TFM - Test AES-GCM                               --------------------- 1\r\n\n");
   printf("  TFM - Test AES-CBC                               --------------------- 2\r\n\n");
   printf("  TFM - Test AES-CCM                               --------------------- 3\r\n\n");
-  printf("  TFM - Test SST set UID                           --------------------- 4\r\n\n");
-  printf("  TFM - Test SST read / check UID                  --------------------- 5\r\n\n");
-  printf("  TFM - Test SST remove UID                        --------------------- 6\r\n\n");
+  printf("  TFM - Test PS set UID                            --------------------- 4\r\n\n");
+  printf("  TFM - Test PS read / check UID                   --------------------- 5\r\n\n");
+  printf("  TFM - Test PS remove UID                         --------------------- 6\r\n\n");
   printf("  TFM - Test EAT                                   --------------------- 7\r\n\n");
   printf("  TFM - Test ITS set UID                           --------------------- 8\r\n\n");
   printf("  TFM - Test ITS read / check UID                  --------------------- 9\r\n\n");
   printf("  TFM - Test ITS remove UID                        --------------------- a\r\n\n");
   printf("  TFM - Test SHA224                                --------------------- b\r\n\n");
   printf("  TFM - Test SHA256                                --------------------- c\r\n\n");
+  printf("  TFM - Test Persistent key import                 --------------------- d\r\n\n");
+  printf("  TFM - Test Persistent key export                 --------------------- e\r\n\n");
+  printf("  TFM - Test Persistent key destroy                --------------------- f\r\n\n");
+#ifdef PSA_USE_SE_ST
+  printf("  TFM - Test STSAFE                                --------------------- s\r\n\n");
+#endif
   printf("  Exit TFM Examples Menu                           --------------------- x\r\n\n");
 }
 /**
-  * @brief  Write in SST a TEST UID
+  * @brief  Write in PS a TEST UID
   * @param  struct test_result_t
   * @retval None
   */
-static void tfm_sst_set_uid(struct test_result_t *ret)
+static void tfm_ps_set_uid(struct test_result_t *ret)
 {
-  psa_ps_status_t status;
-  const psa_ps_uid_t uid = TEST_UID;
-  const psa_ps_create_flags_t flags = PSA_PS_FLAG_NONE;
+  psa_status_t status;
+  const psa_storage_uid_t  uid = TEST_UID;
+  const psa_storage_create_flags_t flags = PSA_STORAGE_FLAG_NONE;
   const uint32_t write_len = TEST_DATA_SIZE;
   const uint8_t write_data[] = TEST_DATA;
   /* Set a UIDtime */
@@ -314,14 +380,14 @@ static void tfm_sst_set_uid(struct test_result_t *ret)
 }
 
 /**
-  * @brief  Remove in SST a TEST UID
+  * @brief  Remove in PS a TEST UID
   * @param  struct test_result_t
   * @retval None
   */
-static void tfm_sst_remove_uid(struct test_result_t *ret)
+static void tfm_ps_remove_uid(struct test_result_t *ret)
 {
-  psa_ps_status_t status;
-  const psa_ps_uid_t uid = TEST_UID;
+  psa_status_t status;
+  const psa_storage_uid_t uid = TEST_UID;
   /* remove UID */
   status = psa_ps_remove(uid);
   ret->val = status == PSA_SUCCESS ? TEST_PASSED : TEST_FAILED;
@@ -329,18 +395,19 @@ static void tfm_sst_remove_uid(struct test_result_t *ret)
 }
 
 /**
-  * @brief  Read in SST a TEST UID and compare with expected value
+  * @brief  Read in PS a TEST UID and compare with expected value
   * @param  struct test_result_t
   * @retval None
   */
-static void tfm_sst_read_uid(struct test_result_t *ret)
+static void tfm_ps_read_uid(struct test_result_t *ret)
 {
-  psa_ps_status_t status;
-  const psa_ps_uid_t uid = TEST_UID;
+  psa_status_t status;
+  const psa_storage_uid_t uid = TEST_UID;
+  size_t data_len;
   uint8_t read_data[] = TEST_READ_DATA ;
   uint8_t expected_data[] = TEST_DATA;
   /* read UID */
-  status = psa_ps_get(uid, 0, TEST_DATA_SIZE, read_data);
+  status = psa_ps_get(uid, 0, TEST_DATA_SIZE, read_data, &data_len);
   if ((status == PSA_SUCCESS) && (!memcmp(read_data, expected_data, TEST_DATA_SIZE)))
   {
     ret->val = TEST_PASSED;
@@ -359,9 +426,9 @@ static void tfm_sst_read_uid(struct test_result_t *ret)
   */
 static void tfm_its_set_uid(struct test_result_t *ret)
 {
-  psa_ps_status_t status;
-  const psa_ps_uid_t uid = TEST_UID;
-  const psa_ps_create_flags_t flags = PSA_PS_FLAG_NONE;
+  psa_status_t status;
+  const psa_storage_uid_t uid = TEST_UID;
+  const psa_storage_create_flags_t flags = PSA_STORAGE_FLAG_NONE;
   const uint32_t write_len = TEST_DATA_SIZE;
   const uint8_t write_data[] = TEST_DATA;
   /* Set a UIDtime */
@@ -377,8 +444,8 @@ static void tfm_its_set_uid(struct test_result_t *ret)
   */
 static void tfm_its_remove_uid(struct test_result_t *ret)
 {
-  psa_ps_status_t status;
-  const psa_ps_uid_t uid = TEST_UID;
+  psa_status_t status;
+  const psa_storage_uid_t uid = TEST_UID;
   /* remove UID */
   status = psa_its_remove(uid);
   ret->val = status == PSA_SUCCESS ? TEST_PASSED : TEST_FAILED;
@@ -392,8 +459,8 @@ static void tfm_its_remove_uid(struct test_result_t *ret)
   */
 static void tfm_its_read_uid(struct test_result_t *ret)
 {
-  psa_ps_status_t status;
-  const psa_ps_uid_t uid = TEST_UID;
+  psa_status_t status;
+  const psa_storage_uid_t uid = TEST_UID;
   size_t data_len;
   uint8_t read_data[] = TEST_READ_DATA ;
   uint8_t expected_data[] = TEST_DATA;
@@ -410,6 +477,384 @@ static void tfm_its_read_uid(struct test_result_t *ret)
   }
   return;
 }
+
+/**
+  * @brief  Import crypto persistent key
+  * @param  struct test_result_t
+  * @retval None
+  */
+static void tfm_crypto_persistent_key_import(struct test_result_t *ret)
+{
+  psa_status_t status;
+  psa_algorithm_t alg = PSA_ALG_CBC_NO_PADDING;
+  psa_key_usage_t usage = PSA_KEY_USAGE_EXPORT;
+  psa_key_attributes_t key_attributes = PSA_KEY_ATTRIBUTES_INIT;
+  const uint8_t data[] = "THIS IS MY KEY1";
+
+  /* Setup the key attributes with a key ID to create a persistent key */
+  psa_set_key_id(&key_attributes, KEY_ID);
+  psa_set_key_usage_flags(&key_attributes, usage);
+  psa_set_key_algorithm(&key_attributes, alg);
+  psa_set_key_type(&key_attributes, PSA_KEY_TYPE_AES);
+
+  /* Import key data to create the persistent key */
+  status = psa_import_key(&key_attributes, data, sizeof(data), &key_handle);
+  if (status != PSA_SUCCESS)
+  {
+    ret->val = TEST_FAILED;
+    return;
+  }
+
+  /* Close the persistent key handle */
+  status = psa_close_key(key_handle);
+  ret->val = status == PSA_SUCCESS ? TEST_PASSED : TEST_FAILED;
+  return;
+}
+
+/**
+  * @brief  Remove crypto persistent key
+  * @param  struct test_result_t
+  * @retval None
+  */
+static void tfm_crypto_persistent_key_destroy(struct test_result_t *ret)
+{
+  psa_status_t status;
+
+  /* Open the previsously-created persistent key */
+  status = psa_open_key(KEY_ID, &key_handle);
+  if (status != PSA_SUCCESS) {
+    ret->val = TEST_FAILED;
+    return;
+  }
+
+  /* Destroy the persistent key */
+  status = psa_destroy_key(key_handle);
+  ret->val = status == PSA_SUCCESS ? TEST_PASSED : TEST_FAILED;
+}
+
+/**
+  * @brief  Read persistent key and compare with expected value
+  * @param  struct test_result_t
+  * @retval None
+  */
+static void tfm_crypto_persistent_key_export(struct test_result_t *ret)
+{
+  psa_status_t status;
+  int comp_result;
+  size_t data_len;
+  const uint8_t data[] = "THIS IS MY KEY1";
+  uint8_t data_out[sizeof(data)] = {0};
+
+  /* Open the previsously-created persistent key */
+  status = psa_open_key(KEY_ID, &key_handle);
+  if (status != PSA_SUCCESS) {
+    ret->val = TEST_FAILED;
+    return;
+  }
+
+  /* Export the persistent key */
+  status = psa_export_key(key_handle, data_out, sizeof(data_out), &data_len);
+  if (status != PSA_SUCCESS) {
+    ret->val = TEST_FAILED;
+    return;
+  }
+
+  if (data_len != sizeof(data)) {
+    ret->val = TEST_FAILED;
+    return;
+  }
+
+  /* Check that the exported key is the same as the imported one */
+  comp_result = memcmp(data_out, data, sizeof(data));
+  if (comp_result != 0) {
+    ret->val = TEST_FAILED;
+    return;
+  }
+
+  /* Close the persistent key handle */
+  status = psa_close_key(key_handle);
+  ret->val = status == PSA_SUCCESS ? TEST_PASSED : TEST_FAILED;
+  return;
+}
+
+
+#ifdef PSA_USE_SE_ST
+#include "se_psa_id.h"
+
+void print_data(uint8_t *data, size_t size, size_t line) {
+  int32_t n_item_per_line;
+  int32_t i, index = 0;
+
+  while (index < size)
+  {
+    if (line != 0) {
+      n_item_per_line = (size-index) >= line ? line : (size-index);
+    } else {
+      n_item_per_line = size;
+    }
+    for (i = 0; i < n_item_per_line; i++)
+    {
+      printf("%2.2x", data[index + i]);
+    }
+    printf("\r\n");
+    index += n_item_per_line;
+
+  }
+  printf("\r\n");
+}
+
+void tfm_stsafe_test(struct test_result_t *ret)
+{
+
+  psa_key_handle_t key_handle;
+  psa_status_t status;
+  uint8_t data[1000];
+  uint8_t pub_key[97];
+  size_t pub_key_size = sizeof(pub_key);
+  char serial_str[19];
+  size_t serial_size = sizeof(serial_str);
+  uint8_t hash[48];
+  hash[0] = 0xFF;
+  uint16_t map_size;
+  int32_t i;
+  psa_key_attributes_t attr = PSA_KEY_ATTRIBUTES_INIT;
+
+  uint8_t sig[96];
+  size_t sig_size = sizeof(sig);
+
+  ret->val = TEST_FAILED;
+  /* serial number key */
+  status = psa_open_key(SE_ST_ID_TO_PSA_ID(SE_ST_SERIAL_NUMBER), &key_handle);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_open_key failed error =%d\n\r", status);
+    goto exit;
+  }
+  status = psa_export_key(key_handle, (uint8_t*)serial_str, sizeof(serial_str), &serial_size);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_export_key failed error =%d\n\r", status);
+    goto exit;
+  }
+  status = psa_close_key(key_handle);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_close_key failed error =%d\n\r", status);
+    goto exit;
+  }
+  printf("STSAFE-A Serial Number = %s\n\r", serial_str);
+
+
+  /* open key slot 0 */
+  status = psa_open_key(SE_ST_ID_TO_PSA_ID(SE_ST_PRIV_SLOT_0), &key_handle);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_open_key failed error =%d\n\r", status);
+    goto exit;
+  }
+  status = psa_export_public_key(key_handle, pub_key, sizeof(pub_key), &pub_key_size);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_export_public_key failed error =%d\n\r", status);
+    goto exit;
+  }
+  printf("STSAFE-A Slot 0 public key = ");
+  print_data(pub_key, pub_key_size, 0);
+
+  status = psa_asymmetric_sign(key_handle, PSA_ALG_ECDSA(PSA_ALG_SHA_256), hash, sizeof(hash), sig, sizeof(sig), &sig_size);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_asymmetric_sign failed error =%d\n\r", status);
+    goto exit;
+  }
+
+  printf("Message being signed:\n\r");
+  print_data(hash, sizeof(hash), 0);
+
+  printf("Signature with key from slot 0:\n\r");
+  print_data(sig, sig_size, sig_size/2);
+
+
+  status = psa_close_key(key_handle);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_close_key failed error =%d\n\r", status);
+    goto exit;
+  }
+
+  /* open key slot 1 */
+  status = psa_open_key(SE_ST_ID_TO_PSA_ID(SE_ST_PRIV_SLOT_1), &key_handle);
+  if (status != PSA_SUCCESS)
+  {
+    /* generate key on slot 1 */
+    psa_set_key_type(&attr, PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_BRAINPOOL_P_R1));
+    psa_set_key_bits(&attr, 256);
+    psa_set_key_lifetime(&attr, PSA_SE_ST_LIFETIME_DEFAULT);
+    psa_set_key_algorithm(&attr, PSA_ALG_ECDSA(PSA_ALG_ANY_HASH));
+    psa_set_key_id(&attr, SE_ST_ID_TO_PSA_ID(SE_ST_PRIV_SLOT_1));
+    psa_set_key_usage_flags(&attr, (PSA_KEY_USAGE_EXPORT | PSA_KEY_USAGE_SIGN_HASH));
+
+    status = psa_generate_key(&attr, &key_handle);
+    if (status != PSA_SUCCESS)
+    {
+      printf("psa_generate_key failed error =%d\n\r", status);
+      goto exit;
+    }
+  }
+
+  status = psa_export_public_key(key_handle, pub_key, sizeof(pub_key), &pub_key_size);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_export_public_key failed error =%d\n\r", status);
+    goto exit;
+  }
+  printf("STSAFE-A Slot 1 public key = ");
+  print_data(pub_key, pub_key_size, 0);
+  
+  status = psa_asymmetric_sign(key_handle, PSA_ALG_ECDSA(PSA_ALG_SHA_256), hash, sizeof(hash), sig, sizeof(sig), &sig_size);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_asymmetric_sign failed error =%d\n\r", status);
+    goto exit;
+  }
+
+  printf("Signature with key from slot 1:\n\r");
+  print_data(sig, sig_size, sig_size/2);
+
+
+  status = psa_close_key(key_handle);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_close_key failed error =%d\n\r", status);
+    goto exit;
+  }
+
+
+  /* memory 0*/
+  status = psa_open_key(SE_ST_ID_TO_PSA_ID(SE_ST_MEMORY_REGION_ID(0)), &key_handle);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_open_key failed error =%d\n\r", status);
+    goto exit;
+  }
+  uint8_t cert_header[4];
+  size_t read_size;
+
+  status = psa_export_key(key_handle, cert_header, 4, &read_size);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_export_key failed error =%d\n\r", status);
+    goto exit;
+  }
+
+  read_size = (cert_header[2] << 8) | cert_header[3] + 4;
+  printf("Certificate size = %d\n\r", read_size);
+  status = psa_export_key(key_handle, data, read_size, &read_size);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_export_key failed error =%d\n\r", status);
+    goto exit;
+  }
+  status = psa_close_key(key_handle);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_close_key failed error =%d\n\r", status);
+    goto exit;
+  }
+
+  print_data(data, read_size, 16);
+
+  /* get mapping size */
+  status = psa_open_key(SE_ST_ID_TO_PSA_ID(SE_ST_MAPPING), &key_handle);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_open_key failed error =%d\n\r", status);
+    goto exit;
+  }
+
+  status = psa_export_key(key_handle, data, sizeof(data), &read_size);
+  map_size = *(uint16_t*)data;
+  printf("Mapping size = %d (%d)\n\r", map_size, read_size);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_export_key failed error =%d\n\r", status);
+    goto exit;
+  }
+  status = psa_close_key(key_handle);
+  if (status != PSA_SUCCESS)
+  {
+    printf("psa_close_key failed error =%d\n\r", status);
+    goto exit;
+  }
+
+
+  for (i = 0; i < map_size; i++)
+  {
+    /* get memory region */
+    status = psa_open_key(SE_ST_ID_TO_PSA_ID(SE_ST_MEMORY_REGION_ID(i)), &key_handle);
+    if (status != PSA_SUCCESS)
+    {
+      printf("psa_open_key failed error =%d\n\r", status);
+      goto exit;
+    }
+
+    status = psa_export_key(key_handle, data, 200, &read_size);
+    if (status != PSA_SUCCESS)
+    {
+      printf("psa_export_key failed error =%d\n\r", status);
+      goto exit;
+    }
+    printf("region %d data : \n\r", i);
+    print_data(data, read_size, 16);
+
+    status = psa_close_key(key_handle);
+    if (status != PSA_SUCCESS)
+    {
+      printf("psa_close_key failed error =%d\n\r", status);
+      goto exit;
+    }
+  }
+
+  /* Test import in memory region 1 */
+  psa_set_key_id(&attr, SE_ST_ID_TO_PSA_ID(SE_ST_MEMORY_REGION_ID(1)));
+  psa_set_key_lifetime(&attr, PSA_SE_ST_LIFETIME_DEFAULT);
+  psa_set_key_bits(&attr, sig_size * 8);
+  psa_set_key_usage_flags(&attr, PSA_KEY_USAGE_EXPORT);
+  psa_set_key_type(&attr, PSA_KEY_TYPE_RAW_DATA);
+
+  /* Fill the region with the signature generated previously */
+  status = psa_import_key(&attr, sig, sig_size, &key_handle);
+  if (status != PSA_SUCCESS) {
+    printf("psa_import_key failed error =%d\n\r", status);
+    goto exit;
+  }
+  status = psa_export_key(key_handle, data, sig_size, &read_size);
+  if (status != PSA_SUCCESS) {
+    printf("psa_export_key failed error =%d\n\r", status);
+    goto exit;
+  }
+  printf("region %d data : \n\r", 1);
+  print_data(data, read_size, 16);
+
+  if ( memcmp(data, sig, sig_size) )
+  {
+    printf("data content mismatched from region 1\n\r");
+    goto exit;
+  }
+
+  status = psa_close_key(key_handle);
+  if (status != PSA_SUCCESS) {
+    printf("psa_close_key failed error =%d\n\r", status);
+    goto exit;
+  }
+
+
+  ret->val = TEST_PASSED;
+exit:
+  return;
+}
+#endif /* PSA_USE_SE_ST */
+
 void dump_eat_token(struct q_useful_buf_c *token)
 {
   int32_t len = token->len;
@@ -438,8 +883,8 @@ void dump_eat_token(struct q_useful_buf_c *token)
   */
 static void tfm_eat_test_circuit_sig(uint32_t encode_options, struct test_result_t *ret)
 {
-  enum psa_attest_err_t status;
-  Q_USEFUL_BUF_MAKE_STACK_UB(token_storage, ATTEST_TOKEN_MAX_SIZE);
+  psa_status_t status;
+  Q_USEFUL_BUF_MAKE_STACK_UB(token_storage, PSA_INITIAL_ATTEST_TOKEN_MAX_SIZE);
   struct q_useful_buf_c completed_token;
   struct q_useful_buf_c tmp;
 
@@ -451,7 +896,7 @@ static void tfm_eat_test_circuit_sig(uint32_t encode_options, struct test_result
                           tmp,
                           token_storage,
                           &completed_token);
-  if (status == PSA_ATTEST_ERR_SUCCESS)
+  if (status == PSA_SUCCESS)
   {
     ret->val = TEST_PASSED;
     printf("token response value :\r\n");
@@ -477,12 +922,12 @@ static void tfm_eat_test_circuit_sig(uint32_t encode_options, struct test_result
   * \return various errors. See \ref attest_token_err_t.
   *
   */
-static enum psa_attest_err_t token_main_alt(uint32_t option_flags,
+static psa_status_t token_main_alt(uint32_t option_flags,
                                             struct q_useful_buf_c nonce,
                                             struct q_useful_buf buffer,
                                             struct q_useful_buf_c *completed_token)
 {
-  enum psa_attest_err_t return_value;
+  psa_status_t return_value;
   uint32_t completed_token_len;
   struct q_useful_buf_c        actual_nonce;
   Q_USEFUL_BUF_MAKE_STACK_UB(actual_nonce_storage, 64);
@@ -505,6 +950,7 @@ static enum psa_attest_err_t token_main_alt(uint32_t option_flags,
   return_value = psa_initial_attest_get_token(actual_nonce.ptr,
                                               (uint32_t)actual_nonce.len,
                                               buffer.ptr,
+                                              buffer.len,
                                               &completed_token_len);
 
   *completed_token = (struct q_useful_buf_c)

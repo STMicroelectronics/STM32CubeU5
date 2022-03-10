@@ -174,7 +174,7 @@ static void EEPROM_Show_Feature(uint8_t feature)
     {
       FillBuffer((uint8_t*)Tx2Buffer, 0xAA, EEPROM_PAGESIZE);
 
-      for(uint32_t i = 0; i < 2048; i++)
+      for(uint32_t i = 0; i < 128; i++)
       {
         /* First write in the memory followed by a read of the written data ----*/
         /* Write on EEPROM to EEPROM_WRITE_ADDRESS1 */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2019-2021, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -14,22 +14,24 @@
 extern "C" {
 #endif
 
-{% for manifest in manifests %}
-    {% if manifest.attr.tfm_partition_ipc %}
-        {% if manifest.attr.conditional %}
-#ifdef {{manifest.attr.conditional}}
-        {% endif %}
-/******** {{manifest.manifest.name}} ********/
-        {% if manifest.manifest.services %}
-            {% for service in manifest.manifest.services %}
+{% for partition in partitions %}
+    {% if partition.attr.tfm_partition_ipc %}
+/******** {{partition.manifest.name}} ********/
+        {% if partition.manifest.services %}
+            {% for service in partition.manifest.services %}
                 {% set str = service.name + "_SID" %}
 #define {{"%-58s"|format(str)}} ({{"%10s"|format(service.sid)}}U)
                 {% set str = service.name + "_VERSION" %}
-#define {{"%-58s"|format(str)}} ({{"%d"|format(service.minor_version)}}U)
+                {% if service.version %}
+#define {{"%-58s"|format(str)}} ({{"%d"|format(service.version)}}U)
+                {% else %}
+#define {{"%-58s"|format(str)}} (1U)
+                {% endif %}
+                {% if partition.manifest.psa_framework_version > 1.0 and service.connection_based == false %}
+                    {% set str = service.name + "_HANDLE" %}
+#define {{"%-58s"|format(str)}} ({{"%s"|format(service.stateless_handle)}}U)
+                {% endif %}
             {% endfor %}
-        {% endif %}
-        {% if manifest.attr.conditional %}
-#endif /* {{manifest.attr.conditional}} */
         {% endif %}
 
     {% endif %}

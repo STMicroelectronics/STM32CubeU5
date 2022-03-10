@@ -1,6 +1,6 @@
 /*==============================================================================
  Copyright (c) 2016-2018, The Linux Foundation.
- Copyright (c) 2018-2019, Laurence Lundblade.
+ Copyright (c) 2018-2020, Laurence Lundblade.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -27,9 +27,9 @@ BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- ==============================================================================*/
+ =============================================================================*/
 
-/*===================================================================================
+/*=============================================================================
  FILE:  UsefulBuf.c
 
  DESCRIPTION:  General purpose input and output buffers
@@ -39,23 +39,27 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  This section contains comments describing changes made to the module.
  Notice that changes are listed in reverse chronological order.
 
- when               who             what, where, why
- --------           ----            ---------------------------------------------------
- 3/6/2019           llundblade      Add UsefulBuf_IsValue()
- 09/07/17           llundbla        Fix critical bug in UsefulBuf_Find() -- a read off
-                                    the end of memory when the bytes to find is longer
-                                    than the bytes to search.
- 06/27/17           llundbla        Fix UsefulBuf_Compare() bug. Only affected comparison
-                                    for < or > for unequal length buffers.  Added
-                                    UsefulBuf_Set() function.
- 05/30/17           llundbla        Functions for NULL UsefulBufs and const / unconst
- 11/13/16           llundbla        Initial Version.
+ when        who          what, where, why
+ --------    ----         ---------------------------------------------------
+ 01/28/2020  llundblade   Refine integer signedness to quiet static analysis.
+ 01/08/2020  llundblade   Documentation corrections & improved code formatting.
+ 11/08/2019  llundblade   Re check pointer math and update comments
+ 3/6/2019    llundblade   Add UsefulBuf_IsValue()
+ 09/07/17    llundbla     Fix critical bug in UsefulBuf_Find() -- a read off
+                          the end of memory when the bytes to find is longer
+                          than the bytes to search.
+ 06/27/17    llundbla     Fix UsefulBuf_Compare() bug. Only affected comparison
+                          for < or > for unequal length buffers.  Added
+                          UsefulBuf_Set() function.
+ 05/30/17    llundbla     Functions for NULL UsefulBufs and const / unconst
+ 11/13/16    llundbla     Initial Version.
 
- =====================================================================================*/
+ ============================================================================*/
 
 #include "UsefulBuf.h"
 
-#define USEFUL_OUT_BUF_MAGIC  (0x0B0F) // used to catch use of uninitialized or corrupted UOBs
+// used to catch use of uninitialized or corrupted UsefulOutBuf
+#define USEFUL_OUT_BUF_MAGIC  (0x0B0F)
 
 
 /*
@@ -63,7 +67,8 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 UsefulBufC UsefulBuf_CopyOffset(UsefulBuf Dest, size_t uOffset, const UsefulBufC Src)
 {
-   // Do this with subtraction so it doesn't give erroneous result if uOffset + Src.len overflows
+   // Do this with subtraction so it doesn't give erroneous
+   // result if uOffset + Src.len overflows
    if(uOffset > Dest.len || Src.len > Dest.len - uOffset) { // uOffset + Src.len > Dest.len
       return NULLUsefulBufC;
    }
@@ -105,7 +110,8 @@ size_t UsefulBuf_IsValue(const UsefulBufC UB, uint8_t uValue)
    for(const uint8_t *p = UB.ptr; p < pEnd; p++) {
       if(*p != uValue) {
          /* Byte didn't match */
-         return p - (uint8_t *)UB.ptr;
+         /* Cast from signed  to unsigned . Safe because the loop increments.*/
+         return (size_t)(p - (uint8_t *)UB.ptr);
       }
    }
 
@@ -165,11 +171,13 @@ void UsefulOutBuf_Init(UsefulOutBuf *pMe, UsefulBuf Storage)
 /*
  Public function -- see UsefulBuf.h
 
- The core of UsefulOutBuf -- put some bytes in the buffer without writing off the end of it.
+ The core of UsefulOutBuf -- put some bytes in the buffer without writing off
+                             the end of it.
 
  Code Reviewers: THIS FUNCTION DOES POINTER MATH
 
- This function inserts the source buffer, NewData, into the destination buffer, me->UB.ptr.
+ This function inserts the source buffer, NewData, into the destination
+ buffer, me->UB.ptr.
 
  Destination is represented as:
    me->UB.ptr -- start of the buffer
@@ -191,7 +199,8 @@ void UsefulOutBuf_Init(UsefulOutBuf *pMe, UsefulBuf Storage)
 
  2. Is insertion position in the range of valid data?
 
- 3. If insertion point is not at the end, slide data to the right of the insertion point to the right
+ 3. If insertion point is not at the end, slide data to the right of the
+    insertion point to the right
 
  4. Put the new data in at the insertion position.
 
@@ -218,11 +227,13 @@ void UsefulOutBuf_InsertUsefulBuf(UsefulOutBuf *pMe, UsefulBufC NewData, size_t 
    // be sure there is no pointer arithmatic under/overflow.
    if(pMe->data_len > pMe->UB.len) {  // Check #1
       pMe->err = 1;
-      return; // Offset of valid data is off the end of the UsefulOutBuf due to uninitialization or corruption
+      // Offset of valid data is off the end of the UsefulOutBuf due to
+      // uninitialization or corruption
+      return;
    }
 
    /* 1. Will it fit? */
-   // WillItFit() is the same as: NewData.len <= (me->size - me->data_len)
+   // WillItFit() is the same as: NewData.len <= (me->UB.len - me->data_len)
    // Check #1 makes sure subtraction in RoomLeft will not wrap around
    if(! UsefulOutBuf_WillItFit(pMe, NewData.len)) { // Check #2
       // The new data will not fit into the the buffer.
@@ -231,7 +242,9 @@ void UsefulOutBuf_InsertUsefulBuf(UsefulOutBuf *pMe, UsefulBufC NewData, size_t 
    }
 
    /* 2. Check the Insertion Position */
-   // This, with Check #1, also confirms that uInsertionPos <= me->data_len
+   // This, with Check #1, also confirms that uInsertionPos <= me->data_len and
+   // that uInsertionPos + pMe->UB.ptr will not wrap around the end of the
+   // address space.
    if(uInsertionPos > pMe->data_len) { // Check #3
       // Off the end of the valid data in the buffer.
       pMe->err = 1;
@@ -245,6 +258,7 @@ void UsefulOutBuf_InsertUsefulBuf(UsefulOutBuf *pMe, UsefulBufC NewData, size_t 
 
    if(uNumBytesToMove && pMe->UB.ptr) {
       // To know memmove won't go off end of destination, see PtrMath #4
+      // Use memove because it handles overlapping buffers
       memmove(pDestinationOfMove, pSourceOfMove, uNumBytesToMove);
    }
 
@@ -254,7 +268,7 @@ void UsefulOutBuf_InsertUsefulBuf(UsefulOutBuf *pMe, UsefulBufC NewData, size_t 
       // To know memmove won't go off end of destination, see PtrMath #6
       memmove(pInsertionPoint, NewData.ptr, NewData.len);
    }
-   pMe->data_len += NewData.len ;
+   pMe->data_len += NewData.len;
 }
 
 
@@ -269,9 +283,9 @@ void UsefulOutBuf_InsertUsefulBuf(UsefulOutBuf *pMe, UsefulBufC NewData, size_t 
  PtrMath #2 will never wrap around under because
     Check #3 makes sure uInsertionPos is less than me->data_len
 
- PtrMath #3 will never wrap around over because   todo
-    PtrMath #1 is checked resulting in pSourceOfMove being between me->UB.ptr and a maximum valid ptr
-    Check #2 that NewData.len will fit
+ PtrMath #3 will never wrap around over because
+    PtrMath #1 is checked resulting in pSourceOfMove being between me->UB.ptr and me->UB.ptr + me->data_len
+    Check #2 that NewData.len will fit in the unused space left in me->UB
 
  PtrMath #4 will never wrap under because
     Calculation for extent or memmove is uRoomInDestination  = me->UB.len - (uInsertionPos + NewData.len)
@@ -326,7 +340,7 @@ UsefulBufC UsefulOutBuf_CopyOut(UsefulOutBuf *pMe, UsefulBuf pDest)
 /*
  Public function -- see UsefulBuf.h
 
- The core of UsefulInputBuf -- consume some bytes without going off the end of the buffer.
+ The core of UsefulInputBuf -- consume bytes without going off end of buffer.
 
  Code Reviewers: THIS FUNCTION DOES POINTER MATH
  */
@@ -338,14 +352,15 @@ const void * UsefulInputBuf_GetBytes(UsefulInputBuf *pMe, size_t uAmount)
    }
 
    if(!UsefulInputBuf_BytesAvailable(pMe, uAmount)) {
-      // The number of bytes asked for at current position are more than available
+      // Number of bytes asked for at current position are more than available
       pMe->err = 1;
       return NULL;
    }
 
    // This is going to succeed
    const void * const result = ((uint8_t *)pMe->UB.ptr) + pMe->cursor;
-   pMe->cursor += uAmount; // this will not overflow because of check using UsefulInputBuf_BytesAvailable()
+   // Will not overflow because of check using UsefulInputBuf_BytesAvailable()
+   pMe->cursor += uAmount;
    return result;
 }
 

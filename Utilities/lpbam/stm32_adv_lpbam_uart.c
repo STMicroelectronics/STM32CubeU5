@@ -19,61 +19,83 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
-      developing an LPBAM application.
+      It is recommended to read the LPBAM_Utility_GettingStarted.html document, available at the root of LPBAM utility
+      folder, prior to any LPBAM application development start.
 
     *** Driver description ***
     ==========================
     [..]
-      This driver is dedicated for UART that can change configuration and operate in low power mode.
-      This advanced LPBAM module counts 3 files :
-          (+) stm32_adv_lpbam_uart.c
-              (++) This file provides the UART advanced files body.
-          (+) stm32_adv_lpbam_uart.h
-              (++) This file is the header file of stm32_adv_lpbam_uart.c. It provides advanced used types.
-          (+) stm32_platform_lpbam_uart.h
-              (++) This header file contains all defines to be used in applicative side.
+      This section provide description of the driver files content (refer to LPBAM_Utility_GettingStarted.html document
+      for more information)
+
+    [..]
+      It is composed of 3 files :
+          (+) stm32_adv_lpbam_uart.c file
+              (++) This file provides the implementation of the advanced LPBAM UART functions.
+          (+) stm32_adv_lpbam_uart.h file
+              (++) This file is the header file of stm32_adv_lpbam_lptim.c. It provides advanced LPBAM UART functions
+                   prototypes and the declaration of their needed exported types and structures.
+          (+) STM32xx/stm32_platform_lpbam_uart.h file
+              (++) This header file contains all defines to be used on applicative side.
+                   (+++) STM32xx stands for the device supporting LPBAM sub-system.
+
+    *** Driver functions model ***
+    ==============================
+    [..]
+      This section precises this module supported advanced functions model (refer to LPBAM_Utility_GettingStarted.html
+      document for function model definition).
+
+    [..]
+      This driver provides 3 model of APIs :
+          (+) ADV_LPBAM_{Module}_{Mode}_SetConfigQ() : provides one peripheral configuration queue.
+          (+) ADV_LPBAM_{Module}_{Mode}_SetDataQ() : provides one peripheral data transfer queue.
+          (+) ADV_LPBAM_{Module}_{Mode}_SetFullQ() : provides one peripheral configuration and one data transfer queue.
 
     *** Driver features ***
     =======================
     [..]
-      This driver provides the following list of features :
-          (+) Configure the UART transfers in simplex and full duplex modes.
-          (+) Starts the UART data transfers in simplex and full duplex modes.
-          (+) Configure and starts the UART data transfers in simplex and full duplex modes.
+      This section describes this LPBAM module supported features.
+
+    [..]
+      This driver provides services covering the LPBAM management of the following UART features :
+          (+) Configure the UART transfers in simplex or full duplex modes.
+          (+) Starts the UART data transfers in simplex or full duplex modes.
+          (+) Configure and starts the UART data transfers in simplex or full duplex modes.
 
     *** Functional description ***
     ==============================
     [..]
-      The UART peripheral is configured and started through a DMA channel thanks to a built DMA linked-list queue in
-      simplex and full duplex mode.
-      The UART peripheral transfer is started through a DMA channel thanks to a build DMA linked-list queue in simplex
-      and full duplex mode.
-      The UART peripheral transfer is configured and started through a DMA channel thanks to a build DMA linked-list
-      queue in simplex and full duplex mode.
+      This section describes the peripheral features covered by this LPBAM module.
 
+    [..]
       The output of each API is one linked-list queue. For simplex transfer, it is performed by executing one API
-      (Transmit or receive) according application needs. For the full duplex transfer, it is performed by executing two
-      APIs (one Transmit and one receive) then link each one to different DMA channel. (Please refer to Driver APIs
-      description and user sequence section for more information).
+      (Transmit or Receive) according to application needs. For the full duplex transfer, it is performed by executing
+      two APIs (one Transmit and one Receive) then link each one to a different DMA channel. (Please refer to Driver
+      APIs description and user sequence section for more information).
+
+      The UART peripheral transfer is configured in simplex or full duplex mode.
+      The UART peripheral transfer is started in simplex or full duplex mode.
+      The UART peripheral transfer is configured and started in simplex or full duplex mode.
 
     *** Driver APIs description ***
     ===============================
     [..]
+      This section provides LPBAM module exhaustive APIs description without considering application user call sequence.
+      For user call sequence information, please refer to 'Driver user sequence' section below.
+
+    [..]
       Use ADV_LPBAM_UART_Transmit_SetConfigQ() API to build a linked-list queue that setup the UART transmission
-      configuration operation according to parameters in the LPBAM_UART_ConfigAdvConf_t structure.
-      Configuration parameters are :
+      configuration according to parameters in the LPBAM_UART_ConfigAdvConf_t structure.
+      The configuration parameters are :
           (+) Mode         : Specifies the UART mode.
-                             This parameter can be a value of @ref LPBAM_UART_Mode.
-          (+) AutoModeConf : Specifies the autonomous mode parameters.
+                             This parameter can be a LPBAM_UART_MODE_TX or LPBAM_UART_MODE_TX_RX.
+          (+) AutoModeConf : Specifies the autonomous mode.
                              (++) AutonomousModeState : Specifies the autonomous mode state.
-                                                        This parameter can be a value
-                                                        of @ref LPBAM_UART_AutonomousMode_State.
+                                                        This parameter shall be LPBAM_UART_AUTONOMOUS_MODE_ENABLE.
                              (++) TriggerSelection    : Specifies the autonomous mode trigger signal selection.
                                                         This parameter can be a value
                                                         of @ref LPBAM_UART_AutonomousMode_TriggerSelection.
-                             (++) TriggerPolarity     : Specifies the autonomous mode trigger signal polarity
-                                                        sensitivity.
+                             (++) TriggerPolarity     : Specifies the autonomous mode trigger signal polarity.
                                                         This parameter can be a value
                                                         of @ref LPBAM_UART_AutonomousMode_TriggerPolarity.
                              (++) DataSize            : Specifies the UART data number of bytes to transfer in each
@@ -88,44 +110,39 @@
 
     [..]
       Use ADV_LPBAM_UART_Transmit_SetDataQ() API to build a linked-list queue that setup the UART transmission operation
-      starting according to parameters in the LPBAM_UART_DataAdvConf_t structure.
-      The data node default configuration is as follow:
-          (+) SrcInc            : DMA_SINC_INCREMENTED.
-          (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
-          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE.
-          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE. (Mandatory)
-          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
-
-      Configuration parameters are :
+      according to parameters in the LPBAM_UART_DataAdvConf_t structure.
+      The configuration parameters are :
           (+) pData : Specifies the data source buffer.
           (+) Size  : Specifies the data number of bytes to be sent.
 
+      The data transfer default configuration is as follow:
+          (+) SrcInc            : DMA_SINC_INCREMENTED.
+          (+) DestInc           : DMA_DINC_FIXED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE.
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE.
+          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
+      The data transfer configuration can be customized using ADV_LPBAM_Q_SetDataConfig() after
+      ADV_LPBAM_UART_Transmit_SetDataQ(). The ADV_LPBAM_Q_SetDataConfig() is in the module stm32_adv_lpbam_common.c
+      file.
+      Because of the HW implementation, the following parameters should be kept at default value:
+          (+) DestInc           : DMA_DINC_FIXED.
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE.
+
     [..]
       Use ADV_LPBAM_UART_Transmit_SetFullQ() API to build a linked-list queue that setup the UART configuration and
-      transmission starting according to parameters in the LPBAM_UART_FullAdvConf_t structure.
-      The data node default configuration is as follow:
-          (+) SrcInc            : DMA_SINC_INCREMENTED.
-          (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
-          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE.
-          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE. (Mandatory)
-          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
-
-      Configuration parameters are :
+      transmission according to parameters in the LPBAM_UART_FullAdvConf_t structure.
+      The configuration parameters are :
           (+) Mode         : Specifies the UART mode.
-                             This parameter can be a value of @ref LPBAM_UART_Mode.
-          (+) AutoModeConf : Specifies the autonomous mode parameters.
+                             This parameter can be a LPBAM_UART_MODE_TX or LPBAM_UART_MODE_TX_RX.
+          (+) AutoModeConf : Specifies the autonomous mode.
                              (++) AutonomousModeState : Specifies the autonomous mode state.
-                                                        This parameter can be a value
-                                                        of @ref LPBAM_UART_AutonomousMode_State.
+                                                        This parameter shall be LPBAM_UART_AUTONOMOUS_MODE_ENABLE.
                              (++) TriggerSelection    : Specifies the autonomous mode trigger signal selection.
                                                         This parameter can be a value
                                                         of @ref LPBAM_UART_AutonomousMode_TriggerSelection.
-                             (++) TriggerPolarity     : Specifies the autonomous mode trigger signal polarity
-                                                        sensitivity.
+                             (++) TriggerPolarity     : Specifies the autonomous mode trigger signal polarity.
                                                         This parameter can be a value
                                                         of @ref LPBAM_UART_AutonomousMode_TriggerPolarity.
                              (++) DataSize            : Specifies the UART data number of bytes to transfer in each
@@ -140,58 +157,87 @@
           (+) pData       : Specifies the data source buffer.
           (+) Size        : Specifies the data number of bytes to be sent.
 
+      The data transfer default configuration is as follow:
+          (+) SrcInc            : DMA_SINC_INCREMENTED.
+          (+) DestInc           : DMA_DINC_FIXED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE.
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE.
+          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
+      The data transfer configuration can be customized using ADV_LPBAM_Q_SetDataConfig() after
+      ADV_LPBAM_UART_Transmit_SetFullQ(). The ADV_LPBAM_Q_SetDataConfig() is in the module stm32_adv_lpbam_common.c
+      file.
+      Because of the HW implementation, the following parameters should be kept at default value:
+          (+) DestInc           : DMA_DINC_FIXED.
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE.
+
     [..]
-      Use ADV_LPBAM_UART_Receive_SetConfigQ() API to build a linked-list queue that setup the UART reception
-      configuration operation according to parameters in the LPBAM_UART_ConfigAdvConf_t structure.
-      Configuration parameters are :
+      Use ADV_LPBAM_UART_Receive_SetConfigQ() API to build a linked-list queue that sets up the UART reception
+      configuration according to parameters in the LPBAM_UART_ConfigAdvConf_t structure.
+      The configuration parameters are :
           (+) Mode     : Specifies the UART mode.
-                         This parameter can be a value of @ref LPBAM_UART_Mode.
+                         This parameter can be a LPBAM_UART_MODE_RX or LPBAM_UART_MODE_TX_RX.
           (+) WakeupIT : Specifies the wake up source.
                          UART wake up IT can be:
                          (++) NONE  : UART wake up interrupt none.
+                         (++) IDLE  : UART idle interrupt.
                          (++) RXFNE : UART RX FIFO not empty interrupt.
                          (++) RXFF  : UART RX FIFO full interrupt.
 
     [..]
-      Use ADV_LPBAM_UART_Receive_SetDataQ() API to build a linked-list queue that setup the UART reception operation
-      starting according to parameters in the LPBAM_UART_DataAdvConf_t structure.
-      The data node default configuration is as follow:
-          (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
-          (+) DestInc           : DMA_DINC_INCREMENTED.
-          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE. (Mandatory)
-          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE.
-          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
-
-      Configuration parameters are :
+      Use ADV_LPBAM_UART_Receive_SetDataQ() API to build a linked-list queue that sets up the UART reception operation
+      according to parameters in the LPBAM_UART_DataAdvConf_t structure.
+      The configuration parameters are :
           (+) pData : Specifies the data source buffer.
           (+) Size  : Specifies the data number of bytes to be sent.
 
-    [..]
-      Use ADV_LPBAM_UART_Receive_SetFullQ() API to build a linked-list queue that setup the UART configuration and
-      reception starting according to parameters in the LPBAM_UART_FullAdvConf_t structure.
-      The data node default configuration is as follow:
-          (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
+      The data transfer default configuration is as follow:
+          (+) SrcInc            : DMA_SINC_FIXED.
           (+) DestInc           : DMA_DINC_INCREMENTED.
-          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE. (Mandatory)
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE.
           (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE.
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
+      The data transfer configuration can be customized using ADV_LPBAM_Q_SetDataConfig() after
+      ADV_LPBAM_UART_Receive_SetDataQ(). The ADV_LPBAM_Q_SetDataConfig() is in the module stm32_adv_lpbam_common.c
+      file.
+      Because of the HW implementation, the following parameters should be kept at default value:
+          (+) SrcInc            : DMA_SINC_FIXED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE.
 
-      Configuration parameters are :
+    [..]
+      Use ADV_LPBAM_UART_Receive_SetFullQ() API to build a linked-list queue that sets up the UART configuration and
+      reception according to parameters in the LPBAM_UART_FullAdvConf_t structure.
+      The configuration parameters are :
           (+) Mode     : Specifies the UART mode.
-                         This parameter can be a value of @ref LPBAM_UART_Mode.
+                         This parameter can be a LPBAM_UART_MODE_RX or LPBAM_UART_MODE_TX_RX.
           (+) WakeupIT : Specifies the wake up source.
                          UART wake up IT can be:
                          (++) NONE  : UART wake up interrupt none.
+                         (++) IDLE  : UART idle interrupt.
                          (++) RXFNE : UART RX FIFO not empty interrupt.
                          (++) RXFF  : UART RX FIFO full interrupt.
           (+) pData    : Specifies the data source buffer.
           (+) Size     : Specifies the data number of bytes to be sent.
 
-      These APIs must be called when the UART is well initialized.
+      The data node default configuration is as follow:
+          (+) SrcInc            : DMA_SINC_FIXED.
+          (+) DestInc           : DMA_DINC_INCREMENTED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE.
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE.
+          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
+      The data transfer configuration can be customized using ADV_LPBAM_Q_SetDataConfig() after
+      ADV_LPBAM_UART_Receive_SetFullQ(). The ADV_LPBAM_Q_SetDataConfig() is in the module stm32_adv_lpbam_common.c
+      file.
+      Because of the HW implementation, the following parameters should be kept at default value:
+          (+) SrcInc            : DMA_SINC_FIXED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE.
+
+      These APIs must be called when the UART is initialized.
            (+) Recommended UART initialization sequence
               (++) Call HAL_UART_Init() to initialize the UART. (Mandatory)
                    Initialization parameters can be :
@@ -199,14 +245,14 @@
                    (+++) WordLength     : Any.
                    (+++) StopBits       : Any.
                    (+++) Parity         : Any.
-                   (+++) HwFlowCtl      : UART_HWCONTROL_NONE.
+                   (+++) HwFlowCtl      : UART_HWCONTROL_NONE. (Mandatory)
                    (+++) Mode           : Any.
                    (+++) ClockPrescaler : Any.
                    (+++) AdvFeatureInit : UART_ADVFEATURE_NO_INIT.
               (++) Call HAL_UARTEx_SetConfigAutonomousMode() to configure the autonomous mode.(Mandatory only for
                    transmission)
                    Autonomous mode parameters can be :
-                   (+++) AutonomousModeState : UART_AUTONOMOUS_MODE_ENABLE.
+                   (+++) AutonomousModeState : UART_AUTONOMOUS_MODE_ENABLE. (Mandatory for transmit APIs)
                    (+++) IdleFrame           : Any.
                    (+++) TriggerPolarity     : Any.
                    (+++) TriggerSelection    : Any.
@@ -220,21 +266,25 @@
     *** Driver user sequence ***
     ============================
     [..]
+      This section provides the steps to follow to build an LPBAM application based on HAL/LL and LPBAM drivers. (refer
+      to LPBAM_Utility_GettingStarted.html for linked-list feature description).
+
+    [..]
       Simplex user sequence :
-          (+) Initialize the UART (Using HAL/LL). (Mandatory)
+          (+) Initialize all needed GPIOs. (Depends on application needs)
+          (+) Initialize the UART (Using HAL/LL) in simplex mode. (Mandatory)
           (+) Call ADV_LPBAM_UART_EnableDMARequests() to enable the UART DMA requests. (Mandatory)
-          (+) Repeat calling ADV_LPBAM_UART_{Transfer}_SetConfigQ() and/or ADV_LPBAM_UART_{Transfer}_SetDataQ() and/or
-              ADV_LPBAM_UART_{Transfer}_SetFullQ until completing LPBAM scenario. (Mandatory)
-          (+) Call ADV_LPBAM_Q_SetTriggerConfig() to add hardware trigger condition for executing output
-              queues. (Optional)
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call ADV_LPBAM_Q_SetCircularMode() to circularize your linked-list queue for infinite scenarios
-              cases. (Optional)
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode (Using HAL/LL). (Mandatory)
+          (+) Call ADV_LPBAM_UART_{Transfer}_SetConfigQ() and/or ADV_LPBAM_UART_{Transfer}_SetDataQ() and/or
+              ADV_LPBAM_UART_{Transfer}_SetFullQ. (Mandatory)
+          (+) Call, optionally, ADV_LPBAM_Q_SetTriggerConfig() in stm32_adv_lpbam_common.c to add hardware trigger
+              condition for executing of ADV_LPBAM_UART_{Transfer}_SetConfigQ(), ADV_LPBAM_UART_{Transfer}_SetDataQ() or
+              ADV_LPBAM_UART_{Transfer}_SetFullQ() output queue.
+          (+) Call, optionally, ADV_LPBAM_Q_SetCircularMode() in stm32_adv_lpbam_common.c to circularize your
+              linked-list queue for infinite scenarios cases.
+          (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode. (Mandatory)
           (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
-              Any DMA error occurred in low power block the LPBAM sub-system mechanisms.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
               DMA error interrupts can be :
               (++) DMA_IT_DTE : data transfer error.
               (++) DMA_IT_ULE : update link error.
@@ -243,75 +293,84 @@
 
     [..]
       Full duplex user sequence :
-          (+) Initialize the UART (Using HAL/LL). (Mandatory)
+          (+) Initialize all needed GPIOs. (Depends on application needs)
+          (+) Initialize the UART (Using HAL/LL) in full duplex mode. (Mandatory)
           (+) Call ADV_LPBAM_UART_EnableDMARequests() to enable the UART DMA requests. (Mandatory)
-          (+) Repeat calling ADV_LPBAM_UART_Receive_SetConfigQ() and/or ADV_LPBAM_UART_Receive_SetDataQ() and/or
-              ADV_LPBAM_UART_Receive_SetFullQ until completing LPBAM scenario. (Mandatory)
-          (+) Repeat calling ADV_LPBAM_UART_Transmit_SetConfigQ() and/or ADV_LPBAM_UART_Transmit_SetDataQ() and/or
-              ADV_LPBAM_UART_Transmit_SetFullQ until completing LPBAM scenario. (Mandatory)
-          (+) Call ADV_LPBAM_Q_SetTriggerConfig() to add hardware trigger condition for executing output
-              queues. (Optional)
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call ADV_LPBAM_Q_SetCircularMode() to circularize your linked-list queue for infinite scenarios
-              cases. (Optional)
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call HAL_DMAEx_List_Init() to initialize the receive DMA channel in linked-list
-              mode (Using HAL/LL). (Mandatory)
-          (+) Call HAL_DMAEx_List_LinkQ() to link the receive output queue to the initialized
-              receive DMA channel. (Mandatory)
+          (+) Call ADV_LPBAM_UART_Receive_SetConfigQ() and/or ADV_LPBAM_UART_Receive_SetDataQ() and/or
+              ADV_LPBAM_UART_Receive_SetFullQ(). (Mandatory)
+          (+) Call ADV_LPBAM_UART_Transmit_SetConfigQ() and/or ADV_LPBAM_UART_Transmit_SetDataQ() and/or
+              ADV_LPBAM_UART_Transmit_SetFullQ(). (Mandatory)
+          (+) Call ADV_LPBAM_UART_Transmit_SetConfigQ() and/or ADV_LPBAM_UART_Transmit_SetDataQ() and/or
+              ADV_LPBAM_UART_Transmit_SetFullQ(). (Mandatory)
+          (+) Call, optionally, ADV_LPBAM_Q_SetTriggerConfig() in stm32_adv_lpbam_common.c to add hardware trigger
+              condition for executing of ADV_LPBAM_UART_{Transfer}_SetConfigQ(), ADV_LPBAM_UART_{Transfer}_SetDataQ() or
+              ADV_LPBAM_UART_{Transfer}_SetFullQ() output queue.
+          (+) Call, optionally, ADV_LPBAM_Q_SetCircularMode() in stm32_adv_lpbam_common.c to circularize your
+              linked-list queues for infinite scenarios cases.
+          (+) Call HAL_DMAEx_List_Init() to initialize the Receive DMA channel in linked-list mode. (Mandatory)
+          (+) Call HAL_DMAEx_List_LinkQ() to link the Receive output queue to the initialized
+              Receive DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
-              Any DMA error occurred in low power block the LPBAM sub-system mechanisms.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
               DMA error interrupts can be :
               (++) DMA_IT_DTE : data transfer error.
               (++) DMA_IT_ULE : update link error.
               (++) DMA_IT_USE : user setting error.
-          (+) Call HAL_DMAEx_List_Start() to start the receive DMA channel linked-list execution. (Mandatory)
-          (+) Call HAL_DMAEx_List_Init() to initialize the transmit DMA channel in linked-list
-              mode (Using HAL/LL). (Mandatory)
-          (+) Call HAL_DMAEx_List_LinkQ() to link the transmit output queue to the initialized
-              transmit DMA channel. (Mandatory)
+          (+) Call HAL_DMAEx_List_Start() to start the Receive DMA channel linked-list execution. (Mandatory)
+          (+) Call HAL_DMAEx_List_Init() to initialize the Transmit DMA channel in linked-list
+              mode. (Mandatory)
+          (+) Call HAL_DMAEx_List_LinkQ() to link the Transmit output queue to the initialized
+              Transmit DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
-              Any DMA error occurred in low power block the LPBAM sub-system mechanisms.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
               DMA error interrupts can be :
               (++) DMA_IT_DTE : data transfer error.
               (++) DMA_IT_ULE : update link error.
               (++) DMA_IT_USE : user setting error.
-          (+) Call HAL_DMAEx_List_Start() to start the transmit DMA channel linked-list execution. (Mandatory)
-
+          (+) Call HAL_DMAEx_List_Start() to start the Transmit DMA channel linked-list execution. (Mandatory)
 
     *** Recommendation ***
     ======================
     [..]
-      It's useless to call ADV_LPBAM_UART_{Transfer}_SetConfigQ() consecutively as the first configuration will be
-      overwritten.
+      This section provides tips and tricks to consider while using LPBAM module drivers to build a user application.
 
     [..]
-      It's useless to call ADV_LPBAM_UART_{Transfer}_SetConfigQ() before ADV_LPBAM_UART_{Transfer}_SetFullQ() as
-      ADV_LPBAM_UART_{Transfer}_SetFullQ() APIs contains configuration process.
+      For memory optimization purpose, when a re-configuration is necessary, it's recommended to use
+      ADV_LPBAM_UART_{Transfer}_SetFullQ() instead of ADV_LPBAM_UART_{Transfer}_SetConfigQ() then
+      ADV_LPBAM_UART_{Transfer}_SetDataQ().
 
     [..]
-      It's mandatory to starts the receive DMA channel before the transmit DMA channel in full duplex mode.
+      For memory optimization purpose, when no re-configuration is necessary, it's recommended to use
+      ADV_LPBAM_UART_{Transfer}_SetDataQ().
 
     [..]
-      It's strongly not recommended to execute the same linked-list queue that contains UART transfers configuration
-      by two different DMA channels as unexpected behavior can appear.
+      It's mandatory to use two linked-list queues (One for the transmission and another one for the reception) which
+      will be executed simultaneously when UART is used in full duplex mode.
 
     [..]
-      It's strongly not recommended to call the UART advanced APIs with the same instance by more than
-      one linked-list queue. When the UART nodes will be executed simultaneously unexpected behavior will appear.
+      To avoid missing Rx DMA request transfers in full duplex, it's mandatory to start the DMA channel execution of Rx
+      linked-list queue before starting the DMA channel execution of Tx linked-list queue.
 
     [..]
-      It's mandatory to use two DMA channels for full duplex transfers and only one DMA channels for simplex transfers.
+      For memory optimization purpose in full duplex transfers, Rx queue shall contains only data transfer ensured by
+      ADV_LPBAM_UART_Receive_SetDataQ() API.
+
+    [..]
+      It's forbidden to execute simultaneously the same linked-list queue with different DMA channels.
+
+    [..]
+      It's forbidden to execute simultaneously two linked-list queue to configure the same UART instance.
 
     *** Driver status description ***
     =================================
     [..]
-      This driver detects and reports any detected issue.
+      This section provides reported LPBAM module status.
+
+    [..]
+      This advanced module reports any detected issue.
           (+) returned values are :
               (++) LPBAM_OK when no error is detected.
-              (++) LPBAM_ERROR when error is detected.
-              (++) LPBAM_INVALID_ID when an invalid node ID is detected. This error value is specific for LPBAM basic
-                   layer.
+              (++) LPBAM_ERROR when any error is detected.
 
     @endverbatim
   **********************************************************************************************************************
@@ -342,7 +401,7 @@
   */
 
 /**
-  * @brief  Build the UART transmit configuration nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the configuration of UART transmit according to parameters in
   *         LPBAM_UART_ConfigAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a USART_TypeDef structure that selects UART instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -517,7 +576,7 @@ LPBAM_Status_t ADV_LPBAM_UART_Transmit_SetConfigQ(USART_TypeDef              *co
 }
 
 /**
-  * @brief  Build the UART transmit data nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the data of UART transmit according to parameters in
   *         LPBAM_UART_DataAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a USART_TypeDef structure that selects UART instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -583,7 +642,7 @@ LPBAM_Status_t ADV_LPBAM_UART_Transmit_SetDataQ(USART_TypeDef            *const 
 }
 
 /**
-  * @brief  Build the UART transmit full nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the configuration and data of UART transmit according to parameters in
   *         LPBAM_UART_FullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a USART_TypeDef structure that selects UART instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -796,7 +855,7 @@ LPBAM_Status_t ADV_LPBAM_UART_Transmit_SetFullQ(USART_TypeDef            *const 
 }
 
 /**
-  * @brief  Build the UART receive configuration nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the configuration of UART receive according to parameters in
   *         LPBAM_UART_ConfigAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a USART_TypeDef structure that selects UART instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -895,7 +954,7 @@ LPBAM_Status_t ADV_LPBAM_UART_Receive_SetConfigQ(USART_TypeDef              *con
 }
 
 /**
-  * @brief  Build the UART receive data nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the data of UART receive according to parameters in
   *         LPBAM_UART_DataAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a USART_TypeDef structure that selects UART instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -961,7 +1020,7 @@ LPBAM_Status_t ADV_LPBAM_UART_Receive_SetDataQ(USART_TypeDef            *const p
 }
 
 /**
-  * @brief  Build the UART receive full nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the configuration and data of UART receive according to parameters in
   *         LPBAM_UART_FullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a USART_TypeDef structure that selects UART instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -1098,13 +1157,13 @@ LPBAM_Status_t ADV_LPBAM_UART_Receive_SetFullQ(USART_TypeDef            *const p
 }
 
 /**
-  * @brief  Enable the uart TX and Rx DMA requests.
+  * @brief  Enable the UART transmit and receive DMA requests.
   * @param  pInstance    : [IN]  Pointer to a USART_TypeDef structure that selects UART instance.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
 LPBAM_Status_t ADV_LPBAM_UART_EnableDMARequests(USART_TypeDef *const pInstance)
 {
-  /* Enable UART TX/Rx DMA requests */
+  /* Enable UART TX and Rx DMA requests */
   pInstance->CR3 |= (LPBAM_UART_DMAT | LPBAM_UART_DMAR);
 
   return LPBAM_OK;

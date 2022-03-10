@@ -129,7 +129,7 @@ void process_txrx_poll(uint32_t timeout);
 mx_buf_t *mx_wifi_hci_recv(uint32_t timeout)
 {
   mx_buf_t *nbuf;
-  nbuf = FIFO_POP(hci_pkt_fifo, timeout, process_txrx_poll);
+  nbuf = (mx_buf_t *)FIFO_POP(hci_pkt_fifo, timeout, process_txrx_poll);
   if (nbuf != NULL)
   {
     MX_STAT(out_fifo);

@@ -22,54 +22,27 @@
 #include "openbl_fdcan_cmd.h"
 
 #include "openbootloader_conf.h"
+#include "app_openbootloader.h"
 #include "fdcan_interface.h"
+#include "common_interface.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define OPENBL_FDCAN_COMMANDS_NB             11U    /* Number of supported commands */
+#define OPENBL_FDCAN_COMMANDS_NB_MAX      13U       /* The maximum number of supported commands */
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+static uint8_t a_OPENBL_FDCAN_CommandsList[OPENBL_FDCAN_COMMANDS_NB_MAX] = {0};
+static uint8_t FdcanCommandsNumber = 0U;
+
 /* Private function prototypes -----------------------------------------------*/
-static void OPENBL_FDCAN_GetCommand(void);
-static void OPENBL_FDCAN_GetVersion(void);
-static void OPENBL_FDCAN_GetID(void);
-static void OPENBL_FDCAN_ReadMemory(void);
-static void OPENBL_FDCAN_WriteMemory(void);
-static void OPENBL_FDCAN_Go(void);
-static void OPENBL_FDCAN_ReadoutProtect(void);
-static void OPENBL_FDCAN_ReadoutUnprotect(void);
-static void OPENBL_FDCAN_EraseMemory(void);
-static void OPENBL_FDCAN_WriteProtect(void);
-static void OPENBL_FDCAN_WriteUnprotect(void);
-
 static uint8_t OPENBL_FDCAN_GetAddress(uint32_t *Address);
+static uint8_t OPENBL_FDCAN_GetSpecialCmdOpCode(uint16_t *OpCode, OPENBL_SpecialCmdTypeTypeDef CmdType);
+static uint8_t OPENBL_FDCAN_ConstructCommandsTable(OPENBL_CommandsTypeDef *pFdcanCmd);
 
 /* Exported variables --------------------------------------------------------*/
-
-OPENBL_CommandsTypeDef OPENBL_FDCAN_Commands =
-{
-  OPENBL_FDCAN_GetCommand,
-  OPENBL_FDCAN_GetVersion,
-  OPENBL_FDCAN_GetID,
-  OPENBL_FDCAN_ReadMemory,
-  OPENBL_FDCAN_WriteMemory,
-  OPENBL_FDCAN_Go,
-  OPENBL_FDCAN_ReadoutProtect,
-  OPENBL_FDCAN_ReadoutUnprotect,
-  OPENBL_FDCAN_EraseMemory,
-  OPENBL_FDCAN_WriteProtect,
-  OPENBL_FDCAN_WriteUnprotect,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL
-};
-
 /* Exported functions---------------------------------------------------------*/
 /**
   * @brief  This function is used to get a pointer to the structure that contains the available FDCAN commands.
@@ -77,44 +50,64 @@ OPENBL_CommandsTypeDef OPENBL_FDCAN_Commands =
   */
 OPENBL_CommandsTypeDef *OPENBL_FDCAN_GetCommandsList(void)
 {
+  static OPENBL_CommandsTypeDef OPENBL_FDCAN_Commands =
+  {
+    OPENBL_FDCAN_GetCommand,
+    OPENBL_FDCAN_GetVersion,
+    OPENBL_FDCAN_GetID,
+    OPENBL_FDCAN_ReadMemory,
+    OPENBL_FDCAN_WriteMemory,
+    OPENBL_FDCAN_Go,
+    OPENBL_FDCAN_ReadoutProtect,
+    OPENBL_FDCAN_ReadoutUnprotect,
+    OPENBL_FDCAN_EraseMemory,
+    OPENBL_FDCAN_WriteProtect,
+    OPENBL_FDCAN_WriteUnprotect,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    OPENBL_FDCAN_SpecialCommand,
+    OPENBL_FDCAN_ExtendedSpecialCommand
+  };
+
+  OPENBL_FDCAN_SetCommandsList(&OPENBL_FDCAN_Commands);
+
   return (&OPENBL_FDCAN_Commands);
 }
 
-/* Private functions ---------------------------------------------------------*/
+/**
+  * @brief  This function is used to set the list of FDCAN supported commands.
+  * @return Returns a pointer to the OPENBL_FDCAN_Commands struct.
+  */
+void OPENBL_FDCAN_SetCommandsList(OPENBL_CommandsTypeDef *pFdcanCmd)
+{
+  /* Get the list of commands supported & their numbers */
+  FdcanCommandsNumber = OPENBL_FDCAN_ConstructCommandsTable(pFdcanCmd);
+}
 
 /**
   * @brief  This function is used to get the list of the available FDCAN commands
   * @retval None.
   */
-static void OPENBL_FDCAN_GetCommand(void)
+void OPENBL_FDCAN_GetCommand(void)
 {
   uint32_t counter;
-  const uint8_t a_OPENBL_FDCAN_CommandsList[OPENBL_FDCAN_COMMANDS_NB] =
-  {
-    CMD_GET_COMMAND,
-    CMD_GET_VERSION,
-    CMD_GET_ID,
-    CMD_READ_MEMORY,
-    CMD_GO,
-    CMD_WRITE_MEMORY,
-    CMD_EXT_ERASE_MEMORY,
-    CMD_WRITE_PROTECT,
-    CMD_WRITE_UNPROTECT,
-    CMD_READ_PROTECT,
-    CMD_READ_UNPROTECT
-  };
 
   /* Send Acknowledge byte to notify the host that the command is recognized */
   OPENBL_FDCAN_SendByte(ACK_BYTE);
 
   /* Send the number of commands supported by FDCAN protocol */
-  OPENBL_FDCAN_SendByte(OPENBL_FDCAN_COMMANDS_NB);
+  OPENBL_FDCAN_SendByte(FdcanCommandsNumber);
 
   /* Send FDCAN protocol version */
   OPENBL_FDCAN_SendByte(OPENBL_FDCAN_VERSION);
 
   /* Send the list of supported commands */
-  for (counter = 0U; counter < OPENBL_FDCAN_COMMANDS_NB; counter++)
+  for (counter = 0U; counter < FdcanCommandsNumber; counter++)
   {
     OPENBL_FDCAN_SendByte(a_OPENBL_FDCAN_CommandsList[counter]);
   }
@@ -127,7 +120,7 @@ static void OPENBL_FDCAN_GetCommand(void)
   * @brief  This function is used to get the FDCAN protocol version.
   * @retval None.
   */
-static void OPENBL_FDCAN_GetVersion(void)
+void OPENBL_FDCAN_GetVersion(void)
 {
   /* Send Acknowledge byte to notify the host that the command is recognized */
   OPENBL_FDCAN_SendByte(ACK_BYTE);
@@ -148,7 +141,7 @@ static void OPENBL_FDCAN_GetVersion(void)
   * @brief  This function is used to get the device ID.
   * @retval None.
   */
-static void OPENBL_FDCAN_GetID(void)
+void OPENBL_FDCAN_GetID(void)
 {
   /* Send Acknowledge byte to notify the host that the command is recognized */
   OPENBL_FDCAN_SendByte(ACK_BYTE);
@@ -166,7 +159,7 @@ static void OPENBL_FDCAN_GetID(void)
   * @brief  This function is used to read memory from the device.
   * @retval None.
   */
-static void OPENBL_FDCAN_ReadMemory(void)
+void OPENBL_FDCAN_ReadMemory(void)
 {
   uint32_t address;
   uint32_t counter;
@@ -177,7 +170,7 @@ static void OPENBL_FDCAN_ReadMemory(void)
   uint8_t  data_length;
 
   /* Check memory protection then send adequate response */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_FDCAN_SendByte(NACK_BYTE);
   }
@@ -249,17 +242,16 @@ static void OPENBL_FDCAN_ReadMemory(void)
   * @brief  This function is used to write in to device memory.
   * @retval None.
   */
-static void OPENBL_FDCAN_WriteMemory(void)
+void OPENBL_FDCAN_WriteMemory(void)
 {
   uint32_t address;
   uint32_t CodeSize;
   uint32_t count;
   uint32_t single;
-  uint32_t mem_area;
   uint8_t data_length;
 
   /* Check memory protection then send adequate response */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_FDCAN_SendByte(NACK_BYTE);
   }
@@ -302,14 +294,8 @@ static void OPENBL_FDCAN_WriteMemory(void)
       /* Send last Acknowledge synchronization byte */
       OPENBL_FDCAN_SendByte(ACK_BYTE);
 
-      /* Check if the received address is an option byte address */
-      mem_area = OPENBL_MEM_GetAddressArea(address);
-
-      if (mem_area == OB_AREA)
-      {
-        /* Launch Option Bytes reload */
-        OPENBL_MEM_OptionBytesLaunch();
-      }
+      /* Start post processing task if needed */
+      Common_StartPostProcessing();
     }
   }
 }
@@ -318,13 +304,13 @@ static void OPENBL_FDCAN_WriteMemory(void)
   * @brief  This function is used to jump to the user application.
   * @retval None.
   */
-static void OPENBL_FDCAN_Go(void)
+void OPENBL_FDCAN_Go(void)
 {
   uint32_t address;
   uint8_t status;
 
   /* Check memory protection then send adequate response */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_FDCAN_SendByte(NACK_BYTE);
   }
@@ -361,10 +347,10 @@ static void OPENBL_FDCAN_Go(void)
  * @brief  This function is used to enable readout protection.
  * @retval None.
  */
-static void OPENBL_FDCAN_ReadoutProtect(void)
+void OPENBL_FDCAN_ReadoutProtect(void)
 {
   /* Check memory protection then send adequate response */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_FDCAN_SendByte(NACK_BYTE);
   }
@@ -373,12 +359,12 @@ static void OPENBL_FDCAN_ReadoutProtect(void)
     OPENBL_FDCAN_SendByte(ACK_BYTE);
 
     /* Enable the read protection */
-    OPENBL_MEM_SetReadOutProtection(ENABLE);
+    OPENBL_MEM_SetReadOutProtection(OPENBL_DEFAULT_MEM, ENABLE);
 
     OPENBL_FDCAN_SendByte(ACK_BYTE);
 
-    /* Launch Option Bytes reload */
-    OPENBL_MEM_OptionBytesLaunch();
+    /* Start post processing task if needed */
+    Common_StartPostProcessing();
   }
 }
 
@@ -386,7 +372,7 @@ static void OPENBL_FDCAN_ReadoutProtect(void)
  * @brief  This function is used to disable readout protection.
  * @retval None.
  */
-static void OPENBL_FDCAN_ReadoutUnprotect(void)
+void OPENBL_FDCAN_ReadoutUnprotect(void)
 {
   OPENBL_FDCAN_SendByte(ACK_BYTE);
 
@@ -396,17 +382,17 @@ static void OPENBL_FDCAN_ReadoutUnprotect(void)
   OPENBL_FDCAN_SendByte(ACK_BYTE);
 
   /* Disable the read protection */
-  OPENBL_MEM_SetReadOutProtection(DISABLE);
+  OPENBL_MEM_SetReadOutProtection(OPENBL_DEFAULT_MEM, DISABLE);
 
-  /* Launch Option Bytes reload and reset system */
-  OPENBL_MEM_OptionBytesLaunch();
+  /* Start post processing task if needed */
+  Common_StartPostProcessing();
 }
 
 /**
  * @brief  This function is used to erase a memory.
  * @retval None.
  */
-static void OPENBL_FDCAN_EraseMemory(void)
+void OPENBL_FDCAN_EraseMemory(void)
 {
   uint16_t data;
   uint16_t counter;
@@ -416,7 +402,7 @@ static void OPENBL_FDCAN_EraseMemory(void)
   ErrorStatus error_value;
 
   /* Check if the memory is protected or not */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_FDCAN_SendByte(NACK_BYTE);
   }
@@ -443,7 +429,7 @@ static void OPENBL_FDCAN_EraseMemory(void)
     {
       if ((data == 0xFFFFU) || (data == 0xFFFEU) || (data == 0xFFFDU))
       {
-        error_value = OPENBL_MEM_MassErase(FLASH_START_ADDRESS, RxData, FDCAN_RAM_BUFFER_SIZE);
+        error_value = OPENBL_MEM_MassErase(OPENBL_DEFAULT_MEM, RxData, FDCAN_RAM_BUFFER_SIZE);
 
         if (error_value == SUCCESS)
         {
@@ -481,7 +467,7 @@ static void OPENBL_FDCAN_EraseMemory(void)
         i++;
       }
 
-      error_value = OPENBL_MEM_Erase(FLASH_START_ADDRESS, RxData, FDCAN_RAM_BUFFER_SIZE);
+      error_value = OPENBL_MEM_Erase(OPENBL_DEFAULT_MEM, RxData, FDCAN_RAM_BUFFER_SIZE);
 
       /* Errors from memory erase are not managed, always return ACK */
       if (error_value == SUCCESS)
@@ -498,13 +484,13 @@ static void OPENBL_FDCAN_EraseMemory(void)
  * @brief  This function is used to enable write protect.
  * @retval None.
  */
-static void OPENBL_FDCAN_WriteProtect(void)
+void OPENBL_FDCAN_WriteProtect(void)
 {
   uint32_t length;
   ErrorStatus error_value;
 
   /* Check if the memory is protected or not */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_FDCAN_SendByte(NACK_BYTE);
   }
@@ -515,13 +501,13 @@ static void OPENBL_FDCAN_WriteProtect(void)
     length = RxData[0];
 
     /* Enable the write protection */
-    error_value = OPENBL_MEM_SetWriteProtection(ENABLE, FLASH_START_ADDRESS, (uint8_t *) &RxData[1], length);
+    error_value = OPENBL_MEM_SetWriteProtection(ENABLE, OPENBL_DEFAULT_MEM, (uint8_t *) &RxData[1], length);
 
     OPENBL_FDCAN_SendByte(ACK_BYTE);
 
     if (error_value == SUCCESS)
     {
-      OPENBL_MEM_OptionBytesLaunch();
+      Common_StartPostProcessing();
     }
   }
 }
@@ -530,12 +516,12 @@ static void OPENBL_FDCAN_WriteProtect(void)
  * @brief  This function is used to disable write protect.
  * @retval None.
  */
-static void OPENBL_FDCAN_WriteUnprotect(void)
+void OPENBL_FDCAN_WriteUnprotect(void)
 {
   ErrorStatus error_value;
 
   /* Check if the memory is not protected */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_FDCAN_SendByte(NACK_BYTE);
   }
@@ -544,13 +530,13 @@ static void OPENBL_FDCAN_WriteUnprotect(void)
     OPENBL_FDCAN_SendByte(ACK_BYTE);
 
     /* Disable write protection */
-    error_value = OPENBL_MEM_SetWriteProtection(DISABLE, FLASH_START_ADDRESS, NULL, 0);
+    error_value = OPENBL_MEM_SetWriteProtection(DISABLE, OPENBL_DEFAULT_MEM, NULL, 0);
 
     OPENBL_FDCAN_SendByte(ACK_BYTE);
 
     if (error_value == SUCCESS)
     {
-      OPENBL_MEM_OptionBytesLaunch();
+      Common_StartPostProcessing();
     }
   }
 }
@@ -559,7 +545,7 @@ static void OPENBL_FDCAN_WriteUnprotect(void)
   * @brief  This function is used to get a valid address.
   * @retval Returns NACK status in case of error else returns ACK status.
   */
-static uint8_t OPENBL_FDCAN_GetAddress(uint32_t *Address)
+uint8_t OPENBL_FDCAN_GetAddress(uint32_t *Address)
 {
   uint8_t status;
 
@@ -576,6 +562,355 @@ static uint8_t OPENBL_FDCAN_GetAddress(uint32_t *Address)
   else
   {
     status = ACK_BYTE;
+  }
+
+  return status;
+}
+
+/**
+ * @brief  This function is used to execute special command commands.
+ * @retval None.
+ */
+void OPENBL_FDCAN_SpecialCommand(void)
+{
+  OPENBL_SpecialCmdTypeDef *special_cmd;
+  uint16_t op_code;
+  uint8_t index;
+  uint8_t data;
+
+  /* Point to the RAM USART buffer to gain size and reliability */
+  special_cmd = (OPENBL_SpecialCmdTypeDef *)(uint32_t) TxData;
+
+  /* Send special command code acknowledgment */
+  OPENBL_FDCAN_SendByte(ACK_BYTE);
+
+  /* Get the command operation code */
+  if (OPENBL_FDCAN_GetSpecialCmdOpCode(&op_code, OPENBL_SPECIAL_CMD) == NACK_BYTE)
+  {
+    OPENBL_FDCAN_SendByte(NACK_BYTE);
+  }
+  else
+  {
+    /* Send Operation code acknowledgment */
+    OPENBL_FDCAN_SendByte(ACK_BYTE);
+
+    /* Initialize the special command frame */
+    special_cmd->CmdType = OPENBL_SPECIAL_CMD;
+    special_cmd->OpCode  = op_code;
+
+    /* Get the number of bytes to be received */
+    OPENBL_FDCAN_ReadBytes(RxData, 2U);
+
+    /* Read the MSB of the size byte */
+    data                     = (*(uint8_t *)(RxData));
+    special_cmd->SizeBuffer1 = ((uint16_t)data) << 8;
+
+    /* Read the LSB of the size byte */
+    data                      = (*(uint8_t *)(RxData + 1));
+    special_cmd->SizeBuffer1 |= (uint16_t)data;
+
+    if (special_cmd->SizeBuffer1 > SPECIAL_CMD_SIZE_BUFFER1)
+    {
+      OPENBL_FDCAN_SendByte(NACK_BYTE);
+    }
+    else
+    {
+      if (special_cmd->SizeBuffer1 != 0U)
+      {
+        if (special_cmd->SizeBuffer1 > 64U)
+        {
+          OPENBL_FDCAN_ReadBytes(RxData, 64U);
+          OPENBL_FDCAN_ReadBytes(&RxData[64U], ((uint32_t)special_cmd->SizeBuffer1) - 64U);
+        }
+        else
+        {
+          OPENBL_FDCAN_ReadBytes(RxData, ((uint32_t) special_cmd->SizeBuffer1));
+        }
+
+        /* Read received bytes */
+        for (index = 0U; index < special_cmd->SizeBuffer1; index++)
+        {
+          special_cmd->Buffer1[index] = RxData[index];
+        }
+      }
+
+      /* Send received size acknowledgment */
+      OPENBL_FDCAN_SendByte(ACK_BYTE);
+
+      /* Process the special command */
+      OPENBL_FDCAN_SpecialCommandProcess(special_cmd);
+
+      /* Send last acknowledgment */
+      OPENBL_FDCAN_SendByte(ACK_BYTE);
+    }
+  }
+}
+
+/**
+ * @brief  This function is used to execute extended special command commands.
+ * @retval None.
+ */
+void OPENBL_FDCAN_ExtendedSpecialCommand(void)
+{
+  OPENBL_SpecialCmdTypeDef *special_cmd;
+  uint16_t op_code;
+  uint16_t index;
+  uint16_t count;
+  uint16_t single;
+  uint8_t data;
+  uint8_t data_length;
+
+
+  /* Point to the RAM USART buffer to gain size and reliability */
+  special_cmd = (OPENBL_SpecialCmdTypeDef *)(uint32_t) TxData;
+
+  /* Send extended special command code acknowledgment */
+  OPENBL_FDCAN_SendByte(ACK_BYTE);
+
+  /* Get the command operation code */
+  if (OPENBL_FDCAN_GetSpecialCmdOpCode(&op_code, OPENBL_EXTENDED_SPECIAL_CMD) == NACK_BYTE)
+  {
+    OPENBL_FDCAN_SendByte(NACK_BYTE);
+  }
+  else
+  {
+    /* Send Operation code acknowledgment */
+    OPENBL_FDCAN_SendByte(ACK_BYTE);
+
+    /* Initialize the special command frame */
+    special_cmd->CmdType = OPENBL_EXTENDED_SPECIAL_CMD;
+    special_cmd->OpCode  = op_code;
+
+    /* Initialize the data length variable */
+    data_length = 0;
+
+    /* Get the number of bytes to be received */
+    OPENBL_FDCAN_ReadBytes(RxData, 2U);
+
+    /* Read the MSB of the size byte */
+    data                    = (*(uint8_t *)(RxData));
+    special_cmd->SizeBuffer1 = ((uint16_t)data) << 8;
+
+    /* Read the LSB of the size byte */
+    data                     = (*(uint8_t *)(RxData + 1));
+    special_cmd->SizeBuffer1 |= (uint16_t)data;
+
+    if (special_cmd->SizeBuffer1 > SPECIAL_CMD_SIZE_BUFFER1)
+    {
+      OPENBL_FDCAN_SendByte(NACK_BYTE);
+    }
+    else
+    {
+      if (special_cmd->SizeBuffer1 != 0U)
+      {
+        if (special_cmd->SizeBuffer1 > 64U)
+        {
+          OPENBL_FDCAN_ReadBytes(RxData, 64U);
+          OPENBL_FDCAN_ReadBytes(&RxData[64U], ((uint32_t)special_cmd->SizeBuffer1) - 64U);
+        }
+        else
+        {
+          OPENBL_FDCAN_ReadBytes(RxData, ((uint32_t) special_cmd->SizeBuffer1));
+        }
+
+        /* Read received bytes */
+        for (index = 0U; index < special_cmd->SizeBuffer1; index++)
+        {
+          special_cmd->Buffer1[index] = RxData[index];
+        }
+      }
+
+      /* Send receive size acknowledgment */
+      OPENBL_FDCAN_SendByte(ACK_BYTE);
+
+      /* Get the number of bytes to be received */
+      OPENBL_FDCAN_ReadBytes(RxData, 2U);
+
+      /* Read the MSB of the size byte */
+      data                    = (*(uint8_t *)(RxData));
+      special_cmd->SizeBuffer2 = ((uint16_t)data) << 8;
+
+      /* Read the LSB of the size byte */
+      data                     = (*(uint8_t *)(RxData + 1));
+      special_cmd->SizeBuffer2 |= (uint16_t)data;
+
+      if (special_cmd->SizeBuffer2 > SPECIAL_CMD_SIZE_BUFFER2)
+      {
+        OPENBL_FDCAN_SendByte(NACK_BYTE);
+      }
+      else
+      {
+        if (special_cmd->SizeBuffer2 != 0U)
+        {
+          count  = special_cmd->SizeBuffer2 / 64U;
+          single = special_cmd->SizeBuffer2 % 64U;
+
+          while (count != 0U)
+          {
+            OPENBL_FDCAN_ReadBytes(&RxData[data_length * 64U], 64U);
+            count--;
+            data_length++;
+          }
+
+          if (single != 0U)
+          {
+            OPENBL_FDCAN_ReadBytes(&RxData[data_length * 64U], single);
+          }
+
+          /* Read received bytes */
+          for (index = 0U; index < special_cmd->SizeBuffer2; index++)
+          {
+            special_cmd->Buffer2[index] = RxData[index];
+          }
+        }
+
+        /* Send receive write size acknowledgment */
+        OPENBL_FDCAN_SendByte(ACK_BYTE);
+
+        /* Process the special command */
+        OPENBL_FDCAN_SpecialCommandProcess(special_cmd);
+
+        /* Send acknowledgment */
+        OPENBL_FDCAN_SendByte(ACK_BYTE);
+      }
+    }
+  }
+}
+
+/* Private functions ---------------------------------------------------------*/
+
+/**
+  * @brief  This function is used to construct the command List table.
+  * @return Returns the number of supported commands.
+  */
+static uint8_t OPENBL_FDCAN_ConstructCommandsTable(OPENBL_CommandsTypeDef *pFdcanCmd)
+{
+  uint8_t i = 0;
+
+  if (pFdcanCmd->GetCommand != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_GET_COMMAND;
+    i++;
+  }
+
+  if (pFdcanCmd->GetVersion != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_GET_VERSION;
+    i++;
+  }
+
+  if (pFdcanCmd->GetID != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_GET_ID;
+    i++;
+  }
+
+  if (pFdcanCmd->ReadMemory != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_READ_MEMORY;
+    i++;
+  }
+
+  if (pFdcanCmd->Go != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_GO;
+    i++;
+  }
+
+  if (pFdcanCmd->WriteMemory != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_WRITE_MEMORY;
+    i++;
+  }
+
+  if (pFdcanCmd->EraseMemory != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_EXT_ERASE_MEMORY;
+    i++;
+  }
+
+  if (pFdcanCmd->WriteProtect != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_WRITE_PROTECT;
+    i++;
+  }
+
+  if (pFdcanCmd->WriteUnprotect != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_WRITE_UNPROTECT;
+    i++;
+  }
+
+  if (pFdcanCmd->ReadoutProtect != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_READ_PROTECT;
+    i++;
+  }
+
+  if (pFdcanCmd->ReadoutUnprotect != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_READ_UNPROTECT;
+    i++;
+  }
+
+  if (pFdcanCmd->SpecialCommand != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_SPECIAL_COMMAND;
+    i++;
+  }
+
+  if (pFdcanCmd->ExtendedSpecialCommand != NULL)
+  {
+    a_OPENBL_FDCAN_CommandsList[i] = CMD_EXTENDED_SPECIAL_COMMAND;
+    i++;
+  }
+
+  return (i);
+}
+
+/**
+ * @brief  This function is used to get the operation code.
+ * @param  OpCode Pointer to the operation code to be returned.
+ * @param  CmdType Type of the command, Special command or extended special command.
+ * @retval Returns NACK status in case of error else returns ACK status.
+ */
+static uint8_t OPENBL_FDCAN_GetSpecialCmdOpCode(uint16_t *OpCode, OPENBL_SpecialCmdTypeTypeDef CmdType)
+{
+  uint8_t op_code[2];
+  uint8_t status;
+  uint8_t index;
+
+  /* Initialize the status variable */
+  status = NACK_BYTE;
+
+  /* Get the command OpCode (2 bytes) */
+  op_code[0] = RxData[0]; /* Read the MSB byte */
+  op_code[1] = RxData[1]; /* Read the LSB byte */
+
+  /* Get the operation code */
+  *OpCode = ((uint16_t)op_code[0] << 8) | (uint16_t)op_code[1];
+
+  if (CmdType == OPENBL_SPECIAL_CMD)
+  {
+    for (index = 0U; index < SPECIAL_CMD_MAX_NUMBER; index++)
+    {
+      if (SpecialCmdList[index] == *OpCode)
+      {
+        status = ACK_BYTE;
+        break;
+      }
+    }
+  }
+  else
+  {
+    for (index = 0U; index < EXTENDED_SPECIAL_CMD_MAX_NUMBER; index++)
+    {
+      if (ExtendedSpecialCmdList[index] == *OpCode)
+      {
+        status = ACK_BYTE;
+        break;
+      }
+    }
   }
 
   return status;

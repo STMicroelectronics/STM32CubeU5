@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   NetXDuo applicative file
   ******************************************************************************
-  * @attention
+    * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.
@@ -80,7 +80,7 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
   /* USER CODE END App_NetXDuo_MEM_POOL */
 
   /* USER CODE BEGIN MX_NetXDuo_Init */
-#if (USE_MEMORY_POOL_ALLOCATION == 1)
+#if (USE_STATIC_ALLOCATION == 1)
   printf("Nx_UDP_Echo_Server_App started..\n");
   
   /* Allocate the memory for packet_pool.  */

@@ -18,7 +18,7 @@ static UINT  lx_ospi_driver_erase_block(ULONG block, ULONG erase_count);
 static UINT  lx_ospi_driver_block_erased_verify(ULONG block);
 
 #ifndef LX_DIRECT_READ
-ULONG  nor_sector_memory[512];
+extern ULONG ospi_sector_buffer[LX_STM32_OSPI_SECTOR_SIZE/sizeof(ULONG)];
 #endif
 
 static UINT is_initialized = LX_FALSE;
@@ -37,10 +37,6 @@ static UINT check_status(void)
     if (lx_stm32_ospi_get_status(LX_STM32_OSPI_INSTANCE) == 0)
     {
       return LX_SUCCESS;
-    }
-    else
-    {
-      return LX_ERROR;
     }
   }
 
@@ -62,8 +58,6 @@ UINT lx_stm32_ospi_initialize(LX_NOR_FLASH *nor_flash)
   if (is_initialized == LX_FALSE)
   {
 
-#if (LX_STM32_OSPI_INIT == 1)
-
     ret = lx_stm32_ospi_lowlevel_init(LX_STM32_OSPI_INSTANCE);
 
     if (ret != 0)
@@ -79,8 +73,6 @@ UINT lx_stm32_ospi_initialize(LX_NOR_FLASH *nor_flash)
     {
       return LX_ERROR;
     }
-#endif
-
 #endif
 
     if (check_status() != LX_SUCCESS)
@@ -112,13 +104,13 @@ UINT lx_stm32_ospi_initialize(LX_NOR_FLASH *nor_flash)
 
 #ifndef LX_DIRECT_READ
     /* Setup local buffer for NOR flash operation. This buffer must be the sector size of the NOR flash memory.  */
-    nor_flash->lx_nor_flash_sector_buffer =  &nor_sector_memory[0];
+    nor_flash->lx_nor_flash_sector_buffer =  &ospi_sector_buffer[0];
 #endif
     is_initialized = LX_TRUE;
   }
 
   /* call post init routine*/
-  LX_STM32_OSPI_POST_INIT;
+  LX_STM32_OSPI_POST_INIT();
 
   /* Return success.  */
   return LX_SUCCESS;
@@ -136,6 +128,12 @@ UINT lx_stm32_ospi_initialize(LX_NOR_FLASH *nor_flash)
 static UINT lx_ospi_driver_read_sector(ULONG *flash_address, ULONG *destination, ULONG words)
 {
   UINT status = LX_SUCCESS;
+
+  if (check_status() != LX_SUCCESS)
+  {
+    return LX_ERROR;
+  }
+
   LX_STM32_OSPI_PRE_READ_TRANSFER(status);
 
   if (status != LX_SUCCESS)
@@ -169,6 +167,12 @@ static UINT lx_ospi_driver_read_sector(ULONG *flash_address, ULONG *destination,
 static UINT  lx_ospi_driver_write_sector(ULONG *flash_address, ULONG *source, ULONG words)
 {
   UINT status = LX_SUCCESS;
+
+  if (check_status() != LX_SUCCESS)
+  {
+    return LX_ERROR;
+  }
+
   LX_STM32_OSPI_PRE_WRITE_TRANSFER(status);
 
   if (status != LX_SUCCESS)
@@ -194,6 +198,12 @@ static UINT  lx_ospi_driver_write_sector(ULONG *flash_address, ULONG *source, UL
 static UINT  lx_ospi_driver_erase_block(ULONG block, ULONG erase_count)
 {
   UINT status;
+
+  if (check_status() != LX_SUCCESS)
+  {
+    return LX_ERROR;
+  }
+
   if (lx_stm32_ospi_erase(LX_STM32_OSPI_INSTANCE, block, erase_count, 0) != 0)
   {
     status = LX_ERROR;
@@ -209,6 +219,11 @@ static UINT  lx_ospi_driver_erase_block(ULONG block, ULONG erase_count)
 static UINT lx_ospi_driver_block_erased_verify(ULONG block)
 {
   UINT status;
+
+  if (check_status() != LX_SUCCESS)
+  {
+    return LX_ERROR;
+  }
 
   if (lx_stm32_ospi_is_block_erased(LX_STM32_OSPI_INSTANCE, block) == 0)
   {

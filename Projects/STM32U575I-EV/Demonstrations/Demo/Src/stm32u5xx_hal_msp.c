@@ -78,7 +78,7 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef *hrtc)
   HAL_PWR_EnableBkUpAccess();
 
   /* Set LSE drive capability configuration */
-  __HAL_RCC_LSEDRIVE_CONFIG(RCC_BDCR_LSEDRV_1);
+  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_MEDIUMHIGH);
 
   /* Enable LSE oscillator */
   RCC_OscInitStruct.PLL.PLLState   = RCC_PLL_NONE;

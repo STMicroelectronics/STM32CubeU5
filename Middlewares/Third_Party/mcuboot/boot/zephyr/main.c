@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2012-2014 Wind River Systems, Inc.
+ * Copyright (c) 2020 Arm Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +23,14 @@
 #include <drivers/timer/system_timer.h>
 #include <usb/usb_device.h>
 #include <soc.h>
+#include <linker/linker-defs.h>
 
 #include "target.h"
 
 #include "bootutil/bootutil_log.h"
 #include "bootutil/image.h"
 #include "bootutil/bootutil.h"
+#include "bootutil/fault_injection_hardening.h"
 #include "flash_map_backend/flash_map_backend.h"
 
 #ifdef CONFIG_MCUBOOT_SERIAL
@@ -79,7 +82,7 @@ K_SEM_DEFINE(boot_log_sem, 1, 1);
 static inline bool boot_skip_serial_recovery()
 {
 #if NRF_POWER_HAS_RESETREAS
-    u32_t rr = nrf_power_resetreas_get(NRF_POWER);
+    uint32_t rr = nrf_power_resetreas_get(NRF_POWER);
 
     return !(rr == 0 || (rr & NRF_POWER_RESETREAS_RESETPIN_MASK));
 #else
@@ -98,6 +101,11 @@ MCUBOOT_LOG_MODULE_REGISTER(mcuboot);
 void os_heap_init(void);
 
 #if defined(CONFIG_ARM)
+
+#ifdef CONFIG_SW_VECTOR_RELAY
+extern void *_vector_table_pointer;
+#endif
+
 struct arm_vector_table {
     uint32_t msp;
     uint32_t reset;
@@ -122,6 +130,7 @@ static void do_boot(struct boot_rsp *rsp)
     vt = (struct arm_vector_table *)(flash_base +
                                      rsp->br_image_off +
                                      rsp->br_hdr->ih_hdr_size);
+
     irq_lock();
 #ifdef CONFIG_SYS_CLOCK_EXISTS
     sys_clock_disable();
@@ -132,10 +141,48 @@ static void do_boot(struct boot_rsp *rsp)
 #endif
 #if CONFIG_MCUBOOT_CLEANUP_ARM_CORE
     cleanup_arm_nvic(); /* cleanup NVIC registers */
+
+#ifdef CONFIG_CPU_CORTEX_M7
+    /* Disable instruction cache and data cache before chain-load the application */
+    SCB_DisableDCache();
+    SCB_DisableICache();
 #endif
+
+#if CONFIG_CPU_HAS_ARM_MPU
+    z_arm_clear_arm_mpu_config();
+#endif
+
+#if defined(CONFIG_BUILTIN_STACK_GUARD) && \
+    defined(CONFIG_CPU_CORTEX_M_HAS_SPLIM)
+    /* Reset limit registers to avoid inflicting stack overflow on image
+     * being booted.
+     */
+    __set_PSPLIM(0);
+    __set_MSPLIM(0);
+#endif
+
+#endif /* CONFIG_MCUBOOT_CLEANUP_ARM_CORE */
+
+#ifdef CONFIG_BOOT_INTR_VEC_RELOC
+#if defined(CONFIG_SW_VECTOR_RELAY)
+    _vector_table_pointer = vt;
+#ifdef CONFIG_CPU_CORTEX_M_HAS_VTOR
+    SCB->VTOR = (uint32_t)__vector_relay_table;
+#endif
+#elif defined(CONFIG_CPU_CORTEX_M_HAS_VTOR)
+    SCB->VTOR = (uint32_t)vt;
+#endif /* CONFIG_SW_VECTOR_RELAY */
+#else /* CONFIG_BOOT_INTR_VEC_RELOC */
+#if defined(CONFIG_CPU_CORTEX_M_HAS_VTOR) && defined(CONFIG_SW_VECTOR_RELAY)
+    _vector_table_pointer = _vector_start;
+    SCB->VTOR = (uint32_t)__vector_relay_table;
+#endif
+#endif /* CONFIG_BOOT_INTR_VEC_RELOC */
+
     __set_MSP(vt->msp);
 #if CONFIG_MCUBOOT_CLEANUP_ARM_CORE
     __set_CONTROL(0x00); /* application will configures core on its own */
+    __ISB();
 #endif
     ((void (*)(void))vt->reset)();
 }
@@ -270,6 +317,9 @@ void main(void)
 {
     struct boot_rsp rsp;
     int rc;
+    fih_int fih_rc = FIH_FAILURE;
+
+    MCUBOOT_WATCHDOG_FEED();
 
     BOOT_LOG_INF("Starting bootloader");
 
@@ -277,15 +327,18 @@ void main(void)
 
     ZEPHYR_BOOT_LOG_START();
 
-#if (!defined(CONFIG_XTENSA) && defined(DT_FLASH_DEV_NAME))
-    if (!flash_device_get_binding(DT_FLASH_DEV_NAME)) {
-        BOOT_LOG_ERR("Flash device %s not found", DT_FLASH_DEV_NAME);
+    (void)rc;
+
+#if (!defined(CONFIG_XTENSA) && defined(DT_CHOSEN_ZEPHYR_FLASH_CONTROLLER_LABEL))
+    if (!flash_device_get_binding(DT_CHOSEN_ZEPHYR_FLASH_CONTROLLER_LABEL)) {
+        BOOT_LOG_ERR("Flash device %s not found",
+		     DT_CHOSEN_ZEPHYR_FLASH_CONTROLLER_LABEL);
         while (1)
             ;
     }
-#elif (defined(CONFIG_XTENSA) && defined(DT_JEDEC_SPI_NOR_0_LABEL))
-    if (!flash_device_get_binding(DT_JEDEC_SPI_NOR_0_LABEL)) {
-        BOOT_LOG_ERR("Flash device %s not found", DT_JEDEC_SPI_NOR_0_LABEL);
+#elif (defined(CONFIG_XTENSA) && defined(JEDEC_SPI_NOR_0_LABEL))
+    if (!flash_device_get_binding(JEDEC_SPI_NOR_0_LABEL)) {
+        BOOT_LOG_ERR("Flash device %s not found", JEDEC_SPI_NOR_0_LABEL);
         while (1)
             ;
     }
@@ -293,8 +346,8 @@ void main(void)
 
 #ifdef CONFIG_MCUBOOT_SERIAL
 
-    struct device *detect_port;
-    u32_t detect_value = !CONFIG_BOOT_SERIAL_DETECT_PIN_VAL;
+    struct device const *detect_port;
+    uint32_t detect_value = !CONFIG_BOOT_SERIAL_DETECT_PIN_VAL;
 
     detect_port = device_get_binding(CONFIG_BOOT_SERIAL_DETECT_PORT);
     __ASSERT(detect_port, "Error: Bad port for boot serial detection.\n");
@@ -341,11 +394,10 @@ void main(void)
     }
 #endif
 
-    rc = boot_go(&rsp);
-    if (rc != 0) {
+    FIH_CALL(boot_go, fih_rc, &rsp);
+    if (fih_not_eq(fih_rc, FIH_SUCCESS)) {
         BOOT_LOG_ERR("Unable to find bootable image");
-        while (1)
-            ;
+        FIH_PANIC;
     }
 
     BOOT_LOG_INF("Bootloader chainload address offset: 0x%x",

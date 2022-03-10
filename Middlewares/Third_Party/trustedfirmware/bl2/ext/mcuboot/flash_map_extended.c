@@ -8,45 +8,30 @@
 
 /*
  * Original code taken from mcuboot project at:
- * https://github.com/JuulLabs-OSS/mcuboot
+ * https://github.com/mcu-tools/mcuboot
  * Git SHA of the original version: ac55554059147fff718015be9f4bd3108123f50a
  */
 
 #include <errno.h>
 #include "target.h"
+#include "cmsis.h"
 #include "Driver_Flash.h"
 #include "sysflash/sysflash.h"
 #include "flash_map/flash_map.h"
 #include "flash_map_backend/flash_map_backend.h"
 #include "bootutil/bootutil_log.h"
 
-/* Flash device name must be specified by target */
-extern ARM_DRIVER_FLASH* driver_list[2];
-
-
-int flash_device_base(uint8_t fd_id, uintptr_t *ret)
+__WEAK int flash_device_base(uint8_t fd_id, uintptr_t *ret)
 {
-    if ((fd_id +FLASH_DEVICE_ID) == FLASH_DEVICE_ID) {
-        *ret = FLASH_BASE_ADDRESS;
-    }
-#if defined (TFM_EXTERNAL_FLASH_ENABLE)
-    else if ((fd_id +FLASH_DEVICE_ID)== OSPI_FLASH_DEVICE_ID) {
-        *ret = OSPI_FLASH_BASE_ADDRESS;
-    }
-    else {
-        BOOT_LOG_ERR("invalid flash ID %d; expected %d or %d",
-                     (fd_id + FLASH_DEVICE_ID), FLASH_DEVICE_ID, OSPI_FLASH_DEVICE_ID);
-        return -1;
-    }
-#else
-    else {
+    if (fd_id != FLASH_DEVICE_ID) {
         BOOT_LOG_ERR("invalid flash ID %d; expected %d",
-                     (fd_id + FLASH_DEVICE_ID), FLASH_DEVICE_ID);
+                     fd_id, FLASH_DEVICE_ID);
         return -1;
     }
-#endif /* TFM_EXTERNAL_FLASH_ENABLE */
+    *ret = FLASH_DEVICE_BASE;
     return 0;
 }
+
 /*
  * This depends on the mappings defined in flash_map.h.
  * MCUBoot uses continuous numbering for the primary slot, the secondary slot,
@@ -56,8 +41,8 @@ int flash_area_id_from_multi_image_slot(int image_index, int slot)
 {
     switch (slot) {
     case 0: return FLASH_AREA_IMAGE_PRIMARY(image_index);
-#if !defined(MCUBOOT_PRIMARY_ONLY)
-    case 1: return FLASH_AREA_IMAGE_SECONDARY(image_index); 
+#ifndef MCUBOOT_PRIMARY_ONLY
+    case 1: return FLASH_AREA_IMAGE_SECONDARY(image_index);
     case 2: return FLASH_AREA_IMAGE_SCRATCH;
 #endif
     }
@@ -75,7 +60,7 @@ int flash_area_id_to_multi_image_slot(int image_index, int area_id)
     if (area_id == FLASH_AREA_IMAGE_PRIMARY(image_index)) {
         return 0;
     }
-#if !defined(MCUBOOT_PRIMARY_ONLY)
+#ifndef MCUBOOT_PRIMARY_ONLY
     if (area_id == FLASH_AREA_IMAGE_SECONDARY(image_index)) {
         return 1;
     }
@@ -91,9 +76,7 @@ int flash_area_id_to_image_slot(int area_id)
 
 uint8_t flash_area_erased_val(const struct flash_area *fap)
 {
-    (void)fap;
-
-    return driver_list[fap->fa_device_id]->GetInfo()->erased_value;;
+    return DRV_FLASH_AREA(fap)->GetInfo()->erased_value;
 }
 
 int flash_area_read_is_empty(const struct flash_area *fa, uint32_t off,
@@ -106,7 +89,7 @@ int flash_area_read_is_empty(const struct flash_area *fa, uint32_t off,
     BOOT_LOG_DBG("read_is_empty area=%d, off=%#x, len=%#x",
                  fa->fa_id, off, len);
 
-    rc = driver_list[fa->fa_device_id]->ReadData(fa->fa_off + off, dst, len);
+    rc = DRV_FLASH_AREA(fa)->ReadData(fa->fa_off + off, dst, len);
     if (rc) {
         return -1;
     }
@@ -121,4 +104,3 @@ int flash_area_read_is_empty(const struct flash_area *fa, uint32_t off,
 
     return 1;
 }
-

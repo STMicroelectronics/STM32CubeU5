@@ -122,12 +122,6 @@ typedef struct
   BSP_OSPI_RAM_BurstLength_t  BurstLength;   /*!< Burst Length of Instance     */
 } OSPI_RAM_Ctx_t;
 
-typedef struct
-{
-  BSP_OSPI_RAM_Latency_t      LatencyType;   /*!< Current RAM Latency Type */
-  BSP_OSPI_RAM_BurstType_t    BurstType;     /*!< Current RAM Burst Type   */
-  BSP_OSPI_RAM_BurstLength_t  BurstLength;   /*!< Current RAM Burst Length */
-} BSP_OSPI_RAM_Init_t;
 /**
   * @}
   */

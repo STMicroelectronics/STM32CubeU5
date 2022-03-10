@@ -14,6 +14,8 @@
 
 /* USER CODE END 0 */
 
+ULONG  qspi_sector_buffer[LX_STM32_QSPI_SECTOR_SIZE/sizeof(ULONG)];
+
 /**
 * @brief Initializes the QSPI IP instance
 * @param UINT Instance QSPI instance to initialize

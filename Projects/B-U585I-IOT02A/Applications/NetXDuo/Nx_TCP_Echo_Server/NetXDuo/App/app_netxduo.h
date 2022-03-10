@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   NetXDuo applicative header file
   ******************************************************************************
-  * @attention
+    * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.

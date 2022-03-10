@@ -85,7 +85,7 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
 
 ### <b>Keywords</b>
 
-RTOS, ThreadX, USBX, USBPD, Device, USB_OTG, Full Speed, MSC, Mass Storage, SD Card, DMA, SDMMC
+RTOS, ThreadX, USBXDevice, USBPD, Device, USB_OTG, Full Speed, MSC, Mass Storage, SD Card, DMA, SDMMC
 
 ### <b>Hardware and Software environment</b>
 
@@ -96,12 +96,12 @@ RTOS, ThreadX, USBX, USBPD, Device, USB_OTG, Full Speed, MSC, Mass Storage, SD C
     - Plug the USB HID device into the STM32U575I-EV board through 'Type C  to A-Female' cable to the connector:
     - CN1 : to use USB OTG IP in full speed (FS)
 <b>Note</b>
-It is mandatory to check that the Jumpers bellow are fitted:
+It is mandatory to check that the Jumpers below are fitted:
     JP6  (UCPD_SNK03).
     JP7  (USBPD_SNK01).
     JP14 (UCPD_FTL).
 
-Also check that the jumpers bellow are disconnected:
+Also check that the jumpers below are disconnected:
     JP25 and JP6.
 ### <b>How to use it ?</b>
 

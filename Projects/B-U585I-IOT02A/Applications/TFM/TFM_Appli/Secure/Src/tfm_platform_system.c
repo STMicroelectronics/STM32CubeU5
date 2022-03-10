@@ -9,36 +9,44 @@
 #include "cmsis.h"
 #include "flash_layout.h"
 #include "platform_ioctl.h"
-#if !defined(MCUBOOT_OVERWRITE_ONLY) && (MCUBOOT_IMAGE_NUMBER == 2)
+#if !defined(MCUBOOT_OVERWRITE_ONLY) && ((MCUBOOT_APP_IMAGE_NUMBER == 2) || (MCUBOOT_S_DATA_IMAGE_NUMBER == 1))
 #include "Driver_Flash.h"
-extern ARM_DRIVER_FLASH FLASH_PRIMARY_SECURE_DEV_NAME ;
+extern ARM_DRIVER_FLASH FLASH_PRIMARY_SECURE_DEV_NAME;
+extern ARM_DRIVER_FLASH FLASH_PRIMARY_DATA_SECURE_DEV_NAME;
 #define TRAILER_MAGIC_SIZE 16
 #endif
 #ifdef TFM_TEST_PRIV_PROTECTION
 #include <string.h>
 #endif
-static enum tfm_platform_err_t tfm_platform_confirm_secure_image(void);
+static enum tfm_platform_err_t tfm_platform_confirm_secure_app_image(void);
+static enum tfm_platform_err_t tfm_platform_confirm_secure_data_image(void);
 #ifdef TFM_TEST_PRIV_PROTECTION
 static enum tfm_platform_err_t tfm_platform_read(psa_invec *in_vec, psa_outvec *out_vec);
 static enum tfm_platform_err_t tfm_platform_write(psa_invec *in_vec, psa_outvec *out_vec);
 static enum tfm_platform_err_t tfm_platform_write_exec(psa_invec *in_vec, psa_outvec *out_vec);
 #endif
-
+#ifdef TFM_DEV_MODE
+static __IO int once=0;
+void Error_Handler(void)
+{
+	/* Reset the system */
+    while(once==0);
+}
+#else
 void Error_Handler(void)
 {
 	/* Reset the system */
     NVIC_SystemReset();
 }
-
-void tfm_platform_hal_system_reset(void)
+#endif
+void tfm_hal_system_reset(void)
 {
-    /* Reset the system */
-    NVIC_SystemReset();
+    Error_Handler();
 }
 
-static enum tfm_platform_err_t tfm_platform_confirm_secure_image(void)
+static enum tfm_platform_err_t tfm_platform_confirm_secure_app_image(void)
 {
-#if defined(MCUBOOT_OVERWRITE_ONLY) || (MCUBOOT_IMAGE_NUMBER == 1)
+#if defined(MCUBOOT_OVERWRITE_ONLY) || (MCUBOOT_APP_IMAGE_NUMBER == 1)
 	return TFM_PLATFORM_ERR_SYSTEM_ERROR;
 #else
   const uint8_t FlagPattern[16]={0x1 ,0xff, 0xff, 0xff, 0xff , 0xff, 0xff, 0xff,
@@ -51,6 +59,23 @@ static enum tfm_platform_err_t tfm_platform_confirm_secure_image(void)
   return TFM_PLATFORM_ERR_SYSTEM_ERROR;
 #endif
 }
+
+static enum tfm_platform_err_t tfm_platform_confirm_secure_data_image(void)
+{
+#if defined(MCUBOOT_OVERWRITE_ONLY) || (MCUBOOT_S_DATA_IMAGE_NUMBER == 0)
+	return TFM_PLATFORM_ERR_SYSTEM_ERROR;
+#else
+  const uint8_t FlagPattern[16]={0x1 ,0xff, 0xff, 0xff, 0xff , 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff , 0xff, 0xff, 0xff };
+  const uint32_t ConfirmAddress = FLASH_AREA_4_OFFSET  + FLASH_AREA_4_SIZE - (TRAILER_MAGIC_SIZE + sizeof(FlagPattern));  
+  if (FLASH_PRIMARY_DATA_SECURE_DEV_NAME.ProgramData(ConfirmAddress, FlagPattern, sizeof(FlagPattern)) == ARM_DRIVER_OK)
+  {
+        return TFM_PLATFORM_ERR_SUCCESS;
+  }
+  return TFM_PLATFORM_ERR_SYSTEM_ERROR;
+#endif
+}
+
 #ifdef TFM_TEST_PRIV_PROTECTION
 /* variable for privileged test */
 __IO __attribute__((__aligned__(4))) uint32_t priv_test_table = 0x01020304;
@@ -148,7 +173,10 @@ enum tfm_platform_err_t tfm_platform_hal_ioctl(tfm_platform_ioctl_req_t request,
   switch (request)
   {
     case PLATFORM_IOTCL_FWSEC_CONFIRM:
-	  return tfm_platform_confirm_secure_image();
+	  return tfm_platform_confirm_secure_app_image();
+	  break;
+    case PLATFORM_IOTCL_DATASEC_CONFIRM:
+	  return tfm_platform_confirm_secure_data_image();
 	  break;
 #ifdef TFM_TEST_PRIV_PROTECTION
     case PLATFORM_IOCTL_TEST_READ:
@@ -162,6 +190,6 @@ enum tfm_platform_err_t tfm_platform_hal_ioctl(tfm_platform_ioctl_req_t request,
       break;
 #endif /* TFM_TEST_PRIV_PROTECTION */
     default:
-      return TFM_PLATFORM_ERR_SYSTEM_ERROR;
+      return TFM_PLATFORM_ERR_NOT_SUPPORTED;
   }
 } 

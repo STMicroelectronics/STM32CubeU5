@@ -581,19 +581,19 @@ int32_t TCPP0203_GetOCPVConnFlag(TCPP0203_Object_t *pObj, uint8_t *pOCPVConnFlag
 /**
   * @brief  Get OCP VBUS Flag value
   * @param  pObj Pointer to component object
-  * @param  GetOCPVBusFlag Pointer on OCP VBUS Flag value
+  * @param  pGetOCPVBusFlag Pointer on OCP VBUS Flag value
   *         This output parameter can be one of the following values:
   *          @arg TCPP0203_FLAG_OCP_VBUS_RESET   OCP VBUS flag not set
   *          @arg TCPP0203_FLAG_OCP_VBUS_SET     OCP VBUS flag set
   * @retval Component status
   */
-int32_t TCPP0203_GetOCPVBusFlag(TCPP0203_Object_t *pObj, uint8_t *GetOCPVBusFlag)
+int32_t TCPP0203_GetOCPVBusFlag(TCPP0203_Object_t *pObj, uint8_t *pGetOCPVBusFlag)
 {
   int32_t ret;
   uint8_t tmp;
 
   ret = tcpp0203_read_reg(&pObj->Ctx, TCPP0203_FLAG_REG, &tmp, 1);
-  *GetOCPVBusFlag = (tmp & TCPP0203_FLAG_OCP_VBUS_MSK);
+  *pGetOCPVBusFlag = (tmp & TCPP0203_FLAG_OCP_VBUS_MSK);
 
   return ret;
 }
@@ -601,19 +601,19 @@ int32_t TCPP0203_GetOCPVBusFlag(TCPP0203_Object_t *pObj, uint8_t *GetOCPVBusFlag
 /**
   * @brief  Get OVP VBUS Flag value
   * @param  pObj Pointer to component object
-  * @param  OVPVBusFlag Pointer on OVP VBUS Flag value
+  * @param  pOVPVBusFlag Pointer on OVP VBUS Flag value
   *         This output parameter can be one of the following values:
   *          @arg TCPP0203_FLAG_OVP_VBUS_RESET   OVP VBUS flag not set
   *          @arg TCPP0203_FLAG_OVP_VBUS_SET     OVP VBUS flag set
   * @retval Component status
   */
-int32_t TCPP0203_GetOVPVBusFlag(TCPP0203_Object_t *pObj, uint8_t *OVPVBusFlag)
+int32_t TCPP0203_GetOVPVBusFlag(TCPP0203_Object_t *pObj, uint8_t *pOVPVBusFlag)
 {
   int32_t ret;
   uint8_t tmp;
 
   ret = tcpp0203_read_reg(&pObj->Ctx, TCPP0203_FLAG_REG, &tmp, 1);
-  *OVPVBusFlag = (tmp & TCPP0203_FLAG_OVP_VBUS_MSK);
+  *pOVPVBusFlag = (tmp & TCPP0203_FLAG_OVP_VBUS_MSK);
 
   return ret;
 }
@@ -621,19 +621,19 @@ int32_t TCPP0203_GetOVPVBusFlag(TCPP0203_Object_t *pObj, uint8_t *OVPVBusFlag)
 /**
   * @brief  Get OVP CC Flag value
   * @param  pObj Pointer to component object
-  * @param  pOCPVConnFlag Pointer on OVP CC Flag value
+  * @param  pOVPCCFlag Pointer on OVP CC Flag value
   *         This output parameter can be one of the following values:
   *          @arg TCPP0203_FLAG_OVP_CC_RESET   OVP CC flag not set
   *          @arg TCPP0203_FLAG_OVP_CC_SET     OVP CC flag set
   * @retval Component status
   */
-int32_t TCPP0203_GetOVPCCFlag(TCPP0203_Object_t *pObj, uint8_t *OVPCCFlag)
+int32_t TCPP0203_GetOVPCCFlag(TCPP0203_Object_t *pObj, uint8_t *pOVPCCFlag)
 {
   int32_t ret;
   uint8_t tmp;
 
   ret = tcpp0203_read_reg(&pObj->Ctx, TCPP0203_FLAG_REG, &tmp, 1);
-  *OVPCCFlag = (tmp & TCPP0203_FLAG_OVP_CC_MSK);
+  *pOVPCCFlag = (tmp & TCPP0203_FLAG_OVP_CC_MSK);
 
   return ret;
 }
@@ -641,19 +641,19 @@ int32_t TCPP0203_GetOVPCCFlag(TCPP0203_Object_t *pObj, uint8_t *OVPCCFlag)
 /**
   * @brief  Get Over Temperature Flag value
   * @param  pObj Pointer to component object
-  * @param  OTPFlag Pointer on Over Temperature Flag value
+  * @param  pOTPFlag Pointer on Over Temperature Flag value
   *         This output parameter can be one of the following values:
   *          @arg TCPP0203_FLAG_OTP_RESET   Over Temperature flag not set
   *          @arg TCPP0203_FLAG_OTP_SET     Over Temperature flag set
   * @retval Component status
   */
-int32_t TCPP0203_GetOTPFlag(TCPP0203_Object_t *pObj, uint8_t *OTPFlag)
+int32_t TCPP0203_GetOTPFlag(TCPP0203_Object_t *pObj, uint8_t *pOTPFlag)
 {
   int32_t ret;
   uint8_t tmp;
 
   ret = tcpp0203_read_reg(&pObj->Ctx, TCPP0203_FLAG_REG, &tmp, 1);
-  *OTPFlag = (tmp & TCPP0203_FLAG_OTP_MSK);
+  *pOTPFlag = (tmp & TCPP0203_FLAG_OTP_MSK);
 
   return ret;
 }
@@ -661,19 +661,19 @@ int32_t TCPP0203_GetOTPFlag(TCPP0203_Object_t *pObj, uint8_t *OTPFlag)
 /**
   * @brief  Get VBUS OK Flag value
   * @param  pObj Pointer to component object
-  * @param  VBusOkFlag Pointer on VBUS OK Flag value
+  * @param  pVBusOkFlag Pointer on VBUS OK Flag value
   *         This output parameter can be one of the following values:
   *          @arg TCPP0203_FLAG_VBUS_OK_RESET   VBUS OK flag not set
   *          @arg TCPP0203_FLAG_VBUS_OK_SET     VBUS OK flag set
   * @retval Component status
   */
-int32_t TCPP0203_GetVBusOkFlag(TCPP0203_Object_t *pObj, uint8_t *VBusOkFlag)
+int32_t TCPP0203_GetVBusOkFlag(TCPP0203_Object_t *pObj, uint8_t *pVBusOkFlag)
 {
   int32_t ret;
   uint8_t tmp;
 
   ret = tcpp0203_read_reg(&pObj->Ctx, TCPP0203_FLAG_REG, &tmp, 1);
-  *VBusOkFlag = (tmp & TCPP0203_FLAG_VBUS_OK_MSK);
+  *pVBusOkFlag = (tmp & TCPP0203_FLAG_VBUS_OK_MSK);
 
   return ret;
 }

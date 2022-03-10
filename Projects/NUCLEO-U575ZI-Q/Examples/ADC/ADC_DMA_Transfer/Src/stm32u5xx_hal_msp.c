@@ -70,10 +70,6 @@ void HAL_MspInit(void)
 
   /* System interrupt init*/
 
-  /** Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
-  */
-  HAL_PWREx_DisableUCPDDeadBattery();
-
   /* USER CODE BEGIN MspInit 1 */
    HAL_PWREx_EnableVddA();
   /* USER CODE END MspInit 1 */
@@ -94,6 +90,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
   /* USER CODE BEGIN ADC4_MspInit 0 */
 
   /* USER CODE END ADC4_MspInit 0 */
+
   /** Initializes the peripherals clock
   */
     PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADCDAC;

@@ -95,7 +95,7 @@
         <tRmem>1</tRmem>
         <tRfunc>1</tRfunc>
         <tRbox>1</tRbox>
-        <tRtrace>1</tRtrace>
+        <tRtrace>0</tRtrace>
         <sRSysVw>1</sRSysVw>
         <tRSysVw>1</tRSysVw>
         <sRunDeb>0</sRunDeb>
@@ -219,8 +219,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../Core/Src/tx_initialize_low_level.s</PathWithFileName>
-      <FilenameWithoutPath>tx_initialize_low_level.s</FilenameWithoutPath>
+      <PathWithFileName>../Core/Src/tx_initialize_low_level.S</PathWithFileName>
+      <FilenameWithoutPath>tx_initialize_low_level.S</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -407,7 +407,7 @@
   </Group>
 
   <Group>
-    <GroupName>Drivers/BSP/Components/aps6408</GroupName>
+    <GroupName>Drivers/BSP/Components</GroupName>
     <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
@@ -419,15 +419,15 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/BSP/Components/aps6408/aps6408.c</PathWithFileName>
-      <FilenameWithoutPath>aps6408.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../Drivers/BSP/Components/mx25lm51245g/mx25lm51245g.c</PathWithFileName>
+      <FilenameWithoutPath>mx25lm51245g.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
   </Group>
 
   <Group>
-    <GroupName>Drivers/BSP/Components/mx25lm51245g</GroupName>
+    <GroupName>Drivers/BSP/Components/aps6408</GroupName>
     <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
@@ -439,8 +439,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/BSP/Components/mx25lm51245g/mx25lm51245g.c</PathWithFileName>
-      <FilenameWithoutPath>mx25lm51245g.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../Drivers/BSP/Components/aps6408/aps6408.c</PathWithFileName>
+      <FilenameWithoutPath>aps6408.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

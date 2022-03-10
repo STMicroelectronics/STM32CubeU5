@@ -53,13 +53,12 @@ BLE, STM32WB5MMG, AT
     * CN5 pinout is from squared pin 1 at bottom: target_VDD, SWCLK, GND, SWDIO
     * Place SW3 on left position and plug USB on CN12 at the back. When done, unplug USB on CN12 and place back SW3 on right position.
     
-  - Flash FUS and BLE stack using STM32CubeProgrammer wireless tab. Full detailled instructions are into STM32CubeWB package release note.
+  - Flash FUS and BLE stack using STM32CubeProgrammer wireless tab. Full detailed instructions are into STM32CubeWB package release note.
     * @0x080EC000 .\STM32Cube_FW_WB_V1.x.x\Projects\STM32WB_Copro_Wireless_Binaries\STM32WB5x\stm32wb5x_FUS_fw.bin
     * @0x080CA000 .\STM32Cube_FW_WB_V1.x.x\Projects\STM32WB_Copro_Wireless_Binaries\STM32WB5x\stm32wb5x_BLE_Stack_full_fw.bin
     
-  - Flash BLE_AT_Server module application using STM32CubeProgrammer, file BLE_AT_Server.hex.
-    * present in this application Module Binary folder 
-    * or in .\STM32Cube_FW_WB_V1.x.x\Projects\P-NUCLEO-WB55.Nucleo\Applications\BLE\BLE_AT_Server\Binary\BLE_AT_Server.hex
+  - Flash BLE_AT_Server module application using STM32CubeProgrammer, file BLE_AT_Server_reference.hex.
+    * present in .\STM32Cube_FW_WB_V1.x.x\Projects\P-NUCLEO-WB55.Nucleo\Applications\BLE\BLE_AT_Server\Binary\BLE_AT_Server_reference.hex
 
 ### <b>How to use it ?</b>
 

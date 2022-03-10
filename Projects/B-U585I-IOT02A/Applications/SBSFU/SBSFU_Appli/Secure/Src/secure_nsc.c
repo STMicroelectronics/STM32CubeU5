@@ -20,10 +20,11 @@
 #include "main.h"
 #include "secure_nsc.h"
 #include <stdio.h>
-#if !defined(MCUBOOT_OVERWRITE_ONLY) && !(MCUBOOT_IMAGE_NUMBER == 1)
 #include "flash_layout.h"
+#if !defined(MCUBOOT_OVERWRITE_ONLY) && ((MCUBOOT_APP_IMAGE_NUMBER == 2) || (MCUBOOT_S_DATA_IMAGE_NUMBER == 1))
 #include "Driver_Flash.h"
-extern ARM_DRIVER_FLASH FLASH_PRIMARY_SECURE_DEV_NAME ;
+extern ARM_DRIVER_FLASH FLASH_PRIMARY_SECURE_DEV_NAME;
+extern ARM_DRIVER_FLASH FLASH_PRIMARY_DATA_SECURE_DEV_NAME;
 #define TRAILER_MAGIC_SIZE 16
 #endif
 /** @addtogroup STM32U5xx_HAL_Examples
@@ -82,21 +83,42 @@ CMSE_NS_ENTRY void SECURE_GPIO_Toggle(void)
 }
 
 /**
-  * @brief  Secure Operation to confirm Secure Image.
+  * @brief  Secure Operation to confirm Secure App Image.
   * @param  None
   * @param  None
   * @retval None
   */
-CMSE_NS_ENTRY void SECURE_ConfirmSecureImage(void)
+CMSE_NS_ENTRY void SECURE_ConfirmSecureAppImage(void)
 {
-#if defined(MCUBOOT_OVERWRITE_ONLY) || (MCUBOOT_IMAGE_NUMBER == 1)
+#if defined(MCUBOOT_OVERWRITE_ONLY) || (MCUBOOT_APP_IMAGE_NUMBER == 1)
 	return;
 #else
   const uint8_t FlagPattern[16]={0x1 ,0xff, 0xff, 0xff, 0xff , 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff , 0xff, 0xff, 0xff };
-  #define TRAILER_MAGIC_SIZE 16
   const uint32_t ConfirmAddress = FLASH_AREA_0_OFFSET  + FLASH_AREA_0_SIZE - (TRAILER_MAGIC_SIZE + sizeof(FlagPattern));  
   if (FLASH_PRIMARY_SECURE_DEV_NAME.ProgramData(ConfirmAddress, FlagPattern, sizeof(FlagPattern)) == ARM_DRIVER_OK)
+  {
+        return;
+  }
+  return;
+#endif
+}
+
+/**
+  * @brief  Secure Operation to confirm Secure Data Image.
+  * @param  None
+  * @param  None
+  * @retval None
+  */
+CMSE_NS_ENTRY void SECURE_ConfirmSecureDataImage(void)
+{
+#if defined(MCUBOOT_OVERWRITE_ONLY) || (MCUBOOT_S_DATA_IMAGE_NUMBER == 0)
+	return;
+#else
+  const uint8_t FlagPattern[16]={0x1 ,0xff, 0xff, 0xff, 0xff , 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff , 0xff, 0xff, 0xff };
+  const uint32_t ConfirmAddress = FLASH_AREA_4_OFFSET  + FLASH_AREA_4_SIZE - (TRAILER_MAGIC_SIZE + sizeof(FlagPattern));  
+  if (FLASH_PRIMARY_DATA_SECURE_DEV_NAME.ProgramData(ConfirmAddress, FlagPattern, sizeof(FlagPattern)) == ARM_DRIVER_OK)
   {
         return;
   }

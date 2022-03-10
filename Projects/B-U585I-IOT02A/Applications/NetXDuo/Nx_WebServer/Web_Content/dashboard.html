@@ -34,8 +34,8 @@
 </head>
 
 <body onload="loadData()">
-
-    <div class="wrapper">
+<div style="background-image: url(assets/background.jpg); width: 100%">
+    <div class="wrapper" ;>
         <nav id="sidebar" class="active">
             <div class="sidebar-header">
                 <a href="https://www.st.com/content/st_com/en.html">
@@ -44,7 +44,7 @@
             </div>
             <ul class="list-unstyled components text-secondary">
                 <li>
-                    <a href="index.html"><i class="fa fa-home"></i> Home</a>
+                    <a href="about.html"><i class="fa fa-home"></i> Home</a>
                 </li>
                 <li>
                     <a href="dashboard.html"><i class="fa fa-tachometer"></i> Dashboard</a>
@@ -60,22 +60,22 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12 page-header" >
-                            <h2 class="page-title" style="margin-left: 10px; color: darkblue;">
+                            <h2 class="page-title" style="margin-left: 10px; color: white;">
                             System Performance</h2>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <div class="card">
+                            <div class="card" style="  background-color: white; opacity: 0.9;">
                                 <div class="content">
                                     <div class="row">
-                                        <div class="col">
+                                        <div class="col-md-4">
                                             <div class="icon-big text-left">
                                                 <img src="assets/cpu.svg"
                                                     style="color: darkblue; width: 80px ; height: 80px;">
                                             </div>
                                         </div>
-                                        <div class="col">
+                                        <div class="col-md-8">
                                             <div class="detail">
                                                 <p class="detail-subtitle" style="text-align: left;">RTOS Info</p>
                                                 <span class="number" id="tx_active" style="font-size:medium">Resumptions : 0</span><br>
@@ -95,21 +95,21 @@
                             </div>
                         </div>
                         <div class="col">
-                            <div class="card">
+                            <div class="card" style="  background-color: white; opacity: 0.9;">
                                 <div class="content">
                                     <div class="row">
-                                        <div class="col">
+                                        <div class="col-md-4">
                                             <div class="icon-big text-left">
                                                 <i class="violet fas fa-wifi fa-lg"></i>
                                             </div>
                                         </div>
-                                        <div class="col">
+                                        <div class="col-md-8">
                                             <div class="detail">
                                                 <p class="detail-subtitle">TCP traffic</p>
                                                 <span class="number" id="nx_sent" style="font-size:medium">Total Bytes Sent : 0</span><br>
                                                 <span class="number" id="nx_received" style="font-size:medium">Total Bytes received : 0</span> <br>
                                                 <span class="number" id="nx_connect" style="font-size:medium">Total Connections : 0</span><br>
-                                                <span class="number" id="nx_received" style="font-size:medium">Total Disconnections : 0</span>
+                                                <span class="number" id="nx_disconnect" style="font-size:medium">Total Disconnections : 0</span>
                                             </div>
                                         </div>
                                     </div>
@@ -122,29 +122,60 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col">
+                            <div class="card" style="  background-color: white; opacity: 0.9;">
+                                <div class="content">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="icon-big text-left">
+                                                <i class="fas fa-network-wired"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="detail">
+                                                <p class="detail-subtitle">CONNECTION info</p><br><br>
+                                                <span class="number" id="net_ip" style="font-size:medium">IP ADDRESS : 0</span><br>
+                                                <span class="number" id="net_port" style="font-size:medium">CONNECTION PORT : 0</span> <br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="footer">
+                                        <hr />
+                                        <div class="stats">
+                                            <i class="fas fa-network-wired"></i> Network
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <div class="row">
+                        <div class="col">
+                            <div id="threadcountchart" style="height: 370px; width: 100%; background-color: white; opacity: 0.9;"></div>
+                        </div>
+                        <div class="col">
+                            <div id="packetpoolchart" style="height: 370px; width: 100%; background-color: white; opacity: 0.9;"></div>
+                        </div>
+
+                    </div>    
                 </div>
             </div>
             <!-- toggle button -->
             <div class="content">
                 <div class="container">
                     <div class="page-title">
-                        <h2 class="page-title" style="margin-left: 10px; color: darkblue;">
+                        <h2 class="page-title" style="margin-left: 10px; color: white;">
                         Actions</h2>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-body" style="top: 50%;left: 50%;width: 50%;">
-                                            <h5 class="card-title">LEDs</h5>
-                                            <p class="card-text" id="ledpannel"> toggle the green led on the board</p>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="greenLed" style="width: 35px; height: 20px;" onclick="toggleLed()">
-                                                <label class="form-check-label" id="buttonLabel" for="buttonActive">  Off</label>
-                                            </div>
-                                        </div>
+                            <div class="card" style="  background-color: white; opacity: 0.9;">
+                                <div class="card-body" style="top: 50%;left: 50%;width: 50%;">
+                                    <h5 class="card-title">LEDs</h5>
+                                    <p class="card-text" id="ledpannel"> toggle the green led on the board</p>
+                                    <div class="form-check form-switch">
+                                       <input class="form-check-input" type="checkbox" id="greenLed" style="width: 35px; height: 20px;" onclick="toggleLed()">
+                                       <label class="form-check-label" id="buttonLabel" for="buttonActive">  Off</label>
                                     </div>
                                 </div>
                             </div>
@@ -160,7 +191,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/js/bootstrap.min.js"
         integrity="sha512-EKWWs1ZcA2ZY9lbLISPz8aGR2+L7JVYqBAYTq5AXgBkSjRSuQEGqWx8R1zAX16KdXPaCjOCaKE8MCpU0wcHlHA=="
         crossorigin="anonymous"></script>
-    <script src="assets/script.js"></script>
+    <script src="assets/script.js"></script> 
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
 </body>
 
 </html>

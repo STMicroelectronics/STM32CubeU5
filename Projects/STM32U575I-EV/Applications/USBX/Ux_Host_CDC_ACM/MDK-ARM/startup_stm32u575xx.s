@@ -75,7 +75,7 @@ __Vectors       DCD     __initial_sp                     ; Top of Stack
                 DCD     SysTick_Handler                  ; SysTick Handler
                 ; External Interrupts
                 DCD     WWDG_IRQHandler                  ; Window WatchDog
-                DCD     PVD_AVD_IRQHandler               ; PVD/AVD through EXTI Line detection Interrupt
+                DCD     PVD_PVM_IRQHandler               ; PVD/PVM through EXTI Line detection Interrupt
                 DCD     RTC_IRQHandler                   ; RTC non-secure interrupt
                 DCD     RTC_S_IRQHandler                 ; RTC secure interrupt
                 DCD     TAMP_IRQHandler                  ; Tamper non-secure interrupt
@@ -277,7 +277,7 @@ SysTick_Handler\
 Default_Handler PROC
 
                 EXPORT  WWDG_IRQHandler              [WEAK]
-                EXPORT  PVD_AVD_IRQHandler           [WEAK]
+                EXPORT  PVD_PVM_IRQHandler           [WEAK]
                 EXPORT  RTC_IRQHandler               [WEAK]
                 EXPORT  RTC_S_IRQHandler             [WEAK]
                 EXPORT  TAMP_IRQHandler              [WEAK]
@@ -399,7 +399,7 @@ Default_Handler PROC
 
 
 WWDG_IRQHandler
-PVD_AVD_IRQHandler
+PVD_PVM_IRQHandler
 RTC_IRQHandler
 RTC_S_IRQHandler
 TAMP_IRQHandler

@@ -1085,7 +1085,7 @@
           <name>$PROJ_DIR$/../Core/Src/main.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../Core/Src/tx_initialize_low_level.s</name>
+          <name>$PROJ_DIR$/../Core/Src/tx_initialize_low_level.S</name>
         </file>
         <file>
           <name>$PROJ_DIR$/../Core/Src/app_threadx.c</name>

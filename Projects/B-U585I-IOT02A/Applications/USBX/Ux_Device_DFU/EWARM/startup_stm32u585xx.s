@@ -11,7 +11,7 @@
 ;*                        calls main()).
 ;*                      After Reset the Cortex-M33 processor is in Thread mode,
 ;*                      priority is Privileged, and the Stack is set to Main.
-;********************************************************************************
+;*******************************************************************************
 ;* @attention
 ;*
 ;* Copyright (c) 2021 STMicroelectronics.
@@ -21,7 +21,7 @@
 ;* in the root directory of this software component.
 ;* If no LICENSE file comes with this software, it is provided AS-IS.
 ;*
-;********************************************************************************
+;*******************************************************************************
 ;
 ;
 ; The modules in this file are included in the libraries, and may be replaced
@@ -75,7 +75,7 @@ __vector_table
 
          ; External Interrupts
         DCD     WWDG_IRQHandler                  ; Window WatchDog
-        DCD     PVD_AVD_IRQHandler               ; PVD/AVD through EXTI Line detection Interrupt
+        DCD     PVD_PVM_IRQHandler               ; PVD/PVM through EXTI Line detection Interrupt
         DCD     RTC_IRQHandler                   ; RTC non-secure interrupt
         DCD     RTC_S_IRQHandler                 ; RTC secure interrupt
         DCD     TAMP_IRQHandler                  ; Tamper non-secure interrupt
@@ -273,10 +273,10 @@ SysTick_Handler
 WWDG_IRQHandler
         B WWDG_IRQHandler
 
-        PUBWEAK PVD_AVD_IRQHandler
+        PUBWEAK PVD_PVM_IRQHandler
         SECTION .text:CODE:NOROOT:REORDER(1)
-PVD_AVD_IRQHandler
-        B PVD_AVD_IRQHandler
+PVD_PVM_IRQHandler
+        B PVD_PVM_IRQHandler
 
         PUBWEAK RTC_IRQHandler
         SECTION .text:CODE:NOROOT:REORDER(1)
@@ -894,4 +894,3 @@ FMAC_IRQHandler
         B FMAC_IRQHandler
 
         END
-

@@ -56,9 +56,10 @@ typedef struct
   */
 typedef struct
 {
-  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : 1 node is needed */
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : only one node is
+                                   needed                                                                             */
 
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : 1 value is needed                */
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one node value is needed    */
 
 } LPBAM_VREFBUF_BufferModeFullDesc_t;
 /**

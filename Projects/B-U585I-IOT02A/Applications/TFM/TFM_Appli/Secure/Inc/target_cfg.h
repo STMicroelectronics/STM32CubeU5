@@ -19,7 +19,9 @@
 
 #include "platform/ext/common/uart_stdout.h"
 #include "tfm_peripherals_def.h"
-
+#ifdef TFM_FIH_PROFILE_ON
+#include "fih.h"
+#endif
 #define TFM_DRIVER_STDIO    TFM_Driver_USART0
 #define NS_DRIVER_STDIO     TFM_Driver_USART0
 
@@ -108,17 +110,29 @@ struct tfm_spm_partition_platform_data_t
 /**
   * \brief Configures the Global TrustZone Controller.
   */
+#ifdef TFM_FIH_PROFILE_ON
+fih_int gtzc_init_cfg(void);
+#else
 void gtzc_init_cfg(void);
+#endif
 
 /**
   * \brief pin mux configuration for non secure access
   * */
+#ifdef TFM_FIH_PROFILE_ON
+fih_int pinmux_init_cfg(void);
+#else
 void pinmux_init_cfg(void);
+#endif
 
 /**
   * \brief Configures SAU and IDAU.
   */
+#ifdef TFM_FIH_PROFILE_ON
+fih_int sau_and_idau_cfg(void);
+#else
 void sau_and_idau_cfg(void);
+#endif
 
 /**
   * \brief Enable Fault handling.

@@ -9,21 +9,28 @@ There are two applications implemented:
 * BlinkyApp - simple PSoC6 blinking LED application which is a target of BOOT/UPGRADE;
 
 The demonstration device is CY8CPROTO-062-4343W board which is PSoC6 device with 2M of Flash available.
-
 The default flash map implemented is the following:
 
-* [0x10000000, 0x10018000] - MCUBootApp (bootloader) area;
-* [0x10018000, 0x10028000] - primary slot for BlinkyApp;
-* [0x10028000, 0x10038000] - secondary slot for BlinkyApp;
-* [0x10038000, 0x10039000] - scratch area;
+Single-image mode.
+
+`[0x10000000, 0x10018000]` - MCUBootApp (bootloader) area;
+
+`[0x10018000, 0x10028000]` - primary slot for BlinkyApp;
+
+`[0x10028000, 0x10038000]` - secondary slot for BlinkyApp;
+
+`[0x10038000, 0x10039000]` - scratch area (not used);
 
 Size of slots `0x10000` - 64kb
 
-**Important**: make sure primary, secondary slot and bootloader app sizes are appropriate and correspond to flash area size defined in Applications' linker files.
-
 MCUBootApp checks image integrity with SHA256, image authenticity with EC256 digital signature verification and uses completely SW implementation of cryptographic functions based on mbedTLS Library.
 
-**Hardware cryptography acceleration:**
+**Important**: make sure primary, secondary slot and bootloader app sizes are appropriate and correspond to flash area size defined in Applications' linker files.
+
+**Important**: make sure RAM areas of CM0p-based MCUBootApp bootloader and CM4-based BlinkyApp do not overlap.
+Memory (stack) corruption of CM0p application can cause failure if SystemCall-served operations invoked from CM4.
+
+### Hardware cryptography acceleration
 
 Cypress PSOC6 MCU family supports hardware acceleration of cryptography based on mbedTLS Library via shim layer. Implementation of this layer is supplied as separate submodule `cy-mbedtls-acceleration`. HW acceleration of cryptography shortens boot time more then 4 times, comparing to software implementation (observation results).
 
@@ -31,7 +38,7 @@ To enable hardware acceleration in `MCUBootApp` pass flag `USE_CRYPTO_HW=1` to `
 
 Hardware acceleration of cryptography is enabled for PSOC6 devices by default.
 
-**How to modify Flash map:**
+### How to modify memory map
 
 __Option 1.__
 
@@ -72,7 +79,7 @@ As an example in a makefile it should look like following:
 
 Multi-image operation considers upgrading and verification of more then one image on the device.
 
-To enable multi-image operation define `MCUBOOT_IMAGE_NUMBER` in `MCUBootApp/mcuboot_config.h` file should be set to 2 (only dual-image is supported at the moment). This could also be done on build time by passing `MCUBOOT_IMAGE_NUMBER=2` as parameter to `make`.
+To enable multi-image operation define `MCUBOOT_IMAGE_NUMBER` in `MCUBootApp/config/mcuboot_config.h` file should be set to 2 (only dual-image is supported at the moment). This could also be done on build time by passing `MCUBOOT_IMAGE_NUMBER=2` as parameter to `make`.
 
 Default value of `MCUBOOT_IMAGE_NUMBER` is 1, which corresponds to single image configuratios.
 
@@ -98,11 +105,23 @@ This ensures two dependent applications can be accepted by device only in case b
 
 `0x10048000 - 0x10058000` - Secondary_2 (UPGRADE) slot of Bootloader
 
-`0x10058000 - 0x10058100` - Scratch of Bootloader
+`0x10058000 - 0x10059000` - Scratch of Bootloader
 
 Size of slots `0x10000` - 64kb
 
-**Downloading Solution's Assets**
+__Note:__ It is also possible to place secondary (upgrade) slots in external memory module so resulting image size can be doubled.
+For more details about External Memory usage, please refer to separate guiding document `ExternalMemory.md`.
+
+### Hardware limitations
+
+Since this application is created to demonstrate MCUBoot library features and not as reference examples some considerations are taken.
+
+1. `SCB5` used to configure serial port for debug prints. This is the most commonly used Serial Communication Block number among available Cypress PSoC 6 kits. If you try to use custom hardware with this application - change definition of `CYBSP_UART_HW` in `main.c` of MCUBootApp to SCB* that correspond to your design.
+
+2. `CY_SMIF_SLAVE_SELECT_0` is used as definition SMIF driver API. This configuration is used on evaluation kit for this example CY8CPROTO-062-4343W. If you try to use custom hardware with this application - change value of `smif_id` in `main.c` of MCUBootApp to value that corresponds to your design.
+
+
+### Downloading Solution's Assets
 
 There is a set assets required:
 
@@ -115,7 +134,7 @@ To get submodules - run the following command:
 
     git submodule update --init --recursive
 
-**Building Solution**
+### Building Solution
 
 This folder contains make files infrastructure for building MCUBoot Bootloader. Same approach used in sample BlinkyLedApp application. Example command are provided below for couple different build configurations.
 
@@ -128,6 +147,32 @@ This folder contains make files infrastructure for building MCUBoot Bootloader. 
         make app APP_NAME=MCUBootApp PLATFORM=PSOC_062_2M BUILDCFG=Release MCUBOOT_IMAGE_NUMBER=2
 
 Root directory for build is **boot/cypress.**
+
+**Programming solution**
+
+There are couple ways of programming hex of MCUBootApp and BlinkyApp. Following instructions assume one of Cypress development kits, for example `CY8CPROTO_062_4343W`.
+
+1. Direct usage of OpenOCD.
+OpenOCD package is supplied with ModuToolbox IDE and can be found in installation folder under `./tools_2.1/openocd`.
+Open terminal application -  and execute following command after substitution `PATH_TO_APPLICATION.hex` and `OPENOCD` paths.
+
+Connect a board to your computer. Switch Kitprog3 to DAP-BULK mode by pressing `SW3 MODE` button until `LED2 STATUS` constantly shines.
+
+        export OPENOCD=/Applications/ModusToolbox/tools_2.1/openocd 
+
+        ${OPENOCD}/bin/openocd -s ${OPENOCD}/scripts \
+                            -f ${OPENOCD}/scripts/interface/kitprog3.cfg \
+                            -f ${OPENOCD}/scripts/target/psoc6_2m.cfg \
+                            -c "init; reset init; program PATH_TO_APPLICATION.hex" \
+                            -c "resume; reset; exit" 
+
+2. Using GUI tool `Cypress Programmer` - follow [link](https://www.cypress.com/products/psoc-programming-solutions) to download.
+   Connect board to your computer. Switch Kitprog3 to DAP-BULK mode by pressing `SW3 MODE` button until `LED2 STATUS` constantly shines. Open `Cypress Programmer` and click `Connect`, then choose hex file: `MCUBootApp.hex` or `BlinkyApp.hex` and click `Program`.  Check log to ensure programming success. Reset board.
+
+3. Using `DAPLINK`.
+   Connect board to your computer. Switch embeded  Kitprog3 to `DAPLINK` mode by pressing `SW3 MODE` button until `LED2 STATUS` blinks fast and mass storage device appeared in OS. Drag and drop `hex` files you wish to program to `DAPLINK` drive in your OS.
+
+
 
 **Currently supported platforms:**
 

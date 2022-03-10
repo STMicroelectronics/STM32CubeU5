@@ -26,7 +26,7 @@
 /*  COMPONENT DEFINITION                                   RELEASE        */ 
 /*                                                                        */ 
 /*    ux_host_class_printer.h                             PORTABLE C      */ 
-/*                                                           6.1          */
+/*                                                           6.1.9        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -46,11 +46,28 @@
 /*                                            TX symbols instead of using */
 /*                                            them directly,              */
 /*                                            resulting in version 6.1    */
+/*  08-02-2021     Wen Wang                 Modified comment(s),          */
+/*                                            added extern "C" keyword    */
+/*                                            for compatibility with C++, */
+/*                                            resulting in version 6.1.8  */
+/*  10-15-2021     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            added entry public define,  */
+/*                                            resulting in version 6.1.9  */
 /*                                                                        */
 /**************************************************************************/
 
 #ifndef UX_HOST_CLASS_PRINTER_H
 #define UX_HOST_CLASS_PRINTER_H
+
+/* Determine if a C++ compiler is being used.  If so, ensure that standard 
+   C is used to process the API information.  */ 
+
+#ifdef   __cplusplus 
+
+/* Yes, C++ compiler is present.  Use standard C.  */ 
+extern   "C" { 
+
+#endif  
 
 
 /* Define Printer Class constants.  */
@@ -113,6 +130,7 @@ UINT    _ux_host_class_printer_write(UX_HOST_CLASS_PRINTER *printer, UCHAR * dat
 
 /* Define Printer Class API prototypes.  */
 
+#define   ux_host_class_printer_entry                                  _ux_host_class_printer_entry
 #define   ux_host_class_printer_activate                               _ux_host_class_printer_activate
 #define   ux_host_class_printer_name_get                               _ux_host_class_printer_name_get
 #define   ux_host_class_printer_device_id_get                          _ux_host_class_printer_device_id_get
@@ -120,5 +138,11 @@ UINT    _ux_host_class_printer_write(UX_HOST_CLASS_PRINTER *printer, UCHAR * dat
 #define   ux_host_class_printer_soft_reset                             _ux_host_class_printer_soft_reset
 #define   ux_host_class_printer_status_get                             _ux_host_class_printer_status_get
 #define   ux_host_class_printer_write                                  _ux_host_class_printer_write
+
+/* Determine if a C++ compiler is being used.  If so, complete the standard 
+   C conditional started above.  */   
+#ifdef __cplusplus
+} 
+#endif 
 
 #endif

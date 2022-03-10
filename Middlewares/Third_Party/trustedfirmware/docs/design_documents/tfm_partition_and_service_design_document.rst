@@ -37,12 +37,12 @@ Partition's code and private date are put into dedicated regions, while
 Partition Database are put in TF-M SPM region. There is a defined structure for
 partition information:
 
-.. codebase :: c
+.. code-block:: c
 
     struct spm_partition_desc_t {
         struct spm_partition_runtime_data_t runtime_data;
         const struct spm_partition_static_data_t *static_data;
-        const struct tfm_spm_partition_platform_data_t *platform_data;
+        const struct platform_data_t *platform_data;
     #if TFM_PSA_API
         const struct tfm_spm_partition_memory_data_t *memory_data;
     #endif
@@ -93,9 +93,9 @@ Partition Database Initialization
 The dedicated partition information file will be added into spm initialization
 file to initialize the global spm data array g_spm_partition_db.
 
-.. codebase :: c
+.. code-block:: c
 
-    #include "secure_fw/services/tfm_spm_db.inc"
+    #include "secure_fw/partitions/tfm_spm_db.inc"
 
 Built-in Partitions
 ===================
@@ -113,14 +113,14 @@ the same Secure Partition.
 All the services are registered in every partition's manifest. There is a
 defined structure for service information:
 
-.. codebase :: c
+.. code-block:: c
 
     struct tfm_spm_service_t {
         const struct tfm_spm_service_db_t *service_db;
         struct spm_partition_desc_t *partition;
-        struct tfm_list_node_t handle_list;
+        struct bi_list_node_t handle_list;
         struct tfm_msg_queue_t msg_queue;
-        struct tfm_list_node_t list;
+        struct bi_list_node_t list;
     };
 
 These members are necessary for a service and the following bullets explain the
@@ -128,7 +128,7 @@ members:
 
 - Service database contains service name, partition id, service signal, service
   identifier, non-secure client(if it can be called by non-secure client),
-  minor_version and minor_policy.
+  version and version_policy.
 - Partition points to the secure partition data.
 - Handle list contains the handle connected to the service.
 - Message queue contains the message for the service.

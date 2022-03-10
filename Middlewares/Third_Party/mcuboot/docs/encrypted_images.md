@@ -1,22 +1,22 @@
 <!--
-#
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-#  KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
-#
+    -
+    - Licensed to the Apache Software Foundation (ASF) under one
+    - or more contributor license agreements.  See the NOTICE file
+    - distributed with this work for additional information
+    - regarding copyright ownership.  The ASF licenses this file
+    - to you under the Apache License, Version 2.0 (the
+    - "License"); you may not use this file except in compliance
+    - with the License.  You may obtain a copy of the License at
+    -
+    -  http://www.apache.org/licenses/LICENSE-2.0
+    -
+    - Unless required by applicable law or agreed to in writing,
+    - software distributed under the License is distributed on an
+    - "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    - KIND, either express or implied.  See the License for the
+    - specific language governing permissions and limitations
+    - under the License.
+    -
 -->
 
 # Encrypted images
@@ -71,22 +71,24 @@ but randomizing a 16-byte block with a TRNG should make it highly
 improbable that duplicates ever happen.
 
 To distribute this AES-CTR-128 key, new TLVs were defined. The key can be
-encrypted using either RSA-OAEP, AES-KW-128 or ECIES-P256.
+encrypted using either RSA-OAEP, AES-KW-128, ECIES-P256 or ECIES-X25519.
 
 For RSA-OAEP a new TLV with value `0x30` is added to the image, for
-AES-KW-128 a new TLV with value `0x31` is added to the image, and for
-ECIES-P256 a new TLV with value `0x32` is added. The contents of those TLVs
+AES-KW-128 a new TLV with value `0x31` is added to the image, for
+ECIES-P256 a new TLV with value `0x32` is added, and for ECIES-X25519 a
+newt TLV with value `0x33` is added. The contents of those TLVs
 are the results of applying the given operations over the AES-CTR-128 key.
 
-## [ECIES-P256 encryption](#ecies-p256-encryption)
+## [ECIES encryption](#ecies-encryption)
 
 ECIES follows a well defined protocol to generate an encryption key. There are
 multiple standards which differ only on which building blocks are used; for
 MCUBoot we settled on some primitives that are easily found on our crypto
 libraries. The whole key encryption can be summarized as:
 
-* Generate a new secp256r1 private key and derive the public key; this will be
-  our ephemeral key.
+* Generate a new private key and derive the public key; when using ECIES-P256
+  this is a secp256r1 keypair, when using ECIES-X25519 this will be a x25519
+  keypair. Those keys will be our ephemeral keys.
 * Generate a new secret (DH) using the ephemeral private key and the public key
   that corresponds to the private key embedded in the HW.
 * Derive the new keys from the secret using HKDF (built on HMAC-SHA256). We
@@ -99,12 +101,13 @@ libraries. The whole key encryption can be summarized as:
 * The encrypted key now goes through a HMAC-SHA256 using the remaining 32
   bytes of key material from the HKDF.
 
-The final TLV is built from the 65 bytes of the ephemeral public key, followed
-by the 32 bytes of MAC tag and the 16 bytes of the encrypted key, resulting in
-a TLV of 113 bytes.
+The final TLV is built from the 65 bytes for ECIES-P256 or 32 bytes for
+ECIES-X25519, which correspond to the ephemeral public key, followed by the
+32 bytes of MAC tag and the 16 bytes of the encrypted key, resulting in a TLV
+of 113 bytes for ECIES-P256 or 80 bytes for ECIES-X25519.
 
-Since other EC primitives could be used, we name this particular implementation
-ECIES-P256 or ENC_EC256 in the source code and artifacts.
+The implemenation of ECIES-P256 is named ENC_EC256 in the source code and
+artifacts while ECIES-X25519 is named ENC_X25519.
 
 ## [Upgrade process](#upgrade-process)
 
@@ -138,7 +141,7 @@ occurs and the information is spread across multiple areas.
 
 ## [Creating your keys with imgtool](#creating-your-keys-with-imgtool)
 
-`imgtool` can generate keys by using `imgtool genkey -k <output.pem> -t <type>`,
+`imgtool` can generate keys by using `imgtool keygen -k <output.pem> -t <type>`,
  where type can be one of `rsa-2048`, `rsa-3072`, `ecdsa-p256`, `ecdsa-p224`
 or `ed25519`. This will generate a keypair or private key.
 
@@ -155,5 +158,8 @@ required keys.
   described in [signed_images](signed_images.md) to create RSA keys.
 * If using ECIES-P256, generate a keypair following steps similar to those
   described in [signed_images](signed_images.md) to create ECDSA256 keys.
+* If using ECIES-X25519, generate a private key passing the option `-t x25519`
+  to `imgtool keygen` command. To generate public key PEM file the following
+  command can be used: `openssl pkey -in <generated-private-key.pem> -pubout`
 * If using AES-KW-128 (`newt` only), the `kek` can be generated with a
   command like `dd if=/dev/urandom bs=1 count=16 | base64 > my_kek.b64`

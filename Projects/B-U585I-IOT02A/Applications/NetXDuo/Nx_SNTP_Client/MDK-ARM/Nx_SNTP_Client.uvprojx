@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>NX_INCLUDE_USER_DEFINE_FILE,TX_INCLUDE_USER_DEFINE_FILE,TX_SINGLE_MODE_NON_SECURE=1,USE_HAL_DRIVER,STM32U585xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../NetXDuo/App; ../Core/Inc; ../AZURE_RTOS/App; ../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc; ../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy; ../../../../../../Middlewares/ST/netxduo/addons/dhcp; ../../../../../../Middlewares/ST/threadx/common/inc; ../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include; ../../../../../../Middlewares/ST/netxduo/common/inc; ../../../../../../Middlewares/ST/netxduo/ports/cortex_m33/ac5/inc; ../../../../../../Middlewares/ST/netxduo/addons/dns; ../../../../../../Middlewares/ST/netxduo/addons/sntp; ../../../../../../Middlewares/ST/threadx/ports/cortex_m33/ac6/inc; ../../../../../../Drivers/CMSIS/Include; ../../../../../../Drivers/BSP/Components/mx_wifi; ../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip; ../../../../../../Drivers/BSP/B-U585I-IOT02A; ../NetXDuo/Target</IncludePath>
+              <IncludePath>../NetXDuo/App;../Core/Inc;../AZURE_RTOS/App;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Middlewares/ST/netxduo/addons/dhcp;../../../../../../Middlewares/ST/threadx/common/inc;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Middlewares/ST/netxduo/common/inc;../../../../../../Middlewares/ST/netxduo/ports/cortex_m33/ac5/inc;../../../../../../Middlewares/ST/netxduo/addons/dns;../../../../../../Middlewares/ST/netxduo/addons/sntp;../../../../../../Middlewares/ST/threadx/ports/cortex_m33/ac6/inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/BSP/Components/mx_wifi;../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip;../../../../../../Drivers/BSP/B-U585I-IOT02A;../NetXDuo/Target</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -399,9 +399,9 @@
               <FilePath>../Core/Src/main.c</FilePath>
             </File>
             <File>
-              <FileName>tx_initialize_low_level.s</FileName>
+              <FileName>tx_initialize_low_level.S</FileName>
               <FileType>2</FileType>
-              <FilePath>../Core/Src/tx_initialize_low_level.s</FilePath>
+              <FilePath>../Core/Src/tx_initialize_low_level.S</FilePath>
             </File>
             <File>
               <FileName>app_threadx.c</FileName>
@@ -442,6 +442,16 @@
               <FileName>app_netxduo.c</FileName>
               <FileType>1</FileType>
               <FilePath>../NetXDuo/App/app_netxduo.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Doc</GroupName>
+          <Files>
+            <File>
+              <FileName>README.md</FileName>
+              <FileType>5</FileType>
+              <FilePath>../README.md</FilePath>
             </File>
           </Files>
         </Group>
@@ -3053,6 +3063,26 @@
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nxd_nd_cache_ip_address_find.c</FilePath>
             </File>
+            <File>
+              <FileName>nx_tcp_server_socket_driver_listen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_server_socket_driver_listen.c</FilePath>
+            </File>
+            <File>
+              <FileName>nx_tcp_socket_driver_establish.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_socket_driver_establish.c</FilePath>
+            </File>
+            <File>
+              <FileName>nx_tcp_socket_driver_packet_receive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_socket_driver_packet_receive.c</FilePath>
+            </File>
+            <File>
+              <FileName>nx_udp_socket_driver_packet_receive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_udp_socket_driver_packet_receive.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3917,104 +3947,6 @@
               <FileName>mx_wifi_azure_rtos.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip/mx_wifi_azure_rtos.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Doc</GroupName>
-          <GroupOption>
-            <CommonProperty>
-              <UseCPPCompiler>0</UseCPPCompiler>
-              <RVCTCodeConst>0</RVCTCodeConst>
-              <RVCTZI>0</RVCTZI>
-              <RVCTOtherData>0</RVCTOtherData>
-              <ModuleSelection>0</ModuleSelection>
-              <IncludeInBuild>2</IncludeInBuild>
-              <AlwaysBuild>2</AlwaysBuild>
-              <GenerateAssemblyFile>2</GenerateAssemblyFile>
-              <AssembleAssemblyFile>2</AssembleAssemblyFile>
-              <PublicsOnly>2</PublicsOnly>
-              <StopOnExitCode>11</StopOnExitCode>
-              <CustomArgument></CustomArgument>
-              <IncludeLibraryModules></IncludeLibraryModules>
-              <ComprImg>1</ComprImg>
-            </CommonProperty>
-            <GroupArmAds>
-              <Cads>
-                <interw>2</interw>
-                <Optim>0</Optim>
-                <oTime>2</oTime>
-                <SplitLS>2</SplitLS>
-                <OneElfS>2</OneElfS>
-                <Strict>2</Strict>
-                <EnumInt>2</EnumInt>
-                <PlainCh>2</PlainCh>
-                <Ropi>2</Ropi>
-                <Rwpi>2</Rwpi>
-                <wLevel>4</wLevel>
-                <uThumb>2</uThumb>
-                <uSurpInc>2</uSurpInc>
-                <uC99>2</uC99>
-                <uGnu>2</uGnu>
-                <useXO>2</useXO>
-                <v6Lang>0</v6Lang>
-                <v6LangP>0</v6LangP>
-                <vShortEn>2</vShortEn>
-                <vShortWch>2</vShortWch>
-                <v6Lto>2</v6Lto>
-                <v6WtE>2</v6WtE>
-                <v6Rtti>2</v6Rtti>
-                <VariousControls>
-                  <MiscControls></MiscControls>
-                  <Define></Define>
-                  <Undefine></Undefine>
-                  <IncludePath></IncludePath>
-                </VariousControls>
-              </Cads>
-              <Aads>
-                <interw>2</interw>
-                <Ropi>2</Ropi>
-                <Rwpi>2</Rwpi>
-                <thumb>2</thumb>
-                <SplitLS>2</SplitLS>
-                <SwStkChk>2</SwStkChk>
-                <NoWarn>2</NoWarn>
-                <uSurpInc>2</uSurpInc>
-                <useXO>2</useXO>
-                <ClangAsOpt>1</ClangAsOpt>
-                <VariousControls>
-                  <MiscControls></MiscControls>
-                  <Define></Define>
-                  <Undefine></Undefine>
-                  <IncludePath></IncludePath>
-                </VariousControls>
-              </Aads>
-            </GroupArmAds>
-          </GroupOption>
-          <Files>
-            <File>
-              <FileName>README.md</FileName>
-              <FileType>5</FileType>
-              <FilePath>../README.md</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>1</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds/>
-              </FileOption>
             </File>
           </Files>
         </Group>

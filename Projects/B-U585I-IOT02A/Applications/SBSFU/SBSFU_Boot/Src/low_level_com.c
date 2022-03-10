@@ -95,7 +95,7 @@ static int32_t USART0_Initialize(ARM_USART_SignalEvent_t cb_event)
   GPIO_Init.Pin       = COM_TX_PIN;
   GPIO_Init.Mode      = GPIO_MODE_AF_PP;
   GPIO_Init.Speed     = GPIO_SPEED_FREQ_HIGH;
-  GPIO_Init.Pull      = GPIO_PULLUP;
+  GPIO_Init.Pull      = GPIO_NOPULL;
   GPIO_Init.Alternate = COM_TX_AF;
   HAL_GPIO_Init(COM_TX_GPIO_PORT, &GPIO_Init);
 
@@ -131,7 +131,7 @@ static int32_t USART0_Uninitialize(void)
 
 static int32_t USART0_PowerControl(ARM_POWER_STATE state)
 {
-  return ARM_DRIVER_ERROR_UNSUPPORTED;
+  return ARM_DRIVER_OK;
 }
 
 static int32_t USART0_Send(const void *data, uint32_t num)
@@ -170,12 +170,12 @@ static int32_t USART0_Transfer(const void *data_out, void *data_in,
 
 static uint32_t USART0_GetTxCount(void)
 {
-  return (uint32_t)ARM_DRIVER_ERROR_UNSUPPORTED;
+  return 0;
 }
 
 static uint32_t USART0_GetRxCount(void)
 {
-  return (uint32_t)ARM_DRIVER_ERROR_UNSUPPORTED;
+  return 0;
 }
 static int32_t USART0_Control(uint32_t control, uint32_t arg)
 {

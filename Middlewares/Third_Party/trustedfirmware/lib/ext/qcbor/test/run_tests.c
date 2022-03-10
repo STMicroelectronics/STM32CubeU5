@@ -1,14 +1,14 @@
 /*==============================================================================
  run_tests.c -- test aggregator and results reporting
 
- Copyright (c) 2018-2019, Laurence Lundblade. All rights reserved.
+ Copyright (c) 2018-2020, Laurence Lundblade. All rights reserved.
 
  SPDX-License-Identifier: BSD-3-Clause
 
  See BSD-3-Clause license in README.md
 
  Created on 9/30/18
- ==============================================================================*/
+ =============================================================================*/
 
 #include "run_tests.h"
 #include "UsefulBuf.h"
@@ -20,56 +20,11 @@
 #include "UsefulBuf_Tests.h"
 
 
-
-// Used to test RunTests
-int fail_test()
-{
-    return -44;
-}
-
-
-
-
 /*
- Convert a number up to 999999999 to a string. This is so sprintf doesn't
- have to be linked in so as to minimized dependencies even in test code.
-  */
-const char *NumToString(int32_t nNum, UsefulBuf StringMem)
-{
-    const int32_t nMax = 1000000000;
+ Test configuration
+ */
 
-    UsefulOutBuf OutBuf;
-    UsefulOutBuf_Init(&OutBuf, StringMem);
-
-    if(nNum < 0) {
-        UsefulOutBuf_AppendByte(&OutBuf, '-');
-        nNum = -nNum;
-    }
-    if(nNum > nMax-1) {
-        return "XXX";
-    }
-
-    bool bDidSomeOutput = false;
-    for(int n = nMax; n > 0; n/=10) {
-        int x = nNum/n;
-        if(x || bDidSomeOutput){
-            bDidSomeOutput = true;
-            UsefulOutBuf_AppendByte(&OutBuf, '0' + x);
-            nNum -= x * n;
-        }
-    }
-    if(!bDidSomeOutput){
-        UsefulOutBuf_AppendByte(&OutBuf, '0');
-    }
-    UsefulOutBuf_AppendByte(&OutBuf, '\0');
-
-    return UsefulOutBuf_GetError(&OutBuf) ? "" : StringMem.ptr;
-}
-
-
-
-
-typedef int (test_fun_t)(void);
+typedef int32_t (test_fun_t)(void);
 typedef const char * (test_fun2_t)(void);
 
 
@@ -88,7 +43,8 @@ typedef struct {
     bool         bEnabled;
 } test_entry2;
 
-test_entry2 s_tests2[] = {
+
+static test_entry2 s_tests2[] = {
     TEST_ENTRY(UBUTest_CopyUtil),
     TEST_ENTRY(UOBTest_NonAdversarial),
     TEST_ENTRY(TestBasicSanity),
@@ -99,12 +55,15 @@ test_entry2 s_tests2[] = {
 };
 
 
-test_entry s_tests[] = {
+static test_entry s_tests[] = {
+    TEST_ENTRY(EmptyMapsAndArraysTest),
+    TEST_ENTRY(NotWellFormedTests),
     TEST_ENTRY(ParseMapAsArrayTest),
     TEST_ENTRY(AllocAllStringsTest),
     TEST_ENTRY(IndefiniteLengthNestTest),
     TEST_ENTRY(NestedMapTestIndefLen),
     TEST_ENTRY(ParseSimpleTest),
+    TEST_ENTRY(DecodeFailureTests),
     TEST_ENTRY(EncodeRawTest),
     TEST_ENTRY(RTICResultsTest),
     TEST_ENTRY(MapEncodeTest),
@@ -142,15 +101,71 @@ test_entry s_tests[] = {
     TEST_ENTRY_DISABLED(BigComprehensiveInputTest),
     TEST_ENTRY(EncodeErrorTests),
     TEST_ENTRY(SetUpAllocatorTest),
-    //TEST_ENTRY(fail_test),
+    TEST_ENTRY(SimpleValuesIndefiniteLengthTest1),
+    TEST_ENTRY(EncodeLengthThirtyoneTest),
+#ifndef     QCBOR_CONFIG_DISABLE_EXP_AND_MANTISSA
+    TEST_ENTRY(EncodeLengthThirtyoneTest),
+    TEST_ENTRY(ExponentAndMantissaDecodeTests),
+    TEST_ENTRY(ExponentAndMantissaDecodeFailTests),
+    TEST_ENTRY(ExponentAndMantissaEncodeTests),
+#endif /* QCBOR_CONFIG_DISABLE_EXP_AND_MANTISSA */
 };
 
 
-int RunTests(const char *szTestNames[], OutputStringCB pfOutput, void *poutCtx, int *pNumTestsRun)
+
+
+/*
+ Convert a number up to 999999999 to a string. This is so sprintf doesn't
+ have to be linked in so as to minimized dependencies even in test code.
+
+ StringMem should be 12 bytes long, 9 for digits, 1 for minus and
+ 1 for \0 termination.
+ */
+static const char *NumToString(int32_t nNum, UsefulBuf StringMem)
+{
+   const int32_t nMax = 1000000000;
+
+   UsefulOutBuf OutBuf;
+   UsefulOutBuf_Init(&OutBuf, StringMem);
+
+   if(nNum < 0) {
+      UsefulOutBuf_AppendByte(&OutBuf, '-');
+      nNum = -nNum;
+   }
+   if(nNum > nMax-1) {
+      return "XXX";
+   }
+
+   bool bDidSomeOutput = false;
+   for(int32_t n = nMax; n > 0; n/=10) {
+      int nDigitValue = nNum/n;
+      if(nDigitValue || bDidSomeOutput){
+         bDidSomeOutput = true;
+         UsefulOutBuf_AppendByte(&OutBuf, (uint8_t)('0' + nDigitValue));
+         nNum -= nDigitValue * n;
+      }
+   }
+   if(!bDidSomeOutput){
+      UsefulOutBuf_AppendByte(&OutBuf, '0');
+   }
+   UsefulOutBuf_AppendByte(&OutBuf, '\0');
+
+   return UsefulOutBuf_GetError(&OutBuf) ? "" : StringMem.ptr;
+}
+
+
+/*
+ Public function. See run_test.h.
+ */
+int RunTestsQCBOR(const char *szTestNames[],
+             OutputStringCB pfOutput,
+             void *poutCtx,
+             int *pNumTestsRun)
 {
     int nTestsFailed = 0;
     int nTestsRun = 0;
-    UsefulBuf_MAKE_STACK_UB(StringStorage, 5);
+
+    UsefulBuf_MAKE_STACK_UB(StringStorage, 12);
 
     test_entry2 *t2;
     const test_entry2 *s_tests2_end = s_tests2 + sizeof(s_tests2)/sizeof(test_entry2);
@@ -223,7 +238,7 @@ int RunTests(const char *szTestNames[], OutputStringCB pfOutput, void *poutCtx, 
             }
         }
 
-        int nTestResult = (t->test_fun)();
+        int32_t nTestResult = (t->test_fun)();
         nTestsRun++;
         if(pfOutput) {
             (*pfOutput)(t->szTestName, poutCtx, 0);
@@ -259,27 +274,37 @@ int RunTests(const char *szTestNames[], OutputStringCB pfOutput, void *poutCtx, 
 }
 
 
+#include "qcbor.h" // For size printing
 
-
-static void PrintSize(const char *szWhat, uint32_t uSize, OutputStringCB pfOutput, void *pOutCtx)
+/*
+ Public function. See run_test.h.
+ */
+static void PrintSize(const char *szWhat,
+                      uint32_t uSize,
+                      OutputStringCB pfOutput,
+                      void *pOutCtx)
 {
    UsefulBuf_MAKE_STACK_UB(buffer, 20);
 
    (*pfOutput)(szWhat, pOutCtx, 0);
    (*pfOutput)(" ", pOutCtx, 0);
-   (*pfOutput)(NumToString(uSize, buffer), pOutCtx, 0);
+   (*pfOutput)(NumToString((int32_t)uSize, buffer), pOutCtx, 0);
    (*pfOutput)("", pOutCtx, 1);
 }
 
-void PrintSizes(OutputStringCB pfOutput, void *pOutCtx)
+
+/*
+ Public function. See run_test.h.
+ */
+void PrintSizesQCBOR(OutputStringCB pfOutput, void *pOutCtx)
 {
-   // Type and size of return from sizeof() varies. These will never be large so cast is safe
-   PrintSize("sizeof(QCBORTrackNesting)",   (uint32_t)sizeof(QCBORTrackNesting), pfOutput, pOutCtx);
+   // These will never be large so cast is safe
+   PrintSize("sizeof(QCBORTrackNesting)",   (uint32_t)sizeof(QCBORTrackNesting),  pfOutput, pOutCtx);
    PrintSize("sizeof(QCBOREncodeContext)",  (uint32_t)sizeof(QCBOREncodeContext), pfOutput, pOutCtx);
    PrintSize("sizeof(QCBORDecodeNesting)",  (uint32_t)sizeof(QCBORDecodeNesting), pfOutput, pOutCtx);
    PrintSize("sizeof(QCBORDecodeContext)",  (uint32_t)sizeof(QCBORDecodeContext), pfOutput, pOutCtx);
-   PrintSize("sizeof(QCBORItem)",           (uint32_t)sizeof(QCBORItem), pfOutput, pOutCtx);
-   PrintSize("sizeof(QCBORTagListIn)",      (uint32_t)sizeof(QCBORTagListIn), pfOutput, pOutCtx);
-   PrintSize("sizeof(QCBORTagListOut)",     (uint32_t)sizeof(QCBORTagListOut), pfOutput, pOutCtx);
+   PrintSize("sizeof(QCBORItem)",           (uint32_t)sizeof(QCBORItem),          pfOutput, pOutCtx);
+   PrintSize("sizeof(QCBORTagListIn)",      (uint32_t)sizeof(QCBORTagListIn),     pfOutput, pOutCtx);
+   PrintSize("sizeof(QCBORTagListOut)",     (uint32_t)sizeof(QCBORTagListOut),    pfOutput, pOutCtx);
    (*pfOutput)("", pOutCtx, 1);
 }

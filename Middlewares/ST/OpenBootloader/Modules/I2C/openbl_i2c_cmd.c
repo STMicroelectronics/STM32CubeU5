@@ -21,14 +21,15 @@
 #include "openbl_i2c_cmd.h"
 
 #include "openbootloader_conf.h"
+#include "app_openbootloader.h"
 #include "i2c_interface.h"
-#include "flash_interface.h"
+#include "common_interface.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define OPENBL_I2C_COMMANDS_NB          18U       /* Number of supported commands */
+#define OPENBL_I2C_COMMANDS_NB_MAX        19U       /* Number of supported commands */
 
-#define I2C_RAM_BUFFER_SIZE             1156U     /* Size of I2C buffer used to store received data from the host */
+#define I2C_RAM_BUFFER_SIZE               1164U     /* Size of I2C buffer used to store received data from the host */
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -36,89 +37,69 @@
 /* Private variables ---------------------------------------------------------*/
 /* Buffer used to store received data from the host */
 static uint8_t I2C_RAM_Buf[I2C_RAM_BUFFER_SIZE];
+static uint8_t a_OPENBL_I2C_CommandsList[OPENBL_I2C_COMMANDS_NB_MAX] = {0};
+static uint8_t I2cCommandsNumber = 0U;
 
 /* Private function prototypes -----------------------------------------------*/
-static void OPENBL_I2C_GetCommand(void);
-static void OPENBL_I2C_GetVersion(void);
-static void OPENBL_I2C_GetID(void);
-static void OPENBL_I2C_ReadMemory(void);
-static void OPENBL_I2C_WriteMemory(void);
-static void OPENBL_I2C_Go(void);
-static void OPENBL_I2C_ReadoutProtect(void);
-static void OPENBL_I2C_ReadoutUnprotect(void);
-static void OPENBL_I2C_EraseMemory(void);
-static void OPENBL_I2C_WriteProtect(void);
-static void OPENBL_I2C_WriteUnprotect(void);
-static void OPENBL_I2C_NonStretchWriteMemory(void);
-static void OPENBL_I2C_NonStretchEraseMemory(void);
-static void OPENBL_I2C_NonStretchWriteProtect(void);
-static void OPENBL_I2C_NonStretchWriteUnprotect(void);
-static void OPENBL_I2C_NonStretchReadoutProtect(void);
-static void OPENBL_I2C_NonStretchReadoutUnprotect(void);
-
 static uint8_t OPENBL_I2C_GetAddress(uint32_t *pAddress);
+static uint8_t OPENBL_I2C_GetSpecialCmdOpCode(uint16_t *OpCode, OPENBL_SpecialCmdTypeTypeDef CmdType);
+static uint8_t OPENBL_I2C_ConstructCommandsTable(OPENBL_CommandsTypeDef *pI2cCmd);
 
 /* Exported variables --------------------------------------------------------*/
-OPENBL_CommandsTypeDef OPENBL_I2C_Commands =
-{
-  OPENBL_I2C_GetCommand,
-  OPENBL_I2C_GetVersion,
-  OPENBL_I2C_GetID,
-  OPENBL_I2C_ReadMemory,
-  OPENBL_I2C_WriteMemory,
-  OPENBL_I2C_Go,
-  OPENBL_I2C_ReadoutProtect,
-  OPENBL_I2C_ReadoutUnprotect,
-  OPENBL_I2C_EraseMemory,
-  OPENBL_I2C_WriteProtect,
-  OPENBL_I2C_WriteUnprotect,
-  OPENBL_I2C_NonStretchWriteMemory,
-  OPENBL_I2C_NonStretchEraseMemory,
-  OPENBL_I2C_NonStretchWriteProtect,
-  OPENBL_I2C_NonStretchWriteUnprotect,
-  OPENBL_I2C_NonStretchReadoutProtect,
-  OPENBL_I2C_NonStretchReadoutUnprotect
-};
-
 /* Exported functions---------------------------------------------------------*/
+
 /**
   * @brief  This function is used to get a pointer to the structure that contains the available I2C commands.
-  * @retval Returns a pointer to the OPENBL_I2C_Commands struct.
+  * @return Returns a pointer to the OPENBL_I2C_Commands struct.
   */
 OPENBL_CommandsTypeDef *OPENBL_I2C_GetCommandsList(void)
 {
+  static OPENBL_CommandsTypeDef OPENBL_I2C_Commands =
+  {
+    OPENBL_I2C_GetCommand,
+    OPENBL_I2C_GetVersion,
+    OPENBL_I2C_GetID,
+    OPENBL_I2C_ReadMemory,
+    OPENBL_I2C_WriteMemory,
+    OPENBL_I2C_Go,
+    OPENBL_I2C_ReadoutProtect,
+    OPENBL_I2C_ReadoutUnprotect,
+    OPENBL_I2C_EraseMemory,
+    OPENBL_I2C_WriteProtect,
+    OPENBL_I2C_WriteUnprotect,
+    OPENBL_I2C_NonStretchWriteMemory,
+    OPENBL_I2C_NonStretchEraseMemory,
+    OPENBL_I2C_NonStretchWriteProtect,
+    OPENBL_I2C_NonStretchWriteUnprotect,
+    OPENBL_I2C_NonStretchReadoutProtect,
+    OPENBL_I2C_NonStretchReadoutUnprotect,
+    NULL,
+    OPENBL_I2C_SpecialCommand,
+    OPENBL_I2C_ExtendedSpecialCommand
+  };
+
+  OPENBL_I2C_SetCommandsList(&OPENBL_I2C_Commands);
+
   return (&OPENBL_I2C_Commands);
 }
 
-/* Private functions ---------------------------------------------------------*/
+/**
+  * @brief  This function is used to set a pointer to the structure that contains the available I2C commands.
+  * @retval Returns a pointer to the OPENBL_I2C_Commands struct.
+  */
+void OPENBL_I2C_SetCommandsList(OPENBL_CommandsTypeDef *pI2cCmd)
+{
+  /* Get the list of commands supported & their numbers */
+  I2cCommandsNumber = OPENBL_I2C_ConstructCommandsTable(pI2cCmd);
+}
+
 /**
   * @brief  This function is used to get the list of the available I2C commands
   * @retval None.
   */
-static void OPENBL_I2C_GetCommand(void)
+void OPENBL_I2C_GetCommand(void)
 {
   uint32_t counter;
-  const uint8_t a_OPENBL_I2C_CommandsList[OPENBL_I2C_COMMANDS_NB] =
-  {
-    CMD_GET_COMMAND,
-    CMD_GET_VERSION,
-    CMD_GET_ID,
-    CMD_READ_MEMORY,
-    CMD_GO,
-    CMD_WRITE_MEMORY,
-    CMD_EXT_ERASE_MEMORY,
-    CMD_WRITE_PROTECT,
-    CMD_WRITE_UNPROTECT,
-    CMD_READ_PROTECT,
-    CMD_READ_UNPROTECT,
-    CMD_NS_WRITE_MEMORY,
-    CMD_NS_ERASE_MEMORY,
-    CMD_NS_WRITE_PROTECT,
-    CMD_NS_WRITE_UNPROTECT,
-    CMD_NS_READ_PROTECT,
-    CMD_NS_READ_UNPROTECT,
-    CMD_CHECKSUM
-  };
 
   OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
@@ -126,13 +107,13 @@ static void OPENBL_I2C_GetCommand(void)
   OPENBL_I2C_WaitAddress();
 
   /* Send the number of commands supported by the I2C protocol */
-  OPENBL_I2C_SendByte(OPENBL_I2C_COMMANDS_NB);
+  OPENBL_I2C_SendByte(I2cCommandsNumber);
 
   /* Send I2C protocol version */
   OPENBL_I2C_SendByte(OPENBL_I2C_VERSION);
 
   /* Send the list of supported commands */
-  for (counter = 0U; counter < OPENBL_I2C_COMMANDS_NB; counter++)
+  for (counter = 0U; counter < I2cCommandsNumber; counter++)
   {
     OPENBL_I2C_SendByte(a_OPENBL_I2C_CommandsList[counter]);
   }
@@ -151,7 +132,7 @@ static void OPENBL_I2C_GetCommand(void)
   * @brief  This function is used to get the I2C protocol version.
   * @retval None.
   */
-static void OPENBL_I2C_GetVersion(void)
+void OPENBL_I2C_GetVersion(void)
 {
   /* Send Acknowledge byte to notify the host that the command is recognized */
   OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
@@ -176,7 +157,7 @@ static void OPENBL_I2C_GetVersion(void)
   * @brief  This function is used to get the device ID.
   * @retval None.
   */
-static void OPENBL_I2C_GetID(void)
+void OPENBL_I2C_GetID(void)
 {
   /* Send Acknowledge byte to notify the host that the command is recognized */
   OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
@@ -204,7 +185,7 @@ static void OPENBL_I2C_GetID(void)
  * @brief  This function is used to read memory from the device.
  * @retval None.
  */
-static void OPENBL_I2C_ReadMemory(void)
+void OPENBL_I2C_ReadMemory(void)
 {
   uint32_t address;
   uint32_t counter;
@@ -213,7 +194,7 @@ static void OPENBL_I2C_ReadMemory(void)
   uint8_t xor;
 
   /* Check memory protection then send adequate response */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
   }
@@ -273,18 +254,17 @@ static void OPENBL_I2C_ReadMemory(void)
  * @brief  This function is used to write in to device memory.
  * @retval None.
  */
-static void OPENBL_I2C_WriteMemory(void)
+void OPENBL_I2C_WriteMemory(void)
 {
   uint32_t address;
   uint32_t xor;
   uint32_t counter;
   uint32_t codesize;
-  uint32_t mem_area;
   uint8_t *p_ramaddress;
   uint8_t data;
 
   /* Check memory protection then send adequate response */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
   }
@@ -339,14 +319,8 @@ static void OPENBL_I2C_WriteMemory(void)
         /* Send last Acknowledge synchronization byte */
         OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
-        /* Check if the received address is an option byte address */
-        mem_area = OPENBL_MEM_GetAddressArea(address);
-
-        if (mem_area == OB_AREA)
-        {
-          /* Launch Option Bytes reload */
-          OPENBL_MEM_OptionBytesLaunch();
-        }
+        /* Start post processing task if needed */
+        Common_StartPostProcessing();
       }
     }
   }
@@ -356,13 +330,13 @@ static void OPENBL_I2C_WriteMemory(void)
   * @brief  This function is used to jump to the user application.
   * @retval None.
   */
-static void OPENBL_I2C_Go(void)
+void OPENBL_I2C_Go(void)
 {
   uint32_t address;
   uint8_t status;
 
   /* Check memory protection then send adequate response */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
   }
@@ -399,10 +373,10 @@ static void OPENBL_I2C_Go(void)
  * @brief  This function is used to enable readout protection.
  * @retval None.
  */
-static void OPENBL_I2C_ReadoutProtect(void)
+void OPENBL_I2C_ReadoutProtect(void)
 {
   /* Check memory protection then send adequate response */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
   }
@@ -411,12 +385,12 @@ static void OPENBL_I2C_ReadoutProtect(void)
     OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
     /* Enable the read protection */
-    OPENBL_MEM_SetReadOutProtection(ENABLE);
+    OPENBL_MEM_SetReadOutProtection(OPENBL_DEFAULT_MEM, ENABLE);
 
     OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
-    /* Launch Option Bytes reload */
-    OPENBL_MEM_OptionBytesLaunch();
+    /* Start post processing task if needed */
+    Common_StartPostProcessing();
   }
 }
 
@@ -427,24 +401,24 @@ static void OPENBL_I2C_ReadoutProtect(void)
  *         is not possible what make the communication with the host get lost
  * @retval None.
  */
-static void OPENBL_I2C_ReadoutUnprotect(void)
+void OPENBL_I2C_ReadoutUnprotect(void)
 {
   OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
   OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
   /* Disable the read protection */
-  OPENBL_MEM_SetReadOutProtection(DISABLE);
+  OPENBL_MEM_SetReadOutProtection(OPENBL_DEFAULT_MEM, DISABLE);
 
-  /* Launch Option Bytes reload and reset system */
-  OPENBL_MEM_OptionBytesLaunch();
+  /* Start post processing task if needed */
+  Common_StartPostProcessing();
 }
 
 /**
  * @brief  This function is used to erase a memory.
  * @retval None.
  */
-static void OPENBL_I2C_EraseMemory(void)
+void OPENBL_I2C_EraseMemory(void)
 {
   uint32_t xor;
   uint32_t counter;
@@ -457,7 +431,7 @@ static void OPENBL_I2C_EraseMemory(void)
   p_ramaddress = (uint8_t *) I2C_RAM_Buf;
 
   /* Check if the memory is not protected */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
   }
@@ -495,7 +469,7 @@ static void OPENBL_I2C_EraseMemory(void)
           p_ramaddress[0] = (uint8_t)(data & 0x00FFU);
           p_ramaddress[1] = (uint8_t)((data & 0xFF00U) >> 8);
 
-          error_value = OPENBL_MEM_MassErase(FLASH_START_ADDRESS, (uint8_t *) I2C_RAM_Buf, I2C_RAM_BUFFER_SIZE);
+          error_value = OPENBL_MEM_MassErase(OPENBL_DEFAULT_MEM, (uint8_t *) I2C_RAM_Buf, I2C_RAM_BUFFER_SIZE);
 
           if (error_value == SUCCESS)
           {
@@ -577,7 +551,7 @@ static void OPENBL_I2C_EraseMemory(void)
         {
           OPENBL_I2C_WaitStop();
 
-          error_value = OPENBL_MEM_Erase(FLASH_START_ADDRESS, (uint8_t *) I2C_RAM_Buf, I2C_RAM_BUFFER_SIZE);
+          error_value = OPENBL_MEM_Erase(OPENBL_DEFAULT_MEM, (uint8_t *) I2C_RAM_Buf, I2C_RAM_BUFFER_SIZE);
 
           /* Errors from memory erase are not managed, always return ACK */
           if (error_value == SUCCESS)
@@ -596,7 +570,7 @@ static void OPENBL_I2C_EraseMemory(void)
  * @brief  This function is used to enable write protect.
  * @retval None.
  */
-static void OPENBL_I2C_WriteProtect(void)
+void OPENBL_I2C_WriteProtect(void)
 {
   uint16_t counter;
   uint16_t length;
@@ -606,7 +580,7 @@ static void OPENBL_I2C_WriteProtect(void)
   uint8_t *p_ramaddress;
 
   /* Check if the memory is not protected */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
   }
@@ -662,13 +636,14 @@ static void OPENBL_I2C_WriteProtect(void)
         p_ramaddress = (uint8_t *) I2C_RAM_Buf;
 
         /* Enable the write protection */
-        error_value = OPENBL_MEM_SetWriteProtection(ENABLE, FLASH_START_ADDRESS, p_ramaddress, length);
+        error_value = OPENBL_MEM_SetWriteProtection(ENABLE, OPENBL_DEFAULT_MEM, p_ramaddress, length);
 
         OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
         if (error_value == SUCCESS)
         {
-          OPENBL_MEM_OptionBytesLaunch();
+          /* Start post processing task if needed */
+          Common_StartPostProcessing();
         }
       }
     }
@@ -679,12 +654,12 @@ static void OPENBL_I2C_WriteProtect(void)
  * @brief  This function is used to disable write protect.
  * @retval None.
  */
-static void OPENBL_I2C_WriteUnprotect(void)
+void OPENBL_I2C_WriteUnprotect(void)
 {
   ErrorStatus error_value;
 
   /* Check if the memory is not protected */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
   }
@@ -693,13 +668,14 @@ static void OPENBL_I2C_WriteUnprotect(void)
     OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
     /* Disable write protection */
-    error_value = OPENBL_MEM_SetWriteProtection(DISABLE, FLASH_START_ADDRESS, NULL, 0);
+    error_value = OPENBL_MEM_SetWriteProtection(DISABLE, OPENBL_DEFAULT_MEM, NULL, 0);
 
     OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
     if (error_value == SUCCESS)
     {
-      OPENBL_MEM_OptionBytesLaunch();
+      /* Start post processing task if needed */
+      Common_StartPostProcessing();
     }
   }
 }
@@ -710,18 +686,17 @@ static void OPENBL_I2C_WriteUnprotect(void)
  *         send busy bytes to the host
  * @retval None.
  */
-static void OPENBL_I2C_NonStretchWriteMemory(void)
+void OPENBL_I2C_NonStretchWriteMemory(void)
 {
   uint32_t address;
   uint32_t xor;
   uint32_t counter;
   uint32_t codesize;
-  uint32_t mem_area;
   uint8_t *p_ramaddress;
   uint8_t data;
 
   /* Check memory protection then send adequate response */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
   }
@@ -771,22 +746,19 @@ static void OPENBL_I2C_NonStretchWriteMemory(void)
       else
       {
         /* Send Busy Byte */
-        OPENBL_Enable_BusyState_Sending(OPENBL_I2C_SendBusyByte);
+        OPENBL_Enable_BusyState_Sending();
 
         /* Write data to memory */
         OPENBL_MEM_Write(address, (uint8_t *)I2C_RAM_Buf, codesize);
 
+        /* Send Busy Byte */
+        OPENBL_Disable_BusyState_Sending();
+
         /* Send last Acknowledge synchronization byte */
         OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
-        /* Check if the received address is an option byte address */
-        mem_area = OPENBL_MEM_GetAddressArea(address);
-
-        if (mem_area == OB_AREA)
-        {
-          /* Launch Option Bytes reload */
-          OPENBL_MEM_OptionBytesLaunch();
-        }
+        /* Start post processing task if needed */
+        Common_StartPostProcessing();
       }
     }
   }
@@ -798,7 +770,7 @@ static void OPENBL_I2C_NonStretchWriteMemory(void)
  *         send busy bytes to the host
  * @retval None.
  */
-static void OPENBL_I2C_NonStretchEraseMemory(void)
+void OPENBL_I2C_NonStretchEraseMemory(void)
 {
   uint32_t xor;
   uint32_t counter;
@@ -811,7 +783,7 @@ static void OPENBL_I2C_NonStretchEraseMemory(void)
   p_ramaddress = (uint8_t *) I2C_RAM_Buf;
 
   /* Check if the memory is not protected */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
   }
@@ -844,14 +816,14 @@ static void OPENBL_I2C_NonStretchEraseMemory(void)
         OPENBL_I2C_WaitStop();
 
         /* Send Busy Byte */
-        OPENBL_Enable_BusyState_Sending(OPENBL_I2C_SendBusyByte);
+        OPENBL_Enable_BusyState_Sending();
 
         if ((data == 0xFFFFU) || (data == 0xFFFEU) || (data == 0xFFFDU))
         {
           p_ramaddress[0] = (uint8_t)(data & 0x00FFU);
           p_ramaddress[1] = (uint8_t)((data & 0xFF00U) >> 8);
 
-          error_value = OPENBL_MEM_MassErase(FLASH_START_ADDRESS, (uint8_t *) I2C_RAM_Buf, I2C_RAM_BUFFER_SIZE);
+          error_value = OPENBL_MEM_MassErase(OPENBL_DEFAULT_MEM, (uint8_t *) I2C_RAM_Buf, I2C_RAM_BUFFER_SIZE);
 
           if (error_value == SUCCESS)
           {
@@ -933,9 +905,12 @@ static void OPENBL_I2C_NonStretchEraseMemory(void)
           OPENBL_I2C_WaitStop();
 
           /* Send Busy Byte */
-          OPENBL_Enable_BusyState_Sending(OPENBL_I2C_SendBusyByte);
+          OPENBL_Enable_BusyState_Sending();
 
-          error_value = OPENBL_MEM_Erase(FLASH_START_ADDRESS, (uint8_t *) I2C_RAM_Buf, I2C_RAM_BUFFER_SIZE);
+          error_value = OPENBL_MEM_Erase(OPENBL_DEFAULT_MEM, (uint8_t *) I2C_RAM_Buf, I2C_RAM_BUFFER_SIZE);
+
+          /* Disable Busy Byte */
+          OPENBL_Disable_BusyState_Sending();
 
           /* Errors from memory erase are not managed, always return ACK */
           if (error_value == SUCCESS)
@@ -956,18 +931,17 @@ static void OPENBL_I2C_NonStretchEraseMemory(void)
  *         send busy bytes to the host
  * @retval None.
  */
-static void OPENBL_I2C_NonStretchWriteProtect(void)
+void OPENBL_I2C_NonStretchWriteProtect(void)
 {
   uint16_t counter;
   uint16_t length;
   uint8_t data;
   uint8_t xor;
   ErrorStatus error_value;
-  uint8_t status = ACK_BYTE;
   uint8_t *p_ramaddress;
 
   /* Check if the memory is not protected */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
   }
@@ -986,7 +960,7 @@ static void OPENBL_I2C_NonStretchWriteProtect(void)
     if (OPENBL_I2C_ReadByte() != xor)
     {
       OPENBL_I2C_WaitStop();
-      status = NACK_BYTE;
+      OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
     }
     else
     {
@@ -1017,7 +991,7 @@ static void OPENBL_I2C_NonStretchWriteProtect(void)
       if (OPENBL_I2C_ReadByte() != (uint8_t) xor)
       {
         OPENBL_I2C_WaitStop();
-        status = NACK_BYTE;
+        OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
       }
       else
       {
@@ -1025,20 +999,23 @@ static void OPENBL_I2C_NonStretchWriteProtect(void)
         p_ramaddress = (uint8_t *) I2C_RAM_Buf;
 
         /* Send Busy Byte */
-        OPENBL_Enable_BusyState_Sending(OPENBL_I2C_SendBusyByte);
+        OPENBL_Enable_BusyState_Sending();
 
         /* Enable the write protection */
-        error_value = OPENBL_MEM_SetWriteProtection(ENABLE, FLASH_START_ADDRESS, p_ramaddress, length);
+        error_value = OPENBL_MEM_SetWriteProtection(ENABLE, OPENBL_DEFAULT_MEM, p_ramaddress, length);
+
+        /* Disable Busy Byte */
+        OPENBL_Disable_BusyState_Sending();
 
         if (error_value == SUCCESS)
         {
           OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
-          OPENBL_MEM_OptionBytesLaunch();
+
+          /* Start post processing task if needed */
+          Common_StartPostProcessing();
         }
       }
     }
-
-    OPENBL_I2C_SendAcknowledgeByte(status);
   }
 }
 
@@ -1048,12 +1025,12 @@ static void OPENBL_I2C_NonStretchWriteProtect(void)
  *         send busy bytes to the host
  * @retval None.
  */
-static void OPENBL_I2C_NonStretchWriteUnprotect(void)
+void OPENBL_I2C_NonStretchWriteUnprotect(void)
 {
   ErrorStatus error_value;
 
   /* Check if the memory is not protected */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
   }
@@ -1062,16 +1039,20 @@ static void OPENBL_I2C_NonStretchWriteUnprotect(void)
     OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
     /* Send Busy Byte */
-    OPENBL_Enable_BusyState_Sending(OPENBL_I2C_SendBusyByte);
+    OPENBL_Enable_BusyState_Sending();
 
     /* Disable write protection */
-    error_value = OPENBL_MEM_SetWriteProtection(DISABLE, FLASH_START_ADDRESS, NULL, 0);
+    error_value = OPENBL_MEM_SetWriteProtection(DISABLE, OPENBL_DEFAULT_MEM, NULL, 0);
+
+    /* Disable Busy Byte */
+    OPENBL_Disable_BusyState_Sending();
 
     OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
     if (error_value == SUCCESS)
     {
-      OPENBL_MEM_OptionBytesLaunch();
+      /* Start post processing task if needed */
+      Common_StartPostProcessing();
     }
   }
 }
@@ -1082,10 +1063,10 @@ static void OPENBL_I2C_NonStretchWriteUnprotect(void)
  *         send busy bytes to the host
  * @retval None.
  */
-static void OPENBL_I2C_NonStretchReadoutProtect(void)
+void OPENBL_I2C_NonStretchReadoutProtect(void)
 {
   /* Check memory protection then send adequate response */
-  if (OPENBL_MEM_GetReadOutProtectionStatus() != RESET)
+  if (Common_GetProtectionStatus() != RESET)
   {
     OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
   }
@@ -1094,15 +1075,18 @@ static void OPENBL_I2C_NonStretchReadoutProtect(void)
     OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
     /* Send Busy Byte */
-    OPENBL_Enable_BusyState_Sending(OPENBL_I2C_SendBusyByte);
+    OPENBL_Enable_BusyState_Sending();
 
     /* Enable the read protection */
-    OPENBL_MEM_SetReadOutProtection(ENABLE);
+    OPENBL_MEM_SetReadOutProtection(OPENBL_DEFAULT_MEM, ENABLE);
+
+    /* Disable Busy Byte */
+    OPENBL_Disable_BusyState_Sending();
 
     OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
-    /* Launch Option Bytes reload */
-    OPENBL_MEM_OptionBytesLaunch();
+    /* Start post processing task if needed */
+    Common_StartPostProcessing();
   }
 }
 
@@ -1115,27 +1099,30 @@ static void OPENBL_I2C_NonStretchReadoutProtect(void)
  *         is not possible what make the communication with the host get lost
  * @retval None.
  */
-static void OPENBL_I2C_NonStretchReadoutUnprotect(void)
+void OPENBL_I2C_NonStretchReadoutUnprotect(void)
 {
   OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
   OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
 
   /* Send Busy Byte */
-  OPENBL_Enable_BusyState_Sending(OPENBL_I2C_SendBusyByte);
+  OPENBL_Enable_BusyState_Sending();
 
   /* Disable the read protection */
-  OPENBL_MEM_SetReadOutProtection(DISABLE);
+  OPENBL_MEM_SetReadOutProtection(OPENBL_DEFAULT_MEM, DISABLE);
 
-  /* Launch Option Bytes reload and reset system */
-  OPENBL_MEM_OptionBytesLaunch();
+  /* Disable Busy Byte */
+  OPENBL_Disable_BusyState_Sending();
+
+  /* Start post processing task if needed */
+  Common_StartPostProcessing();
 }
 
 /**
  * @brief  This function is used to get a valid address.
  * @retval Returns NACK status in case of error else returns ACK status.
  */
-static uint8_t OPENBL_I2C_GetAddress(uint32_t *pAddress)
+uint8_t OPENBL_I2C_GetAddress(uint32_t *pAddress)
 {
   uint8_t data[4] = {0, 0, 0, 0};
   uint8_t status;
@@ -1171,6 +1158,437 @@ static uint8_t OPENBL_I2C_GetAddress(uint32_t *pAddress)
     else
     {
       status = ACK_BYTE;
+    }
+  }
+
+  return status;
+}
+
+/**
+ * @brief  This function is used to execute special command commands.
+ * @retval None.
+ */
+void OPENBL_I2C_SpecialCommand(void)
+{
+  OPENBL_SpecialCmdTypeDef *special_cmd;
+  uint16_t op_code;
+  uint8_t xor;
+  uint8_t index;
+  uint8_t data;
+
+  /* Point to the RAM I2C buffer to gain size and reliability */
+  special_cmd = (OPENBL_SpecialCmdTypeDef *)(uint32_t) I2C_RAM_Buf;
+
+  /* Send Operation code acknowledgment */
+  OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
+
+  /* Wait for address to match */
+  OPENBL_I2C_WaitAddress();
+
+  /* Get the command operation code */
+  if (OPENBL_I2C_GetSpecialCmdOpCode(&op_code, OPENBL_SPECIAL_CMD) == NACK_BYTE)
+  {
+    OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
+  }
+  else
+  {
+    /* Send Operation code acknowledgment */
+    OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
+
+    /* Wait for address to match */
+    OPENBL_I2C_WaitAddress();
+
+    /* Initialize the special command frame */
+    special_cmd->CmdType = OPENBL_SPECIAL_CMD;
+    special_cmd->OpCode  = op_code;
+
+    /* Initialize the xor variable */
+    xor = 0U;
+
+    /* Get the number of bytes to be received */
+    /* Read the MSB of the size byte */
+    data                     = OPENBL_I2C_ReadByte();
+    special_cmd->SizeBuffer1 = ((uint16_t)data) << 8;
+    xor                     ^= data;
+
+    /* Read the LSB of the size byte */
+    data                      = OPENBL_I2C_ReadByte();
+    special_cmd->SizeBuffer1 |= (uint16_t)data;
+    xor                      ^= data;
+
+    if (special_cmd->SizeBuffer1 > SPECIAL_CMD_SIZE_BUFFER1)
+    {
+      OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
+    }
+    else
+    {
+      if (special_cmd->SizeBuffer1 != 0U)
+      {
+        /* Read received bytes */
+        for (index = 0U; index < special_cmd->SizeBuffer1; index++)
+        {
+          data                        = OPENBL_I2C_ReadByte();
+          special_cmd->Buffer1[index] = data;
+          xor                        ^= data;
+        }
+      }
+
+      /* Check data integrity */
+      if (OPENBL_I2C_ReadByte() != xor)
+      {
+        OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
+      }
+      else
+      {
+        /* Send received size acknowledgment */
+        OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
+
+        /* Wait for address to match */
+        OPENBL_I2C_WaitAddress();
+
+        /* Process the special command */
+        OPENBL_I2C_SpecialCommandProcess(special_cmd);
+
+        /* Send acknowledgment */
+        OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
+
+        /* Wait until NACK is detected */
+        OPENBL_I2C_WaitNack();
+
+        /* Wait until STOP is detected */
+        OPENBL_I2C_WaitStop();
+      }
+    }
+  }
+}
+
+/**
+ * @brief  This function is used to execute extended special command commands.
+ * @retval None.
+ */
+void OPENBL_I2C_ExtendedSpecialCommand(void)
+{
+  OPENBL_SpecialCmdTypeDef *special_cmd;
+  uint16_t op_code;
+  uint16_t index;
+  uint8_t xor;
+  uint8_t data;
+
+  /* Point to the RAM I2C buffer to gain size and reliability */
+  special_cmd = (OPENBL_SpecialCmdTypeDef *)(uint32_t) I2C_RAM_Buf;
+
+  /* Send Operation code acknowledgment */
+  OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
+
+  /* Wait for address to match */
+  OPENBL_I2C_WaitAddress();
+
+  /* Get the command operation code */
+  if (OPENBL_I2C_GetSpecialCmdOpCode(&op_code, OPENBL_EXTENDED_SPECIAL_CMD) == NACK_BYTE)
+  {
+    OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
+  }
+  else
+  {
+    /* Send Operation code acknowledgment */
+    OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
+
+    /* Wait for address to match */
+    OPENBL_I2C_WaitAddress();
+
+    /* Initialize the special command frame */
+    special_cmd->CmdType = OPENBL_EXTENDED_SPECIAL_CMD;
+    special_cmd->OpCode  = op_code;
+
+    /* Initialize the xor variable */
+    xor = 0U;
+
+    /* Get the number of bytes to be received */
+    /* Read the MSB of the size byte */
+    data                     = OPENBL_I2C_ReadByte();
+    special_cmd->SizeBuffer1 = ((uint16_t)data) << 8;
+    xor                     ^= data;
+
+    /* Read the LSB of the size byte */
+    data                      = OPENBL_I2C_ReadByte();
+    special_cmd->SizeBuffer1 |= (uint16_t)data;
+    xor                      ^= data;
+
+    if (special_cmd->SizeBuffer1 > SPECIAL_CMD_SIZE_BUFFER1)
+    {
+      OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
+    }
+    else
+    {
+      if (special_cmd->SizeBuffer1 != 0U)
+      {
+        /* Read received bytes */
+        for (index = 0U; index < special_cmd->SizeBuffer1; index++)
+        {
+          data                        = OPENBL_I2C_ReadByte();
+          special_cmd->Buffer1[index] = data;
+          xor                        ^= data;
+        }
+      }
+
+      /* Check data integrity */
+      if (OPENBL_I2C_ReadByte() != xor)
+      {
+        OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
+      }
+      else
+      {
+        /* Send receive size acknowledgment */
+        OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
+
+        /* Wait for address to match */
+        OPENBL_I2C_WaitAddress();
+
+        /* Get the number of bytes to be written */
+        /* Read the MSB of the size byte */
+        xor                      = 0U;
+        data                     = OPENBL_I2C_ReadByte();
+        special_cmd->SizeBuffer2 = ((uint16_t)data) << 8;
+        xor                     ^= data;
+
+        /* Read the LSB of the size byte */
+        data                      = OPENBL_I2C_ReadByte();
+        special_cmd->SizeBuffer2 |= (uint16_t)data;
+        xor                      ^= data;
+
+        if (special_cmd->SizeBuffer2 > SPECIAL_CMD_SIZE_BUFFER2)
+        {
+          OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
+        }
+        else
+        {
+          if (special_cmd->SizeBuffer2 != 0U)
+          {
+            /* Read received bytes */
+            for (index = 0U; index < special_cmd->SizeBuffer2; index++)
+            {
+              data                        = OPENBL_I2C_ReadByte();
+              special_cmd->Buffer2[index] = data;
+              xor                        ^= data;
+            }
+          }
+
+          /* Check data integrity */
+          if (OPENBL_I2C_ReadByte() != xor)
+          {
+            OPENBL_I2C_SendAcknowledgeByte(NACK_BYTE);
+          }
+          else
+          {
+            /* Send receive write size acknowledgment */
+            OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
+
+            /* Wait for address to match */
+            OPENBL_I2C_WaitAddress();
+
+            /* Process the special command */
+            OPENBL_I2C_SpecialCommandProcess(special_cmd);
+
+            /* Send acknowledgment */
+            OPENBL_I2C_SendAcknowledgeByte(ACK_BYTE);
+
+            /* Wait until NACK is detected */
+            OPENBL_I2C_WaitNack();
+
+            /* Wait until STOP is detected */
+            OPENBL_I2C_WaitStop();
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Private functions ---------------------------------------------------------*/
+
+/**
+  * @brief  This function is used to construct the command List table.
+  * @return Returns a table with all opcodes supported.
+  */
+static uint8_t OPENBL_I2C_ConstructCommandsTable(OPENBL_CommandsTypeDef *pI2cCmd)
+{
+  uint8_t i = 0;
+
+  if (pI2cCmd->GetCommand != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_GET_COMMAND;
+    i++;
+  }
+
+  if (pI2cCmd->GetVersion != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_GET_VERSION;
+    i++;
+  }
+
+  if (pI2cCmd->GetID != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_GET_ID;
+    i++;
+  }
+
+  if (pI2cCmd->ReadMemory != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_READ_MEMORY;
+    i++;
+  }
+
+  if (pI2cCmd->Go != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_GO;
+    i++;
+  }
+
+  if (pI2cCmd->WriteMemory != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_WRITE_MEMORY;
+    i++;
+  }
+
+  if (pI2cCmd->EraseMemory != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_EXT_ERASE_MEMORY;
+    i++;
+  }
+
+  if (pI2cCmd->WriteProtect != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_WRITE_PROTECT;
+    i++;
+  }
+
+  if (pI2cCmd->WriteUnprotect != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_WRITE_UNPROTECT;
+    i++;
+  }
+
+  if (pI2cCmd->ReadoutProtect != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_READ_PROTECT;
+    i++;
+  }
+
+  if (pI2cCmd->ReadoutUnprotect != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_READ_UNPROTECT;
+    i++;
+  }
+
+  if (pI2cCmd->NsWriteMemory != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_NS_WRITE_MEMORY;
+    i++;
+  }
+
+  if (pI2cCmd->NsEraseMemory != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_NS_ERASE_MEMORY;
+    i++;
+  }
+
+  if (pI2cCmd->NsWriteProtect != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_NS_WRITE_PROTECT;
+    i++;
+  }
+
+  if (pI2cCmd->NsWriteUnprotect != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_NS_WRITE_UNPROTECT;
+    i++;
+  }
+
+  if (pI2cCmd->NsReadoutProtect != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_NS_READ_PROTECT;
+    i++;
+  }
+
+  if (pI2cCmd->NsReadoutUnprotect != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_NS_READ_UNPROTECT;
+    i++;
+  }
+
+  if (pI2cCmd->SpecialCommand != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_SPECIAL_COMMAND;
+    i++;
+  }
+
+  if (pI2cCmd->ExtendedSpecialCommand != NULL)
+  {
+    a_OPENBL_I2C_CommandsList[i] = CMD_EXTENDED_SPECIAL_COMMAND;
+    i++;
+  }
+
+  return (i);
+}
+
+/**
+ * @brief  This function is used to get the operation code.
+ * @param  OpCode Pointer to the operation code to be returned.
+ * @param  CmdType Type of the command, Special write or extended special command.
+ * @retval Returns NACK status in case of error else returns ACK status.
+ */
+uint8_t OPENBL_I2C_GetSpecialCmdOpCode(uint16_t *OpCode, OPENBL_SpecialCmdTypeTypeDef CmdType)
+{
+  uint8_t op_code[2];
+  uint8_t xor;
+  uint8_t status;
+  uint8_t index;
+
+  /* Initialize the status variable */
+  status = NACK_BYTE;
+
+  /* Get the command OpCode (2 bytes) */
+  op_code[0] = OPENBL_I2C_ReadByte(); /* Read the MSB byte */
+  op_code[1] = OPENBL_I2C_ReadByte(); /* Read the LSB byte */
+
+  /* Get the checksum */
+  xor  = op_code[0];
+  xor ^= op_code[1];
+
+  if (OPENBL_I2C_ReadByte() != xor)
+  {
+    status = NACK_BYTE;
+  }
+  else
+  {
+    /* Get the operation code */
+    *OpCode = ((uint16_t)op_code[0] << 8) | (uint16_t)op_code[1];
+
+    if (CmdType == OPENBL_SPECIAL_CMD)
+    {
+      for (index = 0U; index < SPECIAL_CMD_MAX_NUMBER; index++)
+      {
+        if (SpecialCmdList[index] == *OpCode)
+        {
+          status = ACK_BYTE;
+          break;
+        }
+      }
+    }
+    else if (CmdType == OPENBL_EXTENDED_SPECIAL_CMD)
+    {
+      for (index = 0U; index < EXTENDED_SPECIAL_CMD_MAX_NUMBER; index++)
+      {
+        if (ExtendedSpecialCmdList[index] == *OpCode)
+        {
+          status = ACK_BYTE;
+          break;
+        }
+      }
+    }
+    else
+    {
+      status = NACK_BYTE;
     }
   }
 

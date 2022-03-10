@@ -56,7 +56,7 @@
 /** @defgroup B_U585I_IOT02A_EEPROM_Exported_Variables Exported Variables
   * @{
   */
-void   *Eeprom_CompObj = NULL;
+M24LR64_Object_t   *Eeprom_CompObj = NULL;
 /**
   * @}
   */

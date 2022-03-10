@@ -170,9 +170,9 @@ typedef struct
 /** @defgroup LPBAM_SPI_CommunicationMode LPBAM SPI Communication Mode
   * @{
   */
-#define LPBAM_SPI_DIRECTION_2LINES            (0x00U) /*!< LPBAM SPI Communication Full Duplex      */
-#define LPBAM_SPI_DIRECTION_2LINES_TXONLY     (0x01U) /*!< LPBAM SPI Communication Simplex Transmit */
-#define LPBAM_SPI_DIRECTION_2LINES_RXONLY     (0x02U) /*!< LPBAM SPI Communication Simplex Receive  */
+#define LPBAM_SPI_DIRECTION_2LINES        (0x00U) /*!< LPBAM SPI Communication Full Duplex      */
+#define LPBAM_SPI_DIRECTION_2LINES_TXONLY (0x01U) /*!< LPBAM SPI Communication Simplex Transmit */
+#define LPBAM_SPI_DIRECTION_2LINES_RXONLY (0x02U) /*!< LPBAM SPI Communication Simplex Receive  */
 /**
   * @}
   */
@@ -186,8 +186,8 @@ typedef struct
 /** @defgroup LPBAM_SPI_Platform_Private_Constants LPBAM SPI Platform Private Constants
   * @{
   */
-#define LPBAM_SPI_TXDMAEN                SPI_CFG1_TXDMAEN      /*!< SPI Tx DMA transfer enable */
-#define LPBAM_SPI_RXDMAEN                SPI_CFG1_RXDMAEN      /*!< SPI Rx DMA transfer enable */
+#define LPBAM_SPI_TXDMAEN SPI_CFG1_TXDMAEN /*!< SPI Tx DMA transfer enable */
+#define LPBAM_SPI_RXDMAEN SPI_CFG1_RXDMAEN /*!< SPI Rx DMA transfer enable */
 /**
   * @}
   */

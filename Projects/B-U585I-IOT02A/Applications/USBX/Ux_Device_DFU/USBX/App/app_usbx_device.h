@@ -30,7 +30,15 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "main.h"
+#include "ux_api.h"
+#include "ux_system.h"
+#include "ux_utility.h"
+#include "ux_device_stack.h"
+#include "ux_dcd_stm32.h"
+#include "ux_device_descriptors.h"
+#include "ux_device_dfu_media.h"
+#include "app_azure_rtos_config.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -57,7 +65,7 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr);
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define APP_QUEUE_SIZE                               5
+#define APP_QUEUE_SIZE          1
 /* USER CODE END PD */
 
 /* USER CODE BEGIN 1 */

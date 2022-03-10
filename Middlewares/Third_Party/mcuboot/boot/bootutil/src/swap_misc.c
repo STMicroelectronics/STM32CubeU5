@@ -1,4 +1,6 @@
 /*
+ * SPDX-License-Identifier: Apache-2.0
+ *
  * Copyright (c) 2019 JUUL Labs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +16,6 @@
  * limitations under the License.
  */
 
-#include <assert.h>
 #include <stddef.h>
 #include <stdbool.h>
 #include <inttypes.h>
@@ -30,7 +31,6 @@
 MCUBOOT_LOG_MODULE_DECLARE(mcuboot);
 
 #if defined(MCUBOOT_SWAP_USING_SCRATCH) || defined(MCUBOOT_SWAP_USING_MOVE)
-
 int
 swap_erase_trailer_sectors(const struct boot_loader_state *state,
                            const struct flash_area *fap)
@@ -86,9 +86,6 @@ swap_status_init(const struct boot_loader_state *state,
 {
     struct boot_swap_state swap_state;
     uint8_t image_index;
-#ifdef NDEBUG
-    __attribute__((unused))
-#endif
     int rc;
 
 #if (BOOT_IMAGE_NUMBER == 1)
@@ -101,6 +98,7 @@ swap_status_init(const struct boot_loader_state *state,
 
     rc = boot_read_swap_state_by_id(FLASH_AREA_IMAGE_SECONDARY(image_index),
             &swap_state);
+    (void)rc;
     assert(rc == 0);
 
     if (bs->swap_type != BOOT_SWAP_TYPE_NONE) {
@@ -167,8 +165,12 @@ swap_read_status(struct boot_loader_state *state, struct boot_status *bs)
     rc = swap_read_status_bytes(fap, state, bs);
     if (rc == 0) {
         off = boot_swap_info_off(fap);
-        rc = flash_area_read_is_empty(fap, off, &swap_info, sizeof swap_info);
-        if (rc == 1) {
+        rc = flash_area_read(fap, off, &swap_info, sizeof swap_info);
+        if (rc != 0) {
+            return BOOT_EFLASH;
+        }
+
+        if (bootutil_buffer_is_erased(fap, &swap_info, sizeof swap_info)) {
             BOOT_SET_SWAP_INFO(swap_info, 0, BOOT_SWAP_TYPE_NONE);
             rc = 0;
         }

@@ -23,7 +23,8 @@
 		<nature>org.eclipse.cdt.core.cnature</nature>
 		<nature>com.st.stm32cube.ide.mcu.MCUCubeIdeServicesRevAev2ProjectNature</nature>
 		<nature>com.st.stm32cube.ide.mcu.MCUNonUnderRootProjectNature</nature>
-		<nature>com.st.stm32cube.ide.mcu.MCUCubeExampleProjectNature</nature>
+		<nature>com.st.stm32cube.ide.mcu.MCUCubeProjectNature</nature>
+		<nature>com.st.stm32cube.ide.mcu.MCUAdvancedStructureProjectNature</nature>
 		<nature>com.st.stm32cube.ide.mcu.MCUEndUserDisabledTrustZoneProjectNature</nature>
 		<nature>com.st.stm32cube.ide.mcu.MCUNonSecureProjectNature</nature>
 		<nature>com.st.stm32cube.ide.mcu.MCUSingleCpuProjectNature</nature>
@@ -32,6 +33,11 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
 	<linkedResources>
+		<link>
+			<name>LPBAM_LPGPIO_IOToggle.ioc</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/LPBAM_LPGPIO_IOToggle.ioc</locationURI>
+		</link>
 		<link>
 			<name>Doc/README.md</name>
 			<type>1</type>
@@ -63,24 +69,9 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Utilities/lpbam/stm32_lpbam_gpio.c</locationURI>
 		</link>
 		<link>
-			<name>Application/User/main.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Src/main.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/stm32u5xx_hal_msp.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Src/stm32u5xx_hal_msp.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/stm32u5xx_it.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Src/stm32u5xx_it.c</locationURI>
-		</link>
-		<link>
 			<name>Drivers/CMSIS/system_stm32u5xx.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Src/system_stm32u5xx.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/system_stm32u5xx.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal.c</name>
@@ -91,11 +82,6 @@
 			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_cortex.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_cortex.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_dcache.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_dcache.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_dma.c</name>
@@ -163,6 +149,11 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr_ex.c</locationURI>
 		</link>
 		<link>
+			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_ramcfg.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_ramcfg.c</locationURI>
+		</link>
+		<link>
 			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_rcc.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc.c</locationURI>
@@ -173,14 +164,14 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc_ex.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_rtc.c</name>
+			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_tim.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rtc.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_tim.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_rtc_ex.c</name>
+			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_tim_ex.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rtc_ex.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_tim_ex.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_uart.c</name>
@@ -193,9 +184,39 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_uart_ex.c</locationURI>
 		</link>
 		<link>
+			<name>Application/User/Core/main.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/main.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/Core/stm32u5xx_hal_msp.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/stm32u5xx_hal_msp.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/Core/stm32u5xx_it.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/stm32u5xx_it.c</locationURI>
+		</link>
+		<link>
 			<name>Drivers/BSP/STM32U5xx_Nucleo/stm32u5xx_nucleo.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U5xx_Nucleo/stm32u5xx_nucleo.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/LPBAM/WriteIO/lpbam_writeio_config.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/LPBAM/WriteIO/lpbam_writeio_config.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/LPBAM/WriteIO/lpbam_writeio_writeseq_build.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/LPBAM/WriteIO/lpbam_writeio_writeseq_build.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/LPBAM/WriteIO/lpbam_writeio_writeseq_config.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/LPBAM/WriteIO/lpbam_writeio_writeseq_config.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -1,3 +1,4 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file    partition_stm32u585xx.h
@@ -32,6 +33,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* USER CODE END Header */
+
 #ifndef PARTITION_STM32U585XX_H
 #define PARTITION_STM32U585XX_H
 /*
@@ -511,6 +514,7 @@
 
 /*
 //   <e>Initialize ITNS 3 (Interrupts 96..108)
+
 */
 #define NVIC_INIT_ITNS3    1
 
@@ -539,7 +543,7 @@
 //   <o.20> LPDMA1_Channel2_IRQn  <0=> Secure state
 //   <o.21> LPDMA1_Channel3_IRQn  <0=> Secure state
 //   <o.22> DMA2D_IRQn            <0=> Secure state
-//   <o.23> DCMI_PSSI_IRQN        <0=> Secure state
+//   <o.23> DCMI_PSSI_IRQn        <0=> Secure state
 //   <o.24> OCTOSPI2_IRQn         <0=> Secure state
 //   <o.25> MDF1_FLT4_IRQn        <0=> Secure state
 //   <o.26> MDF1_FLT5_IRQn        <0=> Secure state
@@ -665,3 +669,4 @@ __STATIC_INLINE void TZ_SAU_Setup (void)
 }
 /* USER CODE END 2 */
 #endif  /* PARTITION_STM32U585XX_H */
+

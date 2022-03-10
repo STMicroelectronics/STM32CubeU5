@@ -26,6 +26,8 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+extern uint8_t global_svc_index;
+extern uint8_t at_buffer[64];
 
 #ifdef __cplusplus
 }

@@ -84,7 +84,11 @@ extern "C" {
  * Major numbers (4 bit) to identify the
  * consumer of shared data in runtime SW.
  */
+
+#define TLV_MAJOR_CORE     0x0
 #define TLV_MAJOR_IAS      0x1
+#define TLV_MAJOR_FWU      0x2
+#define TLV_MAJOR_PS       0x3
 
 /* Initial attestation: Claim per SW components / SW modules */
 /* Bits: 0-2 */
@@ -106,6 +110,38 @@ extern "C" {
 #define SET_IAS_MINOR(sw_module, claim) \
         (((uint16_t)(sw_module) << MODULE_POS) | (claim))
 
+/* Minor core identification definition (MAJOR CORE value) */
+#define TLV_MINOR_CORE_IAS_IMPLEMENTATION_ID (0x49CD)  /*  "IM" */
+#define TLV_MINOR_CORE_IAS_KEY_TYPE   (0x4B54)  /* "KT" */
+#define TLV_MINOR_CORE_IAS_KEY_PRIV   (0x4BCD)  /* "KP" */
+/* Minor core identification definition (MAJOR SST value) */
+#define TLV_MINOR_CORE_HUK  (0x4855) /*  "HU" */
+/* Initial attestation: SW components / SW modules
+ * This list is intended to be adjusted per device. It contains more SW
+ * components than currently available in TF-M project. It serves as an example,
+ * what kind of SW components might be available.
+ */
+ 
+/* Initial attestation: General claim does not belong any particular SW
+ * component. But they might be part of the boot status.
+ */
+#define BOOT_SEED          0x00
+#define HW_VERSION         0x01
+#define SECURITY_LIFECYCLE 0x02
+
+
+#define SW_GENERAL     0x00
+#define SW_BL2         0x01
+#define SW_PROT        0x02
+#define SW_AROT        0x03
+#define SW_SPE         0x04
+#define SW_NSPE        0x05
+#define SW_S_NS        0x06
+#define SW_MAX         0x07
+/* Minor numbers (12 bit) to identify attestation service related data */
+#define TLV_MINOR_IAS_BOOT_SEED       ((SW_GENERAL << 6) | BOOT_SEED)
+#define TLV_MINOR_IAS_HW_VERSION      ((SW_GENERAL << 6) | HW_VERSION)
+#define TLV_MINOR_IAS_SLC             ((SW_GENERAL << 6) | SECURITY_LIFECYCLE)
 /**
  * Shared data TLV header.  All fields in little endian.
  *

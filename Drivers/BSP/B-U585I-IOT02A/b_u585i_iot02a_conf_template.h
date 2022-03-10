@@ -55,6 +55,9 @@ extern "C" {
 /* IRQ priorities */
 #define BSP_BUTTON_USER_IT_PRIORITY   15U  /* Default is lowest priority level */
 
+/* Audio interrupt priority */
+#define BSP_AUDIO_IN_IT_PRIORITY      15U  /* Default is lowest priority level */
+
 /* CAMERA interrupt priority */
 #define BSP_CAMERA_IT_PRIORITY        14U  /* Default is lowest priority level */
 

@@ -25,10 +25,10 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-uint8_t received_byte;
+static uint8_t received_byte;
+static uint32_t tick_snapshot, tick_snapshot2;
 uint8_t at_buffer[64];
 uint8_t global_svc_index = 0;
-uint32_t tick_snapshot, tick_snapshot2;
 
 extern UART_HandleTypeDef huart4;
 /* Private function prototypes -----------------------------------------------*/
@@ -58,40 +58,32 @@ void BSP_PB_Callback(Button_TypeDef Button)
         {
           svc_index = 1;
         }
-
-        if(svc_index == 2)
-        {
-          printf("Send a BLE AT command to set the service to HeartRate application\n");
-        }
-        else
-        {
-          printf("Send a BLE AT command to set the service to P2P server application\n");
-        }
-
+        /* Send a BLE_SVC command to select the service running */
         stm32wb_at_BLE_SVC_t param_BLE_SVC;
         param_BLE_SVC.index = svc_index;
         stm32wb_at_client_Set(BLE_SVC, &param_BLE_SVC);
         
-        printf("Send a BLE AT command to read current service running\n");
-        stm32wb_at_client_Query(BLE_SVC);
+        global_svc_index = svc_index;
       }
       else
       {
         tick_snapshot = HAL_GetTick();
-        printf("Send a BLE AT command to notify BLE application\n");
 
+        /* Send a BLE_NOTIF_VAL command to notify BLE application */
         stm32wb_at_BLE_NOTIF_VAL_t param_BLE_NOTIF_VAL;
         if(global_svc_index == 1)
         {
           param_BLE_NOTIF_VAL.svc_index = 1;
           param_BLE_NOTIF_VAL.char_index = 2;
-          param_BLE_NOTIF_VAL.value = 1;
+          param_BLE_NOTIF_VAL.val_tab[0] = 1;
+          param_BLE_NOTIF_VAL.val_tab_len = 1;
         }
         else
         {
           param_BLE_NOTIF_VAL.svc_index = 2;
           param_BLE_NOTIF_VAL.char_index = 1;
-          param_BLE_NOTIF_VAL.value = 80 + (HAL_GetTick() % 60);
+          param_BLE_NOTIF_VAL.val_tab[0] = 80 + (HAL_GetTick() % 60);
+          param_BLE_NOTIF_VAL.val_tab_len = 1;
         }
 
         stm32wb_at_client_Set(BLE_NOTIF_VAL, &param_BLE_NOTIF_VAL);
@@ -113,7 +105,7 @@ uint8_t stm32wb_at_BLE_EVT_WRITE_cb(stm32wb_at_BLE_EVT_WRITE_t *param)
 {
   if( (param->svc_index == 1) && (param->char_index == 2) )
   {
-    if(param->value == 0)
+    if(param->val_tab[0] == 0)
     {
       BSP_LED_Off(LED_GREEN);
     }

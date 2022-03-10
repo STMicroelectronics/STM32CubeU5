@@ -72,6 +72,13 @@
       <div>Reference materials available on <a href="http://www.st.com/stm32cubefw" target="_blank">www.st.com/stm32cubefw</a></div>
       <ul>
         <li><a href="http://www.st.com/stm32cubefw" target="_blank">Latest release</a> of STM32CubeU5 Firmware package.</li>
+        <li><a href="https://www.st.com/resource/en/user_manual/um2883-getting-started-with-stm32cubeu5-for-stm32u5-series-stmicroelectronics.pdf" target="_blank">UM2883</a>: Getting started with STM32CubeU5 for STM32U5 Series.</li>
+        <li><a href="https://www.st.com/resource/en/user_manual/um2911-description-of-stm32u5-hal-and-lowlayer-driver-stmicroelectronics.pdf" target="_blank">UM2911</a>: Description of STM32U5 HAL and low-layer driver.</li>
+        <li><a href="https://www.st.com/resource/en/user_manual/um2298-stm32cube-bsp-drivers-development-guidelines-stmicroelectronics.pdf" target="_blank">UM2298</a>: STM32Cube BSP drivers development guidelines.</li>
+        <li><a href="https://www.st.com/resource/en/user_manual/um2913-stm32cubeu5-bu585iiot02a-web-server-demonstration-firmware-stmicroelectronics.pdf" target="_blank">UM2913</a>: STM32CubeU5 B-U585I-IOT02A web server demonstration firmware.</li>
+        <li><a href="https://www.st.com/resource/en/user_manual/um2912-stm32cubeu5-stm32u575iev-demonstration-firmware-stmicroelectronics.pdf" target="_blank">UM2912</a>: STM32CubeU5 STM32U575I-EV demonstration firmware.</li>
+        <li><a href="https://www.st.com/resource/en/user_manual/um2851-getting-started-with-stm32cubeu5-tfm-application-stmicroelectronics.pdf" target="_blank">UM2851</a>: Getting started with STM32CubeU5 TFM application.</li>
+        <li><a href="https://www.st.com/resource/en/user_manual/um2852-stm32u585xx-security-guidance-for-psa-certified-level-3-with-sesip-profile-stmicroelectronics.pdf" target="_blank">UM2852</a>: STM32U585xx security guidance for PSA Certified™ Level 3 with SESIP Profile.</li>
       </ul>
     </p>
 		<table border='1' bgcolor='#f0f0fF' >
@@ -561,7 +568,7 @@ How to use the HASH peripheral to hash data with HMAC SHA-1 and HMAC MD5 algorit
         <td>-</td>
       </tr>
       <tr align=center>
-        <td align=left rowspan=9><p id="I2C">I2C</p></td>
+        <td align=left rowspan=10><p id="I2C">I2C</p></td>
         <td align=left><p id="I2C_TwoBoards_AdvComIT">I2C_TwoBoards_AdvComIT</p></td>
         <td align=left>
 How to handle several I2C data buffer transmission/reception between
@@ -639,6 +646,15 @@ in interrupt mode and with restart condition.
         <td align=left><p id="I2C_TwoBoards_RestartComIT">I2C_TwoBoards_RestartComIT</p></td>
         <td align=left>
 How to handle single I2C data buffer transmission/reception between two boards in interrupt mode and with restart condition.
+</td>
+        <td>-</td>
+        <td><font size="5" color=green>CubeMx</font></td>
+        <td>-</td>
+      </tr>
+      <tr align=center>
+        <td align=left><p id="I2C_WakeUpFromStop">I2C_WakeUpFromStop</p></td>
+        <td align=left>
+How to handle I2C data buffer transmission/reception between two boards using an interrupt when the device is in Stop mode.
 </td>
         <td>-</td>
         <td><font size="5" color=green>CubeMx</font></td>
@@ -774,7 +790,7 @@ How to execute code from OSPI memory after code loading.
         <td align=left>
 How to use an OSPI PSRAM memory in memory-mapped mode.
 </td>
-        <td>-</td>
+        <td><font size="5" color=green>CubeMx</font></td>
         <td>-</td>
         <td><font size="5" color=green>CubeMx</font></td>
       </tr>
@@ -1350,8 +1366,8 @@ generates an MCU WWDG reset when a predefined time period has elapsed.
         <td>-</td>
       </tr>
       <tr style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" align=center>
-        <td colspan="3"><b>Total number of examples: 136</b></td>
-        <td>26</td>
+        <td colspan="3"><b>Total number of examples: 137</b></td>
+        <td>27</td>
         <td>87</td>
         <td>23</td>
       </tr>
@@ -1602,10 +1618,7 @@ initialization uses LL unitary service functions for optimization purposes (perf
       </tr>
       <tr align=center>
         <td align=left><p id="SPI_TwoBoards_FullDuplex_IT_Slave_Init">SPI_TwoBoards_FullDuplex_IT_Slave_Init</p></td>
-        <td align=left>=======
-## <b>SPI_TwoBoards_FullDuplex_IT_Slave_Init Example Description</b>
->>>>>>> CHANGE (22b2e3 fix readmes)
-
+        <td align=left>
 Data buffer transmission and receptionvia SPI using Interrupt mode.
 </td>
         <td>-</td>
@@ -1863,7 +1876,7 @@ Use of the TIM peripheral to measure an external signal frequency and duty cycle
         <td>0</td>
       </tr>
       <tr align=center>
-        <td style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" rowspan=47><p id="Applications">Applications</p></td>
+        <td style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" rowspan=51><p id="Applications">Applications</p></td>
         <td align=left rowspan=3><p id="-">-</p></td>
         <td align=left><p id="OpenBootloader">OpenBootloader</p></td>
         <td align=left>
@@ -1878,9 +1891,9 @@ and how use it.
         <td align=left><p id="SBSFU">SBSFU</p></td>
         <td align=left>
 The SBSFU provides a Root of Trust solution including Secure Boot and Secure
-Firmware Update functionalities that is used before executing the application
-and provides an example of secure service (GPIO toggle) that is isolated from the non-secure
-application but can be used by the non-secure application at run-time.
+Firmware Update functionalities that is used before executing the application  
+and provides an example of secure service (GPIO toggle) that is isolated from the non-secure  
+application but can be used by the non-secure application at run-time.  
 </td>
         <td>-</td>
         <td>-</td>
@@ -1890,9 +1903,9 @@ application but can be used by the non-secure application at run-time.
         <td align=left><p id="TFM">TFM</p></td>
         <td align=left>
 The TFM provides a Root of Trust solution including Secure Boot and Secure
-Firmware Update functionalities that is used before executing the application
-and provides TFM secure services that are isolated from the non-secure
-application but can be used by the non-secure application at run-time.
+Firmware Update functionalities that is used before executing the application  
+and provides TFM secure services that are isolated from the non-secure  
+application but can be used by the non-secure application at run-time.  
 </td>
         <td>-</td>
         <td>-</td>
@@ -1902,7 +1915,7 @@ application but can be used by the non-secure application at run-time.
         <td align=left rowspan=1><p id="BLE">BLE</p></td>
         <td align=left><p id="BLE_AT_Client">BLE_AT_Client</p></td>
         <td align=left>
-This example demonstrates BLE connectivity on STM32WB5M module for the B-U585-IOT02A board.
+This example demonstrates BLE connectivity on STM32WB5MMG module for the B-U585-IOT02A board.
 </td>
         <td>-</td>
         <td>-</td>
@@ -1913,6 +1926,15 @@ This example demonstrates BLE connectivity on STM32WB5M module for the B-U585-IO
         <td align=left><p id="Fx_Dual_Instance">Fx_Dual_Instance</p></td>
         <td align=left>
 This application provide user a working example of two storage media managed by two independent instances of FileX/LevelX running on STM32U575I-EV board. 
+</td>
+        <td><font size="5" color=green>CubeMx</font></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr align=center>
+        <td align=left><p id="Fx_File_Edit_Standalone">Fx_File_Edit_Standalone</p></td>
+        <td align=left>
+This application provides an example of FileX stack usage on STM32U575I-EV board, running in standalone mode (without ThreadX). It demonstrates how to create a Fat File system on the SD card memory using FileX API.
 </td>
         <td><font size="5" color=green>CubeMx</font></td>
         <td>-</td>
@@ -1941,18 +1963,9 @@ NOR flash device, the code provides all required software code for properly mana
         <td><font size="5" color=green>CubeMx</font></td>
       </tr>
       <tr align=center>
-        <td align=left><p id="Fx_SRAM_File_Edit_Standalone">Fx_SRAM_File_Edit_Standalone</p></td>
-        <td align=left>
-This application provides an example of FileX stack usage on NUCLEO-U575ZI-Q board, running in standalone mode (without ThreadX). It demonstrates how to create a Fat File system on the internal SRAM memory using FileX API.
-</td>
-        <td>-</td>
-        <td><font size="5" color=green>X</font></td>
-        <td>-</td>
-      </tr>
-      <tr align=center>
         <td align=left><p id="Fx_uSD_File_Edit">Fx_uSD_File_Edit</p></td>
-        <td align=left> 
-This application provides an example of Azure RTOS FileX stack usage on STM32U575I-EV board, it shows how to develop a basic SD card file 
+        <td align=left>
+This application provides an example of Azure RTOS FileX stack usage on STM32U575I-EV board, it shows how to develop a basic SD card file
 
 operations application.
 </td>
@@ -1962,47 +1975,47 @@ operations application.
       </tr>
       <tr align=center>
         <td align=left rowspan=9><p id="LPBAM">LPBAM</p></td>
-        <td align=left><p id="LPBAM_ADC_InternalExternalChannelSwitch">LPBAM_ADC_InternalExternalChannelSwitch</p></td>
+        <td align=left><p id="LPBAM_ADC_IntExtChannelSwitch">LPBAM_ADC_IntExtChannelSwitch</p></td>
         <td align=left>-   How to handle ADC switch between internal and external channel configurations then convert data thanks to DMA
 linked-list feature in low power mode through LPBAM utility.
 </td>
         <td>-</td>
-        <td><font size="5" color=green>X</font></td>
+        <td><font size="5" color=green>CubeMx</font></td>
         <td>-</td>
       </tr>
       <tr align=center>
-        <td align=left><p id="LPBAM_COMP_InputSwitch">LPBAM_COMP_InputSwitch</p></td>
-        <td align=left>-   How to handle COMP switch inputs and read compared value using
-DMA linked-list feature in low power mode through LPBAM utility.
+        <td align=left><p id="LPBAM_COMP_InSwitch">LPBAM_COMP_InSwitch</p></td>
+        <td align=left>-   How to handle COMP switch inputs and read compared value using DMA linked-list feature in low power mode through
+LPBAM utility.
 </td>
         <td>-</td>
-        <td><font size="5" color=green>X</font></td>
+        <td><font size="5" color=green>CubeMx</font></td>
         <td>-</td>
       </tr>
       <tr align=center>
-        <td align=left><p id="LPBAM_DAC_OPAMP_ContinuousConversion">LPBAM_DAC_OPAMP_ContinuousConversion</p></td>
-        <td align=left>-   How to handle DAC continuous conversion and OPAMP switching configuration using
-DMA linked-list feature in low power mode through LPBAM utility.
+        <td align=left><p id="LPBAM_DAC_OPAMP_SigAmpli">LPBAM_DAC_OPAMP_SigAmpli</p></td>
+        <td align=left>-   How to handle DAC continuous conversion and OPAMP switching configuration using DMA linked-list feature in low power
+mode through LPBAM utility.
 </td>
         <td>-</td>
-        <td><font size="5" color=green>X</font></td>
+        <td><font size="5" color=green>CubeMx</font></td>
         <td>-</td>
       </tr>
       <tr align=center>
-        <td align=left><p id="LPBAM_DMA_MultiQueueExecution">LPBAM_DMA_MultiQueueExecution</p></td>
+        <td align=left><p id="LPBAM_DMA_MultiQExec">LPBAM_DMA_MultiQExec</p></td>
         <td align=left>-   How to handle multi queue execution with DMA linked-list feature in low power mode through LPBAM utility.
 </td>
         <td>-</td>
-        <td><font size="5" color=green>X</font></td>
+        <td><font size="5" color=green>CubeMx</font></td>
         <td>-</td>
       </tr>
       <tr align=center>
-        <td align=left><p id="LPBAM_I2C_SequentialTransfer">LPBAM_I2C_SequentialTransfer</p></td>
-        <td align=left>-   How to handle I2C sequential transmission/reception with data reload between two boards with
-DMA linked-list feature in low power mode through LPBAM utility.
+        <td align=left><p id="LPBAM_I2C_TransmitReceive">LPBAM_I2C_TransmitReceive</p></td>
+        <td align=left>-   How to handle I2C sequential transmission/reception with data reload between two boards with DMA linked-list feature
+in low power mode through LPBAM utility.
 </td>
         <td>-</td>
-        <td><font size="5" color=green>X</font></td>
+        <td><font size="5" color=green>CubeMx</font></td>
         <td>-</td>
       </tr>
       <tr align=center>
@@ -2010,41 +2023,78 @@ DMA linked-list feature in low power mode through LPBAM utility.
         <td align=left>-   How to toggle a LPGPIO Pin with DMA linked-list feature in low power mode through LPBAM utility every 1s.
 </td>
         <td>-</td>
-        <td><font size="5" color=green>X</font></td>
+        <td><font size="5" color=green>CubeMx</font></td>
         <td>-</td>
       </tr>
       <tr align=center>
-        <td align=left><p id="LPBAM_LPTIM_PWMGeneration">LPBAM_LPTIM_PWMGeneration</p></td>
-        <td align=left>-   How to handle LPTIM PWM Generation with DMA linked-list feature in low power mode
-through LPBAM utility.
+        <td align=left><p id="LPBAM_LPTIM_PWMGen">LPBAM_LPTIM_PWMGen</p></td>
+        <td align=left>-   How to handle LPTIM PWM Generation with DMA linked-list feature in low power mode through LPBAM utility.
 </td>
         <td>-</td>
-        <td><font size="5" color=green>X</font></td>
+        <td><font size="5" color=green>CubeMx</font></td>
         <td>-</td>
       </tr>
       <tr align=center>
         <td align=left><p id="LPBAM_LPUART_TransmitReceive">LPBAM_LPUART_TransmitReceive</p></td>
-        <td align=left>-   How to handle LPUART transmission/reception between two boards with
-DMA linked-list feature in low power mode through LPBAM utility.
+        <td align=left>-   How to handle LPUART transmission/reception between two boards with DMA linked-list feature in low power mode
+through LPBAM utility.
 </td>
         <td>-</td>
-        <td><font size="5" color=green>X</font></td>
+        <td><font size="5" color=green>CubeMx</font></td>
         <td>-</td>
       </tr>
       <tr align=center>
-        <td align=left><p id="LPBAM_SPI_FullDuplex_Simplex">LPBAM_SPI_FullDuplex_Simplex</p></td>
+        <td align=left><p id="LPBAM_SPI_TransmitReceive">LPBAM_SPI_TransmitReceive</p></td>
         <td align=left>-   How to handle SPI two consecutive communications (full duplex then simplex) between two boards with DMA linked-list
 feature in low power mode through LPBAM utility.
 </td>
         <td>-</td>
-        <td><font size="5" color=green>X</font></td>
+        <td><font size="5" color=green>CubeMx</font></td>
         <td>-</td>
       </tr>
       <tr align=center>
-        <td align=left rowspan=7><p id="NetXDuo">NetXDuo</p></td>
+        <td align=left rowspan=11><p id="NetXDuo">NetXDuo</p></td>
+        <td align=left><p id="Nx_HTTP_SSE">Nx_HTTP_SSE</p></td>
+        <td align=left>
+The HTTP_Server_SentEvents_Socket application guides STM32Cube HAL API users to run a http server application.
+</td>
+        <td>-</td>
+        <td>-</td>
+        <td><font size="5" color=green>CubeMx</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left><p id="Nx_IAP_Client">Nx_IAP_Client</p></td>
+        <td align=left>
+The NX_IAP_Client application shows how to use the WiFi module to perform an IAP ("In
+Application Programming") using STM32 Cube HAL.
+</td>
+        <td>-</td>
+        <td>-</td>
+        <td><font size="5" color=green>CubeMx</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left><p id="Nx_MDNS">Nx_MDNS</p></td>
+        <td align=left>
+This application demonstrates mDNS on MXCHIP EMW3080 module for the STM32U585AII6Q board.
+</td>
+        <td>-</td>
+        <td>-</td>
+        <td><font size="5" color=green>CubeMx</font></td>
+      </tr>
+      <tr align=center>
         <td align=left><p id="Nx_MQTT_Client">Nx_MQTT_Client</p></td>
         <td align=left>
 This application provides an example of Azure RTOS NetX/NetXDuo stack usage . 
+</td>
+        <td>-</td>
+        <td>-</td>
+        <td><font size="5" color=green>CubeMx</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left><p id="Nx_Network_Basics">Nx_Network_Basics</p></td>
+        <td align=left>
+
+This application demonstrates WiFi connectivity on MXCHIP EMW3080 module for the STM32U585AII6Q board.
 </td>
         <td>-</td>
         <td>-</td>
@@ -2185,19 +2235,19 @@ This application is a USBPD type C Consumer and USB Device using Azure RTOS USBX
 </td>
         <td>-</td>
         <td>-</td>
-        <td><font size="5" color=green>X</font></td>
+        <td><font size="5" color=green>CubeMx</font></td>
       </tr>
       <tr align=center>
         <td align=left><p id="USBPD_SRC_UX_Host_MSC">USBPD_SRC_UX_Host_MSC</p></td>
         <td align=left>
 This application is a USBPD type C Provider and USB Host using Azure RTOS USBX stack. It shows how to develop a USBPD type C Provider in the case of an USB host application based on Mass Storage "MSC" which is able to enumerate and communicates with a removable usb flash disk.
 </td>
-        <td><font size="5" color=green>X</font></td>
+        <td><font size="5" color=green>CubeMx</font></td>
         <td>-</td>
         <td>-</td>
       </tr>
       <tr align=center>
-        <td align=left rowspan=10><p id="USBX">USBX</p></td>
+        <td align=left rowspan=11><p id="USBX">USBX</p></td>
         <td align=left><p id="Ux_Device_CDC_ACM">Ux_Device_CDC_ACM</p></td>
         <td align=left>
 This application provides an example of Azure RTOS USBX stack usage on NUCLEO-U575ZI-Q board, it shows how to develop USB Device communication Class "CDC_ACM" based application.
@@ -2289,6 +2339,15 @@ This application provides an example of Azure RTOS USBX stack usage .
         <td>-</td>
       </tr>
       <tr align=center>
+        <td align=left><p id="Ux_Host_HID_CDC_ACM">Ux_Host_HID_CDC_ACM</p></td>
+        <td align=left>
+This application provides an example of Azure RTOS USBX stack usage.
+</td>
+        <td><font size="5" color=green>CubeMx</font></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr align=center>
         <td align=left><p id="Ux_Host_MSC">Ux_Host_MSC</p></td>
         <td align=left>
 This application provides an example of Azure RTOS USBX stack usage. It shows how to develop USB Host Mass Storage "MSC" able to enumerate and communicates with a removable usb flash disk.
@@ -2297,22 +2356,11 @@ This application provides an example of Azure RTOS USBX stack usage. It shows ho
         <td>-</td>
         <td>-</td>
       </tr>
-      <tr align=center>
-        <td align=left rowspan=1><p id="WiFi">WiFi</p></td>
-        <td align=left><p id="WiFiBasics">WiFiBasics</p></td>
-        <td align=left>
-
-This application demonstrates WiFi connectivity on MXCHIP EMW3080 module for the B-U585-IOT02A board.
-</td>
-        <td>-</td>
-        <td>-</td>
-        <td><font size="5" color=green>CubeMx</font></td>
-      </tr>
       <tr style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" align=center>
-        <td colspan="3"><b>Total number of applications: 46</b></td>
-        <td>10</td>
-        <td>18</td>
-        <td>18</td>
+        <td colspan="3"><b>Total number of applications: 50</b></td>
+        <td>12</td>
+        <td>17</td>
+        <td>21</td>
       </tr>
       <tr align=center>
         <td style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" rowspan=3><p id="Demonstrations">Demonstrations</p></td>
@@ -2348,10 +2396,10 @@ HAL, BSP and middleware components. It shows how to perform a web server demonst
         <td>1</td>
       </tr>
       <tr style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" align=center>
-      	<td colspan="4"><b>Total number of projects: 239</b></td>
-      	<td>40</td>
-      	<td>154</td>
-      	<td>45</td>
+      	<td colspan="4"><b>Total number of projects: 244</b></td>
+      	<td>43</td>
+      	<td>153</td>
+      	<td>48</td>
       </tr>
     </table>
   </body>

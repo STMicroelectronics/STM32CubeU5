@@ -19,27 +19,47 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
-      developing an LPBAM application.
+      It is recommended to read the LPBAM_Utility_GettingStarted.html document, available at the root of LPBAM utility
+      folder, prior to any LPBAM application development start.
 
     *** Driver description ***
     ==========================
     [..]
-      This driver is dedicated for LPTIM that supports linked-list feature.
-      This advanced LPBAM module counts 3 files :
-          (+) stm32_adv_lpbam_lptim.c
-              (++) This file provides the LPTIM advanced files body.
-          (+) stm32_adv_lpbam_lptim.h
-              (++) This file is the header file of stm32_adv_lpbam_lptim.c. It provides used types
-          (+) stm32_platform_lpbam_lptim.h
-              (++) This header file contains all defines to be used in applicative side.
+      This section provide description of the driver files content (refer to LPBAM_Utility_GettingStarted.html document
+      for more information)
+
+    [..]
+      This LPBAM modules deals with the peripheral instances that support autonomous mode.
+      It is composed of 3 files :
+          (+) stm32_adv_lpbam_lptim.c file
+              (++) This file provides the implementation of the advanced LPBAM LPTIM functions.
+          (+) stm32_adv_lpbam_lptim.h file
+              (++) This file is the header file of stm32_adv_lpbam_lptim.c. It provides advanced LPBAM LPTIM functions
+                   prototypes and the declaration of their needed exported types and structures.
+          (+) STM32xx/stm32_platform_lpbam_lptim.h file
+              (++) This header file contains all defines to be used on applicative side.
+                   (+++) STM32xx stands for the device supporting LPBAM sub-system.
+
+    *** Driver functions model ***
+    ==============================
+    [..]
+      This section precises this module supported advanced functions model (refer to LPBAM_Utility_GettingStarted.html
+      document for function model definition).
+
+    [..]
+      An advanced functionality in this module can be inserted using 1 main type of functions :
+          (+) ADV_LPBAM_{Peripheral}_{Operation}_SetFullQ() : Inserts a {Peripheral} functional and data transfer
+                                                              configuration for the selected {Operation} in a queue.
 
     *** Driver features ***
     =======================
     [..]
-      This driver provides the following list of features :
-          (+) Starts the LPTIM channel for PWM, input capture and update event detection modes.
-          (+) Stops the LPTIM peripheral for PWM, input capture and update event detection modes.
+      This section describes this LPBAM module supported features.
+
+    [..]
+      This driver provides services covering the LPBAM management of the following LPTIM features :
+          (+) Starts the LPTIM peripheral counter in single or continuous mode.
+          (+) Stops the LPTIM peripheral counter.
           (+) Update the pulse, the period and the repetition values for PWM waveform.
           (+) Get capture values for LPTIM input signal.
           (+) Update the period and the repetition values and starts the LPTIM counter to generate an update event.
@@ -47,44 +67,51 @@
     *** Functional description ***
     ==============================
     [..]
-      The LPTIM peripheral can be started and stopped through a DMA channel thanks to a build DMA linked-list queue in
-      three different mode :
-          (+) PWM mode where the LPTIM channel is configured as output.
-          (+) Input capture mode where the LPTIM channel is configured as input.
-          (+) update event detection mode where the LPTIM is initialized (No need for channel configuration).
-      The PWM Waveform can be changed by updating the period, pulse and the repetition thanks to a build DMA linked-list
-      queue.
-      A input capture of external signal can be read and stored in a buffer thanks to a build DMA linked-list queue.
-      An update event detection can be configured and started thanks to a build DMA linked-list queue.
+      This section describes the peripheral features covered by this LPBAM module.
 
+    [..]
       The output of this driver is a queue to be executed by the DMA channel.
+
+      The LPTIM peripheral configuration to start and stop depend on the following three LPTIM modes :
+          (+) PWM update mode when the LPTIM channel is configured as output.
+          (+) Input Capture (IC) mode when the LPTIM channel is configured as input.
+          (+) Update Event (UE) detection mode when the LPTIM peripheral is already initialized, and channel
+              configuration is not needed.
+      According to the chosen LPTIM mode the following configurations can be performed:
+          (+) PWM mode : Update the period, the pulse and the repetition in order to change the PWM Waveform.
+          (+) IC mode  : Read and store in a buffer an external Input Capture signal values.
+          (+) UE mode  : Configure the Update Event period and repetition values.
 
     *** Driver APIs description ***
     ===============================
     [..]
-      Use ADV_LPBAM_LPTIM_Start_SetFullQ() API to build a linked-list queue that starts the LPTIM channel in single or
-      in continuous mode according to parameters in the LPBAM_LPTIM_StartFullAdvConf_t structure.
-      Configured parameters are :
+      This section provides LPBAM module exhaustive APIs description without considering application user call sequence.
+      For user call sequence information, please refer to 'Driver user sequence' section below.
+
+    [..]
+      Use ADV_LPBAM_LPTIM_Start_SetFullQ() API to build a linked-list queue that starts the LPTIM peripheral counter in
+      single or in continuous mode according to parameters in the LPBAM_LPTIM_StartFullAdvConf_t structure.
+      The configuration parameters are :
           (+) StartMode  : Specifies the LPTIM Start Mode.
-                           This parameter can be a value of @ref LPBAM_LPTIM_ContinuousMode.
+                           This parameter can be a value of @ref LPBAM_LPTIM_Start_Mode.
           (+) WakeupIT   : Specifies the wake up source interrupt.
                            This parameter can be one or a combination of @ref LPBAM_LPTIM_Wakeup_Interrupt.
-      This API must be called when the LPTIM is disabled for each mode.
+      The LPTIM peripheral shall be disabled before calling this API.
 
     [..]
-      Use ADV_LPBAM_LPTIM_Stop_SetFullQ() API to build a linked-list queue that stops the LPTIM peripheral in single or
-      in continuous mode according to parameters in the LPBAM_LPTIM_StopFullAdvConf_t structure.
-      Configured parameters are :
+      Use ADV_LPBAM_LPTIM_Stop_SetFullQ() API to build a linked-list queue that stops the LPTIM peripheral counter
+      according to parameters in the LPBAM_LPTIM_StopFullAdvConf_t structure.
+      The configuration parameters are :
           (+) Mode  : Specifies the LPTIM Mode.
                       This parameter can be a value of @ref LPBAM_LPTIM_Stop_Mode.
-      This API must be called when the LPTIM is enabled for each mode in start a new operation.
+      The LPTIM peripheral shall be enabled before calling this API.
 
     [..]
-      Use ADV_LPBAM_LPTIM_PWM_SetFullQ() API to build a linked-list queue that updates at each update event request
-      generated the the period or/and the pulse or/and the repetition values according to parameters in the
-      LPBAM_LPTIM_StartFullAdvConf_t structure.
-      Configuration parameters are :
-          (+) UpdatePeriod     : Specifies the period update state
+      Use ADV_LPBAM_LPTIM_PWM_SetFullQ() API to build a linked-list queue that updates the PWM waveform parameters
+      values at each update event request generated according to parameters in the LPBAM_LPTIM_PWMFullAdvConf_t
+      structure.
+      The configuration parameters are :
+          (+) UpdatePeriod     : Specifies the period update state.
                                  This parameter can be ENABLE or DISABLE.
           (+) PeriodValue      : Specifies the period values.
           (+) UpdatePulse      : Specifies the pulse update state.
@@ -94,9 +121,9 @@
                                  This parameter can be ENABLE or DISABLE.
           (+) RepetitionValue  : Specifies the repetition values.
 
-      This API must be called when the LPTIM channel is well initialized PWM mode.
-          (+) Recommended LPTIM initialization sequence
-              (++) Call HAL_LPTIM_Init() to initialize LPTIM Instance. (Mandatory)
+      This API must be called when the LPTIM channel is initialized in output mode.
+          (+) Recommended LPTIM peripheral initialization sequence
+              (++) Call HAL_LPTIM_Init() to initialize LPTIM peripheral instance. (Mandatory)
                    Initialization parameters can be :
                    (+++) CounterSource                 : LPTIM_COUNTERSOURCE_INTERNAL.
                    (+++) UpdateMode                    : LPTIM_UPDATE_IMMEDIATE.
@@ -115,21 +142,27 @@
                    (+++) OCPolarity : LPTIM_OCPOLARITY_HIGH.
 
     [..]
-      Use ADV_LPBAM_LPTIM_IC_SetFullQ() API to build a linked-list queue that starts the input capture mode of an LPTIM
+      Use ADV_LPBAM_LPTIM_IC_SetFullQ() API to build a linked-list queue that starts the Input Capture mode of an LPTIM
       input signal according to parameters in the LPBAM_LPTIM_ICFullAdvConf_t structure.
-      The data node default configuration is as follow:
-          (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
-          (+) DestInc           : DMA_DINC_INCREMENTED.
-          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_HALFWORD. (Mandatory)
-          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_HALFWORD.
-          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
-
-      Configuration parameters are :
+      The configuration parameters are :
           (+) pData  : Specifies the address of data buffer.
           (+) Size   : Specifies the size of data to be read.
-      This API must be called when the LPTIM Instance is initialized in input mode.
+
+      The data transfer default configuration is as follow:
+          (+) SrcInc            : DMA_SINC_FIXED.
+          (+) DestInc           : DMA_DINC_INCREMENTED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_HALFWORD.
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_HALFWORD.
+          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
+      The data transfer configuration can be customized using ADV_LPBAM_Q_SetDataConfig() after calling
+      ADV_LPBAM_LPTIM_IC_SetFullQ(). The ADV_LPBAM_Q_SetDataConfig() is in the module stm32_adv_lpbam_common.c file.
+      Because of the HW implementation, the following parameters should be kept at default value:
+          (+) SrcInc            : DMA_SINC_FIXED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_HALFWORD.
+
+      This API must be called when the LPTIM channel is initialized in input mode.
           (+) Recommended LPTIM initialization sequence
               Initialization parameters can be :
               (++) Call HAL_LPTIM_Init() to initialize LPTIM Instance. (Mandatory)
@@ -159,12 +192,12 @@
                    (+++) LPTIM_IT_CC2O : Capture/compare 2 over-capture interrupt enable.
 
     [..]
-      Use ADV_LPBAM_LPTIM_UE_SetFullQ() API to build a linked-list queue that starts the LPTIM update event detection
+      Use ADV_LPBAM_LPTIM_UE_SetFullQ() API to build a linked-list queue that starts the LPTIM Update Event detection
       according to parameters in the LPBAM_LPTIM_UEFullAdvConf_t structure.
-      Configuration parameters are :
+      The configuration parameters are :
           (+) Period     : Specifies the period value.
           (+) Repetition : Specifies the period repetition number.
-      This API must be called when the LPTIM Instance is well initialized as follow.
+      This API must be called when the LPTIM peripheral instance is initialized as follow.
           (+) Recommended LPTIM initialization sequence
               (++) Call HAL_LPTIM_Init() to initialize LPTIM Instance. (Mandatory)
                    Initialization parameters can be :
@@ -180,27 +213,33 @@
                    (+++) Period                        : Initial period value.
                    (+++) RepetitionCounter             : Initial period repetition value.
 
-      The purpose of this API is to generate an update event after (Period * Repetition) delay that can be used for
-      trigger and system wake up purpose.
-      This API is used to implement a delay between 2 successives LPBAM APIs execution.
-      The channels outputs are not enabled and no LPTIM channel signal is propagated.
+      The purpose of this API is to generate an update event after (Period * Repetition) delay that can be used to
+      trigger or/and wake up the system.
+      This API is used to implement a delay between 2 successive LPBAM APIs execution.
+      This API is used independently of LPTIM channel settings.
 
     *** Driver user sequence ***
     ============================
     [..]
+      This section provides the steps to follow to build an LPBAM application based on HAL/LL and LPBAM drivers. (refer
+      to LPBAM_Utility_GettingStarted.html for linked-list feature description).
+
+    [..]
       PWM generation user sequence is :
+          (+) Initialize all needed GPIOs. (Depends on application needs)
           (+) Initialize LPTIM channel in output mode (Using HAL/LL). (Mandatory)
           (+) Call ADV_LPBAM_LPTIM_EnableDMARequests() to enable DMA requests and enable channel. (Mandatory)
-          (+) Call ADV_LPBAM_LPTIM_Start_SetFullQ() to start the LPTIM channel. (Mandatory)
-          (+) Repeat calling of ADV_LPBAM_LPTIM_PWM_SetFullQ() API to customize PWM signal for your application.
-          (+) Call ADV_LPBAM_LPTIM_Stop_SetFullQ(). (When your scenario is not circular/Mandatory to restart another
-              LPTIM mode)
-          (+) Call ADV_LPBAM_Q_SetCircularMode() to circularize your linked-list queue for infinite scenarios cases.
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call HAL_DMAEx_List_Link() to link the output queue to a master DMA channel. (Mandatory)
-          (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
+          (+) Call ADV_LPBAM_LPTIM_Start_SetFullQ() to start the LPTIM peripheral counter. (Mandatory)
+          (+) Call n times, where n >= 1, ADV_LPBAM_LPTIM_PWM_SetFullQ() to update PWM previous parameters. (Mandatory)
+          (+) Call ADV_LPBAM_LPTIM_Stop_SetFullQ().
+              (++) This call is mandatory when the generated PWM signal is not in an infinite loop.
+              (++) This call is forbidden when generating PWM signal in an infinite loop.
+          (+) Call, optionally, ADV_LPBAM_Q_SetCircularMode() in stm32_adv_lpbam_common.c to circularize your
+              linked-list queue for an infinite scenarios cases.
+          (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode. (Mandatory)
+          (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
-              Any DMA error occurred in low power block the LPBAM sub-system mechanisms.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
               DMA error interrupts can be :
               (++) DMA_IT_DTE : data transfer error.
               (++) DMA_IT_ULE : update link error.
@@ -208,19 +247,22 @@
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
 
     [..]
-      Input capture user sequence is :
+      Input Capture user sequence is :
+          (+) Initialize all needed GPIOs. (Depends on application needs)
           (+) Initialize LPTIM channel in input mode (Using HAL/LL). (Mandatory)
           (+) Call ADV_LPBAM_LPTIM_EnableDMARequests() to enable DMA requests and enable channel. (Mandatory)
           (+) Call ADV_LPBAM_LPTIM_Start_SetFullQ() to start the LPTIM channel. (Mandatory)
-          (+) Repeat calling of ADV_LPBAM_LPTIM_IC_SetFullQ() API according to application.
-          (+) Call ADV_LPBAM_LPTIM_Stop_SetFullQ(). (When your scenario is not circular/Mandatory to restart another
-              LPTIM mode)
-          (+) Call ADV_LPBAM_Q_SetCircularMode() to circularize your linked-list queue for infinite scenarios cases.
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call HAL_DMAEx_List_Link() to link the output queue to a master DMA channel. (Mandatory)
-          (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
+          (+) Call  n times, where n >= 1, ADV_LPBAM_LPTIM_IC_SetFullQ() to measure the Input Capture signal.
+              (Mandatory)
+          (+) Call ADV_LPBAM_LPTIM_Stop_SetFullQ().
+              (++) This call is mandatory when the measure of the Input Capture signal is not in an infinite loop.
+              (++) This call is forbidden when measuring Input Capture signal in an infinite loop.
+          (+) Call, optionally, ADV_LPBAM_Q_SetCircularMode() in stm32_adv_lpbam_common.c to circularize your
+              linked-list queue for an infinite scenarios cases.
+          (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode. (Mandatory)
+          (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
-              Any DMA error occurred in low power block the LPBAM sub-system mechanisms.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
               DMA error interrupts can be :
               (++) DMA_IT_DTE : data transfer error.
               (++) DMA_IT_ULE : update link error.
@@ -228,18 +270,16 @@
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
 
     [..]
-      Update event user sequence is :
-          (+) Initialize the LPTIM (Using HAL/LL). (Mandatory)
+      Update Event user sequence is :
+          (+) Initialize the LPTIM peripheral (Using HAL/LL). (Mandatory)
           (+) Call ADV_LPBAM_LPTIM_EnableDMARequests() to enable DMA requests and enable channel. (Mandatory)
           (+) Call ADV_LPBAM_LPTIM_Start_SetFullQ() to start the LPTIM channel. (Mandatory)
-          (+) Call ADV_LPBAM_LPTIM_UE_SetFullQ() API according to application.
+          (+) Call ADV_LPBAM_LPTIM_UE_SetFullQ() to configure Update Event parameters. (Mandatory)
           (+) Call ADV_LPBAM_LPTIM_Stop_SetFullQ(). (Mandatory)
-          (+) Call ADV_LPBAM_Q_SetCircularMode() to circularize your linked-list queue for infinite scenarios cases.
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call HAL_DMAEx_List_Link() to link the output queue to a master DMA channel. (Mandatory)
-          (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
+          (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode. (Mandatory)
+          (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
-              Any DMA error occurred in low power block the LPBAM sub-system mechanisms.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
               DMA error interrupts can be :
               (++) DMA_IT_DTE : data transfer error.
               (++) DMA_IT_ULE : update link error.
@@ -249,44 +289,62 @@
     *** Recommendation ***
     ======================
     [..]
+      This section provides tips and tricks to consider while using LPBAM module drivers to build a user application.
+
+    [..]
       The period and repetition parameters are common for all LPTIM channels.
       Case 1: An LPTIM channel is configured in PWM mode:
-          (+) When configuring another channel in PWM mode, it's mandatory to ensure that the same period and repetition
-              are applied for all LPTIM channels when channels operates simultaneously.
+          (+) When configuring another channel in PWM mode, ensure the consistency of updating PWM period and repetition
+              for both channels.
           (+) There are no constraints when configuring another channel in IC mode.
-          (+) When configuring the LPTIM to generate an update event, it's mandatory to ensure that the same period and
-              repetition are applied for all LPTIM channels.
+          (+) It's forbidden to use the LPTIM in update event detection mode.
 
       Case 2: An LPTIM channel is configured in IC mode:
-          (+) There are no constraints when configuring another LPTIM channel in PWM mode.
-          (+) There are no constraints when configuring another LPTIM channel in IC mode.
-          (+) There are no constraints when configuring the LPTIM to generate an update event.
+          (+) There are no constraints when configuring another LPTIM channel in PWM mode or IC mode.
+          (+) It's forbidden to use the LPTIM in update event detection mode.
 
-      Case 3: The LPTIM is configured to generate an update event:
-          (+) When configuring a channel in PWM mode, it's mandatory to ensure that the same period and repetition used
-              for update event generation are applied for the LPTIM channels.
-          (+) There are no constraints when configuring another LPTIM channel in IC mode.
+      Case 3: The LPTIM peripheral is configured to generate an Update Event:
+          (+) It's forbidden to use any LPTIM channel in any mode.
 
     [..]
-      When calling ADV_LPBAM_LPTIM_Stop_SetFullQ(), all LPTIM channels are disabled. So, disabling one LPTIM channel is
-      not possible.
-      If the LPTIM is used to generate an update event, Mode field in the LPBAM_LPTIM_StopFullAdvConf_t structure must
-      be configured as LPBAM_LPTIM_UE_MODE independently of channels mode configuration otherwise LPBAM_LPTIM_NO_UE_MODE
-      value for Mode field must be configured.
+      It's not possible to disable a single LPTIM channel. When calling ADV_LPBAM_LPTIM_Stop_SetFullQ() API, all LPTIM
+      channels will be disabled.
+      If the LPTIM peripheral is used to detect an Update Event, LPBAM_LPTIM_StopFullAdvConf_t structure mode field
+      must be configured as LPBAM_LPTIM_UE_MODE.
+      If the LPTIM peripheral is not used to detect an Update Event, LPBAM_LPTIM_StopFullAdvConf_t structure mode
+      field must be configured as LPBAM_LPTIM_NO_UE_MODE.
 
     [..]
-      It's strongly not recommended to call any LPTIM API with the same channel by more than one linked-list queue. When
-      the LPTIM nodes will be executed simultaneously unexpected behavior will appear.
+      It's possible to call any advanced API before or/and after ADV_LPBAM_LPTIM_PWM_SetFullQ() or/and
+      ADV_LPBAM_LPTIM_IC_SetFullQ() APIs.
+
+    [..]
+      It's forbidden to call any advanced API between calling ADV_LPBAM_LPTIM_Start_SetFullQ() and
+      ADV_LPBAM_LPTIM_UE_SetFullQ().
+
+    [..]
+      It's forbidden to call any advanced API between calling ADV_LPBAM_LPTIM_UE_SetFullQ() and
+      ADV_LPBAM_LPTIM_Stop_SetFullQ().
+
+    [..]
+      It's mandatory to ensure the necessary timing between stopping and starting the LPTIM peripheral.
+
+    [..]
+      It's forbidden to execute simultaneously the same linked-list queue with different DMA channels.
+
+    [..]
+      It's forbidden to execute simultaneously two linked-list queue using the same peripheral.
 
     *** Driver status description ***
     =================================
     [..]
-      This driver detects and reports any detected issue.
+      This section provides reported LPBAM module status.
+
+    [..]
+      This advanced module reports any detected issue.
           (+) returned values are :
               (++) LPBAM_OK when no error is detected.
-              (++) LPBAM_ERROR when error is detected.
-              (++) LPBAM_INVALID_ID when an invalid node ID is detected. This error value is specific for LPBAM basic
-                   layer.
+              (++) LPBAM_ERROR when any error is detected.
 
     @endverbatim
   **********************************************************************************************************************
@@ -317,14 +375,13 @@
   */
 
 /**
-  * @brief  Build the LPTIM PWM full DMA linked-list queue according to configured parameters in
-  *         LPBAM_LPTIM_PWMFullAdvConf_t.
+  * @brief  Build DMA linked-list queue to setup PWM parameters according to parameters in LPBAM_LPTIM_PWMFullAdvConf_t.
   * @param  pInstance         : [IN]  Pointer to a LPTIM_TypeDef structure that selects LPTIM instance.
   * @param  Channel           : [IN]  Specifies the LPTIM channel.
   *                                   This parameter can be a value of @ref LPBAM_LPTIM_Channel.
   * @param  pDMAListInfo      : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and
   *                                   linked-list queue type information.
-  * @param  pPWMFull          : [IN]  Pointer to a LPBAM_LPTIM_FullAdvConf_t structure that contains update PWM
+  * @param  pPWMFull          : [IN]  Pointer to a LPBAM_LPTIM_PWMFullAdvConf_t structure that contains update PWM
   *                                   information.
   * @param  pDescriptor       : [IN]  Pointer to a LPBAM_LPTIM_PWMFullDesc_t structure  that contains update PWM
   *                                   descriptor information.
@@ -518,8 +575,7 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM_TypeDef                *const 
 }
 
 /**
-  * @brief  Build the LPTIM input capture full DMA linked-list queue according to configured parameters in
-  *         LPBAM_LPTIM_ICFullAdvConf_t.
+  * @brief  Build DMA linked-list queue to setup IC parameters according to parameters in LPBAM_LPTIM_ICFullAdvConf_t.
   * @param  pInstance          : [IN]  Pointer to a LPTIM_TypeDef structure that selects LPTIM instance.
   * @param  Channel            : [IN]  Specifies the LPTIM channel.
   *                                    This parameter can be a value of @ref LPBAM_LPTIM_Channel.
@@ -585,7 +641,7 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_IC_SetFullQ(LPTIM_TypeDef               *const pI
 }
 
 /**
-  * @brief  Build the LPTIM update event detection full DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup UE detection parameters according to parameters in
   *         LPBAM_LPTIM_UEFullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a LPTIM_TypeDef structure that selects LPTIM instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -688,11 +744,9 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_UE_SetFullQ(LPTIM_TypeDef              *const pIn
 }
 
 /**
-  * @brief  Build the LPTIM start full DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to start the LPTIM channel according to parameters in
   *         LPBAM_LPTIM_StartFullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a LPTIM_TypeDef structure that selects LPTIM instance.
-  * @param  Channel      : [IN]  Specifies the LPTIM channel.
-  *                              This parameter can be a value of @ref LPBAM_LPTIM_Channel.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
   *                              queue type information.
   * @param  pStartFull   : [IN]  Pointer to a LPBAM_LPTIM_StartFullAdvConf_t structure that contains start full
@@ -704,7 +758,6 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_UE_SetFullQ(LPTIM_TypeDef              *const pIn
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
 LPBAM_Status_t ADV_LPBAM_LPTIM_Start_SetFullQ(LPTIM_TypeDef                  *const pInstance,
-                                              uint32_t                       Channel,
                                               LPBAM_DMAListInfo_t            const *const pDMAListInfo,
                                               LPBAM_LPTIM_StartFullAdvConf_t const *const pStartFull,
                                               LPBAM_LPTIM_StartFullDesc_t    *const pDescriptor,
@@ -720,9 +773,8 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_Start_SetFullQ(LPTIM_TypeDef                  *co
    *               ######## LPTIM enable node ########
    */
 
-  /* Set LPTIM instance and channel */
+  /* Set LPTIM instance */
   config_node.pInstance                  = pInstance;
-  config_node.Config.Channel             = Channel;
 
   /* Set node descriptor */
   config_node.NodeDesc.NodeInfo.NodeID   = (uint32_t)LPBAM_LPTIM_CONFIG_ID;
@@ -824,7 +876,8 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_Start_SetFullQ(LPTIM_TypeDef                  *co
 }
 
 /**
-  * @brief  Build the LPTIM stop full DMA linked-list queue.
+  * @brief  Build DMA linked-list queue to stop the LPTIM according to parameters in
+  *         LPBAM_LPTIM_StopFullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a LPTIM_TypeDef structure that selects LPTIM instance.
   * @param  pStopFull    : [IN]  Pointer to a LPBAM_LPTIM_StopFullAdvConf_t structure that contains stop full
   *                              information.

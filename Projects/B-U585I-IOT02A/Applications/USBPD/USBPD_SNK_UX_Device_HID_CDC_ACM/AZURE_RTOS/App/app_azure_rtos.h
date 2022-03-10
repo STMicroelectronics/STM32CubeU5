@@ -27,12 +27,12 @@
 
 /* Includes ------------------------------------------------------------------*/
 
+#include "stm32u5xx_hal.h"
 #include "app_azure_rtos_config.h"
 #include "app_threadx.h"
 
 #include "app_usbx_device.h"
 #include "usbpd.h"
-#include "gui_api.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -69,3 +69,4 @@
 }
 #endif
 #endif /* APP_AZURE_RTOS_H */
+

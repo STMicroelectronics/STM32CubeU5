@@ -20,10 +20,8 @@
 <div class="row">
 <div class="col-sm-12 col-lg-8">
 <h2 id="tx_secureledtoggle_trustzone-application-description"><b>Tx_SecureLEDToggle_TrustZone Application Description</b></h2>
-<p>This application provides an example of Azure RTOS ThreadX stack usage, it shows how to develop an application using the ThreadX when the TrustZone feature is enabled (TZEN=1). The application is running ThreadX thread in non-secure context that is invoking a secure function to toggle a led each 1 sec. The main entry function tx_application_define() is called by ThreadX during kernel start, at the non-secure stage, the application creates 1 thread : </p>
-<ul>
-<li>MainThread (Prio : 5; Preemption Threshold : 5)</li>
-</ul>
+<p>This application provides an example of Azure RTOS ThreadX stack usage, it shows how to develop an application using the ThreadX when the TrustZone feature is enabled (TZEN=1). The application is running ThreadX thread in non-secure context that is invoking a secure function to toggle a led each 1 sec. The main entry function tx_application_define() is called by ThreadX during kernel start, at the non-secure stage, the application creates 1 thread : - MainThread (Prio : 5; Preemption Threshold : 5)</p>
+<p>Once started, the <b>MainThread</b> toggle the LED_GREEN before sleeping for 1s.</p>
 <p>This project is composed of two sub-projects:</p>
 <ul>
 <li>one for the secure application part (xxxxx_S)</li>
@@ -50,23 +48,7 @@
 <h4 id="known-limitations"><b>Known limitations</b></h4>
 <p>None</p>
 <h4 id="note"><b>Note</b></h4>
-<p>The following sequence is needed to disable TrustZone:</p>
-<ul>
-<li>Boot from user Flash memory:</li>
-<ul style="list-style-type: decimal">
-<li>Make sure that secure and non-secure applications are well loaded and executed (jump done on non-secure application)</li>
-<li>If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution.</li>
-<li>Use a power supply different from ST-LINK in order to be able to connect to the target.</li>
-<li>Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply.</li>
-</ul>
-<li>Boot from RSS:</li>
-<ul style="list-style-type: decimal">
-<li>Make sure to apply a high level on BOOT0 pin (make sure that nSWBOOT0 Option Byte is checked).</li>
-<li>If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution.</li>
-<li>Use a power supply different from ST-LINK in order to be able to connect to the target.</li>
-<li>Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply.</li>
-</ul>
-</ul>
+<p>The following sequence is needed to disable TrustZone: - Boot from user Flash memory: 1. Make sure that secure and non-secure applications are well loaded and executed (jump done on non-secure application). 2. If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution. 3. Use a power supply different from ST-LINK in order to be able to connect to the target. 4. Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply. - Boot from RSS: 1. Make sure to apply a high level on BOOT0 pin (make sure that nSWBOOT0 Option Byte is checked). 2. If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution. 3. Use a power supply different from ST-LINK in order to be able to connect to the target. 4. Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply.</p>
 <p>Please refer to AN5347 for more details.</p>
 <h4 id="threadx-usage-hints"><b>ThreadX usage hints</b></h4>
 <ul>
@@ -130,6 +112,19 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <li>Rebuild xxxxx_S project</li>
 <li>Rebuild xxxxx_NS project</li>
 <li>Load the secure and non-secures images into target memory (Ctrl + D)</li>
+<li>Run the example</li>
+</ul>
+<p>MDK-ARM</p>
+<ul>
+<li>Open your toolchain</li>
+<li>Open Multi-projects workspace file Project.uvmpw</li>
+<li>Select the xxxxx_S project as Active Project (Set as Active Project)</li>
+<li>Build xxxxx_S project</li>
+<li>Select the xxxxx_NS project as Active Project (Set as Active Project)</li>
+<li>Build xxxxx_NS project</li>
+<li>Load the non-secure binary (F8) (this shall download the -ARM_ns_ns.axf to flash memory)</li>
+<li>Select the xxxxx_S project as Active Project (Set as Active Project)</li>
+<li>Load the secure binary (F8) (this shall download the -ARM_s_s.axf to flash memory)</li>
 <li>Run the example</li>
 </ul>
 <p>STM32CubeIDE</p>

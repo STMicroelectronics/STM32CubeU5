@@ -19,7 +19,7 @@
 
 /*
  * Original code taken from mcuboot project at:
- * https://github.com/JuulLabs-OSS/mcuboot
+ * https://github.com/mcu-tools/mcuboot
  * Git SHA of the original version: ac55554059147fff718015be9f4bd3108123f50a
  * Modifications are Copyright (c) 2019 Arm Limited.
  */
@@ -27,7 +27,7 @@
 #include "bootutil/bootutil_log.h"
 #include "flash_map/flash_map.h"
 #include <inttypes.h>
-#include <target.h>
+#include "target.h"
 
 /*
  * Lookup the sector map for a given flash area.  This should fill in

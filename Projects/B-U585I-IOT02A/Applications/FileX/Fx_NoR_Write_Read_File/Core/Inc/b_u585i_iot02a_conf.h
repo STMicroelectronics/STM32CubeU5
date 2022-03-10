@@ -32,7 +32,7 @@ extern "C" {
 #define USE_COM_LOG                          0U
 
   /* Default EEPROM max trials */
-#define EEPROM_MAX_TRIALS                   3000U
+#define EEPROM_MAX_TRIALS                    3000U
 
 /* IRQ priorities */
 #define BSP_BUTTON_USER_IT_PRIORITY   0x15UL  /* Default is lowest priority level */

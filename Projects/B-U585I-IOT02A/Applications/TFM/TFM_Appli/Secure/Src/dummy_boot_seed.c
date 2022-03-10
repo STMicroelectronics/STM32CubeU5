@@ -15,7 +15,7 @@
  */
 
 #include "platform/include/tfm_plat_boot_seed.h"
-#include "bl2/include/tfm_boot_status.h"
+#include "tfm_boot_status.h"
 #include "tfm_secure_api.h"
 
 enum tfm_plat_err_t tfm_plat_get_boot_seed(uint32_t size, uint8_t *buf)

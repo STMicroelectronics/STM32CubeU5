@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stm32u575i_eval.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,9 +51,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 
-/* Buffer for FileX FX_MEDIA sector cache. this should be 32-Bytes
-aligned to avoid cache maintenance issues */
-ALIGN_32BYTES (uint32_t media_memory[FX_STM32_SD_DEFAULT_SECTOR_SIZE / sizeof(uint32_t)]);
+uint32_t media_memory[FX_STM32_SD_DEFAULT_SECTOR_SIZE / sizeof(uint32_t)];
 
 /* Define FileX global data structures.  */
 FX_MEDIA        sdio_disk;
@@ -251,7 +249,7 @@ void fx_thread_entry(ULONG thread_input)
 
   while(1)
   {
-    BSP_LED_Toggle(LED_GREEN);
+    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
     os_delay(40);
   }
 }

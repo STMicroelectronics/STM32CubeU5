@@ -52,11 +52,12 @@ typedef struct
   uint32_t NonInvertingInput;  /*!< Specifies the OPAMP non inverting input of the OPAMP.
                                     This parameter can be a value of @ref LPBAM_OPAMP_NonInvertingInput               */
 
-  uint32_t InvertingInput;     /*!< Specifies the inverting input in Standalone & PGA modes. In Follower mode this
-                                    parameter is Not Applicable.
+  uint32_t InvertingInput;     /*!< Specifies the inverting input in Standalone and PGA modes. In Follower mode this
+                                    parameter is not applicable.
                                     This parameter can be a value of @ref LPBAM_OPAMP_InvertingInput                  */
 
-  uint32_t PgaGain;            /*!< Specifies the OPAMP PGA gain.
+  uint32_t PgaGain;            /*!< Specifies the OPAMP PGA gain. In Standalone and Follower modes this parameter is
+                                    not applicable.
                                     This parameter can be a value of @ref LPBAM_OPAMP_PgaGain                         */
 
 } LPBAM_OPAMP_StartFullAdvConf_t;
@@ -66,9 +67,10 @@ typedef struct
   */
 typedef struct
 {
-  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : 1 node is needed */
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : only one node is
+                                   needed                                                                             */
 
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : 1 value is needed                */
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
 
 } LPBAM_OPAMP_StartFullDesc_t;
 /**

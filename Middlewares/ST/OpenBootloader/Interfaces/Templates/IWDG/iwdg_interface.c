@@ -31,10 +31,18 @@ static IWDG_HandleTypeDef IWDGHandle;
 /* Private functions ---------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 
+/**
+  * @brief  This function is used to configure the watchdog.
+  * @retval None.
+  */
 void OPENBL_IWDG_Configuration(void)
 {
 }
 
+/**
+  * @brief  This function is used to refresh the watchdog.
+  * @retval None.
+  */
 void OPENBL_IWDG_Refresh(void)
 {
 }

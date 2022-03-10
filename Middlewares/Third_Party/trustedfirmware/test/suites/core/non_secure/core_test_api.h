@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2018, Arm Limited. All rights reserved.
+ * Copyright (c) 2017-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -9,7 +9,7 @@
 #define __CORE_TEST_API_H__
 
 #include <stdio.h>
-#include <cmsis_compiler.h>
+#include "cmsis_compiler.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -31,6 +31,10 @@ static IWDG_HandleTypeDef IWDGHandle;
 /* Private functions ---------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 
+/**
+  * @brief  This function is used to configure the watchdog.
+  * @retval None.
+  */
 void OPENBL_IWDG_Configuration(void)
 {
   IWDGHandle.Instance       = IWDG;
@@ -44,6 +48,10 @@ void OPENBL_IWDG_Configuration(void)
   IWDG->KR = IWDG_KEY_RELOAD;
 }
 
+/**
+  * @brief  This function is used to refresh the watchdog.
+  * @retval None.
+  */
 void OPENBL_IWDG_Refresh(void)
 {
   /* Refresh IWDG: reload counter */

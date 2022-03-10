@@ -28,7 +28,9 @@ extern "C" {
  * exist, or bootutil won't build.
  */
 #ifndef __BOOTSIM__
-
+#define MAX_BOOT_RECORD_SZ  (100u)
+/* FIH config */
+#define MCUBOOT_FIH_PROFILE_HIGH    /* in this config random delay is activated at each FIH_CALL */
 /*
  * In TF-M most of the configuration flags (e.g. signature type,
  * upgrade mode ...) are handled by the CMake-based buildsystem and
@@ -70,7 +72,7 @@ extern "C" {
 #define MCUBOOT_HW_ROLLBACK_PROT
 #define MCUBOOT_ENC_IMAGES           /* Defined: Image encryption enabled. */
 #define MCUBOOT_MEASURED_BOOT
-#define MCUBOOT_INDIVIDUAL_CLAIMS
+#define MCUBOOT_DATA_SHARING
 
 /*
  * Cryptographic settings

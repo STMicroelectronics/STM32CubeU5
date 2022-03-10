@@ -41,6 +41,11 @@ extern "C" {
 /**
   * @brief  Flow Control : Steps definition
   */
+#ifdef TFM_FIH_PROFILE_ON
+#define FLOW_STEP_FIH_RAND_GEN    0x00061935U        /*!< Step Random buffer value Generation */
+#else
+#define FLOW_STEP_FIH_RAND_GEN    0x00000000U        /*!< Step Random buffer value Generation */
+#endif
 #define FLOW_STEP_SAU_EN_R0       0x000165baU        /*!< Step SAU Region 0 Init enable value */
 #define FLOW_STEP_SAU_EN_R1       0x00017ba4U        /*!< Step SAU Region 1 Init enable value */
 #define FLOW_STEP_SAU_EN_R2       0x00018799U        /*!< Step SAU Region 2 Init enable value */
@@ -84,6 +89,8 @@ extern "C" {
 
 #define FLOW_STEP_GTZC_VTOR_LCK   0x00029cf6U        /*!< Step GTZC Vector locked check */
 
+#define FLOW_STEP_GTZC_PRIS_EN    0x000154b5U        /*!< Step GTZC PRIS Enabled check */
+
 #define FLOW_STEP_GTZC_PERIPH_CFG 0x00028f7dU        /*!< Step GTZC Periphs config value */
 
 #define FLOW_STEP_GTZC_PERIPH_CH  0x0002e56eU        /*!< Step GTZC Periphs check value */
@@ -98,9 +105,10 @@ extern "C" {
   * @brief  SFU_BOOT Flow Control : Control values runtime protections
   */
 /* Flow control Stage 1 */
-#define FLOW_CTRL_GTZC_VTOR_LCK   (FLOW_CTRL_INIT_VALUE ^     FLOW_STEP_GTZC_VTOR_LCK)
-
-#define FLOW_CTRL_GTZC_PERIPH_CFG (FLOW_CTRL_GTZC_VTOR_LCK ^      FLOW_STEP_GTZC_PERIPH_CFG)
+#define FLOW_CTRL_FIH_RAND_GEN    (FLOW_CTRL_INIT_VALUE ^       FLOW_STEP_FIH_RAND_GEN)
+#define FLOW_CTRL_GTZC_VTOR_LCK   (FLOW_CTRL_FIH_RAND_GEN ^     FLOW_STEP_GTZC_VTOR_LCK)
+#define FLOW_CTRL_GTZC_PRIS_EN    (FLOW_CTRL_GTZC_VTOR_LCK ^     FLOW_STEP_GTZC_PRIS_EN)
+#define FLOW_CTRL_GTZC_PERIPH_CFG (FLOW_CTRL_GTZC_PRIS_EN ^      FLOW_STEP_GTZC_PERIPH_CFG)
 
 #define FLOW_CTRL_SAU_EN_R0       (FLOW_CTRL_GTZC_PERIPH_CFG ^ FLOW_STEP_SAU_EN_R0)
 #define FLOW_CTRL_SAU_EN_R1       (FLOW_CTRL_SAU_EN_R0 ^       FLOW_STEP_SAU_EN_R1)
@@ -146,7 +154,6 @@ extern "C" {
 #define FLOW_CTRL_MPU_S_LCK       (FLOW_CTRL_MPU_S_CH    ^     FLOW_STEP_MPU_S_LCK)
 #define FLOW_CTRL_MPU_S_LCK_CH    (FLOW_CTRL_MPU_S_LCK   ^     FLOW_STEP_MPU_S_LCK_CH)
 #define FLOW_CTRL_STAGE_1         FLOW_CTRL_MPU_S_LCK_CH
-
 
 /* External variables --------------------------------------------------------*/
 /**

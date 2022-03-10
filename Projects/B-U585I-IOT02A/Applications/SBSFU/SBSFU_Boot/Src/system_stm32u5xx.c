@@ -376,6 +376,9 @@ static void SetSysClock(void)
   {
   }
 
+  /* Enable the HSI48 oscillator (HSI48) for RNG peripherals */
+  RCC->CR |= RCC_CR_HSI48ON;
+
   /* Enable the secure Internal High Speed oscillator (SHSI) for HW crypto peripherals */
   RCC->CR |= RCC_CR_SHSION;
 }

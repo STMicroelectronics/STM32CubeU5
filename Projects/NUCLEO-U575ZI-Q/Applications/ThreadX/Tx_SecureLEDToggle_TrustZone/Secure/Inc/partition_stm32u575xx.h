@@ -1,8 +1,9 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file    partition_stm32u575xx.h
   * @author  MCD Application Team
-  * @brief   CMSIS STM32U575xx Device Initial Setup for Secure / Non-Secure Zones
+  * @brief   CMSIS STM32U575xx] Device Initial Setup for Secure / Non-Secure Zones
   *          for ARMCM33 based on CMSIS CORE partition_ARMCM33.h Template.
   *
   *          This file contains:
@@ -32,6 +33,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* USER CODE END Header */
+
 #ifndef PARTITION_STM32U575XX_H
 #define PARTITION_STM32U575XX_H
 /*
@@ -511,11 +514,13 @@
 
 /*
 //   <e>Initialize ITNS 3 (Interrupts 96..108)
+
 */
 #define NVIC_INIT_ITNS3    1
 
 /*
 // Interrupts 96..125
+
 //   <o.0>  HASH_IRQn             <0=> Secure state
 //   <o.1>  PKA_IRQn              <0=> Secure state
 //   <o.2>  LPTIM3_IRQn           <0=> Secure state
@@ -664,4 +669,6 @@ __STATIC_INLINE void TZ_SAU_Setup (void)
 
 }
 /* USER CODE END 2 */
+
 #endif  /* PARTITION_STM32U575XX_H */
+

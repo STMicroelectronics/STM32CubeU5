@@ -1,4 +1,10 @@
 /*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright (c) 2016-2018 JUUL Labs
+ *
+ * Original license:
+ *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -56,11 +62,11 @@ bootutil_parse_eckey(mbedtls_ecdsa_context *ctx, uint8_t **p, uint8_t *end)
         return -2;
     }
     if (alg.len != sizeof(ec_pubkey_oid) - 1 ||
-      boot_secure_memequal(alg.p, ec_pubkey_oid, sizeof(ec_pubkey_oid) - 1)) {
+      boot_fih_memequal(alg.p, ec_pubkey_oid, sizeof(ec_pubkey_oid) - 1)) {
         return -3;
     }
     if (param.len != sizeof(ec_secp224r1_oid) - 1||
-      boot_secure_memequal(param.p, ec_secp224r1_oid, sizeof(ec_secp224r1_oid) - 1)) {
+      boot_fih_memequal(param.p, ec_secp224r1_oid, sizeof(ec_secp224r1_oid) - 1)) {
         return -4;
     }
 

@@ -1079,103 +1079,61 @@ LPBAM_Status_t LPBAM_I2C_FillStructInfo(LPBAM_I2C_ConfNode_t const *const pConfN
     /* LPBAM I2C configuration transfer node ID */
     case LPBAM_I2C_CONFIG_TRANSACTION_ID:
     {
-      if (pConfNode->Config.StopConditionState == ENABLE)
-      {
-        pDescInfo->Request   = LPDMA1_REQUEST_I2C3_EVC;
+      pDescInfo->Request = LPDMA1_REQUEST_I2C3_EVC;
 
-        /* Get control register value */
-        dummy = pConfNode->pInstance->CR2;
+      /* Get control register value */
+      dummy = pConfNode->pInstance->CR2;
 
-        /* Set value to be written */
-        *pConfNode->NodeDesc.pSrcVarReg = dummy | I2C_CR2_STOP;
-      }
-      else
+      /* Set value to be written */
+      *pConfNode->NodeDesc.pSrcVarReg = dummy | I2C_CR2_STOP;
+      /* Master mode */
+      if ((pConfNode->Config.Mode == LPBAM_I2C_MASTER_TRANSMIT_MODE) ||
+          (pConfNode->Config.Mode == LPBAM_I2C_MASTER_RECEIVE_MODE))
       {
-        /* Master mode */
-        if ((pConfNode->Config.Mode == LPBAM_I2C_MASTER_TRANSMIT_MODE) ||
-            (pConfNode->Config.Mode == LPBAM_I2C_MASTER_RECEIVE_MODE))
+        /* Set default I2C configuration */
+        dummy |= I2C_CR2_START | I2C_CR2_RELOAD | I2C_CR2_AUTOEND | I2C_CR2_RD_WRN | pConfNode->Config.DevAddress |
+                 ((uint32_t)pConfNode->Config.Size << I2C_CR2_NBYTES_Pos);
+
+        /* Sequential data transfer is enabled */
+        if (pConfNode->Config.SequentialDataState == ENABLE)
         {
-          /* Set default I2C configuration */
-          dummy |= I2C_CR2_START | I2C_CR2_RELOAD | I2C_CR2_AUTOEND | I2C_CR2_RD_WRN | pConfNode->Config.DevAddress |
-                   ((uint32_t)pConfNode->Config.Size << I2C_CR2_NBYTES_Pos);
-
-          /* Sequential data transfer is enabled */
-          if (pConfNode->Config.SequentialDataState == ENABLE)
+          dummy |= I2C_CR2_AUTOEND;
+          /* Check if I2C hardware trigger is enabled */
+          if (pConfNode->Config.IsFirstSequentialData == LPBAM_I2C_IS_FIRST_SEQUENTIAL_DATA)
           {
-            dummy |= I2C_CR2_AUTOEND;
-            /* Check if I2C hardware trigger is enabled */
-            if (pConfNode->Config.IsFirstSequentialData == LPBAM_I2C_IS_FIRST_SEQUENTIAL_DATA)
+            /* Check trigger signal */
+            if (pConfNode->Config.AutoModeConf.TriggerState != LPBAM_I2C_AUTO_MODE_DISABLE)
             {
-              /* Check trigger signal */
-              if (pConfNode->Config.AutoModeConf.TriggerState != LPBAM_I2C_AUTO_MODE_DISABLE)
-              {
-                dummy &= ~(I2C_CR2_START);
-              }
-            }
-
-            /* Check for last sequential data */
-            if (pConfNode->Config.IsLastSequentialData == LPBAM_I2C_IS_LAST_SEQUENTIAL_DATA)
-            {
-              dummy &= ~(I2C_CR2_AUTOEND);
-              /* Select request and direction for reloaded data */
-              pDescInfo->Request   = LPDMA1_REQUEST_I2C3_EVC;
-              pDescInfo->Direction = DMA_MEMORY_TO_PERIPH;
+              dummy &= ~(I2C_CR2_START);
             }
           }
 
-          /* Data size > 255 */
-          if (pConfNode->Config.ReloadDataState == ENABLE)
+          /* Check for last sequential data */
+          if (pConfNode->Config.IsLastSequentialData == LPBAM_I2C_IS_LAST_SEQUENTIAL_DATA)
           {
-            /* Is not first reload data transfer */
-            if (pConfNode->Config.IsFirstReloadData == LPBAM_I2C_IS_NOT_FIRST_RELOADED_DATA)
-            {
-              /* Select request and direction for reloaded data */
-              pDescInfo->Request   = LPDMA1_REQUEST_I2C3_EVC;
-              pDescInfo->Direction = DMA_MEMORY_TO_PERIPH;
-              /* Remove start condition generation */
-              dummy &= ~I2C_CR2_START;
-            }
+            dummy &= ~(I2C_CR2_AUTOEND);
+            /* Select request and direction for reloaded data */
+            pDescInfo->Direction = DMA_MEMORY_TO_PERIPH;
+          }
+        }
 
-            /* Is not last reload data transfer */
-            if (pConfNode->Config.IsLastReloadData == LPBAM_I2C_IS_NOT_LAST_RELOADED_DATA)
-            {
-              /* Set maximum data to be transferred */
-              dummy |= (LPBAM_I2C_MAX_DATA_SIZE << I2C_CR2_NBYTES_Pos);
-            }
-            else
-            {
-              /* Disable reload data transfer generation */
-              dummy &= ~I2C_CR2_RELOAD;
+        /* Data size > 255 */
+        if (pConfNode->Config.ReloadDataState == ENABLE)
+        {
+          /* Is not first reload data transfer */
+          if (pConfNode->Config.IsFirstReloadData == LPBAM_I2C_IS_NOT_FIRST_RELOADED_DATA)
+          {
+            /* Select direction for reloaded data */
+            pDescInfo->Direction = DMA_MEMORY_TO_PERIPH;
+            /* Remove start condition generation */
+            dummy &= ~I2C_CR2_START;
+          }
 
-              if (pConfNode->Config.SequentialDataState == DISABLE)
-              {
-                /* When transfer complete interrupt is requested => use Software end mode */
-                /* Check if TC interrupt is request by LPBAM or by HAL/LL layer  */
-                if (((pConfNode->pInstance->CR1 & I2C_CR1_TCIE) == I2C_CR1_TCIE) || (xfer_cplt_it_state == ENABLE))
-                {
-                  /* activate Software end mode */
-                  dummy &= ~(I2C_CR2_AUTOEND);
-                }
-              }
-              else /* Sequential data state is enabled */
-              {
-                if (pConfNode->Config.IsLastSequentialData == LPBAM_I2C_IS_NOT_LAST_SEQUENTIAL_DATA)
-                {
-                  /* activate Software end mode */
-                  dummy &= ~(I2C_CR2_AUTOEND);
-                }
-                else /* last sequence and last transfer */
-                {
-                  /* When transfer complete interrupt is requested => use Software end mode */
-                  /* Check if TC interrupt is request by LPBAM or by HAL/LL layer  */
-                  if (((pConfNode->pInstance->CR1 & I2C_CR1_TCIE) == I2C_CR1_TCIE) || (xfer_cplt_it_state == ENABLE))
-                  {
-                    /* activate Software end mode */
-                    dummy &= ~(I2C_CR2_AUTOEND);
-                  }
-                }
-              }
-            }
+          /* Is not last reload data transfer */
+          if (pConfNode->Config.IsLastReloadData == LPBAM_I2C_IS_NOT_LAST_RELOADED_DATA)
+          {
+            /* Set maximum data to be transferred */
+            dummy |= (LPBAM_I2C_MAX_DATA_SIZE << I2C_CR2_NBYTES_Pos);
           }
           else
           {
@@ -1199,7 +1157,7 @@ LPBAM_Status_t LPBAM_I2C_FillStructInfo(LPBAM_I2C_ConfNode_t const *const pConfN
                 /* activate Software end mode */
                 dummy &= ~(I2C_CR2_AUTOEND);
               }
-              else
+              else /* last sequence and last transfer */
               {
                 /* When transfer complete interrupt is requested => use Software end mode */
                 /* Check if TC interrupt is request by LPBAM or by HAL/LL layer  */
@@ -1211,43 +1169,76 @@ LPBAM_Status_t LPBAM_I2C_FillStructInfo(LPBAM_I2C_ConfNode_t const *const pConfN
               }
             }
           }
+        }
+        else
+        {
+          /* Disable reload data transfer generation */
+          dummy &= ~I2C_CR2_RELOAD;
 
-          /* Check for master receive */
-          if (pConfNode->Config.Mode == LPBAM_I2C_MASTER_RECEIVE_MODE)
+          if (pConfNode->Config.SequentialDataState == DISABLE)
           {
-            /* Check whether reload data and sequential data transfer are enabled or not */
-            if ((pConfNode->Config.ReloadDataState == ENABLE) &&
-                (pConfNode->Config.SequentialDataState == ENABLE))
+            /* When transfer complete interrupt is requested => use Software end mode */
+            /* Check if TC interrupt is request by LPBAM or by HAL/LL layer  */
+            if (((pConfNode->pInstance->CR1 & I2C_CR1_TCIE) == I2C_CR1_TCIE) || (xfer_cplt_it_state == ENABLE))
             {
-              /* Select request and direction for reloaded data */
-              if (pConfNode->Config.IsFirstSequentialData == LPBAM_I2C_IS_NOT_FIRST_SEQUENTIAL_DATA)
+              /* activate Software end mode */
+              dummy &= ~(I2C_CR2_AUTOEND);
+            }
+          }
+          else /* Sequential data state is enabled */
+          {
+            if (pConfNode->Config.IsLastSequentialData == LPBAM_I2C_IS_NOT_LAST_SEQUENTIAL_DATA)
+            {
+              /* activate Software end mode */
+              dummy &= ~(I2C_CR2_AUTOEND);
+            }
+            else
+            {
+              /* When transfer complete interrupt is requested => use Software end mode */
+              /* Check if TC interrupt is request by LPBAM or by HAL/LL layer  */
+              if (((pConfNode->pInstance->CR1 & I2C_CR1_TCIE) == I2C_CR1_TCIE) || (xfer_cplt_it_state == ENABLE))
               {
-                /* Select request and direction for reloaded data */
-                pDescInfo->Request   = LPDMA1_REQUEST_I2C3_EVC;
-                pDescInfo->Direction = DMA_MEMORY_TO_PERIPH;
+                /* activate Software end mode */
+                dummy &= ~(I2C_CR2_AUTOEND);
               }
             }
           }
-
-          /* I2C master receiver mode */
-          if (pConfNode->Config.Mode == LPBAM_I2C_MASTER_TRANSMIT_MODE)
-          {
-            /* Set read operation */
-            dummy &= ~I2C_CR2_RD_WRN;
-          }
-
-          /* Set addressing mode */
-          dummy |= (uint32_t)pConfNode->Config.AddressingMode << I2C_CR2_ADD10_Pos;
-
-          /* Set value to be written */
-          *pConfNode->NodeDesc.pSrcVarReg = dummy | pConfNode->Config.DevAddress;
         }
-        /* Slave mode */
-        else
+
+        /* Check for master receive */
+        if (pConfNode->Config.Mode == LPBAM_I2C_MASTER_RECEIVE_MODE)
         {
-          /* Set value to be written */
-          *pConfNode->NodeDesc.pSrcVarReg &= ~(I2C_CR2_NACK);
+          /* Check whether reload data and sequential data transfer are enabled or not */
+          if ((pConfNode->Config.ReloadDataState == ENABLE) &&
+              (pConfNode->Config.SequentialDataState == ENABLE))
+          {
+            /* Select request and direction for reloaded data */
+            if (pConfNode->Config.IsFirstSequentialData == LPBAM_I2C_IS_NOT_FIRST_SEQUENTIAL_DATA)
+            {
+              /* Select direction for reloaded data */
+              pDescInfo->Direction = DMA_MEMORY_TO_PERIPH;
+            }
+          }
         }
+
+        /* I2C master receiver mode */
+        if (pConfNode->Config.Mode == LPBAM_I2C_MASTER_TRANSMIT_MODE)
+        {
+          /* Set read operation */
+          dummy &= ~I2C_CR2_RD_WRN;
+        }
+
+        /* Set addressing mode */
+        dummy |= (uint32_t)pConfNode->Config.AddressingMode << I2C_CR2_ADD10_Pos;
+
+        /* Set value to be written */
+        *pConfNode->NodeDesc.pSrcVarReg = dummy | pConfNode->Config.DevAddress;
+      }
+      /* Slave mode */
+      else
+      {
+        /* Set value to be written */
+        *pConfNode->NodeDesc.pSrcVarReg &= ~(I2C_CR2_NACK);
       }
       /* Set DMA source address */
       pDescInfo->SrcAddr  = (uint32_t)pConfNode->NodeDesc.pSrcVarReg;
@@ -1781,7 +1772,7 @@ LPBAM_Status_t LPBAM_OPAMP_FillStructInfo(LPBAM_OPAMP_ConfNode_t const *const pC
 
 #if defined (LPBAM_SPI_MODULE_ENABLED)
 /**
-  * @brief  Fill the struct information for SPI peripheral nodes.
+  * @brief  Fill the structure information for SPI peripheral nodes.
   * @param  pConfNode    : [IN]  Pointer to a LPBAM_SPI_ConfNode_t structure that contains node configuration.
   * @param  pDescInfo    : [OUT] Pointer to a LPBAM_InfoDesc_t structure that contains descriptor information.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.

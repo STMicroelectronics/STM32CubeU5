@@ -105,13 +105,13 @@ typedef struct
 /** @defgroup LPBAM_I2C_Wakeup_Interrupt LPBAM I2C Wakeup Interrupt
   * @{
   */
-#define LPBAM_I2C_IT_NONE  (0x00U)    /*!< LPBAM I2C wake up interrupt none             */
-#define LPBAM_I2C_IT_STOP  (0x20U)    /*!< LPBAM I2C Stop detection interrupt enable    */
-#define LPBAM_I2C_IT_TC    (0x40U)    /*!< LPBAM I2C transfer complete interrupt enable */
-#define LPBAM_I2C_IT_RXI   (0x04U)    /*!< LPBAM I2C RX interrupt enable                */
-#define LPBAM_I2C_IT_TXI   (0x02U)    /*!< LPBAM I2C TX interrupt enable                */
-#define LPBAM_I2C_IT_ADDRI (0x08U)    /*!< LPBAM I2C Address match interrupt enable     */
-#define LPBAM_I2C_IT_NACKI (0x10U)    /*!< LPBAM I2C NACK received interrupt enable     */
+#define LPBAM_I2C_IT_NONE  (0x00U)    /*!< LPBAM I2C wake up interrupt none               */
+#define LPBAM_I2C_IT_STOP  (0x20U)    /*!< LPBAM I2C Stop detection interrupt enable      */
+#define LPBAM_I2C_IT_TC    (0x40U)    /*!< LPBAM I2C transfer complete interrupt enable   */
+#define LPBAM_I2C_IT_RXI   (0x04U)    /*!< LPBAM I2C Rx buffer not empty interrupt enable */
+#define LPBAM_I2C_IT_TXI   (0x02U)    /*!< LPBAM I2C Tx buffer status interrupt enable    */
+#define LPBAM_I2C_IT_ADDRI (0x08U)    /*!< LPBAM I2C Address match interrupt enable       */
+#define LPBAM_I2C_IT_NACKI (0x10U)    /*!< LPBAM I2C NACK received interrupt enable       */
 /**
   * @}
   */

@@ -73,9 +73,6 @@ typedef struct
   LPBAM_FunctionalState SequentialDataState;    /*!< Specifies the I2C sequential data transfer state.
                                                      This parameter can be ENABLE or DISABLE                          */
 
-  LPBAM_FunctionalState StopConditionState;     /*!< Specifies the I2C stop condition generation state.
-                                                     This parameter can be ENABLE or DISABLE                          */
-
   uint8_t Mode;                                 /*!< Specifies the I2C mode.
                                                      This parameter can be a value of @ref LPBAM_I2C_Mode             */
 

@@ -38,7 +38,7 @@ extern "C" {
  *
  * Returns the flash device on success, or NULL on failure.
  */
-struct device *flash_device_get_binding(char *dev_name);
+const struct device *flash_device_get_binding(char *dev_name);
 
 /*
  * Retrieve a memory-mapped flash device's base address.
@@ -81,14 +81,6 @@ int flash_area_sector_from_off(off_t off, struct flash_sector *sector);
  * flash byte.
  */
 uint8_t flash_area_erased_val(const struct flash_area *fap);
-
-/*
- * Reads len bytes from off, and checks if the read data is erased.
- *
- * Returns 1 if erased, 0 if non-erased, and -1 on failure.
- */
-int flash_area_read_is_empty(const struct flash_area *fa, uint32_t off,
-        void *dst, uint32_t len);
 
 #ifdef __cplusplus
 }

@@ -3,30 +3,27 @@
   * @file    env_sensor.h
   * @author  MCD Application Team
   * @brief   This header file contains the functions prototypes for the
-  *          temperature driver
+  *          environmental sensor driver
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef ENV_SENSORS_H
-#define ENV_SENSORS_H
+#ifndef ENV_SENSOR_H
+#define ENV_SENSOR_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
@@ -43,16 +40,16 @@ extern "C" {
   * @{
   */
 
-/** @addtogroup ENV_SENSORS ENV_SENSORS
+/** @addtogroup ENV_SENSOR ENV SENSOR
   * @{
   */
 
-/** @addtogroup ENV_SENSORS_Public_Types ENV_SENSORS Public types
+/** @addtogroup ENV_SENSOR_Public_Types ENV SENSOR Public types
   * @{
   */
 
 /**
-  * @brief  ENV_SENSORS driver structure definition
+  * @brief  ENV SENSOR driver structure definition
   */
 typedef struct
 {
@@ -95,6 +92,4 @@ typedef struct
 }
 #endif
 
-#endif /* ENV_SENSORS_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+#endif /* ENV_SENSOR_H */

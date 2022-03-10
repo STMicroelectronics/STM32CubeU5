@@ -10,7 +10,7 @@
       <TargetName>B-U585I-IOT02A_Examples_BSP</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6140001::V6.14.1::ARMCLANG</pCCUsed>
+      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>STM32U585xx,USE_HAL_DRIVER,__DBG_ITM</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../../../../../Drivers/CMSIS/Include;../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../Drivers/BSP/B-U585I-IOT02A;../../../../../Drivers/BSP/Components/Common</IncludePath>
+              <IncludePath>../Inc;../../../../../Drivers/CMSIS/Include;../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../Drivers/BSP/B-U585I-IOT02A;../../../../../Drivers/BSP/Components/Common;../../../../../Drivers/BSP/Components/vl53l5cx/modules;../../../../../Drivers/BSP/Components/vl53l5cx/porting</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -433,6 +433,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a_light_sensor.c</FilePath>
             </File>
+            <File>
+              <FileName>b_u585i_iot02a_audio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a_audio.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -512,6 +517,41 @@
               <FileName>veml6030_reg.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\Drivers\BSP\Components\veml6030\veml6030_reg.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l5cx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\vl53l5cx.c</FilePath>
+            </File>
+            <File>
+              <FileName>platform.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\porting\platform.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l5cx_api.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_api.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l5cx_plugin_detection_thresholds.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_plugin_detection_thresholds.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l5cx_plugin_motion_indicator.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_plugin_motion_indicator.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l5cx_plugin_xtalk.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_plugin_xtalk.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_u585i_iot02a_ranging_sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a_ranging_sensor.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -737,6 +777,16 @@
               <FileName>light_sensor.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\light_sensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>audio_record.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\audio_record.c</FilePath>
+            </File>
+            <File>
+              <FileName>ranging_sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\ranging_sensor.c</FilePath>
             </File>
           </Files>
         </Group>

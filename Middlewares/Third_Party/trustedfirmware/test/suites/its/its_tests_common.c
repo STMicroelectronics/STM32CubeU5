@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -12,6 +12,11 @@
 #else
 #include "tfm_memory_utils.h"
 #endif
+
+#define TEST_019_CYCLES    3U
+
+static const uint8_t write_asset_data[ITS_MAX_ASSET_SIZE] = {0xBF};
+static uint8_t read_asset_data[ITS_MAX_ASSET_SIZE] = {0};
 
 void tfm_its_test_common_001(struct test_result_t *ret)
 {
@@ -62,20 +67,28 @@ void tfm_its_test_common_002(struct test_result_t *ret)
 
     /* Set with no flags */
     status = psa_its_set(WRITE_ONCE_UID, data_len, write_data, flags);
-    if (status != PSA_SUCCESS) {
+    if (status == PSA_SUCCESS) {
+        /* Set with valid flag: PSA_STORAGE_FLAG_WRITE_ONCE (with previously
+         * created UID)
+         * Note: Once created, WRITE_ONCE_UID cannot be deleted. It is reused
+         * across multiple tests.
+         */
+        status = psa_its_set(WRITE_ONCE_UID, WRITE_ONCE_DATA_SIZE,
+                             WRITE_ONCE_DATA, PSA_STORAGE_FLAG_WRITE_ONCE);
+        if (status != PSA_SUCCESS) {
+            TEST_FAIL("Set should not fail with valid flags (existing UID)");
+            return;
+        }
+    } else if (status == PSA_ERROR_NOT_PERMITTED) {
+        /* The UID has already been created with the PSA_STORAGE_FLAG_WRITE_ONCE
+         * flag in a previous test run, so skip creating it again and emit a
+         * warning.
+         */
+        TEST_LOG("Note: The UID in this test has already been created with\r\n"
+                 "the PSA_STORAGE_FLAG_WRITE_ONCE flag in a previous test\r\n"
+                 "run. Wipe the storage area to run the full test.\r\n");
+    } else {
         TEST_FAIL("Set should not fail with no flags");
-        return;
-    }
-
-    /* Set with valid flag: PSA_STORAGE_FLAG_WRITE_ONCE (with previously created
-     * UID)
-     * Note: Once created, WRITE_ONCE_UID cannot be deleted. It is reused across
-     * multiple tests.
-     */
-    status = psa_its_set(WRITE_ONCE_UID, WRITE_ONCE_DATA_SIZE, WRITE_ONCE_DATA,
-                         PSA_STORAGE_FLAG_WRITE_ONCE);
-    if (status != PSA_SUCCESS) {
-        TEST_FAIL("Set should not fail with valid flags (and existing UID)");
         return;
     }
 
@@ -941,6 +954,96 @@ void tfm_its_test_common_018(struct test_result_t *ret)
     if (status != PSA_SUCCESS) {
         TEST_FAIL("Remove should not fail");
         return;
+    }
+
+    ret->val = TEST_PASSED;
+}
+
+void tfm_its_test_common_019(struct test_result_t *ret)
+{
+    uint8_t cycle;
+    psa_status_t status;
+    int comp_result;
+    size_t read_data_length = 0;
+    const psa_storage_uid_t test_uid[TEST_019_CYCLES] = {
+        TEST_UID_1,
+        TEST_UID_2,
+        TEST_UID_3};
+    const size_t test_asset_sizes[TEST_019_CYCLES] = {
+        ITS_MAX_ASSET_SIZE >> 2,
+        ITS_MAX_ASSET_SIZE >> 1,
+        ITS_MAX_ASSET_SIZE};
+
+    /* Loop to test different asset sizes and UID's*/
+    for (cycle = 0; cycle < TEST_019_CYCLES; cycle++) {
+        size_t data_size = test_asset_sizes[cycle];
+        psa_storage_uid_t uid = test_uid[cycle];
+        struct psa_storage_info_t info = {0};
+
+#if DOMAIN_NS == 1U
+        memset(read_asset_data, 0x00, sizeof(read_asset_data));
+#else
+        tfm_memset(read_asset_data, 0x00, sizeof(read_asset_data));
+#endif
+
+        /* Set with data and no flags and a valid UID */
+        status = psa_its_set(uid,
+                             data_size,
+                             write_asset_data,
+                             PSA_STORAGE_FLAG_NONE);
+        if (status != PSA_SUCCESS) {
+            TEST_FAIL("Set should not fail with valid UID");
+            return;
+        }
+
+        /* Get info for valid UID */
+        status = psa_its_get_info(uid, &info);
+        if (status != PSA_SUCCESS) {
+            TEST_FAIL("Get info should not fail with valid UID");
+            return;
+        }
+
+        /* Check that the info struct contains the correct values */
+        if (info.size != data_size) {
+            TEST_FAIL("Size incorrect for valid UID");
+            return;
+        }
+
+        if (info.flags != PSA_STORAGE_FLAG_NONE) {
+            TEST_FAIL("Flags incorrect for valid UID");
+            return;
+        }
+
+        /* Check that thread can still get UID */
+        status = psa_its_get(uid, 0, data_size, read_asset_data,
+                             &read_data_length);
+        if (status != PSA_SUCCESS) {
+            TEST_FAIL("Get should not fail with valid UID");
+            return;
+        }
+
+#if DOMAIN_NS == 1U
+        /* Check that get returns the last data which was set */
+        comp_result = memcmp(read_asset_data, write_asset_data, data_size);
+#else
+        comp_result = tfm_memcmp(read_asset_data, write_asset_data, data_size);
+#endif
+        if (comp_result != 0) {
+            TEST_FAIL("Read data should be equal to original write data");
+            return;
+        }
+
+        if (read_data_length != data_size) {
+            TEST_FAIL("Read data length should be equal to result data length");
+            return;
+        }
+
+        /* Call remove to clean up storage for the next test */
+        status = psa_its_remove(uid);
+        if (status != PSA_SUCCESS) {
+            TEST_FAIL("Remove should not fail with valid UID");
+            return;
+        }
     }
 
     ret->val = TEST_PASSED;

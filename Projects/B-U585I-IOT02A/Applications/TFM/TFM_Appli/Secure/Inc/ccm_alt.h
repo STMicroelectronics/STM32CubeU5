@@ -28,7 +28,7 @@
  * consistent with RFC 3610.
  */
 /*
- *  Copyright (C) 2006-2018, Arm Limited (or its affiliates), All Rights Reserved
+ *  Copyright The Mbed TLS Contributors
  *  Copyright (C) 2021 STMicroelectronics, All Rights Reserved
  *  SPDX-License-Identifier: Apache-2.0
  *

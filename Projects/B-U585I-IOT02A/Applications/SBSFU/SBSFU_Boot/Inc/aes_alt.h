@@ -20,7 +20,7 @@
  *          <https://ieeexplore.ieee.org/servlet/opac?punumber=4375278>.
  */
 
-/*  Copyright (C) 2006-2018, Arm Limited (or its affiliates), All Rights Reserved.
+/*  Copyright The Mbed TLS Contributors
  *  Copyright (C) 2021, STMicroelectronics, All Rights Reserved
  *  SPDX-License-Identifier: Apache-2.0
  *
@@ -71,6 +71,11 @@ typedef struct mbedtls_aes_xts_context
                                         computation. */
 } mbedtls_aes_xts_context;
 #endif /* MBEDTLS_CIPHER_MODE_XTS */
+
+int mbedtls_aes_wrap(mbedtls_aes_context *ctx,
+                     uint32_t *input,
+                     uint32_t *output);
+
 
 #ifdef __cplusplus
 }

@@ -391,3 +391,4 @@ HAL_StatusTypeDef HAL_USARTEx_ClearConfigAutonomousMode(USART_HandleTypeDef *hus
 #endif
 
 #endif /* STM32U5xx_HAL_USART_EX_H */
+

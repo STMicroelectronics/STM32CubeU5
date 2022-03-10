@@ -1,6 +1,6 @@
 /*==============================================================================
  Copyright (c) 2016-2018, The Linux Foundation.
- Copyright (c) 2018-2019, Laurence Lundblade.
+ Copyright (c) 2018-2020, Laurence Lundblade.
  All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@ BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- ==============================================================================*/
+ =============================================================================*/
 
 #include "UsefulBuf.h"
 
@@ -48,7 +48,11 @@ const char * UOBTest_NonAdversarial()
    UsefulBuf_MAKE_STACK_UB(outbuf,50);
 
    UsefulOutBuf UOB;
-
+   UsefulBufC UBC = {"hunny", 5};
+   UsefulBufC UBC2 = {"unbounce ", 9};
+   UsefulBufC Out;
+   UsefulBufC U;
+   const UsefulBufC Expected = UsefulBuf_FROM_SZ_LITERAL("heffalump unbounce bluster hunny");
    UsefulOutBuf_Init(&UOB, outbuf);
 
    if(!UsefulOutBuf_AtStart(&UOB)) {
@@ -68,7 +72,6 @@ const char * UOBTest_NonAdversarial()
    UsefulOutBuf_AppendByte(&UOB, ' ');
 
    // Add 5 bytes to the end
-   UsefulBufC UBC = {"hunny", 5};
    UsefulOutBuf_AppendUsefulBuf(&UOB, UBC);
 
    // Insert 9 bytes at the beginning, slide the previous stuff right
@@ -76,25 +79,19 @@ const char * UOBTest_NonAdversarial()
    UsefulOutBuf_InsertByte(&UOB, ' ', 9);
 
    // Put 9 bytes in at position 10 -- just after "heffalump "
-   UsefulBufC UBC2 = {"unbounce ", 9};
    UsefulOutBuf_InsertUsefulBuf(&UOB, UBC2, 10);
 
-   // Make it a null terminated string (because all the appends and inserts above not strcpy !)
-   UsefulOutBuf_AppendByte(&UOB, '\0');
 
+   
 
-   UsefulBufC U = UsefulOutBuf_OutUBuf(&UOB);
-
-   const char *expected = "heffalump unbounce bluster hunny";
-
-   if(UsefulBuf_IsNULLC(U) || U.len-1 != strlen(expected) || strcmp(expected, U.ptr) || UsefulOutBuf_GetError(&UOB)) {
+   U = UsefulOutBuf_OutUBuf(&UOB);
+   if(UsefulBuf_IsNULLC(U) || UsefulBuf_Compare(Expected, U) || UsefulOutBuf_GetError(&UOB)) {
       szReturn = "OutUBuf";
    }
 
    UsefulBuf_MAKE_STACK_UB(buf, 50);
-   UsefulBufC Out =  UsefulOutBuf_CopyOut(&UOB, buf);
-
-   if(UsefulBuf_IsNULLC(Out) || Out.len-1 != strlen(expected) || strcmp(expected, Out.ptr)) {
+   Out =  UsefulOutBuf_CopyOut(&UOB, buf);
+   if(UsefulBuf_IsNULLC(Out) || UsefulBuf_Compare(Expected, Out)) {
       szReturn = "CopyOut";
    }
 
@@ -160,7 +157,8 @@ static int InsertTest(UsefulOutBuf *pUOB,  size_t num, size_t pos, int expected)
    - around MAX size_t
 
 
- Test these for the buffer size and the cursor, the insert amount, the append amount and the insert position
+ Test these for the buffer size and the cursor, the insert amount, the
+ append amount and the insert position
 
  */
 
@@ -314,10 +312,9 @@ const char *UBMacroConversionsTest()
    if(Boo.len != 3 || strncmp(Boo.ptr, "Boo", 3))
      return "UsefulBuf_FROM_BYTE_ARRAY_LITERAL failed";
 
-   char *sz = "not const"; // some data for the test
-   UsefulBuf B = (UsefulBuf){sz, sizeof(sz)};
+   UsefulBuf B = (UsefulBuf){(void *)Too.ptr, Too.len};
    UsefulBufC BC = UsefulBuf_Const(B);
-   if(BC.len != sizeof(sz) || BC.ptr != sz)
+   if(BC.len != Too.len || BC.ptr != Too.ptr)
       return "UsefulBufConst failed";
 
    return NULL;
@@ -710,6 +707,7 @@ const char *UBUTest_CopyUtil()
       return "CopyFloatToUint32 failed";
    }
 
+#if !defined(__ICCARM__) || (__SUBNORMAL_FLOATING_POINTS__ == 1)
    if(UsefulBufUtil_CopyDoubleToUint64(4e-40F) != 0X37C16C2800000000ULL) {
       return "CopyDoubleToUint64 failed";
    }
@@ -717,6 +715,7 @@ const char *UBUTest_CopyUtil()
    if(UsefulBufUtil_CopyUint64ToDouble(0X37C16C2800000000ULL) != 4e-40F) {
       return "CopyUint64ToDouble failed";
    }
+#endif
 
    if(UsefulBufUtil_CopyUint32ToFloat(0x47800000) != 65536.0F) {
       return "CopyUint32ToFloat failed";

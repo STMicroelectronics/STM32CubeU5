@@ -160,6 +160,8 @@
 
 /* #define FX_SINGLE_THREAD */
 
+/* #define FX_STANDALONE_ENABLE */
+
 /* Defines the number of seconds the time parameters are updated in FileX.  */
 
 /* #define FX_UPDATE_RATE_IN_SECONDS         10 */
@@ -169,5 +171,37 @@
    so the default value for this constant is 1000.  */
 
 #define FX_UPDATE_RATE_IN_TICKS     10000
+
+/* If defined, cache is disabled.  */
+
+/*#define FX_DISABLE_CACHE   */
+
+/* If defined, file close is disabled.  */
+
+/* #define FX_DISABLE_FILE_CLOSE */
+
+/* If defined, fast open is disabled.  */
+
+/* #define FX_DISABLE_FAST_OPEN */
+
+/* If defined, force memory operations are disabled.  */
+
+/* #define FX_DISABLE_FORCE_MEMORY_OPERATION */
+
+/* If defined, build options is disabled.  */
+
+/* #define FX_DISABLE_BUILD_OPTIONS */
+
+/* If defined, one line function is disabled.  */
+
+/* #define FX_DISABLE_ONE_LINE_FUNCTION */
+
+/* If defined, FAT entry refresh is disabled.  */
+
+/* #define FX_DISABLE_FAT_ENTRY_REFRESH */
+
+/* If defined, consecutive detect is disabled.  */
+
+/* #define FX_DISABLE_CONSECUTIVE_DETECT */
 
 #endif

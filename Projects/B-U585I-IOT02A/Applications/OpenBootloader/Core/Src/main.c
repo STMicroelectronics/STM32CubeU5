@@ -37,9 +37,9 @@ static void SystemClock_Config(void);
 extern TIM_HandleTypeDef htim6;
 
 /**
-  * @brief  Main program
-  * @param  None
-  * @retval None
+  * @brief  Main program.
+  * @param  None.
+  * @retval None.
   */
 int main(void)
 {
@@ -93,7 +93,10 @@ static void SystemClock_Config(void)
   HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /* Switch to SMPS regulator instead of LDO */
-  HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY);
+  if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    NVIC_SystemReset();
+  }
 
   __HAL_RCC_PWR_CLK_DISABLE();
 
@@ -144,8 +147,17 @@ static void SystemClock_Config(void)
   __HAL_RCC_PWR_CLK_DISABLE();
 }
 
+/**
+  * @brief  This function is used de-initialize the used protocols and their interrupts.
+  * @retval None.
+  */
 void System_DeInit(void)
 {
+  /* Interfaces de-initialization */
+  USARTx_DeInit();
+  I2Cx_DeInit();
+  SPIx_DeInit();
+
   HAL_RCC_DeInit();
 
   /* Disable timer */
@@ -154,13 +166,17 @@ void System_DeInit(void)
   __HAL_RCC_TIM6_CLK_DISABLE();
   HAL_NVIC_DisableIRQ(TIM6_IRQn);
 
-  /* Disable SPI */
+  /* Disable USB interrupt */
+  __HAL_RCC_USB_CLK_DISABLE();
+  HAL_NVIC_DisableIRQ(OTG_FS_IRQn);
+
+  /* Disable SPI interrupt */
   HAL_NVIC_DisableIRQ(SPIx_IRQn);
 }
 
 /**
   * @brief  This function is executed in case of error occurrence.
-  * @retval None
+  * @retval None.
   */
 void Error_Handler(void)
 {
@@ -170,12 +186,12 @@ void Error_Handler(void)
 }
 
 /**
- * @brief  Period elapsed callback in non blocking mode
+ * @brief  Period elapsed callback in non blocking mode.
  * @note   This function is called  when TIM6 interrupt took place, inside
  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
  * a global variable "uwTick" used as application time base.
- * @param  htim : TIM handle
- * @retval None
+ * @param  htim : TIM handle.
+ * @retval None.
  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
@@ -192,9 +208,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
+  * @param  file: pointer to the source file name.
+  * @param  line: assert_param error line source number.
+  * @retval None.
   */
 void assert_failed(uint8_t *file, uint32_t line)
 {

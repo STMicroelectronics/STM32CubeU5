@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    memory_access.c
   * @author  MCD Application Team
-  * @brief   Security Memory Acceess implementation
+  * @brief   Security Memory Access implementation
   ******************************************************************************
   * @attention
   *

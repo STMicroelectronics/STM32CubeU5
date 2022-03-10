@@ -364,7 +364,9 @@
           <state>$PROJ_DIR$/../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include</state>
           <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/inc</state>
           <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/ports/cortex_m33/iar/inc</state>
+          <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/addons/dns</state>
           <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/addons/mqtt</state>
+          <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/addons/sntp</state>
           <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/inc</state>
           <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/ports</state>
           <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/crypto_libraries/inc</state>
@@ -374,7 +376,6 @@
           <state>$PROJ_DIR$/../../../../../../Drivers/BSP/Components/mx_wifi</state>
           <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip</state>
           <state>$PROJ_DIR$/../../../../../../Drivers/BSP/B-U585I-IOT02A</state>
-          <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/addons/dns</state>
           <state>$PROJ_DIR$/../NetXDuo/Target</state>
         </option>
         <option>
@@ -1083,7 +1084,7 @@
           <name>$PROJ_DIR$/../Core/Src/main.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../Core/Src/tx_initialize_low_level.s</name>
+          <name>$PROJ_DIR$/../Core/Src/tx_initialize_low_level.S</name>
         </file>
         <file>
           <name>$PROJ_DIR$/../Core/Src/app_threadx.c</name>
@@ -1117,6 +1118,12 @@
         </group>
       </group>
     </group>
+  </group>
+  <group>
+    <name>Doc</name>
+    <file>
+      <name>$PROJ_DIR$/../README.md</name>
+    </file>
   </group>
   <group>
     <name>Drivers</name>
@@ -1250,6 +1257,18 @@
       </group>
       <group>
         <name>NX Core</name>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_server_socket_driver_listen.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_socket_driver_establish.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_socket_driver_packet_receive.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_udp_socket_driver_packet_receive.c</name>
+        </file>
         <file>
           <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_arp_announce_send.c</name>
         </file>
@@ -2704,6 +2723,18 @@
         </file>
       </group>
       <group>
+        <name>Addons SNTP</name>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/addons/sntp/nxd_sntp_client.c</name>
+        </file>
+      </group>
+      <group>
+        <name>Addons DNS</name>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/addons/dns/nxd_dns.c</name>
+        </file>
+      </group>
+      <group>
         <name>Crypto</name>
         <file>
           <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/crypto_libraries/src/nx_crypto_3des.c</name>
@@ -3673,12 +3704,6 @@
         </file>
         <file>
           <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nxe_secure_x509_key_usage_extension_parse.c</name>
-        </file>
-      </group>
-      <group>
-        <name>Addons DNS</name>
-        <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/addons/dns/nxd_dns.c</name>
         </file>
       </group>
     </group>

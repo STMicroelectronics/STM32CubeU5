@@ -66,6 +66,7 @@ extern DMA_QListTypeDef MDFQueue;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void SystemPower_Config(void);
 static void MX_ICACHE_Init(void);
 static void MX_GPIO_Init(void);
 static void MX_GPDMA1_Init(void);
@@ -108,6 +109,9 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
+
+  /* Configure the System Power */
+  SystemPower_Config();
 
   /* USER CODE BEGIN SysInit */
 
@@ -205,12 +209,6 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /* Switch to SMPS regulator instead of LDO */
-  if(HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
   /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI|RCC_OSCILLATORTYPE_MSIK;
@@ -233,6 +231,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -248,7 +247,27 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  __HAL_RCC_PWR_CLK_DISABLE();
+}
+
+/**
+  * @brief Power Configuration
+  * @retval None
+  */
+static void SystemPower_Config(void)
+{
+
+  /*
+   * Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
+   */
+  HAL_PWREx_DisableUCPDDeadBattery();
+
+  /*
+   * Switch to SMPS regulator instead of LDO
+   */
+  if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 /**
@@ -266,6 +285,7 @@ static void MX_ADF1_Init(void)
   /* USER CODE BEGIN ADF1_Init 1 */
 
   /* USER CODE END ADF1_Init 1 */
+
   /**
     AdfHandle0 structure initialization and HAL_MDF_Init function call
   */
@@ -284,6 +304,7 @@ static void MX_ADF1_Init(void)
   {
     Error_Handler();
   }
+
   /**
     AdfFilterConfig0 structure initialization
 
@@ -339,6 +360,10 @@ static void MX_GPDMA1_Init(void)
   {
     Error_Handler();
   }
+  if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel11, DMA_CHANNEL_NPRIV) != HAL_OK)
+  {
+    Error_Handler();
+  }
   handle_GPDMA1_Channel10.Instance = GPDMA1_Channel10;
   handle_GPDMA1_Channel10.InitLinkedList.Priority = DMA_HIGH_PRIORITY;
   handle_GPDMA1_Channel10.InitLinkedList.LinkStepMode = DMA_LSM_FULL_EXECUTION;
@@ -346,6 +371,10 @@ static void MX_GPDMA1_Init(void)
   handle_GPDMA1_Channel10.InitLinkedList.TransferEventMode = DMA_TCEM_LAST_LL_ITEM_TRANSFER;
   handle_GPDMA1_Channel10.InitLinkedList.LinkedListMode = DMA_LINKEDLIST_CIRCULAR;
   if (HAL_DMAEx_List_Init(&handle_GPDMA1_Channel10) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel10, DMA_CHANNEL_NPRIV) != HAL_OK)
   {
     Error_Handler();
   }
@@ -372,6 +401,7 @@ static void MX_ICACHE_Init(void)
   /* USER CODE BEGIN ICACHE_Init 1 */
 
   /* USER CODE END ICACHE_Init 1 */
+
   /** Enable instruction cache in 1-way (direct mapped cache)
   */
   if (HAL_ICACHE_ConfigAssociativityMode(ICACHE_1WAY) != HAL_OK)
@@ -415,6 +445,7 @@ static void MX_SAI1_Init(void)
   hsai_BlockB1.Init.FIFOThreshold = SAI_FIFOTHRESHOLD_1QF;
   hsai_BlockB1.Init.AudioFrequency = SAI_AUDIO_FREQUENCY_44K;
   hsai_BlockB1.Init.SynchroExt = SAI_SYNCEXT_DISABLE;
+  hsai_BlockB1.Init.MckOutput = SAI_MCK_OUTPUT_ENABLE;
   hsai_BlockB1.Init.MonoStereoMode = SAI_MONOMODE;
   hsai_BlockB1.Init.CompandingMode = SAI_NOCOMPANDING;
   hsai_BlockB1.Init.TriState = SAI_OUTPUT_NOTRELEASED;

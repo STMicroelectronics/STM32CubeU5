@@ -221,7 +221,7 @@ static void MX_DCACHE1_Init(void)
   {
     Error_Handler();
   }
-  HAL_DCACHE_Enable(&hdcache1);
+
   /* USER CODE BEGIN DCACHE1_Init 2 */
 
   /* USER CODE END DCACHE1_Init 2 */

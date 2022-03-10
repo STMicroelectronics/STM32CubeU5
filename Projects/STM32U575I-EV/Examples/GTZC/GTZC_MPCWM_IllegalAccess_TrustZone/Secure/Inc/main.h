@@ -75,20 +75,20 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define BUTTON_USER_Pin          GPIO_PIN_13
-#define BUTTON_USER_GPIO_Port    GPIOC
-#define BUTTON_USER_EXTI_IRQn    EXTI13_IRQn
-#define LED5_PIN_Pin             GPIO_PIN_7
-#define LED5_PIN_GPIO_Port       GPIOB
-#define LED6_Pin                 GPIO_PIN_7
-#define LED6_GPIO_Port           GPIOH
-#define USART_RX_Pin             GPIO_PIN_10
-#define USART_RX_GPIO_Port       GPIOA
-#define USART_TX_Pin             GPIO_PIN_9
-#define USART_TX_GPIO_Port       GPIOA
-#define BUTTON_TAMPER_Pin        GPIO_PIN_1
-#define BUTTON_TAMPER_GPIO_Port  GPIOA
-#define BUTTON_TAMPER_EXTI_IRQn  EXTI1_IRQn
+#define BUTTON_USER_Pin GPIO_PIN_13
+#define BUTTON_USER_GPIO_Port GPIOC
+#define BUTTON_USER_EXTI_IRQn EXTI13_IRQn
+#define LED5_PIN_Pin GPIO_PIN_7
+#define LED5_PIN_GPIO_Port GPIOB
+#define LED6_Pin GPIO_PIN_7
+#define LED6_GPIO_Port GPIOH
+#define USART_RX_Pin GPIO_PIN_10
+#define USART_RX_GPIO_Port GPIOA
+#define USART_TX_Pin GPIO_PIN_9
+#define USART_TX_GPIO_Port GPIOA
+#define BUTTON_TAMPER_Pin GPIO_PIN_1
+#define BUTTON_TAMPER_GPIO_Port GPIOA
+#define BUTTON_TAMPER_EXTI_IRQn EXTI1_IRQn
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

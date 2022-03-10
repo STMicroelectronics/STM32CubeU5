@@ -506,6 +506,11 @@ ULONG             valid_bit_map;
             }
         }
     }
+#else
+    FX_PARAMETER_NOT_USED(media_ptr);
+    FX_PARAMETER_NOT_USED(starting_sector);
+    FX_PARAMETER_NOT_USED(sectors);
+    FX_PARAMETER_NOT_USED(invalidate);
 #endif /* FX_DISABLE_CACHE */
 
     /* If we get here, return successful status to the caller.  */

@@ -16,8 +16,15 @@
 
 #include "platform/include/tfm_plat_device_id.h"
 #include "tfm_secure_api.h"
-#include "bl2/include/tfm_boot_status.h"
+#include "tfm_boot_status.h"
+#include "service_api.h"
 #include <stddef.h>
+
+#ifdef PSA_USE_SE_ST
+#include "psa/crypto.h"
+#include "se_psa.h"
+#include "se_psa_id.h"
+#endif
 
 enum tfm_plat_err_t tfm_plat_get_implementation_id(uint32_t *size,
                                                    uint8_t  *buf)
@@ -42,6 +49,26 @@ enum tfm_plat_err_t tfm_plat_get_implementation_id(uint32_t *size,
 
 enum tfm_plat_err_t tfm_plat_get_hw_version(uint32_t *size, uint8_t *buf)
 {
+#ifdef PSA_USE_SE_ST
+  uint32_t st_number_size = 19;
+  uint8_t st_number[st_number_size];
+  psa_status_t ret;
+  psa_key_handle_t key_handle;
+
+  ret = psa_open_key(SE_ST_ID_TO_PSA_ID(SE_ST_SERIAL_NUMBER), &key_handle);
+  if (ret != PSA_SUCCESS)
+  {
+    return TFM_PLAT_ERR_SYSTEM_ERR;
+  }
+  ret = psa_export_key(key_handle, st_number, st_number_size, &st_number_size);
+  if (ret != PSA_SUCCESS)
+  {
+    return TFM_PLAT_ERR_SYSTEM_ERR;
+  }
+
+  memcpy(buf, st_number, 14);
+  *size = 14;
+#else
   uint32_t hw_version_size = 14;
   uint16_t version;
   uint16_t revision;
@@ -68,6 +95,6 @@ enum tfm_plat_err_t tfm_plat_get_hw_version(uint32_t *size, uint8_t *buf)
   buf[12] = '0' + (((revision >> 0) & 0xf) / 10);
   buf[13] = '0' + (((revision >> 0) & 0xf) % 10);
   *size = hw_version_size;
-
+#endif /* PSA_USE_SE_ST */
   return TFM_PLAT_ERR_SUCCESS;
 }

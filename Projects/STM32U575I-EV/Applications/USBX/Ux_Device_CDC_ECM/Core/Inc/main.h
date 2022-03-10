@@ -44,7 +44,6 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stm32u575i_eval.h"
-  #include "stm32u575i_eval_sd.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -70,6 +69,7 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+void   MX_SDMMC1_SD_Init(void);
 void   MX_USB_OTG_FS_PCD_Init(void);
 void   MX_ADC1_Init(void);
 void   MX_I2C2_Init(void);

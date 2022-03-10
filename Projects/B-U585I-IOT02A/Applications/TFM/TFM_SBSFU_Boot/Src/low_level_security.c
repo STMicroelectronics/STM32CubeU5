@@ -42,22 +42,27 @@
 /* DUAL BANK page size */
 #define PAGE_SIZE FLASH_AREA_IMAGE_SECTOR_SIZE
 
+#if defined(STM32U585xx) || defined(STM32U575xx)
 #define PAGE_MAX_NUMBER_IN_BANK 127
+#elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+#define PAGE_MAX_NUMBER_IN_BANK 255
+#endif
+
 
 /* SBSFU_Boot Vector Address  */
 #define SBSFU_BOOT_VTOR_ADDR ((uint32_t)(BL2_CODE_START))
 
 
 const struct mpu_armv8m_region_cfg_t region_cfg_init_s[] = {
-           /* background region is enabled , secure execution on unsecure flash is not possible*/
+           /* background region is disabled, secure execution on unsecure flash is not possible*/
            /* but non secure execution on unsecure flash is possible , non secure mpu is used to protect execution */
            /* since SAU is enabled later to gain access to non secure flash */
-           /* Forbid execuction outside of flash write protected area  */
+           /* Forbid execution outside of flash write protected area  */
            /* descriptor 0 is set execute readonly before jumping in Secure application */
            {
                0,
                FLASH_BASE_S + S_IMAGE_PRIMARY_PARTITION_OFFSET,
-               FLASH_BASE_S + S_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_S_PARTITION_SIZE - 1,
+               FLASH_BASE_S + S_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_S_PARTITION_SIZE - 1 - (~MPU_RLAR_LIMIT_Msk +1),
                MPU_ARMV8M_MAIR_ATTR_DATANOCACHE_IDX,
                MPU_ARMV8M_XN_EXEC_NEVER,
                MPU_ARMV8M_AP_RW_PRIV_ONLY,
@@ -69,16 +74,13 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_s[] = {
                FLOW_CTRL_MPU_S_I_CH_R0,
 #endif /* FLOW_CONTROL */
            },
+           /* region 0: RW/PRIV_ONLY/EXEC_OK for SBSFU Boot */
            {
                1,
-               FLASH_BASE_S + S_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_S_PARTITION_SIZE,
-#ifndef MCUBOOT_PRIMARY_ONLY
-               FLASH_BASE_S + NS_IMAGE_SECONDARY_PARTITION_OFFSET + FLASH_NS_PARTITION_SIZE - 1,
-#else
-               FLASH_BASE_S + S_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_S_PARTITION_SIZE + FLASH_NS_PARTITION_SIZE - 1,
-#endif /* MCUBOOT_PRIMARY_ONLY */
-               MPU_ARMV8M_MAIR_ATTR_DATANOCACHE_IDX,
-               MPU_ARMV8M_XN_EXEC_NEVER,
+               FLASH_BASE_S + FLASH_AREA_BL2_OFFSET,
+               FLASH_BASE_S + FLASH_AREA_BL2_NOHDP_OFFSET + FLASH_AREA_BL2_NOHDP_SIZE - 1,
+               MPU_ARMV8M_MAIR_ATTR_CODE_IDX,
+               MPU_ARMV8M_XN_EXEC_OK,
                MPU_ARMV8M_AP_RW_PRIV_ONLY,
                MPU_ARMV8M_SH_NONE,
 #ifdef FLOW_CONTROL
@@ -88,9 +90,10 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_s[] = {
                FLOW_CTRL_MPU_S_I_CH_R1,
 #endif /* FLOW_CONTROL */
            },
+           /* Region 2: RW/PRIV_ONLY/EXEC_NEVER NS Flash BL2 NVCNT SCRATCH PERSO DATA */
            {
                2,
-               FLASH_BASE_S,
+               FLASH_BASE_NS,
                FLASH_BASE_S + FLASH_AREA_BL2_OFFSET - 1,
                MPU_ARMV8M_MAIR_ATTR_DATANOCACHE_IDX,
                MPU_ARMV8M_XN_EXEC_NEVER,
@@ -103,6 +106,7 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_s[] = {
                FLOW_CTRL_MPU_S_I_CH_R2,
 #endif /* FLOW_CONTROL */
            },
+           /* Region 2: RW/PRIV_ONLY/EXEC_NEVER Flash for NV Counter SST ITS */
            {
                3,
                FLASH_BASE_S + FLASH_AREA_BL2_NOHDP_OFFSET + FLASH_AREA_BL2_NOHDP_SIZE,
@@ -118,7 +122,7 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_s[] = {
                FLOW_CTRL_MPU_S_I_CH_R3,
 #endif /* FLOW_CONTROL */
            },
-           /* Forbid execution on full SRAM area */
+           /* Region 3: RW/PRIV_ONLY/EXEC_NEVER Forbid execution on full SRAM2 area */
            {
                4,
                BL2_SRAM_AREA_BASE,
@@ -134,10 +138,10 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_s[] = {
                FLOW_CTRL_MPU_S_I_CH_R4,
 #endif /* FLOW_CONTROL */
            },
-           /* forbid secure peripheral execution */
+           /* Region 4: RW/PRIV_ONLY/EXEC_NEVER forbid secure peripheral execution */
            {
                5,
-               PERIPH_BASE_S,
+               PERIPH_BASE_NS,
                PERIPH_BASE_S + 0xFFFFFFF,
                MPU_ARMV8M_MAIR_ATTR_DEVICE_IDX,
                MPU_ARMV8M_XN_EXEC_NEVER,
@@ -150,11 +154,11 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_s[] = {
                FLOW_CTRL_MPU_S_I_CH_R5,
 #endif /* FLOW_CONTROL */
            },
-           /* forbid execution of flash non secure alias */
+           /* Region 6: RW/PRIV_ONLY/EXEC_OK create a partition to be able to validate s appli */
            {
                6,
-               FLASH_BASE_NS,
-               FLASH_BASE_NS+FLASH_TOTAL_SIZE-1,
+               FLASH_BASE_S + S_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_S_PARTITION_SIZE - (~MPU_RLAR_LIMIT_Msk +1),
+               FLASH_BASE_S + S_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_S_PARTITION_SIZE - 1,
                MPU_ARMV8M_MAIR_ATTR_DATANOCACHE_IDX,
                MPU_ARMV8M_XN_EXEC_NEVER,
                MPU_ARMV8M_AP_RW_PRIV_ONLY,
@@ -165,7 +169,25 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_s[] = {
                FLOW_STEP_MPU_S_I_CH_R6,
                FLOW_CTRL_MPU_S_I_CH_R6,
 #endif /* FLOW_CONTROL */
+           },
+           /* Region 7: RW/PRIV_ONLY/EXEC_OK create a new executable s region for external loader for prim only config */
+#if defined(MCUBOOT_EXT_LOADER) && defined(MCUBOOT_PRIMARY_ONLY)
+           {
+               7,
+               FLASH_BASE_S + FLASH_AREA_LOADER_OFFSET,
+               FLASH_BASE_S + FLASH_AREA_LOADER_OFFSET + LOADER_IMAGE_S_CODE_SIZE - 1,
+               MPU_ARMV8M_MAIR_ATTR_DATANOCACHE_IDX,
+               MPU_ARMV8M_XN_EXEC_OK,
+               MPU_ARMV8M_AP_RW_PRIV_ONLY,
+               MPU_ARMV8M_SH_NONE,
+#ifdef FLOW_CONTROL
+               FLOW_STEP_MPU_S_I_EN_R7,
+               FLOW_CTRL_MPU_S_I_EN_R7,
+               FLOW_STEP_MPU_S_I_CH_R7,
+               FLOW_CTRL_MPU_S_I_CH_R7,
+#endif /* FLOW_CONTROL */
            }
+#endif /* MCUBOOT_EXT_LOADER && MCUBOOT_PRIMARY_ONLY */
 };
 
 const struct mpu_armv8m_region_cfg_t region_cfg_init_ns[] = {
@@ -174,8 +196,8 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_ns[] = {
            /* reduced execution to all flash during control */
            {
                0,
-               FLASH_BASE_NS + NS_IMAGE_PRIMARY_PARTITION_OFFSET,
-               FLASH_BASE_NS + NS_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_NS_PARTITION_SIZE - 1,
+               FLASH_BASE_NS + S_IMAGE_PRIMARY_PARTITION_OFFSET,
+               FLASH_BASE_NS + FLASH_AREA_LOADER_OFFSET - 1,
                MPU_ARMV8M_MAIR_ATTR_DATANOCACHE_IDX,
                MPU_ARMV8M_XN_EXEC_NEVER,
                MPU_ARMV8M_AP_RW_PRIV_ONLY,
@@ -187,13 +209,14 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_ns[] = {
                FLOW_CTRL_MPU_NS_I_CH_R0,
 #endif /* FLOW_CONTROL */
            },
-#if !defined(MCUBOOT_PRIMARY_ONLY)
+/* create a new executable ns region for external loader */
+#if defined(MCUBOOT_EXT_LOADER)
            {
                1,
-               FLASH_BASE_NS + S_IMAGE_SECONDARY_PARTITION_OFFSET,
-               FLASH_BASE_NS + NS_IMAGE_SECONDARY_PARTITION_OFFSET + FLASH_NS_PARTITION_SIZE - 1,
+               FLASH_BASE_NS + FLASH_AREA_LOADER_OFFSET,
+               FLASH_BASE_NS + FLASH_TOTAL_SIZE - 1,
                MPU_ARMV8M_MAIR_ATTR_DATANOCACHE_IDX,
-               MPU_ARMV8M_XN_EXEC_NEVER,
+               MPU_ARMV8M_XN_EXEC_OK,
                MPU_ARMV8M_AP_RW_PRIV_ONLY,
                MPU_ARMV8M_SH_NONE,
 #ifdef FLOW_CONTROL
@@ -203,12 +226,12 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_ns[] = {
                FLOW_CTRL_MPU_NS_I_CH_R1,
 #endif /* FLOW_CONTROL */
            },
-#endif /* MCUBOOT_PRIMARY_ONLY */
+#endif /* MCUBOOT_EXT_LOADER */
            /* Forbid execution on full SRAM area */
            {
                2,
 #ifdef TFM_ERROR_HANDLER_NON_SECURE
-               SRAM1_BASE_NS + (~MPU_RBAR_BASE_Msk) + 1,
+               SRAM1_BASE_NS + (~MPU_RLAR_LIMIT_Msk + 1),
 #else
                SRAM1_BASE_NS,
 #endif /*   TFM_ERROR_HANDLER_NON_SECURE */
@@ -239,7 +262,25 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_ns[] = {
                FLOW_STEP_MPU_NS_I_CH_R3,
                FLOW_CTRL_MPU_NS_I_CH_R3,
 #endif /* FLOW_CONTROL */
+           },
+            /* Creation new EXEC_OK region to execute Error Handler */
+#ifdef TFM_ERROR_HANDLER_NON_SECURE
+           {
+               4,
+               SRAM1_BASE_NS,
+               SRAM1_BASE_NS + (~MPU_RLAR_LIMIT_Msk + 1) - 1,
+               MPU_ARMV8M_MAIR_ATTR_DATA_IDX,
+               MPU_ARMV8M_XN_EXEC_OK,
+               MPU_ARMV8M_AP_RW_PRIV_ONLY,
+               MPU_ARMV8M_SH_NONE,
+#ifdef FLOW_CONTROL
+               FLOW_STEP_MPU_NS_I_EN_R4,
+               FLOW_CTRL_MPU_NS_I_EN_R4,
+               FLOW_STEP_MPU_NS_I_CH_R4,
+               FLOW_CTRL_MPU_NS_I_CH_R4,
+#endif /* FLOW_CONTROL */
            }
+#endif /*   TFM_ERROR_HANDLER_NON_SECURE */
 };
 
 #if defined(__ICCARM__)
@@ -250,7 +291,6 @@ const struct mpu_armv8m_region_cfg_t region_cfg_appli_s[] __attribute__((section
            {
                0,
                FLASH_BASE_S + S_IMAGE_PRIMARY_PARTITION_OFFSET,
-               /* Reduce area to allow write to validate the Secure Image */
                FLASH_BASE_S + S_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_S_PARTITION_SIZE - 1 - (~MPU_RLAR_LIMIT_Msk +1),
                MPU_ARMV8M_MAIR_ATTR_DATA_IDX,
                MPU_ARMV8M_XN_EXEC_OK,
@@ -272,9 +312,8 @@ const struct mpu_armv8m_region_cfg_t region_cfg_appli_ns[] __attribute__((sectio
            /* region 0 is now enable for execution */
            {
                0,
-               FLASH_BASE_NS + NS_IMAGE_PRIMARY_PARTITION_OFFSET,
-               /* Reduce area to allow write to validate the Non Secure Image */
-               FLASH_BASE_NS + NS_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_NS_PARTITION_SIZE - 1 - (~MPU_RLAR_LIMIT_Msk +1),
+               FLASH_BASE_NS + S_IMAGE_PRIMARY_PARTITION_OFFSET,
+               FLASH_BASE_NS + S_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_PARTITION_SIZE - (~MPU_RLAR_LIMIT_Msk +1) - 1,
                MPU_ARMV8M_MAIR_ATTR_DATA_IDX,
                MPU_ARMV8M_XN_EXEC_OK,
                MPU_ARMV8M_AP_RO_PRIV_ONLY,
@@ -285,6 +324,21 @@ const struct mpu_armv8m_region_cfg_t region_cfg_appli_ns[] __attribute__((sectio
                FLOW_STEP_MPU_NS_A_CH_R0,
                FLOW_CTRL_MPU_NS_A_CH_R0,
 #endif /* FLOW_CONTROL */
+           },
+           {
+               5,
+               FLASH_BASE_NS + S_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_PARTITION_SIZE - (~MPU_RLAR_LIMIT_Msk +1),
+               FLASH_BASE_NS + FLASH_AREA_LOADER_OFFSET - 1,
+               MPU_ARMV8M_MAIR_ATTR_DATA_IDX,
+               MPU_ARMV8M_XN_EXEC_NEVER,
+               MPU_ARMV8M_AP_RW_PRIV_ONLY,
+               MPU_ARMV8M_SH_NONE,
+#ifdef FLOW_CONTROL
+               FLOW_STEP_MPU_NS_A_EN_R5,
+               FLOW_CTRL_MPU_NS_A_EN_R5,
+               FLOW_STEP_MPU_NS_A_CH_R5,
+               FLOW_CTRL_MPU_NS_A_CH_R5,
+#endif  /* FLOW_CONTROL */
            }
 };
 
@@ -318,15 +372,11 @@ const struct sau_cfg_t sau_init_cfg[] = {
         FLOW_CTRL_SAU_I_CH_R1,
 #endif /* FLOW_CONTROL */
     },
-    /* Allow non secure Flash base access for Area 1/2/3 */
+    /* Allow non secure Flash base access for Area 1/2/3-5/6/7 */
     {
         2,
         ((uint32_t)FLASH_BASE_NS + NS_IMAGE_PRIMARY_PARTITION_OFFSET),
-#if !defined(MCUBOOT_PRIMARY_ONLY)
-        ((uint32_t)FLASH_BASE_NS + S_IMAGE_SECONDARY_PARTITION_OFFSET + FLASH_PARTITION_SIZE - 1),
-#else
-        ((uint32_t)FLASH_BASE_NS + NS_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_NS_PARTITION_SIZE - 1),
-#endif /* MCUBOOT_PRIMARY_ONLY */
+        ((uint32_t)FLASH_BASE_NS + FLASH_AREA_END_OFFSET - 1),
         TFM_FALSE,
 #ifdef FLOW_CONTROL
         FLOW_STEP_SAU_I_EN_R2,
@@ -386,11 +436,7 @@ const struct sau_cfg_t sau_load_cfg[] __attribute__((section(".BL2_NoHdp_Data"))
     {
         2,
         ((uint32_t)FLASH_BASE_NS + NS_IMAGE_PRIMARY_PARTITION_OFFSET),
-#if !defined(MCUBOOT_PRIMARY_ONLY)
-        ((uint32_t)FLASH_BASE_NS + S_IMAGE_SECONDARY_PARTITION_OFFSET + FLASH_PARTITION_SIZE - 1),
-#else
-        ((uint32_t)FLASH_BASE_NS + NS_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_NS_PARTITION_SIZE - 1),
-#endif /* MCUBOOT_PRIMARY_ONLY */
+        ((uint32_t)FLASH_BASE_NS + FLASH_AREA_END_OFFSET - 1),
         TFM_FALSE,
 #ifdef FLOW_CONTROL
         FLOW_STEP_SAU_L_EN_R2,
@@ -518,7 +564,7 @@ void LL_SECU_ApplyRunTimeProtections(void)
   /* With TFM_DEV_MODE , active tamper calls Error_Handler */
   /* Error_Handler requires sau_and_idau_cfg */
   active_tamper();
-  /* Lock top of SRAM2 in secure */
+  /* Lock SRAM2 shared area */
   lock_bl2_shared_area();
 
   /* Configure Flash Privilege access */
@@ -646,7 +692,7 @@ void LL_SECU_CheckStaticProtections(void)
 #endif /* TFM_NSBOOT_CHECK_ENABLE */
 
   /* Check bank1 secure flash protection */
-  start = FLASH_BL2_NVCNT_AREA_OFFSET / PAGE_SIZE;
+  start = 0;
   end = (S_IMAGE_PRIMARY_PARTITION_OFFSET  + FLASH_S_PARTITION_SIZE - 1) / PAGE_SIZE;
   if (end > PAGE_MAX_NUMBER_IN_BANK)
   {
@@ -695,14 +741,14 @@ void LL_SECU_CheckStaticProtections(void)
   /* the bank 2 must be fully unsecure */
   else if (flash_option_bytes_bank2.WMSecEndPage >= flash_option_bytes_bank2.WMSecStartPage)
   {
-    BOOT_LOG_INF("BANK 2 secure flash [%d, %d] : OB [%d, %d]", 127, 0, flash_option_bytes_bank2.WMSecStartPage,
+    BOOT_LOG_INF("BANK 2 secure flash [%d, %d] : OB [%d, %d]", PAGE_MAX_NUMBER_IN_BANK, 0, flash_option_bytes_bank2.WMSecStartPage,
                  flash_option_bytes_bank2.WMSecEndPage);
 #ifndef TFM_ENABLE_SET_OB
     BOOT_LOG_ERR("Unexpected value for secure flash protection");
     Error_Handler();
 #else
     /* bank is not unsecured , modify option bytes */
-    flash_option_bytes_bank2.WMSecStartPage = 127;
+    flash_option_bytes_bank2.WMSecStartPage = PAGE_MAX_NUMBER_IN_BANK;
     flash_option_bytes_bank2.WMSecEndPage = 0;
     flash_option_bytes_bank2.OptionType = OPTIONBYTE_WMSEC;
     flash_option_bytes_bank2.WMSecConfig |= OB_WMSEC_AREA2 | OB_WMSEC_SECURE_AREA_CONFIG ;
@@ -780,7 +826,7 @@ void LL_SECU_CheckStaticProtections(void)
 
 #ifdef  TFM_HDP_PROTECT_ENABLE
   /* Check secure user flash protection (HDP) */
-  start = FLASH_BL2_NVCNT_AREA_OFFSET / PAGE_SIZE;
+  start = 0;
   end = (FLASH_BL2_HDP_END) / PAGE_SIZE;
   if (
     (flash_option_bytes_bank1.WMSecStartPage > flash_option_bytes_bank1.WMHDPEndPage)
@@ -994,8 +1040,15 @@ static void rdp_level(uint32_t rdplevel, uint32_t current_rdplevel)
 #if defined(MCUBOOT_EXT_LOADER) && defined(MCUBOOT_PRIMARY_ONLY)
 static void secure_internal_flash(uint32_t offset_start, uint32_t offset_end)
 {
+#if defined(STM32U585xx) || defined(STM32U575xx)
     volatile uint32_t *SecBB[8]= {&FLASH_S->SECBB1R1, &FLASH_S->SECBB1R2, &FLASH_S->SECBB1R3, &FLASH_S->SECBB1R4,
-      &FLASH_S->SECBB2R1, &FLASH_S->SECBB2R2, &FLASH_S->SECBB2R3, &FLASH_S->SECBB2R4};
+                                  &FLASH_S->SECBB2R1, &FLASH_S->SECBB2R2, &FLASH_S->SECBB2R3, &FLASH_S->SECBB2R4};
+#elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+    volatile uint32_t *SecBB[16] = {&FLASH_S->SECBB1R1, &FLASH_S->SECBB1R2, &FLASH_S->SECBB1R3, &FLASH_S->SECBB1R4,
+                                    &FLASH_S->SECBB1R5, &FLASH_S->SECBB1R6, &FLASH_S->SECBB1R7, &FLASH_S->SECBB1R8,
+                                    &FLASH_S->SECBB2R1, &FLASH_S->SECBB2R2, &FLASH_S->SECBB2R3, &FLASH_S->SECBB2R4,
+                                    &FLASH_S->SECBB2R5, &FLASH_S->SECBB2R6, &FLASH_S->SECBB2R7, &FLASH_S->SECBB2R8};
+#endif
     volatile uint32_t *ptr;
     uint32_t regwrite=0x0, index;
     uint32_t block_start = offset_start;
@@ -1010,7 +1063,7 @@ static void secure_internal_flash(uint32_t offset_start, uint32_t offset_end)
     if (uFlowStage == FLOW_STAGE_CFG)
     {
       /* 1f is for 32 bits */
-      for (index = block_start & ~0x1f; index < (8<<5) ; index++)
+      for (index = block_start & ~0x1f; index < ((PAGE_MAX_NUMBER_IN_BANK+1)*2) ; index++)
       { /* clean register on index aligned */
         if (!(index & 0x1f)){
            regwrite=0x0;
@@ -1029,7 +1082,7 @@ static void secure_internal_flash(uint32_t offset_start, uint32_t offset_end)
     else
     {
       /*  1f is for 32 bits */
-      for (index = block_start & ~0x1f; index < (8<<5) ; index++)
+      for (index = block_start & ~0x1f; index < ((PAGE_MAX_NUMBER_IN_BANK+1)*2) ; index++)
       { /* clean register on index aligned */
         if (!(index & 0x1f)){
            regwrite=0x0;
@@ -1084,7 +1137,7 @@ static void sau_and_idau_cfg(void)
   if (uFlowStage == FLOW_STAGE_CFG)
   {
     /* Disable SAU */
-    TZ_SAU_Disable();
+    SAU->CTRL &= ~(SAU_CTRL_ENABLE_Msk);
 
     for (i = 0; i < ARRAY_SIZE(sau_init_cfg); i++)
     {
@@ -1104,7 +1157,7 @@ static void sau_and_idau_cfg(void)
     /* Flush and refill pipeline with updated permissions */
     __ISB();
     /* Enable SAU */
-    TZ_SAU_Enable();
+    SAU->CTRL |=  (SAU_CTRL_ENABLE_Msk);
 
     /* Execution stopped if flow control failed */
     FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_SAU_I_EN, FLOW_CTRL_SAU_I_EN);
@@ -1137,7 +1190,7 @@ static void sau_and_idau_cfg(void)
     }
 
     ctrl_reg = SAU->CTRL;
-    if ((ctrl_reg && SAU_CTRL_ENABLE_Msk) != 1U)
+    if ((ctrl_reg & SAU_CTRL_ENABLE_Msk) != SAU_CTRL_ENABLE_Msk)
     {
       Error_Handler();
     }
@@ -1175,7 +1228,7 @@ static void sau_loader_cfg(void)
   if (uFlowStage == FLOW_STAGE_CFG)
   {
     /* Disable SAU */
-    TZ_SAU_Disable();
+    SAU->CTRL &= ~(SAU_CTRL_ENABLE_Msk);
 
     for (i = 0; i < ARRAY_SIZE(sau_load_cfg); i++)
     {
@@ -1195,7 +1248,7 @@ static void sau_loader_cfg(void)
     /* Flush and refill pipeline with updated permissions */
     __ISB();
     /* Enable SAU */
-    TZ_SAU_Enable();
+    SAU->CTRL |=  (SAU_CTRL_ENABLE_Msk);
 
     /* Execution stopped if flow control failed */
     FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_SAU_L_EN, FLOW_CTRL_SAU_L_EN);
@@ -1228,7 +1281,7 @@ static void sau_loader_cfg(void)
     }
 
     ctrl_reg = SAU->CTRL;
-    if ((ctrl_reg && SAU_CTRL_ENABLE_Msk) != 1U)
+    if ((ctrl_reg & SAU_CTRL_ENABLE_Msk) != SAU_CTRL_ENABLE_Msk)
     {
       Error_Handler();
     }
@@ -1327,7 +1380,7 @@ static void mpu_init_cfg(void)
     }
 
     /* enable secure MPU */
-    mpu_armv8m_enable(&dev_mpu_s, PRIVILEGED_DEFAULT_ENABLE, HARDFAULT_NMI_ENABLE);
+    mpu_armv8m_enable(&dev_mpu_s, PRIVILEGED_DEFAULT_DISABLE, HARDFAULT_NMI_ENABLE);
     FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_MPU_S_I_EN, FLOW_CTRL_MPU_S_I_EN);
 
     /* configure non secure MPU regions */
@@ -1347,7 +1400,7 @@ static void mpu_init_cfg(void)
     }
 
     /* enable non secure MPU */
-    mpu_armv8m_enable(&dev_mpu_ns, PRIVILEGED_DEFAULT_ENABLE, HARDFAULT_NMI_ENABLE);
+    mpu_armv8m_enable(&dev_mpu_ns, PRIVILEGED_DEFAULT_DISABLE, HARDFAULT_NMI_ENABLE);
     FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_MPU_NS_I_EN, FLOW_CTRL_MPU_NS_I_EN);
   }
   /* verification stage */
@@ -1370,7 +1423,7 @@ static void mpu_init_cfg(void)
     }
 
     /* check secure MPU */
-    if (mpu_armv8m_check(&dev_mpu_s, PRIVILEGED_DEFAULT_ENABLE,
+    if (mpu_armv8m_check(&dev_mpu_s, PRIVILEGED_DEFAULT_DISABLE,
                       HARDFAULT_NMI_ENABLE) != MPU_ARMV8M_OK)
     {
       Error_Handler();
@@ -1398,7 +1451,7 @@ static void mpu_init_cfg(void)
     }
 
     /* check non secure MPU */
-    if (mpu_armv8m_check(&dev_mpu_ns, PRIVILEGED_DEFAULT_ENABLE,
+    if (mpu_armv8m_check(&dev_mpu_ns, PRIVILEGED_DEFAULT_DISABLE,
                       HARDFAULT_NMI_ENABLE) != MPU_ARMV8M_OK)
     {
       Error_Handler();
@@ -1511,36 +1564,6 @@ __attribute__((section(".BL2_NoHdp_Code")))
 #endif /* __ICCARM__ */
 static void mpu_loader_cfg(void)
 {
-#ifdef TFM_BOOT_MPU_PROTECTION
-#if defined(MCUBOOT_PRIMARY_ONLY)
-  static struct mpu_armv8m_dev_t dev_mpu_s = { MPU_BASE };
-
-  /* configuration stage */
-  if (uFlowStage == FLOW_STAGE_CFG)
-  {
-    /* secure region 2 is configured to allow read /write to NS_RAM */
-    mpu_armv8m_region_disable(&dev_mpu_s, 2);
-    /* Execution stopped if flow control failed */
-    FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_MPU_S_L_DI_R2, FLOW_CTRL_MPU_S_L_DI_R2);
-
-  }
-  else
-  {
-    /* check region 2 is disabled */
-    if (mpu_armv8m_region_disable_check(&dev_mpu_s, 2) != MPU_ARMV8M_OK)
-    {
-      Error_Handler();
-    }
-    else
-    {
-      /* Execution stopped if flow control failed */
-      FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_MPU_S_L_CH_R2, FLOW_CTRL_MPU_S_L_CH_R2);
-    }
-
-  }
-#endif /* MCUBOOT_PRIMARY_ONLY */
-#endif /* TFM_BOOT_MPU_PROTECTION  */
-
   /* configuration stage */
   if (uFlowStage != FLOW_STAGE_CFG)
   {
@@ -1568,16 +1591,13 @@ static void lock_bl2_shared_area(void)
 {
  uint32_t lockAttributes = GTZC_MCPBB_SUPERBLOCK_LOCKED;
 
-  /* assumption shared area in SRAM2 in the last 8 Kbytes super block */
+  /* assumption shared area in SRAM2 in the 1st 8 Kbytes super block */
   /*  This area in SRAM 2 is updated BL2 and can be lock to avoid any changes */
-  if (
-    (BOOT_TFM_SHARED_DATA_BASE >= S_RAM_ALIAS(_SRAM2_TOP - GTZC_MPCBB_SUPERBLOCK_SIZE))
-    && (BOOT_TFM_SHARED_DATA_SIZE <= GTZC_MPCBB_SUPERBLOCK_SIZE))
+  if  ((BOOT_TFM_SHARED_DATA_BASE + BOOT_TFM_SHARED_DATA_SIZE)
+      <= (SRAM2_BASE + GTZC_MPCBB_SUPERBLOCK_SIZE))
   {
     __HAL_RCC_GTZC1_CLK_ENABLE();
-    HAL_GTZC_MPCBB_LockConfig(S_RAM_ALIAS(_SRAM2_TOP - GTZC_MPCBB_SUPERBLOCK_SIZE),
-                                            1,
-                                            &lockAttributes);
+    HAL_GTZC_MPCBB_LockConfig(SRAM2_BASE ,1 ,&lockAttributes);
   }
   else Error_Handler();
 }
@@ -1629,13 +1649,14 @@ __attribute__((section(".BL2_NoHdp_Code")))
 static void enable_hdp_protection(void)
 {
 #ifdef TFM_HDP_PROTECT_ENABLE
+  __IO uint32_t read_reg = (uint32_t) &FLASH->SECHDPCR;
   do
   {
     /* Activate HDP protection */
     SET_BIT(FLASH->SECHDPCR, FLASH_SECHDPCR_HDP1_ACCDIS);
-  } while ((FLASH->SECHDPCR & FLASH_SECHDPCR_HDP1_ACCDIS) != FLASH_SECHDPCR_HDP1_ACCDIS);
+  } while (((*(uint32_t *)read_reg) & FLASH_SECHDPCR_HDP1_ACCDIS) != FLASH_SECHDPCR_HDP1_ACCDIS);
 
-  if ((FLASH->SECHDPCR & FLASH_SECHDPCR_HDP1_ACCDIS) != FLASH_SECHDPCR_HDP1_ACCDIS)
+  if (((*(uint32_t *)read_reg) & FLASH_SECHDPCR_HDP1_ACCDIS) != FLASH_SECHDPCR_HDP1_ACCDIS)
   {
     /* Security issue : execution stopped ! */
     Error_Handler();
@@ -1735,6 +1756,7 @@ RTC_HandleTypeDef RTCHandle;
 
 static void active_tamper(void)
 {
+    fih_int fih_rc = FIH_FAILURE;
 #if (TFM_TAMPER_ENABLE == ALL_TAMPER)
     RTC_ActiveTampersTypeDef sAllTamper;
     /*  use random generator to feed  */
@@ -1882,9 +1904,9 @@ static void active_tamper(void)
         {
             Error_Handler();
         }
-        else if (boot_secure_memequal((void *)&TamperSecureConf, (void *)&TamperSecureConfGet, sizeof(TamperSecureConf)))
-        {
-            Error_Handler();
+        FIH_CALL(boot_fih_memequal, fih_rc,(void *)&TamperSecureConf, (void *)&TamperSecureConfGet, sizeof(TamperSecureConf));
+        if (fih_not_eq(fih_rc, FIH_SUCCESS)) {
+                Error_Handler();
         }
         FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_TAMP_SEC_CH, FLOW_CTRL_TAMP_SEC_CH);
 
@@ -1893,21 +1915,18 @@ static void active_tamper(void)
         {
             Error_Handler();
         }
-        else if (boot_secure_memequal((void *)&TamperPrivConf, (void *)&TamperPrivConfGet, sizeof(TamperPrivConf)))
-        {
-            Error_Handler();
+        FIH_CALL(boot_fih_memequal, fih_rc,(void *)&TamperPrivConf, (void *)&TamperPrivConfGet, sizeof(TamperPrivConf));
+        if (fih_not_eq(fih_rc, FIH_SUCCESS)) {
+                Error_Handler();
         }
         FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_TAMP_PRIV_CH, FLOW_CTRL_TAMP_PRIV_CH);
 
         /*  Check Secret Erase */
-#if 0
-        /* On U5 Cut 2 only */
         if (READ_BIT(TAMP->ERCFGR, TAMP_ERCFGR0) != TAMP_ERCFGR0)
         {
             Error_Handler();
         }
-#endif
-    FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_TAMP_CFG_CH, FLOW_CTRL_TAMP_CFG_CH);
+        FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_TAMP_CFG_CH, FLOW_CTRL_TAMP_CFG_CH);
     }
 #endif /*  TFM_TAMPER_ENABLE != NO_TAMPER */
 }

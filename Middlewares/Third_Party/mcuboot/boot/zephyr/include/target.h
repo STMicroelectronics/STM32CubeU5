@@ -20,30 +20,30 @@
  * everything we need.
  */
 #include <soc.h>
+#include <storage/flash_map.h>
 
 #define FLASH_ALIGN FLASH_WRITE_BLOCK_SIZE
 
 #endif /* !defined(MCUBOOT_TARGET_CONFIG) */
 
+#if DT_NODE_HAS_PROP(DT_INST(0, jedec_spi_nor), label)
+#define JEDEC_SPI_NOR_0_LABEL DT_LABEL(DT_INST(0, jedec_spi_nor))
+#endif
+
 /*
  * Sanity check the target support.
  */
-#if (!defined(CONFIG_XTENSA) && !defined(DT_FLASH_DEV_NAME)) || \
-    (defined(CONFIG_XTENSA) && !defined(DT_JEDEC_SPI_NOR_0_LABEL)) || \
+#if (!defined(CONFIG_XTENSA) && !defined(DT_CHOSEN_ZEPHYR_FLASH_CONTROLLER_LABEL)) || \
+    (defined(CONFIG_XTENSA) && !defined(JEDEC_SPI_NOR_0_LABEL)) || \
     !defined(FLASH_ALIGN) ||                  \
-    !defined(DT_FLASH_AREA_IMAGE_0_OFFSET) || \
-    !defined(DT_FLASH_AREA_IMAGE_0_SIZE) || \
-    !defined(DT_FLASH_AREA_IMAGE_1_OFFSET) || \
-    !defined(DT_FLASH_AREA_IMAGE_1_SIZE) || \
-    (!defined(CONFIG_BOOT_SWAP_USING_MOVE) && !defined(DT_FLASH_AREA_IMAGE_SCRATCH_OFFSET)) || \
-    (!defined(CONFIG_BOOT_SWAP_USING_MOVE) && !defined(DT_FLASH_AREA_IMAGE_SCRATCH_SIZE))
+    !(FLASH_AREA_LABEL_EXISTS(image_0)) || \
+    !(FLASH_AREA_LABEL_EXISTS(image_1) || CONFIG_SINGLE_APPLICATION_SLOT) || \
+    (!defined(CONFIG_BOOT_SWAP_USING_MOVE) && !FLASH_AREA_LABEL_EXISTS(image_scratch) && !defined(CONFIG_SINGLE_APPLICATION_SLOT))
 #error "Target support is incomplete; cannot build mcuboot."
 #endif
 
-#if ((MCUBOOT_IMAGE_NUMBER == 2) && (!defined(FLASH_AREA_IMAGE_2_OFFSET) || \
-                                     !defined(FLASH_AREA_IMAGE_2_SIZE)   || \
-                                     !defined(FLASH_AREA_IMAGE_3_OFFSET) || \
-                                     !defined(FLASH_AREA_IMAGE_3_SIZE)))
+#if (MCUBOOT_IMAGE_NUMBER == 2) && (!(FLASH_AREA_LABEL_EXISTS(image_2)) || \
+                                     !(FLASH_AREA_LABEL_EXISTS(image_3)))
 #error "Target support is incomplete; cannot build mcuboot."
 #endif
 

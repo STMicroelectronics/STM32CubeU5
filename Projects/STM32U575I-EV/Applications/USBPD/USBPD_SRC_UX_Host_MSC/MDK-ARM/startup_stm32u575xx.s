@@ -11,14 +11,14 @@
 ;*                      After Reset the Cortex-M33 processor is in Thread mode,
 ;*                      priority is Privileged, and the Stack is set to Main.
 ;*******************************************************************************
+;* @attention
 ;*
-;* <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
-;* All rights reserved.</center></h2>
+;* Copyright (c) 2021 STMicroelectronics.
+;* All rights reserved.
 ;*
-;* This software component is licensed by ST under BSD 3-Clause license,
-;* the "License"; You may not use this file except in compliance with the
-;* License. You may obtain a copy of the License at:
-;*                        opensource.org/licenses/BSD-3-Clause
+;* This software is licensed under terms that can be found in the LICENSE file
+;* in the root directory of this software component.
+;* If no LICENSE file comes with this software, it is provided AS-IS.
 ;*
 ;*******************************************************************************
 ;* <<< Use Configuration Wizard in Context Menu >>>
@@ -75,7 +75,7 @@ __Vectors       DCD     __initial_sp                     ; Top of Stack
                 DCD     SysTick_Handler                  ; SysTick Handler
                 ; External Interrupts
                 DCD     WWDG_IRQHandler                  ; Window WatchDog
-                DCD     PVD_AVD_IRQHandler               ; PVD/AVD through EXTI Line detection Interrupt
+                DCD     PVD_PVM_IRQHandler               ; PVD/PVM through EXTI Line detection Interrupt
                 DCD     RTC_IRQHandler                   ; RTC non-secure interrupt
                 DCD     RTC_S_IRQHandler                 ; RTC secure interrupt
                 DCD     TAMP_IRQHandler                  ; Tamper non-secure interrupt
@@ -277,7 +277,7 @@ SysTick_Handler\
 Default_Handler PROC
 
                 EXPORT  WWDG_IRQHandler              [WEAK]
-                EXPORT  PVD_AVD_IRQHandler           [WEAK]
+                EXPORT  PVD_PVM_IRQHandler           [WEAK]
                 EXPORT  RTC_IRQHandler               [WEAK]
                 EXPORT  RTC_S_IRQHandler             [WEAK]
                 EXPORT  TAMP_IRQHandler              [WEAK]
@@ -399,7 +399,7 @@ Default_Handler PROC
 
 
 WWDG_IRQHandler
-PVD_AVD_IRQHandler
+PVD_PVM_IRQHandler
 RTC_IRQHandler
 RTC_S_IRQHandler
 TAMP_IRQHandler
@@ -553,4 +553,4 @@ __user_initial_stackheap PROC
 
                 END
 
-;************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE*****
+

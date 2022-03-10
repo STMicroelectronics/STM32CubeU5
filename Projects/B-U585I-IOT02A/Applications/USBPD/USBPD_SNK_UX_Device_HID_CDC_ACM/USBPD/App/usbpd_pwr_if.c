@@ -31,7 +31,6 @@
 #include "usbpd_trace.h"
 #endif /* _TRACE */
 #include "string.h"
-#include "gui_api.h"
 /* USER CODE BEGIN Include */
 
 /* USER CODE END Include */
@@ -87,12 +86,6 @@
   * @{
   */
 /* USER CODE BEGIN Private_Variables */
-/**
-  * @brief  USBPD Port PDO Storage array declaration
-  */
-
-/**** PDO ****/
-USBPD_PWR_Port_PDO_Storage_TypeDef PWR_Port_PDO_Storage[USBPD_PORT_COUNT];
 /* USER CODE END Private_Variables */
 /**
   * @}
@@ -121,14 +114,7 @@ USBPD_PWR_Port_PDO_Storage_TypeDef PWR_Port_PDO_Storage[USBPD_PORT_COUNT];
 USBPD_StatusTypeDef USBPD_PWR_IF_Init(void)
 {
 /* USER CODE BEGIN USBPD_PWR_IF_Init */
-  USBPD_StatusTypeDef _status = USBPD_OK;
-
-  /* Set links to PDO values and number for Port 0 (defined in PDO arrays in H file).
-   */
-  PWR_Port_PDO_Storage[USBPD_PORT_0].SinkPDO.ListOfPDO   = (uint32_t *) PORT0_PDO_ListSNK;
-  PWR_Port_PDO_Storage[USBPD_PORT_0].SinkPDO.NumberOfPDO = &USBPD_NbPDO[0];
-
-  return _status;
+  return USBPD_OK;
 /* USER CODE END USBPD_PWR_IF_Init */
 }
 
@@ -220,8 +206,8 @@ USBPD_StatusTypeDef USBPD_PWR_IF_Disable_VConn(uint8_t PortNum, CCxPin_TypeDef C
 void USBPD_PWR_IF_GetPortPDOs(uint8_t PortNum, USBPD_CORE_DataInfoType_TypeDef DataId, uint8_t *Ptr, uint32_t *Size)
 {
     {
-      *Size = USBPD_NbPDO[0];
-      memcpy(Ptr,PORT0_PDO_ListSNK, sizeof(uint32_t) * USBPD_NbPDO[0]);
+      *Size = PORT0_NB_SINKPDO;
+      memcpy(Ptr,PORT0_PDO_ListSNK, sizeof(uint32_t) * PORT0_NB_SINKPDO);
     }
 /* USER CODE BEGIN USBPD_PWR_IF_GetPortPDOs */
 

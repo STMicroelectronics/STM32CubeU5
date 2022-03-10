@@ -23,7 +23,8 @@
 		<nature>org.eclipse.cdt.core.cnature</nature>
 		<nature>com.st.stm32cube.ide.mcu.MCUCubeIdeServicesRevAev2ProjectNature</nature>
 		<nature>com.st.stm32cube.ide.mcu.MCUNonUnderRootProjectNature</nature>
-		<nature>com.st.stm32cube.ide.mcu.MCUCubeExampleProjectNature</nature>
+		<nature>com.st.stm32cube.ide.mcu.MCUCubeProjectNature</nature>
+		<nature>com.st.stm32cube.ide.mcu.MCUAdvancedStructureProjectNature</nature>
 		<nature>com.st.stm32cube.ide.mcu.MCUEndUserDisabledTrustZoneProjectNature</nature>
 		<nature>com.st.stm32cube.ide.mcu.MCUNonSecureProjectNature</nature>
 		<nature>com.st.stm32cube.ide.mcu.MCUSingleCpuProjectNature</nature>
@@ -33,9 +34,39 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>USBPD_SRC_UX_Host_MSC.ioc</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/USBPD_SRC_UX_Host_MSC.ioc</locationURI>
+		</link>
+		<link>
 			<name>Doc/README.md</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/README.md</locationURI>
+		</link>
+		<link>
+			<name>Utilities/bsp_gui.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Utilities/GUI_INTERFACE/bsp_gui.c</locationURI>
+		</link>
+		<link>
+			<name>Utilities/data_struct_tlv.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Utilities/GUI_INTERFACE/data_struct_tlv.c</locationURI>
+		</link>
+		<link>
+			<name>Utilities/gui_api.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Utilities/GUI_INTERFACE/gui_api.c</locationURI>
+		</link>
+		<link>
+			<name>Utilities/tracer_emb.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Utilities/TRACER_EMB/tracer_emb.c</locationURI>
+		</link>
+		<link>
+			<name>Utilities/tracer_emb_hw.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Utilities/TRACER_EMB/tracer_emb_hw.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/CMSIS/system_stm32u5xx.c</name>
@@ -253,16 +284,6 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/STM32_USBPD_Library/Core/src/usbpd_trace.c</locationURI>
 		</link>
 		<link>
-			<name>Utilities/TRACER_EMB/tracer_emb.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Utilities/TRACER_EMB/tracer_emb.c</locationURI>
-		</link>
-		<link>
-			<name>Utilities/TRACER_EMB/tracer_emb_hw.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Utilities/TRACER_EMB/tracer_emb_hw.c</locationURI>
-		</link>
-		<link>
 			<name>Application/User/Core/app_threadx.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/app_threadx.c</locationURI>
@@ -288,9 +309,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/stm32u5xx_it.c</locationURI>
 		</link>
 		<link>
-			<name>Application/User/Core/tx_initialize_low_level.s</name>
+			<name>Application/User/Core/tx_initialize_low_level.S</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/tx_initialize_low_level.s</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/tx_initialize_low_level.S</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/Components/tcpp0203.c</name>
@@ -303,17 +324,17 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/tcpp0203/tcpp0203_reg.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/STM32U575I_EVAL/stm32u575i_eval.c</name>
+			<name>Drivers/BSP/STM32U575-EV/stm32u575i_eval.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U575I-EV/stm32u575i_eval.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/STM32U575I_EVAL/stm32u575i_eval_bus.c</name>
+			<name>Drivers/BSP/STM32U575-EV/stm32u575i_eval_bus.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U575I-EV/stm32u575i_eval_bus.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/STM32U575I_EVAL/stm32u575i_eval_usbpd_pwr.c</name>
+			<name>Drivers/BSP/STM32U575-EV/stm32u575i_eval_usbpd_pwr.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U575I-EV/stm32u575i_eval_usbpd_pwr.c</locationURI>
 		</link>
@@ -1811,16 +1832,6 @@
 			<name>Middlewares/ThreadX/Core/tx_thread_interrupt_control.S</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/threadx/ports/cortex_m33/gnu/src/tx_thread_interrupt_control.S</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/ThreadX/Core/tx_thread_interrupt_disable.S</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/threadx/ports/cortex_m33/gnu/src/tx_thread_interrupt_disable.S</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/ThreadX/Core/tx_thread_interrupt_restore.S</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/threadx/ports/cortex_m33/gnu/src/tx_thread_interrupt_restore.S</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/ThreadX/Core/tx_thread_preemption_change.c</name>

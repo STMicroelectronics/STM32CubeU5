@@ -1,51 +1,57 @@
 #-------------------------------------------------------------------------------
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2020-2021, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.15)
 
-#Tell cmake where our modules can be found
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/../../../cmake)
+add_library(tfm_qcbor STATIC EXCLUDE_FROM_ALL)
 
-#Some project global settings
-set (QCBOR_DIR "${CMAKE_CURRENT_LIST_DIR}")
-get_filename_component(TFM_ROOT_DIR "${QCBOR_DIR}/../../.." ABSOLUTE)
+target_sources(tfm_qcbor
+    PRIVATE
+        src/ieee754.c
+        src/qcbor_encode.c
+        src/qcbor_decode.c
+        src/UsefulBuf.c
+        util/qcbor_util.c
+)
 
-#Include common stuff to control cmake.
-include("Common/BuildSys")
+target_include_directories(tfm_qcbor
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/util>
+)
 
-#Start an embedded project.
-embedded_project_start(CONFIG "${TFM_ROOT_DIR}/configs/ConfigDefault.cmake")
-project(tfm_qcbor LANGUAGES C)
-embedded_project_fixup()
+target_link_libraries(tfm_qcbor
+    PRIVATE
+        tfm_attestation_defs
+        tfm_t_cose
+)
 
-#Append all our source files to global lists.
-list(APPEND ALL_SRC_C_ENCODE
-	"${QCBOR_DIR}/src/ieee754.c"
-	"${QCBOR_DIR}/src/qcbor_encode.c"
-	"${QCBOR_DIR}/src/UsefulBuf.c"
-	)
+############################ qcbor test ########################################
 
-#Append all our source files to global lists.
-list(APPEND ALL_SRC_C_DECODE
-	"${QCBOR_DIR}/src/ieee754.c"
-	"${QCBOR_DIR}/src/qcbor_decode.c"
-	"${QCBOR_DIR}/src/UsefulBuf.c"
-	)
+add_library(tfm_qcbor_test STATIC EXCLUDE_FROM_ALL)
 
-#Setting include directories
-embedded_include_directories(PATH ${QCBOR_DIR}/inc ABSOLUTE)
+target_sources(tfm_qcbor_test
+    PRIVATE
+        test/float_tests.c
+        test/half_to_double_from_rfc7049.c
+        test/qcbor_decode_tests.c
+        test/qcbor_encode_tests.c
+        test/run_tests.c
+        test/UsefulBuf_Tests.c
+)
 
-#Specify what we build (for the QCBOR, build as an object library)
-add_library(tfm_qcbor_encode OBJECT ${ALL_SRC_C_ENCODE})
-add_library(tfm_qcbor_decode OBJECT ${ALL_SRC_C_DECODE})
+target_include_directories(tfm_qcbor_test
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/test>
+    PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
+)
 
-#Set common compiler flags
-config_setting_shared_compiler_flags(tfm_qcbor_encode)
-config_setting_shared_compiler_flags(tfm_qcbor_decode)
-
-embedded_project_end(tfm_qcbor_encode)
-embedded_project_end(tfm_qcbor_decode)
+target_link_libraries(tfm_qcbor_test
+    PRIVATE
+        tfm_qcbor
+)

@@ -8,6 +8,7 @@ pushd %projectdir%\..\..\..\..\..\..\Middlewares\Third_Party\mcuboot
 set mcuboot_dir=%cd%
 popd
 set "tfm_keys=%tfm_key_dir%\keys.c"
+set "key_eat_priv_bin=%tfm_key_dir%\s_data.bin"
 
 ::lines for keys backup
 for /f %%# in ('wmic os get localdatetime^|findstr .') do if "%%#" neq "" set date=%%#
@@ -22,7 +23,9 @@ IF %ERRORLEVEL% NEQ 0 goto :error_key
 set "cmdcpypem=copy %tfm_key_dir%\*.pem %$key_backup_dir%\"
 %cmdcpypem%
 IF %ERRORLEVEL% NEQ 0 goto :error_key
-
+set "cmdcpysdata=copy %key_eat_priv_bin% %$key_backup_dir%"
+%cmdcpysdata%
+IF %ERRORLEVEL% NEQ 0 goto :error_key
 
 :start
 goto exe:
@@ -38,7 +41,7 @@ goto Keygen
 :py
 ::line for python
 echo Keygen with python script
-set "imgtool=%mcuboot_dir%\scripts\imgtool.py"
+set "imgtool=%mcuboot_dir%\scripts\imgtool\main.py"
 set "python=python "
 
 :keygen
@@ -122,6 +125,9 @@ set "command_key=%python%%imgtool% keygen -k %key_eat% -t ecdsa-p256-ssl"
 %command_key%
 IF %ERRORLEVEL% NEQ 0 goto :error_key
 set "command_key=%python%%imgtool% getpriv --minimal -k %key_eat%  >> %tfm_keys%"
+%command_key%
+IF %ERRORLEVEL% NEQ 0 goto :error_key
+set "command_key=%python%%imgtool% getprivbin --minimal -k %key_eat%  > %key_eat_priv_bin%"
 %command_key%
 IF %ERRORLEVEL% NEQ 0 goto :error_key
 ::huk key

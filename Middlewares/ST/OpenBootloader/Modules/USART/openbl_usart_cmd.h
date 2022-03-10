@@ -29,9 +29,21 @@
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/
-extern OPENBL_CommandsTypeDef OPENBL_USART_Commands;
-
 /* Exported functions ------------------------------------------------------- */
 OPENBL_CommandsTypeDef *OPENBL_USART_GetCommandsList(void);
+void OPENBL_USART_SetCommandsList(OPENBL_CommandsTypeDef *pUsartCmd);
+void OPENBL_USART_GetCommand(void);
+void OPENBL_USART_GetVersion(void);
+void OPENBL_USART_GetID(void);
+void OPENBL_USART_ReadMemory(void);
+void OPENBL_USART_WriteMemory(void);
+void OPENBL_USART_Go(void);
+void OPENBL_USART_ReadoutProtect(void);
+void OPENBL_USART_ReadoutUnprotect(void);
+void OPENBL_USART_EraseMemory(void);
+void OPENBL_USART_WriteProtect(void);
+void OPENBL_USART_WriteUnprotect(void);
+void OPENBL_USART_SpecialCommand(void);
+void OPENBL_USART_ExtendedSpecialCommand(void);
 
 #endif /* OPENBL_USART_CMD_H */

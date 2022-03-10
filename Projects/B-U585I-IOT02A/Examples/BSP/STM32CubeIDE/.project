@@ -168,6 +168,11 @@
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_dlyb.c</locationURI>
 		</link>
 		<link>
+			<name>Example/User/audio_record.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Src/audio_record.c</locationURI>
+		</link>
+		<link>
 			<name>Example/User/button.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Src/button.c</locationURI>
@@ -218,6 +223,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Src/ospi_ram.c</locationURI>
 		</link>
 		<link>
+			<name>Example/User/ranging_sensor.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Src/ranging_sensor.c</locationURI>
+		</link>
+		<link>
 			<name>Example/User/stm32u5xx_hal_msp.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Src/stm32u5xx_hal_msp.c</locationURI>
@@ -231,6 +241,11 @@
 			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_audio.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_audio.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_bus.c</name>
@@ -266,6 +281,11 @@
 			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_ospi.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_ospi.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_ranging_sensor.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_ranging_sensor.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/Components/aps6408.c</name>
@@ -333,6 +353,11 @@
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/ov5640/ov5640_reg.c</locationURI>
 		</link>
 		<link>
+			<name>Drivers/BSP/Components/platform.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/porting/platform.c</locationURI>
+		</link>
+		<link>
 			<name>Drivers/BSP/Components/veml6030.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/veml6030/veml6030.c</locationURI>
@@ -341,6 +366,31 @@
 			<name>Drivers/BSP/Components/veml6030_reg.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/veml6030/veml6030_reg.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/vl53l5cx.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/vl53l5cx.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/vl53l5cx_api.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_api.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/vl53l5cx_plugin_detection_thresholds.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_detection_thresholds.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/vl53l5cx_plugin_motion_indicator.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_motion_indicator.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/vl53l5cx_plugin_xtalk.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_xtalk.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

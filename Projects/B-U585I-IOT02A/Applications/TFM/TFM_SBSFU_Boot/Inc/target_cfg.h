@@ -19,7 +19,9 @@
 
 #include "platform/ext/common/uart_stdout.h"
 #include "tfm_peripherals_def.h"
-
+#ifdef TFM_FIH_PROFILE_ON
+#include "fih.h"
+#endif
 #define TFM_DRIVER_STDIO    TFM_Driver_USART0
 #define NS_DRIVER_STDIO     TFM_Driver_USART0
 

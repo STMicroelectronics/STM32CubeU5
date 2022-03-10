@@ -133,7 +133,7 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
 
 ### <b>Keywords</b>
 
-RTOS, ThreadX, USBX, USB_OTG, Full Speed, DFU, USBPD, Firmware upgrade
+RTOS, ThreadX, USBXDevice, USB_OTG, Full Speed, DFU, USBPD, Firmware upgrade
 
 ### <b>Hardware and Software environment</b>
 
@@ -158,9 +158,9 @@ In order to make the program work, you must do the following :
  - To run the application, proceed as follows:
    - Install "DfuSe Demonstrator"
    - Install the DFU driver available in "DfuSe Demonstrator" installation directory
-   - For Windows 8.1 and later : Update STM32 DFU device driver manually from Windows Device Manager.
+   - For Windows 10 and later : Update STM32 DFU device driver manually from Windows Device Manager.
      The install of required device driver is available under:
-     "Program Files\STMicroelectronics\Software\DfuSe v3.0.6\Bin\Driver\Win8.1" directory.
+     "Program Files\STMicroelectronics\Software\DfuSe v3.0.6\Bin\Driver\Win10" directory.
    - Open "DfuSe Demo", choose the "B_U585I-IOT02A_GPIO_IOToggle_@0x08020000.dfu" provided in Binary
      directory, upgrade and verify to check that it is successfully downloaded.
    - This application allows also to upload a dfu file (either the provided DFU file or by creating a new dfu file).

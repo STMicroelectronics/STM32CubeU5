@@ -84,7 +84,7 @@ typedef struct
                                                               trigger event (between ADC enable and ADC conversion start
                                                               trigger event or between two ADC conversion start trigger
                                                               event).
-                                                              Duration value: Refer to device datasheet, parameter
+                                                              Duration value: Refer to device data sheet, parameter
                                                               "Idle".
                                                         Note: When ADC trigger frequency mode is set to low frequency,
                                                               some rearm cycles are inserted before performing ADC
@@ -121,6 +121,10 @@ typedef struct
   */
 typedef struct
 {
+  uint16_t Size;                               /*!< Specifies DMA transfer number of ADC conversion data              */
+
+  uint32_t *pData;                             /*!< Specifies the address of data buffer                              */
+
   LPBAM_FunctionalState DMAContinuousRequests; /*!< Specify whether the DMA requests are performed in one shot mode
                                                     (DMA transfer stops when number of conversions is reached) or in
                                                      continuous mode (DMA transfer unlimited, whatever number of
@@ -129,11 +133,6 @@ typedef struct
                                                      Note: In continuous mode, DMA must be configured in circular mode.
                                                            Otherwise an overrun will be triggered when DMA buffer
                                                            maximum pointer is reached.                                */
-
-  uint16_t Size;                               /*!< Specifies DMA transfer number of ADC conversion data              */
-
-  uint32_t *pData;                             /*!< Specifies the address of data buffer                              */
-
 } LPBAM_ADC_DataAdvConf_t;
 
 /**
@@ -179,7 +178,7 @@ typedef struct
                                                               trigger event (between ADC enable and ADC conversion start
                                                               trigger event or between two ADC conversion start trigger
                                                               event).
-                                                              Duration value: Refer to device datasheet, parameter
+                                                              Duration value: Refer to device data sheet, parameter
                                                               "Idle".
                                                         Note: When ADC trigger frequency mode is set to low frequency,
                                                               some rearm cycles are inserted before performing ADC
@@ -231,7 +230,7 @@ typedef struct
 typedef struct
 {
   LPBAM_ADC_ChannelConfig_t ChannelConfig; /*!< Structure definition of ADC Channel Configuration.
-                                                Please refer to LPBAM_ADC_AnalogWDGConfig_t definition in
+                                                Please refer to LPBAM_ADC_ChannelConfig_t definition in
                                                 stm32xx_platform_lpbam_adc.h for more information.        */
 
 } LPBAM_ADC_ChannelAdvConf_t;
@@ -256,7 +255,7 @@ typedef struct
   DMA_NodeTypeDef pNodes[2U]; /*!< Specifies the content of nodes required for DMA queue execution : 2 different nodes
                                    are needed                                                                         */
 
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : 1 different values are needed    */
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
 
 } LPBAM_ADC_ConvDataDesc_t;
 
@@ -305,7 +304,7 @@ typedef struct
   */
 
 /**
-  * @brief  ADV_LPBAM_ADC_Conversion_SetConfigQ.
+  * @brief ADV_LPBAM_ADC_Conversion_SetConfigQ.
   */
 LPBAM_Status_t ADV_LPBAM_ADC_Conversion_SetConfigQ(ADC_TypeDef                *const pInstance,
                                                    LPBAM_DMAListInfo_t        const *const pDMAListInfo,
@@ -313,7 +312,7 @@ LPBAM_Status_t ADV_LPBAM_ADC_Conversion_SetConfigQ(ADC_TypeDef                *c
                                                    LPBAM_ADC_ConvConfigDesc_t *const pDescriptor,
                                                    DMA_QListTypeDef           *const pQueue);
 /**
-  * @brief  ADV_LPBAM_ADC_Conversion_SetDataQ.
+  * @brief ADV_LPBAM_ADC_Conversion_SetDataQ.
   */
 LPBAM_Status_t ADV_LPBAM_ADC_Conversion_SetDataQ(ADC_TypeDef              *const pInstance,
                                                  LPBAM_DMAListInfo_t      const *const pDMAListInfo,
@@ -321,7 +320,7 @@ LPBAM_Status_t ADV_LPBAM_ADC_Conversion_SetDataQ(ADC_TypeDef              *const
                                                  LPBAM_ADC_ConvDataDesc_t *const pDescriptor,
                                                  DMA_QListTypeDef         *const pQueue);
 /**
-  * @brief  ADV_LPBAM_ADC_Conversion_SetFullQ.
+  * @brief ADV_LPBAM_ADC_Conversion_SetFullQ.
   */
 LPBAM_Status_t ADV_LPBAM_ADC_Conversion_SetFullQ(ADC_TypeDef              *const pInstance,
                                                  LPBAM_DMAListInfo_t      const *const pDMAListInfo,
@@ -329,7 +328,7 @@ LPBAM_Status_t ADV_LPBAM_ADC_Conversion_SetFullQ(ADC_TypeDef              *const
                                                  LPBAM_ADC_ConvFullDesc_t *const pDescriptor,
                                                  DMA_QListTypeDef         *const pQueue);
 /**
-  * @brief  ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ.
+  * @brief ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ.
   */
 LPBAM_Status_t ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ(ADC_TypeDef                 *const pInstance,
                                                       LPBAM_DMAListInfo_t         const *const pDMAListInfo,
@@ -337,12 +336,12 @@ LPBAM_Status_t ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ(ADC_TypeDef               
                                                       LPBAM_ADC_AWDGFullDesc_t    *const pDescriptor,
                                                       DMA_QListTypeDef            *const pQueue);
 /**
-  * @brief  ADV_LPBAM_ADC_ChannelConfig.
+  * @brief ADV_LPBAM_ADC_ChannelConfig.
   */
 LPBAM_Status_t ADV_LPBAM_ADC_ChannelConfig(LPBAM_ADC_ChannelAdvConf_t *const pChannel,
                                            void                       *pDescriptor);
 /**
-  * @brief  ADV_LPBAM_ADC_EnableDMARequests.
+  * @brief ADV_LPBAM_ADC_EnableDMARequests.
   */
 LPBAM_Status_t ADV_LPBAM_ADC_EnableDMARequests(ADC_TypeDef *const pInstance);
 /**

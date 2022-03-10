@@ -159,7 +159,6 @@ static int32_t OSPI_NOR_ResetMemory(uint32_t Instance);
 static int32_t OSPI_NOR_EnterDOPIMode(uint32_t Instance);
 static int32_t OSPI_NOR_EnterSOPIMode(uint32_t Instance);
 static int32_t OSPI_NOR_ExitOPIMode(uint32_t Instance);
-static int32_t OSPI2_DLYB_Enable(uint32_t Instance);
 /**
   * @}
   */
@@ -169,7 +168,7 @@ static int32_t OSPI2_DLYB_Enable(uint32_t Instance);
   */
 static void OSPI_RAM_MspInit(OSPI_HandleTypeDef *hospi);
 static void OSPI_RAM_MspDeInit(OSPI_HandleTypeDef *hospi);
-static int32_t OSPI1_DLYB_Enable(uint32_t Instance);
+static int32_t OSPI_DLYB_Enable(OSPI_HandleTypeDef *hospi);
 /**
   * @}
   */
@@ -231,7 +230,7 @@ int32_t BSP_OSPI_NOR_Init(uint32_t Instance, BSP_OSPI_NOR_Init_t *Init)
         ret = BSP_ERROR_PERIPH_FAILURE;
       }
       /* OSPI Delay Block enable */
-      else if (OSPI2_DLYB_Enable(Instance) != BSP_ERROR_NONE)
+      else if (OSPI_DLYB_Enable(&hospi_nor[Instance]) != BSP_ERROR_NONE)
       {
         ret = BSP_ERROR_COMPONENT_FAILURE;
       }
@@ -1355,7 +1354,7 @@ int32_t BSP_OSPI_RAM_EnableMemoryMappedMode(uint32_t Instance)
     ret = BSP_ERROR_WRONG_PARAM;
   }
   /* OSPI Delay Block enable */
-  else if (OSPI1_DLYB_Enable(Instance) != BSP_ERROR_NONE)
+  else if (OSPI_DLYB_Enable(&hospi_ram[Instance]) != BSP_ERROR_NONE)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
@@ -1857,31 +1856,46 @@ static int32_t OSPI_NOR_ExitOPIMode(uint32_t Instance)
 
 /**
   * @brief  This function enables delay block.
-  * @param  Instance  OSPI instance
+  * @param  ospi_Instance  OSPI instance
   * @retval BSP status
   */
-static int32_t OSPI2_DLYB_Enable(uint32_t Instance)
+static int32_t OSPI_DLYB_Enable(OSPI_HandleTypeDef *hospi)
 {
-  __HAL_OSPI_DISABLE(&hospi_nor[Instance]);
-  HAL_Delay(100);
-  SET_BIT(hospi_nor[Instance].Instance->DCR1, OCTOSPI_DCR1_FRCK);
-  HAL_Delay(100);
-  __HAL_OSPI_ENABLE(&hospi_nor[Instance]);
-  HAL_Delay(100);
+  LL_DLYB_CfgTypeDef dlyb_cfg, dlyb_cfg_test;
+  int32_t ret = BSP_ERROR_NONE;
+  uint32_t div_value = 4;
 
-  DLYB_OCTOSPI2_NS->CR   = 0U;
-  DLYB_OCTOSPI2_NS->CR   = 0x03;
-  DLYB_OCTOSPI2_NS->CFGR = 0x7A02;
-  DLYB_OCTOSPI2_NS->CR   = 0x01;
-  HAL_Delay(100);
-  __HAL_OSPI_DISABLE(&hospi_nor[Instance]);
-  HAL_Delay(100);
-  CLEAR_BIT(hospi_nor[Instance].Instance->DCR1, OCTOSPI_DCR1_FRCK);
-  HAL_Delay(100);
-  __HAL_OSPI_ENABLE(&hospi_nor[Instance]);
-  HAL_Delay(100);
+  /* Delay block configuration ------------------------------------------------ */
+  if (HAL_OSPI_DLYB_GetClockPeriod(hospi, &dlyb_cfg) != HAL_OK)
+  {
+    ret = BSP_ERROR_PERIPH_FAILURE;
+  }
 
-  return BSP_ERROR_NONE;
+  /* PhaseSel is divided by 4 (emperic value)*/
+  dlyb_cfg.PhaseSel /= div_value;
+
+  /* save the present configuration for check*/
+  dlyb_cfg_test = dlyb_cfg;
+
+  /*set delay block configuration*/
+  if (HAL_OSPI_DLYB_SetConfig(hospi, &dlyb_cfg) != HAL_OK)
+  {
+    ret = BSP_ERROR_PERIPH_FAILURE;
+  }
+
+  /*check the set value*/
+  if (HAL_OSPI_DLYB_GetConfig(hospi, &dlyb_cfg) != HAL_OK)
+  {
+    ret = BSP_ERROR_PERIPH_FAILURE;
+  }
+
+  if ((dlyb_cfg.PhaseSel != dlyb_cfg_test.PhaseSel) || (dlyb_cfg.Units != dlyb_cfg_test.Units))
+  {
+    ret = BSP_ERROR_PERIPH_FAILURE;
+  }
+
+  /* Return BSP status */
+  return ret;
 }
 
 /**
@@ -2016,46 +2030,6 @@ static void OSPI_RAM_MspDeInit(OSPI_HandleTypeDef *hospi)
   OSPI_RAM_CLK_DISABLE();
 }
 
-/**
-  * @brief  This function enables delay block.
-  * @param  Instance  OSPI instance
-  * @retval BSP status
-  */
-static int32_t OSPI1_DLYB_Enable(uint32_t Instance)
-{
-  LL_DLYB_CfgTypeDef dlyb_cfg, dlyb_cfg_test;
-  int32_t ret = BSP_ERROR_NONE;
-
-  UNUSED(Instance);
-  /* Delay block configuration ------------------------------------------------ */
-  if (HAL_OSPI_DLYB_GetClockPeriod(&hospi_ram[0], &dlyb_cfg) != HAL_OK)
-  {
-    ret = BSP_ERROR_PERIPH_FAILURE;
-  }
-
-  /* when DTR, PhaseSel is divided by 4 (emperic value) */
-  dlyb_cfg.PhaseSel /= 4UL;
-
-  /* save the present configuration for check */
-  dlyb_cfg_test = dlyb_cfg;
-
-  /* set delay block configuration */
-  if (HAL_OSPI_DLYB_SetConfig(&hospi_ram[0], &dlyb_cfg) != HAL_OK)
-  {
-    ret = BSP_ERROR_PERIPH_FAILURE;
-  }
-  /* check the set value */
-  if (HAL_OSPI_DLYB_GetConfig(&hospi_ram[0], &dlyb_cfg) != HAL_OK)
-  {
-    ret = BSP_ERROR_PERIPH_FAILURE;
-  }
-  if ((dlyb_cfg.PhaseSel != dlyb_cfg_test.PhaseSel) || (dlyb_cfg.Units != dlyb_cfg_test.Units))
-  {
-    ret = BSP_ERROR_PERIPH_FAILURE;
-  }
-
-  return ret;
-}
 /**
   * @}
   */

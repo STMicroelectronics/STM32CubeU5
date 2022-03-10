@@ -347,6 +347,9 @@ ULONG             index;
     /* The requested sector is not in cache, return the last cache entry.  */
     return(cache_entry);
 #else
+    FX_PARAMETER_NOT_USED(media_ptr);
+    FX_PARAMETER_NOT_USED(logical_sector);
+    FX_PARAMETER_NOT_USED(previous_cache_entry);
     return(FX_NULL);
 #endif /* FX_DISABLE_CACHE */
 }

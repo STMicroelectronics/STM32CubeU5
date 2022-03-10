@@ -1,7 +1,7 @@
 /*
  *  NIST SP800-38D compliant GCM implementation
  *
- *  Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
+ *  Copyright The Mbed TLS Contributors
  *  Copyright (C) 2021, STMicroelectronics, All Rights Reserved
  *  SPDX-License-Identifier: Apache-2.0
  *
@@ -28,6 +28,7 @@
 #include <string.h>
 #include "mbedtls/platform.h"
 #include "mbedtls/platform_util.h"
+#include "mbedtls/error.h"
 
 /* Parameter validation macros */
 #define GCM_VALIDATE_RET( cond ) \
@@ -285,7 +286,7 @@ static void gcm_mult( mbedtls_gcm_context *ctx, const unsigned char x[16],
     for( i = 15; i >= 0; i-- )
     {
         lo = x[i] & 0xf;
-        hi = x[i] >> 4;
+        hi = ( x[i] >> 4 ) & 0xf;
 
         if( i != 15 )
         {
@@ -616,7 +617,7 @@ int mbedtls_gcm_crypt_and_tag( mbedtls_gcm_context *ctx,
                        size_t tag_len,
                        unsigned char *tag )
 {
-    int ret;
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
 
     GCM_VALIDATE_RET( ctx != NULL );
     GCM_VALIDATE_RET( iv != NULL );
@@ -648,7 +649,7 @@ int mbedtls_gcm_auth_decrypt( mbedtls_gcm_context *ctx,
                       const unsigned char *input,
                       unsigned char *output )
 {
-    int ret;
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     unsigned char check_tag[16];
     size_t i, j;
     unsigned char diff = 0;

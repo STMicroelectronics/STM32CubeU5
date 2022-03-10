@@ -70,10 +70,6 @@ void HAL_MspInit(void)
 
   /* System interrupt init*/
 
-  /** Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
-  */
-  HAL_PWREx_DisableUCPDDeadBattery();
-
   /* USER CODE BEGIN MspInit 1 */
 
   /* USER CODE END MspInit 1 */
@@ -92,12 +88,13 @@ void HAL_COMP_MspInit(COMP_HandleTypeDef* hcomp)
   {
   /* USER CODE BEGIN COMP1_MspInit 0 */
   /* Enable COMP clock */
-  __HAL_RCC_COMP_CLK_ENABLE();
   __HAL_RCC_COMP12_CLKAM_ENABLE();
   __HAL_RCC_COMP_CLK_SLEEP_ENABLE();
   __HAL_RCC_SYSCFG_CLK_ENABLE();
 
   /* USER CODE END COMP1_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_COMP_CLK_ENABLE();
 
     __HAL_RCC_GPIOB_CLK_ENABLE();
     /**COMP1 GPIO Configuration
@@ -131,6 +128,8 @@ void HAL_COMP_MspDeInit(COMP_HandleTypeDef* hcomp)
   /* USER CODE BEGIN COMP1_MspDeInit 0 */
 
   /* USER CODE END COMP1_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_COMP_CLK_DISABLE();
 
     /**COMP1 GPIO Configuration
     PB2     ------> COMP1_INP

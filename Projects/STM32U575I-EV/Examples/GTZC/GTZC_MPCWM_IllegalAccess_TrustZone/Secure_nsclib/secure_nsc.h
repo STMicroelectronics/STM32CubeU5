@@ -1,3 +1,4 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file    Secure_nsclib/secure_nsc.h
@@ -15,6 +16,8 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
+
 /* USER CODE BEGIN Non_Secure_CallLib_h */
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef SECURE_NSC_H
@@ -44,3 +47,4 @@ void SECURE_SAU_MPCWM2_SetUserButtonErrorCaseConfig(void);
 void SECURE_SAU_MPCWM2_SetTamperButtonErrorCaseConfig(void);
 #endif /* SECURE_NSC_H */
 /* USER CODE END Non_Secure_CallLib_h */
+

@@ -21,7 +21,7 @@
 <div class="col-sm-12 col-lg-8">
 <h2 id="TFM_Appli-application-description"><b>TFM_Appli Application description</b></h2>
 <p>The TFM_Appli application consists in two distinct projects: the TFM_Appli Secure and TFM_Appli Non Secure projects.</p>
-<p>The TFM_Appli Secure project is used to generate the TFM_Appli Secure binary file. The core function of this application relies on the trusted firmware (TFM) middleware and the mbed-crypto middleware. It has to be compiled after TFM_SBSFU_Boot project.</p>
+<p>The TFM_Appli Secure project is used to generate the TFM_Appli Secure binary file. The core function of this application relies on the trusted firmware (TFM) middleware and the mbed-crypto middleware. Optionally, it may also rely on the STSAFE middleware (STSAFE_A) and its secure element. It has to be compiled after TFM_SBSFU_Boot project.</p>
 <p>The TFM_Appli Non Secure project is used to generate the TFM_Appli Non Secure binary file. The core function of this application relies on the trusted firmware (TFM) middleware. It has to be compiled after TFM_Appli Secure project.</p>
 <p>In order to ease the development process, prebuild and postbuild commands are integrated in each toolchain for both projects. The prebuild command is in charge of preparing the scatter file according to common flash layout description in linker folder. The postbuild command is in charge of signing the binaries, so that they are trusted by firmware update process.</p>
 <h3 id="keywords"><b>Keywords</b></h3>
@@ -52,6 +52,8 @@ Cryptography, PSA, TrustZone
 <li><p>TFM_Appli/Secure/Inc/tfm_mbedcrypto_config.h Mbedcrypto configuration file</p></li>
 <li><p>TFM_Appli/Secure/Inc/tfm_peripherals_def.h Peripheral definitions</p></li>
 <li><p>TFM_Appli/Secure/Inc/tick.h Header file for tick.c</p></li>
+<li><p>TFM_Appli/Secure/Inc/stsafea_conf.h STSAFE configuration file</p></li>
+<li><p>TFM_Appli/Secure/Inc/stsafea_interface_conf.h Header file for STSAFE customization</p></li>
 <li><p>TFM_Appli/Secure/Src/aes_alt.c AES HW crypto interface</p></li>
 <li><p>TFM_Appli/Secure/Src/app_rot_test.c TFM AppRoT example service</p></li>
 <li><p>TFM_Appli/Secure/Src/attest_hal.c Initial attestation example</p></li>
@@ -79,6 +81,8 @@ Cryptography, PSA, TrustZone
 <li><p>TFM_Appli/Secure/Src/target_cfg.c Target start up</p></li>
 <li><p>TFM_Appli/Secure/Src/tfm_platform_system.c Platform specific implementation</p></li>
 <li><p>TFM_Appli/Secure/Src/tick.c HAL Tick implementation</p></li>
+<li><p>TFM_Appli/Secure/Src/stsafe_service_interface.c basic services for STSAFE (link management)</p></li>
+<li><p>TFM_Appli/Secure/Src/stsafea_crypto_interface.c crypto services for STSAFE (link securisation)</p></li>
 <li><p>TFM_Appli/NonSecure/Inc/cmsis.h Header file for CMSIS</p></li>
 <li><p>TFM_Appli/NonSecure/Inc/com.h Header file for com.c</p></li>
 <li><p>TFM_Appli/NonSecure/Inc/common.h Header file for common.c</p></li>
@@ -86,6 +90,7 @@ Cryptography, PSA, TrustZone
 <li><p>TFM_Appli/NonSecure/Inc/low_level_flash.h Header file for low_level_flash.c</p></li>
 <li><p>TFM_Appli/NonSecure/Inc/main.h Header file for main.c</p></li>
 <li><p>TFM_Appli/NonSecure/Inc/mpu_armv8m_drv.h Header file for mpu_armv8m_drv.c</p></li>
+<li><p>TFM_Appli/NonSecure/Inc/ns_data.h Header file for ns_data.c</p></li>
 <li><p>TFM_Appli/NonSecure/Inc/stm32u5xx_hal_conf.h HAL configuration file</p></li>
 <li><p>TFM_Appli/NonSecure/Inc/stm32u5xx_it.h Header file for stm32u5xx_it.c</p></li>
 <li><p>TFM_Appli/NonSecure/Inc/test_protections.h Header file for test_protections.c</p></li>
@@ -98,6 +103,7 @@ Cryptography, PSA, TrustZone
 <li><p>TFM_Appli/NonSecure/Src/low_level_flash.c Flash Low level interface</p></li>
 <li><p>TFM_Appli/NonSecure/Src/main.c Main application file</p></li>
 <li><p>TFM_Appli/NonSecure/Src/mpu_armv8m_drv.c MPU low level interface</p></li>
+<li><p>TFM_Appli/NonSecure/Src/ns_data.c NS Data image example</p></li>
 <li><p>TFM_Appli/NonSecure/Src/startup_stm32u5xx.c Startup file in c</p></li>
 <li><p>TFM_Appli/NonSecure/Src/stm32u5xx_it.c Interrupt handlers</p></li>
 <li><p>TFM_Appli/NonSecure/Src/system_stm32u5xx.c System init file</p></li>

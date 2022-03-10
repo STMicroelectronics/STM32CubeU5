@@ -332,3 +332,4 @@ uint8_t *USBD_Get_Device_HID_MOUSE_ReportDesc(void);
 }
 #endif
 #endif  /* __UX_DEVICE_DESCRIPTORS_H__ */
+

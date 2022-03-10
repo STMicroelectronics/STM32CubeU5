@@ -224,10 +224,9 @@
         </option>
         <option>
           <name>CCDefines</name>
-          <state>TX_INCLUDE_USER_DEFINE_FILE</state>
-          <state>TX_SINGLE_MODE_NON_SECURE=1</state>
           <state>USE_HAL_DRIVER</state>
           <state>STM32U575xx</state>
+          <state>TX_INCLUDE_USER_DEFINE_FILE</state>
           <state></state>
         </option>
         <option>
@@ -535,7 +534,7 @@
         </option>
         <option>
           <name>ADefines</name>
-          <state>TX_SINGLE_MODE_NON_SECURE=1</state>
+          <state></state>
         </option>
         <option>
           <name>AList</name>
@@ -1069,7 +1068,7 @@
           <name>$PROJ_DIR$/../NonSecure/Src/main.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../NonSecure/Src/tx_initialize_low_level.s</name>
+          <name>$PROJ_DIR$/../NonSecure/Src/tx_initialize_low_level.S</name>
         </file>
         <file>
           <name>$PROJ_DIR$/../NonSecure/Src/app_threadx.c</name>
@@ -1088,6 +1087,12 @@
         </file>
       </group>
     </group>
+  </group>
+  <group>
+    <name>Doc</name>
+    <file>
+      <name>$PROJ_DIR$/../README.md</name>
+    </file>
   </group>
   <group>
     <name>Drivers</name>

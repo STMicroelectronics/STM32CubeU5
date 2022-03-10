@@ -48,20 +48,23 @@ extern "C" {
 #define USE_COM_LOG                          0U
 
 /* Default EEPROM max trials */
-#define EEPROM_MAX_TRIALS                   3000U
+#define EEPROM_MAX_TRIALS                    3000U
 
 /* IRQ priorities */
-#define BSP_BUTTON_USER_IT_PRIORITY   15U  /* Default is lowest priority level */
+#define BSP_BUTTON_USER_IT_PRIORITY          15U  /* Default is lowest priority level */
+
+/* Audio interrupt priority */
+#define BSP_AUDIO_IN_IT_PRIORITY             15U  /* Default is lowest priority level */
 
 /* CAMERA interrupt priority */
-#define BSP_CAMERA_IT_PRIORITY        14U  /* Default is lowest priority level */
+#define BSP_CAMERA_IT_PRIORITY               14U  /* Default is lowest priority level */
 
 /* I2C1 and I2C2 Frequencies in Hz  */
 #define BUS_I2C1_FREQUENCY                   100000UL /* Frequency of I2C1 = 100 KHz*/
 #define BUS_I2C2_FREQUENCY                   100000UL /* Frequency of I2C2 = 100 KHz*/
 
 /* Usage of USBPD PWR TRACE system */
-#define USE_BSP_USBPD_PWR_TRACE       0U      /* USBPD BSP trace system is disabled */
+#define USE_BSP_USBPD_PWR_TRACE              0U      /* USBPD BSP trace system is disabled */
 
 /**
   * @}

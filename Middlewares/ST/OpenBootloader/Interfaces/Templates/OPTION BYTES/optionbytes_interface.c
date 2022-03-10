@@ -33,7 +33,7 @@ OPENBL_MemoryTypeDef OB_Descriptor =
 {
   OB_START_ADDRESS,
   OB_END_ADDRESS,
-  (128),
+  OB_SIZE,
   OB_AREA,
   OPENBL_OB_Read,
   OPENBL_OB_Write,
@@ -44,8 +44,15 @@ OPENBL_MemoryTypeDef OB_Descriptor =
   NULL
 };
 
-
 /* Exported functions --------------------------------------------------------*/
+
+/**
+  * @brief  Launch the option byte loading.
+  * @retval None.
+  */
+void OPENBL_OB_Launch(void)
+{
+}
 
 /**
   * @brief  This function is used to read data from a given address.

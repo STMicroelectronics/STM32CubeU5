@@ -224,8 +224,8 @@ typedef struct
                                                                This define can be used as a parameter for :
                                                                          + ADV_LPBAM_Q_SetTriggerConfig()
                                                                          + ADV_LPBAM_Q_SetCircularMode()        */
-#define LPBAM_LPTIM_CM_FULLQ_CONFIG_NODE          (0x00U) /*!< Specifies the config node of the queue built by
-                                                               ADV_LPBAM_LPTIM_CM_SetFullQ()
+#define LPBAM_LPTIM_UE_FULLQ_CONFIG_NODE          (0x00U) /*!< Specifies the config node of the queue built by
+                                                               ADV_LPBAM_LPTIM_UE_SetFullQ()
                                                                This define can be used as a parameter for :
                                                                          + ADV_LPBAM_Q_SetTriggerConfig()
                                                                          + ADV_LPBAM_Q_SetCircularMode()        */

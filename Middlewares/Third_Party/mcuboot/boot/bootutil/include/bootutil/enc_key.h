@@ -1,4 +1,11 @@
 /*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright (c) 2018-2019 JUUL Labs
+ * Copyright (c) 2019 Arm Limited
+ *
+ * Original license:
+ *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,14 +30,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <flash_map_backend/flash_map_backend.h>
-#include "mcuboot_config/mcuboot_config.h"
+#include "bootutil/crypto/aes_ctr.h"
 #include "bootutil/image.h"
-
-#if defined(MCUBOOT_USE_MBED_TLS)
-#include "mbedtls/aes.h"
-#else
-#include "tinycrypt/aes.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,11 +43,14 @@ extern "C" {
 #define TLV_ENC_RSA_SZ    256
 #define TLV_ENC_KW_SZ     24
 #define TLV_ENC_EC256_SZ  (65 + 32 + 16)
+#define TLV_ENC_X25519_SZ (32 + 32 + 16)
 
 #if defined(MCUBOOT_ENCRYPT_RSA)
 #define BOOT_ENC_TLV_SIZE TLV_ENC_RSA_SZ
 #elif defined(MCUBOOT_ENCRYPT_EC256)
 #define BOOT_ENC_TLV_SIZE TLV_ENC_EC256_SZ
+#elif defined(MCUBOOT_ENCRYPT_X25519)
+#define BOOT_ENC_TLV_SIZE TLV_ENC_X25519_SZ
 #else
 #define BOOT_ENC_TLV_SIZE TLV_ENC_KW_SZ
 #endif
@@ -56,16 +60,14 @@ extern "C" {
 
 struct enc_key_data {
     uint8_t valid;
-#if defined(MCUBOOT_USE_MBED_TLS)
-    mbedtls_aes_context aes;
-#else
-    struct tc_aes_key_sched_struct aes;
-#endif
+    bootutil_aes_ctr_context aes_ctr;
 };
 
 extern const struct bootutil_key bootutil_enc_key;
 struct boot_status;
 
+int boot_enc_init(struct enc_key_data *enc_state, uint8_t slot);
+int boot_enc_drop(struct enc_key_data *enc_state, uint8_t slot);
 int boot_enc_set_key(struct enc_key_data *enc_state, uint8_t slot,
         const struct boot_status *bs);
 int boot_enc_load(struct enc_key_data *enc_state, int image_index,

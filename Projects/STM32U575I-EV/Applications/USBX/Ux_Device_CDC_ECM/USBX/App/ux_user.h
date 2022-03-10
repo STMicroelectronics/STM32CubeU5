@@ -89,7 +89,8 @@
 
 /* Defined, this value is the maximum number of classes in the device stack that can be loaded by
    USBX.  */
-/* #define UX_MAX_SLAVE_CLASS_DRIVER    1 */
+
+#define UX_MAX_SLAVE_CLASS_DRIVER                         1
 
 /* Defined, this value is the maximum number of interfaces in the device framework.  */
 
@@ -347,5 +348,13 @@
 /* Determine if tracing is enabled.  */
 
 /*#define UX_TRACE_INSERT_MACROS*/
+
+/* Defined, this macro enables device bi-directional endpoint support. */
+
+#define UX_DEVICE_BIDIRECTIONAL_ENDPOINT_SUPPORT
+
+/* Defined, this macro disables CDC ACM non-blocking transmission support. */
+
+#define UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE
 #endif
 

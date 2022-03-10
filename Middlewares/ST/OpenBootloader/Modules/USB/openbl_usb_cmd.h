@@ -38,4 +38,5 @@ void OPENBL_USB_ReadUnprotect(void);
 #ifdef __cplusplus
 }
 #endif
+
 #endif /* OPENBL_USB_CMD_H */

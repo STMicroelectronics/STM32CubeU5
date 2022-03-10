@@ -7,13 +7,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -46,7 +45,7 @@
   * @{
   */
 /* Ambiant Light sensor context */
-LIGHT_SENSOR_Ctx_t LIGHT_SENSOR_Ctx[LIGHT_SENSOR_INSTANCES_NBR]={0};
+LIGHT_SENSOR_Ctx_t LIGHTSENSOR_Ctx[LIGHT_SENSOR_INSTANCES_NBR] = {0};
 
 void                *VEML6030_LIGHT_SENSOR_CompObj[LIGHT_SENSOR_INSTANCES_NBR] = {NULL};
 static LIGHT_SENSOR_Drv_t *VEML6030_LIGHT_SENSOR_Drv[LIGHT_SENSOR_INSTANCES_NBR] = {NULL};
@@ -82,14 +81,14 @@ int32_t BSP_LIGHT_SENSOR_Init(uint32_t Instance)
   else
   {
     /*Probe VEML6030 */
-    if(VEML6030_Probe(Instance)!= BSP_ERROR_NONE)
+    if (VEML6030_Probe(Instance) != BSP_ERROR_NONE)
     {
       status = BSP_ERROR_COMPONENT_FAILURE;
     }
     else
     {
-      LIGHT_SENSOR_Ctx[Instance].Gain = VEML6030_CONF_GAIN_1 ;
-      LIGHT_SENSOR_Ctx[Instance].ExposureTime = VEML6030_CONF_IT100;
+      LIGHTSENSOR_Ctx[Instance].Gain = VEML6030_CONF_GAIN_1 ;
+      LIGHTSENSOR_Ctx[Instance].ExposureTime = VEML6030_CONF_IT100;
 
     }
   }
@@ -159,7 +158,8 @@ int32_t BSP_LIGHT_SENSOR_GetCapabilities(uint32_t Instance, LIGHT_SENSOR_Capabil
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
-  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->GetCapabilities(VEML6030_LIGHT_SENSOR_CompObj[Instance], pCapabilities) < 0)
+  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->GetCapabilities(VEML6030_LIGHT_SENSOR_CompObj[Instance],
+                                                                pCapabilities) < 0)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
@@ -173,6 +173,7 @@ int32_t BSP_LIGHT_SENSOR_GetCapabilities(uint32_t Instance, LIGHT_SENSOR_Capabil
 /**
   * @brief  Set the ambiant light integration gain.
   * @param   Instance ambiant light sensor instance. Could be only 0.
+  * @param  Channel ambiant light sensor channel
   * @param  Gain ambiant light integration gain to be configured
   * @retval BSP status
   */
@@ -187,11 +188,11 @@ int32_t BSP_LIGHT_SENSOR_SetGain(uint32_t Instance, uint8_t Channel, uint32_t Ga
   else
   {
     /* Set the Gain Value */
-    if (VEML6030_LIGHT_SENSOR_Drv[Instance]->SetGain(VEML6030_LIGHT_SENSOR_CompObj[Instance],Channel,Gain) < 0)
+    if (VEML6030_LIGHT_SENSOR_Drv[Instance]->SetGain(VEML6030_LIGHT_SENSOR_CompObj[Instance], Channel, Gain) < 0)
     {
       status = BSP_ERROR_COMPONENT_FAILURE;
     }
-    LIGHT_SENSOR_Ctx[Instance].Gain = Gain;
+    LIGHTSENSOR_Ctx[Instance].Gain = Gain;
   }
   return status ;
 }
@@ -199,7 +200,8 @@ int32_t BSP_LIGHT_SENSOR_SetGain(uint32_t Instance, uint8_t Channel, uint32_t Ga
 /**
   * @brief  Returns the gain of the ambiant light sensor.
   * @param  Instance ambiant light sensor instance. Could be only 0.
-  * @param  Gain  Pointer to ingration time
+  * @param  Channel ambiant light sensor channel
+  * @param  pGain  Pointer to integration time
   * @retval BSP status
   */
 int32_t BSP_LIGHT_SENSOR_GetGain(uint32_t Instance, uint8_t Channel, uint32_t *pGain)
@@ -213,7 +215,7 @@ int32_t BSP_LIGHT_SENSOR_GetGain(uint32_t Instance, uint8_t Channel, uint32_t *p
   else
   {
     /* Get the Gain Value */
-    if (VEML6030_LIGHT_SENSOR_Drv[Instance]->GetGain(VEML6030_LIGHT_SENSOR_CompObj[Instance],Channel,pGain) < 0)
+    if (VEML6030_LIGHT_SENSOR_Drv[Instance]->GetGain(VEML6030_LIGHT_SENSOR_CompObj[Instance], Channel, pGain) < 0)
     {
       status = BSP_ERROR_COMPONENT_FAILURE;
     }
@@ -237,13 +239,14 @@ int32_t BSP_LIGHT_SENSOR_SetExposureTime(uint32_t Instance, uint32_t ExposureTim
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
-  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->SetExposureTime(VEML6030_LIGHT_SENSOR_CompObj[Instance], ExposureTime) < 0)
+  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->SetExposureTime(VEML6030_LIGHT_SENSOR_CompObj[Instance],
+                                                                ExposureTime) < 0)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
   else
   {
-    LIGHT_SENSOR_Ctx[Instance].ExposureTime = ExposureTime ;
+    LIGHTSENSOR_Ctx[Instance].ExposureTime = ExposureTime ;
     ret = BSP_ERROR_NONE;
   }
 
@@ -264,7 +267,8 @@ int32_t BSP_LIGHT_SENSOR_GetExposureTime(uint32_t Instance, uint32_t *pExposureT
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
-  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->GetExposureTime(VEML6030_LIGHT_SENSOR_CompObj[Instance], pExposureTime) < 0)
+  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->GetExposureTime(VEML6030_LIGHT_SENSOR_CompObj[Instance],
+                                                                pExposureTime) < 0)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
@@ -293,7 +297,8 @@ int32_t BSP_LIGHT_SENSOR_SetInterMeasurementTime(uint32_t Instance, uint32_t Int
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
-  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->SetInterMeasurementTime(VEML6030_LIGHT_SENSOR_CompObj[Instance], InterMeasurementTime) < 0)
+  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->SetInterMeasurementTime(VEML6030_LIGHT_SENSOR_CompObj[Instance],
+                                                                        InterMeasurementTime) < 0)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
@@ -319,7 +324,8 @@ int32_t BSP_LIGHT_SENSOR_GetInterMeasurementTime(uint32_t Instance, uint32_t *pI
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
-  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->GetInterMeasurementTime(VEML6030_LIGHT_SENSOR_CompObj[Instance], pInterMeasurementTime) < 0)
+  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->GetInterMeasurementTime(VEML6030_LIGHT_SENSOR_CompObj[Instance],
+                                                                        pInterMeasurementTime) < 0)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
@@ -400,7 +406,8 @@ int32_t BSP_LIGHT_SENSOR_StartFlicker(uint32_t Instance, uint8_t Channel, uint8_
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
-  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->StartFlicker(VEML6030_LIGHT_SENSOR_CompObj[Instance], Channel, OutputMode) < 0)
+  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->StartFlicker(VEML6030_LIGHT_SENSOR_CompObj[Instance], Channel,
+                                                             OutputMode) < 0)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
@@ -481,7 +488,8 @@ int32_t BSP_LIGHT_SENSOR_SetControlMode(uint32_t Instance, uint32_t ControlMode,
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
-  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->SetControlMode(VEML6030_LIGHT_SENSOR_CompObj[Instance], ControlMode, Value) < 0)
+  else if (VEML6030_LIGHT_SENSOR_Drv[Instance]->SetControlMode(VEML6030_LIGHT_SENSOR_CompObj[Instance], ControlMode,
+                                                               Value) < 0)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
@@ -525,15 +533,15 @@ static int32_t VEML6030_Probe(uint32_t Instance)
   {
     status = BSP_ERROR_BUS_FAILURE;
   }
-  else if( HAL_I2C_IsDeviceReady(&hbus_i2c2,IOCtx.ReadAddress , 300, 2000)!=HAL_OK)
+  else if (HAL_I2C_IsDeviceReady(&hbus_i2c2, IOCtx.ReadAddress, 300, 2000) != HAL_OK)
   {
     /* Component failure*/
     status = BSP_ERROR_COMPONENT_FAILURE;
   }
   else
   {
-    VEML6030_LIGHT_SENSOR_CompObj[Instance]=&VEML6030_Obj;
-    VEML6030_LIGHT_SENSOR_Drv[Instance]=(LIGHT_SENSOR_Drv_t *)&VEML6030_Driver;
+    VEML6030_LIGHT_SENSOR_CompObj[Instance] = &VEML6030_Obj;
+    VEML6030_LIGHT_SENSOR_Drv[Instance] = (LIGHT_SENSOR_Drv_t *)&VEML6030_Driver;
 
     /* Initialize the component */
     if (VEML6030_LIGHT_SENSOR_Drv[Instance]->Init(VEML6030_LIGHT_SENSOR_CompObj[Instance]) < 0)
@@ -560,4 +568,3 @@ static int32_t VEML6030_Probe(uint32_t Instance)
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

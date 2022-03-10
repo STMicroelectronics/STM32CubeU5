@@ -112,7 +112,7 @@ WebServer_StatusTypeDef webserver_http_start(void)
     /* Accept net socket requests */
     newconn = net_accept(sock, (struct net_sockaddr *)&remotehost, (uint32_t *)&size);
 
-    /* Check if a valid new connexion is requested */
+    /* Check if a valid new connection is requested */
     if (newconn > 0)
     {
       /* Treat net socket requests */
@@ -124,7 +124,7 @@ WebServer_StatusTypeDef webserver_http_start(void)
     }
     else
     {
-      printf("*** Fail : Invalid socket connexion !!!! \r\n");
+      printf("*** Fail : Invalid socket connection !!!! \r\n");
       return SOCKET_ERROR;
     }
   }

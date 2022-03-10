@@ -18,16 +18,18 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "platform.h"
+#include "interfaces_conf.h"
 #include "openbl_core.h"
 #include "openbl_usart_cmd.h"
 #include "usart_interface.h"
 #include "iwdg_interface.h"
-#include "interfaces_conf.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+static uint8_t UsartDetected = 0U;
+
 /* Exported variables --------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 static void OPENBL_USART_Init(void);
@@ -86,13 +88,13 @@ void OPENBL_USART_Configuration(void)
   /* Configure STMOD+_UART3_SPI3_SEL */
   GPIO_InitTypeDef  GPIO_InitStructure;
 
-  /* Enable the GPIO_LED clock */
+  /* Enable the GPIOH clock */
   __HAL_RCC_GPIOH_CLK_ENABLE();
 
   /* Configure the GPIO pin */
-  GPIO_InitStructure.Pin = GPIO_PIN_15;
-  GPIO_InitStructure.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStructure.Pull = GPIO_NOPULL;
+  GPIO_InitStructure.Pin   = GPIO_PIN_15;
+  GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStructure.Pull  = GPIO_NOPULL;
   GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 
   HAL_GPIO_Init(GPIOH, &GPIO_InitStructure);
@@ -101,11 +103,12 @@ void OPENBL_USART_Configuration(void)
   HAL_GPIO_WritePin(GPIOH, GPIO_PIN_15, GPIO_PIN_SET);
 
   /* USARTx pins configuration -----------------------------------------------*/
-  GPIO_InitStruct.Pin       = USARTx_TX_PIN;
   GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull      = GPIO_PULLUP;
   GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.Alternate = USARTx_ALTERNATE;
+
+  GPIO_InitStruct.Pin = USARTx_TX_PIN;
   HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &GPIO_InitStruct);
 
   GPIO_InitStruct.Pin = USARTx_RX_PIN;
@@ -120,11 +123,13 @@ void OPENBL_USART_Configuration(void)
  */
 void OPENBL_USART_DeInit(void)
 {
-  LL_USART_DeInit(USARTx);
-  LL_USART_Disable(USARTx);
+  /* Only de-initialize the USART if it is not the current detected interface */
+  if (UsartDetected == 0U)
+  {
+    LL_USART_Disable(USARTx);
 
-  USARTx_FORCE_RESET();
-  USARTx_RELEASE_RESET();  
+    USARTx_CLK_DISABLE();
+  }
 }
 
 /**
@@ -133,8 +138,6 @@ void OPENBL_USART_DeInit(void)
  */
 uint8_t OPENBL_USART_ProtocolDetection(void)
 {
-  uint8_t detected;
-
   /* Check if the USARTx is addressed */
   if (((USARTx->ISR & LL_USART_ISR_ABRF) != 0) && ((USARTx->ISR & LL_USART_ISR_ABRE) == 0))
   {
@@ -144,14 +147,14 @@ uint8_t OPENBL_USART_ProtocolDetection(void)
     /* Acknowledge the host */
     OPENBL_USART_SendByte(ACK_BYTE);
 
-    detected = 1;
+    UsartDetected = 1U;
   }
   else
   {
-    detected = 0;
+    UsartDetected = 0U;
   }
 
-  return detected;
+  return UsartDetected;
 }
 
 /**
@@ -199,5 +202,37 @@ void OPENBL_USART_SendByte(uint8_t Byte)
 
   while (!LL_USART_IsActiveFlag_TC(USARTx))
   {
+  }
+}
+
+/**
+ * @brief  This function is used to process and execute the special commands.
+ *         The user must define the special commands routine here.
+ * @param  SpecialCmd Pointer to the OPENBL_SpecialCmdTypeDef structure.
+ * @retval Returns NACK status in case of error else returns ACK status.
+ */
+void OPENBL_USART_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *SpecialCmd)
+{
+  switch (SpecialCmd->OpCode)
+  {
+    /* Unknown command opcode */
+    default:
+      if (SpecialCmd->CmdType == OPENBL_SPECIAL_CMD)
+      {
+        /* Send NULL data size */
+        OPENBL_USART_SendByte(0x00U);
+        OPENBL_USART_SendByte(0x00U);
+
+        /* Send NULL status size */
+        OPENBL_USART_SendByte(0x00U);
+        OPENBL_USART_SendByte(0x00U);
+      }
+      else if (SpecialCmd->CmdType == OPENBL_EXTENDED_SPECIAL_CMD)
+      {
+        /* Send NULL status size */
+        OPENBL_USART_SendByte(0x00U);
+        OPENBL_USART_SendByte(0x00U);
+      }
+      break;
   }
 }

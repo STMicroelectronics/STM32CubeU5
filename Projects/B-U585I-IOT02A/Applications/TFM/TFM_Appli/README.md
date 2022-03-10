@@ -3,14 +3,14 @@
 The TFM_Appli application consists in two distinct projects: the TFM_Appli
 Secure and TFM_Appli Non Secure projects.
 
-The TFM_Appli Secure project is used to generate the TFM_Appli Secure binary
-file. The core function of this application relies on the trusted firmware (TFM)
-middleware and the mbed-crypto middleware.
+The TFM_Appli Secure project is used to generate the TFM_Appli Secure binary file.
+The core function of this application relies on the trusted firmware (TFM) middleware and
+the mbed-crypto middleware.
+Optionally, it may also rely on the STSAFE middleware (STSAFE_A) and its secure element.
 It has to be compiled after TFM_SBSFU_Boot project.
 
-The TFM_Appli Non Secure project is used to generate the TFM_Appli Non Secure
-binary file. The core function of this application relies on the trusted
-firmware (TFM) middleware.
+The TFM_Appli Non Secure project is used to generate the TFM_Appli Non Secure binary file.
+The core function of this application relies on the trusted firmware (TFM) middleware.
 It has to be compiled after TFM_Appli Secure project.
 
 In order to ease the development process, prebuild and postbuild commands are
@@ -48,6 +48,8 @@ Cryptography, PSA, TrustZone
   - TFM_Appli/Secure/Inc/tfm_mbedcrypto_config.h Mbedcrypto configuration file
   - TFM_Appli/Secure/Inc/tfm_peripherals_def.h   Peripheral definitions
   - TFM_Appli/Secure/Inc/tick.h                  Header file for tick.c
+  - TFM_Appli/Secure/Inc/stsafea_conf.h          STSAFE configuration file
+  - TFM_Appli/Secure/Inc/stsafea_interface_conf.h    Header file for STSAFE customization
 
   - TFM_Appli/Secure/Src/aes_alt.c               AES HW crypto interface
   - TFM_Appli/Secure/Src/app_rot_test.c          TFM AppRoT example service
@@ -76,6 +78,8 @@ Cryptography, PSA, TrustZone
   - TFM_Appli/Secure/Src/target_cfg.c            Target start up
   - TFM_Appli/Secure/Src/tfm_platform_system.c   Platform specific implementation
   - TFM_Appli/Secure/Src/tick.c                  HAL Tick implementation
+  - TFM_Appli/Secure/Src/stsafe_service_interface.c    basic services for STSAFE (link management)
+  - TFM_Appli/Secure/Src/stsafea_crypto_interface.c    crypto services for STSAFE (link securisation)
 
   - TFM_Appli/NonSecure/Inc/cmsis.h              Header file for CMSIS
   - TFM_Appli/NonSecure/Inc/com.h                Header file for com.c
@@ -84,6 +88,7 @@ Cryptography, PSA, TrustZone
   - TFM_Appli/NonSecure/Inc/low_level_flash.h    Header file for low_level_flash.c
   - TFM_Appli/NonSecure/Inc/main.h               Header file for main.c
   - TFM_Appli/NonSecure/Inc/mpu_armv8m_drv.h     Header file for mpu_armv8m_drv.c
+  - TFM_Appli/NonSecure/Inc/ns_data.h            Header file for ns_data.c
   - TFM_Appli/NonSecure/Inc/stm32u5xx_hal_conf.h HAL configuration file
   - TFM_Appli/NonSecure/Inc/stm32u5xx_it.h       Header file for stm32u5xx_it.c
   - TFM_Appli/NonSecure/Inc/test_protections.h   Header file for test_protections.c
@@ -97,6 +102,7 @@ Cryptography, PSA, TrustZone
   - TFM_Appli/NonSecure/Src/low_level_flash.c    Flash Low level interface
   - TFM_Appli/NonSecure/Src/main.c               Main application file
   - TFM_Appli/NonSecure/Src/mpu_armv8m_drv.c     MPU low level interface
+  - TFM_Appli/NonSecure/Src/ns_data.c            NS Data image example
   - TFM_Appli/NonSecure/Src/startup_stm32u5xx.c  Startup file in c
   - TFM_Appli/NonSecure/Src/stm32u5xx_it.c       Interrupt handlers
   - TFM_Appli/NonSecure/Src/system_stm32u5xx.c   System init file

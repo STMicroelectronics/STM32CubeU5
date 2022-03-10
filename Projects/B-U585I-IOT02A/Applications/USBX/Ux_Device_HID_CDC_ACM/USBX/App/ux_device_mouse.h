@@ -72,3 +72,4 @@ void  usbx_hid_thread_entry(ULONG arg);
 }
 #endif
 #endif  /* __UX_DEVICE_MOUSE_H__ */
+

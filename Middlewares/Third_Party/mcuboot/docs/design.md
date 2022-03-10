@@ -1,24 +1,28 @@
 <!--
-  Licensed to the Apache Software Foundation (ASF) under one
-  or more contributor license agreements.  See the NOTICE file
-  distributed with this work for additional information
-  regarding copyright ownership.  The ASF licenses this file
-  to you under the Apache License, Version 2.0 (the
-  "License"); you may not use this file except in compliance
-  with the License.  You may obtain a copy of the License at
+  - SPDX-License-Identifier: Apache-2.0
 
-   http://www.apache.org/licenses/LICENSE-2.0
+  - Copyright (c) 2017-2020 Linaro LTD
+  - Copyright (c) 2017-2019 JUUL Labs
+  - Copyright (c) 2019-2020 Arm Limited
 
-  Unless required by applicable law or agreed to in writing,
-  software distributed under the License is distributed on an
-  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  KIND, either express or implied.  See the License for the
-  specific language governing permissions and limitations
-  under the License.
--->
+  - Original license:
 
-<!--
-  Modifications are Copyright (c) 2019-2020 Arm Limited.
+  - Licensed to the Apache Software Foundation (ASF) under one
+  - or more contributor license agreements.  See the NOTICE file
+  - distributed with this work for additional information
+  - regarding copyright ownership.  The ASF licenses this file
+  - to you under the Apache License, Version 2.0 (the
+  - "License"); you may not use this file except in compliance
+  - with the License.  You may obtain a copy of the License at
+
+  -  http://www.apache.org/licenses/LICENSE-2.0
+
+  - Unless required by applicable law or agreed to in writing,
+  - software distributed under the License is distributed on an
+  - "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  - KIND, either express or implied.  See the License for the
+  - specific language governing permissions and limitations
+  - under the License.
 -->
 
 # Boot Loader
@@ -107,7 +111,8 @@ struct image_tlv {
 #define IMAGE_TLV_ED25519           0x24   /* ED25519 of hash output */
 #define IMAGE_TLV_ENC_RSA2048       0x30   /* Key encrypted with RSA-OAEP-2048 */
 #define IMAGE_TLV_ENC_KW128         0x31   /* Key encrypted with AES-KW-128 */
-#define IMAGE_TLV_ENC_EC256         0x32   /* Key encrypted with ECIES P256 */
+#define IMAGE_TLV_ENC_EC256         0x32   /* Key encrypted with ECIES-P256 */
+#define IMAGE_TLV_ENC_X25519        0x33   /* Key encrypted with ECIES-X25519 */
 #define IMAGE_TLV_DEPENDENCY        0x40   /* Image depends on other image */
 #define IMAGE_TLV_SEC_CNT           0x50   /* security counter */
 ```
@@ -161,13 +166,15 @@ working).
 
 A portion of the flash memory can be partitioned into multiple image areas, each
 contains two image slots: a primary slot and a secondary slot.
-The boot loader will only run an image from the primary slot, so images must be
-built such that they can run from that fixed location in flash.  If the boot
-loader needs to run the image resident in the secondary slot, it must copy its
-contents into the primary slot before doing so, either by swapping the two
-images or by overwriting the contents of the primary slot. The bootloader
-supports either swap- or overwrite-based image upgrades, but must be configured
-at build time to choose one of these two strategies.
+Normally, the boot loader will only run an image from the primary slot, so
+images must be built such that they can run from that fixed location in flash
+(the exception to this is the [direct-xip](#direct-xip) and the
+[ram-load](#ram-load) upgrade mode). If the boot loader needs to run the
+image resident in the secondary slot, it must copy its contents into the primary
+slot before doing so, either by swapping the two images or by overwriting the
+contents of the primary slot. The bootloader supports either swap- or
+overwrite-based image upgrades, but must be configured at build time to choose
+one of these two strategies.
 
 In addition to the slots of image areas, the boot loader requires a scratch
 area to allow for reliable image swapping. The scratch area must have a size
@@ -210,11 +217,65 @@ and during development, as well as any desired safety margin on the
 manufacturer's specified number of erase cycles. In general, using a ratio that
 allows hundreds to thousands of field upgrades in production is recommended.
 
-The overwrite upgrade strategy is substantially simpler to implement than the
-image swapping strategy, especially since the bootloader must work properly
-even when it is reset during the middle of an image swap. For this reason, the
-rest of the document describes its behavior when configured to swap images
-during an upgrade.
+### [Equal slots (direct-xip)](#direct-xip)
+
+When the direct-xip mode is enabled the active image flag is "moved" between the
+slots during image upgrade and in contrast to the above, the bootloader can
+run an image directly from either the primary or the secondary slot (without
+having to move/copy it into the primary slot). Therefore the image update
+client, which downloads the new images must be aware, which slot contains the
+active image and which acts as a staging area and it is responsible for loading
+the proper images into the proper slot. All this requires that the images be
+built to be executed from the corresponding slot. At boot time the bootloader
+first looks for images in the slots and then inspects the version numbers in the
+image headers. It selects the newest image (with the highest version number) and
+then checks its validity (integrity check, signature verification etc.). If the
+image is invalid MCUboot erases its memory slot and starts to validate the other
+image. After a successful validation of the selected image the bootloader
+chain-loads it.
+
+An additional "revert" mechanism is also supported. For more information, please
+read the [corresponding section](#direct-xip-revert).
+Handling the primary and secondary slots as equals has its drawbacks. Since the
+images are not moved between the slots, the on-the-fly image
+encryption/decryption can't be supported (it only applies to storing the image
+in an external flash on the device, the transport of encrypted image data is
+still feasible).
+
+The overwrite and the direct-xip upgrade strategies are substantially simpler to
+implement than the image swapping strategy, especially since the bootloader must
+work properly even when it is reset during the middle of an image swap. For this
+reason, the rest of the document describes its behavior when configured to swap
+images during an upgrade.
+
+### [RAM Loading](#ram-load)
+
+In ram-load mode the slots are equal. Like the direct-xip mode, this mode
+also selects the newest image by reading the image version numbers in the image
+headers. But instead of executing it in place, the newest image is copied to the
+RAM for execution. The load address, the location in RAM where the image is
+copied to, is stored in the image header. The ram-load upgrade mode can be
+useful when there is no internal flash in the SoC, but there is a big enough
+internal RAM to hold the images. Usually in this case the images are stored
+in an external storage device. Execution from external storage has some
+drawbacks (lower execution speed, image is exposed to attacks) therefore the
+image is always copied to the internal RAM before the authentication and
+execution. Ram-load mode requires the image to be built to be executed from
+the RAM address range instead of the storage device address range. If
+ram-load is enabled then platform must define the following parameters:
+
+```c
+#define IMAGE_EXECUTABLE_RAM_START    <area_base_addr>
+#define IMAGE_EXECUTABLE_RAM_SIZE     <area_size_in_bytes>
+```
+
+When ram-load is enabled, the `--load-addr <addr>` option of the `imgtool`
+script must also be used when signing the images. This option set the `RAM_LOAD`
+flag in the image header which indicates that the image should be loaded to the
+RAM and also set the load address in the image header.
+
+The ram-load mode currently supports only the single image boot and the image
+encryption feature is not supported.
 
 ## [Boot Swap Types](#boot-swap-types)
 
@@ -270,6 +331,33 @@ The possible swap types, and their meanings, are:
 The "swap type" is a high-level representation of the outcome of the
 boot. Subsequent sections describe how mcuboot determines the swap type from
 the bit-level contents of flash.
+
+### [Revert mechanism in direct-xip mode](#direct-xip-revert)
+
+The direct-xip mode also supports a "revert" mechanism which is the equivalent
+of the swap mode's "revert" swap. It can be enabled with the
+MCUBOOT_DIRECT_XIP_REVERT config option and an image trailer must also be added
+to the signed images (the "--pad" option of the `imgtool` script must be used).
+For more information on this please read the [Image Trailer](#image-trailer)
+section and the [imgtool](imgtool.md) documentation. Making the images permanent
+(marking them as confirmed in advance) is also supported just like in swap mode.
+The individual steps of the direct-xip mode's "revert" mechanism are the
+following:
+
+1. Select the slot which holds the newest potential image.
+2. Was the image previously selected to run (during a previous boot)?
+    + Yes: Did the image mark itself "OK" (was the self-test successful)?
+        + Yes.
+            - Proceed to step 3.
+        + No.
+            - Erase the image from the slot to prevent it from being selected
+              again during the next boot.
+            - Return to step 1 (the bootloader will attempt to select and
+              possibly boot the previous image if there is one).
+    + No.
+        - Mark the image as "selected" (set the copy_done flag in the trailer).
+        - Proceed to step 3.
+3. Proceed to image validation ...
 
 ## [Image Trailer](#image-trailer)
 
@@ -548,7 +636,7 @@ following section. The multiple image boot procedure is organized in loops which
 iterate over all the firmware images. The high-level overview of the boot
 process is presented below.
 
-+ ###### Loop 1. Iterate over all images
++  Loop 1. Iterate over all images
     1. Inspect swap status region of current image; is an interrupted swap being
        resumed?
         + Yes:
@@ -576,7 +664,7 @@ process is presented below.
             + Mark the swap type as `None`.
             + Skip to next image.
 
-+ ###### Loop 2. Iterate over all images
++  Loop 2. Iterate over all images
     1. Does the current image depend on other image(s)?
         + Yes: Are all the image dependencies satisfied?
             + Yes: Skip to next image.
@@ -585,7 +673,7 @@ process is presented below.
                 + Restart dependency check from the first image.
         + No: Skip to next image.
 
-+ ###### Loop 3. Iterate over all images
++  Loop 3. Iterate over all images
     1. Is an image swap requested?
         + Yes:
             + Perform image update operation.
@@ -593,7 +681,7 @@ process is presented below.
             + Skip to next image.
         + No: Skip to next image.
 
-+ ###### Loop 4. Iterate over all images
++  Loop 4. Iterate over all images
     1. Validate image in the primary slot (integrity and security check) or
        at least do a basic sanity check to avoid booting into an empty flash
        area.
@@ -885,6 +973,27 @@ producing signed images, see: [signed_images](signed_images.md).
 If you want to enable and use encrypted images, see:
 [encrypted_images](encrypted_images.md).
 
+Note: Image encryption is not supported when the direct-xip or the ram-load
+upgrade strategy is selected.
+
+### [Using Hardware Keys for Verification](#hw-key-support)
+
+By default, the whole public key is embedded in the bootloader code and its
+hash is added to the image manifest as a KEYHASH TLV entry. As an alternative
+the bootloader can be made independent of the keys by setting the
+`MCUBOOT_HW_KEY` option. In this case the hash of the public key must be
+provisioned to the target device and mcuboot must be able to retrieve the
+key-hash from there. For this reason the target must provide a definition
+for the `boot_retrieve_public_key_hash()` function which is declared in
+`boot/bootutil/include/bootutil/sign_key.h`. It is also required to use
+the `full` option for the `--public-key-format` imgtool argument in order to
+add the whole public key (PUBKEY TLV) to the image manifest instead of its
+hash (KEYHASH TLV). During boot the public key is validated before using it for
+signature verification, mcuboot calculates the hash of the public key from the
+TLV area and compares it with the key-hash that was retrieved from the device.
+This way mcuboot is independent from the public key(s). The key(s) can be
+provisioned any time and by different parties.
+
 ## [Protected TLVs](#protected-tlvs)
 
 If the TLV area contains protected TLV entries, by beginning with a `struct
@@ -963,14 +1072,217 @@ is set).
 
 ### [HW Based Downgrade Prevention](#hw-downgrade-prevention)
 
-Each signed image can contain a security counter in its protected TLV area.
+Each signed image can contain a security counter in its protected TLV area, which
+can be added to the image using the `-s` option of the [imgtool](imgtool.md) script.
 During the hardware based downgrade prevention (alias rollback protection) the
 new image's security counter will be compared with the currently active security
 counter value which must be stored in a non-volatile and trusted component of
-the device. This feature is enabled with the `MCUBOOT_HW_ROLLBACK_PROT` option.
-It is beneficial to handle this counter independently from image version
-number:
+the device. It is beneficial to handle this counter independently from image
+version number:
 
   * It does not need to increase with each software release,
   * It makes it possible to do software downgrade to some extent: if the
     security counter has the same value in the older image then it is accepted.
+
+It is an optional step of the image validation process and can be enabled with
+the `MCUBOOT_HW_ROLLBACK_PROT` config option. When enabled, the target must
+provide an implementation of the security counter interface defined in
+`boot/bootutil/include/security_cnt.h`.
+
+## [Measured boot and data sharing](#boot-data-sharing)
+
+MCUBoot defines a mechanism for sharing boot status information (also known as
+measured boot) and an interface for sharing application specific information
+with the runtime software. If any of these are enabled the target must provide
+a shared data area between the bootloader and runtime firmware and define the
+following parameters:
+
+```c
+#define MCUBOOT_SHARED_DATA_BASE    <area_base_addr>
+#define MCUBOOT_SHARED_DATA_SIZE    <area_size_in_bytes>
+```
+
+In the shared memory area all data entries are stored in a type-length-value
+(TLV) format. Before adding the first data entry, the whole area is overwritten
+with zeros and a TLV header is added at the beginning of the area during an
+initialization phase. This TLV header contains a `tlv_magic` field with a value
+of `SHARED_DATA_TLV_INFO_MAGIC` and a `tlv_tot_len` field which is indicating
+the total length of shared TLV area including this header. The header is
+followed by the the data TLV entries which are composed from a
+`shared_data_tlv_entry` header and the data itself. In the data header there is
+a `tlv_type` field which identifies the consumer of the entry (in the runtime
+software) and specifies the subtype of that data item. More information about
+the `tlv_type` field and data types can be found in the
+`boot/bootutil/include/bootutil/boot_status.h` file. The type is followed by a
+`tlv_len` field which indicates the size of the data entry in bytes, not
+including the entry header. After this header structure comes the actual data.
+
+```c
+/** Shared data TLV header.  All fields in little endian. */
+struct shared_data_tlv_header {
+    uint16_t tlv_magic;
+    uint16_t tlv_tot_len; /* size of whole TLV area (including this header) */
+};
+
+/** Shared data TLV entry header format. All fields in little endian. */
+struct shared_data_tlv_entry {
+    uint16_t tlv_type;
+    uint16_t tlv_len; /* TLV data length (not including this header). */
+};
+```
+
+The measured boot can be enabled with the `MCUBOOT_MEASURED_BOOT` config option.
+When enabled, the `--boot_record` argument of the imgtool script must also be
+used during the image signing process to add a BOOT_RECORD TLV to the image
+manifest. This TLV contains the following attributes/measurements of the
+image in CBOR encoded format:
+
+  * Software type (role of the software component)
+  * Software version
+  * Signer ID (identifies the signing authority)
+  * Measurement value (hash of the image)
+  * Measurement type (algorithm used to calculate the measurement value)
+
+The `sw_type` string that is passed as the `--boot_record` option's parameter
+will be the value of the "Software type" attribute in the generated BOOT_RECORD
+TLV. The target must also define the `MAX_BOOT_RECORD_SZ` macro which indicates
+the maximum size of the CBOR encoded boot record in bytes.
+During boot, MCUBoot will look for these TLVs (in case of multiple images) in
+the manifests of the active images (the latest and validated) and copy the CBOR
+encoded binary data to the shared data area. Preserving all these image
+attributes from the boot stage for use by later runtime services (such as an
+attestation service) is known as a measured boot.
+
+Setting the `MCUBOOT_DATA_SHARING` option enables the sharing of application
+specific data using the same shared data area as for the measured boot. For
+this, the target must provide a definition for the `boot_save_shared_data()`
+function which is declared in `boot/bootutil/include/bootutil/boot_record.h`.
+The `boot_add_data_to_shared_area()` function can be used for adding new TLV
+entries to the shared data area.
+
+## [Testing in CI](#testing-in-ci)
+
+### [Testing Fault Injection Hardening (FIH)](#testing-fih)
+
+The CI currently tests the Fault Injection Hardening feature of MCUboot by
+executing instruction skip during execution, and looking at whether a corrupted
+image was booted by the bootloader or not.
+
+The main idea is that instruction skipping can be automated by scripting a
+debugger to automatically execute the following steps:
+
+- Set breakpoint at specified address.
+- Continue execution.
+- On breakpoint hit increase the Program Counter.
+- Continue execution.
+- Detach from target after a timeout reached.
+
+Whether or not the corrupted image was booted or not can be decided by looking
+for certain entries in the log.
+
+As MCUboot is deployed on a microcontroller, testing FI would not make much
+sense in the simulator environment running on a host machine with different
+architecture than the MCU's, as the degree of hardening depends on compiler
+behavior. For example, (a bit counterintuitively) the code produced by gcc
+with `-O0` optimisation is more resilient against FI attacks than the code
+generated with `-O3` or `-Os` optimizations.
+
+To run on a desired architecture in the CI, the tests need to be executed on an
+emulator (as real devices are not available in the CI environment). For this
+implementation QEMU is selected.
+
+For the tests MCUboot needs a set of drivers and an implementation of a main
+function. For the purpose of this test Trusted-Firmware-M has been selected as
+it supports Armv8-M platforms that are also emulated by QEMU.
+
+The tests run in a docker container inside the CI VMs, to make it more easy to
+deploy build and test environment (QEMU, compilers, interpreters). The CI VMs
+seems to be using quite old Ubuntu (16.04).
+
+The sequence of the testing is the following (pseudo code):
+
+```sh
+fn main()
+  # Implemented in ci/fih-tests_install.sh
+  generate_docker_image(Dockerfile)
+
+  # See details below. Implemented in ci/fih-tests_run.sh.
+  # Calling the function with different parameters is done by Travis CI based on
+  # the values provided in the .travis.yaml
+  start_docker_image(skip_sizes, build_type, damage_type, fih_level)
+
+fn start_docker_image(skip_sizes, build_type, damage_type, fih_level)
+  # implemented in ci/fih_test_docker/execute_test.sh
+  compile_mcuboot(build_type)
+
+  # implemented in ci/fih_test_docker/damage_image.py
+  damage_image(damage_type)
+
+  # implemented in ci/fih_test_docker/run_fi_test.sh
+  ranges = generate_address_ranges()
+  for s in skip_sizes
+    for r in ranges
+      do_skip_in_qemu(s, r) # See details below
+  evaluate_logs()
+
+fn do_skip_in_qemu(size, range)
+  for a in r
+    run_qemu(a, size)  # See details below
+
+# this part is implemented in ci/fih_test_docker/fi_tester_gdb.sh
+fn run_qemu(a, size)
+  script = create_debugger_script(a, size)
+  start_qemu_in_bacground() # logs serial out to a file
+  gdb_attach_to_qemu(script)
+  kill_qemu()
+
+  # This checks the debugger and the quemu logs, and decides whether the tets
+  # was executed successfully, and whether the image is booted or not. Then
+  # emits a yaml fragment on the standard out to be processed by the caller
+  # script
+  evaluate_run(qemu_log_file)
+```
+
+Further notes:
+
+- The image is corrupted by changing its signature.
+- MCUBOOT_FIH_PROFILE_MAX is not tested as it requires TRNG, and the AN521
+platform has no support for it. However this profile adds the random
+execution delay to the code, so should not affect the instruction skip results
+too much, because break point is placed at exact address. But in practice this
+makes harder the accurate timing of the attack.
+- The test cases defined in .travis.yml always return `passed`, if they were
+executed successfully. A yaml file is created during test execution with the
+details of the test execution results. A summary of the collected results is
+printed in the log at the end of the test.
+
+An advantage of having the tests running in a docker image is that it is
+possible to run the tests on a local machine that has git and docker, without
+installing any additional software.
+
+So, running the test on the host looks like the following (The commands below
+are issued from the MCUboot source directory):
+
+```sh
+$ ./ci/fih-tests_install.sh
+$ FIH_LEVEL=MCUBOOT_FIH_PROFILE_MEDIUM BUILD_TYPE=RELEASE SKIP_SIZE=2 \
+    DAMAGE_TYPE=SIGNATURE ./ci/fih-tests_run.sh
+```
+On the travis CI the environment variables in the last command are set based on
+the configs provided in the `.travis.yaml`
+
+This starts the tests, however the shell that it is running in is not
+interactive, it is not possible to examine the results of the test run. To have
+an interactive shell where the results can be examined, the following can be
+done:
+
+- The docker image needs to be built with `ci/fih-tests_install.sh` as described
+  above.
+- Start the docker image with the following command:
+  `docker run -i -t mcuboot/fih-test`.
+- Execute the test with a command similar to the following:
+  `/root/execute_test.sh 8 RELEASE SIGNATURE MEDIUM`. After the test finishes,
+  the shell returns, and it is possible to investigate the results. It is also
+  possible to stop the test with _Ctrl+c_. The parameters to the
+  `execute_test.sh` are `SKIP_SIZE`, `BUILD_TYPE`, `DAMAGE_TYPE`, `FIH_LEVEL` in
+  order.

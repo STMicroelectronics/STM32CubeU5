@@ -38,7 +38,7 @@ extern TX_QUEUE ux_app_MsgQueue;
 extern ux_dfu_downloadInfotypeDef ux_dfu_download;
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
-extern uint8_t USB_Detection;
+extern uint8_t UsbSofDetected;
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 ULONG dfu_status = 0U;
@@ -432,7 +432,7 @@ UINT DFU_Device_ConnectionCallback(ULONG Device_State)
   else if (Device_State == UX_DEVICE_ATTACHED)
   {
     /* Notify the OpenBL the detection of a USB interface */
-    USB_Detection = 1;
+    UsbSofDetected = 1;
   }
 
   return UX_SUCCESS;

@@ -1,6 +1,6 @@
-###########################
-Inter-Process Communication
-###########################
+################################
+TF-M Inter-Process Communication
+################################
 
 :Authors: Ken Liu, Mingyang Sun
 :Organization: Arm Limited
@@ -10,6 +10,7 @@ Inter-Process Communication
 ***********
 Terminology
 ***********
+
 IPC - Inter-Process Communication
 
 For more terminology please check Reference_ document.
@@ -31,7 +32,7 @@ Extra components for implementing IPC:
 - PSA API
 
 **********************
-Implementation details
+Implementation Details
 **********************
 Listed modules are all internal modules except PSA API. Prototypes and
 definitions are not listed for internal modules in this document. For PSA
@@ -57,7 +58,7 @@ Modifications in Core:
 - New PendSV handler for thread scheduling.
 - Arch-related context stacking and switching.
 
-Memory pool
+Memory Pool
 ===========
 Handles of connection and messages for Secure Partition needs to be allocated
 dynamically. A memory pool is provided in the system to handle dynamic
@@ -72,7 +73,7 @@ array of memory areas defined in the linker script. Two chains are available to
 manage the items: free chain and used chain. And an LRU (Last recent used)
 mechanism is applied for fast seeking while item allocating and destroying.
 
-Message manager
+Message Manager
 ===============
 Message Manager handles message creating, pushing, retrieving and destroy. A
 message contains below information:
@@ -138,34 +139,35 @@ This chapter describes the PSA API in an implementation manner.
 - API type: could be Client API and Service Partition API
 - Block-able: Block-able API may block caller thread; Non-Block API does not
   block caller thread.
+- Description: The functionality description and important comments.
 
 .. code-block:: c
 
     uint32_t psa_framework_version(void);
+    uint32_t psa_version(uint32_t sid);
 
 - Client API
 - Non-Block API
-
-This function is finally handled in SPM and return the framework version to the
-caller.
+- These 2 functions are finally handled in SPM and return the framework version
+  or version to the caller.
 
 .. code-block:: c
 
-    uint32_t psa_version(uint32_t sid);
-    psa_handle_t psa_connect(uint32_t sid, uint32_t minor_version);
-    psa_status_t psa_call(psa_handle_t handle, const psa_invec *in_vec,
-                          size_t in_len, psa_outvec *out_vec, size_t out_len);
+    psa_handle_t psa_connect(uint32_t sid, uint32_t version);
+    psa_status_t psa_call(psa_handle_t handle, int32_t type,
+                          const psa_invec *in_vec, size_t in_len,
+                          psa_outvec *out_vec, size_t out_len);
     void psa_close(psa_handle_t handle);
 
 - Client API
 - Block-able API
-
-These 4 APIs are implemented in the same manner and just different parameters.
-SPM convert each call into a corresponded message with a parameter in the
-message body and push the message into service queue to wait for the response.
-Scheduler switches to a specified thread (partition) and makes Secure Partition
-to have chance retrieving and process message. After a message response is
-returned to the caller, the waiting caller gets to go and get the result.
+- These 3 APIs are implemented in the same manner and just different
+  parameters. SPM converts each call into a corresponding message with a
+  parameter in the message body and pushes the message into service queue to
+  wait for the response. Scheduler switches to a specified thread (partition)
+  and makes Secure Partition to have chance retrieving and process message.
+  After a message response is returned to the caller, the waiting caller gets
+  to go and get the result.
 
 .. code-block:: c
 
@@ -173,9 +175,8 @@ returned to the caller, the waiting caller gets to go and get the result.
 
 - Secure Partition API
 - Block-able API
-
-This API blocks caller partition if there is no expected event for it. This
-function is implemented based on event API.
+- This API blocks caller partition if there is no expected event for it. This
+  function is implemented based on event API.
 
 .. code-block:: c
 
@@ -193,9 +194,8 @@ function is implemented based on event API.
 
 - Secure Partition API
 - Non-Block
-
-These APIs do not take the initiative to change caller status. They process
-data and return the processed data back to the caller.
+- These APIs do not take the initiative to change caller status. They process
+  data and return the processed data back to the caller.
 
 .. code-block:: c
 
@@ -203,9 +203,17 @@ data and return the processed data back to the caller.
 
 - Secure Partition API
 - Non-Block
+- This API sets DOORBELL bit in destination partition's event. This API does
+  not take the initiative to change caller status.
 
-This API sets DOORBELL bit in destination partition's event. This API does not
-take the initiative to change caller status.
+.. code-block:: c
+
+    void psa_panic(void);
+
+- Secure Partition API
+- Block-able API
+- This function will terminate execution within the calling Secure Partition
+  and will not return.
 
 *********
 Reference
@@ -220,7 +228,6 @@ Reference
 .. _Slides includes IPC basic introduction URL: https://connect.linaro.org/
   resources/yvr18/sessions/yvr18-108/
 .. _IPC model implementation URL: https://www.youtube.com/watch?v=6wEFoq49qUw
-
 
 --------------
 

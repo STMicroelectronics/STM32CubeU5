@@ -45,15 +45,15 @@
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 #define PAYLOAD_SIZE                1544
-#define NX_PACKET_POOL_SIZE         (( PAYLOAD_SIZE + sizeof(NX_PACKET)) * 10)  
+#define NX_PACKET_POOL_SIZE         (( PAYLOAD_SIZE + sizeof(NX_PACKET)) * 10)
 #define DEFAULT_MEMORY_SIZE         1024
-#define ARP_MEMORY_SIZE             DEFAULT_MEMORY_SIZE   
+#define ARP_MEMORY_SIZE             DEFAULT_MEMORY_SIZE
 #define DEFAULT_MAIN_PRIORITY       10
-#define TOGGLE_LED_PRIORITY         15   
-#define DEFAULT_PRIORITY            5  
-#define THREAD_MEMORY_SIZE          2 * DEFAULT_MEMORY_SIZE  
-#define NULL_ADDRESS                0 
-   
+#define TOGGLE_LED_PRIORITY         15
+#define DEFAULT_PRIORITY            5
+#define THREAD_MEMORY_SIZE          2 * DEFAULT_MEMORY_SIZE
+#define NULL_ADDRESS                0
+
    /* HTTP connection port */
 #define CONNECTION_PORT                  80
 /* Server packet size */
@@ -61,7 +61,7 @@
 /* Server pool size */
 #define SERVER_POOL_SIZE                 (SERVER_PACKET_SIZE * 4)
 /* Server stack */
-#define SERVER_STACK                     4096 
+#define SERVER_STACK                     4096
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -72,7 +72,7 @@
                                                   (addr >> 16) & 0xff,                      \
                                                     (addr >> 8) & 0xff,                     \
                                                       (addr & 0xff));                       \
-                                            } while(0) 
+                                            } while(0)
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

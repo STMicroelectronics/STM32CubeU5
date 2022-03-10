@@ -2,6 +2,7 @@
  * attest_token_decode.h
  *
  * Copyright (c) 2019, Laurence Lundblade.
+ * Copyright (c) 2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -546,7 +547,7 @@ attest_token_get_num_sw_components(struct attest_token_decode_context *me,
  * \retval ATTEST_TOKEN_ERR_NOT_FOUND
  *         There were not \c requested_index in the token.
  *
- * \retval ATTETST_TOKEN_ERR_CBOR_TYPE
+ * \retval ATTEST_TOKEN_ERR_CBOR_TYPE
  *         The claim labeled to contain SW components is not an array.
  */
 enum attest_token_err_t
@@ -573,7 +574,7 @@ attest_token_get_sw_component(struct attest_token_decode_context *me,
  * \retval ATTEST_TOKEN_ERR_CBOR_NOT_WELL_FORMED
  *         CBOR syntax is wrong and it is not decodable.
  *
- * \retval ATTETST_TOKEN_ERR_CBOR_TYPE
+ * \retval ATTEST_TOKEN_ERR_CBOR_TYPE
  *         Returned if the claim is not a byte string.
  *
  * \retval ATTEST_TOKEN_ERR_NOT_FOUND
@@ -606,7 +607,7 @@ attest_token_decode_get_bstr(struct attest_token_decode_context *me,
  * \retval ATTEST_TOKEN_ERR_CBOR_NOT_WELL_FORMED
  *         CBOR syntax is wrong and it is not decodable.
  *
- * \retval ATTETST_TOKEN_ERR_CBOR_TYPE
+ * \retval ATTEST_TOKEN_ERR_CBOR_TYPE
  *         Returned if the claim is not a byte string.
  *
  * \retval ATTEST_TOKEN_ERR_NOT_FOUND
@@ -642,7 +643,7 @@ attest_token_decode_get_tstr(struct attest_token_decode_context *me,
  * \retval ATTEST_TOKEN_ERR_CBOR_NOT_WELL_FORMED
  *         CBOR syntax is wrong and it is not decodable.
  *
- * \retval ATTETST_TOKEN_ERR_CBOR_TYPE
+ * \retval ATTEST_TOKEN_ERR_CBOR_TYPE
  *         Returned if the claim is not a byte string.
  *
  * \retval ATTEST_TOKEN_ERR_NOT_FOUND
@@ -684,7 +685,7 @@ attest_token_decode_get_int(struct attest_token_decode_context *me,
  * \retval ATTEST_TOKEN_ERR_CBOR_NOT_WELL_FORMED
  *         CBOR syntax is wrong and it is not decodable.
  *
- * \retval ATTETST_TOKEN_ERR_CBOR_TYPE
+ * \retval ATTEST_TOKEN_ERR_CBOR_TYPE
  *         Returned if the claim is not a byte string.
  *
  * \retval ATTEST_TOKEN_ERR_NOT_FOUND
@@ -836,6 +837,94 @@ attest_token_decode_get_origination(struct attest_token_decode_context*me,
                                         origination);
 }
 
+/**
+
+ \brief Map t_cose errors into attestation token errors
+
+ \param[in] t_cose_error  The t_cose error to map
+
+ \return The attestation token error.
+ */
+static inline enum attest_token_err_t
+map_t_cose_errors(enum t_cose_err_t t_cose_error)
+{
+    switch (t_cose_error) {
+    case T_COSE_SUCCESS:
+        return ATTEST_TOKEN_ERR_SUCCESS;
+        break;
+    case T_COSE_ERR_UNSUPPORTED_SIGNING_ALG:
+        return ATTEST_TOKEN_ERR_UNSUPPORTED_SIG_ALG;
+        break;
+    case T_COSE_ERR_UNSUPPORTED_HASH:
+        return ATTEST_TOKEN_ERR_HASH_UNAVAILABLE;
+        break;
+    case T_COSE_ERR_CBOR_NOT_WELL_FORMED:
+        return ATTEST_TOKEN_ERR_CBOR_NOT_WELL_FORMED;
+        break;
+    case T_COSE_ERR_INSUFFICIENT_MEMORY:
+        return ATTEST_TOKEN_ERR_INSUFFICIENT_MEMORY;
+        break;
+    case T_COSE_ERR_TAMPERING_DETECTED:
+        return ATTEST_TOKEN_ERR_TAMPERING_DETECTED;
+        break;
+    case T_COSE_ERR_CBOR_FORMATTING:
+        return ATTEST_TOKEN_ERR_CBOR_FORMATTING;
+        break;
+    case T_COSE_ERR_TOO_SMALL:
+        return ATTEST_TOKEN_ERR_TOO_SMALL;
+        break;
+
+    case T_COSE_ERR_PARAMETER_CBOR:
+    case T_COSE_ERR_NON_INTEGER_ALG_ID:
+        return ATTEST_TOKEN_ERR_CBOR_STRUCTURE;
+        break;
+
+    case T_COSE_ERR_SIG_VERIFY:
+    case T_COSE_ERR_SHORT_CIRCUIT_SIG:
+        return ATTEST_TOKEN_ERR_COSE_VALIDATION;
+        break;
+
+    case T_COSE_ERR_SIGN1_FORMAT:
+        return ATTEST_TOKEN_ERR_COSE_FORMAT;
+        break;
+
+    case T_COSE_ERR_MAC0_FORMAT:
+        return ATTEST_TOKEN_ERR_COSE_FORMAT;
+        break;
+
+    case T_COSE_ERR_NO_ALG_ID:
+    case T_COSE_ERR_NO_KID:
+    case T_COSE_ERR_BAD_SHORT_CIRCUIT_KID:
+    case T_COSE_ERR_SIG_STRUCT:
+        return ATTEST_TOKEN_ERR_COSE_FORMAT;
+        break;
+
+    case T_COSE_ERR_UNKNOWN_KEY:
+    case T_COSE_ERR_WRONG_TYPE_OF_KEY:
+        return ATTEST_TOKEN_ERR_VERIFICATION_KEY;
+        break;
+
+    case T_COSE_ERR_MAKING_PROTECTED:
+    case T_COSE_ERR_HASH_GENERAL_FAIL:
+    case T_COSE_ERR_HASH_BUFFER_SIZE:
+    case T_COSE_ERR_SIG_BUFFER_SIZE:
+    case T_COSE_ERR_INVALID_ARGUMENT:
+    case T_COSE_ERR_FAIL:
+    case T_COSE_ERR_SIG_FAIL:
+    case T_COSE_ERR_TOO_MANY_PARAMETERS:
+    case T_COSE_ERR_UNKNOWN_CRITICAL_PARAMETER:
+    case T_COSE_ERR_SHORT_CIRCUIT_SIG_DISABLED:
+    case T_COSE_ERR_INCORRECT_KEY_FOR_LIB:
+    case T_COSE_ERR_BAD_CONTENT_TYPE:
+    case T_COSE_ERR_INCORRECTLY_TAGGED:
+    case T_COSE_ERR_EMPTY_KEY:
+    case T_COSE_ERR_DUPLICATE_PARAMETER:
+    case T_COSE_ERR_PARAMETER_NOT_PROTECTED:
+    case T_COSE_ERR_CRIT_PARAMETER:
+    default:
+        return ATTEST_TOKEN_ERR_GENERAL;
+    }
+}
 
 #ifdef __cplusplus
 }

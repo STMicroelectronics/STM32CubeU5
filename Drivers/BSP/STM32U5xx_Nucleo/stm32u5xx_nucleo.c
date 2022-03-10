@@ -176,7 +176,7 @@ int32_t BSP_LED_Init(Led_TypeDef Led)
 
       HAL_PWREx_EnableVddIO2();
 
-      if(pwrenabled == 1U)
+      if (pwrenabled == 1U)
       {
         __HAL_RCC_PWR_CLK_DISABLE();
       }

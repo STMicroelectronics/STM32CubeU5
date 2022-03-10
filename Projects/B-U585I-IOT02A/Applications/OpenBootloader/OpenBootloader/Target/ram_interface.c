@@ -21,6 +21,7 @@
 #include "openbl_mem.h"
 #include "app_openbootloader.h"
 #include "common_interface.h"
+#include "openbl_core.h"
 #include "ram_interface.h"
 
 /* Private typedef -----------------------------------------------------------*/
@@ -88,8 +89,8 @@ void OPENBL_RAM_JumpToAddress(uint32_t Address)
 {
   Function_Pointer jump_to_address;
 
-  /* Deinitialize all HW resources used by the Bootloader to their reset values */
-  OpenBootloader_DeInit();
+  /* De-initialize all HW resources used by the Open Bootloader to their reset values */
+  OPENBL_DeInit();
 
   /* Enable IRQ */
   Common_EnableIrq();

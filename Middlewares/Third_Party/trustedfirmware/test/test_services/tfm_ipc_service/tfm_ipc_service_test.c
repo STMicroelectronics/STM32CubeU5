@@ -1,19 +1,18 @@
 /*
- * Copyright (c) 2018-2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2018-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
  */
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdbool.h>
 #include "psa/client.h"
 #include "psa/service.h"
-#include "secure_utilities.h"
-#include "tfm_secure_api.h"
+#include "psa_manifest/tfm_ipc_service_test.h"
 #include "tfm_api.h"
-#include "psa_manifest/tfm_ipc_service_partition.h"
+#include "tfm_hal_isolation.h"
+#include "tfm_secure_api.h"
 
 #define IPC_SERVICE_BUFFER_LEN                          32
 
@@ -132,7 +131,7 @@ static void ipc_service_psa_access_app_readonly_mem(void)
     psa_msg_t msg;
     psa_status_t r;
     char rec_data;
-    uint32_t rec_buf;
+    uint32_t rec_buf, attr = 0;
 
     psa_get(IPC_SERVICE_TEST_PSA_ACCESS_APP_READ_ONLY_MEM_SIGNAL, &msg);
     switch (msg.type) {
@@ -161,11 +160,14 @@ static void ipc_service_psa_access_app_readonly_mem(void)
                 psa_reply(msg.handle, -1);
                 break;
             }
-
-            /* Write the char type read only memory. */
-            *((char *)rec_buf) = 'B';
+            attr |= (TFM_HAL_ACCESS_READABLE | TFM_HAL_ACCESS_WRITABLE
+                     | TFM_HAL_ACCESS_UNPRIVILEGED);
+            if (tfm_hal_memory_has_access((uintptr_t)rec_buf, 4, attr) !=
+                                                      TFM_HAL_ERROR_MEM_FAULT) {
+                psa_reply(msg.handle, PSA_ERROR_GENERIC_ERROR);
+                break;
+            }
         }
-
         psa_reply(msg.handle, PSA_SUCCESS);
         break;
     case PSA_IPC_DISCONNECT:
@@ -229,6 +231,38 @@ static void ipc_service_app_access_psa_mem(void)
 }
 #endif
 
+static void ipc_service_programmer_error(void)
+{
+    psa_msg_t msg;
+    psa_status_t r;
+
+    psa_get(IPC_SERVICE_TEST_CLIENT_PROGRAMMER_ERROR_SIGNAL, &msg);
+    switch (msg.type) {
+    case PSA_IPC_CONNECT:
+        if (service_in_use & IPC_SERVICE_TEST_CLIENT_PROGRAMMER_ERROR_SIGNAL) {
+            r = PSA_ERROR_CONNECTION_REFUSED;
+        } else {
+            service_in_use |= IPC_SERVICE_TEST_CLIENT_PROGRAMMER_ERROR_SIGNAL;
+            r = PSA_SUCCESS;
+        }
+        psa_reply(msg.handle, r);
+        break;
+    case PSA_IPC_CALL:
+        psa_reply(msg.handle, PSA_ERROR_PROGRAMMER_ERROR);
+        break;
+    case PSA_IPC_DISCONNECT:
+        assert((service_in_use
+                & IPC_SERVICE_TEST_CLIENT_PROGRAMMER_ERROR_SIGNAL) != 0);
+        service_in_use &= ~IPC_SERVICE_TEST_CLIENT_PROGRAMMER_ERROR_SIGNAL;
+        psa_reply(msg.handle, PSA_SUCCESS);
+        break;
+    default:
+        /* cannot get here? [broken SPM]. TODO*/
+        tfm_abort();
+        break;
+    }
+}
+
 /* Test thread */
 void ipc_service_test_main(void *param)
 {
@@ -250,6 +284,8 @@ void ipc_service_test_main(void *param)
         } else if (signals & IPC_SERVICE_TEST_APP_ACCESS_PSA_MEM_SIGNAL) {
             ipc_service_app_access_psa_mem();
 #endif
+        } else if (signals & IPC_SERVICE_TEST_CLIENT_PROGRAMMER_ERROR_SIGNAL) {
+            ipc_service_programmer_error();
         } else {
             /* Should not come here */
             tfm_abort();

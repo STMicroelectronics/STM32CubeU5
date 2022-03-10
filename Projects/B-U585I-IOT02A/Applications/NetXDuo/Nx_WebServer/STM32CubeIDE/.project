@@ -39,6 +39,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Nx_WebServer.ioc</locationURI>
 		</link>
 		<link>
+			<name>Doc/README.md</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/README.md</locationURI>
+		</link>
+		<link>
 			<name>Drivers/CMSIS/system_stm32u5xx.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/system_stm32u5xx.c</locationURI>
@@ -194,9 +199,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/stm32u5xx_it.c</locationURI>
 		</link>
 		<link>
-			<name>Application/User/Core/tx_initialize_low_level.s</name>
+			<name>Application/User/Core/tx_initialize_low_level.S</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/tx_initialize_low_level.s</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/tx_initialize_low_level.S</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</name>
@@ -207,6 +212,11 @@
 			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_ospi.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_ospi.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/mx25lm51245g.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/mx25lm51245g/mx25lm51245g.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/FileX/Core/fx_directory_attributes_read.c</name>
@@ -4814,9 +4824,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/NetXDuo/App/app_netxduo.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/mx25lm51245g/mx25lm51245g.c</name>
+			<name>Drivers/BSP/Components/aps6408/aps6408.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/mx25lm51245g/mx25lm51245g.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/aps6408/aps6408.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/Components/mx_wifi/mx_wifi.c</name>

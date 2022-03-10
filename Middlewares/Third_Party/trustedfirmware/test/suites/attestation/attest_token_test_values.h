@@ -2,7 +2,7 @@
  * attest_token_test_values.h
  *
  * Copyright (c) 2019, Laurence Lundblade.
- * Copyright (c) 2019, Arm Limited.
+ * Copyright (c) 2019-2020, Arm Limited.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -86,9 +86,13 @@
     }
 #define TOKEN_TEST_REQUIRE_NONCE true /* Mandatory claim */
 
+/* A 32 byte mostly random value. Binary. Value not checked */
+#define TOKEN_TEST_VALUE_UEID NULL_Q_USEFUL_BUF_C
+
 /* A 32 byte mostly random value. Binary.
- *    platform/ext/common/tfm_initial_attestation_key_material.c
+ *    platform/ext/common/template/tfm_initial_attestation_key_material.c
  */
+/*
 #define TOKEN_TEST_VALUE_UEID \
     (struct q_useful_buf_c) {\
         (uint8_t[]){ \
@@ -100,10 +104,16 @@
         },\
         33\
     }
+*/
 #define TOKEN_TEST_REQUIRE_UEID true /* Mandatory claim */
 
+/* If defined, check for the constant values defined in
+ *    platform/ext/common/template/attest_hal.c
+ */
+#ifdef CLAIM_VALUE_CHECK
+
 /* A 32 byte mostly random value. Binary.
- *    platform/ext/target/<TARGET>/dummy_boot_seed.c
+ *    platform/ext/common/template/attest_hal.c
  */
 #define TOKEN_TEST_VALUE_BOOT_SEED \
     (struct q_useful_buf_c) {\
@@ -115,16 +125,14 @@
         },\
         32\
     }
-#define TOKEN_TEST_REQUIRE_BOOT_SEED true /* Mandatory claim */
 
 /* A text string in EAN 13 format
- *    platform/ext/target/<TARGET>/dummy_device_id.c
+ *    platform/ext/common/template/attest_hal.c
  */
 #define TOKEN_TEST_VALUE_HW_VERSION "060456527282910010" /* Hard-coded value */
-#define TOKEN_TEST_REQUIRE_HW_VERSION true /* Optional claim */
 
 /* A 32 byte mostly random value. Binary.
- *    platform/ext/target/<TARGET>/dummy_device_id.c
+ *    platform/ext/common/template/attest_hal.c
  */
 #define TOKEN_TEST_VALUE_IMPLEMENTATION_ID \
     (struct q_useful_buf_c) {\
@@ -136,29 +144,45 @@
         },\
         32\
     }
-#define TOKEN_TEST_REQUIRE_IMPLEMENTATION_ID true /* Mandatory claim */
-
-/* A small unsigned integer
- *    platform/ext/target/<TARGET>/attest_hal.c
- */
-#define TOKEN_TEST_VALUE_SECURITY_LIFECYCLE  0x3000u /* Hard-coded value */
-#define TOKEN_TEST_REQUIRE_SECURITY_LIFECYCLE true /* Mandatory claim */
-
-/* An integer (can be positive or negative */
-#define TOKEN_TEST_VALUE_CLIENT_ID INT32_MAX /* Value not checked */
-#define TOKEN_TEST_REQUIRE_CLIENT_ID true /* Mandatory claim */
 
 /* Text string naming the profile definition:
- *    platform/ext/target/<TARGET>/attest_hal.c
+ *    platform/ext/common/template/attest_hal.c
  */
 #define TOKEN_TEST_VALUE_PROFILE_DEFINITION  "PSA_IOT_PROFILE_1"
-#define TOKEN_TEST_REQUIRE_PROFILE_DEFINITION false /* Optional field */
 
 /* Text string with verification URL or similar
- *    platform/ext/target/<TARGET>/attest_hal.c
+ *    platform/ext/common/template/attest_hal.c
  */
 #define TOKEN_TEST_VALUE_ORIGINATION "www.trustedfirmware.org"
-#define TOKEN_TEST_REQUIRE_ORIGINATION false /* Optional field */
+
+/* A small unsigned integer
+ *    platform/ext/common/template/attest_hal.c
+ */
+#define TOKEN_TEST_VALUE_SECURITY_LIFECYCLE   0x3000u
+#else
+/* Do not check for the constant values defined in
+ *    platform/ext/common/template/attest_hal.c
+ */
+
+#define TOKEN_TEST_VALUE_BOOT_SEED          NULL_Q_USEFUL_BUF_C
+#define TOKEN_TEST_VALUE_HW_VERSION         NULL
+#define TOKEN_TEST_VALUE_IMPLEMENTATION_ID  NULL_Q_USEFUL_BUF_C
+#define TOKEN_TEST_VALUE_PROFILE_DEFINITION NULL
+#define TOKEN_TEST_VALUE_ORIGINATION        NULL
+#define TOKEN_TEST_VALUE_SECURITY_LIFECYCLE INT32_MAX
+
+#endif /* CLAIM_VALUE_CHECK */
+
+#define TOKEN_TEST_REQUIRE_BOOT_SEED            true /* Mandatory claim */
+#define TOKEN_TEST_REQUIRE_HW_VERSION           false /* Optional claim */
+#define TOKEN_TEST_REQUIRE_IMPLEMENTATION_ID    true /* Mandatory claim */
+#define TOKEN_TEST_REQUIRE_PROFILE_DEFINITION   false /* Optional field */
+#define TOKEN_TEST_REQUIRE_ORIGINATION          false /* Optional field */
+#define TOKEN_TEST_REQUIRE_SECURITY_LIFECYCLE   true /* Mandatory claim */
+
+/* An integer (can be positive or negative) */
+#define TOKEN_TEST_VALUE_CLIENT_ID 0 /* Invalid value to trigger check */
+#define TOKEN_TEST_REQUIRE_CLIENT_ID true /* Mandatory claim */
 
 /**
  * \c TOKEN_TEST_REQUIRED_NUM_SWC can be either 0, 1, 2 or \c
@@ -254,7 +278,6 @@
     }
 */
 #define TOKEN_TEST_REQUIRE_SWC2_MEASUREMENT_VAL true /* Mandatory field */
-
 
 /* Text string */
 #define TOKEN_TEST_VALUE_SWC2_VERSION NULL /* Value not checked */

@@ -399,9 +399,9 @@
               <FilePath>../Core/Src/main.c</FilePath>
             </File>
             <File>
-              <FileName>tx_initialize_low_level.s</FileName>
+              <FileName>tx_initialize_low_level.S</FileName>
               <FileType>2</FileType>
-              <FilePath>../Core/Src/tx_initialize_low_level.s</FilePath>
+              <FilePath>../Core/Src/tx_initialize_low_level.S</FilePath>
             </File>
             <File>
               <FileName>app_threadx.c</FileName>
@@ -3052,6 +3052,26 @@
               <FileName>nxd_nd_cache_ip_address_find.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nxd_nd_cache_ip_address_find.c</FilePath>
+            </File>
+            <File>
+              <FileName>nx_tcp_server_socket_driver_listen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_server_socket_driver_listen.c</FilePath>
+            </File>
+            <File>
+              <FileName>nx_tcp_socket_driver_establish.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_socket_driver_establish.c</FilePath>
+            </File>
+            <File>
+              <FileName>nx_tcp_socket_driver_packet_receive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_socket_driver_packet_receive.c</FilePath>
+            </File>
+            <File>
+              <FileName>nx_udp_socket_driver_packet_receive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_udp_socket_driver_packet_receive.c</FilePath>
             </File>
           </Files>
         </Group>

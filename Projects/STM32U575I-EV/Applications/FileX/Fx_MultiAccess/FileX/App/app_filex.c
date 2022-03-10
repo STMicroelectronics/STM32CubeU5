@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stm32u575i_eval.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,10 +52,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
-    /* Buffer for FileX FX_MEDIA sector cache. this should be 32-Bytes
-aligned to avoid cache maintenance issues */
-ALIGN_32BYTES (uint32_t media_memory[FX_STM32_SD_DEFAULT_SECTOR_SIZE / sizeof(uint32_t)]);
+uint32_t media_memory[FX_STM32_SD_DEFAULT_SECTOR_SIZE / sizeof(uint32_t)];
 
 /* Define FileX global data structures.  */
 FX_MEDIA        sdio_disk;
@@ -172,9 +169,17 @@ VOID fx_thread_main_entry(ULONG thread_input)
   }
 
   /* Media opened successfully, we start the concurrent threads. */
-  status = tx_thread_resume(&fx_thread_one) & tx_thread_resume(&fx_thread_two);
+  status = tx_thread_resume(&fx_thread_one);
 
-  /* Check the concurrent thread was started correctly.  */
+  /* Check oncurrent thread 1 was started correctly.  */
+  if (status != TX_SUCCESS)
+  {
+    App_Error_Handler(THREAD_ID_M);
+  }
+
+  status = tx_thread_resume(&fx_thread_two);
+
+  /* Check concurrent thread 2 was started correctly.  */
   if (status != TX_SUCCESS)
   {
     App_Error_Handler(THREAD_ID_M);
@@ -204,7 +209,7 @@ VOID fx_thread_main_entry(ULONG thread_input)
   /* Toggle green LED to indicate processing finish OK */
   while(1)
   {
-  	BSP_LED_Toggle(LED_GREEN);
+  	HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
   	os_delay(40);
   }
 }

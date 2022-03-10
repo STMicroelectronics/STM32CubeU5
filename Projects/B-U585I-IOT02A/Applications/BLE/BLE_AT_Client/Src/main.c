@@ -23,6 +23,7 @@
 #include "stm32wb_at.h"
 #include "stm32wb_at_ble.h"
 #include "stm32wb_at_client.h"
+#include "ble_at_appli.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -31,8 +32,6 @@
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart4;
 
-extern uint8_t global_svc_index;
-extern uint8_t at_buffer[64];
 /* Private function prototypes -----------------------------------------------*/
 #if defined (__ICCARM__) || defined (__ARMCC_VERSION)
 #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)

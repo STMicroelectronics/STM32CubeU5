@@ -101,7 +101,7 @@ GUI_StatusTypeDef BSP_GUI_LoadDataFromFlash(void)
   GUI_CHECK_IF_MEMORY_IS_CORRUPTED(_addr)
   {
     uint32_t *_ptr = (uint32_t *)USBPD_NbPDO;
-    USPBPD_WRITE32(_ptr, *((uint32_t *)_addr));
+    USBPD_WRITE32(_ptr, *((uint32_t *)_addr));
     _status = GUI_OK;
   }
 

@@ -22,7 +22,7 @@
 <h2 id="application-licence-clarification"><b>Application Licence Clarification</b></h2>
 <p>The SBSFU_Boot application is licenced by ST under Ultimate Liberty license SLA0044. Read the file SBSFU_Boot/q_a.txt for Application Licence Clarification.</p>
 <h2 id="SBSFU_Boot-application-description"><b>SBSFU_Boot Application description</b></h2>
-<p>This project is used to generate the SBSFU_Boot binary file. The core function of this application relies on the mcuboot middleware, the trusted firmware (TFM) middleware and the mbed-crypto middleware.</p>
+<p>This project is used to generate the SBSFU_Boot binary file. The core function of this application relies on the mcuboot middleware, the trusted firmware (TFM) middleware (only Boot Loader stage 2 part) and the mbed-crypto middleware.</p>
 <p>It has to be compiled first.</p>
 <p>In order to ease the development process, a prebuild command and postbuild command are integrated in each toolchain project. The prebuild command is in charge of preparing the scatter file according to common flash layout description in linker folder. The postbuild command is in charge of preparing the board programming scripts and the images preparation scripts according to the flash layout and crypto scheme.</p>
 <h3 id="keywords"><b>Keywords</b></h3>
@@ -35,6 +35,7 @@ Option bytes, TrustZone</p>
 <li><p>SBSFU_Boot/Inc/mcuboot_config/mcuboot_config.h Mcuboot configuration file</p></li>
 <li><p>SBSFU_Boot/Inc/aes_alt.h Header file for aes_alt.c</p></li>
 <li><p>SBSFU_Boot/Inc/boot_hal_cfg.h Platform configuration file for SBSFU_Boot</p></li>
+<li><p>SBSFU_Boot/Inc/boot_hal_hash_ref.h Header file for hash reference code in boot_hal.c</p></li>
 <li><p>SBSFU_Boot/Inc/boot_hal_imagevalid.h Header file for image validation code in boot_hal.c</p></li>
 <li><p>SBSFU_Boot/Inc/boot_hal_flowcontrol.h Header file for flow control code in boot_hal.c</p></li>
 <li><p>SBSFU_Boot/Inc/cmsis.h Header file for CMSIS</p></li>

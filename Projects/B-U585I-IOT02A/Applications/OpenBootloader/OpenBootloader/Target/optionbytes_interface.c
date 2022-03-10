@@ -47,6 +47,16 @@ OPENBL_MemoryTypeDef OB_Descriptor =
 /* Exported functions --------------------------------------------------------*/
 
 /**
+  * @brief  Launch the option byte loading.
+  * @retval None.
+  */
+void OPENBL_OB_Launch(void)
+{
+  /* Set the option start bit */
+  HAL_FLASH_OB_Launch();
+}
+
+/**
   * @brief  This function is used to read data from a given address.
   * @param  Address The address to be read.
   * @retval Returns the read value.
@@ -116,4 +126,7 @@ void OPENBL_OB_Write(uint32_t Address, uint8_t *Data, uint32_t DataLength)
   /* OEMKEYR OB can be added by user if needed */
 
   SET_BIT(FLASH->NSCR, FLASH_NSCR_OPTSTRT);
+
+  /* Register system reset callback */
+  Common_SetPostProcessingCallback(OPENBL_OB_Launch);
 }

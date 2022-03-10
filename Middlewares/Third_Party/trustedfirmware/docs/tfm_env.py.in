@@ -1,0 +1,25 @@
+# -----------------------------------------------------------------------------
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# -----------------------------------------------------------------------------
+
+# Interface file between cmake and sphynx-build. Variables will be populated
+# by cmake and evaluated by the Python builder
+
+cmake_env = { "SPHINX_TMP_DOC_DIR"         : "@SPHINX_TMP_DOC_DIR@",
+              "TFM_ROOT_DIR"               : "@CMAKE_SOURCE_DIR@",
+              "PLANTUML_JAR_PATH"          : "@PLANTUML_JAR_PATH@",
+              "Java_JAVA_EXECUTABLE"       : "@Java_JAVA_EXECUTABLE@",
+              "DOXYGEN_EXECUTABLE"         : "@DOXYGEN_EXECUTABLE@",
+              "DOXYGEN_DOT_EXECUTABLE"     : "@DOXYGEN_DOT_EXECUTABLE@",
+              "DOXYCFG_DOXYGEN_CFG_DIR"    : "@DOXYCFG_DOXYGEN_CFG_DIR@",
+              "DOXYCFG_OUTPUT_PATH"        : "@DOXYCFG_OUTPUT_PATH@",
+              "DOXYCFG_DOXYGEN_BUILD"      : "@DOXYCFG_DOXYGEN_BUILD@",
+              "SPHINXCFG_TEMPLATE_FILE"    : "@SPHINXCFG_TEMPLATE_FILE@",
+              "SPHINXCFG_COPY_FILES"       : "@SPHINXCFG_COPY_FILES@",
+              "SPHINXCFG_RENDER_CONF"      : "@SPHINXCFG_RENDER_CONF@",
+              "SPHINXCFG_TFM_VERSION"      : "v@CMAKE_PROJECT_VERSION@",
+              "SPHINXCFG_TFM_VERSION_FULL" : "Version @CMAKE_PROJECT_VERSION@"
+            }

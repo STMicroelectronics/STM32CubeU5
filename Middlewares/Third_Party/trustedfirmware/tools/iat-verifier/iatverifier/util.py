@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -10,8 +10,10 @@ from copy import deepcopy
 
 import cbor
 import yaml
-from ecdsa import SigningKey
+import base64
+from ecdsa import SigningKey, VerifyingKey
 from pycose.sign1message import Sign1Message
+from pycose.mac0message import Mac0Message
 
 from iatverifier import const
 
@@ -28,22 +30,39 @@ def sign_eat(token, key=None):
     return signed_msg.encode()
 
 
-def convert_map_to_token_files(mapfile, keyfile, outfile, raw=False):
+def hmac_eat(token, key=None):
+    hmac_msg = Mac0Message(payload=token, key=key)
+    hmac_msg.compute_auth_tag('HS256')
+    return hmac_msg.encode()
+
+
+def convert_map_to_token_files(mapfile, keyfile, outfile, method='sign'):
     token_map = read_token_map(mapfile)
 
-    with open(keyfile) as fh:
-        signing_key = SigningKey.from_pem(fh.read())
+    if method == 'sign':
+        with open(keyfile) as fh:
+            signing_key = SigningKey.from_pem(fh.read())
+    else:
+        with open(keyfile, 'rb') as fh:
+            signing_key = fh.read()
 
     with open(outfile, 'wb') as wfh:
-        convert_map_to_token(token_map, signing_key, wfh, raw)
+        convert_map_to_token(token_map, signing_key, wfh, method)
 
 
-def convert_map_to_token(token_map, signing_key, wfh, raw=False):
+def convert_map_to_token(token_map, signing_key, wfh, method='sign'):
     token = cbor.dumps(token_map)
-    if raw:
+
+    if method == 'raw':
         signed_token = token
-    else:
+    elif method == 'sign':
         signed_token = sign_eat(token, signing_key)
+    elif method == 'mac':
+        signed_token = hmac_eat(token, signing_key)
+    else:
+        err_msg = 'Unexpected method "{}"; must be one of: raw, sign, mac'
+        raise ValueError(err_msg.format(method))
+
     wfh.write(signed_token)
 
 
@@ -63,35 +82,48 @@ def read_token_map(f):
     return _parse_raw_token(raw)
 
 
-def extract_iat_from_cose(keyfile, tokenfile, keep_going=False):
-    if keyfile:
-        try:
-            sk = SigningKey.from_pem(open(keyfile, 'rb').read())
-        except Exception as e:
-            msg = 'Bad key file "{}": {}'
-            raise ValueError(msg.format(keyfile, e))
-    else:  # no keyfile
-        sk = None
+def extract_iat_from_cose(keyfile, tokenfile, keep_going=False, method='sign'):
+    key = read_keyfile(keyfile, method)
 
     try:
         with open(tokenfile, 'rb') as wfh:
-            return get_cose_payload(wfh.read(), sk)
+            return get_cose_payload(wfh.read(), key, method)
     except Exception as e:
         msg = 'Bad COSE file "{}": {}'
         raise ValueError(msg.format(tokenfile, e))
 
 
-def get_cose_payload(cose, sk=None):
+def get_cose_payload(cose, key=None, method='sign'):
+    if method == 'sign':
+        return get_cose_sign1_payload(cose, key)
+    elif method == 'mac':
+        return get_cose_mac0_pyload(cose, key)
+    else:
+        err_msg = 'Unexpected method "{}"; must be one of: sign, mac'
+        raise ValueError(err_msg.format(method))
+
+
+def get_cose_sign1_payload(cose, key=None):
     msg = Sign1Message.decode(cose)
-    if sk:
-        msg.key = sk
+    if key:
+        msg.key = key
         msg.signature = msg.signers
         try:
             msg.verify_signature(alg='ES256')
-        except Exception:
-            raise ValueError('Bad signature')
+        except Exception as e:
+            raise ValueError('Bad signature ({})'.format(e))
     return msg.payload
 
+
+def get_cose_mac0_pyload(cose, key=None):
+    msg = Mac0Message.decode(cose)
+    if key:
+        msg.key = key
+        try:
+            msg.verify_auth_tag(alg='HS256')
+        except Exception as e:
+            raise ValueError('Bad signature ({})'.format(e))
+    return msg.payload
 
 def recursive_bytes_to_strings(d, in_place=False):
     if in_place:
@@ -107,13 +139,44 @@ def recursive_bytes_to_strings(d, in_place=False):
         result = [recursive_bytes_to_strings(r, in_place=True)
                   for r in result]
     elif isinstance(result, bytes):
-        res=""
-        for x in result:
-            y = format(x,"02x")
-            res+=y
-        #result = str(result)[2:-1]
-        result=res
+        result = str(base64.b16encode(result))
+
     return result
+
+
+def read_keyfile(keyfile, method='sign'):
+    if keyfile:
+        if method == 'sign':
+            return read_sign1_key(keyfile)
+        elif method == 'mac':
+            return read_hmac_key(keyfile)
+        else:
+            err_msg = 'Unexpected method "{}"; must be one of: sign, mac'
+            raise ValueError(err_msg.format(method))
+    else:  # no keyfile
+        key = None
+
+    return key
+
+
+def read_sign1_key(keyfile):
+    try:
+        key = SigningKey.from_pem(open(keyfile, 'rb').read())
+    except Exception as e:
+        signing_key_error = str(e)
+
+        try:
+            key = VerifyingKey.from_pem(open(keyfile, 'rb').read())
+        except Exception as e:
+            verifying_key_error = str(e)
+
+            msg = 'Bad key file "{}":\n\tpubkey error: {}\n\tprikey error: {}'
+            raise ValueError(msg.format(keyfile, verifying_key_error, signing_key_error))
+    return key
+
+
+def read_hmac_key(keyfile):
+    return open(keyfile, 'rb').read()
 
 
 def _parse_raw_token(raw):
@@ -126,7 +189,7 @@ def _parse_raw_token(raw):
             try:
                 key = FIELD_NAMES[field_name]
             except KeyError:
-                mag = 'Unknown field "{}" in token.'.format(field_name)
+                msg = 'Unknown field "{}" in token.'.format(field_name)
                 raise ValueError(msg)
 
         if key == const.SECURITY_LIFECYCLE:

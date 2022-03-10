@@ -37,7 +37,7 @@
 /* USER CODE BEGIN PD */
 #define SD_READ_FLAG                         0x01
 #define SD_WRITE_FLAG                        0x02
-#define SD_TIMEOUT                           100
+#define SD_TIMEOUT                           100U
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -212,3 +212,4 @@ static int32_t check_sd_status(void)
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
+

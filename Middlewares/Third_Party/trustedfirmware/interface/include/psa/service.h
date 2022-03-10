@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2018-2021, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -48,6 +48,9 @@ extern "C" {
 
 /* Store a set of one or more Secure Partition signals */
 typedef uint32_t psa_signal_t;
+
+/* A type used to temporarily store a previous interrupt state. */
+typedef uint32_t psa_irq_status_t;
 
 /**
  * Describe a message received by an RoT Service after calling \ref psa_get().
@@ -259,6 +262,40 @@ void psa_eoi(psa_signal_t irq_signal);
  * \retval "Does not return"
  */
 void psa_panic(void);
+
+/**
+ * \brief Enable an interrupt.
+ *
+ * \param[in] irq_signal The signal for the interrupt to be enabled.
+ *                       This must have a single bit set, which must be the
+ *                       signal value for an interrupt in the calling Secure
+ *                       Partition.
+ *
+ * \retval void
+ * \retval "PROGRAMMER ERROR" If one or more of the following are true:
+ *                            \ref irq_signal is not an interrupt signal.
+ *                            \ref irq_signal indicates more than one signal.
+ */
+void psa_irq_enable(psa_signal_t irq_signal);
+
+/**
+ * \brief Disable an interrupt and return the status of the interrupt prior to
+ *        being disabled by this call.
+ *
+ * \param[in] irq_signal The signal for the interrupt to be disabled.
+ *                       This must have a single bit set, which must be the
+ *                       signal value for an interrupt in the calling Secure
+ *                       Partition.
+ *
+ * \retval 0                  The interrupt was disabled prior to this call.
+ *         1                  The interrupt was enabled prior to this call.
+ * \retval "PROGRAMMER ERROR" If one or more of the following are true:
+ *                            \ref irq_signal is not an interrupt signal.
+ *                            \ref irq_signal indicates more than one signal.
+ *
+ * \note The current implementation always return 1. Do not use the return.
+ */
+psa_irq_status_t psa_irq_disable(psa_signal_t irq_signal);
 
 #ifdef __cplusplus
 }

@@ -25,6 +25,7 @@ Option bytes, TrustZone
   - TFM_SBSFU_Boot/Inc/mcuboot_config/mcuboot_config.h Mcuboot configuration file
   - TFM_SBSFU_Boot/Inc/aes_alt.h                       Header file for aes_alt.c
   - TFM_SBSFU_Boot/Inc/boot_hal_cfg.h                  Platform configuration file for TFM_SBSFU_Boot
+  - TFM_SBSFU_Boot/Inc/boot_hal_hash_ref.h             Header file for hash reference code in boot_hal.c
   - TFM_SBSFU_Boot/Inc/boot_hal_imagevalid.h           Header file for image validation code in boot_hal.c
   - TFM_SBSFU_Boot/Inc/boot_hal_flowcontrol.h          Header file for flow control code in boot_hal.c
   - TFM_SBSFU_Boot/Inc/cmsis.h                         Header file for CMSIS

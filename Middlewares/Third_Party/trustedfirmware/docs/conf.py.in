@@ -1,6 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 #-------------------------------------------------------------------------------
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -57,8 +57,8 @@ plantuml = '@Java_JAVA_EXECUTABLE@ -jar @PLANTUML_JAR_PATH@'
 
 #Make auso section labals generated be prefixed with file name.
 autosectionlabel_prefix_document=True
-#Add auso section label for level 1 headers only.
-autosectionlabel_maxdepth=1
+#Add auso section label for level 2 headers only.
+autosectionlabel_maxdepth=2
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -81,7 +81,9 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'readme.rst',
+                    'platform/ext/target/cypress/psoc64/security/keys/readme.rst',
+                    'lib/ext/**']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -123,13 +125,16 @@ html_show_copyright = False
 
 #Add custom css for HTML. Used to allow full page width rendering
 def setup(app):
-    app.add_stylesheet('css/custom.css')
+    app.add_stylesheet('css/tfm_custom.css')
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'TF-M doc'
 
+rst_prolog = """
+.. |TFM_VERSION| replace:: @SPHINXCFG_TFM_VERSION@
+"""
 
 # -- Options for LaTeX output ------------------------------------------------
 

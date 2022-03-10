@@ -52,7 +52,7 @@ typedef struct
   uint32_t TriggerSelection;    /*!< Specifies the autonomous mode trigger signal selection.
                                      This parameter can be a value of @ref LPBAM_LPUART_AutonomousMode_TriggerSelection
                                                                                                                       */
-  uint32_t TriggerPolarity;     /*!< Specifies the autonomous mode trigger signal polarity sensitivity.
+  uint32_t TriggerPolarity;     /*!< Specifies the autonomous mode trigger signal polarity.
                                      This parameter can be a value of @ref LPBAM_UART_AutonomousMode_TriggerPolarity  */
 
   uint32_t DataSize;            /*!< Specifies the UART data number of bytes to transfer in each packet               */

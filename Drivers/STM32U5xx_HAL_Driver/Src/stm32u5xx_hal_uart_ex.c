@@ -37,6 +37,7 @@
             configured prior starting RX/TX transfers.
 
   @endverbatim
+  ******************************************************************************
   */
 
 /* Includes ------------------------------------------------------------------*/
@@ -1113,3 +1114,4 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
 /**
   * @}
   */
+

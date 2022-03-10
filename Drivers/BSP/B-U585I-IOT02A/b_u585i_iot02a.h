@@ -60,13 +60,13 @@ typedef enum
   LED_RED = LED6,
   LED7 = 1U,
   LED_GREEN = LED7,
-  LEDn
+  LED_NBR
 } Led_TypeDef;
 
 typedef enum
 {
   BUTTON_USER = 0U,
-  BUTTONn
+  BUTTON_NBR
 } Button_TypeDef;
 
 typedef enum
@@ -79,7 +79,7 @@ typedef enum
 typedef enum
 {
   COM1 = 0U,
-  COMn
+  COM_NBR
 } COM_TypeDef;
 
 typedef enum
@@ -145,10 +145,10 @@ typedef struct
 #endif /* USE_B_U585I_IOT02A */
 
 /**
-  * @brief B_U585I_IOT02A BSP Driver version number V1.0.0
+  * @brief B_U585I_IOT02A BSP Driver version number V1.1.0
   */
 #define B_U585I_IOT02A_BSP_VERSION_MAIN   (uint32_t)(0x01U) /*!< [31:24] main version */
-#define B_U585I_IOT02A_BSP_VERSION_SUB1   (uint32_t)(0x00U) /*!< [23:16] sub1 version */
+#define B_U585I_IOT02A_BSP_VERSION_SUB1   (uint32_t)(0x01U) /*!< [23:16] sub1 version */
 #define B_U585I_IOT02A_BSP_VERSION_SUB2   (uint32_t)(0x00U) /*!< [15:8]  sub2 version */
 #define B_U585I_IOT02A_BSP_VERSION_RC     (uint32_t)(0x00U) /*!< [7:0]  release candidate */
 #define B_U585I_IOT02A_BSP_VERSION        ((B_U585I_IOT02A_BSP_VERSION_MAIN << 24)\

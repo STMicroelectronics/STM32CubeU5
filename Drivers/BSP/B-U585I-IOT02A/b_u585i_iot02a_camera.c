@@ -1296,7 +1296,7 @@ int32_t BSP_CAMERA_PwrDown(uint32_t Instance)
   * @param  Instance Camera instance
   * @retval None
   */
-void BSP_CAMERA_IRQHandler(uint32_t Instance)
+void BSP_CAMERA_IRQ_HANDLER(uint32_t Instance)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(Instance);
@@ -1309,7 +1309,7 @@ void BSP_CAMERA_IRQHandler(uint32_t Instance)
   * @param  Instance Camera instance
   * @retval None
   */
-void BSP_CAMERA_DMA_IRQHandler(uint32_t Instance)
+void BSP_CAMERA_DMA_IRQ_HANDLER(uint32_t Instance)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(Instance);

@@ -99,7 +99,8 @@ typedef struct
   */
 typedef struct
 {
-  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DAC transfers : one node is needed */
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DAC transfers : only one node is needed
+                                                                                                                      */
 
 } LPBAM_DAC_ConvDataDesc_t;
 

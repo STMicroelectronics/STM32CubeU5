@@ -47,20 +47,20 @@ extern "C" {
   */
 typedef struct
 {
-  LPBAM_FunctionalState UpdatePeriod;     /*!< Specifies the period update state
-                                               This parameter can be ENABLE or DISABLE */
-
   uint16_t PeriodValue;                   /*!< Specifies the period values             */
 
-  LPBAM_FunctionalState UpdatePulse;      /*!< Specifies the pulse update state
+  LPBAM_FunctionalState UpdatePeriod;     /*!< Specifies the period update state
                                                This parameter can be ENABLE or DISABLE */
 
   uint16_t PulseValue;                    /*!< Specifies the pulse values              */
 
-  LPBAM_FunctionalState UpdateRepetition; /*!< Specifies the repetition update state
+  LPBAM_FunctionalState UpdatePulse;      /*!< Specifies the pulse update state
                                                This parameter can be ENABLE or DISABLE */
 
   uint8_t RepetitionValue;                /*!< Specifies the repetition values         */
+
+  LPBAM_FunctionalState UpdateRepetition; /*!< Specifies the repetition update state
+                                               This parameter can be ENABLE or DISABLE */
 
 } LPBAM_LPTIM_PWMFullAdvConf_t;
 
@@ -92,7 +92,7 @@ typedef struct
 typedef struct
 {
   uint32_t StartMode; /*!< Specifies the LPTIM Start Mode.
-                           This parameter can be a value of @ref LPBAM_LPTIM_ContinuousMode                */
+                           This parameter can be a value of @ref LPBAM_LPTIM_Start_Mode                    */
 
   uint32_t WakeupIT;  /*!< Specifies the wake up source interrupt
                            This parameter can be one or a combination of @ref LPBAM_LPTIM_Wakeup_Interrupt */
@@ -126,9 +126,10 @@ typedef struct
   */
 typedef struct
 {
-  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : 1 node is needed */
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : only one node is
+                                   needed                                                                             */
 
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : 1 value is needed                */
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
 
 } LPBAM_LPTIM_ICFullDesc_t;
 
@@ -160,9 +161,10 @@ typedef struct
   */
 typedef struct
 {
-  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : 1 node is needed */
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : only one node is
+                                   needed                                                                             */
 
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : 1 value is needed                */
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
 
 } LPBAM_LPTIM_StopFullDesc_t;
 /**
@@ -204,7 +206,6 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_UE_SetFullQ(LPTIM_TypeDef              *const pIn
   * @brief ADV_LPBAM_LPTIM_Start_SetFullQ.
   */
 LPBAM_Status_t ADV_LPBAM_LPTIM_Start_SetFullQ(LPTIM_TypeDef                  *const pInstance,
-                                              uint32_t                       Channel,
                                               LPBAM_DMAListInfo_t            const *const pDMAListInfo,
                                               LPBAM_LPTIM_StartFullAdvConf_t const *const pStartFull,
                                               LPBAM_LPTIM_StartFullDesc_t    *const pDescriptor,

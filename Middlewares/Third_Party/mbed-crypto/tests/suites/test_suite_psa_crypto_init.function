@@ -1,11 +1,7 @@
 /* BEGIN_HEADER */
 #include <stdint.h>
 
-#if defined(MBEDTLS_PSA_CRYPTO_SPM)
-#include "spm/psa_defs.h"
-#endif
-#include "psa/crypto.h"
-
+#include "test/psa_crypto_helpers.h"
 /* Some tests in this module configure entropy sources. */
 #include "psa_crypto_invasive.h"
 
@@ -14,6 +10,12 @@
 
 #define ENTROPY_MIN_NV_SEED_SIZE                                        \
     MAX(MBEDTLS_ENTROPY_MIN_PLATFORM, MBEDTLS_ENTROPY_BLOCK_SIZE)
+
+/* PSA crypto uses the CTR_DRBG module. In some configurations, it needs
+ * to read from the entropy source twice: once for the initial entropy
+ * and once for a nonce. */
+#include "mbedtls/ctr_drbg.h"
+#define ENTROPY_NONCE_LEN MBEDTLS_CTR_DRBG_ENTROPY_NONCE_LEN
 
 typedef struct
 {
@@ -142,7 +144,7 @@ void init_deinit( int count )
         PSA_ASSERT( status );
         status = psa_crypto_init( );
         PSA_ASSERT( status );
-        mbedtls_psa_crypto_free( );
+        PSA_DONE( );
     }
 }
 /* END_CASE */
@@ -154,9 +156,9 @@ void deinit_without_init( int count )
     for( i = 0; i < count; i++ )
     {
         PSA_ASSERT( psa_crypto_init( ) );
-        mbedtls_psa_crypto_free( );
+        PSA_DONE( );
     }
-    mbedtls_psa_crypto_free( );
+    PSA_DONE( );
 }
 /* END_CASE */
 
@@ -170,7 +172,7 @@ void validate_module_init_generate_random( int count )
     {
         status = psa_crypto_init( );
         PSA_ASSERT( status );
-        mbedtls_psa_crypto_free( );
+        PSA_DONE( );
     }
     status = psa_generate_random( random, sizeof( random ) );
     TEST_EQUAL( status, PSA_ERROR_BAD_STATE );
@@ -182,15 +184,20 @@ void validate_module_init_key_based( int count )
 {
     psa_status_t status;
     uint8_t data[10] = { 0 };
+    psa_key_attributes_t attributes = PSA_KEY_ATTRIBUTES_INIT;
+    mbedtls_svc_key_id_t key = mbedtls_svc_key_id_make( 0xdead, 0xdead );
     int i;
+
     for( i = 0; i < count; i++ )
     {
         status = psa_crypto_init( );
         PSA_ASSERT( status );
-        mbedtls_psa_crypto_free( );
+        PSA_DONE( );
     }
-    status = psa_import_key( 1, PSA_KEY_TYPE_RAW_DATA, data, sizeof( data ) );
+    psa_set_key_type( &attributes, PSA_KEY_TYPE_RAW_DATA );
+    status = psa_import_key( &attributes, data, sizeof( data ), &key );
     TEST_EQUAL( status, PSA_ERROR_BAD_STATE );
+    TEST_ASSERT( mbedtls_svc_key_id_is_null( key ) );
 }
 /* END_CASE */
 
@@ -211,7 +218,7 @@ void custom_entropy_sources( int sources_arg, int expected_init_status_arg )
     PSA_ASSERT( psa_generate_random( random, sizeof( random ) ) );
 
 exit:
-    mbedtls_psa_crypto_free( );
+    PSA_DONE( );
 }
 /* END_CASE */
 
@@ -251,7 +258,7 @@ void fake_entropy_source( int threshold,
     PSA_ASSERT( psa_generate_random( random, sizeof( random ) ) );
 
 exit:
-    mbedtls_psa_crypto_free( );
+    PSA_DONE( );
 }
 /* END_CASE */
 
@@ -279,6 +286,6 @@ void entropy_from_nv_seed( int seed_size_arg,
 
 exit:
     mbedtls_free( seed );
-    mbedtls_psa_crypto_free( );
+    PSA_DONE( );
 }
 /* END_CASE */

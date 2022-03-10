@@ -177,14 +177,41 @@ uint8_t *USBD_Get_String_Framework(ULONG *Length)
   USBD_Desc_GetString((uint8_t *)USBD_SERIAL_NUMBER, USBD_string_framework + count, &len);
 
 #if USBD_DFU_CLASS_ACTIVATED
-  /* Set DFU_STRING_DESC_INDEX and DFU_STRING_DESC in string_framework */
+  /* Set FLASH descriptor index in USBD_string_framework */
   count += len + 1;
   USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFF;
   USBD_string_framework[count++] = USBD_LANGID_STRING >> 8;
-  USBD_string_framework[count++] = USBD_DFU_STRING_DESC_INDEX;
+  USBD_string_framework[count++] = USBD_DFU_STRING_FLASH_DESC_INDEX;
 
-  /* Set the USBD_DFU_STRING_DESC in USBD_string_framework */
-  USBD_Desc_GetString((uint8_t *)USBD_DFU_STRING_DESC, USBD_string_framework + count, &len);
+  /* Set FLASH descriptor string in USBD_string_framework */
+  USBD_Desc_GetString((uint8_t *)USBD_DFU_STRING_FLASH_DESC, USBD_string_framework + count, &len);
+
+  /* Set Option Bytes descriptor index in USBD_string_framework */
+  count += len + 1;
+  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFF;
+  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8;
+  USBD_string_framework[count++] = USBD_DFU_STRING_OB_DESC_INDEX;
+
+  /* Set Option Bytes descriptor string in USBD_string_framework */
+  USBD_Desc_GetString((uint8_t *)USBD_DFU_STRING_OB_DESC, USBD_string_framework + count, &len);
+
+  /* Set OTP descriptor index in USBD_string_framework */
+  count += len + 1;
+  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFF;
+  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8;
+  USBD_string_framework[count++] = USBD_DFU_STRING_OTP_DESC_INDEX;
+
+  /* Set OTP descriptor string in USBD_string_framework */
+  USBD_Desc_GetString((uint8_t *)USBD_DFU_STRING_OTP_DESC, USBD_string_framework + count, &len);
+
+  /* Set device ID descriptor index in USBD_string_framework */
+  count += len + 1;
+  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFF;
+  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8;
+  USBD_string_framework[count++] = USBD_DFU_STRING_DEVICE_ID_DESC_INDEX;
+
+  /* Set device ID descriptor string in USBD_string_framework */
+  USBD_Desc_GetString((uint8_t *)USBD_DFU_STRING_DEVICE_ID_DESC, USBD_string_framework + count, &len);
 #endif /* USBD_DFU_CLASS_ACTIVATED */
 
   /* Get the length of USBD_string_framework */

@@ -204,6 +204,18 @@
 
 #define TX_TIMER_TICKS_PER_SECOND                1000
 
+/* Defined, the basic parameter error checking is disabled. */
+
+/*#define TX_DISABLE_ERROR_CHECKING*/
+
+/* Determine if there is a FileX pointer in the thread control block.
+   By default, the pointer is there for legacy/backwards compatibility.
+   The pointer must also be there for applications using FileX.
+   Define this to save space in the thread control block.
+*/
+
+/*#define TX_NO_FILEX_POINTER*/
+
 /* Determinate if the basic alignment type is defined. */
 
 /*#define ALIGN_TYPE_DEFINED*/

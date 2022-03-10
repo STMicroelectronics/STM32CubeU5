@@ -67,7 +67,7 @@ void RNG_Init(void)
   HAL_RNG_GenerateRandomNumber(&handle, &dummy);
 }
 
-static void RNG_GetBytes(uint8_t *output, size_t length, size_t *output_length)
+void RNG_GetBytes(uint8_t *output, size_t length, size_t *output_length)
 {
   int32_t ret = 0;
   uint8_t try = 0;

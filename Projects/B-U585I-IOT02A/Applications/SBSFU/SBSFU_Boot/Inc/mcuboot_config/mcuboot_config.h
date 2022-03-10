@@ -28,7 +28,8 @@ extern "C" {
  * exist, or bootutil won't build.
  */
 #ifndef __BOOTSIM__
-
+/* FIH config */
+#define MCUBOOT_FIH_PROFILE_HIGH    /* in this config random delay is activated at each FIH_CALL */
 /*
  * In TF-M most of the configuration flags (e.g. signature type,
  * upgrade mode ...) are handled by the CMake-based buildsystem and

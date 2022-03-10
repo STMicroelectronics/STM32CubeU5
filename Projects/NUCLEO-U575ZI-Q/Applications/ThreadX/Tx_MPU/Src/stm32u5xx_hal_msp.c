@@ -58,7 +58,7 @@
 
 /* USER CODE END 0 */
 /**
-  * Initializes the Global MSP.
+  * Initializes the Global MCU Support Package.
   */
 void HAL_MspInit(void)
 {
@@ -70,9 +70,6 @@ void HAL_MspInit(void)
 
   /* System interrupt init*/
 
-  /** Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
-  */
-  HAL_PWREx_DisableUCPDDeadBattery();
 
   /* USER CODE BEGIN MspInit 1 */
 

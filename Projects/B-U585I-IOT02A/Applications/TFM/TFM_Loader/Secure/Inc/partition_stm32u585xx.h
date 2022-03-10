@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file    partition_stm32u585xx.h
+  * @file    partition_stm32u5xx.h
   * @author  MCD Application Team
-  * @brief   CMSIS STM32U585xx Device Initial Setup for Secure / Non-Secure Zones
+  * @brief   CMSIS STM32U5xx Device Initial Setup for Secure / Non-Secure Zones
   *          for ARMCM33 based on CMSIS CORE partition_ARMCM33.h Template.
   *
   *          This file contains:
@@ -31,8 +31,8 @@
  * limitations under the License.
  */
 
-#ifndef PARTITION_STM32U585XX_H
-#define PARTITION_STM32U585XX_H
+#ifndef PARTITION_STM32U5XXXX_H
+#define PARTITION_STM32U5XXXX_H
 #include "region_defs.h"
 
 /*
@@ -159,12 +159,12 @@
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START3     0x40000000      /* start address of SAU region 3 */
+#define SAU_INIT_START3     NS_DATA_START_2      /* start address of SAU region 3 */
 
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END3       0x4FFFFFFF      /* end address of SAU region 3 */
+#define SAU_INIT_END3       NS_DATA_LIMIT_2      /* end address of SAU region 3 */
 
 /*
 //     <o>Region is
@@ -185,12 +185,13 @@
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START4     0x60000000      /* start address of SAU region 4 */
+#define SAU_INIT_START4     0x40000000      /* start address of SAU region 4 */
 
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END4       0x9FFFFFFF      /* end address of SAU region 4 */
+#define SAU_INIT_END4       0x4FFFFFFF      /* end address of SAU region 4 */
+
 
 /*
 //     <o>Region is
@@ -206,17 +207,17 @@
 //   <e>Initialize SAU Region 5
 //   <i> Setup SAU Region 5 memory attributes
 */
-#define SAU_INIT_REGION5    0
+#define SAU_INIT_REGION5    1
 
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START5     0x0BF90000      /* start address of SAU region 5 */
+#define SAU_INIT_START5     0x60000000     /* start address of SAU region 5 */
 
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END5       0x0BFA8FFF      /* end address of SAU region 5 */
+#define SAU_INIT_END5       0x9FFFFFFF      /* end address of SAU region 5 */
 
 /*
 //     <o>Region is
@@ -547,6 +548,30 @@
 */
 #define NVIC_INIT_ITNS3_VAL      0xFFFFFFFF
 
+#if defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+/*
+//   <e>Initialize ITNS 4 (Interrupts 109..138)
+*/
+#define NVIC_INIT_ITNS4    1
+
+/*
+// Interrupts 96..138
+//   <o.0>  I2C5_EV_IRQn          <0=> Secure state <1=> Non-Secure state
+//   <o.1>  I2C6_ER_IRQn          <0=> Secure state <1=> Non-Secure state
+//   <o.2>  I2C6_EV_IRQn          <0=> Secure state <1=> Non-Secure state
+//   <o.3>  HSPI1_IRQn            <0=> Secure state <1=> Non-Secure state
+*/
+#define NVIC_INIT_ITNS4_VAL      0xFFFFFFFF
+
+/*
+//   </e>
+*/
+
+/*
+// </h>
+*/
+#endif
+
 /*
 //   </e>
 */
@@ -656,7 +681,11 @@ __STATIC_INLINE void TZ_SAU_Setup (void)
   #if defined (NVIC_INIT_ITNS3) && (NVIC_INIT_ITNS3 == 1U)
     NVIC->ITNS[3] = NVIC_INIT_ITNS3_VAL;
   #endif
-
+#if defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+  #if defined (NVIC_INIT_ITNS4) && (NVIC_INIT_ITNS4 == 1U)
+    NVIC->ITNS[4] = NVIC_INIT_ITNS4_VAL;
+  #endif
+#endif
 }
 
-#endif  /* PARTITION_STM32U585XX_H */
+#endif  /* PARTITION_STM32U5XXXX_H */

@@ -25,8 +25,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32u5xx.h"
-#include "stm32u5xx_hal.h"
+#include "platform.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
@@ -40,4 +39,5 @@ uint32_t OPENBL_USB_GetPage(uint32_t Address);
 #ifdef __cplusplus
 }
 #endif
+
 #endif /* USB_INTERFACE_H */

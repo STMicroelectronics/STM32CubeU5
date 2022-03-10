@@ -89,7 +89,8 @@
 
 /* Defined, this value is the maximum number of classes in the device stack that can be loaded by
    USBX.  */
-/* #define UX_MAX_SLAVE_CLASS_DRIVER    1 */
+
+#define UX_MAX_SLAVE_CLASS_DRIVER                         2
 
 /* Defined, this value is the maximum number of interfaces in the device framework.  */
 
@@ -130,7 +131,7 @@
    is 4096 bytes but can be reduced in memory constraint environments. For cd-rom support in the storage
    class, this value cannot be less than 2048.  */
 
-/* #define UX_SLAVE_REQUEST_DATA_MAX_LENGTH        4096 */
+#define UX_SLAVE_REQUEST_DATA_MAX_LENGTH                                   512
 
 /* Defined, this value includes code to handle storage Multi-Media Commands (MMC). E.g., DVD-ROM. */
 
@@ -347,5 +348,13 @@
 /* Determine if tracing is enabled.  */
 
 /*#define UX_TRACE_INSERT_MACROS*/
+
+/* Defined, this macro enables device bi-directional endpoint support. */
+
+#define UX_DEVICE_BIDIRECTIONAL_ENDPOINT_SUPPORT
+
+/* Defined, this macro disables CDC ACM non-blocking transmission support. */
+
+#define UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE
 #endif
 

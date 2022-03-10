@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2018 ARM Limited
+ * Copyright (c) 2017-2020 ARM Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,6 @@
 #include <stdint.h>
 
 /**
- * \brief UART channels that
- *        can be used from TFM
- */
-enum uart_channel {
-    UART0_CHANNEL = 0,
-    UART1_CHANNEL,
-    UART_INVALID
-};
-
-/**
  * \brief Initializes the STDIO.
  *
  */
@@ -39,5 +29,10 @@ void stdio_init(void);
  * \brief Uninitializes the STDIO.
  */
 void stdio_uninit(void);
+
+/**
+ * \brief Output buffer by STDIO.
+ */
+int stdio_output_string(const unsigned char *str, uint32_t len);
 
 #endif /* __UART_STDOUT_H__ */

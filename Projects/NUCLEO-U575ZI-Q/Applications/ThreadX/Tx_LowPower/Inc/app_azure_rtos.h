@@ -27,6 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 
+#include "stm32u5xx_hal.h"
 #include "app_azure_rtos_config.h"
 #include "app_threadx.h"
 
@@ -65,3 +66,4 @@
 }
 #endif
 #endif /* APP_AZURE_RTOS_H */
+

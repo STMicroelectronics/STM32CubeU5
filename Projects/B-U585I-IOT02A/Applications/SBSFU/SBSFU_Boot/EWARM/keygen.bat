@@ -23,7 +23,6 @@ set "cmdcpypem=copy %sbsfu_key_dir%\*.pem %$key_backup_dir%\"
 %cmdcpypem%
 IF %ERRORLEVEL% NEQ 0 goto :error_key
 
-
 :start
 goto exe:
 goto py:
@@ -38,7 +37,7 @@ goto Keygen
 :py
 ::line for python
 echo Keygen with python script
-set "imgtool=%mcuboot_dir%\scripts\imgtool.py"
+set "imgtool=%mcuboot_dir%\scripts\imgtool\main.py"
 set "python=python "
 
 :keygen

@@ -323,3 +323,4 @@ uint8_t *USBD_Get_Language_Id_Framework(ULONG *Length);
 }
 #endif
 #endif  /* __UX_DEVICE_DESCRIPTORS_H__ */
+

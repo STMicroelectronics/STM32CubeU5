@@ -84,17 +84,17 @@ void MotionSensor_demo(void)
     }
     UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
     UTIL_LCD_SetFont(&Font12);
-    sprintf((char*)string, "X = %ld      ", (signed long)axes.x);
+    sprintf((char*)string, "X = %ld      ", (signed long)axes.xval);
     UTIL_LCD_DisplayStringAt(20, 125, string, LEFT_MODE);
-    sprintf((char*)string, "Y = %ld      ", (signed long)axes.y);
+    sprintf((char*)string, "Y = %ld      ", (signed long)axes.yval);
     UTIL_LCD_DisplayStringAt(20, 140, string, LEFT_MODE);
-    sprintf((char*)string, "Z = %ld      ", (signed long)axes.z);
+    sprintf((char*)string, "Z = %ld      ", (signed long)axes.zval);
     UTIL_LCD_DisplayStringAt(20, 155, string, LEFT_MODE);
-    sprintf((char*)string, "Xraw = %d      ", axesRaw.x);
+    sprintf((char*)string, "Xraw = %d      ", axesRaw.xval);
     UTIL_LCD_DisplayStringAt(20, 170, string, LEFT_MODE);
-    sprintf((char*)string, "Yraw = %d      ", axesRaw.y);
+    sprintf((char*)string, "Yraw = %d      ", axesRaw.yval);
     UTIL_LCD_DisplayStringAt(20, 185, string, LEFT_MODE);
-    sprintf((char*)string, "Zraw = %d      ", axesRaw.z);
+    sprintf((char*)string, "Zraw = %d      ", axesRaw.zval);
     UTIL_LCD_DisplayStringAt(20, 200, string, LEFT_MODE);
     HAL_Delay(500);
   }
@@ -147,17 +147,17 @@ void MotionSensor_demo(void)
     }
     UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_ST_BLUE_DARK);
     UTIL_LCD_SetFont(&Font12);
-    sprintf((char*)string, "X = %ld      ", (signed long)axes.x);
+    sprintf((char*)string, "X = %ld      ", (signed long)axes.xval);
     UTIL_LCD_DisplayStringAt(20, 125, string, LEFT_MODE);
-    sprintf((char*)string, "Y = %ld      ", (signed long)axes.y);
+    sprintf((char*)string, "Y = %ld      ", (signed long)axes.yval);
     UTIL_LCD_DisplayStringAt(20, 140, string, LEFT_MODE);
-    sprintf((char*)string, "Z = %ld      ", (signed long)axes.z);
+    sprintf((char*)string, "Z = %ld      ", (signed long)axes.zval);
     UTIL_LCD_DisplayStringAt(20, 155, string, LEFT_MODE);
-    sprintf((char*)string, "Xraw = %d      ", axesRaw.x);
+    sprintf((char*)string, "Xraw = %d      ", axesRaw.xval);
     UTIL_LCD_DisplayStringAt(20, 170, string, LEFT_MODE);
-    sprintf((char*)string, "Yraw = %d      ", axesRaw.y);
+    sprintf((char*)string, "Yraw = %d      ", axesRaw.yval);
     UTIL_LCD_DisplayStringAt(20, 185, string, LEFT_MODE);
-    sprintf((char*)string, "Zraw = %d      ", axesRaw.z);
+    sprintf((char*)string, "Zraw = %d      ", axesRaw.zval);
     UTIL_LCD_DisplayStringAt(20, 200, string, LEFT_MODE);
     HAL_Delay(500);
   }

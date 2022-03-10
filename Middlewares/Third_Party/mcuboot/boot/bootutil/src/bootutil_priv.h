@@ -1,4 +1,12 @@
 /*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright (c) 2017-2020 Linaro LTD
+ * Copyright (c) 2017-2019 JUUL Labs
+ * Copyright (c) 2019-2020 Arm Limited
+ *
+ * Original license:
+ *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,12 +25,10 @@
  * under the License.
  */
 
-/*
- * Modifications are Copyright (c) 2019 Arm Limited.
- */
-
 #ifndef H_BOOTUTIL_PRIV_
 #define H_BOOTUTIL_PRIV_
+
+#include <string.h>
 
 #include "sysflash/sysflash.h"
 
@@ -30,6 +36,7 @@
 
 #include "bootutil/bootutil.h"
 #include "bootutil/image.h"
+#include "bootutil/fault_injection_hardening.h"
 #include "mcuboot_config/mcuboot_config.h"
 
 #ifdef MCUBOOT_ENC_IMAGES
@@ -43,6 +50,7 @@ extern "C" {
 #ifdef MCUBOOT_HAVE_ASSERT_H
 #include "mcuboot_config/mcuboot_assert.h"
 #else
+#include <assert.h>
 #define ASSERT assert
 #endif
 
@@ -57,7 +65,11 @@ struct flash_area;
 #define BOOT_EBADARGS    7
 #define BOOT_EBADVERSION 8
 
+#if defined(MCUBOOT_TMPBUF_SZ)
+#define BOOT_TMPBUF_SZ  MCUBOOT_TMPBUF_SZ
+#else
 #define BOOT_TMPBUF_SZ  0x1000
+#endif
 
 /** Number of image slots in flash; currently limited to two. */
 #if defined(MCUBOOT_PRIMARY_ONLY)
@@ -65,11 +77,17 @@ struct flash_area;
 #else
 #define BOOT_NUM_SLOTS                  2
 #endif
-#if defined(MCUBOOT_OVERWRITE_ONLY) && defined(MCUBOOT_SWAP_USING_MOVE)
-#error "Please enable only one of MCUBOOT_OVERWRITE_ONLY or MCUBOOT_SWAP_USING_MOVE"
+#if (defined(MCUBOOT_OVERWRITE_ONLY) + \
+     defined(MCUBOOT_SWAP_USING_MOVE) + \
+     defined(MCUBOOT_DIRECT_XIP) + \
+     defined(MCUBOOT_RAM_LOAD)) > 1
+#error "Please enable only one of MCUBOOT_OVERWRITE_ONLY, MCUBOOT_SWAP_USING_MOVE, MCUBOOT_DIRECT_XIP or MCUBOOT_RAM_LOAD"
 #endif
 
-#if !defined(MCUBOOT_OVERWRITE_ONLY) && !defined(MCUBOOT_SWAP_USING_MOVE)
+#if !defined(MCUBOOT_OVERWRITE_ONLY) && \
+    !defined(MCUBOOT_SWAP_USING_MOVE) && \
+    !defined(MCUBOOT_DIRECT_XIP) && \
+    !defined(MCUBOOT_RAM_LOAD) 
 #define MCUBOOT_SWAP_USING_SCRATCH 1
 #endif
 
@@ -165,6 +183,19 @@ struct boot_swap_state {
 
 _Static_assert(BOOT_IMAGE_NUMBER > 0, "Invalid value for BOOT_IMAGE_NUMBER");
 
+#if !defined(MCUBOOT_DIRECT_XIP) && !defined(MCUBOOT_RAM_LOAD)
+#define ARE_SLOTS_EQUIVALENT()    0
+#else
+#define ARE_SLOTS_EQUIVALENT()    1
+
+#if (BOOT_IMAGE_NUMBER != 1)
+#error "The MCUBOOT_DIRECT_XIP and MCUBOOT_RAM_LOAD mode only supports single-image boot (MCUBOOT_IMAGE_NUMBER=1)."
+#endif
+#ifdef MCUBOOT_ENC_IMAGES
+#error "Image encryption (MCUBOOT_ENC_IMAGES) is not supported when MCUBOOT_DIRECT_XIP or MCUBOOT_RAM_LOAD mode is selected."
+#endif
+#endif /* MCUBOOT_DIRECT_XIP || MCUBOOT_RAM_LOAD */
+
 #define BOOT_MAX_IMG_SECTORS       MCUBOOT_MAX_IMG_SECTORS
 
 /*
@@ -182,6 +213,14 @@ _Static_assert(BOOT_IMAGE_NUMBER > 0, "Invalid value for BOOT_IMAGE_NUMBER");
                                                                 | (type);      \
                                                     }
 
+#define BOOT_LOG_IMAGE_INFO(slot, hdr)                                    \
+    BOOT_LOG_INF("%-9s slot: version=%u.%u.%u+%u",                        \
+                 ((slot) == BOOT_PRIMARY_SLOT) ? "Primary" : "Secondary", \
+                 (hdr)->ih_ver.iv_major,                                  \
+                 (hdr)->ih_ver.iv_minor,                                  \
+                 (hdr)->ih_ver.iv_revision,                               \
+                 (hdr)->ih_ver.iv_build_num)
+
 /*
  * The current flashmap API does not check the amount of space allocated when
  * loading sector data from the flash device, allowing for smaller counts here
@@ -189,8 +228,10 @@ _Static_assert(BOOT_IMAGE_NUMBER > 0, "Invalid value for BOOT_IMAGE_NUMBER");
  *
  * TODO: make flashmap API receive the current sector array size.
  */
+#if !defined(MCUBOOT_PRIMARY_ONLY)
 #if BOOT_MAX_IMG_SECTORS < 32
 #error "Too few sectors, please increase BOOT_MAX_IMG_SECTORS to at least 32"
+#endif
 #endif
 
 #if MCUBOOT_SWAP_USING_MOVE
@@ -253,9 +294,10 @@ struct boot_loader_state {
 #endif
 };
 
-uint32_t boot_secure_memequal(const void *s1, const void *s2, size_t n);
-int bootutil_verify_sig(uint8_t *hash, uint32_t hlen, uint8_t *sig,
-                        size_t slen, uint8_t key_id);
+fih_int bootutil_verify_sig(uint8_t *hash, uint32_t hlen, uint8_t *sig,
+                            size_t slen, uint8_t key_id);
+
+fih_int boot_fih_memequal(const void *s1, const void *s2, size_t n);
 
 int boot_magic_compatible_check(uint8_t tbl_val, uint8_t val);
 uint32_t boot_status_sz(uint32_t min_write_sz);
@@ -292,6 +334,16 @@ int boot_write_enc_key(const struct flash_area *fap, uint8_t slot,
                        const struct boot_status *bs);
 int boot_read_enc_key(int image_index, uint8_t slot, struct boot_status *bs);
 #endif
+
+/**
+ * Checks that a buffer is erased according to what the erase value for the
+ * flash device provided in `flash_area` is.
+ *
+ * @returns true if the buffer is erased; false if any of the bytes is not
+ * erased, or when buffer is NULL, or when len == 0.
+ */
+bool bootutil_buffer_is_erased(const struct flash_area *area,
+                               const void *buffer, size_t len);
 
 /**
  * Safe (non-overflowing) uint32_t addition.  Returns true, and stores
@@ -416,6 +468,15 @@ boot_img_sector_off(const struct boot_loader_state *state, size_t slot,
 }
 
 #endif  /* !defined(MCUBOOT_USE_FLASH_AREA_GET_SECTORS) */
+
+#ifdef MCUBOOT_RAM_LOAD
+#define LOAD_IMAGE_DATA(hdr, fap, start, output, size)       \
+    (memcpy((output),(void*)((hdr)->ih_load_addr + (start)), \
+    (size)), 0)
+#else
+#define LOAD_IMAGE_DATA(hdr, fap, start, output, size)       \
+    (flash_area_read((fap), (start), (output), (size)))
+#endif /* MCUBOOT_RAM_LOAD */
 
 #ifdef __cplusplus
 }

@@ -131,6 +131,21 @@ EWARM
  - Load the secure and non-secures images into target memory (Ctrl + D)
  - Run the example
 
+MDK-ARM
+
+ - Open your toolchain
+ - Open Multi-projects workspace file Project.uvmpw
+ - Select the xxxxx_S project as Active Project (Set as Active Project)
+ - Build xxxxx_S project
+ - Select the xxxxx_NS project as Active Project (Set as Active Project)
+ - Build xxxxx_NS project
+ - Load the non-secure binary (F8)
+   (this shall download the \MDK-ARM\xxxxx_ns\Exe\Project_ns.axf to flash memory)
+ - Select the xxxxx_S project as Active Project (Set as Active Project)
+ - Load the secure binary (F8)
+   (this shall download the \MDK-ARM\xxxxx_s\Exe\Project_s.axf to flash memory)
+ - Run the example
+ 
 STM32CubeIDE
 
  - Open STM32CubeIDE

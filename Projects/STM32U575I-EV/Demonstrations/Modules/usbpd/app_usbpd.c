@@ -80,7 +80,7 @@ KMODULE_RETURN _UsbPdDemoExec(void)
 /**
   * @brief  Run the image browser
   * @param  None.
-  * @note   run and display image accordng the user action.
+  * @note   run and display image according the user action.
   * @retval None.
   */
 void UsbPdDemo(void)

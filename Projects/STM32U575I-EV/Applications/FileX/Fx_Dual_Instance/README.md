@@ -61,14 +61,15 @@ No SD card insertion/removal mechanisms are implemented.
 ### <b>Notes</b>
 
 1. Before starting the application, the SD card should be present in the SD card connector and formatted initially by user.
+2. Make sure that the camera module is not plugged (CN16) on the board (MB1550)
 
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
  - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.s" file too.
- - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.
+ - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
-   It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL or BSP).
+   It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL).
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
@@ -107,7 +108,6 @@ No SD card insertion/removal mechanisms are implemented.
 
 - When calling the fx_media_format() API, it is highly recommended to understand all the parameters used by the API to correctly generate a valid filesystem.
 - When calling the fx_media_format() API, NOR sector size is always 512 bytes.
-- FileX is using data buffers, passed as arguments to fx_media_open(), fx_media_read() and fx_media_write() API it is recommended that these buffers are multiple of sector size and "32 bytes" aligned to avoid cache maintenance issues.
 
 
 ### <b>Keywords</b>
@@ -117,7 +117,7 @@ RTOS, ThreadX, FileX, LevelX, File system, NOR, SDMMC, OSPI, FAT32
 ### <b>Hardware and Software environment</b>
 
   - This example runs on STM32U575/85xx devices.
-  - This example has been tested with STMicroelectronics STM32U575I-EV  boards Revision: MB1550-U575AIQ-A03
+  - This example has been tested with STMicroelectronics STM32U575I-EV  boards Revision: MB1550-U575AIQ-C01
     and can be easily tailored to any other supported device and development board.
 
   - This application uses USART1 to display logs, the hyperterminal configuration is as follows:

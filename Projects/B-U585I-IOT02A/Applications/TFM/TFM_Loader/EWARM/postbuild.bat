@@ -24,7 +24,7 @@ goto postbuild
 :py
 ::line for python
 echo Postbuild with python script
-set "imgtool=%mcuboot_dir%\scripts\imgtool.py"
+set "imgtool=%mcuboot_dir%\scripts\imgtool\main.py"
 set "python=python "
 :postbuild
 IF "%operation%" == "secure" (

@@ -31,9 +31,21 @@
 extern uint8_t TxData[FDCAN_RAM_BUFFER_SIZE];
 extern uint8_t RxData[FDCAN_RAM_BUFFER_SIZE];
 
-extern OPENBL_CommandsTypeDef OPENBL_FDCAN_Commands;
-
 /* Exported functions ------------------------------------------------------- */
 OPENBL_CommandsTypeDef *OPENBL_FDCAN_GetCommandsList(void);
+void OPENBL_FDCAN_SetCommandsList(OPENBL_CommandsTypeDef *pFdcanCmd);
+void OPENBL_FDCAN_GetCommand(void);
+void OPENBL_FDCAN_GetVersion(void);
+void OPENBL_FDCAN_GetID(void);
+void OPENBL_FDCAN_ReadMemory(void);
+void OPENBL_FDCAN_WriteMemory(void);
+void OPENBL_FDCAN_Go(void);
+void OPENBL_FDCAN_ReadoutProtect(void);
+void OPENBL_FDCAN_ReadoutUnprotect(void);
+void OPENBL_FDCAN_EraseMemory(void);
+void OPENBL_FDCAN_WriteProtect(void);
+void OPENBL_FDCAN_WriteUnprotect(void);
+void OPENBL_FDCAN_SpecialCommand(void);
+void OPENBL_FDCAN_ExtendedSpecialCommand(void);
 
 #endif /* OPENBL_FDCAN_CMD_H */

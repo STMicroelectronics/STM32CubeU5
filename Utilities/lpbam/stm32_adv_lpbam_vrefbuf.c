@@ -19,54 +19,87 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
-      developing an LPBAM application.
+      It is recommended to read the LPBAM_Utility_GettingStarted.html document, available at the root of LPBAM utility
+      folder, prior to any LPBAM application development start.
 
     *** Driver description ***
     ==========================
     [..]
-      This advanced LPBAM module counts 3 files :
-          (+) stm32_adv_lpbam_vrefbuf.c
-              (++) This file provides the VREFBUF advanced files body.
-          (+) stm32_adv_lpbam_vrefbuf.h
-              (++) This file is the header file of stm32_adv_lpbam_vrefbuf.c. It provides advanced used types.
-          (+) stm32_platform_lpbam_vrefbuf.h
-              (++) This header file contains all defines to be used in applicative side.
+      This section provide description of the driver files content (refer to LPBAM_Utility_GettingStarted.html document
+      for more information)
+
+    [..]
+      This LPBAM modules deals with the peripheral instances that support autonomous mode.
+      It is composed of 3 files :
+          (+) stm32_adv_lpbam_vrefbuf.c file
+              (++) This file provides the implementation of the advanced LPBAM VREFBUF functions.
+          (+) stm32_adv_lpbam_vrefbuf.h file
+              (++) This file is the header file of stm32_adv_lpbam_vrefbuf.c. It provides advanced LPBAM VREFBUF
+                   functions prototypes and the declaration of their needed exported types and structures.
+          (+) STM32xx/stm32_platform_lpbam_vrefbuf.h file
+              (++) This header file contains all defines to be used on applicative side.
+                   (+++) STM32xx stands for the device supporting LPBAM sub-system.
+
+    *** Driver functions model ***
+    ==============================
+    [..]
+      This section precises this module supported advanced functions model (refer to LPBAM_Utility_GettingStarted.html
+      document for function model definition).
+
+    [..]
+      This driver provides only one model of API :
+          (+) ADV_LPBAM_{Module}_{Mode}_SetFullQ() : provides one peripheral configuration.
 
     *** Driver features ***
     =======================
     [..]
-      This driver provides the following list of features :
-          (+) Configure the VREFBUF peripheral.
+      This section describes this LPBAM module supported features.
+
+    [..]
+      This driver provides services covering the LPBAM management of the following VREFBUF features :
+          (+) Configure the VREFBUF peripheral buffer mode.
 
     *** Functional description ***
     ==============================
     [..]
-      The VREFBUF peripheral mode is configured through a DMA channel thanks to a built DMA linked-list queue.
+      This section describes the peripheral features covered by this LPBAM module.
+
+    [..]
+      The output of this driver is a queue to be executed by a DMA channel in applicative side.
+
+      The VREFBUF peripheral mode is configured.
 
     *** Driver APIs description ***
     ===============================
     [..]
+      This section provides LPBAM module exhaustive APIs description without considering application user call sequence.
+      For user call sequence information, please refer to 'Driver user sequence' section below.
+
+    [..]
       Use ADV_LPBAM_VREFBUF_BufferMode_SetFullQ() API to build a linked-list queue that configures the VREFBUF and
       start execution according to parameters in LPBAM_VREFBUF_BufferModeFullAdvConf_t structure.
-      Configured parameters are :
+      The configuration parameters are :
           (+) BufferMode : Specifies the VREFBUF buffer mode.
 
     *** Driver user sequence ***
     ============================
     [..]
+      This section provides the steps to follow to build an LPBAM application based on HAL/LL and LPBAM drivers. (refer
+      to LPBAM_Utility_GettingStarted.html for linked-list feature description).
+
+    [..]
       This driver user sequence is :
-          (+) Repeat calling ADV_LPBAM_VREFBUF_BufferMode_SetFullQ() until complete LPBAM scenario. (Mandatory)
-          (+) Call ADV_LPBAM_Q_SetTriggerConfig() to add hardware trigger condition for executing
-              ADV_LPBAM_VREFBUF_BufferMode_SetFullQ() output queue. (Optional)
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call ADV_LPBAM_Q_SetCircularMode() to circularize your linked-list queue
-              for infinite scenarios cases. (Optional)
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode (Using HAL/LL). (Mandatory)
+          (+) Initialize used GPIO when configuring VREFBUF mode as internal voltage reference. (Mandatory)
+          (+) Configure the VREFBUF peripheral (Using HAL/LL). (Optional)
+          (+) Call, when needed, ADV_LPBAM_VREFBUF_BufferMode_SetFullQ(). (Mandatory)
+          (+) Call, optionally, ADV_LPBAM_Q_SetTriggerConfig() in stm32_adv_lpbam_common.c to add hardware trigger
+              condition for executing of ADV_LPBAM_VREFBUF_BufferMode_SetFullQ() output queue.
+          (+) Call, optionally, ADV_LPBAM_Q_SetCircularMode() in stm32_adv_lpbam_common.c to circularize your
+              linked-list queue for infinite scenarios cases.
+          (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode. (Mandatory)
           (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
-              Any DMA error occurred in low power block the LPBAM sub-system mechanisms.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
               DMA error interrupts can be :
               (++) DMA_IT_DTE : data transfer error.
               (++) DMA_IT_ULE : update link error.
@@ -76,22 +109,34 @@
     *** Recommendation ***
     ======================
     [..]
-      It's strongly not recommended to call ADV_LPBAM_VREFBUF_BufferMode_SetFullQ() with the same instance by more than
-      one linked-list queue. When the VREFBUF nodes will be executed simultaneously unexpected behavior will appear.
+      It's mandatory to configure the VREFBUF trimming and the internal voltage reference scale using (HAL/LL) when :
+          (+) The VREFBUF peripheral is configured in internal voltage mode using HAL or LL.
+          (+) The VREFBUF peripheral is configured in internal voltage mode in LPBAM scenario using
+              ADV_LPBAM_VREFBUF_BufferMode_SetFullQ() API.
 
     [..]
-      It's strongly not recommended, to execute the same linked-list queue that contains VREFBUF configuration nodes
-      by two different DMA channels as unexpected behavior can appear.
+      This section provides tips and tricks to consider while using LPBAM module drivers to build a user application.
+
+    [..]
+      It's mandatory to configure the VREFBUF mode as "internal voltage reference" using HAL/LL, when setting BufferMode
+      parameter in LPBAM_VREFBUF_BufferModeFullAdvConf_t structure as LPBAM_VREFBUF_INTERNAL_VOLTAGE_MODE.
+
+    [..]
+      It's forbidden to execute simultaneously the same linked-list queue with different DMA channels.
+
+    [..]
+      It's forbidden to execute simultaneously two linked-list queue using the same VREFBUF instance.
 
     *** Driver status description ***
     =================================
     [..]
-      This driver detects and reports any detected issue.
+      This section provides reported LPBAM module status.
+
+    [..]
+      This advanced module reports any detected issue.
           (+) returned values are :
               (++) LPBAM_OK when no error is detected.
-              (++) LPBAM_ERROR when error is detected.
-              (++) LPBAM_INVALID_ID when an invalid node ID is detected. This error value is specific for LPBAM basic
-                   layer.
+              (++) LPBAM_ERROR when any error is detected.
 
     @endverbatim
   **********************************************************************************************************************
@@ -122,7 +167,7 @@
   */
 
 /**
-  * @brief  Build the VREFBUF buffer mode full nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the VREFBUF buffer mode according to parameters in
   *         LPBAM_VREFBUF_BufferModeFullAdvConf_t.
   * @param  pInstance       : [IN]  Pointer to a VREFBUF_TypeDef structure that selects VREFBUF instance.
   * @param  pDMAListInfo    : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance

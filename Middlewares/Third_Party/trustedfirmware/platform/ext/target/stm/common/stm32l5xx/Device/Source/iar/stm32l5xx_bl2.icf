@@ -1,0 +1,42 @@
+#include "region_defs.h"
+
+do not initialize  { section .noinit };
+initialize by copy  with packing = none {  readwrite };
+
+define block ER_CODE with fixed order, alignment = 8 {
+       section .intvec,
+       readonly
+       };
+
+define block LR_CODE with fixed order, maximum size = BL2_CODE_SIZE {block ER_CODE};
+place at address BL2_CODE_START {block LR_CODE};
+
+define block ER_NOHDP_CODE with fixed order, alignment = 8 {
+       readonly section .BL2_NoHdp_Code,
+       readonly object mpu_armv8m_drv.o};
+
+define block LR_NOHDP_CODE with fixed order, maximum size = BL2_NOHDP_CODE_SIZE {block ER_NOHDP_CODE};
+place at address BL2_NOHDP_CODE_START {block LR_NOHDP_CODE};
+
+define block ER_DATA            with alignment = 32 {readwrite};
+define block ARM_LIB_STACK      with alignment = 32, size = BL2_MSP_STACK_SIZE { };
+define block HEAP               with alignment = 8, size = BL2_HEAP_SIZE { };
+define block ARM_LIB_HEAP       with alignment = 8, size = BL2_HEAP_SIZE { };
+define overlay HEAP_OVL         {block HEAP};
+define overlay HEAP_OVL         {block ARM_LIB_HEAP};
+keep {block ER_DATA, block ARM_LIB_STACK,
+      block HEAP, block ARM_LIB_HEAP};
+
+if (isdefinedsymbol(__USE_DLIB_PERTHREAD))
+{
+  // Required in a multi-threaded application
+  initialize by copy with packing = none { section __DLIB_PERTHREAD };
+}
+
+define block DATA with fixed order, maximum size = BL2_DATA_SIZE {
+       block ER_DATA,
+       block ARM_LIB_STACK,
+       overlay HEAP_OVL
+};
+
+place at address BL2_DATA_START {block DATA};

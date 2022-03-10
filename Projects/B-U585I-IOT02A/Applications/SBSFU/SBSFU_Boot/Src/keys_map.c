@@ -28,13 +28,16 @@
 #include "mcuboot_config/mcuboot_config.h"
 #include "platform/include/tfm_attest_hal.h"
 #include "platform/include/tfm_plat_crypto_keys.h"
+#include "psa/crypto_types.h"
+#include "psa/crypto_values.h"
 #include "flash_layout.h"
+#include "config-boot.h"
 
 #if defined(MCUBOOT_SIGN_RSA)
 #if MCUBOOT_SIGN_RSA_LEN == 2048
 extern const unsigned int rsa2048_pub_key_len;
 extern const unsigned char rsa2048_pub_key[];
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2) || (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
 extern const unsigned int rsa2048_pub_key_len_1;
 extern const unsigned char rsa2048_pub_key_1[];
 #endif
@@ -46,7 +49,19 @@ const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"
         .key = rsa2048_pub_key,
         .len = &rsa2048_pub_key_len,
     },
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
+    {
+        .key = rsa2048_pub_key_1,
+        .len = &rsa2048_pub_key_len_1,
+    },
+#endif
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+    {
+        .key = rsa2048_pub_key,
+        .len = &rsa2048_pub_key_len,
+    },
+#endif
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
     {
         .key = rsa2048_pub_key_1,
         .len = &rsa2048_pub_key_len_1,
@@ -56,7 +71,7 @@ const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"
 #else
 extern const unsigned int rsa3072_pub_key_len;
 extern const unsigned char rsa3072_pub_key[];
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2) || (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
 extern const unsigned int rsa3072_pub_key_len_1;
 extern const unsigned char rsa3072_pub_key_1[];
 #endif
@@ -68,7 +83,19 @@ const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"
         .key = rsa3072_pub_key,
         .len = &rsa3072_pub_key_len,
     },
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
+    {
+        .key = rsa3072_pub_key_1,
+        .len = &rsa3072_pub_key_len_1,
+    },
+#endif
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+    {
+        .key = rsa3072_pub_key,
+        .len = &rsa3072_pub_key_len,
+    },
+#endif
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
     {
         .key = rsa3072_pub_key_1,
         .len = &rsa3072_pub_key_len_1,
@@ -79,7 +106,7 @@ const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"
 #elif defined(MCUBOOT_SIGN_EC256)
 extern const unsigned int ecdsa_pub_key_len;
 extern const unsigned char ecdsa_pub_key[];
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2) || (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
 extern const unsigned int ecdsa_pub_key_len_1;
 extern const unsigned char ecdsa_pub_key_1[];
 #endif
@@ -91,7 +118,19 @@ const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"
         .key = ecdsa_pub_key,
         .len = &ecdsa_pub_key_len,
     },
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
+    {
+        .key = ecdsa_pub_key_1,
+        .len = &ecdsa_pub_key_len_1,
+    },
+#endif
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+    {
+        .key = ecdsa_pub_key,
+        .len = &ecdsa_pub_key_len,
+    },
+#endif
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
     {
         .key = ecdsa_pub_key_1,
         .len = &ecdsa_pub_key_len_1,

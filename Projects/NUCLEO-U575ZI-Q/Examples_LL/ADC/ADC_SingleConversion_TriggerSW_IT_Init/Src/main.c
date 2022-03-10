@@ -102,6 +102,7 @@ __IO uint8_t ubAdcGrpRegularUnitaryConvStatus = 2; /* Variable set into ADC inte
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void SystemPower_Config(void);
 static void MX_ICACHE_Init(void);
 static void MX_GPIO_Init(void);
 static void MX_ADC1_Init(void);
@@ -133,15 +134,12 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 
-  NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-
   /* System interrupt init*/
+   NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+
+  /* Enable PWR clock interface */
 
   LL_AHB3_GRP1_EnableClock(LL_AHB3_GRP1_PERIPH_PWR);
-
-  /** Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
-  */
-  LL_PWR_DisableUCPDDeadBattery();
 
   /* USER CODE BEGIN Init */
   /* Enable the independent analog and I/Os supply */
@@ -151,6 +149,9 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
+
+  /* Configure the System Power */
+  SystemPower_Config();
 
   /* USER CODE BEGIN SysInit */
 
@@ -238,13 +239,6 @@ void SystemClock_Config(void)
   }
 
   LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
-
-  /* Switch to SMPS regulator instead of LDO */
-  LL_PWR_SetRegulatorSupply(LL_PWR_SMPS_SUPPLY);
-  while(LL_PWR_IsActiveFlag_REGULATOR() != 1)
-  {
-  }
-
   LL_RCC_HSI_Enable();
 
    /* Wait till HSI is ready */
@@ -299,7 +293,28 @@ void SystemClock_Config(void)
   LL_Init1msTick(160000000);
 
   LL_SetSystemCoreClock(160000000);
-  LL_AHB3_GRP1_DisableClock(LL_AHB3_GRP1_PERIPH_PWR);
+}
+
+/**
+  * @brief Power Configuration
+  * @retval None
+  */
+static void SystemPower_Config(void)
+{
+
+  /*
+   * Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
+   */
+  LL_PWR_DisableUCPDDeadBattery();
+
+  /*
+   * Switch to SMPS regulator instead of LDO
+   */
+  LL_PWR_SetRegulatorSupply(LL_PWR_SMPS_SUPPLY);
+
+  while(LL_PWR_IsActiveFlag_REGULATOR()!=1)
+  {
+  }
 }
 
 /**
@@ -341,6 +356,7 @@ static void MX_ADC1_Init(void)
   /* USER CODE BEGIN ADC1_Init 1 */
 
   /* USER CODE END ADC1_Init 1 */
+
   /** Common config
   */
   LL_ADC_SetTriggerFrequencyMode(ADC1, LL_ADC_TRIGGER_FREQ_HIGH);
@@ -350,6 +366,7 @@ static void MX_ADC1_Init(void)
   ADC_InitStruct.LowPowerMode = LL_ADC_LP_MODE_NONE;
   ADC_InitStruct.LeftBitShift = LL_ADC_LEFT_BIT_SHIFT_NONE;
   LL_ADC_Init(ADC1, &ADC_InitStruct);
+  LL_ADC_SetGainCompensation(ADC1, 0);
   ADC_REG_InitStruct.TriggerSource = LL_ADC_REG_TRIG_SOFTWARE;
   ADC_REG_InitStruct.SequencerLength = LL_ADC_REG_SEQ_SCAN_DISABLE;
   ADC_REG_InitStruct.SequencerDiscont = LL_ADC_REG_SEQ_DISCONT_DISABLE;
@@ -375,15 +392,14 @@ static void MX_ADC1_Init(void)
   {
     wait_loop_index--;
   }
+
   /** Configure Regular Channel
   */
   LL_ADC_SetChannelSingleDiff(ADC1, LL_ADC_CHANNEL_9, LL_ADC_SINGLE_ENDED);
   LL_ADC_REG_SetSequencerRanks(ADC1, LL_ADC_REG_RANK_1, LL_ADC_CHANNEL_9);
   LL_ADC_SetChannelSamplingTime(ADC1, LL_ADC_CHANNEL_9, LL_ADC_SAMPLINGTIME_391CYCLES_5);
-  /* USER CODE BEGIN ADC1_Init 2 */
-
-  /* ADC channel preselection */
   LL_ADC_SetChannelPreselection(ADC1, LL_ADC_CHANNEL_9);
+  /* USER CODE BEGIN ADC1_Init 2 */
 
   /* Configuration of ADC interruptions */
   /* Enable interruption ADC group regular end of unitary conversion */
@@ -412,6 +428,7 @@ static void MX_ICACHE_Init(void)
   /* USER CODE BEGIN ICACHE_Init 1 */
 
   /* USER CODE END ICACHE_Init 1 */
+
   /** Enable instruction cache in 1-way (direct mapped cache)
   */
   LL_ICACHE_SetMode(LL_ICACHE_1WAY);

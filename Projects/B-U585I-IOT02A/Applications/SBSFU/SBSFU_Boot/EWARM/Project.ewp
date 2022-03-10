@@ -230,6 +230,7 @@
           <state>BL2</state>
           <state>__INITIAL_SP=ARM_LIB_STACK$$Limit</state>
           <state>__STACK_LIMIT=ARM_LIB_STACK$$Base</state>
+          <state>DEFAULT_UART_BAUDRATE=115200</state>
           <state>TFM_DEV_MODE</state>
           <state>BOOT_MAX_ALIGN=16</state>
         </option>
@@ -364,7 +365,9 @@
           <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\BSP\Components\Common</state>
           <state>$PROJ_DIR$\..\..\Linker</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include\psa</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\include</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\common</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\driver</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\bl2\include</state>
@@ -706,7 +709,7 @@
       <name>BUILDACTION</name>
       <archiveVersion>1</archiveVersion>
       <data>
-        <prebuild>$PROJ_DIR$\prebuild.cmd "$PROJ_DIR$"</prebuild>
+        <prebuild>$PROJ_DIR$\prebuild.cmd "$PROJ_DIR$" "STM32U585xx"</prebuild>
         <postbuild>cmd /C "cmd /C $PROJ_DIR$\postbuild.bat""</postbuild>
       </data>
     </settings>
@@ -1195,6 +1198,12 @@
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mcuboot\boot\bootutil\src\tlv.c</name>
       </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mcuboot\boot\bootutil\src\fault_injection_hardening.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mcuboot\boot\bootutil\src\fault_injection_hardening_delay_rng_mbedtls.c</name>
+      </file>
     </group>
     <group>
       <name>trustedfirmware</name>
@@ -1253,9 +1262,6 @@
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\md.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\md_wrap.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\memory_buffer_alloc.c</name>
       </file>
       <file>
@@ -1272,6 +1278,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\sha256.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\entropy.c</name>
       </file>
     </group>
   </group>

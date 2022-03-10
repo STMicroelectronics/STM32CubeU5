@@ -26,9 +26,11 @@ extern "C" {
 
 #if defined(MCUBOOT_DOUBLE_SIGN_VERIF)
 #include "flash_layout.h"
+
 extern uint8_t ImageValidEnable;
 extern uint8_t ImageValidIndex;
 extern uint8_t ImageValidStatus[MCUBOOT_IMAGE_NUMBER];
+
 #define IMAGE_VALID   (uint8_t)(0x55)
 #define IMAGE_INVALID (uint8_t)(0x82)
 #endif

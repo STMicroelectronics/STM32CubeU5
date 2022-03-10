@@ -10,7 +10,7 @@
 /* Core module CSS variable definitions */
 :root {
   --fore-color: #03234b;
-  --secondary-fore-color: #e6007e;
+  --secondary-fore-color: #03234b;
   --back-color: #ffffff;
   --secondary-back-color: #ffffff;
   --blockquote-color: #e6007e;
@@ -21,7 +21,7 @@
   --universal-margin: 0.5rem;
   --universal-padding: 0.25rem;
   --universal-border-radius: 0.075rem;
-  --background-margin: 4.44%;
+  --background-margin: 1.5%;
   --a-link-color: #3cb4e6;
   --a-visited-color: #8c0078; }
 
@@ -77,8 +77,10 @@ h1 {
   font-size: calc(1rem * var(--heading-ratio) * var(--heading-ratio) * var(--heading-ratio)); }
 
 h2 {
-  font-size: calc(1rem * var(--heading-ratio) * var(--heading-ratio) ); }
-
+  font-size: calc(1rem * var(--heading-ratio) * var(--heading-ratio) );
+  border-style: none none solid none ; 
+  border-width: thin;
+  border-color: var(--border-color); }
 h3 {
   font-size: calc(1rem * var(--heading-ratio) ); }
 
@@ -613,9 +615,9 @@ a {
   width: auto; }
 
 .card.warning {
-  --card-back-color: #ffffff;
+  --card-back-color: #e5b8b7;
   --card-fore-color: #3b234b;
-  --card-border-color: #3cb4e6; }
+  --card-border-color: #8c0078; }
 
 .card.error {
   --card-back-color: #464650;
@@ -1059,8 +1061,8 @@ footer.sticky {
 :root {
   --table-border-color: #03234b;
   --table-border-separator-color: #03234b;
-  --table-head-back-color: #ffd200;
-  --table-head-fore-color: #03234b;
+  --table-head-back-color: #03234b;
+  --table-head-fore-color: #ffffff;
   --table-body-back-color: #ffffff;
   --table-body-fore-color: #03234b;
   --table-body-alt-back-color: #f4f4f4; }
@@ -1692,3 +1694,10 @@ span.icon-user {
 
 img[alt="ST logo"] { display: block; margin: auto; width: 75%; max-width: 250px; min-width: 71px; }
 img[alt="Cube logo"] { float: right; width: 30%; max-width: 10rem; min-width: 8rem; padding-right: 1rem;}
+
+.figure {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}

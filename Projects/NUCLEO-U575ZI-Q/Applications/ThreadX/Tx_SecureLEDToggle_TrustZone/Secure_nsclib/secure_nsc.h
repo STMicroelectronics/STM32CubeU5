@@ -1,10 +1,11 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file    Secure_nsclib/secure_nsc.h
   * @author  MCD Application Team
   * @brief   Header for secure non-secure callable APIs list
   ******************************************************************************
-  * @attention
+    * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.
@@ -15,6 +16,8 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
+
 /* USER CODE BEGIN Non_Secure_CallLib_h */
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef SECURE_NSC_H
@@ -41,3 +44,4 @@ void SECURE_LEDToggle(void);
 
 #endif /* SECURE_NSC_H */
 /* USER CODE END Non_Secure_CallLib_h */
+

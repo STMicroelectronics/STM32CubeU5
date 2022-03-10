@@ -1,3 +1,4 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * File Name          : linked_list.c
@@ -15,7 +16,7 @@
   *
   ******************************************************************************
   */
-
+/* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "linked_list.h"
 
@@ -92,8 +93,6 @@ HAL_StatusTypeDef MX_DCMIQueue_Config(void)
 
   /* Insert DCMINode2 to Queue */
   ret |= HAL_DMAEx_List_InsertNode_Tail(&DCMIQueue, &DCMINode2);
-
-  ret |= HAL_DMAEx_List_SetCircularMode(&DCMIQueue);
 
   ret |= HAL_DMAEx_List_SetCircularModeConfig(&DCMIQueue, &DCMINode1);
 

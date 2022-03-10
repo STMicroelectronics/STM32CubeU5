@@ -1,3 +1,4 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * File Name          : linked_list.h
@@ -15,6 +16,7 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef LINKED_LIST_H
@@ -36,4 +38,3 @@ HAL_StatusTypeDef MX_Queue_Config(void);
 #endif
 
 #endif /* LINKED_LIST_H */
-

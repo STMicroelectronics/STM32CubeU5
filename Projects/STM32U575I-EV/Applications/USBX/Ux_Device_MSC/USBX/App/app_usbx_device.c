@@ -23,15 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "main.h"
-#include "ux_api.h"
-#include "ux_system.h"
-#include "ux_utility.h"
-#include "ux_device_stack.h"
-#include "ux_dcd_stm32.h"
-#include "ux_device_descriptors.h"
-#include "ux_device_class_storage.h"
-#include "app_azure_rtos_config.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,29 +33,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
-/* Thread priority */
-#define DEFAULT_THREAD_PRIO                   10
-
-/* Thread preemption priority */
-#define DEFAULT_PREEMPTION_THRESHOLD          DEFAULT_THREAD_PRIO
-
-/* USB App Stack Size */
-#define USBX_APP_STACK_SIZE                   (2 * 1024)
-
-/* Usb Memory Size */
-#define USBX_MEMORY_SIZE                      (32 * 1024)
-
-TX_THREAD                           ux_app_thread;
-TX_EVENT_FLAGS_GROUP                EventFlag;
-UX_SLAVE_CLASS_STORAGE_PARAMETER    storage_parameter;
-/* ux app msg queue */
-TX_QUEUE                            ux_app_MsgQueue;
-
-extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
-extern BSP_SD_CardInfo               USBD_SD_CardInfo;
-extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
-USB_MODE_STATE USB_Device_State_Msg;
+#define USBX_APP_STACK_SIZE                   1024
+#define USBX_MEMORY_SIZE                      (5 * 1024)
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -73,8 +44,14 @@ USB_MODE_STATE USB_Device_State_Msg;
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
-
+TX_THREAD                           ux_app_thread;
+TX_EVENT_FLAGS_GROUP                EventFlag;
+UX_SLAVE_CLASS_STORAGE_PARAMETER    storage_parameter;
+TX_QUEUE                            ux_app_MsgQueue;
+USB_MODE_STATE                      USB_Device_State_Msg;
+extern PCD_HandleTypeDef            hpcd_USB_OTG_FS;
+extern BSP_SD_CardInfo              USBD_SD_CardInfo;
+extern PCD_HandleTypeDef            hpcd_USB_OTG_FS;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -96,37 +73,28 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
   /* USER CODE END App_USBX_Device_MEM_POOL */
 
   /* USER CODE BEGIN MX_USBX_Device_Init */
-#if (USE_MEMORY_POOL_ALLOCATION == 1)
+#if (USE_STATIC_ALLOCATION == 1)
 
   UCHAR *pointer;
-  /* Device framework FS length*/
   ULONG device_framework_fs_length;
-  /* Device String framework length*/
   ULONG string_framework_length;
-  /* Device language id framework length*/
   ULONG languge_id_framework_length;
-  /* Device Framework Full Speed */
   UCHAR *device_framework_full_speed;
-  /* String Framework*/
   UCHAR *string_framework;
-  /* Language_Id_Framework*/
   UCHAR *language_id_framework;
-  /* Status Tx */
-  UINT tx_status = UX_SUCCESS;
-
 
   /* Allocate the USBX_MEMORY_SIZE. */
-  tx_status = tx_byte_allocate(byte_pool, (VOID **) &pointer,
-                   USBX_MEMORY_SIZE, TX_NO_WAIT);
-
-  /* Check memory allocation */
-  if (UX_SUCCESS != tx_status)
+  if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
+                       USBX_MEMORY_SIZE, TX_NO_WAIT) != TX_SUCCESS)
   {
-    Error_Handler();
+    return TX_POOL_ERROR;
   }
 
   /* Initialize USBX Memory */
-  ux_system_initialize(pointer, USBX_MEMORY_SIZE, UX_NULL, 0);
+  if (ux_system_initialize(pointer, USBX_MEMORY_SIZE, UX_NULL, 0) != UX_SUCCESS)
+  {
+    return UX_ERROR;
+  }
 
   /* Get_Device_Framework_Full_Speed and get the length */
   device_framework_full_speed = USBD_Get_Device_Framework_Speed(USBD_FULL_SPEED,
@@ -140,18 +108,17 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
 
   /* The code below is required for installing the device portion of USBX.
      In this application */
-  ret =  _ux_device_stack_initialize(NULL,
-                                     0,
-                                     device_framework_full_speed,
-                                     device_framework_fs_length,
-                                     string_framework,
-                                     string_framework_length,
-                                     language_id_framework,
-                                     languge_id_framework_length, UX_NULL);
-
-  if (ret != UX_SUCCESS)
+  if (ux_device_stack_initialize(NULL,
+                                 0U,
+                                 device_framework_full_speed,
+                                 device_framework_fs_length,
+                                 string_framework,
+                                 string_framework_length,
+                                 language_id_framework,
+                                 languge_id_framework_length,
+                                 UX_NULL) != UX_SUCCESS)
   {
-    Error_Handler();
+    return UX_ERROR;
   }
 
   /* Store the number of LUN in this device storage instance. */
@@ -180,58 +147,46 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
   ux_slave_class_storage_media_status = STORAGE_Status;
 
   /* Initialize the device storage class. The class is connected with interface 0 on configuration 1. */
-  ret =  _ux_device_stack_class_register(_ux_system_slave_class_storage_name,
-                                         _ux_device_class_storage_entry,
-                                         1, 0, (VOID *)&storage_parameter);
-
-  /* Check the device stack class status */
-  if (ret != UX_SUCCESS)
+  if (ux_device_stack_class_register(_ux_system_slave_class_storage_name,
+                                     _ux_device_class_storage_entry,
+                                     1, 0, (VOID *)&storage_parameter) != UX_SUCCESS)
   {
-    Error_Handler();
+    return UX_ERROR;
   }
 
   /* Allocate the stack for main_usbx_app_thread_entry. */
-  tx_status = tx_byte_allocate(byte_pool, (VOID **) &pointer,
-                         USBX_APP_STACK_SIZE, TX_NO_WAIT);
-
-  /* Check memory allocation */
-  if (UX_SUCCESS != tx_status)
+  if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
+                       USBX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
   {
-    Error_Handler();
+    return TX_POOL_ERROR;
   }
 
   /* Create the usbx_app_thread_entry.  */
-  tx_status = tx_thread_create(&ux_app_thread, "main_usbx_app_thread_entry",
-                         usbx_app_thread_entry, 0,
-                         pointer, USBX_APP_STACK_SIZE,
-                         DEFAULT_THREAD_PRIO, DEFAULT_PREEMPTION_THRESHOLD,
-                         TX_NO_TIME_SLICE, TX_AUTO_START);
-
-  /* Check usbx_app_thread_entry creation */
-  if (UX_SUCCESS != tx_status)
+  if (tx_thread_create(&ux_app_thread, "main_usbx_app_thread_entry",
+                       usbx_app_thread_entry, 0, pointer, USBX_APP_STACK_SIZE,
+                       10, 10,  TX_NO_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
   {
-    Error_Handler();
+    return TX_THREAD_ERROR;
   }
+
   /* Create the event flags group.  */
   if (tx_event_flags_create(&EventFlag, "Event Flag") != TX_SUCCESS)
   {
-    Error_Handler();
+    return TX_GROUP_ERROR;
   }
 
   /* Allocate Memory for the Queue */
-  if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
-                       sizeof(APP_QUEUE_SIZE*sizeof(ULONG)),
+  if (tx_byte_allocate(byte_pool, (VOID **) &pointer, APP_QUEUE_SIZE*sizeof(ULONG),
                        TX_NO_WAIT) != TX_SUCCESS)
   {
-    Error_Handler();
+    return TX_POOL_ERROR;
   }
 
   /* Create the MsgQueue */
-  if (tx_queue_create(&ux_app_MsgQueue, "Message Queue app",
-                      TX_1_ULONG, pointer,
-                      APP_QUEUE_SIZE*sizeof(ULONG)) != TX_SUCCESS)
+  if (tx_queue_create(&ux_app_MsgQueue, "Message Queue app", TX_1_ULONG,
+                      pointer, APP_QUEUE_SIZE*sizeof(ULONG)) != TX_SUCCESS)
   {
-    Error_Handler();
+    return TX_QUEUE_ERROR;
   }
 
 #endif
@@ -297,11 +252,8 @@ void MX_USB_Device_Init(void)
   MX_USB_OTG_FS_PCD_Init();
 
   /* USER CODE BEGIN USB_Device_Init_PreTreatment_1 */
-    /* Set Rx FIFO */
   HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_FS, 0x80);
-  /* Set Tx FIFO 0 */
   HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, 0x60);
-  /* Set Tx FIFO 1 */
   HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 1, 0x60);
   /* USER CODE END USB_Device_Init_PreTreatment_1 */
 

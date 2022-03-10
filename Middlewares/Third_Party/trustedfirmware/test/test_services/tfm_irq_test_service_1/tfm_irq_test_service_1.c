@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -8,14 +8,15 @@
 #include <stddef.h>
 #include "tfm_api.h"
 #include "tfm_veneers.h"
-#include "secure_utilities.h"
 #include "tfm_secure_api.h"
-#include "secure_fw/include/tfm_spm_services_api.h"
-#include "spm_partition_defs.h"
-#include "test/test_services/tfm_core_test/core_test_defs.h"
+#include "tfm/tfm_spm_services.h"
+#include "core_test_defs.h"
 #include "psa/service.h"
+#include "psa_manifest/pid.h"
 #include "psa_manifest/tfm_irq_test_service_1.h"
 #include "tfm_plat_test.h"
+
+#define IRQ_TEST_TOOL_CODE_LOCATION(name)
 
 static enum irq_test_scenario_t current_scenario = IRQ_TEST_SCENARIO_NONE;
 static struct irq_test_execution_data_t *current_execution_data;
@@ -42,10 +43,11 @@ static void halt_test_execution(void)
  */
 static void stop_timer(void)
 {
+    IRQ_TEST_TOOL_CODE_LOCATION(stop_secure_timer);
     tfm_plat_test_secure_timer_stop();
 }
 
-uint32_t spm_irq_test_1_prepare_test_scenario_internal(
+int32_t spm_irq_test_1_prepare_test_scenario_internal(
                                enum irq_test_scenario_t irq_test_scenario,
                                struct irq_test_execution_data_t *execution_data)
 {
@@ -56,7 +58,7 @@ uint32_t spm_irq_test_1_prepare_test_scenario_internal(
 
     switch (irq_test_scenario) {
     case IRQ_TEST_SCENARIO_NONE:
-        return CORE_TEST_ERRNO_INVALID_PARAMETER;
+        break; /* uninitialised scenario */
     case IRQ_TEST_SCENARIO_1:
     case IRQ_TEST_SCENARIO_2:
     case IRQ_TEST_SCENARIO_3:
@@ -73,7 +75,7 @@ uint32_t spm_irq_test_1_prepare_test_scenario_internal(
     return CORE_TEST_ERRNO_SUCCESS;
 }
 
-uint32_t spm_irq_test_1_execute_test_scenario(
+int32_t spm_irq_test_1_execute_test_scenario(
                                      struct psa_invec *in_vec, size_t in_len,
                                      struct psa_outvec *out_vec, size_t out_len)
 {
@@ -165,7 +167,7 @@ void SPM_CORE_IRQ_TEST_1_SIGNAL_TIMER_0_IRQ_isr(void)
 
     switch (current_scenario) {
     case IRQ_TEST_SCENARIO_NONE:
-        halt_test_execution();
+        psa_eoi(SPM_CORE_IRQ_TEST_1_SIGNAL_TIMER_0_IRQ);
         break;
     case IRQ_TEST_SCENARIO_1:
     case IRQ_TEST_SCENARIO_2:
@@ -222,11 +224,11 @@ void TIMER_0_isr_ipc(void)
 {
     current_execution_data->timer0_triggered = 1;
 
-    tfm_plat_test_secure_timer_stop();
+    stop_timer();
 
     switch (current_scenario) {
     case IRQ_TEST_SCENARIO_NONE:
-        halt_test_execution();
+        psa_eoi(SPM_CORE_IRQ_TEST_1_SIGNAL_TIMER_0_IRQ);
         break;
     case IRQ_TEST_SCENARIO_1:
     case IRQ_TEST_SCENARIO_2:
@@ -283,7 +285,8 @@ static psa_status_t spm_irq_test_1_wrap_prepare_test_scenario(psa_msg_t *msg)
         return CORE_TEST_ERRNO_INVALID_PARAMETER;
     }
 
-    return spm_irq_test_1_prepare_test_scenario_internal(irq_test_scenario,
+    return spm_irq_test_1_prepare_test_scenario_internal((enum irq_test_scenario_t)
+                                                         irq_test_scenario,
                                                          execution_data);
 }
 
@@ -381,7 +384,9 @@ static void spm_irq_test_1_execute_test_scenario_ipc(psa_signal_t signal)
 
 int32_t tfm_irq_test_1_init(void)
 {
+#ifndef TFM_PSA_API
     tfm_enable_irq(SPM_CORE_IRQ_TEST_1_SIGNAL_TIMER_0_IRQ);
+#endif
 #ifdef TFM_PSA_API
     psa_signal_t signals = 0;
 
@@ -400,8 +405,7 @@ int32_t tfm_irq_test_1_init(void)
             ; /* do nothing */
         }
     }
-    /* NOTREACHED */
-#endif /* TFM_PSA_API */
-
+#else
     return TFM_SUCCESS;
+#endif /* TFM_PSA_API */
 }

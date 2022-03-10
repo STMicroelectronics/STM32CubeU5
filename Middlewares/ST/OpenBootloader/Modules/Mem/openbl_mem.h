@@ -43,16 +43,13 @@ typedef struct
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void OPENBL_MEM_JumpToAddress(uint32_t Address);
-void OPENBL_MEM_OptionBytesLaunch(void);
-void OPENBL_MEM_SetReadOutProtection(FunctionalState State);
+void OPENBL_MEM_SetReadOutProtection(uint32_t Address, FunctionalState State);
 void OPENBL_MEM_Write(uint32_t Address, uint8_t *Data, uint32_t DataLength);
 
 uint8_t OPENBL_MEM_Read(uint32_t Address, uint32_t MemoryIndex);
 uint32_t OPENBL_MEM_GetAddressArea(uint32_t Address);
 uint32_t OPENBL_MEM_GetMemoryIndex(uint32_t Address);
 uint8_t OPENBL_MEM_CheckJumpAddress(uint32_t Address);
-
-FlagStatus OPENBL_MEM_GetReadOutProtectionStatus(void);
 
 ErrorStatus OPENBL_MEM_Erase(uint32_t Address, uint8_t *p_Data, uint32_t DataLength);
 ErrorStatus OPENBL_MEM_MassErase(uint32_t Address, uint8_t *p_Data, uint32_t DataLength);

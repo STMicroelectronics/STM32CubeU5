@@ -69,7 +69,6 @@
 									<listOptionValue builtIn="false" value="../../../../../../Middlewares/ST/OpenBootloader/Modules/Mem"/>
 									<listOptionValue builtIn="false" value="../../../../../../Middlewares/ST/OpenBootloader/Modules/USB"/>
 									<listOptionValue builtIn="false" value="../../../../../../Middlewares/ST/OpenBootloader/Core"/>
-									<listOptionValue builtIn="false" value="../../../../../../Drivers/BSP/B-U585I-IOT02A"/>
 									<listOptionValue builtIn="false" value="../../../../../../Middlewares/ST/threadx/common/inc"/>
 									<listOptionValue builtIn="false" value="../../../../../../Middlewares/ST/threadx/ports/cortex_m33/gnu/inc"/>
 									<listOptionValue builtIn="false" value="../../../../../../Middlewares/ST/usbx/common/core/inc"/>

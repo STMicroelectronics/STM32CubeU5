@@ -1134,7 +1134,7 @@ ULONG       deferred_events;
             nx_driver_hardware_packet_transmitted();
     }
 
-    /* Check for recevied packet.  */
+    /* Check for received packet.  */
     if(deferred_events & NX_DRIVER_DEFERRED_PACKET_RECEIVED)
     {
 
@@ -1281,7 +1281,7 @@ USHORT    packet_type;
 /*                                                                        */
 /*    This function updates the hardware address kept by the driver.      */
 /*    The hardware address is used when constructing send packets and to  */
-/*    filter incomming packets.                                           */
+/*    filter incoming packets.                                            */
 /*                                                                        */
 /*  INPUT                                                                 */
 /*                                                                        */

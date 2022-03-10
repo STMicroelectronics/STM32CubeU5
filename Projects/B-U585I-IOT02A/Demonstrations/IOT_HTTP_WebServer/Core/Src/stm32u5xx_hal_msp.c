@@ -30,7 +30,7 @@ extern DMA_HandleTypeDef handle_GPDMA1_Channel5;
 /* External functions ------------------------------------------------------------------------------------------------*/
 
 /**
-  * Initializes the Global MSP.
+  * Initializes the Global MCU Support Package.
   */
 void HAL_MspInit(void)
 {

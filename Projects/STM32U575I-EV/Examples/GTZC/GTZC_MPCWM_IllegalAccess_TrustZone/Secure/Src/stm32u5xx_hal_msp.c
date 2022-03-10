@@ -68,7 +68,6 @@ void HAL_MspInit(void)
 
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_RCC_GTZC1_CLK_ENABLE();
-  __HAL_RCC_GTZC2_CLK_ENABLE();
 
   /* System interrupt init*/
 
@@ -76,10 +75,6 @@ void HAL_MspInit(void)
   /* GTZC_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(GTZC_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(GTZC_IRQn);
-
-  /** Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
-  */
-  HAL_PWREx_DisableUCPDDeadBattery();
 
   /* USER CODE BEGIN MspInit 1 */
 
@@ -101,6 +96,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
   /* USER CODE BEGIN USART1_MspInit 0 */
 
   /* USER CODE END USART1_MspInit 0 */
+
   /** Initializes the peripherals clock
   */
     PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1;

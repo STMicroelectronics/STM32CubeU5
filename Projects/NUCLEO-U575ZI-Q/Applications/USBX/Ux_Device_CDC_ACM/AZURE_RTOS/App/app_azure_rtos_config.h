@@ -41,11 +41,11 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* Using static memory allocation via threadX Byte memory pools */
 
-#define USE_MEMORY_POOL_ALLOCATION               1
+#define USE_STATIC_ALLOCATION                1
 
 #define TX_APP_MEM_POOL_SIZE                     1024
 
-#define UX_DEVICE_APP_MEM_POOL_SIZE              43008
+#define UX_DEVICE_APP_MEM_POOL_SIZE              8192
 
 #define USBPD_DEVICE_APP_MEM_POOL_SIZE              5000
 
@@ -73,3 +73,4 @@ extern "C" {
 #endif
 
 #endif /* APP_AZURE_RTOS_CONFIG_H */
+

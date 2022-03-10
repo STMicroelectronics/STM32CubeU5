@@ -55,6 +55,7 @@ uint8_t ubSizeToSend = sizeof(aStringToSend);
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void SystemPower_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_ICACHE_Init(void);
@@ -83,15 +84,12 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 
-  NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
-
   /* System interrupt init*/
+   NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+
+  /* Enable PWR clock interface */
 
   LL_AHB3_GRP1_EnableClock(LL_AHB3_GRP1_PERIPH_PWR);
-
-  /** Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
-  */
-  LL_PWR_DisableUCPDDeadBattery();
 
   /* USER CODE BEGIN Init */
 
@@ -99,6 +97,9 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
+
+  /* Configure the System Power */
+  SystemPower_Config();
 
   /* USER CODE BEGIN SysInit */
 
@@ -141,13 +142,6 @@ void SystemClock_Config(void)
   }
 
   LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
-
-  /* Switch to SMPS regulator instead of LDO */
-  LL_PWR_SetRegulatorSupply(LL_PWR_SMPS_SUPPLY);
-  while(LL_PWR_IsActiveFlag_REGULATOR() != 1)
-  {
-  }
-
   LL_RCC_MSIS_Enable();
 
    /* Wait till MSIS is ready */
@@ -194,7 +188,28 @@ void SystemClock_Config(void)
   LL_Init1msTick(160000000);
 
   LL_SetSystemCoreClock(160000000);
-  LL_AHB3_GRP1_DisableClock(LL_AHB3_GRP1_PERIPH_PWR);
+}
+
+/**
+  * @brief Power Configuration
+  * @retval None
+  */
+static void SystemPower_Config(void)
+{
+
+  /*
+   * Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
+   */
+  LL_PWR_DisableUCPDDeadBattery();
+
+  /*
+   * Switch to SMPS regulator instead of LDO
+   */
+  LL_PWR_SetRegulatorSupply(LL_PWR_SMPS_SUPPLY);
+
+  while(LL_PWR_IsActiveFlag_REGULATOR()!=1)
+  {
+  }
 }
 
 /**
@@ -212,6 +227,7 @@ static void MX_ICACHE_Init(void)
   /* USER CODE BEGIN ICACHE_Init 1 */
 
   /* USER CODE END ICACHE_Init 1 */
+
   /** Enable instruction cache in 1-way (direct mapped cache)
   */
   LL_ICACHE_SetMode(LL_ICACHE_1WAY);
@@ -252,7 +268,7 @@ static void MX_USART1_UART_Init(void)
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 

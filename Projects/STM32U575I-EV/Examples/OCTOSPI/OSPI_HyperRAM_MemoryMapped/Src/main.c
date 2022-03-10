@@ -50,9 +50,9 @@ LL_DLYB_CfgTypeDef dlyb_cfg,dlyb_cfg_test;
 
 /* Buffer used for transmission */
 uint8_t aTxBuffer[] = " ****Memory-mapped OSPI communication****  ****Memory-mapped OSPI communication****  ****Memory-mapped OSPI communication****  ****Memory-mapped OSPI communication****  ****Memory-mapped OSPI communication****  ****Memory-mapped OSPI communication**** ";
-  OSPI_HyperbusCfgTypeDef sHyperbusCfg;
-  OSPI_HyperbusCmdTypeDef sCommand;
-  OSPI_MemoryMappedTypeDef sMemMappedCfg;
+  OSPI_HyperbusCfgTypeDef sHyperbusCfg = {0};
+  OSPI_HyperbusCmdTypeDef sCommand = {0};
+  OSPI_MemoryMappedTypeDef sMemMappedCfg = {0};
 
   uint32_t address = 0;
   uint16_t index_buffer;
@@ -61,6 +61,7 @@ uint8_t aTxBuffer[] = " ****Memory-mapped OSPI communication****  ****Memory-map
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void SystemPower_Config(void);
 static void MX_ICACHE_Init(void);
 static void MX_DCACHE1_Init(void);
 static void MX_GPIO_Init(void);
@@ -100,6 +101,9 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
+
+  /* Configure the System Power */
+  SystemPower_Config();
 
   /* USER CODE BEGIN SysInit */
 
@@ -200,12 +204,6 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /* Switch to SMPS regulator instead of LDO */
-  if(HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
   /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
@@ -226,6 +224,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -241,7 +240,27 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  __HAL_RCC_PWR_CLK_DISABLE();
+}
+
+/**
+  * @brief Power Configuration
+  * @retval None
+  */
+static void SystemPower_Config(void)
+{
+
+  /*
+   * Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
+   */
+  HAL_PWREx_DisableUCPDDeadBattery();
+
+  /*
+   * Switch to SMPS regulator instead of LDO
+   */
+  if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 /**
@@ -265,7 +284,7 @@ static void MX_DCACHE1_Init(void)
   {
     Error_Handler();
   }
-  HAL_DCACHE_Enable(&hdcache1);
+
   /* USER CODE BEGIN DCACHE1_Init 2 */
 
   /* USER CODE END DCACHE1_Init 2 */
@@ -287,6 +306,7 @@ static void MX_ICACHE_Init(void)
   /* USER CODE BEGIN ICACHE_Init 1 */
 
   /* USER CODE END ICACHE_Init 1 */
+
   /** Enable instruction cache in 1-way (direct mapped cache)
   */
   if (HAL_ICACHE_ConfigAssociativityMode(ICACHE_1WAY) != HAL_OK)
@@ -335,7 +355,7 @@ static void MX_OCTOSPI1_Init(void)
   hospi1.Init.ClockPrescaler = 4;
   hospi1.Init.SampleShifting = HAL_OSPI_SAMPLE_SHIFTING_NONE;
   hospi1.Init.DelayHoldQuarterCycle = HAL_OSPI_DHQC_ENABLE;
-  hospi1.Init.ChipSelectBoundary = 1;
+  hospi1.Init.ChipSelectBoundary = 0;
   hospi1.Init.DelayBlockBypass = HAL_OSPI_DELAY_BLOCK_USED;
   hospi1.Init.MaxTran = 0;
   hospi1.Init.Refresh = 0;

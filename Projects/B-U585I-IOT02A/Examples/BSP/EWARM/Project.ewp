@@ -352,6 +352,8 @@
                     <state>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\Common</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\porting</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1087,6 +1089,9 @@
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a.c</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a_audio.c</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a_bus.c</name>
                 </file>
                 <file>
@@ -1107,9 +1112,33 @@
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a_ospi.c</name>
                 </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A\b_u585i_iot02a_ranging_sensor.c</name>
+                </file>
             </group>
             <group>
                 <name>Components</name>
+                <group>
+                    <name>vl53l5cx</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\porting\platform.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\vl53l5cx.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_api.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_plugin_detection_thresholds.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_plugin_motion_indicator.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_plugin_xtalk.c</name>
+                    </file>
+                </group>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\aps6408\aps6408.c</name>
                 </file>
@@ -1253,6 +1282,9 @@
         <group>
             <name>User</name>
             <file>
+                <name>$PROJ_DIR$\..\Src\audio_record.c</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\..\Src\button.c</name>
             </file>
             <file>
@@ -1281,6 +1313,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Src\ospi_ram.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Src\ranging_sensor.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Src\stm32u5xx_hal_msp.c</name>

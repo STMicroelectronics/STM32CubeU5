@@ -54,9 +54,7 @@
 #ifndef TX_PORT_H
 #define TX_PORT_H
 
-
 /* Determine if the optional ThreadX user define file should be used.  */
-
 #ifdef TX_INCLUDE_USER_DEFINE_FILE
 
 /* Yes, include the user defines in tx_user.h. The defines in this file may
@@ -64,7 +62,6 @@
 
 #include "tx_user.h"
 #endif
-
 
 /* Define compiler library include files.  */
 
@@ -398,7 +395,7 @@ void   _tx_misra_vfp_touch(void);
 
 /* Define some helper functions (these are intrinsics in some compilers). */
 #ifdef __GNUC__
-__attribute__( ( always_inline ) ) static inline ULONG __get_CONTROL(void)
+__attribute__( ( always_inline ) ) static inline ULONG __get_control(void)
 {
 ULONG  control_value;
 
@@ -406,7 +403,7 @@ ULONG  control_value;
     return(control_value);
 }
 
-__attribute__( ( always_inline ) ) static inline void __set_CONTROL(ULONG control_value)
+__attribute__( ( always_inline ) ) static inline void __set_control(ULONG control_value)
 {
     __asm__ volatile (" MSR  CONTROL,%0": : "r" (control_value): "memory" );
 }
@@ -429,9 +426,9 @@ __attribute__( ( always_inline ) ) static inline void __set_CONTROL(ULONG contro
 
 #define TX_THREAD_COMPLETED_EXTENSION(thread_ptr)   {                                                       \
                                                     ULONG  _tx_vfp_state;                                   \
-                                                        _tx_vfp_state =  __get_CONTROL();                   \
+                                                        _tx_vfp_state =  __get_control();                   \
                                                         _tx_vfp_state =  _tx_vfp_state & ~((ULONG) 0x4);    \
-                                                        __set_CONTROL(_tx_vfp_state);                       \
+                                                        __set_control(_tx_vfp_state);                       \
                                                     }
 #else
 
@@ -457,9 +454,9 @@ __attribute__( ( always_inline ) ) static inline void __set_CONTROL(ULONG contro
                                                         if ((_tx_system_state == ((ULONG) 0)) && ((thread_ptr) == _tx_thread_current_ptr))  \
                                                         {                                                                                   \
                                                         ULONG  _tx_vfp_state;                                                               \
-                                                            _tx_vfp_state =  __get_CONTROL();                                               \
+                                                            _tx_vfp_state =  __get_control();                                               \
                                                             _tx_vfp_state =  _tx_vfp_state & ~((ULONG) 0x4);                                \
-                                                            __set_CONTROL(_tx_vfp_state);                                                   \
+                                                            __set_control(_tx_vfp_state);                                                   \
                                                         }                                                                                   \
                                                         else                                                                                \
                                                         {                                                                                   \
@@ -469,14 +466,14 @@ __attribute__( ( always_inline ) ) static inline void __set_CONTROL(ULONG contro
                                                             if (_tx_fpccr == ((ULONG) 0x01))                                                \
                                                             {                                                                               \
                                                             ULONG _tx_vfp_state;                                                            \
-                                                                _tx_vfp_state = __get_CONTROL();                                            \
+                                                                _tx_vfp_state = __get_control();                                            \
                                                                 _tx_vfp_state =  _tx_vfp_state & ((ULONG) 0x4);                             \
                                                                 TX_VFP_TOUCH();                                                             \
                                                                 if (_tx_vfp_state == ((ULONG) 0))                                           \
                                                                 {                                                                           \
-                                                                    _tx_vfp_state =  __get_CONTROL();                                       \
+                                                                    _tx_vfp_state =  __get_control();                                       \
                                                                     _tx_vfp_state =  _tx_vfp_state & ~((ULONG) 0x4);                        \
-                                                                    __set_CONTROL(_tx_vfp_state);                                           \
+                                                                    __set_control(_tx_vfp_state);                                           \
                                                                 }                                                                           \
                                                             }                                                                               \
                                                         }                                                                                   \
@@ -552,14 +549,14 @@ __attribute__( ( always_inline ) ) static inline void __set_CONTROL(ULONG contro
 
 #ifdef __GNUC__ /* GCC and ARM Compiler 6 */
 
-__attribute__( ( always_inline ) ) static inline unsigned int __get_IPSR(void)
+__attribute__( ( always_inline ) ) static inline unsigned int __get_ipsr(void)
 {
 unsigned int  ipsr_value;
     __asm__ volatile (" MRS  %0,IPSR ": "=r" (ipsr_value) );
     return(ipsr_value);
 }
 
-#define TX_THREAD_GET_SYSTEM_STATE()        (_tx_thread_system_state | __get_IPSR())
+#define TX_THREAD_GET_SYSTEM_STATE()        (_tx_thread_system_state | __get_ipsr())
 
 #elif defined(__ICCARM__)   /* IAR */
 
@@ -622,11 +619,13 @@ unsigned int  primask_value;
 
 __attribute__( ( always_inline ) ) static inline void __restore_interrupt(unsigned int primask_value)
 {
+
     __asm__ volatile (" MSR  PRIMASK,%0": : "r" (primask_value): "memory" );
 }
 
 __attribute__( ( always_inline ) ) static inline unsigned int __get_primask_value(void)
 {
+
 unsigned int  primask_value;
 
     __asm__ volatile (" MRS  %0,PRIMASK ": "=r" (primask_value) );
@@ -635,6 +634,7 @@ unsigned int  primask_value;
 
 __attribute__( ( always_inline ) ) static inline void __enable_interrupt(void)
 {
+
     __asm__ volatile (" CPSIE  i": : : "memory" );
 }
 
@@ -645,7 +645,7 @@ unsigned int interrupt_save;
 
     /* Set PendSV to invoke ThreadX scheduler.  */
     *((ULONG *) 0xE000ED04) = ((ULONG) 0x10000000);
-    if (__get_IPSR() == 0)
+    if (__get_ipsr() == 0)
     {
         interrupt_save = __get_primask_value();
         __enable_interrupt();
@@ -701,7 +701,7 @@ VOID                                            _tx_thread_interrupt_restore(UIN
 
 #ifdef TX_THREAD_INIT
 CHAR                            _tx_version_id[] =
-                                    "Copyright (c) Microsoft Corporation. All rights reserved.  *  ThreadX ARMv8-M Version 6.1.5 *";
+                                    "Copyright (c) Microsoft Corporation. All rights reserved.  *  ThreadX ARMv8-M Version 6.1.9 *";
 #else
 #ifdef TX_MISRA_ENABLE
 extern  CHAR                    _tx_version_id[100];
@@ -709,6 +709,5 @@ extern  CHAR                    _tx_version_id[100];
 extern  CHAR                    _tx_version_id[];
 #endif
 #endif
-
 
 #endif

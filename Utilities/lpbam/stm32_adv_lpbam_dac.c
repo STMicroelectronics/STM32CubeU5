@@ -19,24 +19,46 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
-      developing an LPBAM application.
+      It is recommended to read the LPBAM_Utility_GettingStarted.html document, available at the root of LPBAM utility
+      folder, prior to any LPBAM application development start.
 
     *** Driver description ***
     ==========================
     [..]
-      This advanced LPBAM module counts 3 files :
-          (+) stm32_adv_lpbam_dac.c
-              (++) This file provides the DAC advanced files body.
-          (+) stm32_adv_lpbam_dac.h
-              (++) This file is the header file of stm32_adv_lpbam_dac.c. It provides advanced used types.
-          (+) stm32_platform_lpbam_dac.h
-              (++) This header file contains all defines to be used in applicative side.
+      This section provide description of the driver files content (refer to LPBAM_Utility_GettingStarted.html document
+      for more information)
+
+    [..]
+      This LPBAM modules deals with the peripheral instances that support autonomous mode.
+      It is composed of 3 files :
+          (+) stm32_adv_lpbam_dac.c file
+              (++) This file provides the implementation of the advanced LPBAM DAC functions.
+          (+) stm32_adv_lpbam_dac.h file
+              (++) This file is the header file of stm32_adv_lpbam_dac.c. It provides advanced LPBAM DAC functions
+                   prototypes and the declaration of their needed exported types and structures.
+          (+) STM32xx/stm32_platform_lpbam_dac.h file
+              (++) This header file contains all defines to be used on applicative side.
+                   (+++) STM32xx stands for the device supporting LPBAM sub-system.
+
+    *** Driver functions model ***
+    ==============================
+    [..]
+      This section precises this module supported advanced functions model (refer to LPBAM_Utility_GettingStarted.html
+      document for function model definition).
+
+    [..]
+      This driver provides 3 model of APIs :
+          (+) ADV_LPBAM_{Module}_{Mode}_SetConfigQ() : provides one peripheral configuration queue.
+          (+) ADV_LPBAM_{Module}_{Mode}_SetDataQ() : provides one peripheral data transfer queue.
+          (+) ADV_LPBAM_{Module}_{Mode}_SetFullQ() : provides one peripheral configuration and one data transfer queue.
 
     *** Driver features ***
     =======================
     [..]
-      This driver provides the following list of features :
+      This section describes this LPBAM module supported features.
+
+    [..]
+      This driver provides services covering the LPBAM management of the following DAC features :
           (+) Configures the DAC peripheral conversion.
           (+) Starts the DAC peripheral conversion.
           (+) Configures and starts the DAC peripheral conversion.
@@ -44,66 +66,83 @@
     *** Functional description ***
     ==============================
     [..]
-      The DAC peripheral is configured and started through a DMA channel thanks to a build DMA linked-list queue.
-      The DAC conversion hardware trigger signal is configurable by a DMA channel.
-      The DAC input data is stored in a buffer then sent by a DMA channel to be converted in an analog output signal
-      thanks to a built linked-list queue.
+      This section describes the peripheral features covered by this LPBAM module.
 
-      The output of this driver is a queue to be executed by a DMA channel.
+    [..]
+      The output of this driver is a queue to be executed by a DMA channel in applicative side.
+
+      The DAC peripheral is configured and started.
+      The DAC conversion hardware trigger signal is configurable.
+      The DAC input data is stored in a buffer then sent by a DMA channel to be converted in an analog output signal.
 
     *** Driver APIs description ***
     ===============================
     [..]
+      This section provides LPBAM module exhaustive APIs description without considering application user call sequence.
+      For user call sequence information, please refer to 'Driver user sequence' section below.
+
+    [..]
       Use ADV_LPBAM_DAC_Conversion_SetConfigQ() API to build a linked-list queue that configures the DAC
       peripheral according to parameters in the LPBAM_DAC_ConfigAdvConf_t structure.
-      Configuration parameters are :
-          (+) DAC_Trigger : Specifies the DAC source trigger selection.
+      The configuration parameters are :
+          (+) DAC_Trigger : Specifies the DAC source trigger.
                             This parameter can be a value of @ref DAC_trigger_selection.
 
     [..]
-      Use ADV_LPBAM_DAC_Conversion_SetDataQ() API to build a linked-list queue that configures data nodes
+      Use ADV_LPBAM_DAC_Conversion_SetDataQ() API to build a linked-list queue that configures data transfer
       according to parameters in the LPBAM_DAC_DataAdvConf_t structure.
-      The data node default configuration is as follow:
-          (+) SrcInc            : DMA_SINC_INCREMENTED.
-          (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
-          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_WORD.
-          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_WORD. (Mandatory)
-          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
-
-      Configuration parameters are :
+      The configuration parameters are :
           (+) Alignment : Specifies the DAC alignment.
                           This parameter can be a value of @ref LPBAM_DAC_DataAlignment.
           (+) pData     : Specifies the source buffer of data .
           (+) Size      : Specifies the size of pData.
 
-    [..]
-      Use ADV_LPBAM_DAC_Conversion_SetFullQ() API to build a linked-list queue that configures and starts the DAC and
-      start execution according to parameters in LPBAM_DAC_FullAdvConf_t structure.
-      The data node default configuration is as follow:
+      The data transfer default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
-          (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
+          (+) DestInc           : DMA_DINC_FIXED.
           (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_WORD.
-          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_WORD. (Mandatory)
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_WORD.
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
+      The data transfer configuration can be customized using ADV_LPBAM_Q_SetDataConfig() after
+      ADV_LPBAM_DAC_Conversion_SetDataQ(). The ADV_LPBAM_Q_SetDataConfig() is in the module stm32_adv_lpbam_common.c.
+      Because of the HW implementation, the following parameters should be kept at default value:
+          (+) DestInc           : DMA_DINC_FIXED.
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_WORD.
 
-      Configuration parameters are :
-          (+) DAC_Trigger : Specifies the DAC source trigger selection.
+    [..]
+      Use ADV_LPBAM_DAC_Conversion_SetFullQ() API to build a linked-list queue that configures DAC peripheral and
+      configures data transfer according to parameters in LPBAM_DAC_FullAdvConf_t structure.
+      The configuration parameters are :
+          (+) DAC_Trigger : Specifies the DAC source trigger.
                             This parameter can be a value of @ref DAC_trigger_selection.
           (+) Alignment   : Specifies the DAC alignment.
                             This parameter can be a value of @ref LPBAM_DAC_DataAlignment
           (+) pData       : Specifies the source buffer of data .
           (+) Size        : Specifies the size of pData.
 
-      These API must be called when the DAC is well initialized.
+      The data transfer default configuration is as follow:
+          (+) SrcInc            : DMA_SINC_INCREMENTED.
+          (+) DestInc           : DMA_DINC_FIXED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_WORD.
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_WORD.
+          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
+      The data transfer configuration can be customized using ADV_LPBAM_Q_SetDataConfig() after
+      ADV_LPBAM_DAC_Conversion_SetFullQ(). The ADV_LPBAM_Q_SetDataConfig() is in the module stm32_adv_lpbam_common.c.
+      Because of the HW implementation, the following parameters should be kept at default value:
+          (+) DestInc           : DMA_DINC_FIXED.
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_WORD.
+
+    [..]
+      These API must be called when the DAC is initialized.
            (+) Recommended DAC channel initialization sequence
                (++) Call HAL_DAC_Init() to initialize the DAC. (Mandatory)
                (++) Call HAL_DAC_ConfigChannel() to configure selected channel. (Mandatory)
                     Configuration parameters can be :
-                    (+++) DAC_HighFrequency           : DAC_HIGH_FREQUENCY_INTERFACE_MODE_AUTOMATIC.
+                    (+++) DAC_HighFrequency           : DAC_HIGH_FREQUENCY_INTERFACE_MODE_DISABLE. (Mandatory)
                     (+++) DAC_DMADoubleDataMode       : DISABLE.
                     (+++) DAC_SignedFormat            : DISABLE.
                     (+++) DAC_Trigger                 : DISABLE.
@@ -111,14 +150,14 @@
                     (+++) DAC_ConnectOnChipPeripheral : DAC_CHIPCONNECT_BOTH.
                     (+++) DAC_UserTrimming            : DAC_TRIMMING_USER.
                     (+++) DAC_TrimmingValue           : 16U.
-                    (+++) DAC_SampleAndHold           : DAC_SAMPLEANDHOLD_ENABLE. (Mandatory)
+                    (+++) DAC_SampleAndHold           : DAC_SAMPLEANDHOLD_ENABLE. (Mandatory value)
                     Sample and hold mode is mandatory in stop mode and its configuration parameters can be :
                     (+++) DAC_SampleTime  : 10U.
                     (+++) DAC_HoldTime    : 20U.
                     (+++) DAC_RefreshTime : 5U.
                (++) Call HAL_DACEx_SetConfigAutonomousMode() to enable the autonomous mode. (Mandatory)
                     Autonomous mode parameters can be :
-                    (+++) AutonomousModeState : DAC_AUTONOMOUS_MODE_ENABLE. (Mandatory)
+                    (+++) AutonomousModeState : DAC_AUTONOMOUS_MODE_ENABLE. (Mandatory value)
                (++) Call __HAL_DAC_ENABLE_IT() to enable error interrupts.
                     DAC interrupts can be :
                     (+++) DAC_IT_DMAUDR1 : DMA underrun error for DAC channel 1.
@@ -127,74 +166,69 @@
     *** Driver user sequence ***
     ============================
     [..]
+      This section provides the steps to follow to build an LPBAM application based on HAL/LL and LPBAM drivers. (refer
+      to LPBAM_Utility_GettingStarted.html for linked-list feature description).
+
+    [..]
       This driver user sequence is :
           (+) Initialize the DAC (Using HAL/LL). (Mandatory)
           (+) Call ADV_LPBAM_DAC_EnableDMARequests() to enable DAC DMA requests. (Mandatory)
           (+) There are two possibilities to call advanced API:
-              (++) Conversion with full API :
-                   (+++) Repeat calling ADV_LPBAM_DAC_Conversion_SetFullQ() until complete LPBAM scenario. (Mandatory)
-              (++) Conversion with configuration and data APIs :
-                   (+++) Repeat calling ADV_LPBAM_DAC_Conversion_SetConfigQ() and ADV_LPBAM_DAC_Conversion_SetDataQ()
-                         until complete LPBAM scenario. (Mandatory)
-          (+) Call ADV_LPBAM_Q_SetTriggerConfig() to add hardware trigger condition for executing
-              ADV_LPBAM_DAC_Conversion_SetConfigQ(), ADV_LPBAM_DAC_Conversion_SetDataQ() or
-              ADV_LPBAM_DAC_Conversion_SetFullQ() output queue. (Optional)
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call ADV_LPBAM_Q_SetCircularMode() to circularize your linked-list queue
-              for infinite scenarios cases. (Optional)
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode (Using HAL/LL). (Mandatory)
+              (++) Single API making configuration and data setup :
+                   (+++) Call, when needed, ADV_LPBAM_DAC_Conversion_SetFullQ(). (Mandatory)
+              (++) Two APIs making configuration and data setup separately :
+                   (+++) Call, when needed, ADV_LPBAM_DAC_Conversion_SetConfigQ() and/or
+                         ADV_LPBAM_DAC_Conversion_SetDataQ(). (Mandatory)
+          (+) Call, optionally, ADV_LPBAM_Q_SetTriggerConfig() in stm32_adv_lpbam_common.c to add hardware trigger
+              condition for executing of ADV_LPBAM_DAC_Conversion_SetConfigQ(), ADV_LPBAM_DAC_Conversion_SetDataQ() or
+              ADV_LPBAM_DAC_Conversion_SetFullQ() output queue.
+          (+) Call, optionally, ADV_LPBAM_Q_SetCircularMode() in stm32_adv_lpbam_common.c to circularize your
+              linked-list queue for infinite scenarios cases.
+          (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode. (Mandatory)
           (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
-              Any DMA error occurred in low power block the LPBAM sub-system mechanisms.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
               DMA error interrupts can be :
               (++) DMA_IT_DTE : data transfer error.
               (++) DMA_IT_ULE : update link error.
               (++) DMA_IT_USE : user setting error.
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
 
-    *** Recommendation ***
-    ======================
+    *** Recommendations ***
+    =======================
     [..]
-      It's strongly not recommended to call ADV_LPBAM_DAC_Conversion_SetConfigQ() consecutively.
+      This section provides tips and tricks to consider while using LPBAM module drivers to build a user application.
 
     [..]
-      It's strongly recommended to use ADV_LPBAM_DAC_Conversion_SetFullQ() instead of
-      ADV_LPBAM_DAC_Conversion_SetConfigQ() then ADV_LPBAM_DAC_Conversion_SetDataQ() for memory optimization purpose.
+      For memory optimization purpose, when a re-configuration is necessary, it's recommended to use
+      ADV_LPBAM_DAC_Conversion_SetFullQ() instead of ADV_LPBAM_DAC_Conversion_SetConfigQ() then
+      ADV_LPBAM_DAC_Conversion_SetDataQ().
 
     [..]
-      It's useless to call ADV_LPBAM_DAC_Conversion_SetConfigQ() before ADV_LPBAM_DAC_Conversion_SetFullQ() as full API
-      contains configuration part.
+      For memory optimization purpose, when no re-configuration is necessary, it's recommended to use
+      ADV_LPBAM_DAC_Conversion_SetDataQ().
 
     [..]
-      When current DAC configuration matches with application needs, it's strongly recommended to use
-      ADV_LPBAM_DAC_Conversion_SetDataQ() for memory optimization purpose.
+      It's forbidden to call ADV_LPBAM_DAC_Conversion_SetConfigQ() or ADV_LPBAM_DAC_Conversion_SetFullQ() on DAC
+      channelx when DAC channelx or DAC channely is operating.
 
     [..]
-      It's not allowed to use the 2 DAC channels in LPBAM mode simultaneously. Ensure that only one DAC channel is
-      running each time otherwise unexpected behavior will appear.
+      It's allowed to call ADV_LPBAM_DAC_Conversion_SetDataQ() by two different linked-list queues executed
+      simultaneously for 2 different channel.
 
     [..]
-      When using the 2 DAC channel to run simultaneously, ensure that the two channels are configured before calling
-      LPBAM DAC API.
-
-    [..]
-      It's strongly not recommended to execute the same linked-list queue that contains DAC configuration and data
-      nodes by two different DMA channels as unexpected behavior can appear.
-
-    [..]
-      It's strongly not recommended to call the DAC advanced APIs listed belong with the same instance by more than one
-      linked-list queue. When the DAC nodes will be executed simultaneously unexpected behavior will appear.
+      It's forbidden to execute simultaneously the same linked-list queue with different DMA channels.
 
     *** Driver status description ***
     =================================
     [..]
-      This driver detects and reports any detected issue.
+      This section provides reported LPBAM module status.
+
+    [..]
+      This advanced module reports any detected issue.
           (+) returned values are :
               (++) LPBAM_OK when no error is detected.
-              (++) LPBAM_ERROR when error is detected.
-              (++) LPBAM_INVALID_ID when an invalid node ID is detected. This error value is specific for LPBAM basic
-                   layer.
+              (++) LPBAM_ERROR when any error is detected.
 
     @endverbatim
   **********************************************************************************************************************
@@ -226,7 +260,7 @@
   */
 
 /**
-  * @brief  Build the DAC conversion configuration nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the configuration of DAC conversion according to parameters in
   *         LPBAM_DAC_ConfigAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a DAC_TypeDef structure that selects DAC instance.
   * @param  Channel      : [IN]  Specifies the DAC channel.
@@ -319,7 +353,7 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetConfigQ(DAC_TypeDef                *c
 }
 
 /**
-  * @brief  Build the DAC conversion data nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the data DAC conversion according to parameters in
   *         LPBAM_DAC_DataAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a DAC_TypeDef structure that selects DAC instance.
   * @param  Channel      : [IN]  Specifies the DAC channel.
@@ -383,8 +417,8 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetDataQ(DAC_TypeDef              *const
 }
 
 /**
-  * @brief  Build the DAC conversion full nodes in DMA linked-list queue according to configured parameters in
-  *         LPBAM_DAC_FullAdvConf_t.
+  * @brief  Build DMA linked-list queue to setup the configuration and the data DAC conversion according to parameters
+  *         in LPBAM_DAC_FullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a DAC_TypeDef structure that selects DAC instance.
   * @param  Channel      : [IN]  Specifies the DAC channel.
   *                              This parameter can be a value of @ref LPBAM_DAC_Channel.

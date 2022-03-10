@@ -163,10 +163,10 @@ FX_INT_SAVE_AREA
 
 #ifdef FX_DISABLE_FORCE_MEMORY_OPERATION
     _fx_utility_memory_set((UCHAR *)media_ptr, 0, sizeof(FX_MEDIA));
+#endif /* FX_DISABLE_FORCE_MEMORY_OPERATION */
 #ifdef FX_DISABLE_CACHE
     media_ptr -> fx_media_memory_buffer_sector = (ULONG64)-1;
 #endif /* FX_DISABLE_CACHE */
-#endif /* FX_DISABLE_FORCE_MEMORY_OPERATION */
 
     /* Save the basic information in the media control block.  */
     media_ptr -> fx_media_name =                        media_name;

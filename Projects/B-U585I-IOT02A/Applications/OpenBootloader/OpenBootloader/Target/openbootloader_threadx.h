@@ -20,6 +20,10 @@
 #ifndef OPENBOOTLOADER_THREADX_H
 #define OPENBOOTLOADER_THREADX_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Includes ------------------------------------------------------------------*/
 #include "openbl_mem.h"
 
@@ -30,5 +34,9 @@
 uint16_t OpenBootloader_ThreadxInit(void *memory_ptr);
 
 /* External variables --------------------------------------------------------*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* OPENBOOTLOADER_THREADX_H */

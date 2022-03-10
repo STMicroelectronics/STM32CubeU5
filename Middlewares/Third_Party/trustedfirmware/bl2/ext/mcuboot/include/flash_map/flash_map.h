@@ -19,7 +19,7 @@
 
 /*
  * Original code taken from mcuboot project at:
- * https://github.com/JuulLabs-OSS/mcuboot
+ * https://github.com/mcu-tools/mcuboot
  * Git SHA of the original version: ac55554059147fff718015be9f4bd3108123f50a
  * Modifications are Copyright (c) 2018-2020 Arm Limited.
  */
@@ -49,6 +49,8 @@ extern "C" {
  * and match the target offset specified in download script.
  */
 #include <inttypes.h>
+#include "region_defs.h"
+#include "Driver_Flash.h"
 
 /*
  * For now, we only support one flash device.
@@ -58,6 +60,16 @@ extern "C" {
  */
 #define FLASH_DEVICE_ID                 100
 #define FLASH_DEVICE_BASE               FLASH_BASE_ADDRESS
+
+/*
+ * Shared data area between bootloader and runtime firmware.
+ */
+#if (defined(BOOT_TFM_SHARED_DATA_BASE) && defined(BOOT_TFM_SHARED_DATA_SIZE))
+#define MCUBOOT_SHARED_DATA_BASE    BOOT_TFM_SHARED_DATA_BASE
+#define MCUBOOT_SHARED_DATA_SIZE    BOOT_TFM_SHARED_DATA_SIZE
+#else
+#error "BOOT_TFM_SHARED_DATA_* must be defined by target."
+#endif
 
 /**
  * @brief Structure describing an area on a flash device.
@@ -78,6 +90,11 @@ struct flash_area {
     uint8_t fa_device_id;
 
     uint16_t pad16;
+
+    /**
+     * Pointer to driver
+     */
+    ARM_DRIVER_FLASH *fa_driver;
 
     /**
      * This area's offset, relative to the beginning of its flash
@@ -109,6 +126,12 @@ struct flash_sector {
      */
     uint32_t fs_size;
 };
+
+/**
+ * @brief Macro retrieving driver from struct flash area
+ *
+ */
+#define DRV_FLASH_AREA(area) ((area)->fa_driver)
 
 /*
  * Start using flash area.

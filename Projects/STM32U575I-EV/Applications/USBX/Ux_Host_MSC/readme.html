@@ -110,14 +110,7 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 </ul></li>
 </ul></li>
 </ul>
-<p><b>Note</b> It is mandatory to check that the Jumpers below are fitted:</p>
-<ul>
-<li>JP25 : UCPD_5V Jumper is fitted in order to provide Vbus 5V.</li>
-<li>JP25 : 5V_EXT  Jumper is fitted, the board must be powered using the power adaptor not STLIK cable.</li>
-<li>JP6 (UCPD_SNK03) : Not fitted</li>
-<li>JP8 (UCPD_SRC) : Fitted. This application initialize the type C port in source mode with only one PDO at 5V.</li>
-<li>JP14 and JP15 : To ensure the correct functionality of TCPP03 (Protection IC).</li>
-</ul>
+<p><b>Note</b> It is mandatory to check that the Jumpers below are fitted: JP25 : UCPD_5V Jumper is fitted in order to provide Vbus 5V. JP6 (UCPD_SRC) : This application initialize the type C port in source mode with only one PDO at 5V. JP14 and JP15 : To ensure the correct functionality of TCPP03(Protection IC).</p>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>
 <p>In order to make the program work, you must do the following :</p>
 <ul>

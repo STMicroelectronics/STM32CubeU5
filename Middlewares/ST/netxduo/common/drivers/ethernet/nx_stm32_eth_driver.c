@@ -25,11 +25,7 @@
 
 
 /* Determine if the packet transmit queue logic is required for this driver.   */
-
 /* No, not required for this driver.  #define NX_DRIVER_INTERNAL_TRANSMIT_QUEUE   */
-
-/* Define to enable hardware checksum offload.  */
-#define HARDWARE_CHECKSUM_ENABLE
 
 /* Include driver specific include file.  */
 #include "nx_stm32_eth_driver.h"
@@ -47,12 +43,14 @@
 static  NX_DRIVER_INFORMATION nx_driver_information;
 
 
+#ifndef STM32_ETH_HAL_LEGACY
 extern ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT]; /* Ethernet Rx DMA Descriptors */
 extern ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT]; /* Ethernet Tx DMA Descriptors */
 
 
 ETH_TxPacketConfig TxPacketCfg;
 ETH_MACFilterConfigTypeDef FilterConfig;
+#endif
 
 /****** DRIVER SPECIFIC ****** Start of part/vendor specific data area.  Include hardware-specific data here!  */
 
@@ -1541,7 +1539,12 @@ static UINT  _nx_driver_hardware_initialize(NX_IP_DRIVER *driver_req_ptr)
 {
   NX_PACKET           *packet_ptr;
   UINT                i;
+#ifdef STM32_ETH_HAL_LEGACY
+  ETH_DMADescTypeDef  *DMATxDesc;
+  ETH_DMADescTypeDef  *DMARxDesc;
+#else
   ETH_MACConfigTypeDef MACConf;
+#endif
   INT PHYLinkState;
   UINT duplex, speed = 0;
 
@@ -1566,6 +1569,7 @@ static UINT  _nx_driver_hardware_initialize(NX_IP_DRIVER *driver_req_ptr)
 
   nx_eth_init();
 
+#ifndef STM32_ETH_HAL_LEGACY
   ETH_DMAConfigTypeDef dmaDefaultConf;
   dmaDefaultConf.AddressAlignedBeats = ENABLE;
   dmaDefaultConf.BurstMode = ETH_BURSTLENGTH_FIXED;
@@ -1597,6 +1601,7 @@ static UINT  _nx_driver_hardware_initialize(NX_IP_DRIVER *driver_req_ptr)
   memset(&TxPacketCfg, 0, sizeof(ETH_TxPacketConfig));
   TxPacketCfg.Attributes = ETH_TX_PACKETS_FEATURES_CSUM ;
   TxPacketCfg.CRCPadCtrl = ETH_CRC_PAD_DISABLE;
+#endif
 
   if (nx_eth_phy_init() != ETH_PHY_STATUS_OK)
   {
@@ -1639,22 +1644,66 @@ static UINT  _nx_driver_hardware_initialize(NX_IP_DRIVER *driver_req_ptr)
       break;
     }
 
+#ifdef STM32_ETH_HAL_LEGACY
+    /* Set MAC Config */
+    eth_handle.Init.Speed = speed;
+    eth_handle.Init.DuplexMode = duplex;
+    HAL_ETH_ConfigMAC(&eth_handle, NULL);
+#else
     /* Get MAC Config MAC */
     HAL_ETH_GetMACConfig(&eth_handle, &MACConf);
     MACConf.DuplexMode = duplex;
     MACConf.Speed = speed;
     HAL_ETH_SetMACConfig(&eth_handle, &MACConf);
+#endif
   }
 
-  for(i = 0; i < ETH_TX_DESC_CNT; i++)
+  for(i = 0; i < NX_DRIVER_TX_DESCRIPTORS; i++)
   {
+#ifdef STM32_ETH_HAL_LEGACY
+      /* Get the pointer on the member (i) of the Tx Desc list.  */
+        DMATxDesc = &nx_driver_information.nx_driver_information_dma_tx_descriptors[i];
+
+        if(eth_handle.Init.ChecksumMode == ETH_CHECKSUM_BY_HARDWARE)
+        {
+            /* Set Second Address Chained bit and checksum offload options.  */
+            DMATxDesc -> Status = ETH_DMATXDESC_TCH | ETH_DMATXDESC_IC | ETH_DMATXDESC_CIC_TCPUDPICMP_FULL | ETH_DMATXDESC_CIC_IPV4HEADER;
+        }
+        else
+        {
+            /* Set Second Address Chained bit.  */
+            DMATxDesc -> Status = ETH_DMATXDESC_TCH | ETH_DMATXDESC_IC;
+        }
+
+        /* Initialize the next descriptor with the Next Descriptor Polling Enable */
+        if(i < (NX_DRIVER_TX_DESCRIPTORS - 1))
+        {
+            /* Set next descriptor address register with next descriptor base address */
+            DMATxDesc -> Buffer2NextDescAddr = (ULONG)(nx_driver_information.nx_driver_information_dma_tx_descriptors + i + 1);
+        }
+        else
+        {
+            /* For last descriptor, set next descriptor address register equal to the first descriptor base address */
+            DMATxDesc -> Buffer2NextDescAddr = (ULONG) nx_driver_information.nx_driver_information_dma_tx_descriptors;
+        }
+        nx_driver_information.nx_driver_information_transmit_packets[i] = NX_NULL;
+#else
     DMARxDscrTab[i].DESC0 = 0;
     DMARxDscrTab[i].DESC1 = 0;
     DMATxDscrTab[i].DESC2 = (uint32_t)1<<31;
     DMATxDscrTab[i].DESC3 = 0;
+#endif
   }
 
-  for(i = 0; i < ETH_RX_DESC_CNT; i++)
+#ifdef STM32_ETH_HAL_LEGACY
+    /* Set Transmit Descriptor List Address Register */
+    ETH -> DMATDLAR = (ULONG) nx_driver_information.nx_driver_information_dma_tx_descriptors;
+
+    /* Initialize RX Descriptors list: Ring Mode  */
+    DMARxDesc = nx_driver_information.nx_driver_information_dma_rx_descriptors;
+#endif
+
+  for(i = 0; i < NX_DRIVER_RX_DESCRIPTORS; i++)
   {
 
     /* Allocate a packet for the receive buffers.  */
@@ -1664,13 +1713,26 @@ static UINT  _nx_driver_hardware_initialize(NX_IP_DRIVER *driver_req_ptr)
 
       /* Adjust the packet.  */
       packet_ptr -> nx_packet_prepend_ptr += 2;
+#ifdef STM32_ETH_HAL_LEGACY
+      DMARxDesc[i].Buffer1Addr = (uint32_t) packet_ptr -> nx_packet_prepend_ptr;
+      DMARxDesc[i].ControlBufferSize = ETH_DMARXDESC_RCH | (packet_ptr -> nx_packet_data_end - packet_ptr -> nx_packet_data_start);
+#else
       DMARxDscrTab[i].DESC0 = (uint32_t) packet_ptr -> nx_packet_prepend_ptr;
       DMARxDscrTab[i].BackupAddr0 = (uint32_t) packet_ptr -> nx_packet_prepend_ptr;
+#endif
 
       /* Remember the receive packet pointer.  */
       nx_driver_information.nx_driver_information_receive_packets[i] =  packet_ptr;
 
+#ifdef STM32_ETH_HAL_LEGACY
+      DMARxDesc[i].Status = ETH_DMARXDESC_OWN;
+#else
       DMARxDscrTab[i].DESC3 = ETH_DMARXNDESCRF_OWN | ETH_DMARXNDESCRF_BUF1V|ETH_DMARXNDESCRF_IOC;
+#endif
+
+#if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+      SCB_InvalidateDCache_by_Addr((uint32_t*)packet_ptr -> nx_packet_data_start, packet_ptr -> nx_packet_data_end - packet_ptr -> nx_packet_data_start);
+#endif
 
     }
     else
@@ -1679,6 +1741,19 @@ static UINT  _nx_driver_hardware_initialize(NX_IP_DRIVER *driver_req_ptr)
       return(NX_DRIVER_ERROR);
     }
 
+#ifdef STM32_ETH_HAL_LEGACY
+    /* Initialize the next descriptor with the Next Descriptor Polling Enable.  */
+    if(i < (NX_DRIVER_RX_DESCRIPTORS - 1))
+    {
+      /* Set next descriptor address register with next descriptor base address.  */
+      DMARxDesc[i].Buffer2NextDescAddr = (ULONG)(nx_driver_information.nx_driver_information_dma_rx_descriptors + i + 1);
+    }
+    else
+    {
+      /* For last descriptor, set next descriptor address register equal to the first descriptor base address.  */
+      DMARxDesc[i].Buffer2NextDescAddr = (uint32_t)(nx_driver_information.nx_driver_information_dma_rx_descriptors);
+    }
+#endif
 
   }
 
@@ -1687,6 +1762,11 @@ static UINT  _nx_driver_hardware_initialize(NX_IP_DRIVER *driver_req_ptr)
 
   /* Clear the number of buffers in use counter.  */
   nx_driver_information.nx_driver_information_multicast_count = 0;
+
+#ifdef STM32_ETH_HAL_LEGACY
+  /* Set Receive Descriptor List Address Register */
+  ETH -> DMARDLAR = (ULONG) nx_driver_information.nx_driver_information_dma_rx_descriptors;
+#endif
 
   /* Return success!  */
   return(NX_SUCCESS);
@@ -1736,7 +1816,12 @@ static UINT  _nx_driver_hardware_enable(NX_IP_DRIVER *driver_req_ptr)
 {
 
   /* Call STM32 library to start Ethernet operation.  */
+#ifdef STM32_ETH_HAL_LEGACY
+  HAL_ETH_Start(&eth_handle);
+  __HAL_ETH_DMA_ENABLE_IT((&eth_handle), ETH_DMA_IT_NIS | ETH_DMA_IT_R | ETH_DMA_IT_T);
+#else
   HAL_ETH_Start_IT(&eth_handle);
+#endif
 
   /* Return success!  */
   return(NX_SUCCESS);
@@ -1836,6 +1921,135 @@ static UINT  _nx_driver_hardware_disable(NX_IP_DRIVER *driver_req_ptr)
 /*                                            resulting in version 6.1    */
 /*                                                                        */
 /**************************************************************************/
+#ifdef STM32_ETH_HAL_LEGACY
+static UINT  _nx_driver_hardware_packet_send(NX_PACKET *packet_ptr)
+{
+
+ULONG           curIdx;
+NX_PACKET       *pktIdx;
+ULONG            bd_count = 0;
+TX_INTERRUPT_SAVE_AREA
+
+
+    /* Pick up the first BD. */
+    curIdx = nx_driver_information.nx_driver_information_transmit_current_index;
+
+    /* Check if it is a free descriptor.  */
+    if ((nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].Status & ETH_DMATXDESC_OWN) || nx_driver_information.nx_driver_information_transmit_packets[curIdx])
+    {
+
+        /* Buffer is still owned by device.  */
+        return(NX_DRIVER_ERROR);
+    }
+
+    /* Find the Buffer, set the Buffer pointer.  */
+    nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].Buffer1Addr = (ULONG)packet_ptr->nx_packet_prepend_ptr;
+
+    /* Set the buffer size.  */
+    nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].ControlBufferSize = ((packet_ptr -> nx_packet_append_ptr - packet_ptr->nx_packet_prepend_ptr) & ETH_DMATXDESC_TBS1);
+
+    /* Set the first Descriptor's FS bit.  */
+    nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].Status |= ETH_DMATXDESC_FS;
+
+    /* Clear the first Descriptor's LS bit.  */
+    nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].Status &= ~ETH_DMATXDESC_LS;
+
+#if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    SCB_CleanDCache_by_Addr((uint32_t*)(packet_ptr -> nx_packet_data_start), packet_ptr -> nx_packet_data_end - packet_ptr -> nx_packet_data_start);
+#endif
+
+    /* Find next packet.  */
+    for (pktIdx = packet_ptr -> nx_packet_next;
+         pktIdx != NX_NULL;
+         pktIdx = pktIdx -> nx_packet_next)
+    {
+
+        /* Move to next descriptor.  */
+        curIdx = (curIdx + 1) & (NX_DRIVER_TX_DESCRIPTORS - 1);
+
+        /* Check if it is a free descriptor.  */
+        if ((nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].Status & ETH_DMATXDESC_OWN) || nx_driver_information.nx_driver_information_transmit_packets[curIdx])
+        {
+
+            /* No more descriptor available, return driver error status.  */
+            return(NX_DRIVER_ERROR);
+        }
+
+        /* Set the buffer pointer.  */
+        nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].Buffer1Addr = (ULONG)pktIdx -> nx_packet_prepend_ptr;
+
+        /* Set the buffer size.  */
+        nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].ControlBufferSize = ((pktIdx -> nx_packet_append_ptr - pktIdx -> nx_packet_prepend_ptr) & ETH_DMATXDESC_TBS1);
+
+        /* Clear the descriptor's FS & LS bit.  */
+        nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].Status &= ~(ETH_DMATXDESC_FS | ETH_DMATXDESC_LS);
+
+        /* Increment the BD count.  */
+        bd_count++;
+
+#if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    SCB_CleanDCache_by_Addr((uint32_t*)(pktIdx -> nx_packet_data_start), pktIdx -> nx_packet_data_end - pktIdx -> nx_packet_data_start);
+#endif
+    }
+
+    /* Set the last Descriptor's LS & IC & OWN bit.  */
+    nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].Status |= (ETH_DMATXDESC_LS | ETH_DMATXDESC_IC | ETH_DMATXDESC_OWN);
+
+#ifdef NX_ENABLE_INTERFACE_CAPABILITY
+    /* Set HW checksum offload options according to the flags in NX_PACKET.  */
+    nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].Status &= ~ETH_DMATXDESC_CIC;
+
+    if (packet_ptr -> nx_packet_interface_capability_flag & (NX_INTERFACE_CAPABILITY_TCP_TX_CHECKSUM |
+                                                             NX_INTERFACE_CAPABILITY_UDP_TX_CHECKSUM |
+                                                             NX_INTERFACE_CAPABILITY_ICMPV4_TX_CHECKSUM |
+                                                             NX_INTERFACE_CAPABILITY_ICMPV6_TX_CHECKSUM))
+    {
+
+        nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].Status |= ETH_DMATXDESC_CIC_TCPUDPICMP_FULL;
+    }
+    else if (packet_ptr -> nx_packet_interface_capability_flag & NX_INTERFACE_CAPABILITY_IPV4_TX_CHECKSUM)
+    {
+
+        nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].Status |= ETH_DMATXDESC_CIC_IPV4HEADER;
+    }
+#endif /* NX_ENABLE_INTERFACE_CAPABILITY */
+
+    /* Save the pkt pointer to release.  */
+    nx_driver_information.nx_driver_information_transmit_packets[curIdx] = packet_ptr;
+
+    /* Set the current index to the next descriptor.  */
+    nx_driver_information.nx_driver_information_transmit_current_index = (curIdx + 1) & (NX_DRIVER_TX_DESCRIPTORS - 1);
+
+    TX_DISABLE
+    /* Increment the transmit buffers in use count.  */
+    nx_driver_information.nx_driver_information_number_of_transmit_buffers_in_use += bd_count + 1;
+    TX_RESTORE
+    /* Set OWN bit to indicate BDs are ready.  */
+    for (; bd_count > 0; bd_count--)
+    {
+
+        /* Set OWN bit in reverse order, move to previous BD.  */
+        curIdx = (curIdx - 1) & (NX_DRIVER_TX_DESCRIPTORS - 1);
+
+        /* Set this BD's OWN bit.  */
+        nx_driver_information.nx_driver_information_dma_tx_descriptors[curIdx].Status |= ETH_DMATXDESC_OWN;
+    }
+
+    /* If the DMA transmission is suspended, resume transmission.  */
+    if ((ETH -> DMASR & ETH_DMASR_TBUS) != (ULONG)RESET)
+    {
+        /* Clear TBUS ETHERNET DMA flag.  */
+        ETH -> DMASR = ETH_DMASR_TBUS;
+
+        /* Resume DMA transmission. */
+        ETH -> DMATPDR = 0;
+    }
+
+    return(NX_SUCCESS);
+}
+
+#else
+
 static UINT  _nx_driver_hardware_packet_send(NX_PACKET *packet_ptr)
 {
 
@@ -1905,6 +2119,7 @@ static UINT  _nx_driver_hardware_packet_send(NX_PACKET *packet_ptr)
 
   return(NX_SUCCESS);
 }
+#endif
 
 /**************************************************************************/
 /*                                                                        */
@@ -1954,8 +2169,12 @@ static UINT  _nx_driver_hardware_multicast_join(NX_IP_DRIVER *driver_req_ptr)
   nx_driver_information.nx_driver_information_multicast_count++;
 
   /* Enable multicast frame reception.  */
+#ifdef STM32_ETH_HAL_LEGACY
+  ETH->MACFFR |= ETH_MACFFR_PAM;
+#else
   FilterConfig.PassAllMulticast = ENABLE;
   HAL_ETH_SetMACFilterConfig(&eth_handle, &FilterConfig);
+#endif
 
   /* Return success.  */
   return(NX_SUCCESS);
@@ -2013,8 +2232,12 @@ static UINT  _nx_driver_hardware_multicast_leave(NX_IP_DRIVER *driver_req_ptr)
   {
 
     /* Disable multicast frame reception.  */
+#ifdef STM32_ETH_HAL_LEGACY
+    ETH->MACFFR &= ~ETH_MACFFR_PAM;
+#else
     FilterConfig.PassAllMulticast = DISABLE;
     HAL_ETH_SetMACFilterConfig(&eth_handle, &FilterConfig);
+#endif
   }
 
   /* Return success.  */
@@ -2073,7 +2296,7 @@ static UINT  _nx_driver_hardware_get_status(NX_IP_DRIVER *driver_req_ptr)
 /*                                                                        */
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
-/*    _nx_driver_hardware_packet_transmitted            STM32H7xx/IAR     */
+/*    _nx_driver_hardware_packet_transmitted                              */
 /*                                                           6.1          */
 /*  AUTHOR                                                                */
 /*                                                                        */
@@ -2114,14 +2337,24 @@ static UINT  _nx_driver_hardware_get_status(NX_IP_DRIVER *driver_req_ptr)
 static VOID  _nx_driver_hardware_packet_transmitted(ETH_HandleTypeDef *heth)
 {
   NX_PACKET * release_packet;
+#ifdef STM32_ETH_HAL_LEGACY
+  ETH_DMADescTypeDef *dmatxdescs = nx_driver_information.nx_driver_information_dma_tx_descriptors;
+  ULONG numOfBuf =  nx_driver_information.nx_driver_information_number_of_transmit_buffers_in_use;
+  NX_PACKET **nx_packets = nx_driver_information.nx_driver_information_transmit_packets;
+#else
   ETH_TxDescListTypeDef *dmatxdesclist = &heth->TxDescList;
   ULONG numOfBuf =  dmatxdesclist->BuffersInUse;
+#endif
   ULONG idx =       nx_driver_information.nx_driver_information_transmit_release_index;
   /* Loop through buffers in use.  */
   while (numOfBuf--)
   {
     /* If no packet, just examine the next packet.  */
+#ifdef STM32_ETH_HAL_LEGACY
+    if (nx_packets[idx] == NX_NULL)
+#else
     if (dmatxdesclist->PacketAddress[idx] == NX_NULL)
+#endif
     {
 
       /* No packet in use, skip to next.  */
@@ -2130,12 +2363,19 @@ static VOID  _nx_driver_hardware_packet_transmitted(ETH_HandleTypeDef *heth)
     }
 
     /* Determine if the packet has been transmitted.  */
+#ifdef STM32_ETH_HAL_LEGACY
+    if ((dmatxdescs[idx].Status & ETH_DMATXDESC_OWN) == 0)
+#else
     if ((DMATxDscrTab[idx].DESC3 & ETH_DMATXNDESCRF_OWN) == 0)
+#endif
     {
 
       /* Yes, packet has been transmitted.  */
-
+#ifdef STM32_ETH_HAL_LEGACY
+      release_packet = nx_packets[idx];
+#else
       release_packet = (NX_PACKET *)dmatxdesclist->PacketAddress[idx];
+#endif
 
       /* Remove the Ethernet header and release the packet.  */
       NX_DRIVER_ETHERNET_HEADER_REMOVE(release_packet);
@@ -2144,11 +2384,19 @@ static VOID  _nx_driver_hardware_packet_transmitted(ETH_HandleTypeDef *heth)
       nx_packet_transmit_release(release_packet);
 
       /* Clear the entry in the in-use array.  */
+#ifdef STM32_ETH_HAL_LEGACY
+      nx_packets[idx] = NX_NULL;
+#else
       dmatxdesclist->PacketAddress[idx] = NX_NULL;
+#endif
 
       /* Update the transmit relesae index and number of buffers in use.  */
       idx = (idx + 1) & (NX_DRIVER_TX_DESCRIPTORS - 1);
+#ifdef STM32_ETH_HAL_LEGACY
+      nx_driver_information.nx_driver_information_number_of_transmit_buffers_in_use = numOfBuf;
+#else
       dmatxdesclist->BuffersInUse = numOfBuf;
+#endif
       nx_driver_information.nx_driver_information_transmit_release_index = idx;
     }
     else
@@ -2164,7 +2412,7 @@ static VOID  _nx_driver_hardware_packet_transmitted(ETH_HandleTypeDef *heth)
 /*                                                                        */
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
-/*    _nx_driver_hardware_packet_received               STM32H7xx/IAR     */
+/*    _nx_driver_hardware_packet_received                                 */
 /*                                                           6.1          */
 /*  AUTHOR                                                                */
 /*                                                                        */
@@ -2202,6 +2450,154 @@ static VOID  _nx_driver_hardware_packet_transmitted(ETH_HandleTypeDef *heth)
 /*                                            resulting in version 6.1    */
 /*                                                                        */
 /**************************************************************************/
+#ifdef STM32_ETH_HAL_LEGACY
+static VOID  _nx_driver_hardware_packet_received(VOID)
+{
+
+  NX_PACKET     *packet_ptr;
+  NX_PACKET  *received_packet_ptr;
+  INT            i;
+ULONG          bd_count = 0;
+ULONG          idx;
+ULONG          temp_idx;
+ULONG          first_idx = nx_driver_information.nx_driver_information_receive_current_index;
+  received_packet_ptr = nx_driver_information.nx_driver_information_receive_packets[first_idx];
+
+
+    /* Find out the BDs that owned by CPU.  */
+    for (first_idx = idx = nx_driver_information.nx_driver_information_receive_current_index;
+        (nx_driver_information.nx_driver_information_dma_rx_descriptors[idx].Status & ETH_DMARXDESC_OWN) == 0;
+         idx = (idx + 1) & (NX_DRIVER_RX_DESCRIPTORS - 1))
+    {
+
+        /* Is the BD marked as the end of a frame?  */
+        if (nx_driver_information.nx_driver_information_dma_rx_descriptors[idx].Status & ETH_DMARXDESC_LS)
+        {
+
+            /* Yes, this BD is the last BD in the frame, set the last NX_PACKET's nx_packet_next to NULL.  */
+            nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_next = NX_NULL;
+
+            /* Store the length of the packet in the first NX_PACKET.  */
+            nx_driver_information.nx_driver_information_receive_packets[first_idx] -> nx_packet_length = ((nx_driver_information.nx_driver_information_dma_rx_descriptors[idx].Status & ETH_DMARXDESC_FL) >> ETH_DMARXDESC_FRAME_LENGTHSHIFT) - 4;
+
+            /* Adjust nx_packet_append_ptr with the size of the data in this buffer.  */
+            nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_append_ptr = nx_driver_information.nx_driver_information_receive_packets[idx]->nx_packet_prepend_ptr
+                                                                                                     + nx_driver_information.nx_driver_information_receive_packets[first_idx]->nx_packet_length
+                                                                                                     - bd_count * nx_driver_information.nx_driver_information_rx_buffer_size;
+            /* Is there only one BD for the current frame?  */
+            if (idx != first_idx)
+            {
+
+                /* No, this BD is not the first BD of the frame, frame data starts at the aligned address.  */
+                nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_prepend_ptr -= 2;
+
+                if (nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_prepend_ptr >= nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_append_ptr)
+                {
+
+                    temp_idx = (idx - 1) & (NX_DRIVER_RX_DESCRIPTORS - 1);
+                    nx_driver_information.nx_driver_information_receive_packets[temp_idx] -> nx_packet_next = NX_NULL;
+                    nx_driver_information.nx_driver_information_receive_packets[temp_idx] -> nx_packet_append_ptr -= nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_prepend_ptr >= nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_append_ptr;
+                    nx_driver_information.nx_driver_information_dma_rx_descriptors[idx].Status = ETH_DMARXDESC_OWN;
+                    nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_prepend_ptr = nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_data_start + 2;
+                    bd_count--;
+                }
+            }
+
+            /* Allocate new NX_PACKETs for BDs.  */
+            for (i = bd_count; i >= 0; i--)
+            {
+
+                temp_idx = (first_idx + i) & (NX_DRIVER_RX_DESCRIPTORS - 1);
+
+                /* Allocate a new packet from the packet pool.  */
+                if (nx_packet_allocate(nx_driver_information.nx_driver_information_packet_pool_ptr, &packet_ptr,
+                                          NX_RECEIVE_PACKET, NX_NO_WAIT) == NX_SUCCESS)
+                {
+
+                    /* Adjust the new packet and assign it to the BD.  */
+                    packet_ptr -> nx_packet_prepend_ptr += 2;
+                    nx_driver_information.nx_driver_information_dma_rx_descriptors[temp_idx].Buffer1Addr = (ULONG)packet_ptr->nx_packet_prepend_ptr;
+                    nx_driver_information.nx_driver_information_dma_rx_descriptors[temp_idx].Status = ETH_DMARXDESC_OWN;
+                    nx_driver_information.nx_driver_information_receive_packets[temp_idx] = packet_ptr;
+#if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+      SCB_InvalidateDCache_by_Addr((uint32_t*)packet_ptr -> nx_packet_data_start, packet_ptr -> nx_packet_data_end - packet_ptr -> nx_packet_data_start);
+#endif
+
+                }
+                else
+                {
+
+                    /* Allocation failed, get out of the loop.  */
+                    break;
+                }
+            }
+
+            if (i >= 0)
+            {
+
+                /* At least one packet allocation was failed, release the received packet.  */
+                nx_packet_release(nx_driver_information.nx_driver_information_receive_packets[temp_idx] -> nx_packet_next);
+
+                for (; i >= 0; i--)
+                {
+
+                    /* Free up the BD to ready state. */
+                    temp_idx = (first_idx + i) & (NX_DRIVER_RX_DESCRIPTORS - 1);
+                    nx_driver_information.nx_driver_information_dma_rx_descriptors[temp_idx].Status = ETH_DMARXDESC_OWN;
+                    nx_driver_information.nx_driver_information_receive_packets[temp_idx] -> nx_packet_prepend_ptr = nx_driver_information.nx_driver_information_receive_packets[temp_idx] -> nx_packet_data_start + 2;
+                }
+            }
+            else
+            {
+
+                /* Everything is OK, transfer the packet to NetX.  */
+                _nx_driver_transfer_to_netx(nx_driver_information.nx_driver_information_ip_ptr, received_packet_ptr);
+            }
+
+            /* Set the first BD index for the next packet.  */
+            first_idx = (idx + 1) & (NX_DRIVER_RX_DESCRIPTORS - 1);
+
+            /* Update the current receive index.  */
+            nx_driver_information.nx_driver_information_receive_current_index = first_idx;
+
+            received_packet_ptr = nx_driver_information.nx_driver_information_receive_packets[first_idx];
+
+            bd_count = 0;
+
+        }
+        else
+        {
+
+            /* This BD is not the last BD of a frame. It is a intermediate descriptor.  */
+
+            nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_next = nx_driver_information.nx_driver_information_receive_packets[(idx + 1) & (NX_DRIVER_RX_DESCRIPTORS - 1)];
+
+            nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_append_ptr = nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_data_end;
+
+            if (idx != first_idx)
+            {
+
+                nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_prepend_ptr = nx_driver_information.nx_driver_information_receive_packets[idx] -> nx_packet_data_start;
+            }
+
+            bd_count++;
+        }
+    }
+
+    /* If Rx DMA is in suspended state, resume it.  */
+    if ((ETH->DMASR & ETH_DMASR_RBUS) != (ULONG)RESET)
+    {
+
+        /* Clear RBUS ETHERNET DMA flag */
+        ETH->DMASR = ETH_DMASR_RBUS;
+        /* Resume DMA reception */
+        ETH->DMARPDR = 0;
+    }
+
+}
+
+#else
+
 static VOID  _nx_driver_hardware_packet_received(VOID)
 {
 
@@ -2250,6 +2646,7 @@ static VOID  _nx_driver_hardware_packet_received(VOID)
     }
   }
 }
+#endif
 
 
 #ifdef NX_ENABLE_INTERFACE_CAPABILITY

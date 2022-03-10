@@ -12,24 +12,24 @@
   *           - Setup Interrupt Target
   *
   ******************************************************************************/
-/*
- * Copyright (c) 2009-2016 ARM Limited. All rights reserved.
- * Portions Copyright (c) 2021 STMicroelectronics, all rights reserved
- *
- * SPDX-License-Identifier: Apache-2.0
+/**
+  * Copyright (c) 2009-2016 ARM Limited. All rights reserved.
+  * Portions Copyright (c) 2021 STMicroelectronics, all rights reserved
   *
- * Licensed under the Apache License, Version 2.0 (the License); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+  * SPDX-License-Identifier: Apache-2.0
   *
- * http://www.apache.org/licenses/LICENSE-2.0
+  * Licensed under the Apache License, Version 2.0 (the License); you may
+  * not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
   *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an AS IS BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+  * http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
 
 #ifndef PARTITION_STM32U585XX_H
 #define PARTITION_STM32U585XX_H
@@ -377,7 +377,7 @@
 /*
 // Interrupts 0..31
 //   <o.0>  WWDG_IRQn             <0=> Secure state <1=> Non-Secure state
-//   <o.1>  PVD_AVD_IRQn          <0=> Secure state <1=> Non-Secure state
+//   <o.1>  PVD_PVM_IRQn          <0=> Secure state <1=> Non-Secure state
 //   <o.2>  RTC_IRQn              <0=> Secure state <1=> Non-Secure state
 //   <o.3>  RTC_S_IRQn            <0=> Secure state <1=> Non-Secure state
 //   <o.4>  TAMP_IRQn             <0=> Secure state <1=> Non-Secure state
@@ -537,7 +537,7 @@
 //   <o.20> LPDMA1_Channel2_IRQn  <0=> Secure state <1=> Non-Secure state
 //   <o.21> LPDMA1_Channel3_IRQn  <0=> Secure state <1=> Non-Secure state
 //   <o.22> DMA2D_IRQn            <0=> Secure state <1=> Non-Secure state
-//   <o.23> DCMI_PSSI_IRQN        <0=> Secure state <1=> Non-Secure state
+//   <o.23> DCMI_PSSI_IRQn        <0=> Secure state <1=> Non-Secure state
 //   <o.24> OCTOSPI2_IRQn         <0=> Secure state <1=> Non-Secure state
 //   <o.25> MDF1_FLT4_IRQn        <0=> Secure state <1=> Non-Secure state
 //   <o.26> MDF1_FLT5_IRQn        <0=> Secure state <1=> Non-Secure state

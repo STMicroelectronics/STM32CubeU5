@@ -2,12 +2,12 @@
 :: arg2 is the version i.e "1.0.0"
 :: arg3 is the binary type (1 nonsecure, 2 secure)
 :: Following args are optional
-:: arg 4 : dependency with the other image
+:: arg4 : dependency with the other image
 :: "1.0.0" : version dependency with other image
 :: "nodep": no dependency
-:: arg 5 is version and dependency in output filename
+:: arg5 is version and dependency in output filename
 :: "version" : filename contains the version and dependency
-:: arg 6 is to force python execution
+:: arg6 is to force python execution
 :: "python" : execute with python script
 set "projectdir=%~dp0"
 set "version=%2"
@@ -38,24 +38,24 @@ set "ver=_%version%%depname%"
 
 :namebuild
 
-set "tfm_s_init=%userAppBinary%\tfm_s_init%ver%.bin"
-set "tfm_ns_init=%userAppBinary%\tfm_ns_init%ver%.bin"
-set "tfm_s_sign=%userAppBinary%\tfm_s_sign%ver%.bin"
-set "tfm_ns_sign=%userAppBinary%\tfm_ns_sign%ver%.bin"
-set "tfm_s_enc_sign=%userAppBinary%\tfm_s_enc_sign%ver%.bin"
-set "tfm_ns_enc_sign=%userAppBinary%\tfm_ns_enc_sign%ver%.bin"
-:: variable for image_number = 1
-set "tfm_init=%userAppBinary%\tfm_init%ver%.bin"
-set "tfm_sign=%userAppBinary%\tfm_sign%ver%.bin"
-set "tfm_enc_sign=%userAppBinary%\tfm_enc_sign%ver%.bin"
-set "tfm=%userAppBinary%\tfm.bin"
+set "tfm_s_init=%userAppBinary%\tfm_s_app_init%ver%.bin"
+set "tfm_ns_init=%userAppBinary%\tfm_ns_app_init%ver%.bin"
+set "tfm_s_sign=%userAppBinary%\tfm_s_app_sign%ver%.bin"
+set "tfm_ns_sign=%userAppBinary%\tfm_ns_app_sign%ver%.bin"
+set "tfm_s_enc_sign=%userAppBinary%\tfm_s_app_enc_sign%ver%.bin"
+set "tfm_ns_enc_sign=%userAppBinary%\tfm_ns_app_enc_sign%ver%.bin"
+:: variable for app_image_number = 1
+set "tfm_init=%userAppBinary%\tfm_app_init%ver%.bin"
+set "tfm_sign=%userAppBinary%\tfm_app_sign%ver%.bin"
+set "tfm_enc_sign=%userAppBinary%\tfm_app_enc_sign%ver%.bin"
+set "tfm=%userAppBinary%\tfm_app.bin"
 
 ::field updated with TFM_SBSFU_Boot postbuild
 
 set image_ns_size=
 set image_s_size=
 set primary_only=
-set image_number=
+set app_image_number=
 set crypto_scheme=
 set external_flash_enable=
 set ns_code_start=
@@ -72,11 +72,12 @@ popd
 if not exist "%userAppBinary%" (
 mkdir "%userAppBinary%"
 )
+
 IF "%signing%" == "nonsecure" (
 goto :start;
 )
 
-if  "%image_number%" == "1" (
+if  "%app_image_number%" == "1" (
 :: when image number is 1, image is assemble and sign during non secure postbuild
 exit 0
 )
@@ -96,7 +97,7 @@ goto postbuild
 :py
 ::line for python
 echo Postbuild with python script
-set "imgtool=%mcuboot_dir%\scripts\imgtool.py"
+set "imgtool=%mcuboot_dir%\scripts\imgtool\main.py"
 set "python=python "
 :postbuild
 
@@ -136,16 +137,26 @@ set "encrypt=-E %key_enc_pub% -c"
 if "%primary_only%" == "1" (
 set "option=%option% --primary-only --overwrite-only"
 set "encrypt="
-goto signing
+goto swrecord
 )
-if "%over_write%" == "1" (
+IF "%over_write%" == "1" (
 set "option=%option% --overwrite-only"
 set "encrypt="
 )
+:swrecord
+IF  "%app_image_number%" == "1" (
+set "option=%option% --boot-record=SPE"
+goto signing
+)
+IF "%signing%" == "nonsecure" (
+set "option=%option% --boot-record=NSPE"
+goto signing
+)
+set "option=%option% --boot-record=SPE"
 :signing
-echo %signing% %mode% %option% image_number=%image_number% > %projectdir%\output.txt 2>&1
+echo %signing% %mode% %option% app_image_number=%app_image_number% > %projectdir%\output.txt 2>&1
 
-if "%image_number%" == "2" (
+if "%app_image_number%" == "2" (
 goto continue
 )
 echo "assemble image" >> %projectdir%\output.txt 2>&1
@@ -160,25 +171,29 @@ set "tfm_s_init=%tfm_init%"
 set "tfm_s_sign=%tfm_sign%"
 set "tfm_s_enc_sign=%tfm_enc_sign%"
 :continue
-::alignment value (minimum write value)
+::alignment value (minimum write size value in bytes)
 set "val=16"
+
+::nb sectors in image areas
+set /A image_ns_sectors=%image_ns_size% / 0x2000
+set /A image_s_sectors=%image_s_size% / 0x2000
 
 echo "%signing% init image signing" >> %projectdir%\output.txt 2>&1
 IF "%signing%" == "nonsecure" (
-set "command_init=%python%%imgtool% sign -k %key_ns% %encrypt% -e little -S %image_ns_size% -H 0x400 --pad-header %option% -v %version% -s auto --align %val% %tfm_ns% %tfm_ns_init% >> %projectdir%\output.txt 2>&1"
+set "command_init=%python%%imgtool% sign -k %key_ns% %encrypt% -e little -S %image_ns_size% -M %image_ns_sectors% -H 0x400 --pad-header %option% -v %version% -s auto --align %val% %tfm_ns% %tfm_ns_init% >> %projectdir%\output.txt 2>&1"
 goto :docommand_init
 )
-set "command_init=%python%%imgtool% sign -k %key_s% %encrypt% -e little -S %image_s_size% -H 0x400 --pad-header %option% -v %version% -s auto --align %val% %tfm_s% %tfm_s_init% >> %projectdir%\output.txt 2>&1"
+set "command_init=%python%%imgtool% sign -k %key_s% %encrypt% -e little -S %image_s_size% -M %image_s_sectors% -H 0x400 --pad-header %option% -v %version% -s auto --align %val% %tfm_s% %tfm_s_init% >> %projectdir%\output.txt 2>&1"
 :docommand_init
 %command_init%
 IF %ERRORLEVEL% NEQ 0 goto :error_init
 
 echo "%signing% clear image signing" >> %projectdir%\output.txt 2>&1
 IF "%signing%" == "nonsecure" (
-set "command_clear=%python%%imgtool% sign -k %key_ns% -e little -S %image_ns_size% -H 0x400 --pad-header %option% -v %version% -s auto --align %val% %tfm_ns% %tfm_ns_sign% >> %projectdir%\output.txt 2>&1"
+set "command_clear=%python%%imgtool% sign -k %key_ns% -e little -S %image_ns_size% -M %image_ns_sectors% -H 0x400 --pad-header %option% -v %version% -s auto --align %val% %tfm_ns% %tfm_ns_sign% >> %projectdir%\output.txt 2>&1"
 goto :docommand_clear
 )
-set "command_clear=%python%%imgtool% sign -k %key_s% -e little -S %image_s_size% -H 0x400 --pad-header %option% -v %version% -s auto --align %val% %tfm_s% %tfm_s_sign% >> %projectdir%\output.txt 2>&1"
+set "command_clear=%python%%imgtool% sign -k %key_s% -e little -S %image_s_size% -M %image_s_sectors% -H 0x400 --pad-header %option% -v %version% -s auto --align %val% %tfm_s% %tfm_s_sign% >> %projectdir%\output.txt 2>&1"
 :docommand_clear
 %command_clear%
 IF %ERRORLEVEL% NEQ 0 goto :error_clear
@@ -188,10 +203,10 @@ exit 0
 )
 echo "%signing% enc image encrypting and signing" >> %projectdir%\output.txt 2>&1
 IF "%signing%" == "nonsecure" (
-set "command_enc=%python%%imgtool% sign -k %key_ns% -E %key_enc_pub% -e little -S %image_ns_size% -H 0x400 --pad-header %option% -v %version%  -s auto --align %val% %tfm_ns% %tfm_ns_enc_sign% >> %projectdir%\output.txt 2>&1"
+set "command_enc=%python%%imgtool% sign -k %key_ns% -E %key_enc_pub% -e little -S %image_ns_size% -M %image_ns_sectors% -H 0x400 --pad-header %option% -v %version%  -s auto --align %val% %tfm_ns% %tfm_ns_enc_sign% >> %projectdir%\output.txt 2>&1"
 goto :docommand_enc
 )
-set "command_enc=%python%%imgtool% sign -k %key_s% -E %key_enc_pub% -e little -S %image_s_size% -H 0x400 --pad-header %option% -v %version%  -s auto --align %val% %tfm_s% %tfm_s_enc_sign% >> %projectdir%\output.txt 2>&1"
+set "command_enc=%python%%imgtool% sign -k %key_s% -E %key_enc_pub% -e little -S %image_s_size% -M %image_s_sectors% -H 0x400 --pad-header %option% -v %version%  -s auto --align %val% %tfm_s% %tfm_s_enc_sign% >> %projectdir%\output.txt 2>&1"
 :docommand_enc
 %command_enc%
 IF %ERRORLEVEL% NEQ 0 goto :error_enc
@@ -209,4 +224,3 @@ exit 1
 :error_ass
 echo "%command_ass% : failed" >> %projectdir%\\output.txt
 exit 1
-

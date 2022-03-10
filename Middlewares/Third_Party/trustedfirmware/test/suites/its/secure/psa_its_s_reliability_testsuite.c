@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -7,7 +7,7 @@
 
 #include "its_s_tests.h"
 #include "psa/internal_trusted_storage.h"
-#include "test/framework/test_framework_helpers.h"
+#include "test_framework_helpers.h"
 #include "tfm_memory_utils.h"
 
 /* Test UIDs */
@@ -35,9 +35,9 @@ static void tfm_its_test_3002(struct test_result_t *ret);
 
 static struct test_t reliability_tests[] = {
     {&tfm_its_test_3001, "TFM_ITS_TEST_3001",
-     "repetitive sets and gets in/from an asset", {0} },
+     "repetitive sets and gets in/from an asset", {TEST_PASSED} },
     {&tfm_its_test_3002, "TFM_ITS_TEST_3002",
-     "repetitive sets, gets and removes", {0} },
+     "repetitive sets, gets and removes", {TEST_PASSED} },
 };
 
 void register_testsuite_s_psa_its_reliability(struct test_suite_t *p_test_suite)

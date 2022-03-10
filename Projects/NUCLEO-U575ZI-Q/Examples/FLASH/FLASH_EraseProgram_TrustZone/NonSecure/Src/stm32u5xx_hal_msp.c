@@ -58,7 +58,7 @@
 
 /* USER CODE END 0 */
 /**
-  * Initializes the Global MSP.
+  * Initializes the Global MCU Support Package.
   */
 void HAL_MspInit(void)
 {

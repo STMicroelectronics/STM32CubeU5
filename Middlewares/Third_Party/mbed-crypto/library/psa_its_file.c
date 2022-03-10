@@ -1,7 +1,8 @@
 /*
  *  PSA ITS simulator over stdio files.
  */
-/*  Copyright (C) 2018, ARM Limited, All Rights Reserved
+/*
+ *  Copyright The Mbed TLS Contributors
  *  SPDX-License-Identifier: Apache-2.0
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -15,8 +16,6 @@
  *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 
 #if defined(MBEDTLS_CONFIG_FILE)
@@ -44,7 +43,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#if !defined(PSA_ITS_STORAGE_PREFIX)
 #define PSA_ITS_STORAGE_PREFIX ""
+#endif
 
 #define PSA_ITS_STORAGE_FILENAME_PATTERN "%08lx%08lx"
 #define PSA_ITS_STORAGE_SUFFIX ".psa_its"
@@ -137,7 +138,8 @@ psa_status_t psa_its_get_info( psa_storage_uid_t uid,
 psa_status_t psa_its_get( psa_storage_uid_t uid,
                           uint32_t data_offset,
                           uint32_t data_length,
-                          void *p_data )
+                          void *p_data,
+                          size_t *p_data_length )
 {
     psa_status_t status;
     FILE *stream = NULL;
@@ -172,6 +174,8 @@ psa_status_t psa_its_get( psa_storage_uid_t uid,
     if( n != data_length )
         goto exit;
     status = PSA_SUCCESS;
+    if( p_data_length != NULL )
+        *p_data_length = n;
 
 exit:
     if( stream != NULL )
@@ -209,9 +213,12 @@ psa_status_t psa_its_set( psa_storage_uid_t uid,
     n = fwrite( &header, 1, sizeof( header ), stream );
     if( n != sizeof( header ) )
         goto exit;
-    n = fwrite( p_data, 1, data_length, stream );
-    if( n != data_length )
-        goto exit;
+    if( data_length != 0 )
+    {
+        n = fwrite( p_data, 1, data_length, stream );
+        if( n != data_length )
+            goto exit;
+    }
     status = PSA_SUCCESS;
 
 exit:
@@ -226,7 +233,12 @@ exit:
         if( rename_replace_existing( PSA_ITS_STORAGE_TEMP, filename ) != 0 )
             status = PSA_ERROR_STORAGE_FAILURE;
     }
-    remove( PSA_ITS_STORAGE_TEMP );
+    /* The temporary file may still exist, but only in failure cases where
+     * we're already reporting an error. So there's nothing we can do on
+     * failure. If the function succeeded, and in some error cases, the
+     * temporary file doesn't exist and so remove() is expected to fail.
+     * Thus we just ignore the return status of remove(). */
+    (void) remove( PSA_ITS_STORAGE_TEMP );
     return( status );
 }
 

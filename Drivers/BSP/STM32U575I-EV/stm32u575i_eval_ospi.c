@@ -1445,25 +1445,41 @@ static int32_t OSPI_NOR_ExitOPIMode(uint32_t Instance)
   */
 static int32_t OSPI_DLYB_Enable(uint32_t Instance)
 {
-  __HAL_OSPI_DISABLE(&hospi_nor[Instance]);
-  HAL_Delay(100);
-  SET_BIT(hospi_nor[Instance].Instance->DCR1, OCTOSPI_DCR1_FRCK);
-  HAL_Delay(100);
-  __HAL_OSPI_ENABLE(&hospi_nor[Instance]);
-  HAL_Delay(100);
+  LL_DLYB_CfgTypeDef dlyb_cfg, dlyb_cfg_test;
+  int32_t ret = BSP_ERROR_NONE;
+  uint32_t div_value = 4;
 
-  DLYB_OCTOSPI2_NS->CR   = 0U;
-  DLYB_OCTOSPI2_NS->CR   = 0x03;
-  DLYB_OCTOSPI2_NS->CFGR = 0x7A02;
-  DLYB_OCTOSPI2_NS->CR   = 0x01;
-  HAL_Delay(100);
-  __HAL_OSPI_DISABLE(&hospi_nor[Instance]);
-  HAL_Delay(100);
-  CLEAR_BIT(hospi_nor[Instance].Instance->DCR1, OCTOSPI_DCR1_FRCK);
-  HAL_Delay(100);
-  __HAL_OSPI_ENABLE(&hospi_nor[Instance]);
-  HAL_Delay(100);
-  return BSP_ERROR_NONE;
+  /* Delay block configuration ------------------------------------------------ */
+  if (HAL_OSPI_DLYB_GetClockPeriod(&hospi_nor[Instance], &dlyb_cfg) != HAL_OK)
+  {
+    ret = BSP_ERROR_PERIPH_FAILURE;
+  }
+
+  /* PhaseSel is divided by 4 (emperic value)*/
+  dlyb_cfg.PhaseSel /= div_value;
+
+  /* save the present configuration for check*/
+  dlyb_cfg_test = dlyb_cfg;
+
+  /*set delay block configuration*/
+  if (HAL_OSPI_DLYB_SetConfig(&hospi_nor[Instance], &dlyb_cfg) != HAL_OK)
+  {
+    ret = BSP_ERROR_PERIPH_FAILURE;
+  }
+
+  /*check the set value*/
+  if (HAL_OSPI_DLYB_GetConfig(&hospi_nor[Instance], &dlyb_cfg) != HAL_OK)
+  {
+    ret = BSP_ERROR_PERIPH_FAILURE;
+  }
+
+  if ((dlyb_cfg.PhaseSel != dlyb_cfg_test.PhaseSel) || (dlyb_cfg.Units != dlyb_cfg_test.Units))
+  {
+    ret = BSP_ERROR_PERIPH_FAILURE;
+  }
+
+  /* Return BSP status */
+  return ret;
 }
 
 /**

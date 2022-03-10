@@ -33,6 +33,7 @@ __asm("  .global __ARM_use_no_argv\n");
 #include "test_protections.h"
 #include "fw_update_app.h"
 #include "tfm_app.h"
+#include "ns_data.h"
 /** @defgroup  USER_APP  exported variable
    * @{
   */
@@ -108,6 +109,7 @@ int putchar(int ch)
   return ch;
 }
 #endif /*  __GNUC__ */
+
 
 
 /**
@@ -245,6 +247,9 @@ void FW_APP_PrintMainMenu(void)
 #if   !defined(MCUBOOT_PRIMARY_ONLY)
   printf("  New Fw Image ------------------------------------------ 3\r\n\n");
 #endif
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
+  printf("  Non-Secure Data --------------------------------------- 4\r\n\n");
+#endif /* defined(MCUBOOT_NS_DATA_IMAGE_NUMBER) */
   printf("  Selection :\r\n\n");
 }
 
@@ -281,6 +286,11 @@ void FW_APP_Run(void)
           FW_UPDATE_Run();
           break;
 #endif
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
+        case '4' :
+          NS_DATA_Run();
+          break;
+#endif /* defined(MCUBOOT_NS_DATA_IMAGE_NUMBER) */
         default:
           printf("Invalid Number !\r");
           break;

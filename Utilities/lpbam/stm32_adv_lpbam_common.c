@@ -19,68 +19,97 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
-      developing an LPBAM application.
+      It is recommended to read the LPBAM_Utility_GettingStarted.html document, available at the root of LPBAM utility
+      folder, prior to any LPBAM application development start.
 
     *** Driver description ***
     ==========================
     [..]
-      This advanced LPBAM module counts 3 files :
-          (+) stm32_adv_lpbam_common.c
-              (++) This file provides the DMA advanced files body.
-          (+) stm32_adv_lpbam_common.h
-              (++) This file is the header file of stm32_adv_lpbam_common.c. It provides advanced used types.
-          (+) stm32_platform_lpbam_common.h
-              (++) This header file contains all defines to be used in applicative side.
+      This section provide description of the driver files content (refer to LPBAM_Utility_GettingStarted.html document
+      for more information)
+
+    [..]
+      It is composed of 3 files :
+          (+) stm32_adv_lpbam_common.c file
+              (++) This file provides the implementation of the advanced LPBAM COMMON functions.
+          (+) stm32_adv_lpbam_common.h file
+              (++) This file is the header file of stm32_adv_lpbam_common.c. It provides advanced LPBAM COMMON functions
+                   prototypes and the declaration of their needed exported types and structures.
+          (+) STM32xx/stm32_platform_lpbam_common.h file
+              (++) This header file contains all defines to be used on applicative side.
+                   (+++) STM32xx stands for the device supporting LPBAM sub-system.
+
+    *** Driver functions model ***
+    ==============================
+    [..]
+      This section precises this module supported advanced functions model (refer to LPBAM_Utility_GettingStarted.html
+      document for function model definition).
+
+    [..]
+      This driver provides 2 model of APIs :
+          (+) ADV_LPBAM_Q_Set{Item}Config() : apply configuration for input queue.
+          (+) ADV_LPBAM_Q_Set{Item}Mode()   : apply mode for input queue.
 
     *** Driver features ***
     =======================
     [..]
-      This driver provides the following list of features :
+      This section describes this LPBAM module supported features.
+
+    [..]
+      This driver provides services covering the LPBAM management of the following COMMON features :
           (+) Set a data configuration transfer for advanced APIs that supports data transfers.
-              Please check @ref LPBAM_Q_Data_Node_Selection to have the exhaustive list of APIs that supports this
-              capability.
+              Check LPBAM_Q_Data_Node_Selection to have the exhaustive list of APIs that supports this capability.
           (+) Set a hardware trigger signal for a built linked-list queue execution and data transfers.
-              Please check @ref LPBAM_Q_Config_Node_Selection and @ref LPBAM_Q_Data_Node_Selection to have the
-              exhaustive list of APIs that supports this capability.
+              Check LPBAM_Q_Config_Node_Selection and LPBAM_Q_Data_Node_Selection to have the exhaustive list of APIs
+              that supports this capability.
           (+) Set a circular mode for a built linked-list queue.
-              Please check @ref LPBAM_Q_Config_Node_Selection and @ref LPBAM_Q_Data_Node_Selection to have the
-              exhaustive list of APIs that supports this capability.
+              Check LPBAM_Q_Config_Node_Selection and LPBAM_Q_Data_Node_Selection to have the exhaustive list of APIs
+              that supports this capability.
 
     *** Functional description ***
     ==============================
+    [..]
+      This section describes the peripheral features covered by this LPBAM module.
+
     [..]
       Contrarily to all other advanced LPBAM modules, the common module output is not a DMA linked-list queue. This
       module provides a complementary APIs allowing users to customize their LPBAM scenarios according to application
       needs. These APIs must be called after using advanced APIs in order to customize them.
 
     [..]
-      The common module allows to configure data node within an advanced API in order to customize default transfer
-      configuration offered.
+      The common module allows to configure data transfer within an advanced API in order to customize default
+      functional transfer configuration.
       The common module allows to set a hardware trigger within an advanced API in order to :
-          (+) Condition the whole DMA linked-list execution. When the hardware trigger front (Rising or falling) is
-              occurred, the whole DMA queue is executed (when there are no trigger condition set to another queue
-              level).
-          (+) Condition the DMA linked-list data transfer execution. According to configured parameter, the trigger
-              condition can be set at each single data or the whole data to be transmitted.
-      The common module allows to circularize the linked-list queue in order to perform a circular transfers (infinite
-      loop). The first circular node (the first elementary item to be executed in an infinite loop) is customizable.
+          (+) Condition the whole linked-list queue execution with a hardware trigger signal.
+          (+) Condition the data transfer queue execution with a hardware trigger signal.
+              (++) Data transfer trigger granularity can be at single data.
+              (++) Data transfer trigger granularity can be at whole data.
+
+    [..]
+      The common module allows to circularize a linked-list queue in order to perform transfers in an infinite loop.
+          (+) First circular item in the input queue can be one of parameters in LPBAM_Q_Config_Node_Selection and
+              LPBAM_Q_Data_Node_Selection sections.
 
     *** Driver APIs description ***
     ===============================
     [..]
-      Use ADV_LPBAM_Q_SetDataConfig() API to configure data transfer (when supported) to a built linked-list queue.
-      Each data transfer parameter can be managed independently thanks to the following parameters :
+      This section provides LPBAM module exhaustive APIs description without considering application user call sequence.
+      For user call sequence information, please refer to 'Driver user sequence' section below.
+
+    [..]
+      Use ADV_LPBAM_Q_SetDataConfig() API to configure data transfer to an advanced API linked-list queue that contains
+      data transfer. Advanced API data node constant is defined in LPBAM_Q_Data_Node_Selection section.
+      The data transfer settings parameters can be updated separately thanks to the following fields in
+      LPBAM_COMMON_DataAdvConf_t structure :
           (+) UpdateSrcInc        : Specifies whether the data source increment to be updated or not.
           (+) UpdateDestInc       : Specifies whether the data destination increment to be updated or not.
           (+) UpdateSrcDataWidth  : Specifies whether the data source data width to be updated or not.
           (+) UpdateDestDataWidth : Specifies whether the destination data width to be updated or not.
           (+) UpdateSrcSecure     : Specifies whether the source security to be updated or not.
-                                    This field is used for products that supports trust zone architecture.
+                                    This field is used for products that supports TrustZone architecture.
           (+) UpdateDestSecure    : Specifies whether the destination security to be updated or not.
-                                    This field is used for products that supports trust zone architecture.
-
-      Data transfer parameters are :
+                                    This field is used for products that supports TrustZone architecture.
+      The data transfer parameters are :
           (+) SrcInc        : Specifies the source increment mode for the DMA channel.
           (+) DestInc       : Specifies the destination increment mode for the DMA channel.
           (+) SrcDataWidth  : Specifies the source data width for the DMA channel.
@@ -89,37 +118,52 @@
                               This field is used for products that supports trust zone architecture.
           (+) DestSecure    : Specifies the destination security attribute.
                               This field is used for products that supports trust zone architecture.
+      Default data transfer settings for any advanced API is described under 'Driver APIs description' section by each
+      module.
 
     [..]
-      Use ADV_LPBAM_Q_SetTriggerConfig() API to configure a hardware trigger signal to a built linked-list queue.
-      Trigger configuration parameters are :
+      Use ADV_LPBAM_Q_SetTriggerConfig() API to configure a hardware trigger signal to an advanced API linked-list
+      queue. The exhaustive list of advanced APIs that supports triggers are listed on LPBAM_Q_Config_Node_Selection
+      and LPBAM_Q_Data_Node_Selection sections.
+      The trigger configuration parameters are :
           (+) TriggerMode      : Specifies the DMA channel trigger mode.
           (+) TriggerPolarity  : Specifies the DMA channel trigger event polarity.
           (+) TriggerSelection : Specifies the DMA channel trigger event selection.
       Please refer to stm32u5_platform_lpbam_common.h file for more information.
 
     [..]
-      Use ADV_LPBAM_Q_SetCircularMode() API to circularize a built linked-list queue.
-      Please refer to ADV_LPBAM_Q_SetCircularMode() API description for configurable parameters.
+      Use ADV_LPBAM_Q_SetCircularMode() API to circularize a built linked-list queue. The exhaustive list of advanced
+      API items that can be the first circular item are listed on LPBAM_Q_Config_Node_Selection and
+      LPBAM_Q_Data_Node_Selection sections.
 
     *** Driver user sequence ***
     ============================
     [..]
+      This section provides the steps to follow to build an LPBAM application based on HAL/LL and LPBAM drivers. (refer
+      to LPBAM_Utility_GettingStarted.html for linked-list feature description).
+
+    [..]
       Call ADV_LPBAM_Q_SetDataConfig() after any call to advanced API to setup data transfer (when data transfer is
       supported).
+
+    [..]
       Call ADV_LPBAM_Q_SetTriggerConfig() after any call to advanced API to setup configuration or data transfer (when
       data transfer is supported).
-      Call ADV_LPBAM_Q_SetCircularMode() after calling all API scenario to circularize repeated tasks.
+
+    [..]
+      Call ADV_LPBAM_Q_SetCircularMode() after calling all scenario APIs to circularize the input linked-list queue.
 
     *** Driver status description ***
     =================================
     [..]
-      This driver detects and reports any detected issue.
+      This section provides reported LPBAM module status.
+
+    [..]
+      This advanced module reports any detected issue.
           (+) returned values are :
               (++) LPBAM_OK when no error is detected.
-              (++) LPBAM_ERROR when error is detected.
-              (++) LPBAM_INVALID_ID when an invalid node ID is detected. This error value is specific for LPBAM basic
-                   layer.
+              (++) LPBAM_ERROR when any error is detected.
+
     @endverbatim
   **********************************************************************************************************************
   */

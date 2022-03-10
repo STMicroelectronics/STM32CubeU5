@@ -368,7 +368,7 @@ int32_t BSP_SD_DetectITConfig(uint32_t Instance)
   int32_t ret;
   GPIO_InitTypeDef gpio_init_structure;
   static BSP_EXTI_LineCallback SdCallback[SD_INSTANCES_NBR] = {SD_EXTI_Callback};
-  static IRQn_Type SD_EXTI_IRQn[SD_INSTANCES_NBR] = {SD_DETECT_EXTI_IRQn};
+  static IRQn_Type SD_EXTI_IRQn[SD_INSTANCES_NBR] = {SD_DETECT_EXTI_IRQ};
 
   if (Instance >= SD_INSTANCES_NBR)
   {

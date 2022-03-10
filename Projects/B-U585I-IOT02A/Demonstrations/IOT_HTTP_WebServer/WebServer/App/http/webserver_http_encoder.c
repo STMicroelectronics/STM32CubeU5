@@ -65,7 +65,7 @@ WebServer_StatusTypeDef webserver_http_encode_html_response(char *html_response,
   strcat(html_response, body_length);
   strcat(html_response, "\r\n");
 
-  /* Add http close connexion header */
+  /* Add http close connection header */
   strcat(html_response, http_headers[HTTP_HEADER_CONNECTION_CLOSE]);
 
   /* Add http end of headers */
@@ -107,7 +107,7 @@ WebServer_StatusTypeDef webserver_http_encode_css_response(char *css_response,
   strcat(css_response, body_length);
   strcat(css_response, "\r\n");
 
-  /* Add http close connexion header */
+  /* Add http close connection header */
   strcat(css_response, http_headers[HTTP_HEADER_CONNECTION_CLOSE]);
 
   /* Add http end of headers */
@@ -149,7 +149,7 @@ WebServer_StatusTypeDef webserver_http_encode_js_response(char *js_response,
   strcat(js_response, body_length);
   strcat(js_response, "\r\n");
 
-  /* Add http close connexion header */
+  /* Add http close connection header */
   strcat(js_response, http_headers[HTTP_HEADER_CONNECTION_CLOSE]);
 
   /* Add http end of headers */
@@ -194,7 +194,7 @@ WebServer_StatusTypeDef webserver_http_encode_favicon_response(char *favicon_res
   strcat(favicon_response, body_length);
   strcat(favicon_response, "\r\n");
 
-  /* Add http close connexion header */
+  /* Add http close connection header */
   strcat(favicon_response, http_headers[HTTP_HEADER_CONNECTION_CLOSE]);
 
   /* Add http end of headers */
@@ -232,7 +232,7 @@ WebServer_StatusTypeDef webserver_http_encode_sensor_response(char *sensor_respo
   strcat(sensor_response, body_length);
   strcat(sensor_response, "\r\n");
 
-  /* Add http close connexion header */
+  /* Add http close connection header */
   strcat(sensor_response, http_headers[HTTP_HEADER_CONNECTION_CLOSE]);
 
   /* Add http end of headers */
@@ -270,7 +270,7 @@ WebServer_StatusTypeDef webserver_http_encode_woff2_response(char *woff2_respons
   strcat(woff2_response, body_length);
   strcat(woff2_response, "\r\n");
 
-  /* Add http close connexion header */
+  /* Add http close connection header */
   strcat(woff2_response, http_headers[HTTP_HEADER_CONNECTION_CLOSE]);
 
   /* Add http end of headers */
@@ -309,7 +309,7 @@ WebServer_StatusTypeDef webserver_http_encode_json_response(char *json_response,
   strcat(json_response, body_length);
   strcat(json_response, "\r\n");
 
-  /* Add http close connexion header */
+  /* Add http close connection header */
   strcat(json_response, http_headers[HTTP_HEADER_CONNECTION_CLOSE]);
 
   /* Add http end of headers */
@@ -348,7 +348,7 @@ WebServer_StatusTypeDef webserver_http_encode_image_response(char *image_respons
   strcat(image_response, body_length);
   strcat(image_response, "\r\n");
 
-  /* Add http close connexion header */
+  /* Add http close connection header */
   strcat(image_response, http_headers[HTTP_HEADER_CONNECTION_CLOSE]);
 
   /* Add http end of headers */

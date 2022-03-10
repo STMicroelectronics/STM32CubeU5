@@ -11,6 +11,7 @@ This project is composed of two sub-projects:
 
 
 At the module manager stage, the main entry function tx_application_define() is called by ThreadX during kernel start, the application creates 1 thread and 1 message queue:
+
   - ModuleManager (Prio : 4; Preemption Threshold : 4)
   - ResidentQueue (Size : 16 * ULONG)
 
@@ -36,56 +37,6 @@ None
 #### <b>Known limitations</b>
 None
 
-### <b>Notes</b>
-
-1. Memory regions attributes :
-
-  - Kernel Code region:
-    * MPU region index: 0
-    * Start Address: Dynamically set at the kernel entry function address
-    * Size: 32 Bytes
-    * Attributes: (XN=0 S=1 C=1 B=1, Preveliged access only, Read Only)
-
-  - Module Code region:
-    * MPU region index: 1 through 4
-    * Start Address: 0x08020000
-    * Size: Code size of module (defined in the preamble)
-    * Attributes: (XN=0 S=1 C=1 B=1, All access permitted, Read Only)
-
-  - Module Data region:
-    * MPU region index: 5 through 8
-    * Start Address: Defined by the module_data_area buffer
-    * Size: Defined by the buffer size MODULE_DATA_SIZE
-    * Attributes: (XN=1 S=1 C=1 B=1, All access permitted, Read/Write)
-
-  - User defined Shared Memory region 1:
-    * MPU region index: 9
-    * Start Address: Defined by READONLY_REGION (default: 0x2003FF00)
-    * Size: 256 Bytes
-    * Attributes: (XN=1 S=1 C=1 B=1, All access permitted, Read Only)
-
-  - User defined Shared Memory region 2:
-    * MPU region index: 10
-    * Start Address: Defined by READWRITE_REGION (default: 0x2003FE00)
-    * Size: 256 Bytes
-    * Attributes: (XN=1 S=1 C=1 B=1, All access permitted, Read/Write)
-
-2. A preamble is required with each Module to expose the module configuration to the Module Manager. Particularly the preamble contains information such as the module unique ID and attributes.
-Module Properties (attributes) is a 32bit word, laid out as:
-  - Bits 31-24: Compiler ID 0 -> IAR 1 -> ARM 2 -> GNU
-  - Bits 23-3: Reserved
-  - Bit 2: 0 -> Disable shared/external memory access 1 -> Enable shared/external memory access
-  - Bit 1: 0 -> No MPU protection 1 -> MPU protection (must have user mode selected - bit 0 set)
-  - Bit 0: 0 -> Privileged mode execution 1 -> User mode execution
-
-For this application demonstrating MPU memory protection on modules, the attributes should be set as follows:
-  - Shared memory access is allowed.
-  - MPU protection is enabled.
-  - User mode is set for the module
-
-The above configuration results in an attributes word equals 0x00000007
-
-3. All C files in a module must #define TXM_MODULE prior to including txm_module.h. Doing so remaps the ThreadX API calls to the module-specific version of the API that invokes the dispatch function in the resident Module Manager to perform the call to the actual API function.
 
 #### <b>ThreadX usage hints</b>
 

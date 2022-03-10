@@ -618,3 +618,4 @@ static void USBD_FrameWork_DFUDesc(USBD_DevClassHandleTypeDef *pdev, uint32_t pC
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
+

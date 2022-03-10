@@ -67,9 +67,6 @@ extern "C" {
 #define DUMMY_CLOCK_CYCLES_READ                 5
 #define DUMMY_CLOCK_CYCLES_WRITE                4
 
-/* End address of the OSPI memory */
-#define OSPI_END_ADDR               (1 << OSPI_FLASH_SIZE)
-
 /* Size of buffers */
 #define BUFFERSIZE                  (COUNTOF(aTxBuffer) - 1)
 /* USER CODE END EC */

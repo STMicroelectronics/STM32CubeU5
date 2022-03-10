@@ -29,7 +29,7 @@
 </ol>
 <ul>
 <li><p>At the beginning of the main program the HAL_Init() function is called to reset all the peripherals, initialize the Flash interface and the systick. The SystemClock_Config() function is used to configure the system clock for STM32U575xx Devices : The CPU at 160 MHz.</p></li>
-<li><p>The transfer clock is set at 24Mhz (SDMMC_CLK / Clock_DIV * 2) and configured within the SD Handle init parameters. Next, prepare linked list nodes for write buffers and start the writing transfer to SD Card. Then prepare linked list nodes for read buffers to write and start the raeding transfer from SD Card.</p></li>
+<li><p>The transfer clock is set at 24Mhz (SDMMC_CLK / Clock_DIV * 2) and configured within the SD Handle init parameters. Next, prepare linked list nodes for write buffers and start the writing transfer to SD Card. Then prepare linked list nodes for read buffers to write and start the reading transfer from SD Card.</p></li>
 <li><p>STM32U575I-EV board’s LEDs can be used to monitor the transfer status:</p>
 <ul>
 <li>LED_BLUE is ON when write/read transfer is ongoing.</li>

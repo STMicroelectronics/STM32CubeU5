@@ -71,10 +71,6 @@ void HAL_MspInit(void)
 
   /* System interrupt init*/
 
-  /** Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
-  */
-  HAL_PWREx_DisableUCPDDeadBattery();
-
   /* USER CODE BEGIN MspInit 1 */
 
   /* USER CODE END MspInit 1 */
@@ -119,6 +115,10 @@ void HAL_FMAC_MspInit(FMAC_HandleTypeDef* hfmac)
 
     __HAL_LINKDMA(hfmac, hdmaOut, handle_GPDMA1_Channel1);
 
+    if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel1, DMA_CHANNEL_NPRIV) != HAL_OK)
+    {
+      Error_Handler();
+    }
 
   /* USER CODE BEGIN FMAC_MspInit 1 */
 

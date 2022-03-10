@@ -34,31 +34,17 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
-/* Define the ThreadX , NetX and FileX object control blocks. */
-
-/* Define Threadx global data structures. */
-TX_THREAD Main_thread;
-TX_SEMAPHORE Semaphore;
-
-/* Define NetX global data structures. */
-NX_PACKET_POOL EthPool;
-NX_PACKET_POOL WebServerPool;
-NX_IP  EthIP;
-NX_DHCP DHCPClient;
-NX_WEB_HTTP_SERVER HTTPServer;
-ULONG IPAddress;
-ULONG NetMask;
-
-/* Define FileX global data structures. */
-
-/* the web server reads the web content from the uSD, a FX_MEDIA instance is required */
-FX_MEDIA SDMedia;
-
-/* Buffer for FileX FX_MEDIA sector cache. this should be 32-Bytes
-aligned to avoid cache maintenance issues */
+TX_THREAD               Main_thread;
+TX_SEMAPHORE            Semaphore;
+NX_PACKET_POOL          EthPool;
+NX_PACKET_POOL          WebServerPool;
+NX_IP                   EthIP;
+NX_DHCP                 DHCPClient;
+NX_WEB_HTTP_SERVER      HTTPServer;
+ULONG                   IPAddress;
+ULONG                   NetMask;
+FX_MEDIA                SDMedia;
 ALIGN_32BYTES (uint32_t media_memory[FX_STM32_SD_DEFAULT_SECTOR_SIZE / sizeof(uint32_t)]);
-
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -78,14 +64,8 @@ static uint8_t nx_server_pool[SERVER_POOL_SIZE];
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
-/* WEB HTTP server thread entry */
-static void  nx_server_thread_entry(ULONG thread_input);
-
-/* DHCP state change notify callback */
+static void nx_server_thread_entry(ULONG thread_input);
 static VOID ip_address_change_notify_callback(NX_IP *ip_instance, VOID *ptr);
-
-/* Web Server callback when a new request from a web client is triggered */
 static UINT webserver_request_notify_callback(NX_WEB_HTTP_SERVER *server_ptr,
                                               UINT request_type, CHAR *resource,
                                               NX_PACKET *packet_ptr);

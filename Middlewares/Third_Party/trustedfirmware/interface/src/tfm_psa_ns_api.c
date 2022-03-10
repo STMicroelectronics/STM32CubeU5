@@ -54,18 +54,18 @@ psa_status_t psa_call(psa_handle_t handle, int32_t type,
     /* Due to v8M restrictions, TF-M NS API needs to add another layer of
      * serialization in order for NS to pass arguments to S
      */
-    psa_invec in_vecs, out_vecs;
+    const struct tfm_control_parameter_t ctrl_param = {
+        .type = type,
+        .in_len = in_len,
+        .out_len = out_len,
+    };
 
-    in_vecs.base = in_vec;
-    in_vecs.len = in_len;
-    out_vecs.base = out_vec;
-    out_vecs.len = out_len;
     return tfm_ns_interface_dispatch(
                                 (veneer_fn)tfm_psa_call_veneer,
                                 (uint32_t)handle,
-                                (uint32_t)type,
-                                (uint32_t)&in_vecs,
-                                (uint32_t)&out_vecs);
+                                (uint32_t)&ctrl_param,
+                                (uint32_t)in_vec,
+                                (uint32_t)out_vec);
 }
 
 void psa_close(psa_handle_t handle)

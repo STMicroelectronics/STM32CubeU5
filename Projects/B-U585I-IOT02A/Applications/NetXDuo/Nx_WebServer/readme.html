@@ -31,9 +31,10 @@
 <li><p>The <i>ARP</i>, <i>ICMP</i>, <i>UDP</i> and <i>TCP</i> protocols are enabled for the <i>NX_IP</i> instance</p></li>
 <li><p>A <i>DHCP client is created.</i></p></li>
 </ul>
-<p>The application then creates 2 threads with the same priorities:</p>
+<p>The application then creates 3 threads :</p>
 <ul>
 <li><p><strong>AppMainThread</strong> (priority 10, PreemtionThreashold 10) : created with the <i>TX_AUTO_START</i> flag to start automatically.</p></li>
+<li><p><strong>AppServerThread</strong> (priority 5, PreemtionThreashold 5) : created with the <i>TX_DONT_START</i> flag to be started later.</p></li>
 <li><p><strong>AppWebServerThread</strong> (priority 5, PreemtionThreashold 5) : created with the <i>TX_DONT_START</i> flag to be started later.</p></li>
 </ul>
 <p>The <strong>AppMainThread</strong> starts and perform the following actions:</p>
@@ -51,7 +52,7 @@
 <h4 id="expected-success-behavior"><b>Expected success behavior</b></h4>
 <ul>
 <li><p>The board IP address “IP@” is printed on the HyperTerminal</p></li>
-<li><p>Home page is well displayed on the browser after entering the url: http://IP@/index.html</p></li>
+<li><p>Home page is well displayed on the browser after entering the url: http://IP@/about.html</p></li>
 <li><p>Dashboard is well displayed on the browser after entering the url: http://IP@/dashboard.html</p></li>
 <li><p>On dashboard, You can command Green LED and watch some infos about threadx and netxduo.</p></li>
 </ul>

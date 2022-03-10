@@ -31,6 +31,7 @@
 #include "usbpd_trace.h"
 #endif /* _TRACE */
 #include "string.h"
+#include "gui_api.h"
 /* USER CODE BEGIN Include */
 
 /* USER CODE END Include */
@@ -352,8 +353,8 @@ void USBPD_PWR_IF_GetPortPDOs(uint8_t PortNum, USBPD_CORE_DataInfoType_TypeDef D
 {
     if (DataId == USBPD_CORE_DATATYPE_SRC_PDO)
     {
-      *Size = PORT0_NB_SOURCEPDO;
-      memcpy(Ptr,PORT0_PDO_ListSRC, sizeof(uint32_t) * PORT0_NB_SOURCEPDO);
+      *Size = USBPD_NbPDO[1];
+      memcpy(Ptr,PORT0_PDO_ListSRC, sizeof(uint32_t) * USBPD_NbPDO[1]);
     }
 /* USER CODE BEGIN USBPD_PWR_IF_GetPortPDOs */
   uint32_t   nbpdo, index, nb_valid_pdo = 0;

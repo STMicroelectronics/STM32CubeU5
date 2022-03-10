@@ -115,12 +115,10 @@ Connectivity, USBX Host, USBPD, ThreadX, USB, HID, Mouse, Keyboard, UART, USART,
 
 <b>Note</b>
 It is mandatory to check that the Jumpers below are fitted:
+    JP25           : UCPD_5V Jumper is fitted in order to provide Vbus 5V.
+    JP6 (UCPD_SRC) : This application initialize the type C port in source mode with only one PDO at 5V.
+    JP14 and JP15  : To ensure the correct functionality of TCPP03(Protection IC).  
 
-  -  JP25             : UCPD_5V Jumper is fitted in order to provide Vbus 5V.
-  -  JP25             : 5V_EXT  Jumper is fitted, the board must be powered using the power adaptor not STLIK cable.
-  -  JP6 (UCPD_SNK03) : Not fitted
-  -  JP8 (UCPD_SRC)   : Fitted. This application initialize the type C port in source mode with only one PDO at 5V.
-  -  JP14 and JP15    : To ensure the correct functionality of TCPP03 (Protection IC).
 
 ### <b>How to use it ?</b>
 

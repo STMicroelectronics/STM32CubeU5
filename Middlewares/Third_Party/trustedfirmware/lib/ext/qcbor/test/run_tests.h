@@ -1,14 +1,14 @@
 /*==============================================================================
  run_tests.h -- test aggregator and results reporting
 
- Copyright (c) 2018-2019, Laurence Lundblade. All rights reserved.
+ Copyright (c) 2018-2020, Laurence Lundblade. All rights reserved.
 
  SPDX-License-Identifier: BSD-3-Clause
 
  See BSD-3-Clause license in README.md
 
  Created 9/30/18
- ==============================================================================*/
+ =============================================================================*/
 
 /**
  @file run_tests.h
@@ -53,7 +53,10 @@ typedef void (*OutputStringCB)(const char *szString, void *pOutCtx, int bNewline
 
  @return The number of tests that failed. Zero means overall success.
  */
-int RunTests(const char *szTestNames[], OutputStringCB pfOutput, void *pOutCtx, int *pNumTestsRun);
+int RunTestsQCBOR(const char *szTestNames[],
+                  OutputStringCB pfOutput,
+                  void *pOutCtx,
+                  int *pNumTestsRun);
 
 
 /**
@@ -62,5 +65,5 @@ int RunTests(const char *szTestNames[], OutputStringCB pfOutput, void *pOutCtx, 
  @param[in] pfOutput     Function that is called to output text strings.
  @param[in] pOutCtx      Context pointer passed to output function.
  */
-void PrintSizes(OutputStringCB pfOutput, void *pOutCtx);
+void PrintSizesQCBOR(OutputStringCB pfOutput, void *pOutCtx);
 

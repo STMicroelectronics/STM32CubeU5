@@ -12,7 +12,7 @@ The CPU at 160 MHz.
 
 - The transfer clock is set at 24Mhz (SDMMC_CLK / Clock_DIV * 2) and configured within the SD Handle init parameters.
 Next, prepare linked list nodes for write buffers and start the writing transfer to SD Card.
-Then prepare linked list nodes for read buffers to write and start the raeding transfer from SD Card.
+Then prepare linked list nodes for read buffers to write and start the reading transfer from SD Card.
 
 - STM32U575I-EV board's LEDs can be used to monitor the transfer status:
 

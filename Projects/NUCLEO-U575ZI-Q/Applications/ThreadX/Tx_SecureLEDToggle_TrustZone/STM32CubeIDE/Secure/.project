@@ -31,6 +31,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>Doc/README.md</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/README.md</locationURI>
+		</link>
+		<link>
 			<name>Application/User/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Secure/Src/main.c</locationURI>
@@ -151,7 +156,7 @@
 			<locationURI>PARENT-7-PROJECT_LOC/Drivers/BSP/STM32U5xx_Nucleo/stm32u5xx_nucleo.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/ThreadX/Core/tx_thread_secure_stack.c</name>
+			<name>Middlewares/threadx/Core/tx_thread_secure_stack.c</name>
 			<type>1</type>
 			<locationURI>PARENT-7-PROJECT_LOC/Middlewares/ST/threadx/ports/cortex_m33/gnu/src/tx_thread_secure_stack.c</locationURI>
 		</link>

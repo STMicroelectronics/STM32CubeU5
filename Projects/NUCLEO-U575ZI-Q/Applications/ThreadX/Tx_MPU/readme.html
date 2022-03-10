@@ -26,7 +26,11 @@
 <li>Tx_Module_Manager : ThreadX Module Manager code that load and start the module dynamically at runtime.</li>
 <li>Tx_Module : ThreadX Module code that is to be loaded and started by the module manager dynamically at runtime.</li>
 </ul>
-<p>At the module manager stage, the main entry function tx_application_define() is called by ThreadX during kernel start, the application creates 1 thread and 1 message queue: - ModuleManager (Prio : 4; Preemption Threshold : 4) - ResidentQueue (Size : 16 * ULONG)</p>
+<p>At the module manager stage, the main entry function tx_application_define() is called by ThreadX during kernel start, the application creates 1 thread and 1 message queue:</p>
+<ul>
+<li>ModuleManager (Prio : 4; Preemption Threshold : 4)</li>
+<li>ResidentQueue (Size : 16 * ULONG)</li>
+</ul>
 <p>ModuleManager thread uses the ThreadX Module Manager APIs to configure, load and start the expected module. ResidentQueue is used to synchronize operations between Module Manager and the loaded Module.</p>
 <p>At the module stage, the main entry function default_module_start() is called by ThreadX during module start, the application creates 1 thread: - MainThread (Prio : 2; Preemption Threshold : 2)</p>
 <p>MainThread is expected to execute data read and write operations to/from user-defined Shared Memory regions. Memory protection is then demonstrated by trapping the Module’s attempt at writing to the shared Read Only region. A Memory Fault is then expected before the unload of the module and the module manager continues to run correctly.</p>
@@ -41,62 +45,6 @@
 <p>None</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
 <p>None</p>
-<h3 id="notes"><b>Notes</b></h3>
-<ol type="1">
-<li>Memory regions attributes :</li>
-</ol>
-<ul>
-<li>Kernel Code region:
-<ul>
-<li>MPU region index: 0</li>
-<li>Start Address: Dynamically set at the kernel entry function address</li>
-<li>Size: 32 Bytes</li>
-<li>Attributes: (XN=0 S=1 C=1 B=1, Preveliged access only, Read Only)</li>
-</ul></li>
-<li>Module Code region:
-<ul>
-<li>MPU region index: 1 through 4</li>
-<li>Start Address: 0x08020000</li>
-<li>Size: Code size of module (defined in the preamble)</li>
-<li>Attributes: (XN=0 S=1 C=1 B=1, All access permitted, Read Only)</li>
-</ul></li>
-<li>Module Data region:
-<ul>
-<li>MPU region index: 5 through 8</li>
-<li>Start Address: Defined by the module_data_area buffer</li>
-<li>Size: Defined by the buffer size MODULE_DATA_SIZE</li>
-<li>Attributes: (XN=1 S=1 C=1 B=1, All access permitted, Read/Write)</li>
-</ul></li>
-<li>User defined Shared Memory region 1:
-<ul>
-<li>MPU region index: 9</li>
-<li>Start Address: Defined by READONLY_REGION (default: 0x2003FF00)</li>
-<li>Size: 256 Bytes</li>
-<li>Attributes: (XN=1 S=1 C=1 B=1, All access permitted, Read Only)</li>
-</ul></li>
-<li>User defined Shared Memory region 2:
-<ul>
-<li>MPU region index: 10</li>
-<li>Start Address: Defined by READWRITE_REGION (default: 0x2003FE00)</li>
-<li>Size: 256 Bytes</li>
-<li>Attributes: (XN=1 S=1 C=1 B=1, All access permitted, Read/Write)</li>
-</ul></li>
-</ul>
-<ol start="2" type="1">
-<li>A preamble is required with each Module to expose the module configuration to the Module Manager. Particularly the preamble contains information such as the module unique ID and attributes. Module Properties (attributes) is a 32bit word, laid out as:</li>
-</ol>
-<ul>
-<li>Bits 31-24: Compiler ID 0 -&gt; IAR 1 -&gt; ARM 2 -&gt; GNU</li>
-<li>Bits 23-3: Reserved</li>
-<li>Bit 2: 0 -&gt; Disable shared/external memory access 1 -&gt; Enable shared/external memory access</li>
-<li>Bit 1: 0 -&gt; No MPU protection 1 -&gt; MPU protection (must have user mode selected - bit 0 set)</li>
-<li>Bit 0: 0 -&gt; Privileged mode execution 1 -&gt; User mode execution</li>
-</ul>
-<p>For this application demonstrating MPU memory protection on modules, the attributes should be set as follows: - Shared memory access is allowed. - MPU protection is enabled. - User mode is set for the module</p>
-<p>The above configuration results in an attributes word equals 0x00000007</p>
-<ol start="3" type="1">
-<li>All C files in a module must #define TXM_MODULE prior to including txm_module.h. Doing so remaps the ThreadX API calls to the module-specific version of the API that invokes the dispatch function in the resident Module Manager to perform the call to the actual API function.</li>
-</ol>
 <h4 id="threadx-usage-hints"><b>ThreadX usage hints</b></h4>
 <ul>
 <li>ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.</li>

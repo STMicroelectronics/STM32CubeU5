@@ -32,6 +32,7 @@ extern "C" {
 #include "lx_stm32_ospi_driver.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "main.h"
 #include <stdio.h>
 /* USER CODE END Includes */
 

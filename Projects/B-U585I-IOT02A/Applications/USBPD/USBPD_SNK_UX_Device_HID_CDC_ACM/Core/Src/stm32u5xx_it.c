@@ -21,7 +21,6 @@
 #include "main.h"
 #include "stm32u5xx_it.h"
 #include "usbpd.h"
-#include "tracer_emb.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stm32u5xx_ll_exti.h"
@@ -219,11 +218,7 @@ void GPDMA1_Channel6_IRQHandler(void)
   /* USER CODE BEGIN GPDMA1_Channel6_IRQn 0 */
 
   /* USER CODE END GPDMA1_Channel6_IRQn 0 */
-#if defined(_TRACE)
-  TRACER_EMB_IRQHandlerDMA();
-#else
   HAL_DMA_IRQHandler(&handle_GPDMA1_Channel6);
-#endif /* _TRACE */
   /* USER CODE BEGIN GPDMA1_Channel6_IRQn 1 */
 
   /* USER CODE END GPDMA1_Channel6_IRQn 1 */
@@ -240,9 +235,6 @@ void TIM6_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_IRQn 1 */
   USBPD_DPM_TimerCounter();
-#if defined(_GUI_INTERFACE)
-  GUI_TimerCounter();
-#endif /* _GUI_INTERFACE */
   /* USER CODE END TIM6_IRQn 1 */
 }
 
@@ -254,11 +246,7 @@ void USART1_IRQHandler(void)
   /* USER CODE BEGIN USART1_IRQn 0 */
 
   /* USER CODE END USART1_IRQn 0 */
-#if defined(_TRACE)
-  TRACER_EMB_IRQHandlerUSART();
-#else
   HAL_UART_IRQHandler(&huart1);
-#endif /* _TRACE */
   /* USER CODE BEGIN USART1_IRQn 1 */
 
   /* USER CODE END USART1_IRQn 1 */

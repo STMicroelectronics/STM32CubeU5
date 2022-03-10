@@ -23,7 +23,7 @@ setup(
         'cbor',
         'cryptography',
         'ecdsa',
-        'pycose',
+        'pycose>=0.1.2',
         'pyyaml',
     ],
 )

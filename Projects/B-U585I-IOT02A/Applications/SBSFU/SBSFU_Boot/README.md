@@ -7,7 +7,7 @@ Read the file SBSFU_Boot/q_a.txt for Application Licence Clarification.
 
 This project is used to generate the SBSFU_Boot binary file.
 The core function of this application relies on the mcuboot middleware, the trusted
-firmware (TFM) middleware and the mbed-crypto middleware.
+firmware (TFM) middleware (only Boot Loader stage 2 part) and the mbed-crypto middleware.
 
 It has to be compiled first.
 
@@ -30,6 +30,7 @@ Option bytes, TrustZone
   - SBSFU_Boot/Inc/mcuboot_config/mcuboot_config.h Mcuboot configuration file
   - SBSFU_Boot/Inc/aes_alt.h                       Header file for aes_alt.c
   - SBSFU_Boot/Inc/boot_hal_cfg.h                  Platform configuration file for SBSFU_Boot
+  - SBSFU_Boot/Inc/boot_hal_hash_ref.h             Header file for hash reference code in boot_hal.c
   - SBSFU_Boot/Inc/boot_hal_imagevalid.h           Header file for image validation code in boot_hal.c
   - SBSFU_Boot/Inc/boot_hal_flowcontrol.h          Header file for flow control code in boot_hal.c
   - SBSFU_Boot/Inc/cmsis.h                         Header file for CMSIS

@@ -223,19 +223,42 @@
           <state>STM32U585xx</state>
           <state>USE_HAL_DRIVER</state>
           <state>NDEBUG</state>
+          <state>TFM_PARTITION_LOG_LEVEL=3</state>
+          <state>TFM_SPM_LOG_LEVEL=3</state>
+          <state>__AS_BOUNDS__</state>
           <state>BL2</state>
-          <state>SST_ENCRYPTION</state>
+          <state>PS_ENCRYPTION</state>
+          <state>TFM_PARTITION_PROTECTED_STORAGE</state>
+          <state>TFM_PARTITION_INTERNAL_TRUSTED_STORAGE</state>
+          <state>TFM_PARTITION_CRYPTO</state>
           <state>TFM_PARTITION_PLATFORM</state>
+          <state>TFM_PARTITION_INITIAL_ATTESTATION</state>
           <state>TFM_PSA_API=1</state>
+          <state>CONFIG_TFM_ENABLE_MEMORY_PROTECT</state>
           <state>TFM_LVL=2</state>
-          <state>TFM_LEGACY_API</state>
           <state>MULADDC_CANNOT_USE_R7</state>
           <state>MBEDTLS_CONFIG_FILE=&lt;tfm_mbedcrypto_config.h&gt;</state>
           <state>ITS_CREATE_FLASH_LAYOUT</state>
-          <state>SST_CREATE_FLASH_LAYOUT</state>
-          <state>FLOW_CONTROL</state>
+          <state>PS_CREATE_FLASH_LAYOUT</state>
+          <state>TFM_CRYPTO_IOVEC_BUFFER_SIZE=5120</state>
+          <state>TFM_CRYPTO_ENGINE_BUF_SIZE=0x2c00</state>
+          <state>PS_MAX_ASSET_SIZE=2048</state>
+          <state>PS_NUM_ASSETS=10</state>
+          <state>ITS_MAX_ASSET_SIZE=2048</state>
+          <state>ITS_NUM_ASSETS=20</state>
+          <state>T_COSE_COMPILE_TIME_CONFIG</state>
+          <state>T_COSE_USE_PSA_CRYPTO</state>
+          <state>T_COSE_USE_PSA_CRYPTO_FROM_TFM</state>
+          <state>T_COSE_DISABLE_CONTENT_TYPE</state>
+          <state>BOOT_DATA_AVAILABLE</state>
           <state>__INITIAL_SP=ARM_LIB_STACK$$Limit</state>
           <state>__STACK_LIMIT=ARM_LIB_STACK$$Base</state>
+          <state>DEFAULT_UART_BAUDRATE=115200</state>
+          <state>INCLUDE_OPTIONAL_CLAIMS</state>
+          <state>FLOW_CONTROL</state>
+          <state>TFM_FIH_PROFILE_ON</state>
+          <state>TFM_FIH_PROFILE_HIGH</state>
+          <state>STSAFE_A110</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -363,38 +386,62 @@
           <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\CMSIS\Include</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\CMSIS\Device\ST\STM32U5xx\Include</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Inc</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\include</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\include\ext</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\include\log</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\include\os_wrapper</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\mbedcrypto\mbedcrypto_config</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\inc</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\src</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\util</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\t_cose\inc</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\t_cose\src</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\fih\inc</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\cmsis</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\driver</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\include</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\include\</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\crypto</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\firmware_update</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\firmware_update\bootloader</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\initial_attestation</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\flash</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\flash_fs</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\lib\sprt</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\lib\sprt\include</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\platform</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\protected_storage</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\protected_storage\crypto</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\protected_storage\nv_counters</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa\arch</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\include</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\include\</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\common</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext</state>
+          <state>$PROJ_DIR$\g\interface\include</state>
+          <state>$PROJ_DIR$\g\psa_manifest</state>
+          <state>$PROJ_DIR$\g\</state>
+          <state>$PROJ_DIR$\g\secure_fw\partitions</state>
+          <state>$PROJ_DIR$\g\secure_fw\spm\cmsis_psa</state>
           <state>$PROJ_DIR$\..\..\Linker</state>
           <state>$PROJ_DIR$\..\Secure\Inc</state>
+          <state>$PROJ_DIR$\..\Secure_nsclib</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include\mbedtls</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include\psa</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mcuboot\boot\bootutil\include</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mcuboot\boot\bootutil\src</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\bl2\ext\mcuboot\include</state>
+          <state>$PROJ_DIR$\..\..\TFM_SBSFU_BOOT\Inc</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\arch\include</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\include</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\ipc</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\ipc\include</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\platform</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\crypto</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\audit_logging</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\initial_attestation</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\initial_attestation\psa_manifest</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\app_rot</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\include</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\include\psa_manifest</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\include</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\common</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\driver</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\inc</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\util</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\t_cose\inc</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\t_cose\src</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\bl2\include</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\test\suites\attestation</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\SE_STSAFEA_API\Core\Inc</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\SE_STSAFEA_API\Application\MbedTLS\Inc</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\STSAFE_A1xx\CoreModules\Inc</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\secure_element\stm</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -728,7 +775,7 @@
       <name>BUILDACTION</name>
       <archiveVersion>1</archiveVersion>
       <data>
-        <prebuild>$PROJ_DIR$\prebuild_s.cmd "$PROJ_DIR$"</prebuild>
+        <prebuild>$PROJ_DIR$\prebuild_s.cmd "$PROJ_DIR$" "STM32U585xx"</prebuild>
         <postbuild>cmd /C "cmd /C $PROJ_DIR$\postbuild.bat "$PROJ_DIR$"  "1.0.0" "secure""</postbuild>
       </data>
     </settings>
@@ -1093,91 +1140,307 @@
     </settings>
   </configuration>
   <group>
-    <name>Drivers</name>
-    <group>
-      <name>STM32U5xx_HAL_Driver</name>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_cortex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_dma.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_dma_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_exti.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_flash.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_flash_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_gpio.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_gtzc.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_hash.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_hash_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_pwr.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_pwr_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rcc.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rcc_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rng.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rng_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rtc.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rtc_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_uart.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_uart_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_cryp.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_cryp_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_pka.c</name>
-      </file>
-    </group>
-    <group>
-      <name>CMSIS</name>
-      <file>
-        <name>$PROJ_DIR$\..\Secure\Src\system_stm32u5xx.c</name>
-      </file>
-    </group>
-  </group>
-  <group>
     <name>Middlewares</name>
+    <group>
+      <name>trustedfirmware</name>
+      <group>
+        <name>core</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\src\ieee754.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\src\qcbor_decode.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\src\qcbor_encode.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\src\UsefulBuf.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\util\qcbor_util.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\t_cose\crypto_adapters\t_cose_psa_crypto.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\t_cose\src\t_cose_parameters.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\t_cose\src\t_cose_sign1_sign.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\t_cose\src\t_cose_sign1_verify.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\t_cose\src\t_cose_util.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\fih\src\fih.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\crypto\crypto_aead.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\crypto\crypto_alloc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\crypto\crypto_asymmetric.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\crypto\crypto_cipher.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\crypto\crypto_hash.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\crypto\crypto_init.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\crypto\crypto_key.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\crypto\crypto_key_derivation.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\crypto\crypto_mac.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\crypto\tfm_crypto_secure_api.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\crypto\tfm_mbedcrypto_alt.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\firmware_update\bootloader\mcuboot\tfm_mcuboot_fwu.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\firmware_update\tfm_fwu.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\firmware_update\tfm_fwu_req_mngr.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\firmware_update\tfm_fwu_secure_api.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\initial_attestation\attest_asymmetric_key.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\initial_attestation\attest_core.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\initial_attestation\attest_token_encode.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\initial_attestation\tfm_attest.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\initial_attestation\tfm_attest_req_mngr.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\initial_attestation\tfm_attest_secure_api.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\flash\its_flash.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\flash\its_flash_nand.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\flash\its_flash_nor.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\flash\its_flash_ram.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\flash_fs\its_flash_fs.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\flash_fs\its_flash_fs_dblock.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\flash_fs\its_flash_fs_mblock.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\its_utils.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\tfm_internal_trusted_storage.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\tfm_its_req_mngr.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\internal_trusted_storage\tfm_its_secure_api.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\lib\sprt\crt_memcmp.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\lib\sprt\crt_memcpy.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\lib\sprt\crt_memmove.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\lib\sprt\crt_memset.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\lib\sprt\service_api.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\lib\sprt\sprt_partition_metadata_indicator.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\lib\sprt\tfm_sp_log_raw.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\platform\tfm_platform_secure_api.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\protected_storage\crypto\ps_crypto_interface.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\protected_storage\nv_counters\ps_nv_counters.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\protected_storage\ps_encrypted_object.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\protected_storage\ps_object_system.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\protected_storage\ps_object_table.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\protected_storage\ps_utils.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\protected_storage\tfm_protected_storage.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\protected_storage\tfm_ps_req_mngr.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\partitions\protected_storage\tfm_ps_secure_api.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa\arch\tfm_arch.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa\arch\tfm_arch_v8m_main.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa\exception_info.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa\main.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa\spm_ipc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa\tfm_core_svcalls_ipc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa\tfm_nspm_ipc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa\tfm_pools.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa\tfm_psa_api_veneers.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa\tfm_thread.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\cmsis_psa\tfm_wait.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\ffm\psa_client_service_apis.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\ffm\spm_log.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\ffm\spm_psa_client_call.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\ffm\tfm_boot_data.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\ffm\tfm_core_utils.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\ffm\utilities.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\src\psa\psa_client.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\src\psa\psa_lifecycle.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\src\psa\psa_service.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\.\EWARM\g\auto_generated\intermedia_tfm_crypto.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\.\EWARM\g\auto_generated\intermedia_tfm_firmware_update.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\.\EWARM\g\auto_generated\intermedia_tfm_initial_attestation.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\.\EWARM\g\auto_generated\intermedia_tfm_internal_trusted_storage.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\.\EWARM\g\auto_generated\intermedia_tfm_platform.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\.\EWARM\g\auto_generated\intermedia_tfm_protected_storage.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\.\EWARM\g\auto_generated\intermedia_tfm_app_rot.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\common\tfm_platform.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\common\tfm_hal_ps.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\common\tfm_hal_its.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\common\tfm_hal_isolation_mpu_v8m.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\common\uart_stdout.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\common\tfm_hal_spm_logdev_peripheral.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\bl2\src\flash_map.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\bl2\ext\mcuboot\flash_map_extended.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\secure_element\stm\se_psa.c</name>
+        </file>
+      </group>
+      <group>
+        <name>test</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\log\tfm_log_raw.c</name>
+        </file>
+      </group>
+    </group>
     <group>
       <name>mbed-crypto</name>
       <file>
@@ -1283,9 +1546,6 @@
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\md5.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\md_wrap.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\memory_buffer_alloc.c</name>
       </file>
       <file>
@@ -1337,6 +1597,9 @@
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\psa_crypto_storage.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\psa_crypto_driver_wrappers.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\ripemd160.c</name>
       </file>
       <file>
@@ -1369,234 +1632,129 @@
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\xtea.c</name>
       </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\psa_crypto_se.c</name>
+      </file>
     </group>
     <group>
-      <name>trustedfirmware</name>
+      <name>mcuboot</name>
       <group>
         <name>core</name>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\initial_attestation\attest_token.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\initial_attestation\attestation_core.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\initial_attestation\attestation_key.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\crypto\crypto_aead.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\crypto\crypto_alloc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\crypto\crypto_asymmetric.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\crypto\crypto_cipher.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\crypto\crypto_generator.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\crypto\crypto_hash.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\crypto\crypto_init.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\crypto\crypto_key.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\crypto\crypto_mac.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\src\ieee754.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\internal_trusted_storage\flash\its_flash.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\internal_trusted_storage\flash_fs\its_flash_fs.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\internal_trusted_storage\flash_fs\its_flash_fs_dblock.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\internal_trusted_storage\flash_fs\its_flash_fs_mblock.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\internal_trusted_storage\its_utils.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\ipc\psa_client.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\ipc\psa_service.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\src\qcbor_decode.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\src\qcbor_encode.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\util\qcbor_util.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\spm_api.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm\spm_api_ipc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\crypto\sst_crypto_interface.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\sst_encrypted_object.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\flash\sst_flash.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\flash_fs\sst_flash_fs.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\flash_fs\sst_flash_fs_dblock.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\flash_fs\sst_flash_fs_mblock.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\nv_counters\sst_nv_counters.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\sst_object_system.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\sst_object_table.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\sst_utils.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\t_cose\src\t_cose_psa_crypto_hash.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\t_cose\src\t_cose_psa_crypto_sign.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\t_cose\src\t_cose_psa_crypto_verify.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\t_cose\src\t_cose_sign1_sign.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\t_cose\src\t_cose_sign1_verify.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\t_cose\src\t_cose_util.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\arch\tfm_arch_v8m_main.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\initial_attestation\tfm_attestation.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\initial_attestation\tfm_attestation_req_mngr.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\initial_attestation\tfm_attestation_secure_api.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\tfm_boot_data.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\tfm_core.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\tfm_core_log.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\tfm_core_mem_check.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\tfm_core_svcalls_ipc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\tfm_core_utils.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\crypto\tfm_crypto_secure_api.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\internal_trusted_storage\tfm_internal_trusted_storage.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\internal_trusted_storage\tfm_its_req_mngr.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\internal_trusted_storage\tfm_its_secure_api.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\ipc\tfm_message_queue.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\tfm_nspm_ipc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\ipc\tfm_pools.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\tfm_protected_storage.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\ns_callable\tfm_psa_api_veneers.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\tfm_secure_api.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\tfm_spm_services.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\tfm_sst_req_mngr.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\secure_storage\tfm_sst_secure_api.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\platform\platform_sp.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\platform\tfm_platform_secure_api.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services\app_rot\tfm_app_rot.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\ipc\tfm_svcalls.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\ipc\tfm_thread.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\tfm_utils.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\ns_callable\tfm_veneers.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\ipc\tfm_wait.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\common\uart_stdout.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\src\UsefulBuf.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mcuboot\boot\bootutil\src\bootutil_misc.c</name>
         </file>
       </group>
+    </group>
+    <group>
+      <name>stsafe_a</name>
+      <group>
+        <name>stsafe_axx0</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\STSAFE_A1xx\CoreModules\Src\stsafea_core.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\STSAFE_A1xx\CoreModules\Src\stsafea_crypto.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\STSAFE_A1xx\CoreModules\Src\stsafea_service.c</name>
+        </file>
+      </group>
+      <group>
+        <name>se_stsafea_api</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\SE_STSAFEA_API\Core\Src\se_stsafea_api.c</name>
+        </file>
+      </group>
+    </group>
+  </group>
+  <group>
+    <name>Drivers</name>
+    <group>
+      <name>STM32U5xx_HAL_Driver</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_cortex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_dma.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_dma_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_exti.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_flash.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_flash_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_gpio.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_gtzc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_hash.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_hash_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_pwr.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_pwr_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rcc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rcc_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rng.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rng_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rtc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rtc_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_uart.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_uart_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_cryp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_cryp_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_pka.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_i2c.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_i2c_ex.c</name>
+      </file>
+    </group>
+    <group>
+      <name>CMSIS</name>
+      <file>
+        <name>$PROJ_DIR$\..\Secure\Src\system_stm32u5xx.c</name>
+      </file>
     </group>
   </group>
   <group>
@@ -1616,6 +1774,9 @@
         <name>$PROJ_DIR$\..\Secure\Src\tick.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Secure\Src\nv_counters.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Secure\Src\attest_hal.c</name>
       </file>
       <file>
@@ -1628,9 +1789,6 @@
         <name>$PROJ_DIR$\..\Secure\Src\dummy_device_id.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\Secure\Src\dummy_nv_counters.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\Secure\Src\low_level_device.c</name>
       </file>
       <file>
@@ -1640,6 +1798,9 @@
         <name>$PROJ_DIR$\..\Secure\Src\target_cfg.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Secure\Src\tfm_hal_isolation.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Secure\Src\tfm_platform_system.c</name>
       </file>
       <file>
@@ -1647,6 +1808,15 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Secure\Src\app_rot_test.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Secure\Src\tfm_app_rot.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Secure\Src\platform_sp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Secure\Src\tfm_fih.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Secure\Src\aes_alt.c</name>
@@ -1677,6 +1847,12 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Secure\Src\sha256_alt.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Secure\Src\stsafea_service_interface.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Secure\Src\stsafea_crypto_interface.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Secure\Src\startup_stm32u5xx.c</name>

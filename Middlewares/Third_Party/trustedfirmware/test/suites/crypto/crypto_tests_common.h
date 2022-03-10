@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -13,7 +13,7 @@ extern "C" {
 #endif
 
 #include "psa/crypto.h"
-#include "test/framework/test_framework_helpers.h"
+#include "test_framework_helpers.h"
 
 /**
  * \brief Size of the key to use in tests in bits
@@ -59,6 +59,11 @@ extern "C" {
 #define TEST_MAX_KEY_LENGTH (64)
 
 /**
+ * \brief The length of truncated authentication tag for AEAD algorithm
+ */
+#define TRUNCATED_AUTH_TAG_LEN (8)
+
+/**
  * \brief Tests the key interfaces with different key types
  *
  * \param[in]  key_type PSA key type
@@ -92,6 +97,15 @@ void psa_invalid_cipher_test(const psa_key_type_t key_type,
                              const size_t key_size,
                              struct test_result_t *ret);
 /**
+ * \brief Tests setup of an unsupported hash algorithm
+ *
+ * \param[in]  alg PSA algorithm
+ * \param[out] ret Test result
+ *
+ */
+void psa_unsupported_hash_test(const psa_algorithm_t alg,
+                               struct test_result_t *ret);
+/**
  * \brief Tests different hashing algorithms
  *
  * \param[in]  alg PSA algorithm
@@ -100,6 +114,17 @@ void psa_invalid_cipher_test(const psa_key_type_t key_type,
  */
 void psa_hash_test(const psa_algorithm_t alg,
                    struct test_result_t *ret);
+/**
+ * \brief Tests setup of an unsupported MAC algorithm
+ *
+ * \param[in]  key_type PSA key type
+ * \param[in]  alg      PSA algorithm
+ * \param[out] ret      Test result
+ *
+ */
+void psa_unsupported_mac_test(const psa_key_type_t key_type,
+                              const psa_algorithm_t alg,
+                              struct test_result_t *ret);
 /**
  * \brief Tests different MAC algorithms
  *
@@ -145,6 +170,23 @@ void psa_policy_key_interface_test(struct test_result_t *ret);
  *
  */
 void psa_policy_invalid_policy_usage_test(struct test_result_t *ret);
+
+/**
+ * \brief Tests persistent keys
+ *
+ * \param[out] ret Test result
+ *
+ */
+void psa_persistent_key_test(psa_key_id_t key_id, struct test_result_t *ret);
+
+/**
+ * \brief Key derivation test
+ *
+ * \param[in] deriv_alg Key derivation algorithm
+ * \param[out] ret      Test result
+ */
+void psa_key_derivation_test(psa_algorithm_t deriv_alg,
+                             struct test_result_t *ret);
 
 #ifdef __cplusplus
 }

@@ -101,18 +101,32 @@ WebServer_StatusTypeDef webserver_console_get_ssid(ap_t *net_wifi_registred_hots
   printf("\r\n");
   printf("*** Please enter your wifi ssid : =====================================================================\r\n");
 
+  /* Clear pending characters */
+  if (HAL_UART_AbortReceive(&Console_UARTHandle) != HAL_OK)
+  {
+    return CONSOLE_ERROR;
+  }
+
   /* Repeat receiving character until getting all SSID */
   do
   {
+    /* Get entred character */
     if (HAL_UART_Receive(&Console_UARTHandle, (uint8_t *) &ch, 1, HAL_MAX_DELAY) != HAL_OK)
     {
       return CONSOLE_ERROR;
     }
 
+    /* Store entred character */
     SSID[count] = ch;
     count++;
 
-  } while ((ch != '\n') && (ch != ' ') && (ch != 0));
+    /* Print entred character */
+    if ((ch != 0) && (ch != '\r'))
+    {
+      printf("%c",ch);
+    }
+
+  } while ((ch != '\r') && (ch != 0));
 
   /* Clear end of characters symbols */
   do
@@ -120,7 +134,7 @@ WebServer_StatusTypeDef webserver_console_get_ssid(ap_t *net_wifi_registred_hots
     SSID[count] = 0;
     count--;
 
-  } while ((SSID[count] == '\n') || (SSID[count] == ' ') || (SSID[count] == '\r'));
+  } while (SSID[count] == '\r');
 
   /* Store user SSID */
   net_wifi_registred_hotspot->ssid = SSID;
@@ -143,6 +157,12 @@ WebServer_StatusTypeDef webserver_console_get_password(ap_t *net_wifi_registred_
   printf("\r\n");
   printf("*** Please enter your wifi password : =================================================================\r\n");
 
+  /* Clear pending characters */
+  if (HAL_UART_AbortReceive(&Console_UARTHandle) != HAL_OK)
+  {
+    return CONSOLE_ERROR;
+  }
+
   /* Repeat receiving character until getting all SSID */
   do
   {
@@ -154,7 +174,13 @@ WebServer_StatusTypeDef webserver_console_get_password(ap_t *net_wifi_registred_
     PassWord[count] = ch;
     count++;
 
-  }while ((ch != '\n') && (ch != ' ') && (ch != 0));
+    /* Print entred character */
+    if ((ch != '\n') && (ch != 0) && (ch != '\r'))
+    {
+      printf("*");
+    }
+
+  } while ((ch != '\n') && (ch != '\r') && (ch != 0));
 
   /* Clear end of characters symbols */
   do

@@ -72,8 +72,8 @@ typedef struct
 #define SRAM_DMAx_CLK_ENABLE  __HAL_RCC_GPDMA1_CLK_ENABLE
 #define SRAM_DMAx_CLK_DISABLE __HAL_RCC_GPDMA1_CLK_DISABLE
 #define SRAM_DMAx_CHANNEL     GPDMA1_Channel0
-#define SRAM_DMAx_IRQn        GPDMA1_Channel0_IRQn
-#define SRAM_DMAx_IRQHandler  GPDMA1_Channel0_IRQHandler
+#define SRAM_DMAx_IRQ         GPDMA1_Channel0_IRQn
+#define SRAM_DMAx_IRQ_HANDLER GPDMA1_Channel0_IRQHandler
 
 /**
   * @}

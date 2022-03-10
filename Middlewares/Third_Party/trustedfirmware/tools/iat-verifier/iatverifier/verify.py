@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -289,13 +289,18 @@ def main():
                         help='''
                         Report failure if unknown claim is encountered.
                         ''')
+    parser.add_argument('-m', '--method', choices=['sign', 'mac'], default='sign',
+                        help='''
+                        Specify how this token is wrapped -- whether Sign1Message or
+                        Mac0Message COSE structure is used.
+                        ''')
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO)
 
     try:
         raw_iat = extract_iat_from_cose(args.keyfile, args.tokenfile,
-                                        args.keep_going)
+                                        args.keep_going, args.method)
         if args.keyfile and not seen_errors:
             print('Signature OK')
     except ValueError as e:

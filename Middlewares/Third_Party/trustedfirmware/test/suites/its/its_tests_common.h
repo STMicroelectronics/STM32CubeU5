@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -8,7 +8,7 @@
 #ifndef __ITS_TESTS_COMMON_H__
 #define __ITS_TESTS_COMMON_H__
 
-#include "test/framework/test_framework_helpers.h"
+#include "test_framework_helpers.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -220,6 +220,15 @@ void tfm_its_test_common_017(struct test_result_t *ret);
  * \param[out] ret  Test result
  */
 void tfm_its_test_common_018(struct test_result_t *ret);
+
+/**
+ * \brief Tests set, get_info, get and remove function with:
+ *        - Valid UID's, No Flags
+ *        - Data length of different asset sizes
+ *
+ * \param[out] ret  Test result
+ */
+void tfm_its_test_common_019(struct test_result_t *ret);
 
 #ifdef __cplusplus
 }

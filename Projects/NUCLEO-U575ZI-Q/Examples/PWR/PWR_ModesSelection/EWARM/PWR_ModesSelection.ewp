@@ -32,11 +32,11 @@
         </option>
         <option>
           <name>Input description</name>
-          <state>Full formatting, with multibyte support.</state>
+          <state>Full formatting, without multibyte support.</state>
         </option>
         <option>
           <name>Output description</name>
-          <state>Full formatting, with multibyte support.</state>
+          <state>Full formatting, without multibyte support.</state>
         </option>
         <option>
           <name>GOutputBinary</name>
@@ -62,11 +62,11 @@
         </option>
         <option>
           <name>OGProductVersion</name>
-          <state>4.41A</state>
+          <state>5.10.0.159</state>
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>8.50.6.28611</state>
+          <state>8.50.9.33458</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -108,7 +108,7 @@
         <option>
           <name>GeneralMisraRules04</name>
           <version>0</version>
-          <state>011111111111111110111111111111011111111111111011110100111111111111111111111111111111111111111111101111111111111011111111111111111111111111111</state>
+          <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
         </option>
         <option>
           <name>RTConfigPath2</name>
@@ -177,7 +177,7 @@
         </option>
         <option>
           <name>OGPrintfMultibyteSupport</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>OGScanfVariant</name>
@@ -186,7 +186,7 @@
         </option>
         <option>
           <name>OGScanfMultibyteSupport</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>GenLocaleTags</name>
@@ -198,7 +198,7 @@
         </option>
         <option>
           <name>DSPExtension</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>TrustZone</name>
@@ -286,7 +286,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>11111110</state>
+          <state>00000000</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
@@ -418,7 +418,7 @@
         </option>
         <option>
           <name>IccStaticDestr</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IccCppInlineSemantics</name>
@@ -483,7 +483,7 @@
       <name>AARM</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>10</version>
+        <version>11</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -639,6 +639,10 @@
           <name>AsmNoLiteralPool</name>
           <state>0</state>
         </option>
+        <option>
+          <name>PreInclude</name>
+          <state></state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -701,6 +705,10 @@
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
+          <name>IlinkOutputFile</name>
+          <state>PWR_ModesSelection.out</state>
+        </option>
+        <option>
           <name>IlinkLibIOConfig</name>
           <state>1</state>
         </option>
@@ -711,10 +719,6 @@
         <option>
           <name>IlinkInputFileSlave</name>
           <state>0</state>
-        </option>
-        <option>
-          <name>IlinkOutputFile</name>
-          <state>PWR_ModesSelection.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -1011,7 +1015,7 @@
         </option>
         <option>
           <name>IlinkTrustzoneImportLibraryOut</name>
-          <state>PWR_ModesSelection_import_lib.o</state>
+          <state></state>
         </option>
         <option>
           <name>OILinkExtraOption</name>
@@ -1058,6 +1062,11 @@
     </settings>
     <settings>
       <name>BILINK</name>
+      <archiveVersion>0</archiveVersion>
+      <data></data>
+    </settings>
+    <settings>
+      <name>Coder</name>
       <archiveVersion>0</archiveVersion>
       <data></data>
     </settings>
@@ -1189,3 +1198,4 @@
     </group>
   </group>
 </project>
+

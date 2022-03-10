@@ -127,7 +127,7 @@ net_if_handle_t *NetInterfaceOn(net_if_driver_init_func registred_driver, net_if
   }
   if (ret)
   {
-    printf("Network interface initialiazation failed\r\n");
+    printf("Network interface initialization failed\r\n");
   }
   return netif;
 }

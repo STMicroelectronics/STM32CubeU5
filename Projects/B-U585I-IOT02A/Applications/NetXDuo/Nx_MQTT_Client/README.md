@@ -14,7 +14,7 @@ The main entry function tx_application_define() is called by ThreadX during kern
 
  + A <i>DHCP client is created.</i>
 
-The application then creates 2 threads with the same priorities:
+The application then creates 3 threads with the different priorities:
 
  + **AppMainThread** (priority 10, PreemtionThreashold 10) : created with the <i>TX_AUTO_START</i> flag to start automatically.
 
@@ -26,8 +26,11 @@ The **AppMainThread** starts and perform the following actions:
 
   + Waits for the IP address resolution
 
-  + Resumes the **AppMQTTClientThread**
+  + Resumes the **AppSNTPThread**
 
+The **AppSNTPThread**, once started:
+
+  + it connects to an SNTP server to get current time in order to check x509 certificate validation then it resumes **AppMQTTClientThread**.
 
 The **AppMQTTClientThread**, once started:
 
@@ -36,7 +39,7 @@ The **AppMQTTClientThread**, once started:
   + creates an mqtt_client
 
   + connects mqtt_client to the online MQTT broker; connection with server will be secure and a **tls_setup_callback** will set TLS parametres. By default MQTT_PORT for encrypted mode is 8883.
-  
+
           refer to note 1 below, to know how to setup an x509 certificate.
   
   + mqtt_client subscribes on a predefined topic TOPIC_NAME  "Temperature" with a Quality Of Service QOS0

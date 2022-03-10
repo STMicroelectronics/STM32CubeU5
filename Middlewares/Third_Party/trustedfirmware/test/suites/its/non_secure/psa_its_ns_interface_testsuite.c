@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
  */
 
 #include "its_ns_tests.h"
-#include "test/framework/test_framework_helpers.h"
+#include "test_framework_helpers.h"
 #include "../its_tests_common.h"
 
 static struct test_t psa_its_ns_tests[] = {
@@ -46,6 +46,8 @@ static struct test_t psa_its_ns_tests[] = {
      "Multiple partial gets"},
     {&tfm_its_test_common_018, "TFM_ITS_TEST_1018",
      "Multiple sets to same UID from same thread"},
+    {&tfm_its_test_common_019, "TFM_ITS_TEST_1019",
+     "Set, get and remove interface with different asset sizes"},
 };
 
 void register_testsuite_ns_psa_its_interface(struct test_suite_t *p_test_suite)
@@ -57,11 +59,4 @@ void register_testsuite_ns_psa_its_interface(struct test_suite_t *p_test_suite)
     set_testsuite("PSA internal trusted storage NS interface tests "
                  "(TFM_ITS_TEST_1XXX)",
                   psa_its_ns_tests, list_size, p_test_suite);
-
-#ifdef ITS_SHOW_FLASH_WARNING
-    TEST_LOG("\r\n**WARNING** The ITS regression tests reduce the life of the "
-             "flash memory as they write/erase multiple times the memory. \r\n"
-             "Please, set the ITS_RAM_FS flag to use RAM instead of flash."
-             "\r\n\r\n");
-#endif
 }

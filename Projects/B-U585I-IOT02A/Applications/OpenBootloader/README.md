@@ -35,6 +35,47 @@ the OpenBootloader application will wait for commands sent by the host.
  2. The current implementation of write in option bytes doesn’t support writing in OEMKEYR option bytes.
     The OEMKEYR option bytes registers programming can be easily added at the end of the function OPENBL_OB_Write in the file optionbytes_interface.c
 
+ 3. In the `OpenBootloader_Init()` function in `app_openbootloader.c` file, the user can:
+       - Select the list of supported commands for a specific interface by defining its own list of commands.
+
+       Here is an example of how to customize USART interface commands list, here only read/write commands are supported:
+
+        OPENBL_CommandsTypeDef USART_Cmd =
+        {
+          NULL,
+          NULL,
+          NULL,
+          OPENBL_USART_ReadMemory,
+          OPENBL_USART_WriteMemory,
+          NULL,
+          NULL,
+          NULL,
+          NULL,
+          NULL,
+          NULL,
+          NULL,
+          NULL,
+          NULL,
+          NULL,
+          NULL,
+          NULL,
+          NULL,
+          NULL,
+          NULL
+        };
+
+        USART_Handle.p_Ops = &USART_Ops;
+        USART_Handle.p_Cmd = &USART_Cmd;           /* Initialize the USART handle with the list of supported commands */
+        OPENBL_USART_SetCommandsList(&USART_Cmd);  /* Register the list of supported commands in MW side */
+
+       - Use the default list of supported commands for a specific interface by reusing the commands list defined in MW side.
+
+       Here is an example of how to use USART interface default commands list:
+
+        /* Register USART interfaces */
+        USART_Handle.p_Ops = &USART_Ops;
+        USART_Handle.p_Cmd = OPENBL_USART_GetCommandsList();  /* Initialize the USART handle with the default list osupported commands */
+
 ### <b>Keywords</b>
 
 OpenBootloader, USART, FDCAN, I2C, SPI, USB

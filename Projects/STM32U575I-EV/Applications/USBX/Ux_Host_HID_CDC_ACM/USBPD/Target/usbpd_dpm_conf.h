@@ -1,0 +1,83 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file    usbpd_dpm_conf.h
+  * @author  MCD Application Team
+  * @brief   Header file for stack/application settings file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2022 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+
+#ifndef __USBPD_DPM_CONF_H_
+#define __USBPD_DPM_CONF_H_
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
+#include "usbpd_dpm_user.h"
+
+/* USER CODE BEGIN Includes */
+/* Section where include file can be added */
+
+/* USER CODE END Includes */
+
+/* Define   ------------------------------------------------------------------*/
+/* USER CODE BEGIN Define */
+/* Section where Define can be added */
+
+/* USER CODE END Define */
+
+/* Exported typedef ----------------------------------------------------------*/
+/* USER CODE BEGIN Typedef */
+/* Section where Typedef can be added */
+
+/* USER CODE END Typedef */
+
+/* Private variables ---------------------------------------------------------*/
+#ifndef __USBPD_DPM_CORE_C
+extern USBPD_SettingsTypeDef            DPM_Settings[USBPD_PORT_COUNT];
+#else /* __USBPD_DPM_CORE_C */
+USBPD_SettingsTypeDef       DPM_Settings[USBPD_PORT_COUNT] =
+{
+  {
+    .PE_DefaultRole = USBPD_PORTPOWERROLE_SRC,  /* Default port role                                       */
+    .CAD_DefaultResistor = 0x00u,
+  }
+};
+
+#endif /* !__USBPD_DPM_CORE_C */
+
+/* USER CODE BEGIN Variable */
+/* Section where Variable can be added */
+
+/* USER CODE END Variable */
+
+/* Exported constants --------------------------------------------------------*/
+/* USER CODE BEGIN Constant */
+/* Section where Constant can be added */
+
+/* USER CODE END Constant */
+
+/* Exported macro ------------------------------------------------------------*/
+/* USER CODE BEGIN Macro */
+/* Section where Macro can be added */
+
+/* USER CODE END Macro */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __USBPD_DPM_CONF_H_ */

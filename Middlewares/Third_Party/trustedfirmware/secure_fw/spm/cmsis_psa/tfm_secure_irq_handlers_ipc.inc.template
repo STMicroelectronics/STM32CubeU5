@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2019-2021, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+{{utilities.donotedit_warning}}
+
+{% for partition in partitions %}
+#ifdef {{partition.attr.conditional}}
+#include "{{partition.header_file}}"
+#endif /* {{partition.attr.conditional}} */
+
+{% endfor %}
+
+#include "cmsis_compiler.h"
+{% macro _irq_record(partition_name, signal, line, priority) -%}
+{ {{ partition_name }}, {{ signal }}, {{ line }}, {{ priority }} },
+{%- endmacro %}
+
+/* Definitions of the signals of the IRQs (if any) */
+const struct tfm_core_irq_signal_data_t tfm_core_irq_signals[] = {
+{% for partition in partitions %}
+    {% if partition.manifest.irqs %}
+        {% if partition.attr.conditional %}
+#ifdef {{partition.attr.conditional}}
+        {% endif %}
+        {% for handler in partition.manifest.irqs %}
+            {% set irq_data = namespace() %}
+            {% if handler.source %}
+                {% set irq_data.line = handler.source %}
+            {% else %}
+#error "Interrupt source isn't provided for 'irqs' in partition {{partition.manifest.name}}"
+            {% endif %}
+            {% if handler.tfm_irq_priority %}
+                {% set irq_data.priority = handler.tfm_irq_priority %}
+            {% else %}
+                {% set irq_data.priority = "TFM_DEFAULT_SECURE_IRQ_PRIOTITY" %}
+            {% endif %}
+    {{ _irq_record(partition.manifest.name, handler.signal, irq_data.line, irq_data.priority) }}
+        {% endfor %}
+        {% if partition.attr.conditional %}
+#endif /* {{partition.attr.conditional}} */
+        {% endif %}
+   {% endif %}
+{% endfor %}
+   {0, 0, (IRQn_Type)0, 0}              /* add dummy element to avoid non-standard empty array */
+};
+
+const size_t tfm_core_irq_signals_count = (sizeof(tfm_core_irq_signals) /
+                                           sizeof(*tfm_core_irq_signals)) - 1; /* adjust for the dummy element */
+
+/* Definitions of privileged IRQ handlers (if any) */
+{% for partition in partitions %}
+    {% if partition.manifest.irqs %}
+        {% if partition.attr.conditional %}
+#ifdef {{partition.attr.conditional}}
+        {% endif %}
+        {% for handler in partition.manifest.irqs %}
+            {% if handler.source is number %}
+void irq_{{handler.source}}_Handler(void)
+            {% elif handler.source %}
+void {{handler.source}}Handler(void)
+            {% else %}
+#error "Interrupt source isn't provided for 'irqs' in partition {{partition.manifest.name}}"
+            {% endif %}
+{
+            {% if handler.source %}
+    tfm_set_irq_signal({{partition.manifest.name}}, {{handler.signal}}, {{handler.source}});
+            {% else %}
+#error "Interrupt source isn't provided for 'irqs' in partition {{partition.manifest.name}}"
+            {% endif %}
+}
+
+        {% endfor %}
+        {% if partition.attr.conditional %}
+#endif /* {{partition.attr.conditional}} */
+        {% endif %}
+
+    {% endif %}
+{% endfor %}

@@ -26,11 +26,30 @@
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 #define OPENBL_I2C_VERSION                 0x12U               /* Open Bootloader I2C protocol V1.2 */
+
 /* Exported macro ------------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/
-extern OPENBL_CommandsTypeDef OPENBL_I2C_Commands;
-
 /* Exported functions ------------------------------------------------------- */
 OPENBL_CommandsTypeDef *OPENBL_I2C_GetCommandsList(void);
+void OPENBL_I2C_SetCommandsList(OPENBL_CommandsTypeDef *pI2cCmd);
+void OPENBL_I2C_GetCommand(void);
+void OPENBL_I2C_GetVersion(void);
+void OPENBL_I2C_GetID(void);
+void OPENBL_I2C_ReadMemory(void);
+void OPENBL_I2C_WriteMemory(void);
+void OPENBL_I2C_Go(void);
+void OPENBL_I2C_ReadoutProtect(void);
+void OPENBL_I2C_ReadoutUnprotect(void);
+void OPENBL_I2C_EraseMemory(void);
+void OPENBL_I2C_WriteProtect(void);
+void OPENBL_I2C_WriteUnprotect(void);
+void OPENBL_I2C_NonStretchWriteMemory(void);
+void OPENBL_I2C_NonStretchEraseMemory(void);
+void OPENBL_I2C_NonStretchWriteProtect(void);
+void OPENBL_I2C_NonStretchWriteUnprotect(void);
+void OPENBL_I2C_NonStretchReadoutProtect(void);
+void OPENBL_I2C_NonStretchReadoutUnprotect(void);
+void OPENBL_I2C_SpecialCommand(void);
+void OPENBL_I2C_ExtendedSpecialCommand(void);
 
 #endif /* OPENBL_I2C_CMD_H */

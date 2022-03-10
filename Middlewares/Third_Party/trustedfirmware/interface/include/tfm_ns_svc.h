@@ -6,7 +6,7 @@
  */
 
 #include <stdio.h>
-#include <cmsis_compiler.h>
+#include "cmsis_compiler.h"
 
 #ifndef __TFM_NS_SVC_H__
 #define __TFM_NS_SVC_H__

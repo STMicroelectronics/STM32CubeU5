@@ -12,7 +12,7 @@
 
 #include "cmsis.h"
 
-#define PRIVILEGED_DEFAULT_ENABLE 1
+#define PRIVILEGED_DEFAULT_DISABLE 0
 #define HARDFAULT_NMI_ENABLE      1
 
 /* MAIR_ATTR */

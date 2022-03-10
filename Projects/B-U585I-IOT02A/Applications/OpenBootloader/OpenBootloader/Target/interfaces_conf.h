@@ -20,12 +20,23 @@
 #ifndef INTERFACES_CONF_H
 #define INTERFACES_CONF_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
+#include "stm32u5xx_ll_usart.h"
+#include "stm32u5xx_ll_i2c.h"
+#include "stm32u5xx_ll_spi.h"
+
 #define MEMORIES_SUPPORTED                7U
 
 /* ------------------------- Definitions for USART -------------------------- */
 #define USARTx                            USART3
 #define USARTx_CLK_ENABLE()               __HAL_RCC_USART3_CLK_ENABLE()
+#define USARTx_CLK_DISABLE()              __HAL_RCC_USART3_CLK_DISABLE()
 #define USARTx_GPIO_CLK_ENABLE()          __HAL_RCC_GPIOD_CLK_ENABLE()
+#define USARTx_DeInit()                   LL_USART_DeInit(USARTx)
 
 #define USARTx_TX_PIN                     GPIO_PIN_8
 #define USARTx_TX_GPIO_PORT               GPIOD
@@ -33,13 +44,12 @@
 #define USARTx_RX_GPIO_PORT               GPIOD
 #define USARTx_ALTERNATE                  GPIO_AF7_USART3
 
-#define USARTx_FORCE_RESET()              __HAL_RCC_USART3_FORCE_RESET()
-#define USARTx_RELEASE_RESET()            __HAL_RCC_USART3_RELEASE_RESET()
-
 /* ------------------------- Definitions for I2C -------------------------- */
 #define I2Cx                              I2C2
 #define I2Cx_CLK_ENABLE()                 __HAL_RCC_I2C2_CLK_ENABLE()
+#define I2Cx_CLK_DISABLE()                __HAL_RCC_I2C2_CLK_DISABLE()
 #define I2Cx_GPIO_CLK_ENABLE()            __HAL_RCC_GPIOH_CLK_ENABLE()
+#define I2Cx_DeInit()                     LL_I2C_DeInit(I2Cx)
 
 #define I2Cx_SCL_PIN                      GPIO_PIN_4
 #define I2Cx_SCL_PIN_PORT                 GPIOH
@@ -50,12 +60,10 @@
 #define OPENBL_I2C_TIMEOUT                0xFFFFF000U
 #define I2C_TIMING                        0x00800000U
 
-#define I2Cx_FORCE_RESET()                __HAL_RCC_I2C2_FORCE_RESET()
-#define I2Cx_RELEASE_RESET()              __HAL_RCC_I2C2_RELEASE_RESET()
-
 /* ------------------------- Definitions for FDCAN -------------------------- */
 #define FDCANx                            FDCAN1
 #define FDCANx_CLK_ENABLE()               __HAL_RCC_FDCAN1_CLK_ENABLE()
+#define FDCANx_CLK_DISABLE()              __HAL_RCC_FDCAN1_CLK_DISABLE()
 #define FDCANx_GPIO_CLK_ENABLE()          __HAL_RCC_GPIOB_CLK_ENABLE()
 
 #define FDCANx_TX_PIN                     GPIO_PIN_8
@@ -77,6 +85,7 @@
 #define SPIx_CLK_ENABLE()                 __HAL_RCC_SPI1_CLK_ENABLE()
 #define SPIx_CLK_DISABLE()                __HAL_RCC_SPI1_CLK_DISABLE()
 #define SPIx_GPIO_CLK_ENABLE()            __HAL_RCC_GPIOE_CLK_ENABLE()
+#define SPIx_DeInit()                     LL_SPI_DeInit(SPIx)
 #define SPIx_IRQn                         SPI1_IRQn
 
 #define SPIx_MOSI_PIN                     GPIO_PIN_15
@@ -89,7 +98,8 @@
 #define SPIx_NSS_PIN_PORT                 GPIOA
 #define SPIx_ALTERNATE                    GPIO_AF5_SPI1
 
-#define SPIx_FORCE_RESET()                __HAL_RCC_SPI1_FORCE_RESET()
-#define SPIx_RELEASE_RESET()              __HAL_RCC_SPI1_RELEASE_RESET()
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INTERFACES_CONF_H */

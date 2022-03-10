@@ -1,4 +1,3 @@
-t
   @verbatim
   ******************************************************************************
   *
@@ -16,6 +15,25 @@ t
   *
   ******************************************************************************
   @endverbatim
+
+### 26-January-2022 ###
+========================
+    + add custom TMPBUF_SZ for devices with small ram
+    + log the key during image installation
+    + remove compilation warning
+
+### 14-December-2021 ###
+========================
+    + remove compilation warning
+
+### 11-October-2021 ###
+========================
+    + use mcuboot release v1.7.2
+    + Branch FIH_PANIC macro to Error_Handler()
+    + fix FIH support
+    + imgtool: add option 'getprivbin' to produce key in binary format
+    + imgtool: update windows version
+    + Use hash reference (sha256) in flash to reduce boot time
 
 ### 2-Jun-2021 ###
 ========================
@@ -74,7 +92,6 @@ t
 ### 11-June-2020 ###
 ==========================
     + fix to accept TLV DEPENDENCY in during TLV verification
-
 ### 02-June-2020 ###
 ==========================
     + mcuboot release v1.5.0

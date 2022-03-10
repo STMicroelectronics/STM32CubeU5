@@ -19,7 +19,7 @@
 #include "flash_layout.h"
 
 #define BL2_HEAP_SIZE           0x0000000
-#define BL2_MSP_STACK_SIZE      0x0001400
+#define BL2_MSP_STACK_SIZE      0x0002000
 
 #define LOADER_NS_MSP_STACK_SIZE 0x0000400
 #define LOADER_NS_HEAP_SIZE      0x0000200
@@ -42,16 +42,17 @@
 /* GTZC specific Alignment */
 #define GTZC_RAM_ALIGN 512
 #define GTZC_FLASH_ALIGN 8192
+
 /*
  * This size of buffer is big enough to store an attestation
  * token produced by initial attestation service
  */
 #define PSA_INITIAL_ATTEST_TOKEN_MAX_SIZE   0x250
 
-/*  FIX ME : include stm32u5xx.h instead  */
+#if defined(STM32U585xx) || defined(STM32U575xx)
 #define _SRAM2_TOP              (0x40000) /* 256Kbytes */
 #define _SRAM1_SIZE_MAX         (0x30000)  /*!< SRAM1=192k*/
-#define _SRAM2_SIZE_MAX         (0x10000 - BOOT_TFM_SHARED_DATA_SIZE)  /*!< SRAM2=64k -0x400 */
+#define _SRAM2_SIZE_MAX         (0x10000)  /*!< SRAM2=64k*/
 #define _SRAM3_SIZE_MAX         (0x80000) /* 512Kbytes */
 #define _SRAM4_SIZE_MAX         (0x04000) /* 16Kbytes */
 
@@ -67,14 +68,39 @@
 #define _SRAM2_BASE_S           (0x30030000) /*!< SRAM2(64 KB) base address */
 #define _SRAM3_BASE_S           (0x30040000) /*!< SRAM3(512 KB) base address */
 #define _SRAM4_BASE_S           (0x38000000) /*!< SRAM4(16 KB) base address */
+#elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+#define _SRAM2_TOP              (0xD0000) /* 832Kbytes */
+#define _SRAM1_SIZE_MAX         (0xC0000)  /*!< SRAM1=768k*/
+#define _SRAM2_SIZE_MAX         (0x10000)  /*!< SRAM2=64k*/
+#define _SRAM3_SIZE_MAX         (0xD0000) /* 832Kbytes */
+#define _SRAM4_SIZE_MAX         (0x04000) /* 16Kbytes */
+#define _SRAM5_SIZE_MAX         (0xD0000)  /*!< SRAM5=832k */
+
+/* Flash and internal SRAMs base addresses - Non secure aliased */
+#define _FLASH_BASE_NS          (0x08000000) /*!< FLASH(up to 512 KB) base address */
+#define _SRAM1_BASE_NS          (0x20000000) /*!< SRAM1(up to 768 KB) base address */
+#define _SRAM2_BASE_NS          (0x200C0000) /*!< SRAM2(64 KB) base address */
+#define _SRAM3_BASE_NS          (0x200D0000) /*!< SRAM3(832 KB) base address */
+#define _SRAM4_BASE_NS          (0x28000000) /*!< SRAM4(16 KB) base address */
+#define _SRAM5_BASE_NS          (0x201A0000) /*!< SRAM5 (832 KB) non-secure base address              */
+/* Flash and internal SRAMs base addresses - Secure aliased */
+#define _FLASH_BASE_S           (0x0C000000) /*!< FLASH(up to 512 KB) base address */
+#define _SRAM1_BASE_S           (0x30000000) /*!< SRAM1(up to 768 KB) base address */
+#define _SRAM2_BASE_S           (0x300C0000) /*!< SRAM2(64 KB) base address */
+#define _SRAM3_BASE_S           (0x300D0000) /*!< SRAM3(832 KB) base address */
+#define _SRAM4_BASE_S           (0x38000000) /*!< SRAM4(16 KB) base address */
+#define _SRAM5_BASE_S           (0x301A0000) /*!< SRAM3(832 KB) base address */
+#else
+#error "No STM32U5 version Defined"
+#endif
 
 #define TOTAL_ROM_SIZE          FLASH_TOTAL_SIZE
-#define TOTAL_RAM_SIZE          (_SRAM1_SIZE_MAX+_SRAM2_SIZE_MAX)
-/* 192 + 64 Kbytes - BOOT info */
-/* boot info are placed and locked at top of SRAM2  */
+#define SRAM3_S_SIZE            0x8000                           /* 32Kbytes */
+#define S_TOTAL_RAM_SIZE        (_SRAM2_SIZE_MAX + SRAM3_S_SIZE ) /*! size require for Secure part */
 
-#define S_TOTAL_RAM_SIZE        (_SRAM2_SIZE_MAX) /*! size require for Secure part */
-
+/*  This area in SRAM 2 is updated BL2 and can be lock to avoid any changes */
+#define BOOT_TFM_SHARED_DATA_SIZE        0
+#define BOOT_TFM_SHARED_DATA_BASE        (S_RAM_ALIAS(_SRAM1_SIZE_MAX))
 /*
  * Boot partition structure if MCUBoot is used:
  * 0x0_0000 Bootloader header
@@ -86,13 +112,22 @@
  * for the image header and trailer introduced by the bootloader.
  */
 
-#define BL2_HEADER_SIZE                     (0x400)
+#define BL2_HEADER_SIZE                     (0x400) /*!< Appli image header size */
+#define BL2_DATA_HEADER_SIZE                (0x20)  /*!< Data image header size */
 #define BL2_TRAILER_SIZE                    (0x2000)
 #ifdef BL2
 #define S_IMAGE_PRIMARY_PARTITION_OFFSET    (FLASH_AREA_0_OFFSET)
 #define S_IMAGE_SECONDARY_PARTITION_OFFSET  (FLASH_AREA_2_OFFSET)
-#define NS_IMAGE_PRIMARY_PARTITION_OFFSET (FLASH_AREA_0_OFFSET + FLASH_S_PARTITION_SIZE)
+#define NS_IMAGE_PRIMARY_PARTITION_OFFSET   (FLASH_AREA_0_OFFSET + FLASH_S_PARTITION_SIZE)
 #define NS_IMAGE_SECONDARY_PARTITION_OFFSET (FLASH_AREA_2_OFFSET + FLASH_S_PARTITION_SIZE)
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+#define S_DATA_IMAGE_PRIMARY_PARTITION_OFFSET    (FLASH_AREA_4_OFFSET)
+#define S_DATA_IMAGE_SECONDARY_PARTITION_OFFSET  (FLASH_AREA_6_OFFSET)
+#endif /* MCUBOOT_S_DATA_IMAGE_NUMBER == 1 */
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
+#define NS_DATA_IMAGE_PRIMARY_PARTITION_OFFSET   (FLASH_AREA_5_OFFSET)
+#define NS_DATA_IMAGE_SECONDARY_PARTITION_OFFSET (FLASH_AREA_7_OFFSET)
+#endif /* MCUBOOT_NS_DATA_IMAGE_NUMBER == 1 */
 #else
 #error "Config without BL2 not supported"
 #endif /* BL2 */
@@ -103,11 +138,6 @@
 #define IMAGE_NS_CODE_SIZE \
     (FLASH_NS_PARTITION_SIZE - BL2_HEADER_SIZE - BL2_TRAILER_SIZE)
 
-/* FIXME: veneer region size is increased temporarily while both legacy veneers
- * and their iovec-based equivalents co-exist for secure partitions. To be
- * adjusted as legacy veneers are eliminated
- */
-#define CMSE_VENEER_REGION_SIZE             (0x00000380)
 
 /* Use SRAM1 memory to store Code data */
 #define S_ROM_ALIAS_BASE                    (_FLASH_BASE_S)
@@ -127,17 +157,18 @@
 #define S_RAM_ALIAS(x)                      (S_RAM_ALIAS_BASE + (x))
 #define NS_RAM_ALIAS(x)                     (NS_RAM_ALIAS_BASE + (x))
 
-
 #define S_IMAGE_PRIMARY_AREA_OFFSET         (S_IMAGE_PRIMARY_PARTITION_OFFSET + BL2_HEADER_SIZE)
 #define S_CODE_START                        (S_ROM_ALIAS(S_IMAGE_PRIMARY_AREA_OFFSET))
-#define S_CODE_SIZE                         (IMAGE_S_CODE_SIZE - CMSE_VENEER_REGION_SIZE)
+#define S_CODE_SIZE                         (IMAGE_S_CODE_SIZE)
 #define S_CODE_LIMIT                        ((S_CODE_START + S_CODE_SIZE) -1)
 #define S_DATA_START                        (_SRAM2_BASE_S)
 #define S_DATA_SIZE                         (S_TOTAL_RAM_SIZE)
 #define S_DATA_LIMIT                        (S_DATA_START + S_DATA_SIZE - 1)
 
-/* CMSE Veneers region */
-#define CMSE_VENEER_REGION_START            (S_CODE_LIMIT + 1)
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+#define S_DATA_IMAGE_PRIMARY_AREA_OFFSET    (S_DATA_IMAGE_PRIMARY_PARTITION_OFFSET + BL2_DATA_HEADER_SIZE)
+#endif /* MCUBOOT_S_DATA_IMAGE_NUMBER == 1 */
+
 /* Non-secure regions */
 
 /* Secure regions , the end of secure regions must be aligned on page size for dual bank 0x800*/
@@ -149,10 +180,10 @@
 #define NS_CODE_SIZE                        (IMAGE_NS_CODE_SIZE)
 #define NS_CODE_LIMIT                       (NS_CODE_START + NS_CODE_SIZE - 1)
 #define NS_DATA_START                       (_SRAM1_BASE_NS)
-#define NS_DATA_START_2                     (_SRAM3_BASE_NS)
+#define NS_DATA_START_2                     (_SRAM3_BASE_NS + SRAM3_S_SIZE)
 #define NS_NO_INIT_DATA_SIZE                (0x100)
 #define NS_DATA_SIZE                        (_SRAM1_SIZE_MAX)
-#define NS_DATA_SIZE_2                      (_SRAM3_SIZE_MAX)
+#define NS_DATA_SIZE_2                      (_SRAM3_SIZE_MAX - SRAM3_S_SIZE)
 #define NS_DATA_LIMIT                       (NS_DATA_START + NS_DATA_SIZE - 1)
 #define NS_DATA_LIMIT_2                     (NS_DATA_START_2 + NS_DATA_SIZE_2 - 1)
 
@@ -186,8 +217,8 @@
 /*  keep 256 bytes unused to place while(1) for non secure to enable */
 /*  regression from local tool with non secure attachment
  *  This avoid blocking board in case of hardening error */
-#define BL2_DATA_START                      (S_RAM_ALIAS(_SRAM1_SIZE_MAX))
-#define BL2_DATA_SIZE                       (BOOT_TFM_SHARED_DATA_BASE - BL2_DATA_START)
+#define BL2_DATA_START                      (_SRAM2_BASE_S)
+#define BL2_DATA_SIZE                       (_SRAM2_SIZE_MAX)
 #define BL2_DATA_LIMIT                      (BL2_DATA_START + BL2_DATA_SIZE - 1)
 
 /* Define BL2 MPU SRAM protection to remove execution capability */
@@ -258,10 +289,10 @@
 #error "Loader mapping overlapping slot %LOADER_CODE_SIZE %LOADER_MAX_CODE_SIZE"
 #endif /* LOADER_CODE_SIZE > LOADER_MAX_CODE_SIZE */
 
-/* TFM non volatile data (NVCNT/SST/ITS) region */
+/* TFM non volatile data (NVCNT/PS/ITS) region */
 #define TFM_NV_DATA_START                   (S_ROM_ALIAS(FLASH_NV_COUNTERS_AREA_OFFSET))
 #define TFM_NV_DATA_SIZE                    (FLASH_NV_COUNTER_AREA_SIZE + \
-                                             FLASH_SST_AREA_SIZE + FLASH_ITS_AREA_SIZE)
+                                             FLASH_PS_AREA_SIZE + FLASH_ITS_AREA_SIZE)
 #define TFM_NV_DATA_LIMIT                   (TFM_NV_DATA_START + TFM_NV_DATA_SIZE - 1)
 /* Additional Check to detect flash download slot overlap or overflow */
 #if defined(MCUBOOT_EXT_LOADER)
@@ -273,5 +304,16 @@
 #if FLASH_AREA_END_OFFSET > FLASH_AREA_END_OFFSET_MAX
 #error "Flash memory overflow"
 #endif /* FLASH_AREA_END_OFFSET > FLASH_AREA_END_OFFSET_MAX */
+
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+/* S DATA image layout */
+#define S_DATA_IMAGE_IAT_PRIV_KEY_OFFSET    (BL2_DATA_HEADER_SIZE)
+#endif /* (MCUBOOT_S_DATA_IMAGE_NUMBER == 1) */
+
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
+/* NS DATA image layout */
+#define NS_DATA_IMAGE_DATA1_OFFSET          (BL2_DATA_HEADER_SIZE)
+#define NS_DATA_IMAGE_DATA1_SIZE            (32U)
+#endif /* (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1) */
 
 #endif /* __REGION_DEFS_H__ */

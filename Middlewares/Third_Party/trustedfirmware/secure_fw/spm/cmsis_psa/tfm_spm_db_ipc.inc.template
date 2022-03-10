@@ -1,0 +1,255 @@
+/*
+ * Copyright (c) 2019-2021, Arm Limited. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
+ */
+
+{{utilities.donotedit_warning}}
+
+#ifndef __TFM_SPM_DB_IPC_INC__
+#define __TFM_SPM_DB_IPC_INC__
+
+#include "psa_manifest/sid.h"
+
+{# Produce a build error if heap_size is presented in the manifest, because of the dynamic memory allocation is not supported now. #}
+{% for partition in partitions %}
+    {% if partition.manifest.heap_size %}
+#error "Please do not add 'heap_size' for partition '{{partition.manifest.name}}', the dynamic memory allocation is not supported now!"
+    {% endif %}
+{% endfor %}
+/**************************************************************************/
+/** IRQ count per partition */
+/**************************************************************************/
+{% for partition in partitions %}
+    {% if partition.attr.conditional %}
+#ifdef {{partition.attr.conditional}}
+    {% endif %}
+    {% if partition.manifest.irqs %}
+#define TFM_PARTITION_{{partition.manifest.name}}_IRQ_COUNT {{partition.manifest.irqs | length() }}
+    {% else %}
+#define TFM_PARTITION_{{partition.manifest.name}}_IRQ_COUNT 0
+    {% endif %}
+    {% if partition.attr.conditional %}
+#endif /* {{partition.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+/**************************************************************************/
+/** Declarations of partition init functions */
+/**************************************************************************/
+extern void tfm_nspm_thread_entry(void);
+
+{% for partition in partitions %}
+    {% if partition.attr.conditional %}
+#ifdef {{partition.attr.conditional}}
+    {% endif %}
+extern void {{partition.manifest.entry_point}}(void);
+    {% if partition.attr.conditional %}
+#endif /* {{partition.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+/**************************************************************************/
+/** Memory region declarations */
+/**************************************************************************/
+REGION_DECLARE(Image$$, ARM_LIB_STACK, $$ZI$$Base);
+REGION_DECLARE(Image$$, ARM_LIB_STACK, $$ZI$$Limit);
+
+{% for partition in partitions %}
+    {% if partition.attr.conditional %}
+#ifdef {{partition.attr.conditional}}
+    {% endif %}
+#if TFM_LVL == 3
+REGION_DECLARE(Image$$, PT_{{partition.manifest.name}}_PRIVATE, _DATA_START$$Base);
+REGION_DECLARE(Image$$, PT_{{partition.manifest.name}}_PRIVATE, _DATA_END$$Base);
+#endif
+extern uint8_t {{partition.manifest.name.lower()}}_stack[];
+    {% if partition.attr.conditional %}
+#endif /* {{partition.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+/**************************************************************************/
+/** Dependencies array for Secure Partition */
+/**************************************************************************/
+{% for partition in partitions %}
+    {% if partition.manifest.dependencies %}
+        {% if partition.attr.conditional %}
+#ifdef {{partition.attr.conditional}}
+        {% endif %}
+static uint32_t dependencies_{{partition.manifest.name}}[] =
+{
+        {% for dependence in partition.manifest.dependencies %}
+            {% for service in partition.manifest.services %}
+                {% if dependence == service.name %}
+#error "Please DO NOT include SP's own RoT Service '{{dependence}}', which will cause a deadlock!"
+                {% endif %}
+            {% endfor %}
+    {{dependence}}_SID,
+        {% endfor %}
+};
+        {% if partition.attr.conditional %}
+#endif /* {{partition.attr.conditional}} */
+        {% endif %}
+
+    {% endif %}
+{% endfor %}
+
+/**************************************************************************/
+/** The platform data of the partition list */
+/**************************************************************************/
+{% for partition in partitions %}
+    {% if partition.manifest.mmio_regions %}
+        {% if partition.attr.conditional %}
+#ifdef {{partition.attr.conditional}}
+        {% endif %}
+const struct platform_data_t *
+    platform_data_list_{{partition.manifest.name}}[] =
+{
+        {% for region in partition.manifest.mmio_regions %}
+            {% if region.conditional %}
+#ifdef {{region.conditional}}
+            {% endif %}
+    {{region.name}},
+            {% if region.conditional %}
+#endif /* {{region.conditional}} */
+            {% endif %}
+        {% endfor %}
+    NULL
+};
+        {% if partition.attr.conditional %}
+#endif /* {{partition.attr.conditional}} */
+        {% endif %}
+
+    {% endif %}
+{% endfor %}
+
+/**************************************************************************/
+/** The static data of the partition list */
+/**************************************************************************/
+const struct partition_static_t static_data_list[] =
+{
+    {
+        .psa_ff_ver           = 0x0100,
+        .pid                  = TFM_SP_NON_SECURE_ID,
+#if TFM_MULTI_CORE_TOPOLOGY
+        .flags                = SPM_PART_FLAG_PSA_ROT | SPM_PART_FLAG_IPC,
+#else
+        .flags                = SPM_PART_FLAG_APP_ROT | SPM_PART_FLAG_IPC,
+#endif
+        .priority             = TFM_PRIORITY_LOW,
+        .entry                = tfm_nspm_thread_entry,
+        .stack_base_addr      = 0,
+        .stack_size           = 0
+    },
+
+{% for partition in partitions %}
+    {% if partition.attr.conditional %}
+#ifdef {{partition.attr.conditional}}
+    {% endif %}
+    {{'{'}}
+    {% if partition.manifest.psa_framework_version == 1.0 %}
+        .psa_ff_ver            = 0x0100,
+    {% elif partition.manifest.psa_framework_version == 1.1 %}
+        .psa_ff_ver            = 0x0101,
+    {% else %}
+        .psa_ff_ver            = 0,
+    {% endif %}
+        .pid                   = {{partition.manifest.name}},
+    {% if partition.attr.tfm_partition_ipc %}
+        .flags                 = SPM_PART_FLAG_IPC
+    {% else %}
+        .flags                 = 0
+    {% endif %}
+    {% if partition.manifest.type == "APPLICATION-ROT" %}
+                               | SPM_PART_FLAG_APP_ROT
+    {% elif partition.manifest.type == "PSA-ROT" %}
+                               | SPM_PART_FLAG_PSA_ROT | SPM_PART_FLAG_APP_ROT
+    {% else %}
+#error "Unsupported type '{{partition.manifest.type}}' for partition '{{partition.manifest.name}}'!"
+    {% endif %}
+                              ,
+        .priority             = TFM_PRIORITY({{partition.manifest.priority}}),
+        .entry                = {{partition.manifest.entry_point}},
+        .stack_base_addr      = 0,
+        .stack_size           = 0,
+    {% if partition.manifest.mmio_regions %}
+        .platform_data        = (uintptr_t)platform_data_list_{{partition.manifest.name}},
+    {% else %}{# if partition.manifest.mmio_regions #}
+        .platform_data        = 0,
+    {% endif %}{# if partition.manifest.mmio_regions #}
+        .ndeps                = {{partition.manifest.dependencies | length()}},
+    {% if partition.manifest.dependencies %}
+        .deps                 = dependencies_{{partition.manifest.name}},
+    {% else %}
+        .deps                 = NULL,
+    {% endif %}
+    {{'},'}}
+    {% if partition.attr.conditional %}
+#endif /* {{partition.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+};
+
+/**************************************************************************/
+/** The memory data of the partition list */
+/**************************************************************************/
+const struct tfm_spm_partition_memory_data_t memory_data_list[] =
+{
+    {
+#if TFM_LVL == 3
+        .data_start           = PART_REGION_ADDR(ARM_LIB_STACK, $$ZI$$Base),
+        .data_limit           = PART_REGION_ADDR(ARM_LIB_STACK, $$ZI$$Limit),
+#endif
+        .stack_bottom         = PART_REGION_ADDR(ARM_LIB_STACK, $$ZI$$Base),
+        .stack_top            = PART_REGION_ADDR(ARM_LIB_STACK, $$ZI$$Limit),
+    },
+{% for partition in partitions %}
+    {% if partition.attr.conditional %}
+#ifdef {{partition.attr.conditional}}
+    {% endif %}
+    {{'{'}}
+#if TFM_LVL == 3
+        .data_start           = PART_REGION_ADDR(PT_{{partition.manifest.name}}_PRIVATE, _DATA_START$$Base),
+        .data_limit           = PART_REGION_ADDR(PT_{{partition.manifest.name}}_PRIVATE, _DATA_END$$Base),
+#endif
+        .stack_bottom         = (uint32_t){{partition.manifest.name.lower()}}_stack,
+        .stack_top            = (uint32_t)({{partition.manifest.name.lower()}}_stack + {{partition.manifest.stack_size}}),
+    {{'},'}}
+    {% if partition.attr.conditional %}
+#endif /* {{partition.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+};
+
+/**************************************************************************/
+/** The partition list for the DB */
+/**************************************************************************/
+static struct partition_t partition_list [] =
+{
+    {{'{0}'}}, /* placeholder for Non-secure internal partition */
+
+{% for partition in partitions %}
+    /* -----------------------------------------------------------------------*/
+    /* - Partition DB record for {{partition.manifest.name}} */
+    /* -----------------------------------------------------------------------*/
+    {% if partition.attr.conditional %}
+#ifdef {{partition.attr.conditional}}
+    {% endif %}
+    {{'{0}'}},
+    {% if partition.attr.conditional %}
+#endif /* {{partition.attr.conditional}} */
+    {% endif %}
+
+{% endfor %}
+};
+
+struct spm_partition_db_t g_spm_partition_db = {
+    .partition_count = sizeof(partition_list) / sizeof(partition_list[0]),
+    .partitions = partition_list,
+};
+
+#endif /* __TFM_SPM_DB_IPC_INC__ */

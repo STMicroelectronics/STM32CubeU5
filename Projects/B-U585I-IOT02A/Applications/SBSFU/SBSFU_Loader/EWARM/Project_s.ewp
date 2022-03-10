@@ -688,7 +688,7 @@
       <name>BUILDACTION</name>
       <archiveVersion>1</archiveVersion>
       <data>
-        <prebuild>$PROJ_DIR$\prebuild_s.cmd "$PROJ_DIR$"</prebuild>
+        <prebuild>$PROJ_DIR$\prebuild_s.cmd "$PROJ_DIR$" "STM32U585xx"</prebuild>
         <postbuild>cmd /C "cmd /C $PROJ_DIR$\postbuild.bat "secure""</postbuild>
       </data>
     </settings>

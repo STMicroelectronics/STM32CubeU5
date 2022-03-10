@@ -87,7 +87,7 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
 
 ### <b>Keywords</b>
 
-RTOS, ThreadX, USBX, USB_OTG, Full Speed, HID, Mouse, USBPD
+RTOS, ThreadX, USBXDevice, USB_OTG, Full Speed, HID, Mouse, USBPD
 
 ### <b>Hardware and Software environment</b>
 

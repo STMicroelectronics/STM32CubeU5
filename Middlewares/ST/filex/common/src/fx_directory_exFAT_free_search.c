@@ -100,7 +100,9 @@ ULONG64           logical_sector;
 FX_DIR_ENTRY     *search_dir_ptr;
 ULONG             free_entry_start;
 UINT              sectors;
+#ifndef FX_DISABLE_CACHE
 FX_CACHED_SECTOR *cache_entry_ptr;
+#endif
 ULONG             bytes_per_cluster;
 
 
@@ -311,6 +313,7 @@ ULONG             bytes_per_cluster;
             i =  i + sizeof(ULONG);
         }
 
+#ifndef FX_DISABLE_CACHE
         /* Invalidate all cached sectors that are contained in the newly allocated first
            cluster of the directory.  */
 
@@ -344,6 +347,7 @@ ULONG             bytes_per_cluster;
                 cache_entry_ptr =  cache_entry_ptr -> fx_cached_sector_next_used;
             }
         }
+#endif
 
         /* Clear all sectors of new sub-directory cluster.  */
         do

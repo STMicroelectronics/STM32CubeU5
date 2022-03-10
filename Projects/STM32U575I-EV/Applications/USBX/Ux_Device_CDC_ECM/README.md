@@ -83,7 +83,7 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
 
 ### <b>Keywords</b>
 
-RTOS, ThreadX, USBX, USBPD, Network, NetxDuo, FileX, File ,SDMMC, UART
+RTOS, ThreadX, USBXDevice, USBPD, Network, NetxDuo, FileX, File ,SDMMC, UART
 
 
 ### <b>Hardware and Software environment</b>
@@ -105,14 +105,13 @@ RTOS, ThreadX, USBX, USBPD, Network, NetxDuo, FileX, File ,SDMMC, UART
       - Flow control = None
 
 <b>Note</b>
-It is mandatory to check that the Jumpers bellow are fitted:
+It is mandatory to check that the Jumpers below are fitted:
     JP6  (UCPD_SNK03).
     JP7  (USBPD_SNK01).
     JP14 (UCPD_FTL).
-    JP25 (5V_STLK)
 
-Also check that the jumper bellow is disconnected:
-    JP8.
+Also check that the jumpers below are disconnected:
+    JP25 and JP6.
 
 ### <b>How to use it ?</b>
 

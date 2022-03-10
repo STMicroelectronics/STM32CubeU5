@@ -155,19 +155,19 @@ typedef struct
 #define CAMERA_NIGHT_MODE_SET           0x00U   /* Disable night mode         */
 #define CAMERA_NIGHT_MODE_RESET         0x01U   /* Enable night mode          */
 
-#define CAMERA_IRQHandler               DCMI_PSSI_IRQHandler
-#define CAMERA_DMA_IRQHandler           DMA2_Stream3_IRQHandler
+#define CAMERA_IRQ_HANDLER              DCMI_PSSI_IRQHandler
+#define CAMERA_DMA_IRQ_HANDLER          DMA2_Stream3_IRQHandler
 
-#define XSDN_PIN                       GPIO_PIN_3
-#define XSDN_PORT                      GPIOI
+#define XSDN_PIN                        GPIO_PIN_3
+#define XSDN_PORT                       GPIOI
 
-#define RSTI_PIN                       GPIO_PIN_2
-#define RSTI_PORT                      GPIOI
+#define RSTI_PIN                        GPIO_PIN_2
+#define RSTI_PORT                       GPIOI
 
-#define CAM_PLUG_PIN                   GPIO_PIN_10
-#define CAM_PLUG_PORT                  GPIOG
+#define CAM_PLUG_PIN                    GPIO_PIN_10
+#define CAM_PLUG_PORT                   GPIOG
 
-#define CAMERA_OV5640_ADDRESS          0x78U
+#define CAMERA_OV5640_ADDRESS           0x78U
 /**
   * @}
   */

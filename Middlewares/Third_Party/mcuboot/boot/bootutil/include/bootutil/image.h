@@ -1,4 +1,12 @@
 /*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright (c) 2016-2019 Linaro LTD
+ * Copyright (c) 2016-2019 JUUL Labs
+ * Copyright (c) 2019-2020 Arm Limited
+ *
+ * Original license:
+ *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,19 +25,12 @@
  * under the License.
  */
 
-/*
- * Modifications are Copyright (c) 2019-2020 Arm Limited.
- */
-
 #ifndef H_IMAGE_
 #define H_IMAGE_
 
 #include <inttypes.h>
 #include <stdbool.h>
-
-#ifdef __ZEPHYR__
-#include <toolchain/gcc.h>
-#endif
+#include "bootutil/fault_injection_hardening.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -77,6 +78,7 @@ struct flash_area;
  *   2nd one is the actual signature.
  */
 #define IMAGE_TLV_KEYHASH           0x01   /* hash of the public key */
+#define IMAGE_TLV_PUBKEY            0x02   /* public key */
 #define IMAGE_TLV_SHA256            0x10   /* SHA256 of image hdr and body */
 #define IMAGE_TLV_RSA2048_PSS       0x20   /* RSA2048 of hash output */
 #define IMAGE_TLV_ECDSA224          0x21   /* ECDSA of hash output */
@@ -86,9 +88,20 @@ struct flash_area;
 #define IMAGE_TLV_ENC_RSA2048       0x30   /* Key encrypted with RSA-OAEP-2048 */
 #define IMAGE_TLV_ENC_KW128         0x31   /* Key encrypted with AES-KW-128 */
 #define IMAGE_TLV_ENC_EC256         0x32   /* Key encrypted with ECIES-EC256 */
+#define IMAGE_TLV_ENC_X25519        0x33   /* Key encrypted with ECIES-X25519 */
 #define IMAGE_TLV_DEPENDENCY        0x40   /* Image depends on other image */
 #define IMAGE_TLV_SEC_CNT           0x50   /* security counter */
 #define IMAGE_TLV_BOOT_RECORD       0x60   /* measured boot record */
+					   /*
+					    * vendor reserved TLVs at xxA0-xxFF,
+					    * where xx denotes the upper byte
+					    * range.  Examples:
+					    * 0x00a0 - 0x00ff
+					    * 0x01a0 - 0x01ff
+					    * 0x02a0 - 0x02ff
+					    * ...
+					    * 0xffa0 - 0xfffe
+					    */
 #define IMAGE_TLV_ANY               0xffff /* Used to iterate over all TLV */
 
 struct image_version {
@@ -141,20 +154,16 @@ struct image_tlv {
     ((fap)->fa_id == FLASH_AREA_IMAGE_SECONDARY(idx) && IS_ENCRYPTED(hdr))
 #define IS_OTFDEC_ENCRYPTED(hdr) ((hdr)->ih_flags & IMAGE_F_OTFDEC)
 
-#ifdef __ZEPHYR__
-BUILD_ASSERT(sizeof(struct image_header) == IMAGE_HEADER_SIZE,
-	     "struct image_header not required size");
-#else
 _Static_assert(sizeof(struct image_header) == IMAGE_HEADER_SIZE,
                "struct image_header not required size");
-#endif
+
 
 struct enc_key_data;
-int bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
-                          struct image_header *hdr,
-                          const struct flash_area *fap,
-                          uint8_t *tmp_buf, uint32_t tmp_buf_sz,
-                          uint8_t *seed, int seed_len, uint8_t *out_hash);
+fih_int bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
+                              struct image_header *hdr,
+                              const struct flash_area *fap,
+                              uint8_t *tmp_buf, uint32_t tmp_buf_sz,
+                              uint8_t *seed, int seed_len, uint8_t *out_hash);
 
 struct image_tlv_iter {
     const struct image_header *hdr;
@@ -180,5 +189,4 @@ int32_t bootutil_get_img_security_cnt(struct image_header *hdr,
 #ifdef __cplusplus
 }
 #endif
-
 #endif

@@ -66,7 +66,6 @@ uint32_t OSPIDataMode;
 
 __ALIGN_BEGIN uint32_t Cipher[PLAIN_SIZE] __ALIGN_END ;
 uint32_t Plain_AES_test[PLAIN_SIZE] = {0};
-
 uint16_t FirmwareVersion[VERSION_NUMBER] = { 0xABBA, 0xA5A5, 0x5A5A,0xF119 };
 
 uint32_t Nonce[NONCE_NUMBER][2]       = {    {0xA5A5A5A5, 0xC3C3C3C3},
@@ -87,6 +86,7 @@ uint32_t Plain[PLAIN_SIZE] ={ 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void SystemPower_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ICACHE_Init(void);
 static void MX_DCACHE1_Init(void);
@@ -133,6 +133,9 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
+
+  /* Configure the System Power */
+  SystemPower_Config();
 
   /* USER CODE BEGIN SysInit */
   /* Configure LED6, LED7 */
@@ -242,12 +245,6 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /* Switch to SMPS regulator instead of LDO */
-  if(HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
   /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
@@ -268,6 +265,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -283,7 +281,27 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  __HAL_RCC_PWR_CLK_DISABLE();
+}
+
+/**
+  * @brief Power Configuration
+  * @retval None
+  */
+static void SystemPower_Config(void)
+{
+
+  /*
+   * Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
+   */
+  HAL_PWREx_DisableUCPDDeadBattery();
+
+  /*
+   * Switch to SMPS regulator instead of LDO
+   */
+  if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 /**
@@ -342,7 +360,7 @@ static void MX_DCACHE1_Init(void)
   {
     Error_Handler();
   }
-  HAL_DCACHE_Enable(&hdcache1);
+
   /* USER CODE BEGIN DCACHE1_Init 2 */
 
   /* USER CODE END DCACHE1_Init 2 */
@@ -364,6 +382,7 @@ static void MX_ICACHE_Init(void)
   /* USER CODE BEGIN ICACHE_Init 1 */
 
   /* USER CODE END ICACHE_Init 1 */
+
   /** Enable instruction cache in 1-way (direct mapped cache)
   */
   if (HAL_ICACHE_ConfigAssociativityMode(ICACHE_1WAY) != HAL_OK)
@@ -390,7 +409,7 @@ static void MX_OCTOSPI2_Init(void)
 
   /* USER CODE BEGIN OCTOSPI2_Init 0 */
   uint8_t id[20];
-  OSPI_RegularCmdTypeDef  sCommand;
+  OSPI_RegularCmdTypeDef  sCommand = {0};
   /* USER CODE END OCTOSPI2_Init 0 */
 
   OSPIM_CfgTypeDef sOspiManagerCfg = {0};
@@ -909,4 +928,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-

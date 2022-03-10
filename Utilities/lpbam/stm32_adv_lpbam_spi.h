@@ -80,6 +80,7 @@ typedef struct
 typedef struct
 {
   LPBAM_SPI_AutonomousModeConf_t AutoModeConf; /*!< Specifies only the autonomous mode trigger state
+                                                    Only TriggerState field is mandatory.
                                                     Please refer to LPBAM_SPI_AutonomousModeConf_t definition in
                                                     stm32_platform_lpbam_spi.h for more information.                  */
 
@@ -237,7 +238,7 @@ typedef struct
   */
 typedef struct
 {
-  DMA_NodeTypeDef pRxNodes[1U]; /*!< Specifies the content of nodes required for SPI transfers : 1 different nodes are
+  DMA_NodeTypeDef pRxNodes[1U]; /*!< Specifies the content of nodes required for SPI transfers : only one node is
                                      needed                                                                           */
 } LPBAM_SPI_TxRx_RxDataDesc_t;
 
@@ -258,7 +259,7 @@ typedef struct
   */
 typedef struct
 {
-  DMA_NodeTypeDef pRxNodes[1U];  /*!< Specifies the content of nodes required for SPI transfers : 1 different nodes are
+  DMA_NodeTypeDef pRxNodes[1U];  /*!< Specifies the content of nodes required for SPI transfers : only one node is
                                       needed                                                                          */
 } LPBAM_SPI_TxRx_RxFullDesc_t;
 /**

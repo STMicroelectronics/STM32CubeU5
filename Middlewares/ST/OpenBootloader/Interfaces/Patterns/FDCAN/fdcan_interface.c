@@ -18,20 +18,21 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "platform.h"
+#include "interfaces_conf.h"
 #include "openbl_core.h"
 #include "openbl_fdcan_cmd.h"
 #include "fdcan_interface.h"
 #include "iwdg_interface.h"
-#include "interfaces_conf.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-FDCAN_HandleTypeDef hfdcan;
-FDCAN_FilterTypeDef sFilterConfig;
-FDCAN_TxHeaderTypeDef TxHeader;
-FDCAN_RxHeaderTypeDef RxHeader;
+static FDCAN_HandleTypeDef hfdcan;
+static FDCAN_FilterTypeDef sFilterConfig;
+static FDCAN_TxHeaderTypeDef TxHeader;
+static FDCAN_RxHeaderTypeDef RxHeader;
+static uint8_t FdcanDetected = 0U;
 
 /* Exported variables --------------------------------------------------------*/
 uint8_t TxData[FDCAN_RAM_BUFFER_SIZE];
@@ -41,7 +42,10 @@ uint8_t RxData[FDCAN_RAM_BUFFER_SIZE];
 static void OPENBL_FDCAN_Init(void);
 
 /* Private functions ---------------------------------------------------------*/
-
+/**
+ * @brief  This function is used to initialize the used FDCAN instance.
+ * @retval None.
+ */
 static void OPENBL_FDCAN_Init(void)
 {
   /*                Bit time configuration:
@@ -115,32 +119,46 @@ void OPENBL_FDCAN_Configuration(void)
 {
   /* Enable all resources clocks --------------------------------------------*/
   /* Enable used GPIOx clocks */
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  /* Enable FDCAN clock */
-  __HAL_RCC_FDCAN_CLK_ENABLE();
+  FDCANx_GPIO_CLK_ENABLE();
 
   OPENBL_FDCAN_Init();
 }
 
 /**
- * @brief  This function is used to detect if there is any activity on FDCAN protocol.
+ * @brief  This function is used to De-initialize the FDCAN pins and instance.
  * @retval None.
+ */
+void OPENBL_FDCAN_DeInit(void)
+{
+  /* Only de-initialize the FDCAN if it is not the current detected interface */
+  if (FdcanDetected == 0U)
+  {
+    FDCANx_FORCE_RESET();
+    FDCANx_RELEASE_RESET();
+    HAL_GPIO_DeInit(FDCANx_TX_GPIO_PORT, FDCANx_TX_PIN);
+    HAL_GPIO_DeInit(FDCANx_RX_GPIO_PORT, FDCANx_RX_PIN);
+
+    FDCANx_CLK_DISABLE();
+  }
+}
+
+/**
+ * @brief  This function is used to detect if there is any activity on FDCAN protocol.
+ * @retval Returns 1 if interface is detected else 0..
  */
 uint8_t OPENBL_FDCAN_ProtocolDetection(void)
 {
-  uint8_t detected;
-
   /* check if FIFO 0 receive at least one message */
   if (HAL_FDCAN_GetRxFifoFillLevel(&hfdcan, FDCAN_RX_FIFO0) > 0)
   {
-    detected = 1;
+    FdcanDetected = 1;
   }
   else
   {
-    detected = 0;
+    FdcanDetected = 0;
   }
 
-  return detected;
+  return FdcanDetected;
 }
 
 /**
@@ -179,7 +197,7 @@ uint8_t OPENBL_FDCAN_GetCommandOpcode(void)
   */
 uint8_t OPENBL_FDCAN_ReadByte(void)
 {
-  uint8_t byte = 0x0;
+  uint8_t byte;
 
   /* check if FIFO 0 receive at least one message */
   while (HAL_FDCAN_GetRxFifoFillLevel(&hfdcan, FDCAN_RX_FIFO0) < 1)
@@ -195,7 +213,7 @@ uint8_t OPENBL_FDCAN_ReadByte(void)
 
 /**
   * @brief  This function is used to read bytes from FDCAN pipe.
-  * @retval Returns the read byte.
+  * @retval None.
   */
 void OPENBL_FDCAN_ReadBytes(uint8_t *Buffer, uint32_t BufferSize)
 {
@@ -252,4 +270,39 @@ void OPENBL_FDCAN_SendBytes(uint8_t *Buffer, uint32_t BufferSize)
 
   /* Clear the complete flag */
   (&hfdcan)->Instance->IR &= FDCAN_IR_TFE;
+}
+
+/**
+ * @brief  This function is used to process and execute the special commands.
+ *         The user must define the special commands routine here.
+ * @retval Returns NACK status in case of error else returns ACK status.
+ */
+void OPENBL_FDCAN_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *Frame)
+{
+  switch (Frame->OpCode)
+  {
+    /* Unknown command opcode */
+    default:
+      if (Frame->CmdType == OPENBL_SPECIAL_CMD)
+      {
+        /* Send NULL data size */
+        TxData[0] = 0x0;
+        TxData[1] = 0x0;
+
+        /* Send NULL status size */
+        TxData[2] = 0x0;
+        TxData[3] = 0x0;
+
+        OPENBL_FDCAN_SendBytes(TxData, FDCAN_DLC_BYTES_4);
+      }
+      else if (Frame->CmdType == OPENBL_EXTENDED_SPECIAL_CMD)
+      {
+        /* Send NULL status size */
+        TxData[0] = 0x0;
+        TxData[1] = 0x0;
+
+        OPENBL_FDCAN_SendBytes(TxData, FDCAN_DLC_BYTES_2);
+      }
+      break;
+  }
 }

@@ -12,33 +12,33 @@
 
 /**************************************************************************/
 /**************************************************************************/
-/**                                                                       */ 
-/** USBX Component                                                        */ 
+/**                                                                       */
+/** USBX Component                                                        */
 /**                                                                       */
 /**   STM32 Controller Driver                                             */
 /**                                                                       */
 /**************************************************************************/
 /**************************************************************************/
 
-/**************************************************************************/ 
-/*                                                                        */ 
-/*  COMPONENT DEFINITION                                   RELEASE        */ 
-/*                                                                        */ 
-/*    ux_dcd_stm32.h                                      PORTABLE C      */ 
+/**************************************************************************/
+/*                                                                        */
+/*  COMPONENT DEFINITION                                   RELEASE        */
+/*                                                                        */
+/*    ux_dcd_stm32.h                                      PORTABLE C      */
 /*                                                           6.1          */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
 /*                                                                        */
 /*  DESCRIPTION                                                           */
-/*                                                                        */ 
-/*    This file defines the USB OTG device equivalences for the STM32     */ 
-/*    controller.                                                         */ 
-/*                                                                        */ 
-/*  RELEASE HISTORY                                                       */ 
-/*                                                                        */ 
-/*    DATE              NAME                      DESCRIPTION             */ 
-/*                                                                        */ 
+/*                                                                        */
+/*    This file defines the USB OTG device equivalences for the STM32     */
+/*    controller.                                                         */
+/*                                                                        */
+/*  RELEASE HISTORY                                                       */
+/*                                                                        */
+/*    DATE              NAME                      DESCRIPTION             */
+/*                                                                        */
 /*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
 /*  09-30-2020     Chaoqiong Xiao           Modified comment(s), used ST  */
 /*                                            HAL library to drive the    */
@@ -92,14 +92,14 @@
 
 /* Define USB STM32 physical endpoint structure.  */
 
-typedef struct UX_DCD_STM32_ED_STRUCT 
+typedef struct UX_DCD_STM32_ED_STRUCT
 {
 
     UCHAR           ux_dcd_stm32_ed_status;
     UCHAR           ux_dcd_stm32_ed_state;
     UCHAR           ux_dcd_stm32_ed_index;
     UCHAR           ux_dcd_stm32_ed_direction;
-    struct UX_SLAVE_ENDPOINT_STRUCT             
+    struct UX_SLAVE_ENDPOINT_STRUCT
                     *ux_dcd_stm32_ed_endpoint;
 } UX_DCD_STM32_ED;
 
@@ -113,6 +113,10 @@ typedef struct UX_DCD_STM32_STRUCT
                         *ux_dcd_stm32_dcd_owner;
     struct UX_DCD_STM32_ED_STRUCT
                         ux_dcd_stm32_ed[UX_DCD_STM32_MAX_ED];
+#ifdef UX_DEVICE_BIDIRECTIONAL_ENDPOINT_SUPPORT
+    struct UX_DCD_STM32_ED_STRUCT
+                        ux_dcd_stm32_ed_in[UX_DCD_STM32_MAX_ED];
+#endif
     PCD_HandleTypeDef   *pcd_handle;
 } UX_DCD_STM32;
 

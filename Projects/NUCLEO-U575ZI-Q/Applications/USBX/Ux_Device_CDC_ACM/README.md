@@ -40,6 +40,9 @@ In CDC_ACM application, two requests are implemented:
 - Receiving data over UART is handled by interrupt while transmitting is handled by DMA allowing hence the application to receive data at the same time it is transmitting another data (full- duplex feature).
 The support of the VCP interface is managed through the ST Virtual COM Port driver available for download from www.st.com.
 
+- CDC ACM non-blocking transmission by default disabled, to enable non-blocking transmission UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE must be disabled
+  and 2048 additional in USBX byte pool and USBX_MEMORY_SIZE should be added.
+
 - The user has to check the list of the COM ports in Device Manager to find out the COM port number that have been assigned (by OS) to the VCP interface.
 
 #### <b>Expected success behavior</b>
@@ -52,6 +55,8 @@ Open two hyperterminals (USB com port and UART com port(USB STLink VCP)) to send
 #### <b>Error behaviors</b>
 
 Host PC shows that USB device does not operate as designed (CDC Device enumeration failed, PC and Device can not communicate over VCP ports).
+
+The Red LED is toggling to indicate any error that has occurred.
 
 #### <b>Assumptions if any</b>
 
@@ -107,7 +112,7 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
 
 ### <b>Keywords</b>
 
-RTOS, ThreadX, USBX, Device, USB_OTG, Full Speed, CDC, VCP, USART, DMA, Mouse, USBPD.
+RTOS, ThreadX, USBXDevice, USB_OTG, Full Speed, CDC, VCP, USART, DMA, Mouse, USBPD.
 
 
 ### <b>Hardware and Software environment</b>

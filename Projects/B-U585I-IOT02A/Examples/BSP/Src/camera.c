@@ -55,9 +55,8 @@ int32_t Camera_demo(void)
   {
     printf("VERIFY THAT CAMERA IS CONNECTED!\n");    
     printf("TEST ABORTED\n");
-    result--;
 
-    return result;
+    return 0;
   }
   
   else

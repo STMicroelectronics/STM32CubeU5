@@ -715,3 +715,4 @@ static void  USBD_FrameWork_HID_Desc(USBD_DevClassHandleTypeDef *pdev,
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
+

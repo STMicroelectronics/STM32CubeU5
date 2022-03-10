@@ -66,7 +66,7 @@ UINT MX_FileX_Init(VOID *memory_ptr)
   /* USER CODE END App_FileX_MEM_POOL */
 
   /* USER CODE BEGIN MX_FileX_Init */
-#if (USE_MEMORY_POOL_ALLOCATION == 1) 
+#if (USE_STATIC_ALLOCATION == 1) 
   /* Allocate memory for the media cache */
   ret = tx_byte_allocate(byte_pool, (VOID**) &media_memory, DEFAULT_MEDIA_BUF_LENGTH, TX_NO_WAIT);
 

@@ -17,6 +17,29 @@
   ******************************************************************************
   @endverbatim
 
+### 26-January-2022 ###
+========================
+    + FOSS Audit Neutral license and removal of external targets
+    + fix crypto issues
+    + fix PS object data size
+
+### 14-December-2021 ###
+========================
+    + stsafe: add pairing
+    + fix stsafe issue
+    + remove compilation warning
+
+### 02-November-2021 ###
+========================
+    + add support of STSAFE through SE PSA driver started from crypto partition
+	(under compilation switch PSA_USE_SE_ST)
+
+### 11-October-2021 ###
+========================
+    + use tfm 1.3.0 release
+    + add support of firmware update partition
+    + add support of data provisionning
+
 ### 28-May-2021 ###
 ========================
     Add Add NS_DATA_START_2 region

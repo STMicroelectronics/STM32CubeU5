@@ -630,3 +630,4 @@ static void  USBD_FrameWork_MSCDesc(USBD_DevClassHandleTypeDef *pdev,
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
+

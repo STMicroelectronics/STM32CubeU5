@@ -76,9 +76,10 @@ typedef struct
   */
 typedef struct
 {
-  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : 1 node is needed */
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : only one node is
+                                   needed                                                                             */
 
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : 1 value is needed                */
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
 
 } LPBAM_GPIO_WritePinFullDesc_t;
 
@@ -87,7 +88,8 @@ typedef struct
   */
 typedef struct
 {
-  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : 1 node is needed */
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : only one node is
+                                   needed                                                                             */
 
 } LPBAM_GPIO_WritePinSeqFullDesc_t;
 
@@ -96,7 +98,8 @@ typedef struct
   */
 typedef struct
 {
-  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : 1 node is needed */
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : only one node is
+                                   needed                                                                             */
 
 } LPBAM_GPIO_ReadPinSeqFullDesc_t;
 /**

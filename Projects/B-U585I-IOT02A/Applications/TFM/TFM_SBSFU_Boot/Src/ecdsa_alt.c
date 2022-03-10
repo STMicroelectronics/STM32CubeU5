@@ -1,7 +1,7 @@
 /*
  *  Elliptic curve DSA sign and verify functions
  *
- *  Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
+ *  Copyright The Mbed TLS Contributors
  *  Copyright (C) 2021, STMicroelectronics, All Rights Reserved
  *  SPDX-License-Identifier: Apache-2.0
  *
@@ -26,6 +26,7 @@
 #if defined(MBEDTLS_ECDSA_C)
 #include "mbedtls/platform.h"
 #include "mbedtls/platform_util.h"
+#include "mbedtls/error.h"
 #include "stm32u5xx_hal.h"
 #if  defined(MCUBOOT_DOUBLE_SIGN_VERIF)
 #include "boot_hal_imagevalid.h"
@@ -63,7 +64,7 @@ int mbedtls_ecdsa_sign( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
                 const mbedtls_mpi *d, const unsigned char *buf, size_t blen,
                 int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
-    int ret = 0;
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     uint8_t *d_binary;
     uint8_t *k_binary = NULL;
 
@@ -80,7 +81,7 @@ int mbedtls_ecdsa_sign( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
     ECDSA_VALIDATE_RET( buf   != NULL || blen == 0 );
 
     /* Fail cleanly on curves such as Curve25519 that can't be used for ECDSA */
-    if( grp->G.Y.p == NULL )
+    if( ! mbedtls_ecdsa_can_do( grp->id ) || grp->N.p == NULL )
         return( MBEDTLS_ERR_ECP_BAD_INPUT_DATA );
 
     /* Make sure d is in range 1..n-1 */
@@ -185,6 +186,20 @@ cleanup:
     return ret;
 }
 
+int mbedtls_ecdsa_can_do( mbedtls_ecp_group_id gid )
+{
+    switch( gid )
+    {
+#ifdef MBEDTLS_ECP_DP_CURVE25519_ENABLED
+        case MBEDTLS_ECP_DP_CURVE25519: return 0;
+#endif
+#ifdef MBEDTLS_ECP_DP_CURVE448_ENABLED
+        case MBEDTLS_ECP_DP_CURVE448: return 0;
+#endif
+    default: return 1;
+    }
+}
+
 #endif /* MBEDTLS_ECDSA_SIGN_ALT*/
 
 #if defined(MBEDTLS_ECDSA_VERIFY_ALT)
@@ -235,7 +250,7 @@ int mbedtls_ecdsa_verify( mbedtls_ecp_group *grp,
                           const mbedtls_mpi *r,
                           const mbedtls_mpi *s)
 {
-    int ret = 0;
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     size_t olen;
     uint8_t *Q_binary;
     uint8_t *r_binary = NULL;

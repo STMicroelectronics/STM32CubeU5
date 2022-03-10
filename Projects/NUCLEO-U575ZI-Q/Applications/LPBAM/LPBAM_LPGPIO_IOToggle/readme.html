@@ -22,47 +22,62 @@
 <h2 id="lpbam_lpgpio_iotoggle-application-description"><b>LPBAM_LPGPIO_IOToggle Application Description</b></h2>
 <ul>
 <li><p>How to toggle a LPGPIO Pin with DMA linked-list feature in low power mode through LPBAM utility every 1s.</p></li>
-<li><p>At the beginning of the main program the HAL_Init() function is called to reset all the peripherals, initialize the Flash interface and the systick. Then the SystemClock_Config() function is used to configure the system clock (SYSCLK) to run at 160 MHz.</p></li>
-<li><p>LPGPIO_PIN_0 is configured as output. LPBAM GPIO layer is used to configure write pin node to set and reset the selected LPGPIO pin every 1s. LPDMA1_Channel0 is configured to transfer the contents of user buffer (LPGPIOBufferState) stored in SRAM4 memory to the LPGPIO1 register (LPGPIO1_ODR register). When queue is well created, the whole system enters in STOP 2 mode.</p></li>
-<li><p>Each transmitted state is triggered by LPTIM1 rising edge PWM signal.</p></li>
-<li><p>The example exits STOP2 mode when the user press the user push-button.</p></li>
-<li><p>The LPBAM operating scenario is not impacted when the system exits from STOP 2 mode.</p></li>
-<li>This project contains two configurations :
+<li><p>At the beginning of the main program the HAL_Init() function is called to reset all the peripherals, initialize the Flash interface and the systick. Then the SystemClock_Config() function is used to configure the system clock (SYSCLK) to run at 160 MHz. The HCLK for AHB peripherals to run at 160 MHz. The APB clock dividers APB1, APB2, APB3 peripherals to run at 160 MHz.</p></li>
+<li>LPBAM_LPGPIO_IOToggle application contains :
 <ul>
-<li>Debug configuration : uncomment DEBUG_CONFIGURATION flag in the main.h.
+<li>One LPBAM sub-application named <strong>WriteIO</strong>.</li>
+</ul></li>
+<li>WriteIO application contains :
 <ul>
-<li>LPTIM1 output signal is mapped on PB2 pin.</li>
+<li>One LPBAM scenario named <strong>WriteSeq</strong>.</li>
 </ul></li>
-<li>Power measurement configuration : comment DEBUG_CONFIGURATION flag in the main.h.
+<li><p>The LPBAM WriteIO application configures the system to reach the lowest power consumption.</p></li>
+<li><p>The LPBAM WriteSeq scenario configures the used peripherals and builds the scenario linked-list.</p></li>
+<li>The WriteSeq scenario performs :
 <ul>
-<li>LPTIM1 output signal is not mapped.</li>
+<li>Create write LPGPIO pin 0 values queue.
+<ul>
+<li>Each write operation is triggered by LPTIM1 PWM rising edge signal.</li>
 </ul></li>
 </ul></li>
-<li><p>The typical average power consumption of the system performing LPGPIO pin toggling with a 1s period is 4uA.</p></li>
+<li><p>This scenario is repeated in infinite loop.</p></li>
+<li><p>LPTIM1 PWM trigger signal period is equal to 1s.</p></li>
+<li><p>After configuring, building, linking and starting the LPBAM scenario the MCU enters in Stop2 mode.</p></li>
+<li><p>User push-button pin (PC.13) is configured as input with external interrupt (EXTI_Line13), falling edge. When it is pressed, the system wakes up from Stop2 mode.</p></li>
+<li><p>After the wake up from Stop2 mode, the LPBAM sub-system is still operating and the blue led is turns on.</p></li>
+<li><p>When pressing another time on the user push-button, the LPBAM scenario is stopped, unlinked and de-initialized and the green led turns on.</p></li>
+<li><p>The typical average power consumption of the system performing LPGPIO pin toggling with a 1s period is 4.2uA.</p></li>
 <li>NUCLEO-U575ZI-Q (MB1549) board’s LEDs can be used to monitor the LPGPIO Pin status:
 <ul>
-<li>LED1 is ON when no error detected.</li>
-<li>LED3 is ON when any error occurred.</li>
+<li>LED1 (green led) is turned on at the end of application and no error is detected.</li>
+<li>LED2 (blue led) is turned on after wake up from Stop2 mode and before pressing the user push-button.</li>
+<li>LED3 (red led) is turned on when any error is occurred.</li>
 </ul></li>
 </ul>
 <h4 id="notes"><b>Notes</b></h4>
 <ol type="1">
 <li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise the caller ISR process will be blocked. To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>
 <li><p>The application needs to ensure that the SysTick time base is always set to 1 millisecond to have correct HAL operation.</p></li>
+<li><p>This application can not be used in DEBUG mode due to the fact that the debug pins are configured in analog mode for power consumption and Cortex-M33 core is no longer clocked during low power mode so debugging features are disabled.</p></li>
+<li><p>When deleting project folder (EWARM, MDK-ARM or STM32CubeIDE) and regenerating this application with STM32CubeMx tool, ensure to re-adjust linker ROM and RAM sections addresses.</p></li>
 </ol>
 <h3 id="keywords"><b>Keywords</b></h3>
 <p>System, LPGPIO, LPDMA, LPBAM, Output, Alternate function, Push-pull, Toggle</p>
 <h3 id="directory-contents"><b>Directory contents</b></h3>
 <ul>
-<li>LPBAM/LPBAM_LPGPIO_IOToggle/Inc/stm32_lpbam_conf.h LPBAM Configuration file</li>
-<li>LPBAM/LPBAM_LPGPIO_IOToggle/Inc/stm32u5xx_nucleo_conf.h BSP configuration file</li>
-<li>LPBAM/LPBAM_LPGPIO_IOToggle/Inc/stm32u5xx_hal_conf.h HAL configuration file</li>
-<li>LPBAM/LPBAM_LPGPIO_IOToggle/Inc/stm32u5xx_it.h Interrupt handlers header file</li>
-<li>LPBAM/LPBAM_LPGPIO_IOToggle/Inc/main.h Header for main.c module</li>
-<li>LPBAM/LPBAM_LPGPIO_IOToggle/Src/stm32u5xx_it.c Interrupt handlers</li>
-<li>LPBAM/LPBAM_LPGPIO_IOToggle/Src/stm32u5xx_hal_msp.c HAL MSP file</li>
-<li>LPBAM/LPBAM_LPGPIO_IOToggle/Src/main.c Main program</li>
-<li>LPBAM/LPBAM_LPGPIO_IOToggle/Src/system_stm32u5xx.c STM32U5xx system source file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/Core/Inc/stm32_lpbam_conf.h LPBAM Configuration file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/Core/Inc/stm32u5xx_nucleo_conf.h BSP configuration file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/Core/Inc/stm32u5xx_hal_conf.h HAL configuration file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/Core/Inc/stm32u5xx_it.h Interrupt handlers header file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/Core/Inc/main.h Header for main.c module file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/Core/Src/stm32u5xx_it.c Interrupt handlers file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/Core/Src/stm32u5xx_hal_msp.c HAL MSP file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/Core/Src/main.c Main program file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/Core/Src/system_stm32u5xx.c STM32U5xx system source file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/LPBAM/WriteIO/lpbam_writeio.h LPBAM WriteIO application header file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/LPBAM/WriteIO/lpbam_writeio_config.c LPBAM WriteIO application configuration file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/LPBAM/WriteIO/lpbam_writeio_writeseq_config.c LPBAM WriteIO application WriteSeq scenario configuration file</li>
+<li>LPBAM/LPBAM_LPGPIO_IOToggle/LPBAM/WriteIO/lpbam_writeio_writeseq_build.c LPBAM WriteIO application WriteSeq scenario build file</li>
 </ul>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
@@ -70,8 +85,7 @@
 <li><p>This application has been tested with NUCLEO-U575ZI-Q (MB1549) board and can be easily tailored to any other supported device and development board.</p></li>
 <li>NUCLEO-U575ZI-Q set-up
 <ul>
-<li>Connect the pin PB2 (pin 13 CN9) to an oscilloscope (LPTIM Channel 1 output).</li>
-<li>Connect the pin PA1 (pin 11 CN10)to an oscilloscope (LPGPIO1 pin 0 output).</li>
+<li>Connect the pin PA.1 (pin 11 in CN10 connector)to an oscilloscope (LPGPIO1 pin 0 output).</li>
 </ul></li>
 </ul>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>
@@ -80,7 +94,7 @@
 <ul>
 <li>Open your preferred toolchain</li>
 <li>Rebuild all files and load your image into target memory</li>
-<li>Run the application</li>
+<li>UnPlug then Plug STLINK connection to perform a power-on-reset.</li>
 </ul></li>
 </ul>
 </div>

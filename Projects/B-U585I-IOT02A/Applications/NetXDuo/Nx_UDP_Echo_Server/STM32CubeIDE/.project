@@ -39,6 +39,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Nx_UDP_Echo_Server.ioc</locationURI>
 		</link>
 		<link>
+			<name>Doc/README.md</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/README.md</locationURI>
+		</link>
+		<link>
 			<name>Drivers/CMSIS/system_stm32u5xx.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/system_stm32u5xx.c</locationURI>
@@ -179,9 +184,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/stm32u5xx_it.c</locationURI>
 		</link>
 		<link>
-			<name>Application/User/Core/tx_initialize_low_level.s</name>
+			<name>Application/User/Core/tx_initialize_low_level.S</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/tx_initialize_low_level.s</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/tx_initialize_low_level.S</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</name>
@@ -1279,6 +1284,11 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_tcp_server_socket_accept.c</locationURI>
 		</link>
 		<link>
+			<name>Middlewares/NetXDuo/NX Core/nx_tcp_server_socket_driver_listen.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_tcp_server_socket_driver_listen.c</locationURI>
+		</link>
+		<link>
 			<name>Middlewares/NetXDuo/NX Core/nx_tcp_server_socket_listen.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_tcp_server_socket_listen.c</locationURI>
@@ -1332,6 +1342,16 @@
 			<name>Middlewares/NetXDuo/NX Core/nx_tcp_socket_disconnect_complete_notify.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_tcp_socket_disconnect_complete_notify.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/NetXDuo/NX Core/nx_tcp_socket_driver_establish.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_tcp_socket_driver_establish.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/NetXDuo/NX Core/nx_tcp_socket_driver_packet_receive.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_tcp_socket_driver_packet_receive.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/NetXDuo/NX Core/nx_tcp_socket_establish_notify.c</name>
@@ -1567,6 +1587,11 @@
 			<name>Middlewares/NetXDuo/NX Core/nx_udp_socket_delete.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_udp_socket_delete.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/NetXDuo/NX Core/nx_udp_socket_driver_packet_receive.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_udp_socket_driver_packet_receive.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/NetXDuo/NX Core/nx_udp_socket_info_get.c</name>

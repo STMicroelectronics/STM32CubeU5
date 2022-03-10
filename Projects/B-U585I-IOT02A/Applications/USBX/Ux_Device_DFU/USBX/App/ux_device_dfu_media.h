@@ -84,3 +84,4 @@ void usbx_dfu_download_thread_entry(ULONG arg);
 }
 #endif
 #endif  /* __UX_DEVICE_DFU_MEDIA_H__ */
+

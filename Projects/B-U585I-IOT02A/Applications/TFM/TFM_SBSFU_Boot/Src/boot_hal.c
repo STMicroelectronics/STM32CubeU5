@@ -21,19 +21,24 @@
 #include <string.h>
 #include "boot_hal_cfg.h"
 #include "boot_hal.h"
+#include "boot_hal_hash_ref.h"
 #include "boot_hal_imagevalid.h"
 #include "boot_hal_flowcontrol.h"
 #include "mcuboot_config/mcuboot_config.h"
 #include "uart_stdout.h"
 #include "low_level_security.h"
 #include "tfm_bl2_shared_data.h"
+#include "bootutil/boot_record.h"
 #include "target_cfg.h"
 #include "cmsis.h"
 #include "Driver_Flash.h"
 #include "region_defs.h"
 #include "low_level_rng.h"
+#if   defined(MCUBOOT_USE_HASH_REF)
+#include "bootutil_priv.h"
+#endif
 #ifdef MCUBOOT_EXT_LOADER
-#include "bootutil/sha256.h"
+#include "bootutil/crypto/sha256.h"
 #define BUTTON_PORT                       GPIOC
 #define BUTTON_CLK_ENABLE                 __HAL_RCC_GPIOC_CLK_ENABLE()
 #define BUTTON_PIN                        GPIO_PIN_13
@@ -47,12 +52,24 @@ extern ARM_DRIVER_FLASH FLASH_DEV_NAME;
 uint8_t ImageValidStatus[MCUBOOT_IMAGE_NUMBER] = {IMAGE_INVALID};
 #elif (MCUBOOT_IMAGE_NUMBER == 2)
 uint8_t ImageValidStatus[MCUBOOT_IMAGE_NUMBER] = {IMAGE_INVALID, IMAGE_INVALID};
+#elif (MCUBOOT_IMAGE_NUMBER == 3)
+uint8_t ImageValidStatus[MCUBOOT_IMAGE_NUMBER] = {IMAGE_INVALID, IMAGE_INVALID, IMAGE_INVALID};
+#elif (MCUBOOT_IMAGE_NUMBER == 4)
+uint8_t ImageValidStatus[MCUBOOT_IMAGE_NUMBER] = {IMAGE_INVALID, IMAGE_INVALID, IMAGE_INVALID, IMAGE_INVALID};
 #else
 #error "MCUBOOT_IMAGE_NUMBER not supported"
 #endif /* (MCUBOOT_IMAGE_NUMBER == 1)  */
 uint8_t ImageValidIndex = 0;
-uint8_t ImageValidEnable = 0;
 #endif /* MCUBOOT_DOUBLE_SIGN_VERIF */
+#if defined(MCUBOOT_DOUBLE_SIGN_VERIF) || defined(MCUBOOT_USE_HASH_REF)
+uint8_t ImageValidEnable = 0;
+#endif /* MCUBOOT_DOUBLE_SIGN_VERIF || MCUBOOT_USE_HASH_REF */
+
+#if defined(MCUBOOT_USE_HASH_REF)
+#define BL2_HASH_REF_ADDR     (FLASH_HASH_REF_AREA_OFFSET)
+uint8_t ImageValidHashUpdate = 0;
+uint8_t ImageValidHashRef[MCUBOOT_IMAGE_NUMBER * SHA256_LEN] = {0};
+#endif /* MCUBOOT_USE_HASH_REF */
 
 #if defined(FLOW_CONTROL)
 /* Global variable for Flow Control state */
@@ -75,7 +92,7 @@ volatile uint32_t uFlowStage = FLOW_STAGE_CFG;
   * @{
   */
 #ifdef MCUBOOT_EXT_LOADER
-void execute_loader(void);
+void execute_loader(void) __NO_RETURN;
 #endif /* MCUBOOT_EXT_LOADER */
 void boot_clean_ns_ram_area(void);
 __attribute__((naked)) void boot_jump_to_ns_image(uint32_t reset_handler_addr);
@@ -140,7 +157,7 @@ __attribute__((section(".BL2_NoHdp_Code")))
 void execute_loader(void)
 {
 #if defined(MCUBOOT_PRIMARY_ONLY)
-    static struct arm_vector_table *vt = (struct arm_vector_table *)LOADER_S_CODE_START;
+    static struct boot_arm_vector_table *vt = (struct boot_arm_vector_table *)LOADER_S_CODE_START;
 
     /* Check Flow control */
     FLOW_CONTROL_CHECK(uFlowProtectValue, FLOW_CTRL_STAGE_4_L);
@@ -176,7 +193,7 @@ void execute_loader(void)
     __ISB();
     boot_jump_to_next_image((uint32_t)&boot_jump_to_next_image, vt->reset);
 #else
-    static struct arm_vector_table *vt = (struct arm_vector_table *)LOADER_NS_CODE_START;
+    static struct boot_arm_vector_table *vt = (struct boot_arm_vector_table *)LOADER_NS_CODE_START;
 
     /* Check Flow control */
     FLOW_CONTROL_CHECK(uFlowProtectValue, FLOW_CTRL_STAGE_4_L);
@@ -263,7 +280,45 @@ __attribute__((naked)) void boot_jump_to_ns_image(uint32_t reset_handler_addr)
 #endif /* __ICCARM__ */
 
 #endif /* MCUBOOT_EXT_LOADER */
-
+#if defined(__ICCARM__)
+#pragma default_function_attributes = @ ".BL2_NoHdp_Code"
+#elif defined(__CC_ARM)
+#pragma arm section code = ".BL2_NoHdp_Code"
+#else
+__attribute__((section(".BL2_NoHdp_Code")))
+#endif /* __ICCARM__ */
+__attribute__((naked)) void boot_jump_to_next_image(uint32_t boot_jump_addr, uint32_t reset_handler_addr)
+{
+    __ASM volatile(
+#if !defined(__ICCARM__)
+        ".syntax unified                 \n"
+#endif
+        "mov     r7, r0                  \n"
+        "mov     r8, r1                  \n"
+        "bl      boot_clear_bl2_ram_area \n" /* Clear RAM before jump */
+        "movs    r0, #0                  \n" /* Clear registers: R0-R12, */
+        "mov     r1, r0                  \n" /* except R7 */
+        "mov     r2, r0                  \n"
+        "mov     r3, r0                  \n"
+        "mov     r4, r0                  \n"
+        "mov     r5, r0                  \n"
+        "mov     r6, r0                  \n"
+        "mov     r9, r0                  \n"
+        "mov     r10, r0                 \n"
+        "mov     r11, r0                 \n"
+        "mov     r12, r0                 \n"
+        "mov     lr,  r0                 \n"
+        "mov     r0, r8                  \n"
+        "mov     r8, r1                  \n"
+        "bx      r7                      \n" /* Jump to Reset_handler */
+    );
+}
+/* Stop placing data in specified section */
+#if defined(__ICCARM__)
+#pragma default_function_attributes =
+#elif defined(__CC_ARM)
+#pragma arm section code
+#endif /* __ICCARM__ */
 /* Place code in a specific section */
 #if defined(__ICCARM__)
 #pragma default_function_attributes = @ ".BL2_NoHdp_Code"
@@ -275,12 +330,13 @@ __attribute__((section(".BL2_NoHdp_Code")))
   * @note
   * @retval void
   */
-void jumper(struct arm_vector_table *vector)
+void boot_platform_quit(struct boot_arm_vector_table *vector)
 {
-    static struct arm_vector_table *vt;
+    static struct boot_arm_vector_table *vt;
 #if defined(MCUBOOT_DOUBLE_SIGN_VERIF)
     uint32_t image_index;
 
+   (void)fih_delay();
     /* Check again if images have been validated, to resist to basic hw attacks */
     for (image_index = 0; image_index < MCUBOOT_IMAGE_NUMBER; image_index++)
     {
@@ -291,6 +347,18 @@ void jumper(struct arm_vector_table *vector)
         }
     }
 #endif /* MCUBOOT_DOUBLE_SIGN_VERIF */
+
+#if defined(MCUBOOT_USE_HASH_REF)
+    /* Store new hash references in flash for next boot */
+    if (ImageValidHashUpdate)
+    {
+        if (boot_hash_ref_store())
+        {
+            BOOT_LOG_ERR("Error while storing hash references");
+            Error_Handler();
+        }
+    }
+#endif /* MCUBOOT_USE_HASH_REF */
 
     /* Check Flow control state */
     FLOW_CONTROL_CHECK(uFlowProtectValue, FLOW_CTRL_STAGE_2);
@@ -317,7 +385,7 @@ void jumper(struct arm_vector_table *vector)
     /* set the secure vector */
     SCB->VTOR = (uint32_t)vector;
 
-    vt = (struct arm_vector_table *)vector;
+    vt = (struct boot_arm_vector_table *)vector;
     /* Check Flow control state */
     FLOW_CONTROL_CHECK(uFlowProtectValue, FLOW_CTRL_STAGE_3_A);
     uFlowStage = FLOW_STAGE_CHK;
@@ -434,6 +502,102 @@ void  boot_clean_ns_ram_area(void)
 #endif /* __ICCARM__ */
 
 
+#if defined(MCUBOOT_USE_HASH_REF)
+/**
+  * @brief This function store all hash references in flash
+  * @return 0 on success; nonzero on failure.
+  */
+int boot_hash_ref_store(void)
+{
+  /* Erase hash references flash sector */
+  if (FLASH_DEV_NAME.EraseSector(BL2_HASH_REF_ADDR) != ARM_DRIVER_OK)
+  {
+    return BOOT_EFLASH;
+  }
+
+  /* Store new hash references in flash */
+  if (FLASH_DEV_NAME.ProgramData(BL2_HASH_REF_ADDR, ImageValidHashRef,
+      (SHA256_LEN * MCUBOOT_IMAGE_NUMBER)) != ARM_DRIVER_OK)
+  {
+    return BOOT_EFLASH;
+  }
+
+  return 0;
+}
+
+/**
+  * @brief This function load all hash references from flash
+  * @return 0 on success; nonzero on failure.
+  */
+int boot_hash_ref_load(void)
+{
+  /* Read hash references */
+  if (FLASH_DEV_NAME.ReadData(BL2_HASH_REF_ADDR, ImageValidHashRef,
+      (SHA256_LEN * MCUBOOT_IMAGE_NUMBER)) != ARM_DRIVER_OK)
+  {
+    return BOOT_EFLASH;
+  }
+
+  return 0;
+}
+
+/**
+  * @brief This function set one hash reference in ram
+  * @param hash_ref hash reference to update
+  * @param size size of the hash references
+  * @param image_index index of image corresponding to hash reference
+  * @return 0 on success; nonzero on failure.
+  */
+int boot_hash_ref_set(uint8_t *hash_ref, uint8_t size, uint8_t image_index)
+{
+  /* Check size */
+  if (size != SHA256_LEN)
+  {
+    return BOOT_EFLASH;
+  }
+
+  /* Check image index */
+  if (image_index >= MCUBOOT_IMAGE_NUMBER)
+  {
+    return BOOT_EFLASH;
+  }
+
+  /* Set hash reference */
+  memcpy(ImageValidHashRef + (image_index * SHA256_LEN), hash_ref, SHA256_LEN);
+
+  /* Memorize that hash references will have to be updated in flash (later) */
+  ImageValidHashUpdate++;
+
+  return 0;
+}
+
+/**
+  * @brief This function get one hash reference from ram
+  * @param hash_ref hash reference to get
+  * @param size size of the hash reference
+  * @param image_index index of image corresponding to hash reference
+  * @return 0 on success; nonzero on failure.
+  */
+int boot_hash_ref_get(uint8_t *hash_ref, uint8_t size, uint8_t image_index)
+{
+  /* Check size */
+  if (size != SHA256_LEN)
+  {
+    return BOOT_EFLASH;
+  }
+
+  /* Check image index */
+  if (image_index >= MCUBOOT_IMAGE_NUMBER)
+  {
+    return BOOT_EFLASH;
+  }
+
+  /* Get hash reference */
+  memcpy(hash_ref, ImageValidHashRef + (image_index * SHA256_LEN), SHA256_LEN);
+
+  return 0;
+}
+#endif /* MCUBOOT_USE_HASH_REF */
 
 /**
   * @brief This function configures and enables the ICache.
@@ -501,6 +665,7 @@ int32_t boot_platform_init(void)
 
     /* Start HW randomization */
     RNG_Init();
+   (void)fih_delay_init();
     /* Apply Run time Protection */
     LL_SECU_ApplyRunTimeProtections();
     /* Check static protections */
@@ -511,6 +676,7 @@ int32_t boot_platform_init(void)
     uFlowStage = FLOW_STAGE_CHK;
     /* Double protections apply / check to resist to basic fault injections */
     /* Apply Run time Protection */
+   (void)fih_delay();
     LL_SECU_ApplyRunTimeProtections();
     /* Check static protections */
     LL_SECU_CheckStaticProtections();
@@ -520,6 +686,14 @@ int32_t boot_platform_init(void)
         Error_Handler();
     }
 
+#if defined(MCUBOOT_USE_HASH_REF)
+    /* Load all images hash references (for mcuboot) */
+    if (boot_hash_ref_load())
+    {
+        BOOT_LOG_ERR("Error while loading Hash references from FLash");
+        Error_Handler();
+    }
+#endif
 
 #ifdef MCUBOOT_EXT_LOADER
     /* configure Button pin */

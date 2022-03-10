@@ -29,9 +29,21 @@
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/
-extern OPENBL_CommandsTypeDef OPENBL_SPI_Commands;
-
 /* Exported functions ------------------------------------------------------- */
 OPENBL_CommandsTypeDef *OPENBL_SPI_GetCommandsList(void);
+void OPENBL_SPI_SetCommandsList(OPENBL_CommandsTypeDef *pSpiCmd);
+void OPENBL_SPI_GetCommand(void);
+void OPENBL_SPI_GetVersion(void);
+void OPENBL_SPI_GetID(void);
+void OPENBL_SPI_ReadMemory(void);
+void OPENBL_SPI_WriteMemory(void);
+void OPENBL_SPI_Go(void);
+void OPENBL_SPI_ReadoutProtect(void);
+void OPENBL_SPI_ReadoutUnprotect(void);
+void OPENBL_SPI_EraseMemory(void);
+void OPENBL_SPI_WriteProtect(void);
+void OPENBL_SPI_WriteUnprotect(void);
+void OPENBL_SPI_SpecialCommand(void);
+void OPENBL_SPI_ExtendedSpecialCommand(void);
 
 #endif /* OPENBL_SPI_CMD_H */

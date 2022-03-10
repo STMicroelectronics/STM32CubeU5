@@ -31,8 +31,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "b_u585i_iot02a.h"
-#include "b_u585i_iot02a_ospi.h"
 #include "lx_stm32_ospi_driver.h"
 #include <stdio.h>
 /* USER CODE END Includes */
@@ -60,6 +58,11 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define LED2_Pin GPIO_PIN_6
+#define LED2_GPIO_Port GPIOH
+#define LED1_Pin GPIO_PIN_7
+#define LED1_GPIO_Port GPIOH
+void   MX_OCTOSPI2_Init(void);
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

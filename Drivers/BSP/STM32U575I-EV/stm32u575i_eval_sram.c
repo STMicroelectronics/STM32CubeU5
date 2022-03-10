@@ -430,8 +430,8 @@ static void SRAM_MspInit(SRAM_HandleTypeDef *hSram)
   __HAL_LINKDMA(hSram, hdma, dmaHandle);
 
   /* NVIC configuration for DMA transfer complete interrupt */
-  HAL_NVIC_SetPriority(SRAM_DMAx_IRQn, BSP_SRAM_DMA_IT_PRIORITY, 0);
-  HAL_NVIC_EnableIRQ(SRAM_DMAx_IRQn);
+  HAL_NVIC_SetPriority(SRAM_DMAx_IRQ, BSP_SRAM_DMA_IT_PRIORITY, 0);
+  HAL_NVIC_EnableIRQ(SRAM_DMAx_IRQ);
 }
 
 /**
@@ -472,7 +472,7 @@ static void SRAM_MspDeInit(SRAM_HandleTypeDef *hSram)
   HAL_GPIO_DeInit(GPIOG, gpio_init_structure.Pin);
 
   /* Disable NVIC configuration for DMA interrupt */
-  HAL_NVIC_DisableIRQ(SRAM_DMAx_IRQn);
+  HAL_NVIC_DisableIRQ(SRAM_DMAx_IRQ);
 
   /* Deinitialize the stream for new transfer */
   dma_handle.Instance = SRAM_DMAx_CHANNEL;

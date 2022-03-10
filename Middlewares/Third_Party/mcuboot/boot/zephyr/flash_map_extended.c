@@ -17,7 +17,7 @@
 
 MCUBOOT_LOG_MODULE_DECLARE(mcuboot);
 
-#if (!defined(CONFIG_XTENSA) && defined(DT_FLASH_DEV_NAME))
+#if (!defined(CONFIG_XTENSA) && defined(DT_CHOSEN_ZEPHYR_FLASH_CONTROLLER_LABEL))
 #define FLASH_DEVICE_ID SOC_FLASH_0_ID
 #define FLASH_DEVICE_BASE CONFIG_FLASH_BASE_ADDRESS
 #elif (defined(CONFIG_XTENSA) && defined(DT_JEDEC_SPI_NOR_0_LABEL))
@@ -27,9 +27,9 @@ MCUBOOT_LOG_MODULE_DECLARE(mcuboot);
 #error "FLASH_DEVICE_ID could not be determined"
 #endif
 
-static struct device *flash_dev;
+static const struct device *flash_dev;
 
-struct device *flash_device_get_binding(char *dev_name)
+const struct device *flash_device_get_binding(char *dev_name)
 {
     if (!flash_dev) {
         flash_dev = device_get_binding(dev_name);
@@ -57,9 +57,11 @@ int flash_area_id_from_multi_image_slot(int image_index, int slot)
 {
     switch (slot) {
     case 0: return FLASH_AREA_IMAGE_PRIMARY(image_index);
+#if !defined(CONFIG_SINGLE_APPLICATION_SLOT)
     case 1: return FLASH_AREA_IMAGE_SECONDARY(image_index);
 #if !defined(CONFIG_BOOT_SWAP_USING_MOVE)
     case 2: return FLASH_AREA_IMAGE_SCRATCH;
+#endif
 #endif
     }
 
@@ -76,9 +78,11 @@ int flash_area_id_to_multi_image_slot(int image_index, int area_id)
     if (area_id == FLASH_AREA_IMAGE_PRIMARY(image_index)) {
         return 0;
     }
+#if !defined(CONFIG_SINGLE_APPLICATION_SLOT)
     if (area_id == FLASH_AREA_IMAGE_SECONDARY(image_index)) {
         return 1;
     }
+#endif
 
     BOOT_LOG_ERR("invalid flash area ID");
     return -1;
@@ -106,29 +110,8 @@ int flash_area_sector_from_off(off_t off, struct flash_sector *sector)
 }
 
 #define ERASED_VAL 0xff
-uint8_t flash_area_erased_val(const struct flash_area *fap)
+__weak uint8_t flash_area_erased_val(const struct flash_area *fap)
 {
     (void)fap;
     return ERASED_VAL;
-}
-
-int flash_area_read_is_empty(const struct flash_area *fa, uint32_t off,
-        void *dst, uint32_t len)
-{
-    uint8_t i;
-    uint8_t *u8dst;
-    int rc;
-
-    rc = flash_area_read(fa, off, dst, len);
-    if (rc) {
-        return -1;
-    }
-
-    for (i = 0, u8dst = (uint8_t *)dst; i < len; i++) {
-        if (u8dst[i] != ERASED_VAL) {
-            return 0;
-        }
-    }
-
-    return 1;
 }

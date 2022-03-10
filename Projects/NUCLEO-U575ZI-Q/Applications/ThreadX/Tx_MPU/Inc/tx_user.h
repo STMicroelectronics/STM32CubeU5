@@ -116,7 +116,7 @@
    enabled. If the application does not use preemption-threshold, it may be disabled to reduce
    code size and improve performance.  */
 
-#define TX_DISABLE_PREEMPTION_THRESHOLD
+/*#define TX_DISABLE_PREEMPTION_THRESHOLD*/
 
 /* Determine if global ThreadX variables should be cleared. If the compiler startup code clears
    the .bss section prior to ThreadX running, the define can be used to eliminate unnecessary
@@ -124,24 +124,11 @@
 
 /*#define TX_DISABLE_REDUNDANT_CLEARING*/
 
-/* Determine if no timer processing is required. This option will help eliminate the timer
-   processing when not needed. The user will also have to comment out the call to
-   tx_timer_interrupt, which is typically made from assembly language in
-   tx_initialize_low_level. Note: if TX_NO_TIMER is used, the define TX_TIMER_PROCESS_IN_ISR
-   must also be used.  */
-
-/*
-#define TX_NO_TIMER
-#ifndef TX_TIMER_PROCESS_IN_ISR
-#define TX_TIMER_PROCESS_IN_ISR
-#endif
-*/
-
 /* Determine if the notify callback option should be disabled. By default, notify callbacks are
    enabled. If the application does not use notify callbacks, they may be disabled to reduce
    code size and improve performance.  */
 
-#define TX_DISABLE_NOTIFY_CALLBACKS
+/*#define TX_DISABLE_NOTIFY_CALLBACKS*/
 
 /* Determine if the tx_thread_resume and tx_thread_suspend services should have their internal
    code in-line. This results in a larger image, but improves the performance of the thread
@@ -200,14 +187,6 @@
 
 /*#define TX_TIMER_ENABLE_PERFORMANCE_INFO*/
 
-/* Define the clock source for trace event entry time stamp. */
-
-/*#define TX_TRACE_TIME_SOURCE  *((ULONG *) 0xE0001004)*/
-
-/* Define the clock source for trace mask. */
-
-/*#define TX_TRACE_TIME_MASK  0xFFFFFFFFUL*/
-
 /* Define if the execution change notify is enabled. */
 
 /*#define TX_ENABLE_EXECUTION_CHANGE_NOTIFY*/
@@ -237,13 +216,8 @@
 
 /*#define TX_MEMSET  memset((a),(b),(c))*/
 
-/* Define if the IAR library is supported. */
-
-/*#define TX_ENABLE_IAR_LIBRARY_SUPPORT*/
-
 /* Define if the safety critical configuration is enabled. */
 
 /*#define TX_SAFETY_CRITICAL*/
 
 #endif
-

@@ -34,19 +34,13 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define APP_RX_DATA_SIZE                          2048
-#define APP_TX_DATA_SIZE                          2048
-
-/* Rx/TX flag */
-#define RX_NEW_RECEIVED_DATA                      0x01
-#define TX_NEW_TRANSMITTED_DATA                   0x02
-
-/* Data length for vcp */
-#define VCP_WORDLENGTH8                           8
-#define VCP_WORDLENGTH9                           9
-
-/* the minimum baudrate */
-#define MIN_BAUDRATE                              9600
+#define APP_RX_DATA_SIZE                2048
+#define APP_TX_DATA_SIZE                2048
+#define RX_NEW_RECEIVED_DATA            0x01
+#define TX_NEW_TRANSMITTED_DATA         0x02
+#define VCP_WORDLENGTH8                 8
+#define VCP_WORDLENGTH9                 9
+#define MIN_BAUDRATE                    9600
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -56,22 +50,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
-/* Data received over uart are stored in this buffer */
-uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
-
-/* Data to send over USB CDC are stored in this buffer   */
-uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
-
-/* Increment this pointer or roll it back to
-start address when data are received over USART */
+uint8_t  UserRxBufferFS[APP_RX_DATA_SIZE];
+uint8_t  UserTxBufferFS[APP_TX_DATA_SIZE];
 uint32_t UserTxBufPtrIn;
-
-/* Increment this pointer or roll it back to
-start address when data are sent over USB */
 uint32_t UserTxBufPtrOut;
-
-/* uart1 handler */
 extern UART_HandleTypeDef huart1;
 
 UX_SLAVE_CLASS_CDC_ACM_LINE_CODING_PARAMETER CDC_VCP_LineCoding =
@@ -104,10 +86,12 @@ void CDC_Init_FS(void *cdc_acm)
   UINT ux_status = UX_SUCCESS;
 
   /* USER CODE BEGIN 3 */
-  /*-- 1- Configure the UART peripheral --------------------------------------*/
+
+  /* Configure the UART peripheral */
   MX_USART1_UART_Init();
 
-  /* Get default uart parameters defined by CubeMx */
+  /* Get default UART parameters */
+
   /* Get uart3 baudrate */
   CDC_VCP_LineCoding.ux_slave_class_cdc_acm_parameter_baudrate = huart1.Init.BaudRate;
 
@@ -152,7 +136,7 @@ void CDC_Init_FS(void *cdc_acm)
     Error_Handler();
   }
 
-  /*-- 2- Put UART peripheral in IT reception process ------------------------*/
+  /* Put UART peripheral in IT reception process */
 
   /* Any data received will be stored in "UserTxBufferFS" buffer  */
   if (HAL_UART_Receive_IT(&huart1, (uint8_t *)UserTxBufferFS, 1) != HAL_OK)
@@ -286,8 +270,10 @@ void usbx_cdc_acm_read_thread_entry(ULONG arg)
       {
         cdc_acm =  data_interface->ux_slave_interface_class_instance;
 
+#ifndef UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE
         /* Set transmission_status to UX_FALSE for the first time */
         cdc_acm -> ux_slave_class_cdc_acm_transmission_status = UX_FALSE;
+#endif /* UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE */
 
         /* Read the received data in blocking mode */
         ux_device_class_cdc_acm_read(cdc_acm, (UCHAR *)UserRxBufferFS, 64,
@@ -313,7 +299,7 @@ void usbx_cdc_acm_read_thread_entry(ULONG arg)
     }
     else
     {
-      tx_thread_sleep(1);
+      tx_thread_sleep(MS_TO_TICK(10));
     }
   }
 }
@@ -352,7 +338,9 @@ void usbx_cdc_acm_write_thread_entry(ULONG arg)
     /* Get the cdc Instance */
     cdc_acm = data_interface->ux_slave_interface_class_instance;
 
+#ifndef UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE
     cdc_acm -> ux_slave_class_cdc_acm_transmission_status = UX_FALSE;
+#endif /* UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE */
 
     /* Check if there is a new data to send */
     if (UserTxBufPtrOut != UserTxBufPtrIn)
@@ -566,3 +554,4 @@ static void USBD_CDC_VCP_Config(UX_SLAVE_CLASS_CDC_ACM_LINE_CODING_PARAMETER
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
+

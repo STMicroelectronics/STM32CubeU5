@@ -52,20 +52,20 @@ LL_DLYB_CfgTypeDef dlyb_cfg,dlyb_cfg_test;
 
 /* Buffer used for transmission */
 uint8_t aTxBuffer[BUFFERSIZE];
-
-/*To configure AP memory register for the used size*/
-uint8_t reg[2]={0x04B,0x03};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void SystemPower_Config(void);
 static void MX_ICACHE_Init(void);
 static void MX_DCACHE1_Init(void);
 static void MX_GPIO_Init(void);
 static void MX_OCTOSPI1_Init(void);
 /* USER CODE BEGIN PFP */
-uint32_t APS256XX_WriteReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Value);
-uint32_t APS256XX_ReadReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Value, uint32_t LatencyCode);
+void Configure_APMemory(void);
+void EnableCompensationCell(void);
+uint32_t APS6408_WriteReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Value);
+uint32_t APS6408_ReadReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Value, uint32_t LatencyCode);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -80,8 +80,9 @@ uint32_t APS256XX_ReadReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Va
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  OSPI_RegularCmdTypeDef sCommand;
+  OSPI_RegularCmdTypeDef sCommand = {0};
   uint32_t index, index_K;
+  uint16_t errorBuffer = 0;
   /* STM32U5xx HAL library initialization:
   - Configure the Flash prefetch
   - Configure the Systick to generate an interrupt each 1 msec
@@ -102,6 +103,9 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 
+  /* Configure the System Power */
+  SystemPower_Config();
+
   /* USER CODE BEGIN SysInit */
   /* Configure LED6, LED7 */
   BSP_LED_Init(LED6);
@@ -114,6 +118,8 @@ int main(void)
   MX_GPIO_Init();
   MX_OCTOSPI1_Init();
   /* USER CODE BEGIN 2 */
+  /* Enable Compensation cell */
+  EnableCompensationCell();
   /* Delay block configuration ------------------------------------------------ */
   if (HAL_OSPI_DLYB_GetClockPeriod(&hospi1,&dlyb_cfg) != HAL_OK)
   {
@@ -136,19 +142,16 @@ int main(void)
     Error_Handler() ;
   }
 
-  /*Configure AP register*/
-  if (APS256XX_WriteReg(&hospi1, MR8, reg) != HAL_OK)
-  {
-    Error_Handler();
-  }
+  /*Configure AP memory register */
+  Configure_APMemory();
 
   /*Configure Memory Mapped mode*/
   sCommand.OperationType      = HAL_OSPI_OPTYPE_WRITE_CFG;
   sCommand.FlashId            = HAL_OSPI_FLASH_ID_1;
   sCommand.Instruction        = WRITE_CMD;
   sCommand.InstructionMode    = HAL_OSPI_INSTRUCTION_8_LINES;
-  sCommand.InstructionSize    = HAL_OSPI_INSTRUCTION_8_BITS;
-  sCommand.InstructionDtrMode = HAL_OSPI_INSTRUCTION_DTR_DISABLE;
+  sCommand.InstructionSize    = HAL_OSPI_INSTRUCTION_16_BITS;
+  sCommand.InstructionDtrMode = HAL_OSPI_INSTRUCTION_DTR_ENABLE; 
   sCommand.AddressMode        = HAL_OSPI_ADDRESS_8_LINES;
   sCommand.AddressSize        = HAL_OSPI_ADDRESS_32_BITS;
   sCommand.AddressDtrMode     = HAL_OSPI_ADDRESS_DTR_ENABLE;
@@ -217,11 +220,16 @@ int main(void)
       if (*mem_addr != aTxBuffer[index])
       {
         BSP_LED_On(LED6);
+        errorBuffer++;
       }
       mem_addr++;
     }
   }
-  BSP_LED_On(LED7);
+  if (errorBuffer == 0)
+  {
+    /* Turn LED7 on */
+    BSP_LED_On(LED7);
+  }
 
   /* Abort OctoSPI driver to stop the memory-mapped mode ------------ */
   if (HAL_OSPI_Abort(&hospi1) != HAL_OK)
@@ -257,12 +265,6 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /* Switch to SMPS regulator instead of LDO */
-  if(HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
   /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
@@ -283,6 +285,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -298,7 +301,27 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  __HAL_RCC_PWR_CLK_DISABLE();
+}
+
+/**
+  * @brief Power Configuration
+  * @retval None
+  */
+static void SystemPower_Config(void)
+{
+
+  /*
+   * Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
+   */
+  HAL_PWREx_DisableUCPDDeadBattery();
+
+  /*
+   * Switch to SMPS regulator instead of LDO
+   */
+  if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 /**
@@ -322,7 +345,7 @@ static void MX_DCACHE1_Init(void)
   {
     Error_Handler();
   }
-  HAL_DCACHE_Enable(&hdcache1);
+
   /* USER CODE BEGIN DCACHE1_Init 2 */
 
   /* USER CODE END DCACHE1_Init 2 */
@@ -344,6 +367,7 @@ static void MX_ICACHE_Init(void)
   /* USER CODE BEGIN ICACHE_Init 1 */
 
   /* USER CODE END ICACHE_Init 1 */
+
   /** Enable instruction cache in 1-way (direct mapped cache)
   */
   if (HAL_ICACHE_ConfigAssociativityMode(ICACHE_1WAY) != HAL_OK)
@@ -384,7 +408,7 @@ static void MX_OCTOSPI1_Init(void)
   hospi1.Init.DualQuad = HAL_OSPI_DUALQUAD_DISABLE;
   hospi1.Init.MemoryType = HAL_OSPI_MEMTYPE_APMEMORY;
   hospi1.Init.DeviceSize = 23;
-  hospi1.Init.ChipSelectHighTime = 1;
+  hospi1.Init.ChipSelectHighTime = 2;
   hospi1.Init.FreeRunningClock = HAL_OSPI_FREERUNCLK_DISABLE;
   hospi1.Init.ClockMode = HAL_OSPI_CLOCK_MODE_0;
   hospi1.Init.WrapSize = HAL_OSPI_WRAP_NOT_SUPPORTED;
@@ -394,7 +418,7 @@ static void MX_OCTOSPI1_Init(void)
   hospi1.Init.ChipSelectBoundary = 10;
   hospi1.Init.DelayBlockBypass = HAL_OSPI_DELAY_BLOCK_USED;
   hospi1.Init.MaxTran = 0;
-  hospi1.Init.Refresh = 400;
+  hospi1.Init.Refresh = 320;
   if (HAL_OSPI_Init(&hospi1) != HAL_OK)
   {
     Error_Handler();
@@ -490,7 +514,14 @@ void HAL_OSPI_ErrorCallback(OSPI_HandleTypeDef *hospi)
   Error_Handler();
 }
 
-uint32_t APS256XX_WriteReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Value)
+/**
+  * @brief  Write mode register
+  * @param  Ctx Component object pointer
+  * @param  Address Register address
+  * @param  Value Register value pointer
+  * @retval error status
+  */
+uint32_t APS6408_WriteReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Value)
 {
   OSPI_RegularCmdTypeDef sCommand1={0};
 
@@ -535,7 +566,7 @@ uint32_t APS256XX_WriteReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *V
   * @param  LatencyCode Latency used for the access
   * @retval error status
   */
-uint32_t APS256XX_ReadReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Value, uint32_t LatencyCode)
+uint32_t APS6408_ReadReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Value, uint32_t LatencyCode)
 {
   OSPI_RegularCmdTypeDef sCommand;
 
@@ -570,6 +601,69 @@ uint32_t APS256XX_ReadReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Va
   }
 
   return HAL_OK;
+}
+
+/**
+  * @brief Enable Compensation Cell
+  * @retval None
+  */
+void EnableCompensationCell(void)
+{
+  __HAL_RCC_SYSCFG_CLK_ENABLE() ;
+  HAL_SYSCFG_EnableVddCompensationCell();
+}
+
+/**
+  * @brief Configure AP memory
+  * @retval None
+  */
+void Configure_APMemory(void)
+{
+  /* MR0 register for read and write */
+  uint8_t regW_MR0[2]={0x24,0x0D}; /* To configure AP memory Latency Type and drive Strength */
+  uint8_t regR_MR0[2]={0};
+
+  /* MR8 register for read and write */
+  uint8_t regW_MR8[2]={0x0B,0x08}; /* To configure AP memory Burst Type */
+  uint8_t regR_MR8[2]={0};
+
+  /*Read Latency */
+  uint8_t latency=6;
+
+  /* Configure Read Latency and drive Strength */
+  if (APS6408_WriteReg(&hospi1, MR0, regW_MR0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Check MR0 configuration */
+  if (APS6408_ReadReg(&hospi1, MR0, regR_MR0, latency ) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+    /* Check MR0 configuration */
+  if (regR_MR0 [0] != regW_MR0 [0])
+  {
+    Error_Handler() ;
+  }
+
+  /* Configure Burst Length */
+  if (APS6408_WriteReg(&hospi1, MR8, regW_MR8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Check MR8 configuration */
+  if (APS6408_ReadReg(&hospi1, MR8, regR_MR8, 6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  if (regR_MR8[0] != regW_MR8[0])
+  {
+    Error_Handler() ;
+  }
 }
 /* USER CODE END 4 */
 

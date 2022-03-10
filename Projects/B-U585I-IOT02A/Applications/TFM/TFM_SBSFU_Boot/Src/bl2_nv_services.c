@@ -51,8 +51,8 @@
 #endif /* TFM_DEV_MODE */
 #include "bootutil/bootutil_log.h"
 #include "low_level_rng.h"
-#include "tfm_boot_status.h"
-#include "boot_record.h"
+#include "bootutil/boot_status.h"
+#include "bootutil/boot_record.h"
 #include <limits.h>
 #include "Driver_Flash.h"
 #include "flash_layout.h"
@@ -217,6 +217,8 @@ enum tfm_plat_err_t tfm_plat_init_nv_counter(void)
     return TFM_PLAT_ERR_SYSTEM_ERR;
   }
   BOOT_LOG_INF("Consistent BL2 NV Counter %d  = 0x%x", PLAT_NV_COUNTER_3, counter_value);
+
+#if (MCUBOOT_IMAGE_NUMBER  >= 2)
   if (tfm_plat_read_nv_counter(PLAT_NV_COUNTER_4, sizeof(counter_value),
                                (uint8_t *)&counter_value) != TFM_PLAT_ERR_SUCCESS)
   {
@@ -224,6 +226,26 @@ enum tfm_plat_err_t tfm_plat_init_nv_counter(void)
     return TFM_PLAT_ERR_SYSTEM_ERR;
   }
   BOOT_LOG_INF("Consistent BL2 NV Counter %d  = 0x%x", PLAT_NV_COUNTER_4, counter_value);
+#endif
+
+#if (MCUBOOT_IMAGE_NUMBER  >= 3)
+  if (tfm_plat_read_nv_counter(PLAT_NV_COUNTER_5, sizeof(counter_value),
+                               (uint8_t *)&counter_value) != TFM_PLAT_ERR_SUCCESS)
+  {
+    BOOT_LOG_ERR("NV Counter Not consistent %d", PLAT_NV_COUNTER_5);
+    return TFM_PLAT_ERR_SYSTEM_ERR;
+  }
+  BOOT_LOG_INF("Consistent BL2 NV Counter %d  = 0x%x", PLAT_NV_COUNTER_5, counter_value);
+#endif
+#if (MCUBOOT_IMAGE_NUMBER  == 4)
+  if (tfm_plat_read_nv_counter(PLAT_NV_COUNTER_6, sizeof(counter_value),
+                               (uint8_t *)&counter_value) != TFM_PLAT_ERR_SUCCESS)
+  {
+    BOOT_LOG_ERR("NV Counter Not consistent %d", PLAT_NV_COUNTER_6);
+    return TFM_PLAT_ERR_SYSTEM_ERR;
+  }
+  BOOT_LOG_INF("Consistent BL2 NV Counter %d  = 0x%x", PLAT_NV_COUNTER_6, counter_value);
+#endif
 
   /*********************************************************************/
   /* Step 2: Initialize eeprom emulation global variables relative     */

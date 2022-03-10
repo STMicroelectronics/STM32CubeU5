@@ -67,7 +67,7 @@ extern "C" {
 /** @addtogroup B_U585I_IOT02A_EEPROM_Exported_Variables
   * @{
   */
-extern void  *Eeprom_CompObj;
+extern M24LR64_Object_t  *Eeprom_CompObj;
 /**
   * @}
   */

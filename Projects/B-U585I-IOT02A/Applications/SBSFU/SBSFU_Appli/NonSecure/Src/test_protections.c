@@ -68,7 +68,8 @@ void Test_Execute(void)
 const TestProtection_t aProtectTests[] =
 {
     {NS_RAM_ALIAS(S_DATA_START - S_RAM_ALIAS(0)), "Data Secure Start", TEST_READ_RAM, NOT_APPLICABLE, DENIED},
-    {NS_RAM_ALIAS(S_DATA_START - S_RAM_ALIAS(0) + S_DATA_SIZE), "Data Secure End", TEST_READ_RAM, NOT_APPLICABLE, DENIED},
+    {NS_RAM_ALIAS(S_DATA_START - S_RAM_ALIAS(0) + S_DATA_SIZE-1), "Data Secure End", TEST_READ_RAM, NOT_APPLICABLE, DENIED},
+    {NS_RAM_ALIAS(S_DATA_START - S_RAM_ALIAS(0) + S_DATA_SIZE), "Data Secure End", TEST_READ_RAM, NOT_APPLICABLE, ALLOWED},
     {S_ROM_ALIAS(S_IMAGE_PRIMARY_AREA_OFFSET), "Code Secure Start", TEST_READ_FLASH, NOT_APPLICABLE, DENIED},
     {S_ROM_ALIAS(S_IMAGE_PRIMARY_AREA_OFFSET) + FLASH_S_PARTITION_SIZE - 1, "Code Secure END(veneer)", TEST_READ_FLASH, NOT_APPLICABLE, DENIED},
     { (uint32_t) &Test_Execute, "fun call", TEST_EXECUTE,  NOT_APPLICABLE, ALLOWED},
@@ -82,6 +83,7 @@ static __attribute__((__aligned__(4))) uint32_t DMA_NON_SECURE[2] = {  0, 0 };
 const  __attribute__((__aligned__(4))) uint32_t DMA_CONST[2] = {  0xfeedbeef, 0xcacadada };
 REGION_DECLARE(Load$$LR$$, LR_VENEER, $$Limit);
 REGION_DECLARE(Image$$, TFM_APP_RW_STACK_END, $$Base);
+REGION_DECLARE(Image$$, TFM_PSA_RW_STACK_END, $$Base);
 const TestProtection_t aProtectTests[] =
 {
     { (uint32_t)DMA_CONST, "NPRIV SEC", TEST_READ_DMA, NOT_APPLICABLE, ALLOWED},
@@ -89,16 +91,24 @@ const TestProtection_t aProtectTests[] =
     { (uint32_t) &GTZC_TZIC1->IER3, "GTZC1_TZCIC IER3", TEST_WRITE_PERIPH, NOT_APPLICABLE, SILENT},
     { (uint32_t) &GTZC_TZIC2->IER3, "GTZC2_TZCIC IER3", TEST_READ_PERIPH, NOT_APPLICABLE, SILENT},
     {  (uint32_t) &REGION_NAME(Image$$, TFM_APP_RW_STACK_END, $$Base) - 1, "NPRIV END", TEST_READ_RAM, NOT_APPLICABLE, ALLOWED},
-    {  (uint32_t) &REGION_NAME(Image$$, TFM_APP_RW_STACK_END, $$Base), "PRIV Begin", TEST_WRITE_RAM, NOT_APPLICABLE, DENIED},
+    {  (uint32_t)(SRAM3_BASE_S + SRAM3_S_SIZE), "NS Begin", TEST_WRITE_RAM, NOT_APPLICABLE, DENIED},
     {  (uint32_t) &REGION_NAME(Image$$, TFM_APP_RW_STACK_END, $$Base) - 8, "NPRIV END", TEST_READ_DMA, NOT_APPLICABLE, ALLOWED},
-    {  (uint32_t) &REGION_NAME(Image$$, TFM_APP_RW_STACK_END, $$Base), "NPRIV END", TEST_READ_DMA, NOT_APPLICABLE, SILENT},
+    {  (uint32_t) &REGION_NAME(Image$$, TFM_PSA_RW_STACK_END, $$Base), "NPRIV END", TEST_READ_DMA, NOT_APPLICABLE, ALLOWED},
+    {  (uint32_t) &REGION_NAME(Image$$, TFM_PSA_RW_STACK_END, $$Base) -8, "NPRIV END", TEST_READ_DMA, NOT_APPLICABLE, SILENT}, 
     {  S_RAM_ALIAS(BOOT_TFM_SHARED_DATA_BASE - SRAM1_BASE_S), "BL2 SHARED", TEST_WRITE_DMA, NOT_APPLICABLE, SILENT},
     {  S_ROM_ALIAS(FLASH_ITS_AREA_OFFSET), "ITS", TEST_READ_DMA, NOT_APPLICABLE, SILENT},
-    {  S_ROM_ALIAS(FLASH_ITS_AREA_OFFSET), "ITS", TEST_READ_DMA, NOT_APPLICABLE, SILENT},
+    {  S_ROM_ALIAS(FLASH_PS_AREA_OFFSET), "PS", TEST_READ_DMA, NOT_APPLICABLE, SILENT},
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+    {  S_ROM_ALIAS(S_DATA_IMAGE_PRIMARY_AREA_OFFSET), "Data Image Secure Start", TEST_READ_DMA, NOT_APPLICABLE, SILENT},
+#endif /* MCUBOOT_S_DATA_IMAGE_NUMBER == 1 */
     {  S_RAM_ALIAS(S_DATA_START - S_RAM_ALIAS(0) + S_DATA_SIZE), "PRIV", TEST_READ_RAM, NOT_APPLICABLE, DENIED},
     {  S_RAM_ALIAS(BOOT_TFM_SHARED_DATA_BASE - SRAM1_BASE_S), "BL2 SHARED", TEST_READ_RAM, NOT_APPLICABLE, DENIED},
     {  S_ROM_ALIAS(FLASH_ITS_AREA_OFFSET), "ITS", TEST_READ_FLASH, NOT_APPLICABLE, DENIED},
-    {  S_RAM_ALIAS(S_DATA_START - S_RAM_ALIAS(0)), "Data Secure Start", TEST_READ_RAM, NOT_APPLICABLE, ALLOWED},
+    {  S_ROM_ALIAS(FLASH_PS_AREA_OFFSET), "PS", TEST_READ_FLASH, NOT_APPLICABLE, DENIED},
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+    {  S_ROM_ALIAS(S_DATA_IMAGE_PRIMARY_AREA_OFFSET), "Data Image Secure Start", TEST_READ_FLASH, NOT_APPLICABLE, DENIED},
+#endif /* MCUBOOT_S_DATA_IMAGE_NUMBER == 1 */
+    {  (uint32_t)SRAM3_BASE_S, "App Rot Data Start", TEST_READ_RAM, NOT_APPLICABLE, ALLOWED},
     { (uint32_t)DMA_NON_SECURE, "NPRIV SEC", TEST_WRITE_EXEC, NOT_APPLICABLE,  DENIED},
     {  S_ROM_ALIAS(S_IMAGE_PRIMARY_AREA_OFFSET), "Code Secure Start", TEST_READ_FLASH, NOT_APPLICABLE, DENIED},
     {
@@ -122,13 +132,15 @@ const TestProtection_t aProtectTests[] =
     { (uint32_t) S_ROM_ALIAS(FLASH_BL2_HDP_END-FLASH_AREA_IMAGE_SECTOR_SIZE), "HDP End-PageSize+1", TEST_PRIV_READ_RAM, NOT_APPLICABLE, SILENT},
     { (uint32_t) S_ROM_ALIAS(FLASH_BL2_HDP_END), "HDP End", TEST_PRIV_READ_RAM, NOT_APPLICABLE, SILENT},
     { (uint32_t) S_ROM_ALIAS(FLASH_BL2_HDP_END + 1), "HDP End+1", TEST_PRIV_READ_RAM, NOT_APPLICABLE, ALLOWED},
-    { (uint32_t) BOOT_TFM_SHARED_DATA_BASE - 1, "BL2 SHARED-1", TEST_PRIV_WRITE_RAM, NOT_APPLICABLE, ALLOWED},
+    { (uint32_t) BOOT_TFM_SHARED_DATA_BASE - 1, "BL2 SHARED-1", TEST_PRIV_WRITE_RAM, NOT_APPLICABLE, SILENT},
     { (uint32_t) BOOT_TFM_SHARED_DATA_BASE, "BL2 SHARED", TEST_PRIV_WRITE_RAM, NOT_APPLICABLE, DENIED},
+    { (uint32_t) BOOT_TFM_SHARED_DATA_BASE + BOOT_TFM_SHARED_DATA_SIZE, "BL2 SHARED End +1", TEST_PRIV_WRITE_RAM, NOT_APPLICABLE, ALLOWED},
+    { (uint32_t) BOOT_TFM_SHARED_DATA_BASE + BOOT_TFM_SHARED_DATA_SIZE-1, "BL2 SHARED End", TEST_PRIV_WRITE_RAM, NOT_APPLICABLE, DENIED},
     { (uint32_t) &Test_Execute, "fun call", TEST_PRIV_EXECUTE,  NOT_APPLICABLE, ALLOWED},
     { (uint32_t) &BX_LR + 1, "BX_LR const", TEST_PRIV_EXECUTE, NOT_APPLICABLE, ALLOWED },
     { (uint32_t) &REGION_NAME(Image$$, TFM_APP_RW_STACK_END, $$Base), "Read RAM", TEST_PRIV_READ_RAM, NOT_APPLICABLE, ALLOWED },
     { (uint32_t) &REGION_NAME(Image$$, TFM_APP_RW_STACK_END, $$Base), "Exec RAM", TEST_PRIV_WRITE_EXEC, NOT_APPLICABLE, DENIED},
-#endif
+#endif /* TFM_TEST_PRIV_PROTECTION */
     {0x00000000, "Execution successful", TEST_END}
 };
 #endif /*  !defined (__ARM_FEATURE_CMSE) || (__ARM_FEATURE_CMSE != 3U) */
@@ -326,8 +338,15 @@ void TEST_PROTECTIONS_Run_SecUserMem(void)
         if (test_idx < NS_MAX_TEST)
         {
             /*  update to next test  */
-            TestNumber = TEST_PROTECTION_MASK | ((test_idx + 1) & 0xffff);
             test_desc = (TestProtection_t *)&aProtectTests[test_idx];
+            if (test_desc->access == ALLOWED)
+            {
+              TestNumber = TEST_PROTECTION_FAILED | ((test_idx + 1) & 0xffff);
+            }
+            else
+            {
+              TestNumber = TEST_PROTECTION_MASK | ((test_idx + 1) & 0xffff);
+            }
             printf("\r\n= [TEST_NS %d] %s @ %s %08x %s\r\n",(int)test_idx, \
                    aTestOperation[test_desc->type], test_desc->msg,(unsigned int)test_desc->address, aTestAccess[test_desc->access]);
             status = do_test(test_idx);

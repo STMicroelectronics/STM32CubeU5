@@ -63,9 +63,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Src/stm32u5xx_it.c</locationURI>
 		</link>
 		<link>
-			<name>Application/User/tx_initialize_low_level.s</name>
+			<name>Application/User/tx_initialize_low_level.S</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Src/tx_initialize_low_level.s</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Src/tx_initialize_low_level.S</locationURI>
 		</link>
 		<link>
 			<name>Drivers/CMSIS/system_stm32u5xx.c</name>
@@ -171,16 +171,11 @@
 			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_uart_ex.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_uart_ex.c</locationURI>
-		</link>
+        </link>
 		<link>
 			<name>Middlewares/CMSIS_RTOS_Threadx/cmsis_os2.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/cmsis_rtos_threadx/cmsis_os2.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/BSP/STM32U5xx_Nucleo/b_u585i_iot02a.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/ThreadX/Core/tx_block_allocate.c</name>

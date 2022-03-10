@@ -55,7 +55,8 @@ typedef struct
                                      For Analog Watchdog 1 : Configure the ADC analog watchdog mode: single channel
                                                              or all channels.
                                      For Analog Watchdog 2 and 3 : Several channels can be monitored by a combination
-                                                                   of several channels in the AWD init structure.
+                                                                   of several channels in the AWD initialization
+                                                                   structure.
                                      Channels on ADC group regular and injected are not differentiated :
                                      Set value 'LPBAM_ADC_ANALOGWATCHDOG_SINGLE_REG' to monitor 1 or several channels,
                                      value 'LPBAM_ADC_ANALOGWATCHDOG_ALL_REG' to monitor all channels, value
@@ -63,7 +64,7 @@ typedef struct
                                      This parameter can be a value of @ref LPBAM_ADC_AnalogWatchDog_Mode.
                                      Note: For Analog Watchdog 2 and 3 and when using
                                            'LPBAM_ADC_ANALOGWATCHDOG_SINGLE_REG' several channels can be monitored by
-                                           combinate several channels.                                                */
+                                           combine several channels.                                                  */
 
   uint32_t Channel;             /*!< Select which ADC channel to monitor by analog watchdog.
                                      For Analog Watchdog 1: this parameter has an effect only if parameter
@@ -91,7 +92,11 @@ typedef struct
                          This parameter can be a value of @ref LPBAM_ADC_Channel_Selection. */
 
   uint32_t Rank;    /*!< Specify the rank in the regular group sequencer.
+                         This parameter is discarded when the ScanConvMode field in LPBAM_ADC_ConfigAdvConf_t or
+                         LPBAM_ADC_FullAdvConf_t is configured as LPBAM_ADC_SCAN_DIRECTION_FORWARD or
+                         LPBAM_ADC_SCAN_DIRECTION_BACKWARD.
                          This parameter can be a value of @ref LPBAM_ADC_Channel_RANK.      */
+
 } LPBAM_ADC_ChannelConfig_t;
 /**
   * @}
@@ -105,7 +110,7 @@ typedef struct
 /** @defgroup LPBAM_ADC_Sequence_Scan_Mode LPBAM_ADC_Sequence_Scan_Mode
   * @{
   */
-#define LPBAM_ADC_SCAN_DISABLE            (0x00U) /*!< LPBAM Scan mode enabled                                        */
+#define LPBAM_ADC_SCAN_DISABLE            (0x00U) /*!< LPBAM Scan mode disabled                                       */
 #define LPBAM_ADC_SCAN_ENABLE             (0x01U) /*!< LPBAM channels order and sequencer length are configurable
                                                        (Sequencer configured to fully configurable)                   */
 #define LPBAM_ADC_SCAN_DIRECTION_FORWARD  (0x02U) /*!< LPBAM channels order is defined by channel index.

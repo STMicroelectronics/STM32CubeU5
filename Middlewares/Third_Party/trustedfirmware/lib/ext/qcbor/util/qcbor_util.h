@@ -198,7 +198,7 @@ qcbor_util_get_item_in_map(QCBORDecodeContext *decode_context,
  * \param[out] item       Place to copy the \c QCBORItem to that
  *                        describes what was found.
  *
- *\retval ATTETST_TOKEN_ERR_CBOR_TYPE
+ * \retval ATTEST_TOKEN_ERR_CBOR_TYPE
  *        The labeled item was found, but it didn't match \c qcbor_type.
  * \retval ATTEST_TOKEN_ERR_SUCCESS
  *        The labeled item was found and returned.

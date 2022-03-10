@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2017-2018, Arm Limited. All rights reserved.
+ * Copyright (c) 2017-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
  */
 
 #include <stdio.h>
-#include <cmsis_compiler.h>
+#include "cmsis_compiler.h"
 
 #ifndef __TFM_INTEG_TEST_H__
 #define __TFM_INTEG_TEST_H__
@@ -26,32 +26,14 @@ __asm("  .global __ARM_use_no_argv\n");
  */
 #define UNUSED_VARIABLE(X) ((void)(X))
 
-#ifdef TEST_FRAMEWORK_NS
+#if defined(TEST_FRAMEWORK_NS) || defined(TEST_FRAMEWORK_S)
 /**
  * \brief Main test application for the RTX-TFM core
  *        integration tests
  *
  */
 void test_app(void *argument);
-#endif /* TEST_FRAMEWORK_NS */
-
-/**
- * \brief Execute the interactive test cases (button push)
- *
- */
-void execute_ns_interactive_tests(void);
-
-/**
- * \brief Logging function
- *
- */
-__attribute__((always_inline)) __STATIC_INLINE void LOG_MSG(const char *MSG)
-{
-    /* if IPSR is non-zero, exception is active. NOT banked S/NS */
-    if (!__get_IPSR()) {
-        printf("\t\033[1;32m[Non-Sec] %s\033[0m\r\n", MSG);
-    }
-}
+#endif /* TEST_FRAMEWORK_NS || TEST_FRAMEWORK_S */
 
 #ifdef __cplusplus
 }

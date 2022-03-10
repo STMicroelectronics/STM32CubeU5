@@ -26,7 +26,9 @@
 #include <stdio.h>
 #include "tfm_mbedcrypto_config.h"
 #include "platform/include/region.h"
-
+#ifdef TFM_FIH_PROFILE_ON
+#include "fih.h"
+#endif
 
 extern void Error_Handler(void);
 
@@ -36,25 +38,12 @@ REGION_DECLARE(Load$$LR$$, LR_VENEER, $$Base);
 REGION_DECLARE(Load$$LR$$, LR_VENEER, $$Limit);
 REGION_DECLARE(Load$$LR$$, LR_SECONDARY_PARTITION, $$Base);
 REGION_DECLARE(Image$$, TFM_UNPRIV_CODE, $$RO$$Base);
-REGION_DECLARE(Image$$, TFM_APP_RW_STACK_END, $$Base);
-
+REGION_DECLARE(Image$$, TFM_PSA_RW_STACK_END, $$Base);
 #define NON_SECURE_BASE (uint32_t) &REGION_NAME(Load$$LR$$, LR_NS_PARTITION, $$Base)
-#if defined(MCUBOOT_PRIMARY_ONLY)
-#if MCUBOOT_IMAGE_NUMBER == 2
-#define NON_SECURE_LIMIT (uint32_t)(FLASH_BASE_NS + FLASH_AREA_1_OFFSET + FLASH_AREA_1_SIZE - 1)
-#else
-#define NON_SECURE_LIMIT (uint32_t)(FLASH_BASE_NS + FLASH_AREA_0_OFFSET + FLASH_AREA_0_SIZE - 1)
-#endif /* MCUBOOT_IMAGE_NUMBER == 2 */
-#else /* MCUBOOT_PRIMARY_ONLY */
-#if MCUBOOT_IMAGE_NUMBER == 2
-#define NON_SECURE_LIMIT (uint32_t)(FLASH_BASE_NS + FLASH_AREA_3_OFFSET + FLASH_AREA_3_SIZE - 1)
-#else
-#define NON_SECURE_LIMIT (uint32_t)(FLASH_BASE_NS + FLASH_AREA_2_OFFSET + FLASH_AREA_2_SIZE - 1)
-#endif /* MCUBOOT_IMAGE_NUMBER == 2 */
-#endif /* MCUBOOT_PRIMARY_ONLY */
+#define NON_SECURE_LIMIT (uint32_t)(FLASH_BASE_NS + FLASH_AREA_END_OFFSET - 1)
 #define VENEER_BASE (uint32_t) &REGION_NAME(Load$$LR$$, LR_VENEER, $$Base)
 #define VENEER_LIMIT (uint32_t) &REGION_NAME(Load$$LR$$, LR_VENEER, $$Limit)
-
+#define DATA_NPRIV_START (uint32_t) &REGION_NAME(Image$$, TFM_PSA_RW_STACK_END, $$Base)
 const struct memory_region_limits memory_regions =
 {
   .non_secure_code_start =
@@ -73,7 +62,12 @@ const struct memory_region_limits memory_regions =
   VENEER_LIMIT,
 };
 
-
+#define TFM_NS_REGION_CODE      0
+#define TFM_NS_REGION_DATA_1    1
+#define TFM_NS_REGION_DATA_2    2
+#define TFM_NS_REGION_VENEER    3
+#define TFM_NS_REGION_PERIPH_1  4
+#define TFM_NS_REGION_PERIPH_2  5
 /* Define Peripherals NS address range for the platform */
 #define PERIPHERALS_BASE_NS_START (PERIPH_BASE_NS)
 #define PERIPHERALS_BASE_NS_END   (0x4FFFFFFF)
@@ -106,7 +100,7 @@ const struct sau_cfg_t sau_init_cfg[] = {
     },
     {
         TFM_NS_REGION_DATA_2,
-        SRAM3_BASE_NS,
+        SRAM3_BASE_NS+SRAM3_S_SIZE,
         (SRAM4_BASE_NS + _SRAM4_SIZE_MAX - 1),
         TFM_FALSE,
 #ifdef FLOW_CONTROL
@@ -205,7 +199,11 @@ void enable_ns_clk_config(void)
 }
 /*----------------- GPIO Pin mux configuration for non secure --------------- */
 /*  set all pin mux to un-secure */
+#ifdef TFM_FIH_PROFILE_ON
+fih_int pinmux_init_cfg(void)
+#else
 void pinmux_init_cfg(void)
+#endif
 {
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -223,11 +221,17 @@ void pinmux_init_cfg(void)
   GPIOF_S->SECCFGR = 0x0;
   GPIOG_S->SECCFGR = 0x0;
   GPIOH_S->SECCFGR = 0x0;
-
+#ifdef TFM_FIH_PROFILE_ON
+  FIH_RET(fih_int_encode(TFM_PLAT_ERR_SUCCESS));
+#endif 
 }
 /*------------------- SAU/IDAU configuration functions -----------------------*/
 
+#ifdef TFM_FIH_PROFILE_ON
+fih_int sau_and_idau_cfg(void)
+#else
 void sau_and_idau_cfg(void)
+#endif
 {
   uint32_t i;
   uint32_t rnr;
@@ -316,14 +320,17 @@ void sau_and_idau_cfg(void)
     }
 
     /* Lock SAU config */
+    __IO uint32_t read_reg = (uint32_t) &SYSCFG->CSLCKR;
     __HAL_RCC_SYSCFG_CLK_ENABLE();
     SYSCFG->CSLCKR |= SYSCFG_CSLCKR_LOCKSAU;
     FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_SAU_LCK, FLOW_CTRL_SAU_LCK);
-    if (!(SYSCFG->CSLCKR &  SYSCFG_CSLCKR_LOCKSAU))
+    if (!((*(uint32_t *)read_reg) &  SYSCFG_CSLCKR_LOCKSAU))
         Error_Handler();
     FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_SAU_LCK_CH, FLOW_CTRL_SAU_LCK_CH);
-
   }
+#ifdef TFM_FIH_PROFILE_ON
+  FIH_RET(fih_int_encode(TFM_PLAT_ERR_SUCCESS));
+#endif
 }
 #define MPCBB_BLOCK_SIZE GTZC_MPCBB_BLOCK_SIZE
 #define MPCBB_SUPER_BLOCK_SIZE (GTZC_MPCBB_SUPERBLOCK_SIZE)
@@ -335,6 +342,9 @@ void sau_and_idau_cfg(void)
 #define MPCBB_LOCK_SRAM1_SIZE 0xfff
 #define MPCBB_LOCK_SRAM3_SIZE 0xffffffff
 #define MPCBB_LOCK_SRAM4_SIZE 0x1
+#if defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+#define MPCBB_LOCK_SRAM5_SIZE 0xffffffff
+#endif
 #define MPCBB_LOCK(A) MPCBB_LOCK_##A
 
 static void gtzc_config_sram(uint32_t base, uint32_t max_size, uint32_t off_start, uint32_t off_end, uint32_t flag);
@@ -448,7 +458,12 @@ static void gtzc_internal_flash_priv(uint32_t offset_start, uint32_t offset_end)
     }
   }
 }
+
+#ifdef TFM_FIH_PROFILE_ON
+fih_int gtzc_init_cfg(void)
+#else
 void gtzc_init_cfg(void)
+#endif
 {
   uint32_t gtzc_periph_att;
 
@@ -459,22 +474,42 @@ void gtzc_init_cfg(void)
         Error_Handler();
     FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_GTZC_VTOR_LCK, FLOW_CTRL_GTZC_VTOR_LCK);
 
+    /* Check PRIS Is enabled */
+    if(SCB->AIRCR & SCB_AIRCR_PRIS_Msk == 0)
+      Error_Handler();
+    FLOW_CONTROL_STEP(uFlowProtectValue, FLOW_STEP_GTZC_PRIS_EN, FLOW_CTRL_GTZC_PRIS_EN);
+
     /* Enable GTZC clock */
     __HAL_RCC_GTZC1_CLK_ENABLE();
     __HAL_RCC_GTZC2_CLK_ENABLE();
     /* assume non secure ram is only in SRAM 1 , SRAM 2 is reserved for secure */
     gtzc_config_sram(SRAM1_BASE, SRAM1_SIZE, 0, SRAM1_SIZE -1, FLAG_NPRIV | FLAG_NSEC);
-    gtzc_config_sram(SRAM2_BASE, SRAM2_SIZE, 0, (uint32_t)&REGION_NAME(Image$$, TFM_APP_RW_STACK_END, $$Base)
-                     - SRAM2_BASE -1, FLAG_NPRIV);
-    gtzc_config_sram(SRAM2_BASE, SRAM2_SIZE, (uint32_t)&REGION_NAME(Image$$, TFM_APP_RW_STACK_END, $$Base)
-                     - SRAM2_BASE, SRAM2_SIZE - 1, 0);
-    gtzc_config_sram(SRAM3_BASE, SRAM3_SIZE, 0, SRAM3_SIZE -1, FLAG_NPRIV | FLAG_NSEC);
+    if (DATA_NPRIV_START <=(SRAM2_BASE + SRAM2_SIZE))
+    {
+        gtzc_config_sram(SRAM2_BASE, SRAM2_SIZE, 0, DATA_NPRIV_START - SRAM2_BASE -1, 0);
+        gtzc_config_sram(SRAM2_BASE, SRAM2_SIZE, DATA_NPRIV_START - SRAM2_BASE, SRAM2_SIZE -1, FLAG_NPRIV);
+        gtzc_config_sram(SRAM3_BASE, SRAM3_SIZE, 0,  SRAM3_S_SIZE -1, FLAG_NPRIV);
+    }
+    else
+    {
+        gtzc_config_sram(SRAM2_BASE, SRAM2_SIZE, 0,SRAM2_SIZE -1, 0);
+        gtzc_config_sram(SRAM3_BASE, SRAM3_SIZE, 0, DATA_NPRIV_START - SRAM3_BASE -1, 0);
+        gtzc_config_sram(SRAM3_BASE, SRAM3_SIZE, DATA_NPRIV_START - SRAM3_BASE,  SRAM3_S_SIZE -1, FLAG_NPRIV);
+    }
+    gtzc_config_sram(SRAM3_BASE, SRAM3_SIZE, SRAM3_S_SIZE, SRAM3_SIZE -1, FLAG_NPRIV | FLAG_NSEC);
+
+#if defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+    gtzc_config_sram(SRAM5_BASE, SRAM5_SIZE, 0, SRAM5_SIZE -1, FLAG_NPRIV | FLAG_NSEC);
+#endif /* defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx) */
     gtzc_config_sram(SRAM4_BASE, SRAM4_SIZE, 0, SRAM4_SIZE -1, FLAG_NPRIV | FLAG_NSEC);
 
     GTZC_MPCBB1_S->CFGLOCKR1=MPCBB_LOCK(SRAM1_SIZE);
     GTZC_MPCBB2_S->CFGLOCKR1=MPCBB_LOCK(SRAM2_SIZE);
     GTZC_MPCBB3_S->CFGLOCKR1=MPCBB_LOCK(SRAM3_SIZE);
     GTZC_MPCBB4_S->CFGLOCKR1=MPCBB_LOCK(SRAM4_SIZE);
+#if defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+    GTZC_MPCBB5_S->CFGLOCKR1=MPCBB_LOCK(SRAM5_SIZE);
+#endif
     /* privileged secure internal flash */
     gtzc_internal_flash_priv(0x0, (uint32_t)(&REGION_NAME(Image$$, TFM_UNPRIV_CODE, $$RO$$Base)) - FLASH_BASE_S - 1);
 
@@ -557,16 +592,30 @@ void gtzc_init_cfg(void)
   else
   {
     gtzc_config_sram(SRAM1_BASE, SRAM1_SIZE, 0, SRAM1_SIZE -1, FLAG_NPRIV | FLAG_NSEC);
-    gtzc_config_sram(SRAM2_BASE, SRAM2_SIZE, 0, (uint32_t)&REGION_NAME(Image$$, TFM_APP_RW_STACK_END, $$Base)
-                     - SRAM2_BASE -1, FLAG_NPRIV);
-    gtzc_config_sram(SRAM2_BASE, SRAM2_SIZE, (uint32_t)&REGION_NAME(Image$$, TFM_APP_RW_STACK_END, $$Base)
-                     - SRAM2_BASE, SRAM2_SIZE - 1, 0);
-    gtzc_config_sram(SRAM3_BASE, SRAM3_SIZE, 0, SRAM3_SIZE -1, FLAG_NPRIV | FLAG_NSEC);
+    if (DATA_NPRIV_START <=(SRAM2_BASE + SRAM2_SIZE))
+    {
+        gtzc_config_sram(SRAM2_BASE, SRAM2_SIZE, 0, DATA_NPRIV_START - SRAM2_BASE -1, 0);
+        gtzc_config_sram(SRAM2_BASE, SRAM2_SIZE, DATA_NPRIV_START - SRAM2_BASE, SRAM2_SIZE -1, FLAG_NPRIV);
+        gtzc_config_sram(SRAM3_BASE, SRAM3_SIZE, 0,  SRAM3_S_SIZE -1, FLAG_NPRIV);
+    }
+    else
+    {
+        gtzc_config_sram(SRAM2_BASE, SRAM2_SIZE, 0,SRAM2_SIZE -1, 0);
+        gtzc_config_sram(SRAM3_BASE, SRAM3_SIZE, 0, DATA_NPRIV_START - SRAM3_BASE -1, 0);
+        gtzc_config_sram(SRAM3_BASE, SRAM3_SIZE, DATA_NPRIV_START - SRAM3_BASE,  SRAM3_S_SIZE -1, FLAG_NPRIV);
+    }
+    gtzc_config_sram(SRAM3_BASE, SRAM3_SIZE, SRAM3_S_SIZE, SRAM3_SIZE -1, FLAG_NPRIV | FLAG_NSEC);
+#if defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+    gtzc_config_sram(SRAM5_BASE, SRAM5_SIZE, 0, SRAM5_SIZE -1, FLAG_NPRIV | FLAG_NSEC);
+#endif /* defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx) */
     gtzc_config_sram(SRAM4_BASE, SRAM4_SIZE, 0, SRAM4_SIZE -1, FLAG_NPRIV | FLAG_NSEC);
     if (GTZC_MPCBB1_S->CFGLOCKR1 != MPCBB_LOCK(SRAM1_SIZE)) Error_Handler();
     if (GTZC_MPCBB2_S->CFGLOCKR1 != MPCBB_LOCK(SRAM2_SIZE)) Error_Handler();
     if (GTZC_MPCBB3_S->CFGLOCKR1 != MPCBB_LOCK(SRAM3_SIZE)) Error_Handler();
     if (GTZC_MPCBB4_S->CFGLOCKR1 != MPCBB_LOCK(SRAM4_SIZE)) Error_Handler();
+#if defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+    if (GTZC_MPCBB5_S->CFGLOCKR1 != MPCBB_LOCK(SRAM5_SIZE)) Error_Handler();
+#endif
     gtzc_internal_flash_priv(0x0, (uint32_t)(&REGION_NAME(Image$$, TFM_UNPRIV_CODE, $$RO$$Base)) - FLASH_BASE_S - 1);
 #if (defined (MBEDTLS_SHA256_C) && defined (MBEDTLS_SHA256_ALT)) \
  || (defined (MBEDTLS_SHA1_C) && defined (MBEDTLS_SHA1_ALT)) \
@@ -603,9 +652,27 @@ void gtzc_init_cfg(void)
   /* Lock GTZC */
   HAL_GTZC_TZSC_Lock(GTZC_TZSC1_S);
   HAL_GTZC_TZSC_Lock(GTZC_TZSC2_S);
+#ifdef TFM_FIH_PROFILE_ON
+  FIH_RET(fih_int_encode(TFM_PLAT_ERR_SUCCESS));
+#endif
 }
 
+#ifdef TFM_FIH_PROFILE_ON
+
+fih_int tfm_spm_hal_init_debug(void)
+{
+  /*  debug is available  only with RDP 0 for secure*/
+  FIH_RET(fih_int_encode(TFM_PLAT_ERR_SUCCESS));
+}
+
+fih_int tfm_spm_hal_verify_isolation_hw(void)
+{
+  FIH_RET(fih_int_encode(TFM_PLAT_ERR_SUCCESS));
+}
+
+#else
 void tfm_spm_hal_init_debug(void)
 {
   /*  debug is available  only with RDP 0 for secure*/
 }
+#endif /* TFM_FIH_PROFILE_ON */

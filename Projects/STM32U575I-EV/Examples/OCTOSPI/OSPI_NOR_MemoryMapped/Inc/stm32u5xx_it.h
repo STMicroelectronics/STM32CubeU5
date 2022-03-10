@@ -1,8 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    OCTOSPI/OSPI_NOR_MemoryMapped/Inc/stm32u5xx_it.h
-  * @author  MCD Application Team
+  * @file    stm32u5xx_it.h
   * @brief   This file contains the headers of the interrupt handlers.
   ******************************************************************************
   * @attention

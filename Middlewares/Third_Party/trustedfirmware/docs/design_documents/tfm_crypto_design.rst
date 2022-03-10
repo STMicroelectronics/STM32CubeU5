@@ -39,7 +39,7 @@ components, which are listed below:
    +-----------------------------+---------------------------------------------------------------+----------------------------------------------------------------------+
    | **Component name**          | **Description**                                               | **Location**                                                         |
    +=============================+===============================================================+======================================================================+
-   | SPE client API interface    | This module exports the client API of PSA Crypto to the other | ``./secure_fw/services/crypto/tfm_crypto_secure_api.c``              |
+   | SPE client API interface    | This module exports the client API of PSA Crypto to the other | ``./secure_fw/partitions/crypto/tfm_crypto_secure_api.c``            |
    |                             | services available in TF-M.                                   |                                                                      |
    +-----------------------------+---------------------------------------------------------------+----------------------------------------------------------------------+
    | NSPE client API interface   | This module exports the client API of PSA Crypto to the NSPE  | ``./interface/src/tfm_crypto_api.c``                                 |
@@ -48,7 +48,7 @@ components, which are listed below:
    | Mbed Crypto                 | The Mbed Crypto library is used in the service as a           | Needed as dependency at the same level of the TF-M folder,           |
    |                             | cryptographic library exposing the PSA Crypto API interface.  | i.e. ``../mbed-crypto``                                              |
    +-----------------------------+---------------------------------------------------------------+----------------------------------------------------------------------+
-   | Init module                 | This module handles the initialisation of the service objects | ``./secure_fw/services/crypto/crypto_init.c``                        |
+   | Init module                 | This module handles the initialisation of the service objects | ``./secure_fw/partitions/crypto/crypto_init.c``                      |
    |                             | during TF-M boot and provides the infrastructure to service   |                                                                      |
    |                             | requests when TF-M is built for IPC mode.                     |                                                                      |
    |                             | Due to the fact that the functions available in the Service   |                                                                      |
@@ -59,28 +59,28 @@ components, which are listed below:
    |                             | higher number of Secure functions with minimal overhead and   |                                                                      |
    |                             | duplication of code.                                          |                                                                      |
    +-----------------------------+---------------------------------------------------------------+----------------------------------------------------------------------+
-   | Alloc module                | This module handles the allocation of contexts for multipart  | ``./secure_fw/services/crypto/crypto_alloc.c``                       |
+   | Alloc module                | This module handles the allocation of contexts for multipart  | ``./secure_fw/partitions/crypto/crypto_alloc.c``                     |
    |                             | operations in the Secure world.                               |                                                                      |
    +-----------------------------+---------------------------------------------------------------+----------------------------------------------------------------------+
-   | Service modules             | These modules (AEAD, Asymmetric, Cipher, Generator, Hash, Key,| ``./secure_fw/services/crypto/crypto_aead.c``                        |
-   |                             | MAC) represent a thin layer which is in charge of servicing   | ``./secure_fw/services/crypto/crypto_asymmetric.c``                  |
-   |                             | the calls from the SPE/NSPE client API interfaces.            | ``./secure_fw/services/crypto/crypto_cipher.c``                      |
-   |                             | They provide parameter sanitation and context retrieval for   | ``./secure_fw/services/crypto/crypto_generator.c``                   |
-   |                             | multipart operations, and dispatching to the corresponding    | ``./secure_fw/services/crypto/crypto_hash.c``                        |
-   |                             | library function exposed by Mbed Crypto for the desired       | ``./secure_fw/services/crypto/crypto_key.c``                         |
-   |                             | functionality.                                                | ``./secure_fw/services/crypto/crypto_mac.c``                         |
+   | Service modules             | These modules (AEAD, Asymmetric, Cipher, Key Deriv, Hash, Key,| ``./secure_fw/partitions/crypto/crypto_aead.c``                      |
+   |                             | MAC) represent a thin layer which is in charge of servicing   | ``./secure_fw/partitions/crypto/crypto_asymmetric.c``                |
+   |                             | the calls from the SPE/NSPE client API interfaces.            | ``./secure_fw/partitions/crypto/crypto_cipher.c``                    |
+   |                             | They provide parameter sanitation and context retrieval for   | ``./secure_fw/partitions/crypto/crypto_key_derivation.c``            |
+   |                             | multipart operations, and dispatching to the corresponding    | ``./secure_fw/partitions/crypto/crypto_hash.c``                      |
+   |                             | library function exposed by Mbed Crypto for the desired       | ``./secure_fw/partitions/crypto/crypto_key.c``                       |
+   |                             | functionality.                                                | ``./secure_fw/partitions/crypto/crypto_mac.c``                       |
    |                             | All the functions in the Service modules are based on the     |                                                                      |
    |                             | Uniform Signature prototype [2]_ .                            |                                                                      |
    +-----------------------------+---------------------------------------------------------------+----------------------------------------------------------------------+
-   | Manifest                    | The manifest file is a description of the service components  | ``./secure_fw/services/crypto/manifest.yaml``                        |
+   | Manifest                    | The manifest file is a description of the service components  | ``./secure_fw/partitions/crypto/manifest.yaml``                      |
    |                             | for both library mode and IPC mode.                           |                                                                      |
    +-----------------------------+---------------------------------------------------------------+----------------------------------------------------------------------+
-   | CMake files and headers     | The CMake files are used by the TF-M CMake build system to    | ``./secure_fw/services/crypto/CMakeLists.inc``                       |
-   |                             | build the service as part of the Secure FW build. The service | ``./secure_fw/services/crypto/CMakeLists.txt``                       |
+   | CMake files and headers     | The CMake files are used by the TF-M CMake build system to    | ``./secure_fw/partitions/crypto/CMakeLists.inc``                     |
+   |                             | build the service as part of the Secure FW build. The service | ``./secure_fw/partitions/crypto/CMakeLists.txt``                     |
    |                             | is built as a static library (``tfm_crypto.a``).              | ``./interface/include/tfm_crypto_defs.h``                            |
-   |                             | The build system allows to build as well the Mbed Crypto      | ``./secure_fw/services/crypto/tfm_crypto_api.h``                     |
-   |                             | library as part of the Secure FW build process and archive it | ``./secure_fw/services/crypto/tfm_crypto_signal.h``                  |
-   |                             | with the static library of the Crypto service.                | ``./secure_fw/services/crypto/spe_crypto.h``                         |
+   |                             | The build system allows to build as well the Mbed Crypto      | ``./secure_fw/partitions/crypto/tfm_crypto_api.h``                   |
+   |                             | library as part of the Secure FW build process and archive it | ``./secure_fw/partitions/crypto/tfm_crypto_signal.h``                |
+   |                             | with the static library of the Crypto service.                | ``./secure_fw/partitions/crypto/spe_crypto.h``                       |
    |                             | The headers are used to export the public prototypes of the   |                                                                      |
    |                             | functions in the Service modules ``tfm_crypto_api.h``, and    |                                                                      |
    |                             | to provide the necessary defines (i.e. ``TFM_CRYPTO_SIG``).   |                                                                      |
@@ -166,15 +166,15 @@ configuration of the Mbed Crypto library.
    +-------------------------------+---------------------------+----------------------------------------------------------------+-----------------------------------------+----------------------------------------------------+
    | **Parameter**                 | **Type**                  | **Description**                                                | **Scope**                               | **Default**                                        |
    +===============================+===========================+================================================================+=========================================+====================================================+
-   | ``CRYPTO_ENGINE_BUF_SIZE``    | CMake build               | Buffer used by Mbed Crypto for its own allocations at runtime. | To be configured based on the desired   | 1024 (bytes)                                       |
+   | ``CRYPTO_ENGINE_BUF_SIZE``    | CMake build               | Buffer used by Mbed Crypto for its own allocations at runtime. | To be configured based on the desired   | 8096 (bytes)                                       |
    |                               | configuration parameter   | This is a buffer allocated in static memory.                   | use case and application requirements.  |                                                    |
    +-------------------------------+---------------------------+----------------------------------------------------------------+-----------------------------------------+----------------------------------------------------+
    | ``CRYPTO_CONC_OPER_NUM``      | CMake build               | This parameter defines the maximum number of possible          | To be configured based on the desire    | 8                                                  |
-   |                               | configuration parameter   | concurrent operation contexts (cipher, MAC, hash and generator)| use case and platform requirements.     |                                                    |
+   |                               | configuration parameter   | concurrent operation contexts (cipher, MAC, hash and key deriv)| use case and platform requirements.     |                                                    |
    |                               |                           | for multi-part operations, that can be allocated simultaneously|                                         |                                                    |
    |                               |                           | at any time.                                                   |                                         |                                                    |
    +-------------------------------+---------------------------+----------------------------------------------------------------+-----------------------------------------+----------------------------------------------------+
-   | ``CRYPTO_IOVEC_BUFFER_SIZE``  | CMake build               | This parameter applies only to IPC mode builds. In IPC mode,   | To be configured based on the desired   | 1024 (bytes)                                       |
+   | ``CRYPTO_IOVEC_BUFFER_SIZE``  | CMake build               | This parameter applies only to IPC mode builds. In IPC mode,   | To be configured based on the desired   | 5120 (bytes)                                       |
    |                               | configuration parameter   | during a Service call, input and outputs are allocated         | use case and application requirements.  |                                                    |
    |                               |                           | temporarily in an internal scratch buffer whose size is        |                                         |                                                    |
    |                               |                           | determined by this parameter.                                  |                                         |                                                    |
@@ -195,4 +195,4 @@ References
 
 --------------
 
-*Copyright (c) 2019, Arm Limited. All rights reserved.*
+*Copyright (c) 2019-2020, Arm Limited. All rights reserved.*

@@ -204,6 +204,18 @@
 
 /*#define TX_TIMER_TICKS_PER_SECOND                100*/
 
+/* Defined, the basic parameter error checking is disabled. */
+
+/*#define TX_DISABLE_ERROR_CHECKING*/
+
+/* Determine if there is a FileX pointer in the thread control block.
+   By default, the pointer is there for legacy/backwards compatibility.
+   The pointer must also be there for applications using FileX.
+   Define this to save space in the thread control block.
+*/
+
+/*#define TX_NO_FILEX_POINTER*/
+
 /* Determinate if the basic alignment type is defined. */
 
 /*#define ALIGN_TYPE_DEFINED*/
@@ -223,20 +235,22 @@
 /* Define the LowPower macros and flags */
 
 /* Define a macro that sets up a low power clock and keep track of time */
-/*#define TX_LOW_POWER_TIMER_SETUP */
+void App_ThreadX_LowPower_Timer_Setup(unsigned long count);
+#define TX_LOW_POWER_TIMER_SETUP(_count) App_ThreadX_LowPower_Timer_Setup(_count)
 
 /* Define the TX_LOW_POWER_TICKLESS to disable the internal ticks */
 #define TX_LOW_POWER_TICKLESS
 
 /* A user defined macro to make the system enter low power mode */
-void App_ThreadX_LowPower_Enter();
+void App_ThreadX_LowPower_Enter(void);
 #define TX_LOW_POWER_USER_ENTER App_ThreadX_LowPower_Enter()
 
 /* A user defined macro to make the system exit low power mode */
-void App_ThreadX_LowPower_Exit();
+void App_ThreadX_LowPower_Exit(void);
 #define TX_LOW_POWER_USER_EXIT App_ThreadX_LowPower_Exit()
 
 /* User's low-power macro to obtain the amount of time (in ticks) the system has been in low power mode */
-/*#define TX_LOW_POWER_USER_TIMER_ADJUST */
+unsigned long App_ThreadX_LowPower_Timer_Adjust(void);
+#define TX_LOW_POWER_USER_TIMER_ADJUST App_ThreadX_LowPower_Timer_Adjust()
 
 #endif

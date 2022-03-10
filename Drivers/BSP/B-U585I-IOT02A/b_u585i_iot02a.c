@@ -74,10 +74,10 @@ static void COM_MspDeInit(UART_HandleTypeDef *huart);
 /** @defgroup B_U585I_IOT02A_LOW_LEVEL_Exported_Variables LOW LEVEL Exported Variables
   * @{
   */
-EXTI_HandleTypeDef hpb_exti[BUTTONn];
+EXTI_HandleTypeDef hpb_exti[BUTTON_NBR];
 #if (USE_BSP_COM_FEATURE > 0)
-UART_HandleTypeDef hcom_uart[COMn];
-USART_TypeDef *COM_UART[COMn]   = {COM1_UART};
+UART_HandleTypeDef hcom_uart[COM_NBR];
+USART_TypeDef *COM_UART[COM_NBR]   = {COM1_UART};
 #endif /* USE_BSP_COM_FEATURE */
 
 /**
@@ -87,20 +87,20 @@ USART_TypeDef *COM_UART[COMn]   = {COM1_UART};
 /** @defgroup B_U585I_IOT02A_LOW_LEVEL_Private_Variables LOW LEVEL Private Variables
   * @{
   */
-static GPIO_TypeDef *LED_PORT[LEDn] = {LED6_GPIO_PORT,
-                                       LED7_GPIO_PORT,
-                                      };
+static GPIO_TypeDef *LED_PORT[LED_NBR] = {LED6_GPIO_PORT,
+                                          LED7_GPIO_PORT,
+                                         };
 
-static const uint32_t LED_PIN[LEDn] = {LED6_PIN,
-                                       LED7_PIN,
-                                      };
+static const uint32_t LED_PIN[LED_NBR] = {LED6_PIN,
+                                          LED7_PIN,
+                                         };
 
-static GPIO_TypeDef *BUTTON_PORT[BUTTONn] = {BUTTON_USER_GPIO_PORT
-                                            };
-static const uint16_t BUTTON_PIN[BUTTONn] = {BUTTON_USER_PIN
-                                            };
-static const IRQn_Type BUTTON_IRQn[BUTTONn] = {BUTTON_USER_EXTI_IRQn
-                                              };
+static GPIO_TypeDef *BUTTON_PORT[BUTTON_NBR] = {BUTTON_USER_GPIO_PORT
+                                               };
+static const uint16_t BUTTON_PIN[BUTTON_NBR] = {BUTTON_USER_PIN
+                                               };
+static const IRQn_Type BUTTON_IRQn[BUTTON_NBR] = {BUTTON_USER_EXTI_IRQn
+                                                 };
 
 #if (USE_COM_LOG > 0)
 static COM_TypeDef COM_ActiveLogPort = COM1;
@@ -108,7 +108,7 @@ static COM_TypeDef COM_ActiveLogPort = COM1;
 
 #if (USE_BSP_COM_FEATURE > 0)
 #if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
-static uint32_t IsComMspCbValid[COMn] = {0};
+static uint32_t IsComMspCbValid[COM_NBR] = {0};
 #endif /* USE_HAL_UART_REGISTER_CALLBACKS */
 #endif /* USE_BSP_COM_FEATURE */
 
@@ -292,9 +292,9 @@ int32_t BSP_PB_Init(Button_TypeDef Button, ButtonMode_TypeDef ButtonMode)
 {
   int32_t ret = BSP_ERROR_NONE;
   GPIO_InitTypeDef gpio_init_structure;
-  static BSP_EXTI_LineCallback ButtonCallback[BUTTONn] = {BUTTON_USER_EXTI_Callback,};
-  static uint32_t  BSP_BUTTON_PRIO [BUTTONn] = {BSP_BUTTON_USER_IT_PRIORITY,};
-  static const uint32_t BUTTON_EXTI_LINE[BUTTONn] = {BUTTON_USER_EXTI_LINE,};
+  static BSP_EXTI_LineCallback ButtonCallback[BUTTON_NBR] = {BUTTON_USER_EXTI_Callback,};
+  static uint32_t  BSP_BUTTON_PRIO [BUTTON_NBR] = {BSP_BUTTON_USER_IT_PRIORITY,};
+  static const uint32_t BUTTON_EXTI_LINE[BUTTON_NBR] = {BUTTON_USER_EXTI_LINE,};
 
   if (Button != BUTTON_USER)
   {
@@ -409,7 +409,7 @@ int32_t BSP_COM_Init(COM_TypeDef COM, COM_InitTypeDef *COM_Init)
 {
   int32_t ret = BSP_ERROR_NONE;
 
-  if (COM >= COMn)
+  if (COM >= COM_NBR)
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -450,7 +450,7 @@ int32_t BSP_COM_DeInit(COM_TypeDef COM)
 {
   int32_t ret = BSP_ERROR_NONE;
 
-  if (COM >= COMn)
+  if (COM >= COM_NBR)
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -503,7 +503,7 @@ int32_t BSP_COM_RegisterDefaultMspCallbacks(COM_TypeDef COM)
 {
   int32_t ret = BSP_ERROR_NONE;
 
-  if (COM >= COMn)
+  if (COM >= COM_NBR)
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -540,7 +540,7 @@ int32_t BSP_COM_RegisterMspCallbacks(COM_TypeDef COM, BSP_COM_Cb_t *Callback)
 {
   int32_t ret = BSP_ERROR_NONE;
 
-  if (COM >= COMn)
+  if (COM >= COM_NBR)
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }

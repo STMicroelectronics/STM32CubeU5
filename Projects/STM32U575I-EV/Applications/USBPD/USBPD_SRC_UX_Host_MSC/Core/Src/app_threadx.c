@@ -62,7 +62,7 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
 
    /* USER CODE BEGIN App_ThreadX_MEM_POOL */
-#if (USE_MEMORY_POOL_ALLOCATION == 1)
+#if (USE_STATIC_ALLOCATION == 1)
   (void)byte_pool;
 #endif
   /* USER CODE END App_ThreadX_MEM_POOL */

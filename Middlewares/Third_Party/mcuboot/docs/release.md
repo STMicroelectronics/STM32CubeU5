@@ -15,6 +15,9 @@ incremeting the numbers:
 
 We add pre-release tags of the format MAJOR.MINOR.PATCH-rc1.
 
+We mark in documentation an MCUBoot development version using
+the format MAJOR.MINOR.PATCH-dev.
+
 ## Release Notes
 
 Before making a release, be sure to update the `docs/release-notes.md`
@@ -51,8 +54,7 @@ On Mynewt, `newt` always fetches a versioned MCUBoot release, so after
 the rc step is finished, the release needs to be exported by modifying
 `repository.yml` in the root directory; it must be updated with the
 new release version, including updates to the pseudo keys
-(`*-(latest|dev)`). Similarly `version.yml` must have its `repo.version`
-key updated with the version number being released.
+(`*-(latest|dev)`).
 
 ## Tagging and Release
 
@@ -82,10 +84,17 @@ git push origin HEAD:refs/heads/master
 git push origin va.b.c-rcn
 ```
 
-## Update Mynewt version.yml
+## Post release actions
 
-On master `version.yml` must always have its `repo.version`
-key set to "0.0.0" to this must be done now that the release
-is finished.
+Mark the MCUBoot version as a development version. The version number used
+should be specified for the next expected release.
+It should be larger than the last release version by incrementing the MAJOR or
+the MINOR number. It is not necessary to define the next version precisely as
+the next release version might still be different as it might be needed to do:
+
+- a patch release
+- a MINOR release while a MAJOR release was expected
+- a MAJOR release while a MINOR release was expected
+
 
 [semver]: http://semver.org/

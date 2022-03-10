@@ -93,7 +93,7 @@ DEFAULT_IRQ_HANDLER(EXTI13_IRQHandler)
 DEFAULT_IRQ_HANDLER(EXTI14_IRQHandler)
 DEFAULT_IRQ_HANDLER(EXTI15_IRQHandler)
 DEFAULT_IRQ_HANDLER(IWDG_IRQHandler)
-#ifdef STM32U585xx
+#if defined(STM32U585xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
 DEFAULT_IRQ_HANDLER(SAES_IRQHandler)
 #endif
 DEFAULT_IRQ_HANDLER(GPDMA1_Channel0_IRQHandler)
@@ -104,7 +104,11 @@ DEFAULT_IRQ_HANDLER(GPDMA1_Channel4_IRQHandler)
 DEFAULT_IRQ_HANDLER(GPDMA1_Channel5_IRQHandler)
 DEFAULT_IRQ_HANDLER(GPDMA1_Channel6_IRQHandler)
 DEFAULT_IRQ_HANDLER(GPDMA1_Channel7_IRQHandler)
+#if defined(STM32U585xx) || defined(STM32U575xx)
 DEFAULT_IRQ_HANDLER(ADC1_IRQHandler)
+#else
+DEFAULT_IRQ_HANDLER(ADC1_2_IRQHandler)
+#endif
 DEFAULT_IRQ_HANDLER(DAC1_IRQHandler)
 DEFAULT_IRQ_HANDLER(FDCAN1_IT0_IRQHandler)
 DEFAULT_IRQ_HANDLER(FDCAN1_IT1_IRQHandler)
@@ -140,7 +144,11 @@ DEFAULT_IRQ_HANDLER(TIM15_IRQHandler)
 DEFAULT_IRQ_HANDLER(TIM16_IRQHandler)
 DEFAULT_IRQ_HANDLER(TIM17_IRQHandler)
 DEFAULT_IRQ_HANDLER(COMP_IRQHandler)
+#if defined(STM32U585xx) || defined(STM32U575xx)
 DEFAULT_IRQ_HANDLER(OTG_FS_IRQHandler)
+#else
+DEFAULT_IRQ_HANDLER(OTG_HS_IRQHandler)
+#endif
 DEFAULT_IRQ_HANDLER(CRS_IRQHandler)
 DEFAULT_IRQ_HANDLER(FMC_IRQHandler)
 DEFAULT_IRQ_HANDLER(OCTOSPI1_IRQHandler)
@@ -162,13 +170,13 @@ DEFAULT_IRQ_HANDLER(I2C3_ER_IRQHandler)
 DEFAULT_IRQ_HANDLER(SAI1_IRQHandler)
 DEFAULT_IRQ_HANDLER(SAI2_IRQHandler)
 DEFAULT_IRQ_HANDLER(TSC_IRQHandler)
-#ifdef STM32U585xx
+#if defined(STM32U585xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
 DEFAULT_IRQ_HANDLER(AES_IRQHandler)
 #endif
 DEFAULT_IRQ_HANDLER(RNG_IRQHandler)
 DEFAULT_IRQ_HANDLER(FPU_IRQHandler)
 DEFAULT_IRQ_HANDLER(HASH_IRQHandler)
-#ifdef STM32U585xx
+#if defined(STM32U585xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
 DEFAULT_IRQ_HANDLER(PKA_IRQHandler)
 #endif
 DEFAULT_IRQ_HANDLER(LPTIM3_IRQHandler)
@@ -181,7 +189,7 @@ DEFAULT_IRQ_HANDLER(MDF1_FLT2_IRQHandler)
 DEFAULT_IRQ_HANDLER(MDF1_FLT3_IRQHandler)
 DEFAULT_IRQ_HANDLER(UCPD1_IRQHandler)
 DEFAULT_IRQ_HANDLER(ICACHE_IRQHandler)
-#ifdef STM32U585xx
+#if defined(STM32U585xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
 DEFAULT_IRQ_HANDLER(OTFDEC1_IRQHandler)
 DEFAULT_IRQ_HANDLER(OTFDEC2_IRQHandler)
 #endif
@@ -200,6 +208,23 @@ DEFAULT_IRQ_HANDLER(MDF1_FLT4_IRQHandler)
 DEFAULT_IRQ_HANDLER(MDF1_FLT5_IRQHandler)
 DEFAULT_IRQ_HANDLER(CORDIC_IRQHandler)
 DEFAULT_IRQ_HANDLER(FMAC_IRQHandler)
+#if defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+DEFAULT_IRQ_HANDLER(USART6_IRQHandler)
+DEFAULT_IRQ_HANDLER(I2C5_ER_IRQHandler)
+DEFAULT_IRQ_HANDLER(I2C5_EV_IRQHandler)
+DEFAULT_IRQ_HANDLER(I2C6_ER_IRQHandler)
+DEFAULT_IRQ_HANDLER(I2C6_EV_IRQHandler)
+DEFAULT_IRQ_HANDLER(HSPI1_IRQHandler)
+#endif
+#if defined(STM32U599xx) || defined(STM32U5A9xx)
+DEFAULT_IRQ_HANDLER(GPU2D_IRQHandler)
+DEFAULT_IRQ_HANDLER(GPU2D_ER_IRQHandler)
+DEFAULT_IRQ_HANDLER(GFXMMU_IRQHandler)
+DEFAULT_IRQ_HANDLER(LTDC_IRQHandler)
+DEFAULT_IRQ_HANDLER(LTDC_ER_IRQHandler)
+DEFAULT_IRQ_HANDLER(DSI_IRQHandler)
+DEFAULT_IRQ_HANDLER(DCACHE2_IRQHandler)
+#endif
 
 /*----------------------------------------------------------------------------
   Exception / Interrupt Vector table
@@ -256,7 +281,7 @@ extern const pFunc __VECTOR_TABLE[];
   EXTI14_IRQHandler,                /*  25: EXTI Line14 */
   EXTI15_IRQHandler,                /*  26: EXTI Line15 */
   IWDG_IRQHandler,                  /*  27: IWDG global interrupt */
-#ifdef STM32U585xx
+#if defined(STM32U585xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
   SAES_IRQHandler,                  /*  28:Secure AES global interrupt */
 #else
   0,                                /*  28: Reserved */
@@ -269,7 +294,11 @@ extern const pFunc __VECTOR_TABLE[];
   GPDMA1_Channel5_IRQHandler,       /*  34: GPDMA1 Channel 5 global interrupt */
   GPDMA1_Channel6_IRQHandler,       /*  35: GPDMA1 Channel 6 global interrupt */
   GPDMA1_Channel7_IRQHandler,       /*  36: GPDMA1 Channel 7 global interrupt */
+#if defined(STM32U585xx) || defined(STM32U575xx)
   ADC1_IRQHandler,                  /*  37: ADC1 global interrupt  */
+#else /* defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx) */
+  ADC1_2_IRQHandler,                /*  37: ADC1_2 global interrupt */
+#endif
   DAC1_IRQHandler,                  /*  38: DAC1 global interrupt */
   FDCAN1_IT0_IRQHandler,            /*  39: FDCAN1 Interrupt 0 */
   FDCAN1_IT1_IRQHandler,            /*  40: FDCAN1 Interrupt 1 */
@@ -305,7 +334,11 @@ extern const pFunc __VECTOR_TABLE[];
   TIM16_IRQHandler,                 /*  70: TIM16 */
   TIM17_IRQHandler,                 /*  71: TIM17 */
   COMP_IRQHandler,                  /*  72: COMP1&2 */
+#if defined(STM32U585xx) || defined(STM32U575xx)
   OTG_FS_IRQHandler,                /*  73: USB OTG FS global interrupt */
+#else /* defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx) */
+  OTG_HS_IRQHandler,                /*  73: USB OTG HS global interrupt */
+#endif
   CRS_IRQHandler,                   /*  74: CRS */
   FMC_IRQHandler,                   /*  75: FMC */
   OCTOSPI1_IRQHandler,              /*  76: OctoSPI1 global interrupt */
@@ -325,7 +358,7 @@ extern const pFunc __VECTOR_TABLE[];
   SAI1_IRQHandler,                  /*  90: Serial Audio Interface 1 global interrupt */
   SAI2_IRQHandler,                  /*  91: Serial Audio Interface 2 global interrupt */
   TSC_IRQHandler,                   /*  92: Touch Sense Controller global interrupt */
-#ifdef STM32U585xx
+#if defined(STM32U585xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
   AES_IRQHandler,                   /*  93: AES global interrupt */
 #else
   0,                                /*  93: Reserved */
@@ -333,7 +366,7 @@ extern const pFunc __VECTOR_TABLE[];
   RNG_IRQHandler,                   /*  94: RNG global interrupt */
   FPU_IRQHandler,                   /*  95: FPU */
   HASH_IRQHandler,                  /*  96: HASH global interrupt */
-#ifdef STM32U585xx
+#if defined(STM32U585xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
   PKA_IRQHandler,                   /*  97: PKA global interrupt */
 #else
   0,                                /*  97: Reserved */
@@ -348,9 +381,9 @@ extern const pFunc __VECTOR_TABLE[];
   MDF1_FLT3_IRQHandler,             /* 105: MDF1 Filter 3 global interrupt */
   UCPD1_IRQHandler,                 /* 106: UCPD1 global interrupt */
   ICACHE_IRQHandler,                /* 107: Instruction cache global interrupt*/
-#ifdef STM32U585xx
+#if defined(STM32U585xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
   OTFDEC1_IRQHandler,               /* 108: OTFDEC1 global interrupt */
-  OTFDEC2_IRQHandler,               /* 108: OTFDEC2 global interrupt */
+  OTFDEC2_IRQHandler,               /* 109: OTFDEC2 global interrupt */
 #else
   0,                                /* 108: Reserved */
   0,                                /* 109: Reserved */
@@ -370,7 +403,26 @@ extern const pFunc __VECTOR_TABLE[];
   MDF1_FLT5_IRQHandler,             /* 122: MDF1 Filter 5 global interrupt */
   CORDIC_IRQHandler,                /* 123: CORDIC global interrupt */
   FMAC_IRQHandler,                  /* 124: FMAC global interrupt  */
+#if defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+  0,                                /* 125 Reserved */
+  USART6_IRQHandler,                /* 126 USART6 global interrupt */ 
+  I2C5_ER_IRQHandler,               /* 127 I2C5 error interrupt */
+  I2C5_EV_IRQHandler,               /* 128 I2C5 event interrupt */
+  I2C6_ER_IRQHandler,               /* 129 I2C6 error interrupt */
+  I2C6_EV_IRQHandler,               /* 130 I2C6 event interrupt */
+  HSPI1_IRQHandler,                 /* 131 HSPI1 global */
+#endif
+#if defined(STM32U599xx) || defined(STM32U5A9xx)
+  GPU2D_IRQHandler,                 /* 132 GPU2D global interrupt */ 
+  GPU2D_ER_IRQHandler,              /* 133 GPU2D error interrupt */
+  GFXMMU_IRQHandler,                /* 134 GFXMMU global interrupt */
+  LTDC_IRQHandler,                  /* 135 LCD-TFT global interrupt */
+  LTDC_ER_IRQHandler,               /* 136 LCD-TFT error interrupt */
+  DSI_IRQHandler,                   /* 137 DSIHOST global interrupt */
+  DCACHE2_IRQHandler,               /* 138 GPU2D Data cache global interrupt */
+#endif
 };
+
 #if defined ( __GNUC__ )
 #pragma GCC diagnostic pop
 #endif

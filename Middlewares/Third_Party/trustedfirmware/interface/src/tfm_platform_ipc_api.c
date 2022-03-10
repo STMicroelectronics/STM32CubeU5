@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  *
  */
-#ifdef TFM_PARTITION_PLATFORM
 
 #include <stdbool.h>
 #include "tfm_platform_api.h"
@@ -77,4 +76,3 @@ tfm_platform_ioctl(tfm_platform_ioctl_req_t request,
     }
 }
 
-#endif

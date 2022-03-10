@@ -23,6 +23,8 @@ pub enum Caps {
     EncEc256             = (1 << 10),
     SwapUsingMove        = (1 << 11),
     DowngradePrevention  = (1 << 12),
+    EncX25519            = (1 << 13),
+    Bootstrap            = (1 << 14),
 }
 
 impl Caps {

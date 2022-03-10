@@ -26,7 +26,7 @@
 /*  APPLICATION INTERFACE DEFINITION                       RELEASE        */ 
 /*                                                                        */ 
 /*    ux_api.h                                            PORTABLE C      */ 
-/*                                                           6.1.7        */
+/*                                                           6.1.9        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -92,6 +92,15 @@
 /*                                            changed transfer timeout    */
 /*                                            value,                      */
 /*                                            resulting in version 6.1.7  */
+/*  08-02-2021     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            fixed spelling error,       */
+/*                                            fixed trace ID order error, */
+/*                                            resulting in version 6.1.8  */
+/*  10-15-2021     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            improved assert macros,     */
+/*                                            added transfer size field,  */
+/*                                            improved traceX support,    */
+/*                                            resulting in version 6.1.9  */
 /*                                                                        */
 /**************************************************************************/
 
@@ -145,7 +154,11 @@ typedef signed char               SCHAR;
 /* This defines the ASSERT and process on ASSERT fail. */
 #ifdef UX_ENABLE_ASSERT
 #ifndef UX_ASSERT_FAIL
+#ifdef TX_API_H
 #define UX_ASSERT_FAIL                                      for (;;) {tx_thread_sleep(UX_WAIT_FOREVER); }
+#else
+#define UX_ASSERT_FAIL                                      for (;;) {}
+#endif
 #endif
 #define UX_ASSERT(s)                                        if (!(s)) {UX_ASSERT_FAIL}
 #else
@@ -226,7 +239,7 @@ typedef signed char               SCHAR;
 #define AZURE_RTOS_USBX
 #define USBX_MAJOR_VERSION            6
 #define USBX_MINOR_VERSION            1
-#define USBX_PATCH_VERSION            7
+#define USBX_PATCH_VERSION            9
 
 /* Macros for concatenating tokens, where UX_CONCATn concatenates n tokens.  */
 
@@ -237,7 +250,7 @@ typedef signed char               SCHAR;
 #define UX_COMPILE_TIME_ASSERT(exp, meaningful_name_as_variable) \
     typedef char UX_CONCAT2(meaningful_name_as_variable, __LINE__)[!(exp) ? -1 : 1];
 
-/* Arithmetics.  */
+/* Arithmetic.  */
 
 #define UX_MIN(a, b)                  ((a) < (b) ? (a) : (b))
 #define UX_MAX(a, b)                  ((a) > (b) ? (a) : (b))
@@ -321,7 +334,7 @@ typedef signed char               SCHAR;
 
 VOID _ux_utility_debug_log(UCHAR *debug_location, UCHAR *debug_message, ULONG debug_code, ULONG debug_parameter_1, ULONG debug_parameter_2);
 
-/* DEBUG LOG MESSAGES SHOULD BE WRITEN LIKE THIS IN THE CODE :    */
+/* DEBUG LOG MESSAGES SHOULD BE WRITTEN LIKE THIS IN THE CODE :    */
 /* If error log is enabled, insert this error message into the log buffer.  */
 /* UX_DEBUG_LOG("_ux_host_stack_rh_device_insertion", "Device insertion", port_index, port_index, 0) */
 
@@ -335,9 +348,6 @@ VOID _ux_utility_debug_log(UCHAR *debug_location, UCHAR *debug_message, ULONG de
 /* Determine if tracing is enabled.  */
 
 #ifdef TX_ENABLE_EVENT_TRACE
-#ifndef UX_TRACE_INSERT_MACROS
-#error UX_TRACE_INSERT_MACROS must be defined to support TX_ENABLE_EVENT_TRACE
-#endif
 
 /* Trace is enabled. Remap calls so that interrupts can be disabled around the actual event logging.  */
 
@@ -594,23 +604,23 @@ VOID    _ux_trace_event_update(TX_TRACE_BUFFER_ENTRY *event, ULONG timestamp, UL
 #define UX_TRACE_DEVICE_STACK_CLASS_REGISTER                            (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 3)             /* I1 = class name      , I2 = interface number, I3 = parameter                                     */
 #define UX_TRACE_DEVICE_STACK_CLEAR_FEATURE                             (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 4)             /* I1 = request type    , I2 = request value   , I3 = request index                                 */
 #define UX_TRACE_DEVICE_STACK_CONFIGURATION_GET                         (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 5)             /* I1 = configuration value                                                                         */
-#define UX_TRACE_DEVICE_STACK_CONFIGURATION_SET                         (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 5)             /* I1 = configuration value                                                                         */
-#define UX_TRACE_DEVICE_STACK_CONNECT                                   (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 6)             /*                                                                                                  */                                      
-#define UX_TRACE_DEVICE_STACK_DESCRIPTOR_SEND                           (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 7)             /* I1 = descriptor type , I2 = request index                                                        */                                      
-#define UX_TRACE_DEVICE_STACK_DISCONNECT                                (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 8)             /* I1 = device                                                                                      */
-#define UX_TRACE_DEVICE_STACK_ENDPOINT_STALL                            (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 9)             /* I1 = endpoint                                                                                    */
-#define UX_TRACE_DEVICE_STACK_GET_STATUS                                (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 10)            /* I1 = request type    , I2 = request value   , I3 = request index                                 */                                      
-#define UX_TRACE_DEVICE_STACK_HOST_WAKEUP                               (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 11)            /*                                                                                                  */                                      
-#define UX_TRACE_DEVICE_STACK_INITIALIZE                                (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 12)            /*                                                                                                  */                                      
-#define UX_TRACE_DEVICE_STACK_INTERFACE_DELETE                          (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 13)            /* I1 = interface                                                                                   */                                      
-#define UX_TRACE_DEVICE_STACK_INTERFACE_GET                             (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 14)            /* I1 = interface value                                                                             */
-#define UX_TRACE_DEVICE_STACK_INTERFACE_SET                             (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 15)            /* I1 = alternate setting value                                                                     */
-#define UX_TRACE_DEVICE_STACK_SET_FEATURE                               (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 16)            /* I1 = request value   , I2 = request index                                                        */
-#define UX_TRACE_DEVICE_STACK_TRANSFER_ABORT                            (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 17)            /* I1 = transfer request, I2 = completion code                                                      */
-#define UX_TRACE_DEVICE_STACK_TRANSFER_ALL_REQUEST_ABORT                (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 18)            /* I1 = endpoint        , I2 = completion code                                                      */
-#define UX_TRACE_DEVICE_STACK_TRANSFER_REQUEST                          (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 19)            /* I1 = transfer request                                                                            */
-#define UX_TRACE_DEVICE_STACK_MICROSOFT_EXTENSION_REGISTER              (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 20)            /* I1 = transfer request                                                                            */
-#define UX_TRACE_DEVICE_STACK_CLASS_UNREGISTER                          (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 21)            /* I1 = class name                                                                                  */
+#define UX_TRACE_DEVICE_STACK_CONFIGURATION_SET                         (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 6)             /* I1 = configuration value                                                                         */
+#define UX_TRACE_DEVICE_STACK_CONNECT                                   (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 7)             /*                                                                                                  */                                      
+#define UX_TRACE_DEVICE_STACK_DESCRIPTOR_SEND                           (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 8)             /* I1 = descriptor type , I2 = request index                                                        */                                      
+#define UX_TRACE_DEVICE_STACK_DISCONNECT                                (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 9)             /* I1 = device                                                                                      */
+#define UX_TRACE_DEVICE_STACK_ENDPOINT_STALL                            (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 10)            /* I1 = endpoint                                                                                    */
+#define UX_TRACE_DEVICE_STACK_GET_STATUS                                (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 11)            /* I1 = request type    , I2 = request value   , I3 = request index                                 */                                      
+#define UX_TRACE_DEVICE_STACK_HOST_WAKEUP                               (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 12)            /*                                                                                                  */                                      
+#define UX_TRACE_DEVICE_STACK_INITIALIZE                                (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 13)            /*                                                                                                  */                                      
+#define UX_TRACE_DEVICE_STACK_INTERFACE_DELETE                          (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 14)            /* I1 = interface                                                                                   */                                      
+#define UX_TRACE_DEVICE_STACK_INTERFACE_GET                             (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 15)            /* I1 = interface value                                                                             */
+#define UX_TRACE_DEVICE_STACK_INTERFACE_SET                             (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 16)            /* I1 = alternate setting value                                                                     */
+#define UX_TRACE_DEVICE_STACK_SET_FEATURE                               (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 17)            /* I1 = request value   , I2 = request index                                                        */
+#define UX_TRACE_DEVICE_STACK_TRANSFER_ABORT                            (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 18)            /* I1 = transfer request, I2 = completion code                                                      */
+#define UX_TRACE_DEVICE_STACK_TRANSFER_ALL_REQUEST_ABORT                (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 19)            /* I1 = endpoint        , I2 = completion code                                                      */
+#define UX_TRACE_DEVICE_STACK_TRANSFER_REQUEST                          (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 20)            /* I1 = transfer request                                                                            */
+#define UX_TRACE_DEVICE_STACK_MICROSOFT_EXTENSION_REGISTER              (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 21)            /* I1 = transfer request                                                                            */
+#define UX_TRACE_DEVICE_STACK_CLASS_UNREGISTER                          (UX_TRACE_DEVICE_STACK_EVENTS_BASE + 22)            /* I1 = class name                                                                                  */
                                                                                                                                                                                                                               
 /* Define the USBX device stack events first.  */                                                                                                                                                                             
 
@@ -619,7 +629,7 @@ VOID    _ux_trace_event_update(TX_TRACE_BUFFER_ENTRY *event, ULONG timestamp, UL
 #define UX_TRACE_DEVICE_CLASS_DPUMP_DEACTIVATE                          (UX_TRACE_DEVICE_CLASS_EVENTS_BASE + 2)             /* I1 = class instance                                                                              */       
 #define UX_TRACE_DEVICE_CLASS_DPUMP_READ                                (UX_TRACE_DEVICE_CLASS_EVENTS_BASE + 3)             /* I1 = class instance  , I2 = buffer          , I3 = requested_length                              */
 #define UX_TRACE_DEVICE_CLASS_DPUMP_WRITE                               (UX_TRACE_DEVICE_CLASS_EVENTS_BASE + 4)             /* I1 = class instance  , I2 = buffer          , I3 = requested_length                              */
-#define UX_TRACE_DEVICE_CLASS_DPUMP_CHANGE                              (UX_TRACE_DEVICE_CLASS_EVENTS_BASE + 4)             /* I1 = class instance  , I2 = buffer          , I3 = requested_length                              */
+#define UX_TRACE_DEVICE_CLASS_DPUMP_CHANGE                              (UX_TRACE_DEVICE_CLASS_EVENTS_BASE + 5)             /* I1 = class instance  , I2 = buffer          , I3 = requested_length                              */
                                                                                                                                                                                                                               
 #define UX_TRACE_DEVICE_CLASS_CDC_ACM_ACTIVATE                          (UX_TRACE_DEVICE_CLASS_EVENTS_BASE + 10)            /* I1 = class instance                                                                              */       
 #define UX_TRACE_DEVICE_CLASS_CDC_ACM_DEACTIVATE                        (UX_TRACE_DEVICE_CLASS_EVENTS_BASE + 11)            /* I1 = class instance                                                                              */       
@@ -1908,6 +1918,7 @@ typedef struct UX_SLAVE_TRANSFER_STRUCT
     ULONG           ux_slave_transfer_request_requested_length;
     ULONG           ux_slave_transfer_request_actual_length;
     ULONG           ux_slave_transfer_request_in_transfer_length;
+    ULONG           ux_slave_transfer_request_transfer_length;
     ULONG           ux_slave_transfer_request_completion_code;
     ULONG           ux_slave_transfer_request_phase;
     VOID            (*ux_slave_transfer_request_completion_function) (struct UX_SLAVE_TRANSFER_STRUCT *);

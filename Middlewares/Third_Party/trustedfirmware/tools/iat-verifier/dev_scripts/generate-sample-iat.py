@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -----------------------------------------------------------------------------
-# Copyright (c) 2019, Arm Limited. All rights reserved.
+# Copyright (c) 2019-2020, Arm Limited. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
@@ -36,7 +36,7 @@ token_map = {
   const.IMPLEMENTATION_ID: ORIGIN,
   const.CHALLENGE: NONCE,
   const.CLIENT_ID: 2,
-  const.SECURITY_LIFECYCLE: const.SL_PROVISIONED,
+  const.SECURITY_LIFECYCLE: const.SL_SECURED,
   const.PROFILE_ID: 'http://example.com',
   const.BOOT_SEED: BOOT_SEED,
   const.SW_COMPONENTS: [
@@ -75,6 +75,9 @@ token_map = {
 
 if __name__ == '__main__':
     import sys
+    if len(sys.argv) != 3:
+        print('Usage: {} KEYFILE OUTFILE'.format(sys.argv[0]))
+        sys.exit(1)
     keyfile = sys.argv[1]
     outfile = sys.argv[2]
 

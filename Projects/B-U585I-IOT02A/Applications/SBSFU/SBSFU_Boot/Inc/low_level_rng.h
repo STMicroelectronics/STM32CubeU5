@@ -19,4 +19,4 @@
 void RNG_DeInit(void);
 void RNG_Init(void);
 int mbedtls_hardware_poll(void *data, unsigned char *output, size_t len, size_t *olen);
-
+void RNG_GetBytes(uint8_t *output, size_t length, size_t *output_length);

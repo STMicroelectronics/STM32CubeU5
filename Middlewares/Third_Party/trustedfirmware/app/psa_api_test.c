@@ -6,7 +6,9 @@
  */
 
 #include "psa_api_test.h"
+#ifdef TFM_NS_CLIENT_IDENTIFICATION
 #include "tfm_nspm_api.h"
+#endif /* TFM_NS_CLIENT_IDENTIFICATION */
 #include "tfm_integ_test.h"
 
 /**

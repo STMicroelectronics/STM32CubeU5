@@ -19,6 +19,8 @@
 <body>
 <div class="row">
 <div class="col-sm-12 col-lg-8">
+<div class="row">
+<div class="col-sm-12 col-lg-8">
 <h2 id="iap_main-application-description"><b>IAP_main Application Description</b></h2>
 <p>This application provides an example of Azure RTOS FileX stack usage on STM32U575I-EV board, it implements an In-Application programming (IAP) demonstrating FileX’s SD file access capabilities. The application is designed to erase and write to on-chip flash memory, it provides all required software code for handling SD card and flash memory I/O operations.</p>
 <p>This is a typical application on how to use the STM32U575/85 SD card peripheral for firmware upgrade application or IAP, allowing user to erase and write to on-chip flash memory.</p>
@@ -74,8 +76,8 @@
 <ul>
 <li>ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.</li>
 <li>ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the “tx_user.h”, the “TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in “tx_initialize_low_level.s” file too.</li>
-<li>ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.</li>
-<li>ThreadX offers the “tx_application_define()” function, that is automatically called by the tx_kernel_enter() API. It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools…) but it should not in any way contain a system API call (HAL or BSP).</li>
+<li>ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL) should be done either at the beginning of the application or inside the thread entry functions.</li>
+<li>ThreadX offers the “tx_application_define()” function, that is automatically called by the tx_kernel_enter() API. It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools…) but it should not in any way contain a system API call (HAL).</li>
 <li>Using dynamic memory allocation requires to apply some changes to the linker file. ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function, using the “first_unused_memory” argument. This require changes in the linker files to expose this memory location.
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
@@ -109,7 +111,6 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <h4 id="filexlevelx-usage-hints"><b>FileX/LevelX usage hints</b></h4>
 <ul>
 <li>When calling the fx_media_format() API, it is highly recommended to understand all the parameters used by the API to correctly generate a valid filesystem.</li>
-<li>FileX is using data buffers, passed as arguments to fx_media_open(), fx_media_read() and fx_media_write() API it is recommended that these buffers are multiple of sector size and “32 bytes” aligned to avoid cache maintenance issues.</li>
 </ul>
 <h4 id="debugging"><b>Debugging</b></h4>
 <p>While in loading new software sequence, the loaded-App can be debugged using IAR by going into <strong>Project</strong> menu and click <strong>Attach to Running Target</strong>.</p>
@@ -135,6 +136,8 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <li>Rebuild all files and load your image into target memory</li>
 <li>Run the application</li>
 </ul>
+</div>
+</div>
 </div>
 </div>
 </body>

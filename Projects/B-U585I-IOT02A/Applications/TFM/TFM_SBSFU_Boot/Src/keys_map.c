@@ -28,13 +28,16 @@
 #include "mcuboot_config/mcuboot_config.h"
 #include "platform/include/tfm_attest_hal.h"
 #include "platform/include/tfm_plat_crypto_keys.h"
+#include "psa/crypto_types.h"
+#include "psa/crypto_values.h"
 #include "flash_layout.h"
+#include "config-boot.h"
 
 #if defined(MCUBOOT_SIGN_RSA)
 #if MCUBOOT_SIGN_RSA_LEN == 2048
 extern const unsigned int rsa2048_pub_key_len;
 extern const unsigned char rsa2048_pub_key[];
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2) || (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
 extern const unsigned int rsa2048_pub_key_len_1;
 extern const unsigned char rsa2048_pub_key_1[];
 #endif
@@ -46,7 +49,19 @@ const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"
         .key = rsa2048_pub_key,
         .len = &rsa2048_pub_key_len,
     },
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
+    {
+        .key = rsa2048_pub_key_1,
+        .len = &rsa2048_pub_key_len_1,
+    },
+#endif
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+    {
+        .key = rsa2048_pub_key,
+        .len = &rsa2048_pub_key_len,
+    },
+#endif
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
     {
         .key = rsa2048_pub_key_1,
         .len = &rsa2048_pub_key_len_1,
@@ -56,7 +71,7 @@ const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"
 #else
 extern const unsigned int rsa3072_pub_key_len;
 extern const unsigned char rsa3072_pub_key[];
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2) || (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
 extern const unsigned int rsa3072_pub_key_len_1;
 extern const unsigned char rsa3072_pub_key_1[];
 #endif
@@ -68,7 +83,19 @@ const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"
         .key = rsa3072_pub_key,
         .len = &rsa3072_pub_key_len,
     },
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
+    {
+        .key = rsa3072_pub_key_1,
+        .len = &rsa3072_pub_key_len_1,
+    },
+#endif
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+    {
+        .key = rsa3072_pub_key,
+        .len = &rsa3072_pub_key_len,
+    },
+#endif
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
     {
         .key = rsa3072_pub_key_1,
         .len = &rsa3072_pub_key_len_1,
@@ -79,7 +106,7 @@ const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"
 #elif defined(MCUBOOT_SIGN_EC256)
 extern const unsigned int ecdsa_pub_key_len;
 extern const unsigned char ecdsa_pub_key[];
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2) || (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
 extern const unsigned int ecdsa_pub_key_len_1;
 extern const unsigned char ecdsa_pub_key_1[];
 #endif
@@ -91,7 +118,19 @@ const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"
         .key = ecdsa_pub_key,
         .len = &ecdsa_pub_key_len,
     },
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
+    {
+        .key = ecdsa_pub_key_1,
+        .len = &ecdsa_pub_key_len_1,
+    },
+#endif
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+    {
+        .key = ecdsa_pub_key,
+        .len = &ecdsa_pub_key_len,
+    },
+#endif
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
     {
         .key = ecdsa_pub_key_1,
         .len = &ecdsa_pub_key_len_1,
@@ -137,24 +176,44 @@ const struct bootutil_key bootutil_enc_key __attribute__((section(".bootutil_enc
     .len = (const unsigned int *)0,
 };
 #endif/* MCUBOOT_ENC_IMAGES */
+#if !defined(BL2_USE_HUK_HW)
+/* HUK is provisioned in PERSO area (else HUK is in HW) */
 extern const uint8_t huk_value[];
 extern const unsigned int huk_len;
 
+#if defined(__ICCARM__)
+#pragma location=".bootutil_priv_huk_key"
+#endif /* __ICCARM__ */
+const struct bootutil_key bootutil_priv_huk_key[] __attribute__((section(".bootutil_priv_huk_key"))) = {
+    {
+        .key = huk_value,
+        .len = &huk_len,
+    },
+};
+#if defined(__ICCARM__)
+#pragma location=".bootutil_priv_huk_key_cnt"
+#endif
+const int bootutil_priv_huk_key_cnt __attribute__((section(".bootutil_priv_huk_key_cnt"))) = sizeof(bootutil_priv_huk_key)/sizeof(struct bootutil_key);
+#endif /* BL2_USE_HUK_HW */
+
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 0)
+/* EAT key is provisioned in PERSO area (else EAT key is in Secure Data image) */
 extern const unsigned int initial_attestation_priv_key_len;
 extern const uint8_t initial_attestation_priv_key[];
-#if defined(__ICCARM__)
-#pragma location=".eat_curve_type"
-#endif /* __ICCARM__ */
-const enum ecc_curve_t initial_attestation_curve_type  __attribute__((section(".eat_curve_type")))  = P_256;
-#if defined(__ICCARM__)
-#pragma location=".eat_curve_type"
-#endif /* __ICCARM__ */
-const unsigned int initial_attestation_curve_type_len __attribute__((section(".eat_curve_type"))) = sizeof(initial_attestation_curve_type);
 
 #if defined(__ICCARM__)
-#pragma location=".bootutil_priv_key"
+#pragma location=".eat_curve_type"
 #endif /* __ICCARM__ */
-const struct bootutil_key bootutil_priv_keys[] __attribute__((section(".bootutil_priv_key"))) = {
+const psa_ecc_family_t initial_attestation_curve_type  __attribute__((section(".eat_curve_type")))  = PSA_ECC_CURVE_SECP256R1;
+#if defined(__ICCARM__)
+#pragma location=".eat_curve_type_len"
+#endif /* __ICCARM__ */
+const unsigned int initial_attestation_curve_type_len __attribute__((section(".eat_curve_type_len"))) = sizeof(initial_attestation_curve_type);
+
+#if defined(__ICCARM__)
+#pragma location=".bootutil_priv_eat_key"
+#endif /* __ICCARM__ */
+const struct bootutil_key bootutil_priv_eat_key[] __attribute__((section(".bootutil_priv_eat_key"))) = {
     {
         .key = initial_attestation_priv_key,
         .len = &initial_attestation_priv_key_len,
@@ -163,12 +222,10 @@ const struct bootutil_key bootutil_priv_keys[] __attribute__((section(".bootutil
         .key = (uint8_t *)&initial_attestation_curve_type,
         .len = &initial_attestation_curve_type_len,
     },
-    {
-        .key = huk_value,
-        .len = &huk_len,
-    },
 };
 #if defined(__ICCARM__)
-#pragma location=".bootutil_priv_key_cnt"
+#pragma location=".bootutil_priv_eat_key_cnt"
 #endif
-const int bootutil_priv_key_cnt __attribute__((section(".bootutil_priv_key_cnt"))) = sizeof(bootutil_priv_keys)/sizeof(struct bootutil_key);
+const int bootutil_priv_eat_key_cnt __attribute__((section(".bootutil_priv_eat_key_cnt"))) = sizeof(bootutil_priv_eat_key)/sizeof(struct bootutil_key);
+
+#endif /* (MCUBOOT_S_DATA_IMAGE_NUMBER == 0) */

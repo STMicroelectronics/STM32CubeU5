@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2018-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -27,12 +27,18 @@
 #include "tfm_plat_defs.h"
 
 enum tfm_nv_counter_t {
-    PLAT_NV_COUNTER_0 = 0,  /* Used by SST service */
-    PLAT_NV_COUNTER_1,      /* Used by SST service */
-    PLAT_NV_COUNTER_2,      /* Used by SST service */
+    PLAT_NV_COUNTER_0 = 0,  /* Used by PS service */
+    PLAT_NV_COUNTER_1,      /* Used by PS service */
+    PLAT_NV_COUNTER_2,      /* Used by PS service */
+#ifdef BL2
     PLAT_NV_COUNTER_3,      /* Used by bootloader */
     PLAT_NV_COUNTER_4,      /* Used by bootloader */
-    PLAT_NV_COUNTER_MAX
+    PLAT_NV_COUNTER_5,      /* Used by bootloader */
+    PLAT_NV_COUNTER_6,      /* Used by bootloader */
+#endif
+    PLAT_NV_COUNTER_MAX,
+    PLAT_NV_COUNTER_BOUNDARY = UINT32_MAX  /* Fix  tfm_nv_counter_t size
+                                              to 4 bytes */
 };
 
 #ifdef __cplusplus

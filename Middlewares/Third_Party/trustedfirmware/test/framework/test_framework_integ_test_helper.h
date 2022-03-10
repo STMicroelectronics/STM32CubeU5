@@ -21,9 +21,11 @@ extern "C" {
  *                            (used for printing).
  * \param[in] test_suites     The suites to be executed.
  * \param[in] test_suite_cnt  The number of test suites to be executed.
+ *
+ * \returns Returns error code as specified in \ref test_suite_err_t
  */
-void integ_test(const char *suite_type,
-                struct test_suite_t test_suites[]);
+enum test_suite_err_t integ_test(const char *suite_type,
+                                 struct test_suite_t test_suites[]);
 
 #ifdef __cplusplus
 }

@@ -41,12 +41,12 @@ PROCESSING_FINISHED       = 44
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define DEFAULT_STACK_SIZE         1024
+#define DEFAULT_STACK_SIZE         3*1024
 #define MODULE_DATA_SIZE           32*1024
 #define OBJECT_MEM_SIZE            16*1024
 
-#define READONLY_REGION            0x2003FF00
-#define READWRITE_REGION           0x2003FE00
+#define READONLY_REGION            0x20010000
+#define READWRITE_REGION           0x20010100
 #define SHARED_MEM_SIZE            0xFF
 
 #define MODULE_FLASH_ADDRESS       0x08020000
@@ -65,9 +65,11 @@ TXM_MODULE_INSTANCE ModuleOne;
 TX_QUEUE ResidentQueue;
 
 /* Define the module data pool area. */
-ALIGN_32BYTES (UCHAR  module_data_area[MODULE_DATA_SIZE]);
+UCHAR  module_data_area[MODULE_DATA_SIZE];
+
 /* Define the object pool area.  */
-ALIGN_32BYTES (UCHAR  object_memory[OBJECT_MEM_SIZE]);
+UCHAR  object_memory[OBJECT_MEM_SIZE];
+
 /* Define the count of memory faults.  */
 ULONG memory_faults = 0;
 
@@ -222,12 +224,13 @@ VOID ModuleManager_Entry(ULONG thread_input)
 
   /* Print loaded module info */
   printf("Module <%s> is loaded from address 0x%08X\n", ModuleOne.txm_module_instance_name, MODULE_FLASH_ADDRESS);
-  printf("Module code section size: %i bytes, data section size: %i\n", ModuleOne.txm_module_instance_code_size, ModuleOne.txm_module_instance_data_size);
+  printf("Module code section size: %i bytes, data section size: %i\n", (int)ModuleOne.txm_module_instance_code_size, (int)ModuleOne.txm_module_instance_data_size);
   printf("Module Attributes:\n");
-  printf("  - Compiled for %s compiler\n", ((module_properties >> 24) == 0)? "IAR EW" : ((module_properties >> 24) == 1)? "ARM KEIL" : "CubeIDE (GNU)");
-  printf("  - Shared/external memory access is %s\n", ((module_properties | 0x04) == 0)? "Disabled" : "Enabled");
-  printf("  - MPU protection is %s\n", ((module_properties | 0x02) == 0)? "Disabled" : "Enabled");
-  printf("  - %s mode execution is enabled for the module\n\n", ((module_properties | 0x01) == 0)? "Privileged" : "User");
+  printf("  - Compiled for %s compiler\n", ((module_properties >> 25) == 1)? "STM32CubeIDE (GNU)" : ((module_properties >> 24) == 1)? "ARM KEIL" : "IAR EW");
+  printf("  - Shared/external memory access is %s\n", ((module_properties & 0x04) == 0)? "Disabled" : "Enabled");
+  printf("  - MPU protection is %s\n", ((module_properties & 0x02) == 0)? "Disabled" : "Enabled");
+  printf("  - %s mode execution is enabled for the module\n\n", ((module_properties & 0x01) == 0)? "Privileged" : "User");
+
 
   /* Start the modules. */
   status = txm_module_manager_start(&ModuleOne);

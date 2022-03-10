@@ -49,13 +49,16 @@ extern "C" {
 typedef struct
 {
   uint32_t OutputPol;          /*!< Specifies the COMP polarity.
-                                    This parameter can be a value of @ref LPBAM_COMP_OutputPolarity   */
+                                    This parameter can be a value of @ref LPBAM_COMP_OutputPolarity                   */
 
   uint32_t InputPlus;          /*!< Specifies the COMP input plus.
-                                    This parameter can be a value of @ref LPBAM_COMP_InputPlus        */
+                                    Note:  When the comparator is configured as input window mode, the input plus will
+                                           be shared between the two comparator instances. For the comparator instance
+                                           which is not driving the window mode InputPlus parameter has no effect.
+                                    This parameter can be a value of @ref LPBAM_COMP_InputPlus                        */
 
   uint32_t InputMinus;         /*!< Specifies the COMP input minus.
-                                    This parameter can be a value of @ref LPBAM_COMP_InputMinus       */
+                                    This parameter can be a value of @ref LPBAM_COMP_InputMinus                       */
 
 } LPBAM_COMP_StartFullAdvConf_t;
 
@@ -75,9 +78,10 @@ typedef struct
   */
 typedef struct
 {
-  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : 1 node is needed */
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : only one node is
+                                   needed                                                                             */
 
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : 1 value is needed                */
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
 
 } LPBAM_COMP_StartFullDesc_t;
 
@@ -86,7 +90,8 @@ typedef struct
   */
 typedef struct
 {
-  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : 1 node is needed */
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : only one node is
+                                   needed                                                                             */
 
 } LPBAM_COMP_OutLevelFullDesc_t;
 /**

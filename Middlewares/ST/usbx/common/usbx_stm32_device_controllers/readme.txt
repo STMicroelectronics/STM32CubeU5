@@ -8,6 +8,18 @@
   ******************************************************************************
   */
 
+
+### V1.1.0 / 05-November-2021 ###
+=================================
+Main changes
+-------------
+- Add USBX device bidirectional endpoint support
+
+Dependencies:
+-------------
+- Azure RTOS USBX V6.1.8
+- STM32Cube PCD HAL drivers
+
 ### V1.0.1 / 21-June-2021 ###
 =================================
 Main changes

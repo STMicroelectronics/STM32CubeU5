@@ -3,6 +3,106 @@
 - Table of Contents
 {:toc}
 
+## Version 1.7.2
+
+The 1.7.2 release of MCUboot is a minor patch release.  It makes a few
+changes to the CI build process, and changes the exporting of the
+function `boot_add_data_to_shared_area` so that it can be used within
+the TF-M-specific bootloader.
+
+There are no vulnerabilities addressed in this release.
+
+## Version 1.7.1
+
+The 1.7.1 release of MCUboot is a minor patch release that fixes a
+vulnerability in the documentation generation, and adds an option for
+setting a ROM address in the image header.
+
+- CVE-2020-26247: The vulnerability doesn't appear to affect the usage
+  within MCUboot (to generate documentation.  We have updated all
+  dependencies in the docs/Gemfile.lock.
+- Add an option `--rom-fixed` to imgtool.py to support setting the
+  `ROM_FIXED` field in the image header.
+
+## Version 1.7.0
+
+The 1.7.0 release of MCUBoot adds support for the Mbed-OS platform,
+Equal slots (direct-xip) upgrade mode, RAM loading upgrade mode,
+hardening against hardware level fault injection and timing attacks
+and single image mode.
+There are bug fixes, and associated imgtool updates as well.
+
+### About this release
+
+- Initial support for the Mbed-OS platform.
+- Added possibility to enter deep sleep mode after mcuboot app execution
+  for cypress platform.
+- Added hardening against hardware level fault injection and timing attacks.
+- Introduced Abstract crypto primitives to simplify porting.
+- Added RAM-load upgrade mode.
+- Renamed single-image mode to single-slot mode.
+- Allow larger primary slot in swap-move
+- Fixed boostrapping in swap-move mode.
+- Fixed issue causing that interrupted swap-move operation might brick device
+  if the primary image was padded.
+- Abstracting mcuboot crypto functions for cleaner porting
+- Droped flash_area_read_is_empty() porting API.
+- boot/zephyr: Added watchdog feed on nRF devices.
+  See `CONFIG_BOOT_WATCHDOG_FEED` option.
+- boot/zephyr: Added patch for turning off cache for Cortex M7 before
+  chain-loading.
+- boot/zephyr: added option to relocate interrupts to application
+- boot/zephyr: clean ARM core configuration only when selected by user
+- boot/boot_serial: allow nonaligned last image data chunk
+- imgtool: added custom TLV support.
+- imgtool: added possibility to set confirm flag for hex files as well.
+- imgtool: Print image digest during verify.
+
+### Zephyr-RTOS Compatibility
+
+This release of MCUboot works with the Zephyr "master" at the time of the
+release. It was tested as of has 7a3b253ce. This version of MCUboot also
+works with the Zephyr v2.4.0, however it is recommended to enable
+`CONFIG_MCUBOOT_CLEANUP_ARM_CORE` while using that version.
+
+## Version 1.6.0
+
+The 1.6.0 release of MCUboot adds support for the PSOC6 platform,
+X25519 encrypted images, rollback protection, hardware keys, and a
+shared boot record to communicate boot attestation information to
+later boot stages.  There are bug fixes, and associated imgtool
+updates as well.
+
+### About this release
+
+- Initial support for the Cypress PSOC6 plaformt.  This platform
+  builds using the Cypress SDK, which has been added as submodules.
+- CBOR decoding in serial recovery replaced by code generated from a
+  CDDL description.
+- Add support for X25519 encrypted images.
+- Add rollback protection.  There is support for a HW rollback counter
+  (which must be provided as part of the platform), as well as a SW
+  solution that protects against some types of rollback.
+- Add an optional boot record in shared memory to communicate boot
+  attributes to later-run code.
+- Add support for hardware keys.
+- Various fixes to work with the latest Zephyr version.
+
+### Security issues addressed
+
+- CVE-2020-7595 "xmlStringLenDecodeEntities in parser.c in libxml2
+  2.9.10 has an infinite loop in a certain end-of-file situation." Fix
+  by updating a dependency in documentation generation.
+
+### Zephyr-RTOS Compatibility
+
+This release of MCUboot works the Zephyr "master" at the time of the
+release.  It was tested as of has 1a89ca1238.  When Zephyr v2.3.0 is
+released, there will be a possible 1.6.1 or similar release of Zephyr
+if needed to address any issues.  There also may be branch releases of
+MCUboot specifically for the current version of Zephyr, e.g.
+v1.6.0-zephyr-2.2.1.
+
 ## Version 1.5.0
 
 The 1.5.0 release of MCUboot adds support for encrypted images using

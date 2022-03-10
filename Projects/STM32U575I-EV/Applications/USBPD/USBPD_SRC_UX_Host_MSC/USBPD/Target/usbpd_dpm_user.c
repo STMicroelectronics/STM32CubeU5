@@ -55,6 +55,8 @@
 /** @defgroup USBPD_USER_PRIVATE_DEFINES USBPD USER Private Defines
   * @{
   */
+#define DPM_GUI_NOTIF_ISCONNECTED       (1 << 5)
+#define DPM_GUI_NOTIF_POWER_EVENT       (1 << 15)
 /* USER CODE BEGIN Private_Define */
 
 /* USER CODE END Private_Define */
@@ -103,6 +105,9 @@
 /** @defgroup USBPD_USER_PRIVATE_VARIABLES USBPD USER Private Variables
   * @{
   */
+GUI_NOTIFICATION_POST         DPM_GUI_PostNotificationMessage   = NULL;
+GUI_NOTIFICATION_FORMAT_SEND  DPM_GUI_FormatAndSendNotification = NULL;
+GUI_SAVE_INFO                 DPM_GUI_SaveInfo                  = NULL;
 
 /* USER CODE BEGIN Private_Variables */
 
@@ -156,6 +161,20 @@ USBPD_StatusTypeDef USBPD_DPM_UserInit(void)
 }
 
 /**
+  * @brief  Function to set the function ptr linked to GUI interface
+  * @param  PtrFormatSend Pointer on function to format and send GUI notifications
+  * @param  PtrPost       Pointer on function to send GUI notifications
+  * @param  PtrSaveInfo   Pointer on function to save information from Port Partner
+  * @retval None
+  */
+void USBPD_DPM_SetNotification_GUI(GUI_NOTIFICATION_FORMAT_SEND PtrFormatSend, GUI_NOTIFICATION_POST PtrPost, GUI_SAVE_INFO PtrSaveInfo)
+{
+  DPM_GUI_PostNotificationMessage   = PtrPost;
+  DPM_GUI_FormatAndSendNotification = PtrFormatSend;
+  DPM_GUI_SaveInfo                  = PtrSaveInfo;
+}
+
+/**
   * @brief  User delay implementation which is OS dependent
   * @param  Time time in ms
   * @retval None
@@ -185,6 +204,23 @@ void USBPD_DPM_UserExecute(void const *argument)
   */
 void USBPD_DPM_UserCableDetection(uint8_t PortNum, USBPD_CAD_EVENT State)
 {
+  switch(State)
+  {
+  case USBPD_CAD_EVENT_ATTEMC:
+  case USBPD_CAD_EVENT_ATTACHED:
+    /* Format and send a notification to GUI if enabled */
+    if (NULL != DPM_GUI_FormatAndSendNotification)
+    {
+      DPM_GUI_FormatAndSendNotification(PortNum, DPM_GUI_NOTIF_ISCONNECTED, 0);
+    }
+    break;
+  default :
+    /* Format and send a notification to GUI if enabled */
+    if (NULL != DPM_GUI_FormatAndSendNotification)
+    {
+      DPM_GUI_FormatAndSendNotification(PortNum, DPM_GUI_NOTIF_ISCONNECTED | DPM_GUI_NOTIF_POWER_EVENT, 0);
+    }
+  }
 /* USER CODE BEGIN USBPD_DPM_UserCableDetection */
 DPM_USER_DEBUG_TRACE(PortNum, "ADVICE: update USBPD_DPM_UserCableDetection");
    switch(State)
@@ -243,6 +279,11 @@ void USBPD_DPM_UserTimerCounter(uint8_t PortNum)
   */
 void USBPD_DPM_Notification(uint8_t PortNum, USBPD_NotifyEventValue_TypeDef EventVal)
 {
+  /* Forward PE notifications to GUI if enabled */
+  if (NULL != DPM_GUI_PostNotificationMessage)
+  {
+    DPM_GUI_PostNotificationMessage(PortNum, EventVal);
+  }
 /* USER CODE BEGIN USBPD_DPM_Notification */
   /* Manage event notified by the stack? */
   switch(EventVal)
@@ -398,6 +439,11 @@ void USBPD_DPM_SetDataInfo(uint8_t PortNum, USBPD_CORE_DataInfoType_TypeDef Data
   }
 /* USER CODE END USBPD_DPM_SetDataInfo */
 
+  /* Forward info to GUI if enabled */
+  if (NULL != DPM_GUI_SaveInfo)
+  {
+    DPM_GUI_SaveInfo(PortNum, DataId, Ptr, Size);
+  }
 }
 
 /**

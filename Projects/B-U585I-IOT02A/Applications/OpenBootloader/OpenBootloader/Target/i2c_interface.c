@@ -17,19 +17,20 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32u5xx.h"
-#include "stm32u5xx_ll_i2c.h"
+#include "platform.h"
+#include "interfaces_conf.h"
 #include "openbl_core.h"
 #include "openbl_i2c_cmd.h"
 #include "i2c_interface.h"
 #include "iwdg_interface.h"
-#include "interfaces_conf.h"
 #include "flash_interface.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+static uint8_t I2cDetected = 0;
+
 /* Exported variables --------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 static void OPENBL_I2C_Init(void);
@@ -96,32 +97,32 @@ void OPENBL_I2C_Configuration(void)
  */
 void OPENBL_I2C_DeInit(void)
 {
-  LL_I2C_DeInit(I2Cx);
-  LL_I2C_Disable(I2Cx);
+  /* Only de-initialize the I2C if it is not the current detected interface */
+  if (I2cDetected == 0U)
+  {
+    LL_I2C_Disable(I2Cx);
 
-  I2Cx_FORCE_RESET();
-  I2Cx_RELEASE_RESET();
+    I2Cx_CLK_DISABLE();
+  }
 }
 
 /**
  * @brief  This function is used to detect if there is any activity on I2C protocol.
- * @retval Returns 1 if interface is detected else 0.
+ * @retval None.
  */
 uint8_t OPENBL_I2C_ProtocolDetection(void)
 {
-  uint8_t detected;
-
   /* Check if the I2Cx is addressed */
   if ((I2Cx->ISR & I2C_ISR_ADDR) != 0)
   {
-    detected = 1U;
+    I2cDetected = 1U;
   }
   else
   {
-    detected = 0U;
+    I2cDetected = 0U;
   }
 
-  return detected;
+  return I2cDetected;
 }
 
 /**
@@ -230,7 +231,7 @@ void OPENBL_I2C_WaitAddress(void)
 #if defined (__ICCARM__)
 __ramfunc void OPENBL_I2C_WaitNack(void)
 #else
-__attribute__ ((section (".ramfunc"))) void OPENBL_I2C_WaitNack(void)
+__attribute__((section(".ramfunc"))) void OPENBL_I2C_WaitNack(void)
 #endif /* (__ICCARM__) */
 {
   uint32_t timeout = 0U;
@@ -262,7 +263,7 @@ __attribute__ ((section (".ramfunc"))) void OPENBL_I2C_WaitNack(void)
 #if defined (__ICCARM__)
 __ramfunc void OPENBL_I2C_WaitStop(void)
 #else
-__attribute__ ((section (".ramfunc"))) void OPENBL_I2C_WaitStop(void)
+__attribute__((section(".ramfunc"))) void OPENBL_I2C_WaitStop(void)
 #endif /* (__ICCARM__) */
 {
   uint32_t timeout = 0U;
@@ -314,7 +315,7 @@ void OPENBL_I2C_SendAcknowledgeByte(uint8_t Byte)
 #if defined (__ICCARM__)
 __ramfunc void OPENBL_I2C_SendBusyByte(void)
 #else
-__attribute__ ((section (".ramfunc"))) void OPENBL_I2C_SendBusyByte(void)
+__attribute__((section(".ramfunc"))) void OPENBL_I2C_SendBusyByte(void)
 #endif /* (__ICCARM__) */
 {
   uint32_t timeout = 0;
@@ -349,4 +350,60 @@ __attribute__ ((section (".ramfunc"))) void OPENBL_I2C_SendBusyByte(void)
     /* Wait until STOP byte is detected */
     OPENBL_I2C_WaitStop();
   }
+}
+
+/**
+ * @brief  This function is used to process and execute the special commands.
+ *         The user must define the special commands routine here.
+ * @param  SpecialCmd Pointer to the OPENBL_SpecialCmdTypeDef structure.
+ * @retval Returns NACK status in case of error else returns ACK status.
+ */
+void OPENBL_I2C_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *SpecialCmd)
+{
+  switch (SpecialCmd->OpCode)
+  {
+    /* Unknown command opcode */
+    default:
+      if (SpecialCmd->CmdType == OPENBL_SPECIAL_CMD)
+      {
+        /* Send NULL data size */
+        OPENBL_I2C_SendByte(0x00U);
+        OPENBL_I2C_SendByte(0x00U);
+
+        /* Wait for address to match */
+        OPENBL_I2C_WaitAddress();
+
+        /* Send NULL status size */
+        OPENBL_I2C_SendByte(0x00U);
+        OPENBL_I2C_SendByte(0x00U);
+      }
+      else if (SpecialCmd->CmdType == OPENBL_EXTENDED_SPECIAL_CMD)
+      {
+        /* Send NULL status size */
+        OPENBL_I2C_SendByte(0x00U);
+        OPENBL_I2C_SendByte(0x00U);
+      }
+      break;
+  }
+}
+
+/**
+ * @brief  This function is used to Set Flash busy state variable to activate busy state sending
+ *         during flash operations
+ * @retval None.
+*/
+void OPENBL_Enable_BusyState_Sending(void)
+{
+  /* Enable Flash busy state sending */
+  OPENBL_Enable_BusyState_Flag();
+}
+
+/**
+ * @brief  This function is used to disable the send of busy state in I2C non stretch mode.
+ * @retval None.
+*/
+void OPENBL_Disable_BusyState_Sending(void)
+{
+  /* Disable Flash busy state sending */
+  OPENBL_Disable_BusyState_Flag();
 }

@@ -48,9 +48,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-/* Buffer for FileX FX_MEDIA sector cache. this should be 32-Bytes
-aligned to avoid cache maintenance issues */
-ALIGN_32BYTES (uint32_t media_memory[FX_STM32_SD_DEFAULT_SECTOR_SIZE / sizeof(uint32_t)]);
+uint32_t media_memory[FX_STM32_SD_DEFAULT_SECTOR_SIZE / sizeof(uint32_t)];
 
 /* Flash buffer*/
 UINT *read_buffer;
@@ -254,7 +252,7 @@ VOID fx_thread_entry(ULONG thread_input)
   /* Toggle green LED to indicate programming finish OK */
   while(1)
   {
-    BSP_LED_Toggle(LED_GREEN);
+    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
     os_delay(40);
   }
 }

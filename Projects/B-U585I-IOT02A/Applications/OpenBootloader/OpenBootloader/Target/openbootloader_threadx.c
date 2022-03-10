@@ -18,10 +18,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "interfaces_conf.h"
 #include "openbl_core.h"
 #include "ux_device_dfu_media.h"
 #include "usb_interface.h"
-#include "interfaces_conf.h"
 #include "openbootloader_threadx.h"
 
 /* Private typedef -----------------------------------------------------------*/

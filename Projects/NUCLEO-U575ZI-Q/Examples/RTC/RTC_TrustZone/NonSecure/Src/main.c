@@ -158,6 +158,7 @@ static void MX_RTC_Init(void)
   hrtc.Instance = RTC;  /* Not yet managed by cubeMX */
 
   /* USER CODE END RTC_Init 1 */
+
   /** Enable the Alarm B
   */
   sAlarm.AlarmTime.Hours = 0x2;
@@ -371,4 +372,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-

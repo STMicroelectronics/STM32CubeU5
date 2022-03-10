@@ -68,14 +68,14 @@ typedef enum
   LED8 = 3U,
   LED_YELLOW = LED8,
 #endif /* USE_BSP_IO_CLASS */
-  LEDn
+  LED_NBR
 } Led_TypeDef;
 
 typedef enum
 {
   BUTTON_USER = 0U,
   BUTTON_TAMPER = 1U,
-  BUTTONn
+  BUTTON_NBR
 } Button_TypeDef;
 
 typedef enum
@@ -91,17 +91,17 @@ typedef enum
 } POT_TypeDef;
 #endif /* USE_BSP_POT_FEATURE */
 
+#if (USE_BSP_IO_CLASS > 0)
 typedef enum
 {
   JOY_MODE_GPIO = 0U,
   JOY_MODE_EXTI = 1U
 } JOYMode_TypeDef;
 
-#if (USE_BSP_IO_CLASS > 0)
 typedef enum
 {
   JOY1 = 0U,
-  JOYn
+  JOY_NBR
 } JOY_TypeDef;
 
 typedef enum
@@ -121,7 +121,7 @@ typedef enum
 {
   COM1 = 0U,
   COM2 = 1U,
-  COMn
+  COM_NBR
 } COM_TypeDef;
 
 typedef enum
@@ -198,10 +198,10 @@ typedef struct
 #endif /* USE_STM32U575I_EVAL */
 
 /**
-  * @brief STM32U575I_EVAL BSP Driver version number V1.0.0
+  * @brief STM32U575I_EVAL BSP Driver version number V1.1.0
   */
 #define STM32U575I_EVAL_BSP_VERSION_MAIN   (uint32_t)(0x01U) /*!< [31:24] main version */
-#define STM32U575I_EVAL_BSP_VERSION_SUB1   (uint32_t)(0x00U) /*!< [23:16] sub1 version */
+#define STM32U575I_EVAL_BSP_VERSION_SUB1   (uint32_t)(0x01U) /*!< [23:16] sub1 version */
 #define STM32U575I_EVAL_BSP_VERSION_SUB2   (uint32_t)(0x00U) /*!< [15:8]  sub2 version */
 #define STM32U575I_EVAL_BSP_VERSION_RC     (uint32_t)(0x00U) /*!< [7:0]  release candidate */
 #define STM32U575I_EVAL_BSP_VERSION        ((STM32U575I_EVAL_BSP_VERSION_MAIN << 24)\
@@ -246,7 +246,7 @@ typedef struct
 #define BUTTON_TAMPER_GPIO_PORT                 GPIOA
 #define BUTTON_TAMPER_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOA_CLK_ENABLE()
 #define BUTTON_TAMPER_GPIO_CLK_DISABLE()        __HAL_RCC_GPIOA_CLK_DISABLE()
-#define BUTTON_TAMPER_EXTI_IRQn                 EXTI1_IRQn
+#define BUTTON_TAMPER_EXTI_IRQ                  EXTI1_IRQn
 #define BUTTON_TAMPER_EXTI_LINE                 EXTI_LINE_1
 
 /**
@@ -256,7 +256,7 @@ typedef struct
 #define BUTTON_USER_GPIO_PORT                 GPIOC
 #define BUTTON_USER_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOC_CLK_ENABLE()
 #define BUTTON_USER_GPIO_CLK_DISABLE()        __HAL_RCC_GPIOC_CLK_DISABLE()
-#define BUTTON_USER_EXTI_IRQn                 EXTI13_IRQn
+#define BUTTON_USER_EXTI_IRQ                  EXTI13_IRQn
 #define BUTTON_USER_EXTI_LINE                 EXTI_LINE_13
 /**
   * @}
@@ -314,7 +314,7 @@ typedef struct
 /** @defgroup STM32U575I_EVAL_COMMON_POT STM32U575I_EVAL COMMON POTENTIOMETER
   * @{
   */
-#define POTn                                    1U
+#define POT_NBR                                 1U
 
 #define POT1_ADC                                ADC1
 #define POT1_ADC_CHANNEL                        ADC_CHANNEL_5
@@ -364,7 +364,7 @@ extern USART_TypeDef *COM_UART[];
 #endif /* USE_BSP_COM_FEATURE */
 
 #if (USE_BSP_POT_FEATURE > 0)
-extern ADC_HandleTypeDef hpot_adc[POTn];
+extern ADC_HandleTypeDef hpot_adc[POT_NBR];
 #endif /* USE_BSP_POT_FEATURE */
 /**
   * @}

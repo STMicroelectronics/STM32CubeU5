@@ -155,8 +155,8 @@ typedef struct
 #define CAMERA_NIGHT_MODE_SET           0x00U   /* Disable night mode         */
 #define CAMERA_NIGHT_MODE_RESET         0x01U   /* Enable night mode          */
 
-#define CAMERA_IRQHandler               DCMI_PSSI_IRQHandler
-#define CAMERA_DMA_IRQHandler           DMA2_Stream3_IRQHandler
+#define CAMERA_IRQ_HANDLER             DCMI_PSSI_IRQHandler
+#define CAMERA_DMA_IRQ_HANDLER         DMA2_Stream3_IRQHandler
 
 #define XSDN_PIN                       GPIO_PIN_3
 #define XSDN_PORT                      GPIOI
@@ -240,8 +240,8 @@ void    BSP_CAMERA_FrameEventCallback(uint32_t Instance);
 void    BSP_CAMERA_VsyncEventCallback(uint32_t Instance);
 void    BSP_CAMERA_ErrorCallback(uint32_t Instance);
 
-void    BSP_CAMERA_IRQHandler(uint32_t Instance);
-void    BSP_CAMERA_DMA_IRQHandler(uint32_t Instance);
+void    BSP_CAMERA_IRQ_HANDLER(uint32_t Instance);
+void    BSP_CAMERA_DMA_IRQ_HANDLER(uint32_t Instance);
 
 /* This function can be modified in case the current settings (e.g. DMA stream)
    need to be changed for specific application needs */

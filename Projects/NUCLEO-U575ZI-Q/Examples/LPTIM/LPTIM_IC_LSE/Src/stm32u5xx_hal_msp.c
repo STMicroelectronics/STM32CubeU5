@@ -71,10 +71,6 @@ void HAL_MspInit(void)
 
   /* System interrupt init*/
 
-  /** Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
-  */
-  HAL_PWREx_DisableUCPDDeadBattery();
-
   /* USER CODE BEGIN MspInit 1 */
 
   /* USER CODE END MspInit 1 */
@@ -102,6 +98,7 @@ void HAL_LPTIM_MspInit(LPTIM_HandleTypeDef* hlptim)
   /* Release the LPTIM Periheral Clock Reset */
   __HAL_RCC_LPTIM1_RELEASE_RESET();
   /* USER CODE END LPTIM1_MspInit 0 */
+
   /** Initializes the peripherals clock
   */
     PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_LPTIM1;
@@ -145,6 +142,10 @@ void HAL_LPTIM_MspInit(LPTIM_HandleTypeDef* hlptim)
 
     __HAL_LINKDMA(hlptim, hdma[LPTIM_DMA_ID_CC1], handle_LPDMA1_Channel0);
 
+    if (HAL_DMA_ConfigChannelAttributes(&handle_LPDMA1_Channel0, DMA_CHANNEL_NPRIV) != HAL_OK)
+    {
+      Error_Handler();
+    }
 
   /* USER CODE BEGIN LPTIM1_MspInit 1 */
 

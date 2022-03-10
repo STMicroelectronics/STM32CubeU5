@@ -19,15 +19,12 @@
 <body>
 <div class="row">
 <div class="col-sm-12 col-lg-8">
-<h2 id="templates_trustzonedisabled-example-description"><b>Templates_TrustZoneDisabled Example Description</b></h2>
+<h2 id="templates_trustzoneenabled-example-description"><b>Templates_TrustZoneEnabled Example Description</b></h2>
 <ul>
-<li><p>This project provides a reference template based on the STM32Cube HAL API that can be used to build any firmware application when security is not enabled (TZEN=0).</p></li>
-<li><p>This project is targeted to run on STM32U575xx devices on NUCLEO-U575ZI-Q boards from STMicroelectronics.</p></li>
-<li><p>At the beginning of the main program, the HAL_Init() function is called to reset all the peripherals, initialize the Flash interface and the systick.</p></li>
-<li><p>The SystemClock_Config() function is used to configure the system clock (SYSCLK)## Templates_TrustZoneEnabled Example Description</p></li>
 <li><p>This project provides a reference template based on the STM32Cube HAL API that can be used to build any firmware application when TrustZone security is activated (Option bit TZEN=1).</p></li>
+<li><p>This project is targeted to run on STM32U575xx devices on NUCLEO-U575ZI-Q boards from STMicroelectronics.</p></li>
 </ul>
-<p>This project is composed of two sub-projects:</p>
+<p>This project is composed of two sub-projects :</p>
 <ul>
 <li>One for the secure application part (Project_s)<br />
 </li>
@@ -40,15 +37,16 @@
 </li>
 <li>The second half for the non-secure application.</li>
 </ul>
-<p>User Option Bytes configuration:</p>
-<p>Please note the internal Flash is fully secure by default in TZEN=1 and User Option Bytes SECWM1_PSTRT/SECWM1_PEND and SECWM2_PSTRT/SECWM2_PEND should be set according to the application configuration. Here the proper User Option Bytes setup in line with the project linker/scatter file is as follows:</p>
+<p>User Option Bytes configuration :</p>
+<p>Please note the internal Flash is fully secure by default in TZEN=1 and User Option Bytes SECWM1_PSTRT/SECWM1_PEND and SECWM2_PSTRT/SECWM2_PEND should be set according to the application configuration.</p>
+<p>Here the proper User Option Bytes setup in line with the project linker/scatter file is as follows:</p>
 <pre><code> - TZEN=1
  - SECWM1_PSTRT=0x0  SECWM1_PEND=0x7F  meaning all 128 pages of Bank1 set as secure
  - SECWM2_PSTRT=0x1  SECWM2_PEND=0x0   meaning no page of Bank2 set as secure, hence Bank2 non-secure  
  </code></pre>
-<p>Any attempt by the non-secure application to access unauthorized code, memory or peripheral generates a fault as demonstrated in non secure application by commenting some code instructions in Secure/main.c (LED I/O release).<br />
-This project is targeted to run on STM32U575xx device on NUCLEO-U575ZI-Q boards from STMicroelectronics.<br />
-The reference template project configures the maximum system clock frequency at 160Mhz in non-secure application.</p>
+<p>Any attempt by the non-secure application to access unauthorized code, memory or peripheral generates a fault as demonstrated in non secure application by commenting some code instructions in Secure/main.c (LED I/O release).</p>
+<p>This project is targeted to run on STM32U575xx device on NUCLEO-U575ZI-Q boards from STMicroelectronics.</p>
+<p>The reference template project configures the maximum system clock frequency at 160Mhz in non-secure application.</p>
 <h4 id="notes"><b>Notes</b></h4>
 <ol type="1">
 <li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise the caller ISR process will be blocked. To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>
@@ -97,8 +95,7 @@ The reference template project configures the maximum system clock frequency at 
 </ul>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
-<li>This template runs on STM32U575xx devices with security enabled (TZEN=1).<br />
-</li>
+<li><p>This template runs on STM32U575xx devices with security enabled (TZEN=1).</p></li>
 <li><p>This template has been tested with STMicroelectronics NUCLEO-U575ZI-Q (MB1549) board and can be easily tailored to any other supported device and development board.</p></li>
 <li><p>User Option Bytes requirement (with STM32CubeProgrammer tool)</p>
 <pre><code>- TZEN = 1                            System with TrustZone-M enabled
@@ -141,43 +138,8 @@ The reference template project configures the maximum system clock frequency at 
 <li>Select “Startup” &gt; “Add” &gt;</li>
 </ul></li>
 <li>Select the xxxxx_NS project</li>
-<li>Build configuration : Select Release/Debug
-<ul>
+<li>Build configuration : Select Release/Debug</li>
 <li>Click Debug to debug the example</li>
-</ul></li>
-</ul>
-<p>to run at 160 Mhz.</p>
-<p>The template project calls also CACHE_Enable() function in order to enable the Instruction and Data Caches. This function is provided as template implementation that the User may integrate in his application in order to enhance the performance.</p>
-<h4 id="notes-1"><b>Notes</b></h4>
-<ol type="1">
-<li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise the caller ISR process will be blocked. To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>
-<li><p>The application needs to ensure that the SysTick time base is always set to 1 millisecond to have correct HAL operation.</p></li>
-</ol>
-<h3 id="keywords-1"><b>Keywords</b></h3>
-<p>Reference, Template, TrustZone disabled</p>
-<h3 id="directory-contents-1"><b>Directory contents</b></h3>
-<ul>
-<li>Templates/TrustZoneDisabled/Src/main.c Main program</li>
-<li>Templates/TrustZoneDisabled/Src/system_stm32u5xx.c STM32U5xx system clock configuration file</li>
-<li>Templates/TrustZoneDisabled/Src/stm32u5xx_it.c Interrupt handlers</li>
-<li>Templates/TrustZoneDisabled/Src/stm32u5xx_hal_msp.c HAL MSP module</li>
-<li>Templates/TrustZoneDisabled/Inc/main.h Main program header file</li>
-<li>Templates/TrustZoneDisabled/Inc/stm32u5xx_nucleo_conf.h BSP Configuration file</li>
-<li>Templates/TrustZoneDisabled/Inc/stm32u5xx_hal_conf.h HAL Configuration file</li>
-<li>Templates/TrustZoneDisabled/Inc/stm32u5xx_it.h Interrupt handlers header file</li>
-</ul>
-<h3 id="hardware-and-software-environment-1"><b>Hardware and Software environment</b></h3>
-<ul>
-<li>This template runs on STM32U575xx devices without security enabled (TZEN=0).<br />
-</li>
-<li>This template has been tested with STMicroelectronics NUCLEO-U575ZI-Q (MB1549) board and can be easily tailored to any other supported device and development board.</li>
-</ul>
-<h3 id="how-to-use-it-1"><b>How to use it ?</b></h3>
-<p>In order to make the program work, you must do the following :</p>
-<ul>
-<li>Open your preferred toolchain</li>
-<li>Rebuild all files and load your image into target memory</li>
-<li>Run the example</li>
 </ul>
 </div>
 </div>

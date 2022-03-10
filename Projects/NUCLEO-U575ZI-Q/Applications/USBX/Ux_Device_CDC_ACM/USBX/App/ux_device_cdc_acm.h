@@ -73,3 +73,4 @@ void usbx_cdc_acm_write_thread_entry(ULONG arg);
 }
 #endif
 #endif  /* __UX_DEVICE_CDC_ACM_H__ */
+

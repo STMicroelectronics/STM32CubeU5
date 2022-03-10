@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -28,7 +28,7 @@ static void tfm_qcbor_test_7001(struct test_result_t *ret);
 
 static struct test_t qcbor_regression_test[] = {
     {&tfm_qcbor_test_7001, "TFM_QCBOR_TEST_7001",
-     "Regression test of QCBOR library", {0} },
+     "Regression test of QCBOR library", {TEST_PASSED} },
 };
 
 /* To execute only selected test cases, then remove unwanted ones from the array
@@ -102,23 +102,25 @@ const static char *qcbor_test_cases_all[] = {
 
 static void fputs_wrapper(const char *string, void *out_ctx, int new_line)
 {
-    /* To get test result per test case then remove comments around the
-     * following lines.
+    (void)out_ctx;
+    (void)new_line;
+    /*
+     * To get test result per test case, change
+     * the preprocessor '#if 0' to '#if 1'.
      */
-/*
-    fputs(string, (FILE *)out_ctx);
-    if(new_line) {
-        fputs("\r\n", out_ctx);
-    }
-*/
+# if 0
+    TEST_LOG("%s\r\n", string);
+#else
+    (void)string;
+#endif
 }
 
 static void tfm_qcbor_test_7001(struct test_result_t *ret)
 {
     int32_t test_failed_cnt = 0;
 
-    test_failed_cnt = RunTests(qcbor_test_cases_all, fputs_wrapper,
-                               stdout, NULL);
+    test_failed_cnt = RunTestsQCBOR(qcbor_test_cases_all, fputs_wrapper,
+                                    NULL, NULL);
     if (test_failed_cnt != 0) {
         TEST_FAIL("QCBOR test failed");
         return;

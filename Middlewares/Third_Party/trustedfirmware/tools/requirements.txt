@@ -1,0 +1,13 @@
+cbor>=1.0.0
+click
+cryptography
+pyasn1
+graphviz
+imgtool>=1.6.0
+Jinja2>=2.10.3
+latex
+PyYAML
+Sphinx>=1.4
+m2r
+sphinx-rtd-theme
+sphinxcontrib-plantuml

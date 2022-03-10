@@ -1,15 +1,15 @@
 /*
- * Copyright (c) 2018-2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2018-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
  */
 
-#include "test/framework/test_framework_helpers.h"
+#include "test_framework_helpers.h"
 #include "psa_audit_api.h"
 #include "audit_ns_tests.h"
 #include "tfm_api.h"
-#include "secure_fw/services/audit_logging/audit_core.h"
+#include "audit_core.h"
 
 #include "../audit_tests_common.h"
 
@@ -54,7 +54,7 @@ static void tfm_audit_test_1001(struct test_result_t *ret);
 
 static struct test_t audit_veneers_tests[] = {
     {&tfm_audit_test_1001, "TFM_AUDIT_TEST_1001",
-     "Non Secure functional", {0} },
+     "Non Secure functional", {TEST_PASSED} },
 };
 
 void register_testsuite_ns_audit_interface(struct test_suite_t *p_test_suite)
@@ -68,6 +68,7 @@ void register_testsuite_ns_audit_interface(struct test_suite_t *p_test_suite)
                   audit_veneers_tests, list_size, p_test_suite);
 }
 
+#if AUDIT_TEST_S_ENABLE
 /**
  * \brief Functional test of NS API
  *
@@ -254,3 +255,19 @@ static void tfm_audit_test_1001(struct test_result_t *ret)
 
     ret->val = TEST_PASSED;
 }
+#else
+/**
+ * \brief Functional test of NS API
+ *
+ * \note This test case relies on Secure audit logging test to prepare the
+ *       loggings. If Secure audit logging test is disabled, this test case
+ *       will always fail. Therefore skip this test case when Secure audit
+ *       logging is disabled.
+ */
+static void tfm_audit_test_1001(struct test_result_t *ret)
+{
+    TEST_LOG("Skipped when Secure audit logging test is disabled.\r\n");
+
+    ret->val = TEST_PASSED;
+}
+#endif /* AUDIT_TEST_S_ENABLE */

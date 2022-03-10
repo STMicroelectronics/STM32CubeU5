@@ -1,7 +1,7 @@
 /*
 *  FIPS-197 compliant AES implementation
 *
-*  Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
+*  Copyright The Mbed TLS Contributors
 *  Copyright (C) 2021, STMicroelectronics, All Rights Reserved
 *  SPDX-License-Identifier: Apache-2.0
 *
@@ -34,6 +34,7 @@
 #include <string.h>
 #include "mbedtls/platform.h"
 #include "mbedtls/platform_util.h"
+#include "mbedtls/error.h"
 
 /* Parameter validation macros based on platform_util.h */
 #define AES_VALIDATE_RET( cond )    \
@@ -47,21 +48,28 @@
 #define ST_AES_NO_ALGO     0xFFFFU /* any algo is programmed */
 
 /* Private macro -------------------------------------------------------------*/
-#define SWAP_B8_TO_B32(b32,b8,i)                         \
-{                                                        \
-  (b32) = ( (uint32_t) (b8)[(i) + 3]       )             \
-        | ( (uint32_t) (b8)[(i) + 2] <<  8 )             \
-        | ( (uint32_t) (b8)[(i) + 1] << 16 )             \
-        | ( (uint32_t) (b8)[(i)    ] << 24 );            \
-}
+/*
+ * 32-bit integer manipulation macros (big endian)
+ */
+#ifndef GET_UINT32_BE
+#define GET_UINT32_BE(n,b,i)                            \
+do {                                                    \
+    (n) = ( (uint32_t) (b)[(i)    ] << 24 )             \
+        | ( (uint32_t) (b)[(i) + 1] << 16 )             \
+        | ( (uint32_t) (b)[(i) + 2] <<  8 )             \
+        | ( (uint32_t) (b)[(i) + 3]       );            \
+} while( 0 )
+#endif
 
-#define SWAP_B32_TO_B8(b32,b8,i)                                 \
-{                                                                \
-  (b8)[(i) + 3] = (unsigned char) ( ( (b32)       ) & 0xFF );    \
-  (b8)[(i) + 2] = (unsigned char) ( ( (b32) >>  8 ) & 0xFF );    \
-  (b8)[(i) + 1] = (unsigned char) ( ( (b32) >> 16 ) & 0xFF );    \
-  (b8)[(i)    ] = (unsigned char) ( ( (b32) >> 24 ) & 0xFF );    \
-}
+#ifndef PUT_UINT32_BE
+#define PUT_UINT32_BE(n,b,i)                            \
+do {                                                    \
+    (b)[(i)    ] = (unsigned char) ( (n) >> 24 );       \
+    (b)[(i) + 1] = (unsigned char) ( (n) >> 16 );       \
+    (b)[(i) + 2] = (unsigned char) ( (n) >>  8 );       \
+    (b)[(i) + 3] = (unsigned char) ( (n)       );       \
+} while( 0 )
+#endif
 
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
@@ -71,6 +79,8 @@ static int aes_set_key(mbedtls_aes_context *ctx,
                        const unsigned char *key,
                        unsigned int keybits)
 {
+    unsigned int i;
+
     AES_VALIDATE_RET( ctx != NULL );
 
     switch (keybits) {
@@ -81,11 +91,6 @@ static int aes_set_key(mbedtls_aes_context *ctx,
 #endif
         case 128:
             ctx->hcryp_aes.Init.KeySize = CRYP_KEYSIZE_128B;;
-
-            SWAP_B8_TO_B32(ctx->aes_key[0],key,0);
-            SWAP_B8_TO_B32(ctx->aes_key[1],key,4);
-            SWAP_B8_TO_B32(ctx->aes_key[2],key,8);
-            SWAP_B8_TO_B32(ctx->aes_key[3],key,12);
             break;
 
         case 192:
@@ -93,20 +98,16 @@ static int aes_set_key(mbedtls_aes_context *ctx,
 
         case 256:
             ctx->hcryp_aes.Init.KeySize = CRYP_KEYSIZE_256B;
-
-            SWAP_B8_TO_B32(ctx->aes_key[0],key,0);
-            SWAP_B8_TO_B32(ctx->aes_key[1],key,4);
-            SWAP_B8_TO_B32(ctx->aes_key[2],key,8);
-            SWAP_B8_TO_B32(ctx->aes_key[3],key,12);
-            SWAP_B8_TO_B32(ctx->aes_key[4],key,16);
-            SWAP_B8_TO_B32(ctx->aes_key[5],key,20);
-            SWAP_B8_TO_B32(ctx->aes_key[6],key,24);
-            SWAP_B8_TO_B32(ctx->aes_key[7],key,28);
             break;
 
         default :
             return (MBEDTLS_ERR_AES_INVALID_KEY_LENGTH);
     }
+
+    /* Format and fill AES key  */
+    for( i=0; i < (keybits/32); i++ )
+        GET_UINT32_BE( ctx->aes_key[i], key, 4*i );
+
 #if  defined(HW_CRYPTO_DPA_AES)
     ctx->hcryp_aes.Instance = SAES;
 #else
@@ -247,7 +248,7 @@ int mbedtls_aes_xts_setkey_enc( mbedtls_aes_xts_context *ctx,
                                 const unsigned char *key,
                                 unsigned int keybits)
 {
-    int ret;
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     const unsigned char *key1, *key2;
     unsigned int key1bits, key2bits;
 
@@ -272,7 +273,7 @@ int mbedtls_aes_xts_setkey_dec( mbedtls_aes_xts_context *ctx,
                                 const unsigned char *key,
                                 unsigned int keybits)
 {
-    int ret;
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     const unsigned char *key1, *key2;
     unsigned int key1bits, key2bits;
 
@@ -391,10 +392,10 @@ int mbedtls_aes_crypt_cbc(mbedtls_aes_context *ctx,
     }
 
     /* Set IV with invert endianness */
-    SWAP_B8_TO_B32(iv_32B[0],iv,0);
-    SWAP_B8_TO_B32(iv_32B[1],iv,4);
-    SWAP_B8_TO_B32(iv_32B[2],iv,8);
-    SWAP_B8_TO_B32(iv_32B[3],iv,12);
+    GET_UINT32_BE(iv_32B[0],iv,0);
+    GET_UINT32_BE(iv_32B[1],iv,4);
+    GET_UINT32_BE(iv_32B[2],iv,8);
+    GET_UINT32_BE(iv_32B[3],iv,12);
 
     ctx->hcryp_aes.Init.pInitVect = iv_32B;
 
@@ -409,10 +410,10 @@ int mbedtls_aes_crypt_cbc(mbedtls_aes_context *ctx,
         }
 
         /* Get IV vector for the next call */
-        SWAP_B32_TO_B8(ctx->hcryp_aes.Instance->IVR3,iv,0);
-        SWAP_B32_TO_B8(ctx->hcryp_aes.Instance->IVR2,iv,4);
-        SWAP_B32_TO_B8(ctx->hcryp_aes.Instance->IVR1,iv,8);
-        SWAP_B32_TO_B8(ctx->hcryp_aes.Instance->IVR0,iv,12);
+        PUT_UINT32_BE(ctx->hcryp_aes.Instance->IVR3,iv,0);
+        PUT_UINT32_BE(ctx->hcryp_aes.Instance->IVR2,iv,4);
+        PUT_UINT32_BE(ctx->hcryp_aes.Instance->IVR1,iv,8);
+        PUT_UINT32_BE(ctx->hcryp_aes.Instance->IVR0,iv,12);
 
     } else {
         if (HAL_CRYP_Encrypt(&ctx->hcryp_aes, (uint32_t *)input, length, (uint32_t *)output, ST_AES_TIMEOUT) != HAL_OK) {
@@ -495,7 +496,7 @@ int mbedtls_aes_crypt_xts( mbedtls_aes_xts_context *ctx,
                            const unsigned char *input,
                            unsigned char *output )
 {
-    int ret;
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     size_t blocks = length / 16;
     size_t leftover = length % 16;
     unsigned char tweak[16];
@@ -567,7 +568,7 @@ int mbedtls_aes_crypt_xts( mbedtls_aes_xts_context *ctx,
         unsigned char *prev_output = output - 16;
 
         /* Copy ciphertext bytes from the previous block to our output for each
-         * byte of cyphertext we won't steal. At the same time, copy the
+         * byte of ciphertext we won't steal. At the same time, copy the
          * remainder of the input for this final round (since the loop bounds
          * are the same). */
         for( i = 0; i < leftover; i++ )
@@ -828,5 +829,8 @@ void mbedtls_aes_decrypt(mbedtls_aes_context *ctx,
     mbedtls_internal_aes_decrypt(ctx, input, output);
 }
 #endif /* MBEDTLS_DEPRECATED_REMOVED */
+
+
+
 #endif /* MBEDTLS_AES_ALT */
 #endif /* MBEDTLS_AES_C */

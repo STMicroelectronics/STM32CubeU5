@@ -1,11 +1,11 @@
 /**************************************************************************//**
  * @file     cmsis_version.h
  * @brief    CMSIS Core(M) Version definitions
- * @version  V5.0.2
- * @date     19. April 2017
+ * @version  V5.0.3
+ * @date     24. June 2019
  ******************************************************************************/
 /*
- * Copyright (c) 2009-2017 ARM Limited. All rights reserved.
+ * Copyright (c) 2009-2019 ARM Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -23,8 +23,8 @@
  */
 
 #if   defined ( __ICCARM__ )
- #pragma system_include         /* treat file as system include file for MISRA check */
-#elif defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+  #pragma system_include         /* treat file as system include file for MISRA check */
+#elif defined (__clang__)
   #pragma clang system_header   /* treat file as system include file */
 #endif
 
@@ -33,7 +33,7 @@
 
 /*  CMSIS Version definitions */
 #define __CM_CMSIS_VERSION_MAIN  ( 5U)                                      /*!< [31:16] CMSIS Core(M) main version */
-#define __CM_CMSIS_VERSION_SUB   ( 0U)                                      /*!< [15:0]  CMSIS Core(M) sub version */
+#define __CM_CMSIS_VERSION_SUB   ( 3U)                                      /*!< [15:0]  CMSIS Core(M) sub version */
 #define __CM_CMSIS_VERSION       ((__CM_CMSIS_VERSION_MAIN << 16U) | \
                                    __CM_CMSIS_VERSION_SUB           )       /*!< CMSIS Core(M) version number */
 #endif

@@ -17,16 +17,12 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32u5xx.h"
-#include "stm32u5xx_ll_spi.h"
-
+#include "platform.h"
+#include "interfaces_conf.h"
 #include "openbl_core.h"
 #include "openbl_spi_cmd.h"
-
 #include "spi_interface.h"
 #include "iwdg_interface.h"
-
-#include "interfaces_conf.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -37,15 +33,16 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 static volatile uint8_t SpiRxNotEmpty = 0U;
+static uint8_t SpiDetected = 0U;
 
 /* Exported variables --------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 static void OPENBL_SPI_Init(void);
-#if defined (__CC_ARM)
-void OPENBL_SPI_ClearFlag_OVR(void);
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_ClearFlag_OVR(void);
-#endif /* (__CC_ARM) */
+#else
+__attribute__((section(".ramfunc"))) void OPENBL_SPI_ClearFlag_OVR(void);
+#endif /* (__ICCARM__) */
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -68,14 +65,20 @@ void OPENBL_SPI_Configuration(void)
 }
 
 /**
+ * @brief  This function is used to De-initialize the SPI pins and instance.
+ * @retval None.
+ */
+void OPENBL_SPI_DeInit(void)
+{
+}
+
+/**
  * @brief  This function is used to detect if there is any activity on SPI protocol.
  * @retval None.
  */
 uint8_t OPENBL_SPI_ProtocolDetection(void)
 {
-  uint8_t detected;
-
-  return detected;
+  return SpiDetected;
 }
 
 /**
@@ -94,11 +97,11 @@ uint8_t OPENBL_SPI_GetCommandOpcode(void)
   *         Read operation is synchronized on SPI Rx buffer not empty interrupt.
   * @retval Returns the read byte.
   */
-#if defined (__CC_ARM)
-uint8_t OPENBL_SPI_ReadByte(void)
-#else
+#if defined (__ICCARM__)
 __ramfunc uint8_t OPENBL_SPI_ReadByte(void)
-#endif /* (__CC_ARM) */
+#else
+__attribute__((section(".ramfunc"))) uint8_t OPENBL_SPI_ReadByte(void)
+#endif /* (__ICCARM__) */
 {
   uint8_t data;
 
@@ -110,11 +113,11 @@ __ramfunc uint8_t OPENBL_SPI_ReadByte(void)
   *         Read operation is synchronized on SPI Rx buffer not empty interrupt.
   * @retval Returns the read byte.
   */
-#if defined (__CC_ARM)
-void OPENBL_SPI_SendBusyByte(void)
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_SendBusyByte(void)
-#endif /* (__CC_ARM) */
+#else
+__attribute__((section(".ramfunc"))) void OPENBL_SPI_SendBusyByte(void)
+#endif /* (__ICCARM__) */
 {
 }
 
@@ -122,11 +125,11 @@ __ramfunc void OPENBL_SPI_SendBusyByte(void)
   * @brief  This function is used to send one byte through SPI pipe.
   * @retval None.
   */
-#if defined (__CC_ARM)
-void OPENBL_SPI_SendByte(uint8_t Byte)
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_SendByte(uint8_t Byte)
-#endif /* (__CC_ARM) */
+#else
+__attribute__((section(".ramfunc"))) void OPENBL_SPI_SendByte(uint8_t Byte)
+#endif /* (__ICCARM__) */
 {
 }
 
@@ -142,11 +145,11 @@ void OPENBL_SPI_SendAcknowledgeByte(uint8_t Byte)
   * @brief  Handle SPI interrupt request.
   * @retval None.
   */
-#if defined (__CC_ARM)
-void OPENBL_SPI_IRQHandler()
+#if defined (__ICCARM__)
+__ramfunc void OPENBL_SPI_IRQHandler(void)
 #else
-__ramfunc void OPENBL_SPI_IRQHandler()
-#endif /* (__CC_ARM) */
+__attribute__((section(".ramfunc"))) void OPENBL_SPI_IRQHandler(void)
+#endif /* (__ICCARM__) */
 {
 }
 
@@ -173,10 +176,20 @@ void OPENBL_SPI_DisableBusyState(void)
   *         register followed by a read access to the SPIx_SR register
   * @retval None
   */
-#if defined (__CC_ARM)
-void OPENBL_SPI_ClearFlag_OVR(void)
-#else
+#if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_ClearFlag_OVR(void)
-#endif /* (__CC_ARM) */
+#else
+__attribute__((section(".ramfunc"))) void OPENBL_SPI_ClearFlag_OVR(void)
+#endif /* (__ICCARM__) */
+{
+}
+
+/**
+ * @brief  This function is used to process and execute the special commands.
+ *         The user must define the special commands routine here.
+ * @param  SpecialCmd Pointer to the OPENBL_SpecialCmdTypeDef structure.
+ * @retval Returns NACK status in case of error else returns ACK status.
+ */
+void OPENBL_SPI_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *SpecialCmd)
 {
 }

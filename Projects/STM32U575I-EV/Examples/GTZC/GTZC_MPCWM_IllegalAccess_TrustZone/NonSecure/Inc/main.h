@@ -33,7 +33,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stm32u575i_eval.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

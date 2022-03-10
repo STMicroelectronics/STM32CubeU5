@@ -1,10 +1,11 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file    Secure/Src/secure_nsc.c
   * @author  MCD Application Team
   * @brief   This file contains the non-secure callable APIs (secure world)
   ******************************************************************************
-  * @attention
+    * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.
@@ -15,6 +16,8 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
+
 /* USER CODE BEGIN Non_Secure_CallLib */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -81,3 +84,4 @@ CMSE_NS_ENTRY void SECURE_LEDToggle(void)
   * @}
   */
 /* USER CODE END Non_Secure_CallLib */
+

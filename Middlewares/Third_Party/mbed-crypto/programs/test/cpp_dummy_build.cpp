@@ -2,7 +2,7 @@
  *  This program is a dummy C++ program to ensure Mbed TLS library header files
  *  can be included and built with a C++ compiler.
  *
- *  Copyright (C) 2018, ARM Limited, All Rights Reserved
+ *  Copyright The Mbed TLS Contributors
  *  SPDX-License-Identifier: Apache-2.0
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -16,8 +16,6 @@
  *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 
 #if !defined(MBEDTLS_CONFIG_FILE)
@@ -45,7 +43,9 @@
 #include "mbedtls/cipher.h"
 #include "mbedtls/cipher_internal.h"
 #include "mbedtls/cmac.h"
+#include "mbedtls/compat-1.3.h"
 #include "mbedtls/ctr_drbg.h"
+#include "mbedtls/debug.h"
 #include "mbedtls/des.h"
 #include "mbedtls/dhm.h"
 #include "mbedtls/ecdh.h"
@@ -65,12 +65,15 @@
 #include "mbedtls/md4.h"
 #include "mbedtls/md5.h"
 #include "mbedtls/md_internal.h"
+#include "mbedtls/net.h"
+#include "mbedtls/net_sockets.h"
 #include "mbedtls/nist_kw.h"
 #include "mbedtls/oid.h"
 #include "mbedtls/padlock.h"
 #include "mbedtls/pem.h"
 #include "mbedtls/pk.h"
 #include "mbedtls/pk_internal.h"
+#include "mbedtls/pkcs11.h"
 #include "mbedtls/pkcs12.h"
 #include "mbedtls/pkcs5.h"
 #include "mbedtls/platform_time.h"
@@ -83,9 +86,19 @@
 #include "mbedtls/sha1.h"
 #include "mbedtls/sha256.h"
 #include "mbedtls/sha512.h"
+#include "mbedtls/ssl.h"
+#include "mbedtls/ssl_cache.h"
+#include "mbedtls/ssl_ciphersuites.h"
+#include "mbedtls/ssl_cookie.h"
+#include "mbedtls/ssl_internal.h"
+#include "mbedtls/ssl_ticket.h"
 #include "mbedtls/threading.h"
 #include "mbedtls/timing.h"
 #include "mbedtls/version.h"
+#include "mbedtls/x509.h"
+#include "mbedtls/x509_crl.h"
+#include "mbedtls/x509_crt.h"
+#include "mbedtls/x509_csr.h"
 #include "mbedtls/xtea.h"
 
 #if defined(MBEDTLS_PLATFORM_C)
@@ -95,6 +108,12 @@
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
 #include "mbedtls/memory_buffer_alloc.h"
 #endif
+
+#include "psa/crypto.h"
+#include "psa/crypto_se_driver.h"
+#include "psa/crypto_entropy_driver.h"
+#include "psa/crypto_accel_driver.h"
+#include "../library/psa_crypto_its.h"
 
 int main()
 {

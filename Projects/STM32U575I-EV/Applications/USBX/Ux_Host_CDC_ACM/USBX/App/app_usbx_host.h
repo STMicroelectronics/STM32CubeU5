@@ -98,9 +98,6 @@ void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin);
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define APP_QUEUE_SIZE                               5
-#define USBX_APP_STACK_SIZE                          1024
-#define USBX_MEMORY_SIZE                             (64 * 1024)
 #define NEW_RECEIVED_DATA                            0x01
 #define NEW_DATA_TO_SEND                             0x02
 #define BUTTON_KEY                                   BUTTON_USER

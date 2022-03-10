@@ -1,0 +1,31 @@
+From a74762e09a3f0407b10d1494f2b55b034fce70bb Mon Sep 17 00:00:00 2001
+From: Shawn Shan <Shawn.Shan@arm.com>
+Date: Wed, 10 Mar 2021 17:00:30 +0800
+Subject: [PATCH] Align SPE libraries name with TF-M
+
+Change-Id: I3d0030cea15ce5d3e283d766a50d0d43b83eab7b
+Signed-off-by: Shawn Shan <Shawn.Shan@arm.com>
+---
+ api-tests/CMakeLists.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/api-tests/CMakeLists.txt b/api-tests/CMakeLists.txt
+index c243ebd..e63a7c3 100644
+--- a/api-tests/CMakeLists.txt
++++ b/api-tests/CMakeLists.txt
+@@ -177,9 +177,9 @@ endif()
+ set(PSA_TARGET_PAL_NSPE_LIB		pal_nspe)
+ set(PSA_TARGET_VAL_NSPE_LIB		val_nspe)
+ set(PSA_TARGET_TEST_COMBINE_LIB		test_combine)
+-set(PSA_TARGET_DRIVER_PARTITION_LIB	driver_partition)
+-set(PSA_TARGET_CLIENT_PARTITION_LIB	client_partition)
+-set(PSA_TARGET_SERVER_PARTITION_LIB	server_partition)
++set(PSA_TARGET_DRIVER_PARTITION_LIB	tfm_psa_rot_partition_driver_partition)
++set(PSA_TARGET_CLIENT_PARTITION_LIB	tfm_app_rot_partition_client_partition)
++set(PSA_TARGET_SERVER_PARTITION_LIB	tfm_app_rot_partition_server_partition)
+ if(${SUITE} STREQUAL "IPC")
+ 	set(PSA_SUITE_DIR		${PSA_ROOT_DIR}/ff/${SUITE_LOWER})
+ 	set(PSA_SUITE_OUT_DIR		${CMAKE_CURRENT_BINARY_DIR}/ff/${SUITE_LOWER})
+--
+2.17.1
+

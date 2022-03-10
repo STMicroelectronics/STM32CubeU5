@@ -13,8 +13,17 @@
 /* Include necessary system files.  */
 #include "fx_stm32_mmc_driver.h"
 
+/*
+ * the scratch buffer is required when performing DMA transfers using unaligned addresses
+ * When CPU cache is enabled, the scratch buffer should be 32-byte aligned to match a whole cache line
+ * otherwise it is 4-byte aligned to match the DMA alignment constraints
+ */
 
-ALIGN_32BYTES (UCHAR scratch[FX_STM32_MMC_DEFAULT_SECTOR_SIZE]);
+#if (FX_STM32_MMC_CACHE_MAINTENANCE == 1)
+static UCHAR scratch[FX_STM32_MMC_DEFAULT_SECTOR_SIZE] __attribute__ ((aligned (32)));
+#else
+static UCHAR scratch[FX_STM32_MMC_DEFAULT_SECTOR_SIZE] __attribute__ ((aligned (4)));
+#endif
 
 UINT  _fx_partition_offset_calculate(void  *partition_sector, UINT partition, ULONG *partition_start, ULONG *partition_size);
 
@@ -40,8 +49,8 @@ static INT check_mmc_status(uint32_t instance)
 }
 
 /**
-* @brief This function is the entry point to the STM32 SDIO disk driver.     */
-/*        It relies on the STM32 peripheral library from ST.
+* @brief This function is the entry point to the STM32 SDIO disk driver.
+* It relies on the STM32 peripheral library from ST.
 * @param media_ptr: FileX's Media Config Block
 * @retval None
 */
@@ -53,7 +62,8 @@ VOID  fx_stm32_mmc_driver(FX_MEDIA *media_ptr)
   ULONG partition_size;
 
 #if (FX_STM32_MMC_INIT == 0)
-  is_initialized = 1; /* the SD  was initialized by the application*/
+ /* the SD  was initialized by the application */
+  is_initialized = 1;
 #endif
   /* before performing any operation, check the status of the SDMMC */
   if (is_initialized == 1)
@@ -69,7 +79,7 @@ VOID  fx_stm32_mmc_driver(FX_MEDIA *media_ptr)
   /* the SD DMA requires a 4-byte aligned buffers */
   unaligned_buffer = (UINT)(media_ptr->fx_media_driver_buffer) & 0x3;
 #else
-  /* if the DMA is not used there isn't any constraint on buffer alignement */
+  /* if the DMA is not used there isn't any constraint on buffer alignment */
   unaligned_buffer = 0;
 #endif
   /* Process the driver request specified in the media control block.  */
@@ -266,13 +276,13 @@ static UINT mmc_read_data(FX_MEDIA *media_ptr, ULONG start_sector, UINT num_sect
 
       if (status != 0)
       {
-        /* read error occured, call the error handler code then return immediately */
+        /* read error occurred, call the error handler code then return immediately */
         FX_STM32_MMC_READ_TRANSFER_ERROR(status);
         return FX_IO_ERROR;
       }
 
     /* wait for read transfer notification */
-       FX_STM32_MMC_READ_CPLT_NOTIFY;
+       FX_STM32_MMC_READ_CPLT_NOTIFY();
 
 #if (FX_STM32_MMC_CACHE_MAINTENANCE == 1)
       invalidate_cache_by_addr((uint32_t*)scratch, FX_STM32_MMC_DEFAULT_SECTOR_SIZE);
@@ -299,14 +309,14 @@ static UINT mmc_read_data(FX_MEDIA *media_ptr, ULONG start_sector, UINT num_sect
 
     if (status != 0)
     {
-      /* read error occured, call the error handler code then return immediately */
+      /* read error occurred, call the error handler code then return immediately */
       FX_STM32_MMC_READ_TRANSFER_ERROR(status);
 
       return FX_IO_ERROR;
     }
 
     /* wait for read transfer notification */
-       FX_STM32_MMC_READ_CPLT_NOTIFY;
+       FX_STM32_MMC_READ_CPLT_NOTIFY();
 
 #if (FX_STM32_MMC_CACHE_MAINTENANCE == 1)
     invalidate_cache_by_addr((uint32_t*)media_ptr->fx_media_driver_buffer, num_sectors * FX_STM32_MMC_DEFAULT_SECTOR_SIZE);
@@ -362,8 +372,8 @@ static UINT mmc_write_data(FX_MEDIA *media_ptr, ULONG start_sector, UINT num_sec
         return FX_IO_ERROR;
       }
 
-      /*  */
-       FX_STM32_MMC_WRITE_CPLT_NOTIFY;
+      /* call the write completion notification macro */
+       FX_STM32_MMC_WRITE_CPLT_NOTIFY();
     }
 
     if (i == num_sectors)
@@ -389,7 +399,7 @@ static UINT mmc_write_data(FX_MEDIA *media_ptr, ULONG start_sector, UINT num_sec
     }
 
     /* when defined, wait for the write notification */
-     FX_STM32_MMC_WRITE_CPLT_NOTIFY;
+     FX_STM32_MMC_WRITE_CPLT_NOTIFY();
 
     status = FX_SUCCESS;
   }

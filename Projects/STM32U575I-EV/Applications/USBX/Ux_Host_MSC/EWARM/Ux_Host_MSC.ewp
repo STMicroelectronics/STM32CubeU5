@@ -232,7 +232,6 @@
           <state>USBPD_PORT_COUNT=1</state>
           <state>USBPD_THREADX</state>
           <state>_SRC</state>
-          <state>USBPD_REV30_SUPPORT</state>
           <state>USBPDCORE_LIB_NO_PD</state>
           <state>UX_INCLUDE_USER_DEFINE_FILE</state>
           <state>USE_HAL_DRIVER</state>
@@ -369,7 +368,6 @@
           <state>$PROJ_DIR$/../USBPD/Target</state>
           <state>$PROJ_DIR$/../USBX/App</state>
           <state>$PROJ_DIR$/../USBX/Target</state>
-          <state>$PROJ_DIR$/../../../../../../Drivers/BSP/STM32U575-EV</state>
           <state>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc</state>
           <state>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy</state>
           <state>$PROJ_DIR$/../../../../../../Middlewares/ST/threadx/common/inc</state>
@@ -1092,7 +1090,7 @@
           <name>$PROJ_DIR$/../Core/Src/main.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../Core/Src/tx_initialize_low_level.s</name>
+          <name>$PROJ_DIR$/../Core/Src/tx_initialize_low_level.S</name>
         </file>
         <file>
           <name>$PROJ_DIR$/../Core/Src/app_threadx.c</name>
@@ -1167,6 +1165,12 @@
     </group>
   </group>
   <group>
+    <name>Doc</name>
+    <file>
+      <name>$PROJ_DIR$/../README.md</name>
+    </file>
+  </group>
+  <group>
     <name>Drivers</name>
     <group>
       <name>BSP</name>
@@ -1191,12 +1195,6 @@
           <name>$PROJ_DIR$/../../../../../../Drivers/BSP/Components/tcpp0203/tcpp0203_reg.c</name>
         </file>
       </group>
-    </group>
-    <group>
-      <name>CMSIS</name>
-      <file>
-        <name>$PROJ_DIR$/../Core/Src/system_stm32u5xx.c</name>
-      </file>
     </group>
     <group>
       <name>STM32U5xx_HAL_Driver</name>
@@ -1292,6 +1290,12 @@
       </file>
       <file>
         <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_tim.c</name>
+      </file>
+    </group>
+    <group>
+      <name>CMSIS</name>
+      <file>
+        <name>$PROJ_DIR$/../Core/Src/system_stm32u5xx.c</name>
       </file>
     </group>
   </group>
@@ -3061,12 +3065,6 @@
         </file>
       </group>
     </group>
-  </group>
-  <group>
-    <name>Doc</name>
-    <file>
-      <name>$PROJ_DIR$/../README.md</name>
-    </file>
   </group>
 </project>
 

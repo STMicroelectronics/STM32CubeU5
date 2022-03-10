@@ -1,3 +1,4 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file    Secure_nsclib/secure_nsc.h
@@ -15,6 +16,8 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
+
 /* USER CODE BEGIN Non_Secure_CallLib_h */
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef SECURE_NSC_H
@@ -40,4 +43,3 @@ void SECURE_RegisterCallback(SECURE_CallbackIDTypeDef CallbackId, void *func);
 uint32_t SECURE_GetRtcSecureStatus(void);
 #endif /* SECURE_NSC_H */
 /* USER CODE END Non_Secure_CallLib_h */
-

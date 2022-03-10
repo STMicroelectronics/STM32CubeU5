@@ -7,13 +7,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -229,7 +228,7 @@ int32_t SX8651_Init(SX8651_Object_t *pObj)
       ret += sx8651_write_cmd(&pObj->Ctx, &mode, 1);
 
       /* Wait for 2 ms */
-      SX8651_Delay(pObj, 2);
+      (void)SX8651_Delay(pObj, 2);
     }
   }
 
@@ -321,8 +320,8 @@ int32_t SX8651_GetState(SX8651_Object_t *pObj, SX8651_State_t *State)
     }
     else
     {
-      State->TouchX = ((data[0] & 0xF) << 8) | data[1];
-      State->TouchY = ((data[2] & 0xF) << 8) | data[3];
+      State->TouchX = (((uint32_t)data[0] & 0xFU) << 8U) | (uint32_t)data[1];
+      State->TouchY = (((uint32_t)data[2] & 0xFU) << 8U) | (uint32_t)data[3];
     }
   }
 
@@ -437,7 +436,7 @@ int32_t SX8651_Reset(SX8651_Object_t *pObj)
   else
   {
     /* Wait for a delay to ensure registers erasing */
-    SX8651_Delay(pObj, 2);
+    (void)SX8651_Delay(pObj, 2);
   }
 
   return ret;
@@ -464,14 +463,13 @@ static int32_t SX8651_Delay(SX8651_Object_t *pObj, uint32_t Delay)
 static int32_t SX8651_DetectTouch(SX8651_Object_t *pObj)
 {
   int32_t ret;
-  uint8_t nb_touch = 0;
+  uint8_t nb_touch = 0U;
 
-  sx8651_read_reg(&pObj->Ctx, SX8651_READ_ADDR | SX8651_REG_STAT, &nb_touch, 1);
-  nb_touch = ((nb_touch & REG_STAT_CONVIRQ) == REG_STAT_CONVIRQ);
+  (void)sx8651_read_reg(&pObj->Ctx, SX8651_READ_ADDR | SX8651_REG_STAT, &nb_touch, 1);
 
   if ((nb_touch & REG_STAT_CONVIRQ) == REG_STAT_CONVIRQ)
   {
-    nb_touch = 1;
+    nb_touch = 1U;
   }
   ret = (int32_t)nb_touch;
 
@@ -552,4 +550,4 @@ static int32_t WriteCmdWrap(void *handle, uint8_t *pData, uint16_t Length)
   * @}
   */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+

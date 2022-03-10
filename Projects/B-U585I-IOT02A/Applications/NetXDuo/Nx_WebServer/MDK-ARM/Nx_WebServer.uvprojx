@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>FX_INCLUDE_USER_DEFINE_FILE,LX_INCLUDE_USER_DEFINE_FILE,NX_INCLUDE_USER_DEFINE_FILE,TX_INCLUDE_USER_DEFINE_FILE,TX_SINGLE_MODE_NON_SECURE=1,USE_HAL_DRIVER,STM32U585xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../FileX/App;../FileX/Target;../LevelX/App;../LevelX/Target;../NetXDuo/App;../Core/Inc;../AZURE_RTOS/App;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver//Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Middlewares/ST/levelx/common/inc;../../../../../../Middlewares/ST/netxduo/addons/dhcp;../../../../../../Middlewares/ST/netxduo/addons/web;../../../../../../Middlewares/ST/threadx/common/inc;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Middlewares/ST/filex/common/inc;../../../../../../Middlewares/ST/filex/ports/generic/inc;../../../../../../Middlewares/ST/netxduo/common/inc;../../../../../../Middlewares/ST/netxduo/ports/cortex_m33/ac5/inc;../../../../../../Middlewares/ST/threadx/ports/cortex_m33/ac6/inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/BSP/Components/mx_wifi;../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip;../../../../../../Drivers/BSP/B-U585I-IOT02A;../NetXDuo/Target</IncludePath>
+              <IncludePath>../FileX/App;../FileX/Target;../LevelX/App;../Core/Inc;../LevelX/Target;../NetXDuo/App;../AZURE_RTOS/App;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver//Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Middlewares/ST/levelx/common/inc;../../../../../../Drivers/BSP/Components/mx25lm51245g;../../../../../../Middlewares/ST/netxduo/addons/dhcp;../../../../../../Middlewares/ST/netxduo/addons/web;../../../../../../Middlewares/ST/threadx/common/inc;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Middlewares/ST/filex/common/inc;../../../../../../Middlewares/ST/filex/ports/generic/inc;../../../../../../Middlewares/ST/netxduo/common/inc;../../../../../../Middlewares/ST/netxduo/ports/cortex_m33/ac5/inc;../../../../../../Middlewares/ST/threadx/ports/cortex_m33/ac6/inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/BSP/Components/mx_wifi;../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip;../../../../../../Drivers/BSP/B-U585I-IOT02A;../NetXDuo/Target</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -399,9 +399,9 @@
               <FilePath>../Core/Src/main.c</FilePath>
             </File>
             <File>
-              <FileName>tx_initialize_low_level.s</FileName>
+              <FileName>tx_initialize_low_level.S</FileName>
               <FileType>2</FileType>
-              <FilePath>../Core/Src/tx_initialize_low_level.s</FilePath>
+              <FilePath>../Core/Src/tx_initialize_low_level.S</FilePath>
             </File>
             <File>
               <FileName>app_threadx.c</FileName>
@@ -491,22 +491,22 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drivers/BSP/Components</GroupName>
+          <Files>
+            <File>
+              <FileName>mx25lm51245g.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Drivers/BSP/Components/mx25lm51245g/mx25lm51245g.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Drivers/BSP/Components/aps6408</GroupName>
           <Files>
             <File>
               <FileName>aps6408.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Drivers/BSP/Components/aps6408/aps6408.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Drivers/BSP/Components/mx25lm51245g</GroupName>
-          <Files>
-            <File>
-              <FileName>mx25lm51245g.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Drivers/BSP/Components/mx25lm51245g/mx25lm51245g.c</FilePath>
             </File>
           </Files>
         </Group>

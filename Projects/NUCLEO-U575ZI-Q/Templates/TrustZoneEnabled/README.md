@@ -1,49 +1,44 @@
-## <b>Templates_TrustZoneDisabled Example Description</b>
+## <b>Templates_TrustZoneEnabled Example Description</b>
 
 - This project provides a reference template based on the STM32Cube HAL API that can be used
-to build any firmware application when security is not enabled (TZEN=0).
+to build any firmware application when TrustZone security is activated (Option bit TZEN=1).
 
 - This project is targeted to run on STM32U575xx devices on NUCLEO-U575ZI-Q boards from STMicroelectronics.
 
-- At the beginning of the main program, the HAL_Init() function is called to reset
-all the peripherals, initialize the Flash interface and the systick.
+This project is composed of two sub-projects :
 
-- The SystemClock_Config() function is used to configure the system clock (SYSCLK)## Templates_TrustZoneEnabled Example Description
-
-- This project provides a reference template based on the STM32Cube HAL API that can be used
-to build any firmware application when TrustZone security is activated (Option bit TZEN=1).  
-
-This project is composed of two sub-projects:  
-
- - One for the secure application part (Project_s)  
- - One for the non-secure application part (Project_ns).  
+ - One for the secure application part (Project_s)
+ - One for the non-secure application part (Project_ns).
 
 Please remember that on system with security enabled, the system always boots in secure and
-the secure application is responsible for launching the non-secure application.  
+the secure application is responsible for launching the non-secure application.
 
 This project mainly shows how to switch from secure application to non-secure application
 thanks to the system isolation performed to split the internal Flash and internal SRAM memories
-into two halves:  
+into two halves:
 
- - The first half for the secure application and  
- - The second half for the non-secure application.  
- 
-User Option Bytes configuration:  
+ - The first half for the secure application.
+ - The second half for the non-secure application.
+
+User Option Bytes configuration :
 
 Please note the internal Flash is fully secure by default in TZEN=1 and User Option Bytes
 SECWM1_PSTRT/SECWM1_PEND and SECWM2_PSTRT/SECWM2_PEND should be set according to the application
-configuration. 
+configuration.
+
 Here the proper User Option Bytes setup in line with the project linker/scatter
 file is as follows:
 
      - TZEN=1
-     - SECWM1_PSTRT=0x0  SECWM1_PEND=0x7F  meaning all 128 pages of Bank1 set as secure
-     - SECWM2_PSTRT=0x1  SECWM2_PEND=0x0   meaning no page of Bank2 set as secure, hence Bank2 non-secure  
-	 
+     - SECWM1_PSTRT=0x0  SECWM1_PEND=0x7F  meaning all 128 pages of Bank1 set as secure.
+     - SECWM2_PSTRT=0x1  SECWM2_PEND=0x0   meaning no page of Bank2 set as secure, hence Bank2 non-secure.
+
 Any attempt by the non-secure application to access unauthorized code, memory or
 peripheral generates a fault as demonstrated in non secure application by commenting some
-code instructions in Secure/main.c (LED I/O release).  
-This project is targeted to run on STM32U575xx device on NUCLEO-U575ZI-Q boards from STMicroelectronics.  
+code instructions in Secure/main.c (LED I/O release).
+
+This project is targeted to run on STM32U575xx device on NUCLEO-U575ZI-Q boards from STMicroelectronics.
+
 The reference template project configures the maximum system clock frequency at 160Mhz in non-secure
 application.
 
@@ -71,8 +66,8 @@ application.
          b.	If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution.
          c.	Use a power supply different from ST-LINK in order to be able to connect to the target.
          d.	Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply.
-		 
-	Please refer to AN5347 for more details.	 
+
+Please refer to AN5347 for more details.
 
 ### <b>Keywords</b>
 
@@ -101,11 +96,12 @@ Reference, Template, TrustZone
 
 ### <b>Hardware and Software environment</b>
 
-  - This template runs on STM32U575xx devices with security enabled (TZEN=1).  
+  - This template runs on STM32U575xx devices with security enabled (TZEN=1).
+
   - This template has been tested with STMicroelectronics NUCLEO-U575ZI-Q (MB1549)
     board and can be easily tailored to any other supported device
-    and development board.  
-	
+    and development board.
+
   - User Option Bytes requirement (with STM32CubeProgrammer tool)
 
         - TZEN = 1                            System with TrustZone-M enabled
@@ -151,52 +147,4 @@ In order to make the program work, you must do the following :
    - Select  “Startup” >  “Add” >
  - Select the xxxxx_NS project
  - Build configuration : Select Release/Debug
-   - Click Debug to debug the example
-
-to run at 160 Mhz.
-
-The template project calls also CACHE_Enable() function in order to enable the Instruction
-and Data Caches. This function is provided as template implementation that the User may
-integrate in his application in order to enhance the performance.
-
-#### <b>Notes</b>
-
- 1. Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds)
-    based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from
-    a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower)
-    than the peripheral interrupt. Otherwise the caller ISR process will be blocked.
-    To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.
-
- 2. The application needs to ensure that the SysTick time base is always set to 1 millisecond
-    to have correct HAL operation.
-
-### <b>Keywords</b>
-
-Reference, Template, TrustZone disabled
-
-### <b>Directory contents</b>
-
-  - Templates/TrustZoneDisabled/Src/main.c                  Main program
-  - Templates/TrustZoneDisabled/Src/system_stm32u5xx.c      STM32U5xx system clock configuration file
-  - Templates/TrustZoneDisabled/Src/stm32u5xx_it.c          Interrupt handlers
-  - Templates/TrustZoneDisabled/Src/stm32u5xx_hal_msp.c     HAL MSP module
-  - Templates/TrustZoneDisabled/Inc/main.h                  Main program header file
-  - Templates/TrustZoneDisabled/Inc/stm32u5xx_nucleo_conf.h BSP Configuration file
-  - Templates/TrustZoneDisabled/Inc/stm32u5xx_hal_conf.h    HAL Configuration file
-  - Templates/TrustZoneDisabled/Inc/stm32u5xx_it.h          Interrupt handlers header file
-
-### <b>Hardware and Software environment</b>
-
-  - This template runs on STM32U575xx devices without security enabled (TZEN=0).  
-  - This template has been tested with STMicroelectronics NUCLEO-U575ZI-Q (MB1549)
-    board and can be easily tailored to any other supported device
-    and development board.
-
-### <b>How to use it ?</b>
-
-In order to make the program work, you must do the following :
-
- - Open your preferred toolchain 
- - Rebuild all files and load your image into target memory
- - Run the example
-
+ - Click Debug to debug the example

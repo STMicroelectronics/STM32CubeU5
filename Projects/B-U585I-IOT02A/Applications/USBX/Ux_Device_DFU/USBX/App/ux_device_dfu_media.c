@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   USBX Device applicative file
   ******************************************************************************
-  * @attention
+    * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.
@@ -16,7 +16,7 @@
   *
   ******************************************************************************
   */
-/* USER CODE END  */
+/* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -84,10 +84,10 @@ static uint32_t GetBank(uint32_t Addr);
 /* USER CODE BEGIN 0 */
 
 /**
-* @brief  Initializes Memory routine, Unlock the internal flash.
-* @param  dfu Instance.
-* @retval none.
-*/
+  * @brief  Initializes Memory routine, Unlock the internal flash.
+  * @param  dfu Instance.
+  * @retval none.
+  */
 void DFU_Init(void *dfu)
 {
   /* Unlock the internal flash */
@@ -95,10 +95,10 @@ void DFU_Init(void *dfu)
 }
 
 /**
-* @brief  DeInitializes Memory routine, Lock the internal flash.
-* @param  dfu: dfu Instance.
-* @retval none.
-*/
+  * @brief  DeInitializes Memory routine, Lock the internal flash.
+  * @param  dfu: dfu Instance.
+  * @retval none.
+  */
 void DFU_DeInit(void *dfu)
 {
   /* Lock the internal flash */
@@ -106,11 +106,11 @@ void DFU_DeInit(void *dfu)
 }
 
 /**
-* @brief  Get status routine.
-* @param  dfu: dfu Instance.
-* @param  media_status : dfu media status.
-* @retval UX_SUCCESS.
-*/
+  * @brief  Get status routine.
+  * @param  dfu: dfu Instance.
+  * @param  media_status : dfu media status.
+  * @retval UX_SUCCESS.
+  */
 UINT DFU_GetStatus(void *dfu, ULONG *media_status)
 {
   *media_status = dfu_status;
@@ -119,12 +119,12 @@ UINT DFU_GetStatus(void *dfu, ULONG *media_status)
 }
 
 /**
-* @brief  Inform application when a begin and end of transfer of the firmware
-occur.
-* @param  dfu: dfu Instance.
-* @param  notification: unused.
-* @retval UX_SUCCESS.
-*/
+  * @brief  Inform application when a begin and end of transfer of the firmware
+            occur.
+  * @param  dfu: dfu Instance.
+  * @param  notification: unused.
+  * @retval UX_SUCCESS.
+  */
 UINT DFU_Notify(void *dfu, ULONG notification)
 {
   UNUSED(notification);
@@ -133,13 +133,13 @@ UINT DFU_Notify(void *dfu, ULONG notification)
 }
 
 /**
-* @brief  Memory read routine.
-* @param  dfu: dfu Instance
-* @param  block_number: block number.
-* @param  data_pointer: Pointer to the Source buffer.
-* @param  length: Number of data to be read (in bytes).
-* @retval Status.
-*/
+  * @brief  Memory read routine.
+  * @param  dfu: dfu Instance
+  * @param  block_number: block number.
+  * @param  data_pointer: Pointer to the Source buffer.
+  * @param  length: Number of data to be read (in bytes).
+  * @retval Status.
+  */
 UINT DFU_Read(VOID *dfu, ULONG block_number, UCHAR * data_pointer,
               ULONG length, ULONG *media_status)
 {
@@ -182,14 +182,14 @@ UINT DFU_Read(VOID *dfu, ULONG block_number, UCHAR * data_pointer,
 }
 
 /**
-* @brief  Memory write routine.
-* @param  dfu: dfu Instance.
-* @param  block_number: block number
-* @param  data_pointer: Pointer to the Source buffer.
-* @param  length: Number of data to be read (in bytes).
-* @param  media_status: Not used.
-* @retval status.
-*/
+  * @brief  Memory write routine.
+  * @param  dfu: dfu Instance.
+  * @param  block_number: block number
+  * @param  data_pointer: Pointer to the Source buffer.
+  * @param  length: Number of data to be read (in bytes).
+  * @param  media_status: Not used.
+  * @retval status.
+  */
 UINT DFU_Write(VOID *dfu, ULONG block_number, UCHAR * data_pointer,
                ULONG length, ULONG *media_status)
 {
@@ -225,7 +225,7 @@ UINT DFU_Write(VOID *dfu, ULONG block_number, UCHAR * data_pointer,
   }
 
   /* put a message queue to usbx_dfu_download_thread_entry */
-  if (tx_queue_send(&ux_app_MsgQueue, &ux_dfu_download, TX_NO_WAIT))
+  if (tx_queue_send(&ux_app_MsgQueue, &ux_dfu_download, TX_NO_WAIT) != TX_SUCCESS)
   {
     Error_Handler();
   }
@@ -234,12 +234,12 @@ UINT DFU_Write(VOID *dfu, ULONG block_number, UCHAR * data_pointer,
 }
 
 /**
-* @brief  Handles the sub-protocol DFU leave DFU mode request (leaves DFU mode
-*         and resets device to jump to user loaded code).
-* @param  dfu: dfu Instance.
-* @param  transfer: transfer request.
-* @retval None.
-*/
+  * @brief  Handles the sub-protocol DFU leave DFU mode request (leaves DFU mode
+  *         and resets device to jump to user loaded code).
+  * @param  dfu: dfu Instance.
+  * @param  transfer: transfer request.
+  * @retval None.
+  */
 UINT DFU_Leave(VOID *dfu, UX_SLAVE_TRANSFER *transfer)
 {
   UCHAR *setup;
@@ -258,7 +258,7 @@ UINT DFU_Leave(VOID *dfu, UX_SLAVE_TRANSFER *transfer)
     if (setup[UX_SETUP_REQUEST] == UX_SLAVE_CLASS_DFU_COMMAND_DOWNLOAD)
     {
 
-      if ((setup[UX_SETUP_LENGTH] == 0) && (setup[UX_SETUP_LENGTH +1] == 0))
+      if ((setup[UX_SETUP_LENGTH] == 0) && (setup[UX_SETUP_LENGTH + 1] == 0))
       {
         /* Update Leave DFU state */
         Leave_DFU_State = LEAVE_DFU_ENABLED;
@@ -278,10 +278,10 @@ UINT DFU_Leave(VOID *dfu, UX_SLAVE_TRANSFER *transfer)
 }
 
 /**
-* @brief  Function implementing usbx_dfu_download_thread_entry.
-* @param  arg: Not used.
-* @retval None.
-*/
+  * @brief  Function implementing usbx_dfu_download_thread_entry.
+  * @param  arg: Not used.
+  * @retval None.
+  */
 void usbx_dfu_download_thread_entry(ULONG arg)
 {
   UINT                  status;
@@ -299,7 +299,7 @@ void usbx_dfu_download_thread_entry(ULONG arg)
     status = tx_queue_receive(&ux_app_MsgQueue, &ux_dfu_download, TX_WAIT_FOREVER);
 
     /* Check the completion code and the actual flags returned. */
-    if (status == UX_SUCCESS)
+    if (status == TX_SUCCESS)
     {
 
       if(ux_dfu_download.wblock_num == 0)
@@ -421,10 +421,10 @@ void usbx_dfu_download_thread_entry(ULONG arg)
 
 
 /**
-* @brief  Erase sector.
-* @param  Address: Address of sector to be erased.
-* @retval UX_SUCCESS if operation is successful.
-*/
+  * @brief  Erase sector.
+  * @param  Address: Address of sector to be erased.
+  * @retval UX_SUCCESS if operation is successful.
+  */
 static uint16_t DFU_Erase(uint32_t Address)
 {
   FLASH_EraseInitTypeDef EraseInitStruct;
@@ -476,10 +476,10 @@ static uint16_t DFU_Erase(uint32_t Address)
 }
 
 /**
-* @brief  Gets the page of a given address
-* @param  Addr: Address of the FLASH Memory
-* @retval The page of a given address
-*/
+  * @brief  Get the page of a given address
+  * @param  Addr: Address of the FLASH Memory
+  * @retval The page of a given address
+  */
 static uint32_t GetPage(uint32_t Addr)
 {
   uint32_t page = 0;
@@ -517,10 +517,10 @@ static uint32_t GetBank(uint32_t Addr)
 }
 
 /**
-* @brief DFU device connection callback.
-* @param  Device_State: dfu Instance.
-* @retval status.
-*/
+  * @brief DFU device connection callback.
+  * @param  Device_State: dfu Instance.
+  * @retval status.
+  */
 UINT DFU_Device_ConnectionCallback(ULONG Device_State)
 {
 
@@ -543,3 +543,4 @@ UINT DFU_Device_ConnectionCallback(ULONG Device_State)
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
+

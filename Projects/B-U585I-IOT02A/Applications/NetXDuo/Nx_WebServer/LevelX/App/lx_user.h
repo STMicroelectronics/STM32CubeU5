@@ -26,10 +26,6 @@
 
 /* #define LX_FREE_SECTOR_DATA_VERIFY */
 
-/* #define LX_NAND_SECTOR_MAPPING_CACHE_SIZE         128 */
-
-/* #define LX_NAND_FLASH_DIRECT_MAPPING_CACHE */
-
 /* #define LX_NOR_DISABLE_EXTENDED_CACHE */
 
 /* #define LX_NOR_EXTENDED_CACHE_SIZE         8 */

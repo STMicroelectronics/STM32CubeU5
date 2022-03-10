@@ -228,4 +228,3 @@ HAL_SRAM_StateTypeDef HAL_SRAM_GetState(SRAM_HandleTypeDef *hsram);
 #endif
 
 #endif /* STM32U5xx_HAL_SRAM_H */
-

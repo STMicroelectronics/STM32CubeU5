@@ -53,8 +53,10 @@ int32_t Led_demo(void)
   /* Switch on the LEDs */
   printf("Switch on LED6\n");
   if (BSP_LED_On(LED6) != BSP_ERROR_NONE) result--;
+  HAL_Delay(1000);
   printf("Switch on LED7\n");
   if (BSP_LED_On(LED7) != BSP_ERROR_NONE) result--;
+  HAL_Delay(1000);
 
   /* Check LEDs states */
   if (BSP_LED_GetState(LED6) != 1) result--;
@@ -66,8 +68,10 @@ int32_t Led_demo(void)
   /* Toggle the LEDs */
   printf("Switch off LED6\n");
   if (BSP_LED_Toggle(LED6) != BSP_ERROR_NONE) result--;
+  HAL_Delay(1000);
   printf("Switch off LED7\n");
   if (BSP_LED_Toggle(LED7) != BSP_ERROR_NONE) result--;
+  HAL_Delay(1000);
 
   /* Check LEDs states */
   if (BSP_LED_GetState(LED6) != 0) result--;
@@ -79,8 +83,10 @@ int32_t Led_demo(void)
   /* Toggle the LEDs */
   printf("Switch on LED6\n");
   if (BSP_LED_Toggle(LED6) != BSP_ERROR_NONE) result--;
+  HAL_Delay(1000);
   printf("Switch on LED7\n");
   if (BSP_LED_Toggle(LED7) != BSP_ERROR_NONE) result--;
+  HAL_Delay(1000);
 
   /* Check result */
   if (CheckResult() != 0U) result--;
@@ -88,8 +94,10 @@ int32_t Led_demo(void)
   /* Switch off the LEDs */
   printf("Switch off LED6\n");
   if (BSP_LED_Off(LED6) != BSP_ERROR_NONE) result--;
+  HAL_Delay(1000);
   printf("Switch off LED7\n");
   if (BSP_LED_Off(LED7) != BSP_ERROR_NONE) result--;
+  HAL_Delay(1000);
 
   /* Check result */
  if (CheckResult() != 0U) result--;

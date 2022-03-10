@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2017-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -15,14 +15,11 @@ extern "C" {
 #include <inttypes.h>
 #include <limits.h>
 #include "tfm_api.h"
-#include "tfm_core.h"
 
 /* These definitions are used in symbols, only digits are permitted */
 #define CORE_TEST_ID_NS_THREAD            1001
 #define CORE_TEST_ID_CHECK_INIT           1003
 #define CORE_TEST_ID_RECURSION            1004
-#define CORE_TEST_ID_MEMORY_PERMISSIONS   1005
-#define CORE_TEST_ID_MPU_ACCESS           1006
 #define CORE_TEST_ID_BUFFER_CHECK         1007
 #define CORE_TEST_ID_SS_TO_SS             1008
 #define CORE_TEST_ID_SS_TO_SS_BUFFER      1010

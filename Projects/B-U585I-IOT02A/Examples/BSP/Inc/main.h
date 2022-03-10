@@ -32,7 +32,9 @@
 #include "b_u585i_iot02a_motion_sensors.h"
 #include "b_u585i_iot02a_env_sensors.h"
 #include "b_u585i_iot02a_light_sensor.h"
+#include "b_u585i_iot02a_ranging_sensor.h"
 #include "b_u585i_iot02a_camera.h"
+#include "b_u585i_iot02a_audio.h"
 #include "b_u585i_iot02a_eeprom.h"
 
 /* Exported types ------------------------------------------------------------*/
@@ -55,7 +57,9 @@ int32_t  Button_demo(void);
 int32_t  Ms_demo(void);
 int32_t  Es_demo(void);
 int32_t  Ls_demo(void);
+int32_t  Rs_demo(void);
 int32_t  Camera_demo(void);
+int32_t  AudioRecord_demo(void);
 int32_t  OSPI_NOR_demo(void);
 int32_t  OSPI_RAM_demo(void);
 int32_t  EEPROM_demo(void);

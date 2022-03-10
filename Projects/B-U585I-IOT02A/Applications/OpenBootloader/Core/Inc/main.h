@@ -20,6 +20,10 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Includes ------------------------------------------------------------------*/
 #include "stm32u5xx_hal.h"
 
@@ -30,5 +34,9 @@
 void Error_Handler(void);
 void System_DeInit(void);
 void MX_USB_OTG_FS_PCD_Init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MAIN_H */

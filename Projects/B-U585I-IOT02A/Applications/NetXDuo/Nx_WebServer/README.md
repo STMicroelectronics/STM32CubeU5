@@ -18,9 +18,11 @@ The main entry function tx_application_define() is called by ThreadX during kern
 
  + A <i>DHCP client is created.</i>
 
-The application then creates 2 threads with the same priorities:
+The application then creates 3 threads :
 
  + **AppMainThread** (priority 10, PreemtionThreashold 10) : created with the <i>TX_AUTO_START</i> flag to start automatically.
+
++ **AppServerThread** (priority 5, PreemtionThreashold 5) : created with the <i>TX_DONT_START</i> flag to be started later.
 
  + **AppWebServerThread** (priority 5, PreemtionThreashold 5) : created with the <i>TX_DONT_START</i> flag to be started later.
 
@@ -45,7 +47,7 @@ The **AppWebServerThread**, once started:
 
  + The board IP address "IP@" is printed on the HyperTerminal
 
- + Home page is well displayed on the browser after entering the url: http://IP@/index.html
+ + Home page is well displayed on the browser after entering the url: http://IP@/about.html
 
  + Dashboard is well displayed on the browser after entering the url: http://IP@/dashboard.html
 

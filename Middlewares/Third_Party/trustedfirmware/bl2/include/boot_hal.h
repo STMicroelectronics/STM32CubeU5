@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
+ * Copyright (c) 2020 STMicroelectronics. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -14,9 +15,9 @@
 extern "C" {
 #endif
 
-struct arm_vector_table {
-	uint32_t msp;
-	uint32_t reset;
+struct boot_arm_vector_table {
+    uint32_t msp;
+    uint32_t reset;
 };
 
 /*
@@ -36,10 +37,40 @@ struct arm_vector_table {
  *        - Etc.
  */
 void boot_clear_bl2_ram_area(void);
+
+/*
+ * \brief Chain-loading the next image in the boot sequence.
+ *        Can be overridden for platform specific initialization.
+ * \param[in] jump function beeing call again
+ * \param[in] reset_handler_addr Address of next image's Reset_Handler() in
+                                 the boot chain (TF-M SPE, etc.)
+ */
+void boot_jump_to_next_image(uint32_t boot_jump_addr, uint32_t reset_handler_addr);
+
+/**
+ * \brief Platform peripherals and devices initialization.
+ *        Can be overridden for platform specific initialization.
+ *
+ * \return Returns 0 on success, non-zero otherwise
+ */
 int32_t boot_platform_init(void);
-__attribute__((naked)) void boot_jump_to_next_image(uint32_t boot_jump_addr, uint32_t reset_handler_addr);
-void jumper(struct arm_vector_table *vt);
-void boot_platform_noimage(void);
+
+/**
+ * \brief Platform operation to start secure image.
+ *        Can be overridden for platform specific initialization.
+ *
+ * \param[in] vt  pointer to secure application vector table descriptor
+ */
+void boot_platform_quit(struct boot_arm_vector_table *vt) __NO_RETURN;
+
+
+/**
+ * \brief Platform operation to execute when no image is valid.
+ *        Can be overridden for platform specific initialization.
+ *
+ */
+void boot_platform_noimage(void) __NO_RETURN;
+
 #ifdef __cplusplus
 }
 #endif

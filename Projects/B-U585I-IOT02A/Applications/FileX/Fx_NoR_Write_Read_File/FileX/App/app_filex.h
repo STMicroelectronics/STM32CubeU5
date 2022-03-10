@@ -31,9 +31,9 @@ extern "C" {
 #include "lx_stm32_ospi_driver.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "main.h"
 #include <stdio.h>
-#include "b_u585i_iot02a.h"
-#include "b_u585i_iot02a_ospi.h"
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

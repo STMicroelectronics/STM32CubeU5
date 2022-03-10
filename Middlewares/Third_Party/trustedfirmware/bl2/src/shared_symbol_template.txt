@@ -1,0 +1,34 @@
+# -----------------------------------------------------------
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# -----------------------------------------------------------
+
+#Groups of functions that can be always shared with no exceptions
+mbedtls_asn1
+
+mbedtls_mpi
+
+mbedtls_platform
+
+mbedtls_rsa
+
+#This group is only relevant if BL2 image encryption is on
+mbedtls_md
+
+#This group has two functions that cause runtime errors when shared, so the
+#error-free ones are listed piece by piece
+mbedtls_internal_sha256
+mbedtls_sha256_free
+mbedtls_sha256_init
+mbedtls_sha256_ret
+mbedtls_sha256_starts_ret
+
+#Symbols necessary to make sharing additional functions possible
+mbedtls_calloc
+mbedtls_free
+
+#Miscellaneous functions
+mbedtls_exit
+memset_func

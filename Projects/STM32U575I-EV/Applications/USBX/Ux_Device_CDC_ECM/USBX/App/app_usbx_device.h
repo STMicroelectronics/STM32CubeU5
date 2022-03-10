@@ -30,7 +30,16 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "main.h"
+#include "ux_api.h"
+#include "ux_system.h"
+#include "ux_utility.h"
+#include "ux_device_stack.h"
+#include "ux_dcd_stm32.h"
+#include "ux_device_descriptors.h"
+#include "ux_device_class_cdc_ecm.h"
+#include "ux_network_driver.h"
+#include "app_azure_rtos_config.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

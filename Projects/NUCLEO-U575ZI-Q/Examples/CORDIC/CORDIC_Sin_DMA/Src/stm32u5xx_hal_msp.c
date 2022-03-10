@@ -73,10 +73,6 @@ void HAL_MspInit(void)
 
   /* System interrupt init*/
 
-  /** Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
-  */
-  HAL_PWREx_DisableUCPDDeadBattery();
-
   /* USER CODE BEGIN MspInit 1 */
 
   /* USER CODE END MspInit 1 */
@@ -121,6 +117,10 @@ void HAL_CORDIC_MspInit(CORDIC_HandleTypeDef* hcordic)
 
     __HAL_LINKDMA(hcordic, hdmaOut, handle_GPDMA1_Channel2);
 
+    if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel2, DMA_CHANNEL_NPRIV) != HAL_OK)
+    {
+      Error_Handler();
+    }
 
     /* GPDMA1_REQUEST_CORDIC_WRITE Init */
     handle_GPDMA1_Channel1.Instance = GPDMA1_Channel1;
@@ -144,6 +144,10 @@ void HAL_CORDIC_MspInit(CORDIC_HandleTypeDef* hcordic)
 
     __HAL_LINKDMA(hcordic, hdmaIn, handle_GPDMA1_Channel1);
 
+    if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel1, DMA_CHANNEL_NPRIV) != HAL_OK)
+    {
+      Error_Handler();
+    }
 
   /* USER CODE BEGIN CORDIC_MspInit 1 */
 

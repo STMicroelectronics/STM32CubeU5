@@ -3,14 +3,10 @@
 The SBSFU_Appli application consists in two distinct projects: the SBSFU_Appli
 Secure and SBSFU_Appli Non Secure projects.
 
-The SBSFU_Appli Secure project is used to generate the SBSFU_Appli Secure binary
-file. The core function of this application relies on the trusted firmware (TFM)
-middleware and the mbed-crypto middleware.
+The SBSFU_Appli Secure project is used to generate the SBSFU_Appli Secure binary file.
 It has to be compiled after TFM_SBSFU_Boot project.
 
-The SBSFU_Appli Non Secure project is used to generate the SBSFU_Appli Non Secure
-binary file. The core function of this application relies on the trusted
-firmware (TFM) middleware.
+The SBSFU_Appli Non Secure project is used to generate the SBSFU_Appli Non Secure binary file.
 It has to be compiled after SBSFU_Appli Secure project.
 
 In order to ease the development process, prebuild and postbuild commands are
@@ -50,6 +46,7 @@ Cryptography, PSA, TrustZone
   - SBSFU_Appli/NonSecure/Inc/low_level_flash.h    Header file for low_level_flash.c
   - SBSFU_Appli/NonSecure/Inc/main.h               Header file for main.c
   - SBSFU_Appli/NonSecure/Inc/mpu_armv8m_drv.h     Header file for mpu_armv8m_drv.c
+  - SBSFU_Appli/NonSecure/Inc/ns_data.h            Header file for ns_data.c
   - SBSFU_Appli/NonSecure/Inc/stm32u5xx_hal_conf.h HAL configuration file
   - SBSFU_Appli/NonSecure/Inc/stm32u5xx_it.h       Header file for stm32u5xx_it.c
   - SBSFU_Appli/NonSecure/Inc/test_protections.h   Header file for test_protections.c
@@ -62,6 +59,7 @@ Cryptography, PSA, TrustZone
   - SBSFU_Appli/NonSecure/Src/low_level_flash.c    Flash Low level interface
   - SBSFU_Appli/NonSecure/Src/main.c               Main application file
   - SBSFU_Appli/NonSecure/Src/mpu_armv8m_drv.c     MPU low level interface
+  - SBSFU_Appli/NonSecure/Src/ns_data.c            NS Data image example
   - SBSFU_Appli/NonSecure/Src/startup_stm32u5xx.c  Startup file in c
   - SBSFU_Appli/NonSecure/Src/stm32u5xx_it.c       Interrupt handlers
   - SBSFU_Appli/NonSecure/Src/system_stm32u5xx.c   System init file

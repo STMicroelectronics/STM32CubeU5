@@ -50,7 +50,7 @@ extern "C" {
   * @}
   */
 
-/** @defgroup LPBAM_LPTIM_ContinuousMode LPBAM LPTIM Continuous Mode
+/** @defgroup LPBAM_LPTIM_Start_Mode LPBAM LPTIM Start Mode
   * @{
   */
 #define LPBAM_LPTIM_START_SINGLE     (0x00U) /*!< LPBAM LPTIM single mode start     */
@@ -72,7 +72,7 @@ extern "C" {
   * @{
   */
 #define LPBAM_LPTIM_IT_NONE   (0x00U)         /*!< LPBAM LPTIM wake up interrupt none              */
-#define LPBAM_LPTIM_IT_UPDATE LPTIM_IT_UPDATE /*!< LPBAM LPTIM update event match interrupt enable */
+#define LPBAM_LPTIM_IT_UPDATE LPTIM_DIER_UEIE /*!< LPBAM LPTIM update event match interrupt enable */
 /**
   * @}
   */

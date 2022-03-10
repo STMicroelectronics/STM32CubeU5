@@ -1,4 +1,6 @@
 /*
+ * SPDX-License-Identifier: Apache-2.0
+ *
  * Copyright (c) 2017 Linaro Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,11 +56,17 @@ uint32_t bootutil_get_caps(void)
 #if defined(MCUBOOT_ENCRYPT_EC256)
     res |= BOOTUTIL_CAP_ENC_EC256;
 #endif
+#if defined(MCUBOOT_ENCRYPT_X25519)
+    res |= BOOTUTIL_CAP_ENC_X25519;
+#endif
 #if defined(MCUBOOT_VALIDATE_PRIMARY_SLOT)
     res |= BOOTUTIL_CAP_VALIDATE_PRIMARY_SLOT;
 #endif
 #if defined(MCUBOOT_DOWNGRADE_PREVENTION)
     res |= BOOTUTIL_CAP_DOWNGRADE_PREVENTION;
+#endif
+#if defined(MCUBOOT_BOOTSTRAP)
+    res |= BOOTUTIL_CAP_BOOTSTRAP;
 #endif
 
     return res;

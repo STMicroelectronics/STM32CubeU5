@@ -443,8 +443,8 @@ void BSP_IOEXPANDER_ITConfig(uint32_t Instance)
     HAL_GPIO_Init(MFX_IRQOUT_GPIO_PORT, &gpio_init_structure);
 
     /* Enable and set GPIO EXTI Interrupt to the lowest priority */
-    HAL_NVIC_SetPriority((IRQn_Type)(MFX_IRQOUT_EXTI_IRQn), BSP_IOEXPANDER_IT_PRIORITY, 0x00);
-    HAL_NVIC_EnableIRQ((IRQn_Type)(MFX_IRQOUT_EXTI_IRQn));
+    HAL_NVIC_SetPriority((IRQn_Type)(MFX_IRQOUT_EXTI_IRQ), BSP_IOEXPANDER_IT_PRIORITY, 0x00);
+    HAL_NVIC_EnableIRQ((IRQn_Type)(MFX_IRQOUT_EXTI_IRQ));
   }
 }
 

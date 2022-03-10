@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2017-2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2017-2020, Arm Limited. All rights reserved.
+ * Copyright (c) 2020, Cypress Semiconductor Corporation. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -9,17 +10,18 @@
 #include <string.h>
 
 #include "core_ns_tests.h"
+#include "cmsis.h"
 #include "tfm_api.h"
 #include "tfm_plat_test.h"
-#include "test/suites/core/non_secure/core_test_api.h"
-#include "test/test_services/tfm_core_test/core_test_defs.h"
+#include "core_test_api.h"
+#include "core_test_defs.h"
 #ifdef TFM_PSA_API
 #include "psa_manifest/sid.h"
 #else  /* TFM_PSA_API */
 #include "tfm_veneers.h"
 #endif /* TFM_PSA_API */
 #ifdef TFM_ENABLE_IRQ_TEST
-#include "platform_irq.h"
+#include "tfm_peripherals_def.h"
 #endif
 
 /* Define test suite for core tests */
@@ -28,17 +30,17 @@
 #define TOSTRING(x) #x
 #define CORE_TEST_DESCRIPTION(number, fn, description) \
     {fn, "TFM_CORE_TEST_"TOSTRING(number),\
-     description, {0} }
+     description, {TEST_PASSED} }
 
 #ifndef TFM_PSA_API
-static void tfm_core_test_permissions(struct test_result_t *ret);
-static void tfm_core_test_mpu_access(struct test_result_t *ret);
 static void tfm_core_test_get_caller_client_id(struct test_result_t *ret);
 static void tfm_core_test_spm_request(struct test_result_t *ret);
 #endif /* TFM_PSA_API */
 static void tfm_core_test_ns_thread(struct test_result_t *ret);
 static void tfm_core_test_check_init(struct test_result_t *ret);
+#ifdef ENABLE_TFM_CORE_RECURSION_TESTS
 static void tfm_core_test_recursion(struct test_result_t *ret);
+#endif
 static void tfm_core_test_buffer_check(struct test_result_t *ret);
 static void tfm_core_test_ss_to_ss(struct test_result_t *ret);
 static void tfm_core_test_ss_to_ss_buffer(struct test_result_t *ret);
@@ -59,22 +61,15 @@ CORE_TEST_DESCRIPTION(CORE_TEST_ID_NS_THREAD, tfm_core_test_ns_thread,
     "Test service request from NS thread mode"),
 CORE_TEST_DESCRIPTION(CORE_TEST_ID_CHECK_INIT, tfm_core_test_check_init,
     "Test the success of service init"),
+#ifdef ENABLE_TFM_CORE_RECURSION_TESTS
 CORE_TEST_DESCRIPTION(CORE_TEST_ID_RECURSION, tfm_core_test_recursion,
-    "Test direct recursion of secure services (DEPRECATED)"),
-#ifndef TFM_PSA_API
-CORE_TEST_DESCRIPTION(CORE_TEST_ID_MEMORY_PERMISSIONS,
-    tfm_core_test_permissions,
-    "Test secure service memory access permissions"),
-#endif /* TFM_PSA_API */
+    "Test direct recursion of secure services"),
+#endif
 #ifdef TFM_ENABLE_IRQ_TEST
 CORE_TEST_DESCRIPTION(CORE_TEST_ID_SECURE_IRQ,
     tfm_core_test_irq,
     "Test secure irq"),
 #endif
-#ifndef TFM_PSA_API
-CORE_TEST_DESCRIPTION(CORE_TEST_ID_MPU_ACCESS, tfm_core_test_mpu_access,
-    "Test secure service MPU accesses"),
-#endif /* TFM_PSA_API */
 CORE_TEST_DESCRIPTION(CORE_TEST_ID_BUFFER_CHECK, tfm_core_test_buffer_check,
     "Test secure service buffer accesses"),
 CORE_TEST_DESCRIPTION(CORE_TEST_ID_SS_TO_SS, tfm_core_test_ss_to_ss,
@@ -114,14 +109,14 @@ void register_testsuite_ns_core_positive(struct test_suite_t *p_test_suite)
 }
 
 #ifdef TFM_PSA_API
-static psa_status_t psa_test_common(uint32_t sid, uint32_t minor_version,
+static psa_status_t psa_test_common(uint32_t sid, uint32_t version,
                                     const psa_invec *in_vecs, size_t in_len,
                                     psa_outvec *out_vecs, size_t out_len)
 {
     psa_handle_t handle;
     psa_status_t status;
 
-    handle = psa_connect(sid, minor_version);
+    handle = psa_connect(sid, version);
     if (handle <= 0) {
         return CORE_TEST_ERRNO_INVALID_PARAMETER;
     }
@@ -206,9 +201,9 @@ static void full_iovecs(psa_invec invec[], psa_outvec outvec[])
     int i = 0;
 
     for (i = 0; i < PSA_MAX_IOVEC; ++i) {
-        invec[i].len = PSA_MAX_IOVEC*sizeof(psa_invec);
-        invec[i].base = invec;
-        outvec[i].len = PSA_MAX_IOVEC*sizeof(psa_outvec);
+        invec[i].len = sizeof(psa_invec);
+        invec[i].base = invec + i;
+        outvec[i].len = PSA_MAX_IOVEC * sizeof(psa_outvec);
         outvec[i].base = outvec;
     }
 }
@@ -521,7 +516,8 @@ void TIMER1_Handler (void)
 static int32_t tfm_core_test_irq_scenario(
                                          enum irq_test_scenario_t test_scenario)
 {
-    struct irq_test_execution_data_t *execution_data_address = &irq_test_execution_data;
+    struct irq_test_execution_data_t *execution_data_address =
+                                                       &irq_test_execution_data;
     uint32_t scenario = test_scenario;
 
     psa_invec in_vec[] = {
@@ -591,7 +587,16 @@ static void tfm_core_test_irq(struct test_result_t *ret)
 {
     int32_t err;
 
-    NVIC_EnableIRQ(4);
+    struct irq_test_execution_data_t *execution_data_address =
+                                                       &irq_test_execution_data;
+    uint32_t scenario = IRQ_TEST_SCENARIO_NONE;
+
+    psa_invec in_vec[] = {
+                 {&scenario, sizeof(uint32_t)},
+                 {&execution_data_address,
+                                  sizeof(struct irq_test_execution_data_t *)} };
+
+    NVIC_EnableIRQ(TFM_TIMER1_IRQ);
 
     err = tfm_core_test_irq_scenario(IRQ_TEST_SCENARIO_1);
     if (err != CORE_TEST_ERRNO_SUCCESS) {
@@ -620,6 +625,19 @@ static void tfm_core_test_irq(struct test_result_t *ret)
     err = tfm_core_test_irq_scenario(IRQ_TEST_SCENARIO_5);
     if (err != CORE_TEST_ERRNO_SUCCESS) {
         TEST_FAIL("Failed to execute IRQ test scenario 5.");
+        return;
+    }
+
+    /* finally call prepare with scenario none as a teardown */
+#ifdef TFM_PSA_API
+    err = psa_test_common(SPM_CORE_IRQ_TEST_1_PREPARE_TEST_SCENARIO_SID,
+                          SPM_CORE_IRQ_TEST_1_PREPARE_TEST_SCENARIO_VERSION,
+                          in_vec, 2, NULL, 0);
+#else
+    err = tfm_spm_irq_test_1_prepare_test_scenario_veneer(in_vec, 2, NULL, 0);
+#endif
+    if (err != CORE_TEST_ERRNO_SUCCESS) {
+        TEST_FAIL("Failed to tear down IRQ tests");
         return;
     }
 
@@ -652,78 +670,21 @@ static void tfm_core_test_check_init(struct test_result_t *ret)
     ret->val = TEST_PASSED;
 }
 
+#ifdef ENABLE_TFM_CORE_RECURSION_TESTS
 /**
  * \brief Tests what happens when a service calls itself directly
  */
 static void tfm_core_test_recursion(struct test_result_t *ret)
 {
-    /* This test triggers a non-recoverable security violation. Don't run */
-    TEST_LOG("This test is DEPRECATED and the test execution was SKIPPED\r\n");
-    ret->val = TEST_PASSED;
+    /*
+     * TODO
+     * Recursive calls will trigger a fatal error. Current test framework cannot
+     * recover from that error.
+     * Leave a test case stub here for further implementation.
+     */
+    TEST_FAIL("The test case is not implemented yet.");
 }
-
-#ifndef TFM_PSA_API
-static char *error_to_string(const char *desc, int32_t err)
-{
-    static char info[80];
-
-    sprintf(info, "%s. Error code: %d, extra data: %d",
-        desc,
-        CORE_TEST_ERROR_GET_CODE(err),
-        CORE_TEST_ERROR_GET_EXTRA(err));
-    return info;
-}
-
-static void tfm_core_test_mpu_access(struct test_result_t *ret)
-{
-    int32_t err;
-    int32_t test_case_id = CORE_TEST_ID_MPU_ACCESS;
-    uint32_t data[4] = {0};
-    psa_invec in_vec[] = { {&test_case_id, sizeof(int32_t)},
-                          {data, sizeof(data)},
-                          {(void *)((int32_t)tfm_core_test_mpu_access &
-                                                                      (~(0x3))),
-                           sizeof(uint32_t)} };
-    psa_outvec outvec[] = { {data, sizeof(data)} };
-    struct tfm_core_test_call_args_t args = {in_vec, 3, outvec, 1};
-
-    err = tfm_core_test_call(tfm_spm_core_test_sfn_veneer, &args);
-
-    if (err != CORE_TEST_ERRNO_SUCCESS) {
-        char *info = error_to_string(
-            "Service memory accesses configured incorrectly.", err);
-        TEST_FAIL(info);
-        return;
-    }
-
-    ret->val = TEST_PASSED;
-}
-
-static void tfm_core_test_permissions(struct test_result_t *ret)
-{
-    int32_t err;
-    int32_t test_case_id = CORE_TEST_ID_MEMORY_PERMISSIONS;
-    uint32_t data[4] = {0};
-    psa_invec in_vec[] = { {&test_case_id, sizeof(int32_t)},
-                          {data, sizeof(data)},
-                          {(void *)((int32_t)tfm_core_test_mpu_access &
-                                                                      (~(0x3))),
-                           sizeof(uint32_t)} };
-    psa_outvec outvec[] = { {data, sizeof(data)} };
-    struct tfm_core_test_call_args_t args = {in_vec, 3, outvec, 1};
-
-    err = tfm_core_test_call(tfm_spm_core_test_sfn_veneer, &args);
-
-    if (err != CORE_TEST_ERRNO_SUCCESS) {
-        char *info = error_to_string(
-            "Service memory accesses configured incorrectly.", err);
-        TEST_FAIL(info);
-        return;
-    }
-
-    ret->val = TEST_PASSED;
-}
-#endif /* TFM_PSA_API */
+#endif
 
 static void tfm_core_test_buffer_check(struct test_result_t *ret)
 {

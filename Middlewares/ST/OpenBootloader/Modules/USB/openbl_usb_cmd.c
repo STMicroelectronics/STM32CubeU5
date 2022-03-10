@@ -21,6 +21,7 @@
 #include "openbl_mem.h"
 #include "openbootloader_conf.h"
 #include "usb_interface.h"
+#include "common_interface.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -64,7 +65,7 @@ uint16_t OPENBL_USB_EraseMemory(uint32_t Address)
   *ramaddress = (uint8_t)((page & 0xFF00U) >> 8);
   ramaddress++;
 
-  error_value = OPENBL_MEM_Erase(FLASH_START_ADDRESS, (uint8_t *) usb_ram_buffer, USB_RAM_BUFFER_SIZE);
+  error_value = OPENBL_MEM_Erase(OPENBL_DEFAULT_MEM, (uint8_t *) usb_ram_buffer, USB_RAM_BUFFER_SIZE);
 
   if (error_value != SUCCESS)
   {
@@ -87,7 +88,6 @@ uint16_t OPENBL_USB_EraseMemory(uint32_t Address)
   */
 void OPENBL_USB_WriteMemory(uint8_t *pSrc, uint8_t *pDest, uint32_t Length)
 {
-  uint32_t mem_area;
   uint32_t address;
 
   address = (uint32_t)pDest[0] | ((uint32_t)pDest[1] << 8) |
@@ -95,14 +95,8 @@ void OPENBL_USB_WriteMemory(uint8_t *pSrc, uint8_t *pDest, uint32_t Length)
 
   OPENBL_MEM_Write(address, pSrc, Length);
 
-  /* Check if the received address is an option byte address */
-  mem_area = OPENBL_MEM_GetAddressArea(address);
-
-  if (mem_area == OB_AREA)
-  {
-    /* Launch Option Bytes reload */
-    OPENBL_MEM_OptionBytesLaunch();
-  }
+  /* Start post processing task if needed */
+  Common_StartPostProcessing();
 }
 
 /**
@@ -161,11 +155,12 @@ void OPENBL_USB_WriteProtect(uint8_t *pBuffer, uint32_t Length)
 {
   ErrorStatus error_value;
 
-  error_value = OPENBL_MEM_SetWriteProtection(ENABLE, FLASH_START_ADDRESS, pBuffer, Length);
+  error_value = OPENBL_MEM_SetWriteProtection(ENABLE, OPENBL_DEFAULT_MEM, pBuffer, Length);
 
   if (error_value == SUCCESS)
   {
-    OPENBL_MEM_OptionBytesLaunch();
+    /* Start post processing task if needed */
+    Common_StartPostProcessing();
   }
 }
 
@@ -177,11 +172,12 @@ void OPENBL_USB_WriteUnprotect(void)
 {
   ErrorStatus error_value;
 
-  error_value = OPENBL_MEM_SetWriteProtection(DISABLE, FLASH_START_ADDRESS, NULL, 0);
+  error_value = OPENBL_MEM_SetWriteProtection(DISABLE, OPENBL_DEFAULT_MEM, NULL, 0);
 
   if (error_value == SUCCESS)
   {
-    OPENBL_MEM_OptionBytesLaunch();
+    /* Start post processing task if needed */
+    Common_StartPostProcessing();
   }
 }
 
@@ -192,10 +188,10 @@ void OPENBL_USB_WriteUnprotect(void)
 void OPENBL_USB_ReadProtect(void)
 {
   /* Enable the read protection */
-  OPENBL_MEM_SetReadOutProtection(ENABLE);
+  OPENBL_MEM_SetReadOutProtection(OPENBL_DEFAULT_MEM, ENABLE);
 
-  /* Launch Option Bytes reload and reset system */
-  OPENBL_MEM_OptionBytesLaunch();
+  /* Start post processing task if needed */
+  Common_StartPostProcessing();
 }
 
 /**
@@ -205,8 +201,8 @@ void OPENBL_USB_ReadProtect(void)
 void OPENBL_USB_ReadUnprotect(void)
 {
   /* Disable the read protection */
-  OPENBL_MEM_SetReadOutProtection(DISABLE);
+  OPENBL_MEM_SetReadOutProtection(OPENBL_DEFAULT_MEM, DISABLE);
 
-  /* Launch Option Bytes reload and reset system */
-  OPENBL_MEM_OptionBytesLaunch();
+  /* Start post processing task if needed */
+  Common_StartPostProcessing();
 }

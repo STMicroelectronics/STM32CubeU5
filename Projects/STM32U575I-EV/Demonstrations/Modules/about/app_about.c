@@ -80,7 +80,7 @@ KMODULE_RETURN _SystemInfoDemoExec(void)
 /**
   * @brief  Run the image browser
   * @param  None.
-  * @note   run and display image accordng the user action.
+  * @note   run and display image according the user action.
   * @retval None.
   */
 void SystemInfoDemo(void)

@@ -40,15 +40,17 @@ BSP_DemoTypedef  BSP_examples[]=
 {
   {Led_demo,    "LED"},
   {Button_demo, "BUTTON"},
+  {Rs_demo,     "RangingSensor"},
   {Camera_demo, "CAMERA"},
   {Ms_demo,     "MotionSensor"},
   {Es_demo,     "EnvSensor"},
   {Ls_demo,     "LightSensor"},
   {OSPI_NOR_demo, "OSPI NOR"},
   {OSPI_RAM_demo, "OSPI RAM"},
+  {AudioRecord_demo, "Audio"},
   {EEPROM_demo, "EEPROM"}
 };
-uint8_t DemoIndex = 0;
+__IO uint8_t DemoIndex = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);

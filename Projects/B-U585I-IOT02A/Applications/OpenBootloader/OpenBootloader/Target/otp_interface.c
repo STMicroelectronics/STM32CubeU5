@@ -28,7 +28,6 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-//static void OPENBL_OTP_ProgramDoubleWord(uint32_t Address, uint64_t Data);
 
 /* Exported variables --------------------------------------------------------*/
 OPENBL_MemoryTypeDef OTP_Descriptor =

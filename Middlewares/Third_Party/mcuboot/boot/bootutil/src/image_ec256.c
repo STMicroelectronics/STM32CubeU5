@@ -1,4 +1,11 @@
 /*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright (c) 2016-2019 JUUL Labs
+ * Copyright (c) 2017 Linaro LTD
+ *
+ * Original license:
+ *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,28 +28,26 @@
 
 #include "mcuboot_config/mcuboot_config.h"
 #include "bootutil/bootutil_log.h"
-
 #ifdef MCUBOOT_SIGN_EC256
+/*TODO: remove this after cypress port mbedtls to abstract crypto api */
+#ifdef MCUBOOT_USE_CC310
+#define NUM_ECC_BYTES (256 / 8)
+#endif
+
 #include "bootutil/sign_key.h"
 
 #include "mbedtls/oid.h"
 #include "mbedtls/asn1.h"
-
-#ifdef MCUBOOT_USE_TINYCRYPT
-#include "tinycrypt/ecc_dsa.h"
-#endif
-#ifdef MCUBOOT_USE_CC310
-#include "cc310_glue.h"
-#define NUM_ECC_BYTES (4*8)
-#endif
+#include "bootutil/crypto/ecdsa_p256.h"
 #include "bootutil_priv.h"
+#include "bootutil/fault_injection_hardening.h"
 
 /*
  * Declaring these like this adds NULL termination.
  */
-#if 1
 static const uint8_t ec_pubkey_oid[] = MBEDTLS_OID_EC_ALG_UNRESTRICTED;
 static const uint8_t ec_secp256r1_oid[] = MBEDTLS_OID_EC_GRP_SECP256R1;
+
 /*
  * Parse the public key used for signing.
  */
@@ -52,7 +57,7 @@ bootutil_import_key(uint8_t **cp, uint8_t *end)
     size_t len;
     mbedtls_asn1_buf alg;
     mbedtls_asn1_buf param;
-
+    fih_int fih_rc = FIH_FAILURE;
     if (mbedtls_asn1_get_tag(cp, end, &len,
         MBEDTLS_ASN1_CONSTRUCTED | MBEDTLS_ASN1_SEQUENCE)) {
         return -1;
@@ -64,15 +69,15 @@ bootutil_import_key(uint8_t **cp, uint8_t *end)
         return -2;
     }
     /* id-ecPublicKey (RFC5480) */
-    if (alg.len != sizeof(ec_pubkey_oid) - 1 ||
-        boot_secure_memequal(alg.p, ec_pubkey_oid, sizeof(ec_pubkey_oid) - 1)) {
+    if (alg.len != sizeof(ec_pubkey_oid) - 1) {
         return -3;
     }
+    FIH_CALL(boot_fih_memequal, fih_rc, alg.p, ec_pubkey_oid, sizeof(ec_pubkey_oid) - 1);
     /* namedCurve (RFC5480) */
-    if (param.len != sizeof(ec_secp256r1_oid) - 1 ||
-        boot_secure_memequal(param.p, ec_secp256r1_oid, sizeof(ec_secp256r1_oid) - 1)) {
+    if (param.len != sizeof(ec_secp256r1_oid) - 1) {
         return -4;
     }
+    FIH_CALL(boot_fih_memequal,fih_rc, param.p, ec_secp256r1_oid, sizeof(ec_secp256r1_oid) - 1);
     /* ECPoint (RFC5480) */
     if (mbedtls_asn1_get_bitstring_null(cp, end, &len)) {
         return -6;
@@ -93,7 +98,7 @@ bootutil_import_key(uint8_t **cp, uint8_t *end)
 #endif
     return 0;
 }
-#endif
+
 /*
  * cp points to ASN1 string containing an integer.
  * Verify the tag, and that the length is 32 bytes.
@@ -145,153 +150,49 @@ bootutil_decode_sig(uint8_t signature[NUM_ECC_BYTES * 2], uint8_t *cp, uint8_t *
     }
     return 0;
 }
-#if !defined(MCUBOOT_USE_TINYCRYPT) && !defined(MCUBOOT_USE_CC310)
 
-#define BITS_TO_BYTES(bits) (((bits) + 7) / 8)
-
-int
+fih_int
 bootutil_verify_sig(uint8_t *hash, uint32_t hlen, uint8_t *sig, size_t slen,
   uint8_t key_id)
 {
-	int rc;
-	uint8_t *pubkey;
-	uint8_t *end;
-	uint8_t signature[2 * NUM_ECC_BYTES];
-	mbedtls_mpi r, s;
-	mbedtls_ecp_keypair ecp;
-	size_t curve_bytes;
-	pubkey = (uint8_t *)bootutil_keys[key_id].key;
-	end = pubkey + *bootutil_keys[key_id].len;
-
-	rc = bootutil_import_key(&pubkey, end);
-	if (rc) return -1;
-
-	mbedtls_ecp_keypair_init(&ecp);
-	rc = mbedtls_ecp_group_load( &ecp.grp,  MBEDTLS_ECP_DP_SECP256R1);
-    if (rc) return -3;
-
-	/*  initial the public  ecdsa key */
-	BOOT_LOG_INF("checking public key %x",slen);
-
-	rc = mbedtls_ecp_point_read_binary( &ecp.grp, &ecp.Q,
-			pubkey, (end - pubkey));
-	if (rc) return -4;
-
-	/* Check that the point is on the curve. */
-	rc = mbedtls_ecp_check_pubkey( &ecp.grp, &ecp.Q );
-	if (rc) return -5;
-
-	/* set signature   */
-	mbedtls_mpi_init( &r );
-	mbedtls_mpi_init( &s );
-
-	curve_bytes = BITS_TO_BYTES( ecp.grp.pbits );
-#if 0
-	if( slen != 2 * curve_bytes )
-		return -6;
-#endif
-	BOOT_LOG_INF("decoding signature slen %x",slen);
-
-	rc = bootutil_decode_sig(signature, sig, sig + slen);
-
-	if (rc) return -7;
-	rc = mbedtls_mpi_read_binary(&r,signature, curve_bytes);
-	if (rc) return -8;
-	rc = mbedtls_mpi_read_binary(&s,signature + curve_bytes, curve_bytes);
-	if (rc) return -9;
-	BOOT_LOG_INF("verifying signature hlen %x",hlen);
-
-
-	/*  ecdsa check hash against signature  */
-	rc = mbedtls_ecdsa_verify( &ecp.grp, hash , hlen,
-			&ecp.Q, &r, &s );
-    if (rc) return -10;
-	mbedtls_mpi_free( &r );
-	mbedtls_mpi_free( &s );
-	return rc;
-}
-#endif
-#ifdef MCUBOOT_USE_TINYCRYPT
-int
-bootutil_verify_sig(uint8_t *hash, uint32_t hlen, uint8_t *sig, size_t slen,
-  uint8_t key_id)
-{
-    int rc;
+    int rc = -1;
+    bootutil_ecdsa_p256_context ctx;
     uint8_t *pubkey;
     uint8_t *end;
-
     uint8_t signature[2 * NUM_ECC_BYTES];
-
+    fih_int fih_rc = FIH_FAILURE;
     pubkey = (uint8_t *)bootutil_keys[key_id].key;
     end = pubkey + *bootutil_keys[key_id].len;
-
+    /*  initial the public  ecdsa key */
+    BOOT_LOG_INF("checking public key %x %x",slen,*bootutil_keys[key_id].len );
     rc = bootutil_import_key(&pubkey, end);
     if (rc) {
-        return -1;
+        goto out;
     }
 
     rc = bootutil_decode_sig(signature, sig, sig + slen);
     if (rc) {
-        return -1;
+        goto out;
     }
+
 
     /*
      * This is simplified, as the hash length is also 32 bytes.
      */
     if (hlen != NUM_ECC_BYTES) {
-        return -1;
+        goto out;
     }
+    BOOT_LOG_INF("verifying signature hlen %x",hlen);
+    bootutil_ecdsa_p256_init(&ctx);
+    rc = bootutil_ecdsa_p256_verify(&ctx, pubkey,(end-pubkey), hash, signature);
+    /* for more control , we need to implement FIH mechanisms within mbed tls */
+    /* since we have a double signature inside mbedtls, nothing more is done */
+    if (rc == 0)
+      fih_rc = FIH_SUCCESS;
+    bootutil_ecdsa_p256_drop(&ctx);
+out:
 
-    rc = uECC_verify(pubkey, hash, NUM_ECC_BYTES, signature, uECC_secp256r1());
-    if (rc == 1) {
-        return 0;
-    } else {
-        return -2;
-    }
+    FIH_RET(fih_rc);
 }
-#endif /* MCUBOOT_USE_TINYCRYPT */
-#ifdef MCUBOOT_USE_CC310
-int
-bootutil_verify_sig(uint8_t *hash,
-                    uint32_t hlen,
-                    uint8_t *sig,
-                    size_t slen,
-                    uint8_t key_id)
-{
-    int rc;
-    uint8_t *pubkey;
-    uint8_t *end;
-    uint8_t signature[2 * NUM_ECC_BYTES];
 
-    pubkey = (uint8_t *)bootutil_keys[key_id].key;
-    end = pubkey + *bootutil_keys[key_id].len;
-
-    rc = bootutil_import_key(&pubkey, end);
-    if (rc) {
-        return -1;
-    }
-
-    /* Decode signature */
-    rc = bootutil_decode_sig(signature, sig, sig + slen);
-    if (rc) {
-        return -1;
-    }
-
-    /*
-     * This is simplified, as the hash length is also 32 bytes.
-     */
-    if (hlen != NUM_ECC_BYTES) {
-        return -1;
-    }
-
-    /* Initialize and verify in one go */
-    rc = cc310_ecdsa_verify_secp256r1(hash, pubkey, signature, hlen);
-
-    if (rc != 0) {
-        return -2;
-    }
-
-    return rc;
-}
-#endif /* MCUBOOT_USE_CC310 */
 #endif /* MCUBOOT_SIGN_EC256 */

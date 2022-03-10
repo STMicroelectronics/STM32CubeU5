@@ -102,7 +102,7 @@ int32_t Ms_demo(void)
   while (UserButtonPressed == 0)
   {
     if (BSP_MOTION_SENSOR_GetAxes(0, MOTION_ACCELERO, &axes) != BSP_ERROR_NONE) result--;
-    printf("X = %d, Y = %d, , Z = %d\n", axes.x, axes.y, axes.z);
+    printf("X = %d, Y = %d, , Z = %d\n", axes.xval, axes.yval, axes.zval);
     HAL_Delay(500);
   }
   HAL_Delay(1000);
@@ -113,7 +113,7 @@ int32_t Ms_demo(void)
   while (UserButtonPressed == 0)
   {
     if (BSP_MOTION_SENSOR_GetAxesRaw(0, MOTION_ACCELERO, &axesRaw) != BSP_ERROR_NONE) result--;
-    printf("Xraw = %d, Yraw = %d, , Zraw = %d\n", axesRaw.x, axesRaw.y, axesRaw.z);
+    printf("Xraw = %d, Yraw = %d, , Zraw = %d\n", axesRaw.xval, axesRaw.yval, axesRaw.zval);
     HAL_Delay(500);
   }
   HAL_Delay(1000);
@@ -162,7 +162,7 @@ int32_t Ms_demo(void)
   while (UserButtonPressed == 0)
   {
     if (BSP_MOTION_SENSOR_GetAxes(0, MOTION_GYRO, &axes) != BSP_ERROR_NONE) result--;
-    printf("X = %d, Y = %d, , Z = %d\n", axes.x, axes.y, axes.z);
+    printf("X = %d, Y = %d, , Z = %d\n", axes.xval, axes.yval, axes.zval);
     HAL_Delay(500);
   }
   HAL_Delay(1000);
@@ -173,7 +173,7 @@ int32_t Ms_demo(void)
   while (UserButtonPressed == 0)
   {
     if (BSP_MOTION_SENSOR_GetAxesRaw(0, MOTION_GYRO, &axesRaw) != BSP_ERROR_NONE) result--;
-    printf("Xraw = %d, Yraw = %d, , Zraw = %d\n", axesRaw.x, axesRaw.y, axesRaw.z);
+    printf("Xraw = %d, Yraw = %d, , Zraw = %d\n", axesRaw.xval, axesRaw.yval, axesRaw.zval);
     HAL_Delay(500);
   }
   HAL_Delay(1000);
@@ -226,7 +226,7 @@ int32_t Ms_demo(void)
   while (UserButtonPressed == 0)
   {
     if (BSP_MOTION_SENSOR_GetAxes(1, MOTION_MAGNETO, &axes) != BSP_ERROR_NONE) result--;
-    printf("X = %d, Y = %d, , Z = %d\n", axes.x, axes.y, axes.z);
+    printf("X = %d, Y = %d, , Z = %d\n", axes.xval, axes.yval, axes.zval);
     HAL_Delay(500);
   }
   HAL_Delay(1000);
@@ -237,7 +237,7 @@ int32_t Ms_demo(void)
   while (UserButtonPressed == 0)
   {
     if (BSP_MOTION_SENSOR_GetAxesRaw(1, MOTION_MAGNETO, &axesRaw) != BSP_ERROR_NONE) result--;
-    printf("Xraw = %d, Yraw = %d, , Zraw = %d\n", axesRaw.x, axesRaw.y, axesRaw.z);
+    printf("Xraw = %d, Yraw = %d, , Zraw = %d\n", axesRaw.xval, axesRaw.yval, axesRaw.zval);
     HAL_Delay(500);
   }
   HAL_Delay(1000);

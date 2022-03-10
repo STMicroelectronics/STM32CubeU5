@@ -264,7 +264,7 @@ int32_t mipc_request(uint16_t api_id, uint8_t *cparams, uint16_t cparams_size,
         /* wait for command answer */
         if (SEM_WAIT(pending_request.resp_flag, timeout_ms, mipc_poll) != SEM_OK)
         {
-          DEBUG_ERROR("Error: command 0x%04x timeout(%"PRIu32" ms) waiting answer %"PRIu32"\n",
+          DEBUG_ERROR("Error: command 0x%04x timeout(%" PRIu32 " ms) waiting answer %" PRIu32 "\n",
                       api_id, timeout_ms, pending_request.req_id);
           pending_request.req_id = 0xFFFFFFFF;
           ret = MIPC_CODE_ERROR;

@@ -19,80 +19,77 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
-      developing an LPBAM application.
+      It is recommended to read the LPBAM_Utility_GettingStarted.html document, available at the root of LPBAM utility
+      folder, prior to any LPBAM application development start.
 
     *** Driver description ***
     ==========================
     [..]
-      This driver is dedicated for ADC allowing to change configuration and operate in low power mode.
-      This advanced LPBAM module counts 3 files :
-          (+) stm32_adv_lpbam_adc.c
-              (++) This file provides the ADC advanced files body.
-          (+) stm32_adv_lpbam_adc.h
-              (++) This file is the header file of stm32_adv_lpbam_adc.c. It provides advanced used types.
-          (+) stm32_platform_lpbam_adc.h
-              (++) This header file contains all defines to be used in applicative side.
+      This section provide description of the driver files content (refer to LPBAM_Utility_GettingStarted.html document
+      for more information)
+
+    [..]
+      This LPBAM modules deals with the peripheral instances that support autonomous mode.
+      It is composed of 3 files :
+          (+) stm32_adv_lpbam_adc.c file
+              (++) This file provides the implementation of the advanced LPBAM ADC functions.
+          (+) stm32_adv_lpbam_adc.h file
+              (++) This file is the header file of stm32_adv_lpbam_adc.c. It provides advanced LPBAM ADC functions
+                   prototypes and the declaration of their needed exported types and structures.
+          (+) STM32xx/stm32_platform_lpbam_adc.h file
+              (++) This header file contains all defines to be used on applicative side.
+                   (+++) STM32xx stands for the device supporting LPBAM sub-system.
+
+    *** Driver functions model ***
+    ==============================
+    [..]
+      This section precises this module supported advanced functions model (refer to LPBAM_Utility_GettingStarted.html
+      document for function model definition).
+
+    [..]
+      This driver provides 4 model of APIs :
+          (+) ADV_LPBAM_{Module}_{Mode}_SetConfigQ() : provides one peripheral configuration queue.
+          (+) ADV_LPBAM_{Module}_{Mode}_SetDataQ()   : provides one peripheral data transfer queue.
+          (+) ADV_LPBAM_{Module}_{Mode}_SetFullQ()   : provides one peripheral configuration and one data transfer
+                                                       queue.
+          (+) ADV_LPBAM_{Module}_ChannelConfig()     : helper API to tune ADC channel configuration on built queue.
 
     *** Driver features ***
     =======================
     [..]
-      This driver provides the following list of features :
-          (+) Configure the ADC peripheral for conversion.
+      This section describes this LPBAM module supported features.
+
+    [..]
+      This driver provides services covering the LPBAM management of the following ADC features :
+          (+) Configure the ADC peripheral for conversion and analog watchdog monitoring.
           (+) Starts the ADC conversion.
-          (+) Configure and starts the ADC conversion.
-          (+) Configure and starts only the watchdog input signal monitoring without transfer to SRAM.
+          (+) Configure and starts the ADC conversion and analog watchdog monitoring.
+          (+) Configure and starts only the analog watchdog monitoring without data transfer.
 
     *** Functional description ***
     ==============================
     [..]
-      The ADC peripheral conversion is configured through a DMA channel thanks to a build DMA linked-list queue.
-      The ADC peripheral conversion is started through a DMA channel thanks to a build DMA linked-list queue.
-      The ADC peripheral conversion is configured and started through a DMA channel thanks to a build DMA linked-list
-      queue.
-      The ADC peripheral analog watchdog monitoring is configured and started without any data transfer to SRAM
-      through a DMA channel thanks to a build DMA linked-list queue.
+      This section describes the peripheral features covered by this LPBAM module.
 
-      The output of this driver is a queue to be executed by a DMA channel.
+    [..]
+      The output of this driver is a queue to be executed by a DMA channel in applicative side.
+
+      The ADC peripheral conversion is configured and started.
+      The ADC peripheral channels are configured.
+      The ADC peripheral converted data is stored in a buffer.
+      The ADC peripheral analog watchdog monitoring is configured and started without any data transfer.
 
     *** Driver APIs description ***
     ===============================
     [..]
-      Use ADV_LPBAM_ADC_Conversion_SetConfigQ() API to build a linked-list queue that setup the ADC configuration
-      operation according to parameters in the LPBAM_ADC_ConfigAdvConf_t structure.
+      This section provides LPBAM module exhaustive APIs description without considering application user call sequence.
+      For user call sequence information, please refer to 'Driver user sequence' section below.
 
     [..]
-      Use ADV_LPBAM_ADC_Conversion_SetDataQ() API to build a linked-list queue that setup the ADC conversion
-      starting operation according to parameters in the LPBAM_ADC_DataAdvConf_t structure.
-      The data node default configuration is as follow:
-          (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
-          (+) DestInc           : DMA_DINC_INCREMENTED.
-          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_HALFWORD. (Mandatory)
-          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_HALFWORD.
-          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
-
-    [..]
-      Use ADV_LPBAM_ADC_Conversion_SetFullQ() API to build a linked-list queue that setup the ADC configuration
-      and conversion starting operation according to parameters in the LPBAM_ADC_FullAdvConf_t structure.
-      The data node default configuration is as follow:
-          (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
-          (+) DestInc           : DMA_DINC_INCREMENTED.
-          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_HALFWORD. (Mandatory)
-          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_HALFWORD.
-          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
-
-    [..]
-      Use ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() API to build a linked-list queue that setup the ADC analog watchdog
-      configuration operation according to parameters in the LPBAM_ADC_AWDGFullAdvConf_t structure (without any data
-      transfer to SRAM).
-
-    [..]
-      Configuration parameters through ADV_LPBAM_ADC_Conversion_SetConfigQ are :
-          (+) ScanConvMode          : Configure the sequencer of ADC groups regular.
+      Use ADV_LPBAM_ADC_Conversion_SetConfigQ() API to build a linked-list queue that setups the ADC configuration
+      according to parameters in the LPBAM_ADC_ConfigAdvConf_t structure.
+      The configuration parameters are :
+          (+) ScanConvMode          : Specify the scan conversion mode.
                                       This parameter can be a value of @ref LPBAM_ADC_Sequence_Scan_Mode.
           (+) ContinuousConvMode    : Specify whether the conversion is performed in single or continuous mode.
                                       This parameter can be ENABLE or DISABLE.
@@ -125,11 +122,32 @@
               (++) HighThreshold        : Specifies the ADC watchdog high threshold.
                                           This parameter can be a value from 0 to 0xFFF.
 
-      Configuration parameters through ADV_ADC_Conversion_SetDataQ() are :
-          (+) pData : Specifies the address of data buffer
-          (+) Size  : Specifies the size of data to be read.
+    [..]
+      Use ADV_LPBAM_ADC_Conversion_SetDataQ() API to build a linked-list queue that setup the data ADC conversion
+      according to parameters in the LPBAM_ADC_DataAdvConf_t structure.
+      The configuration parameters are :
+          (+) pData : Specifies the address of data buffer.
+          (+) Size  : Specifies the number of conversion to be transferred from ADC peripheral to memory.
 
-      Configuration parameters through ADV_LPBAM_ADC_Conversion_SetFullQ() are :
+      The data transfer default configuration is as follow:
+          (+) SrcInc            : DMA_SINC_FIXED.
+          (+) DestInc           : DMA_DINC_INCREMENTED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_HALFWORD.
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_HALFWORD.
+          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
+      The data transfer configuration can be customized using ADV_LPBAM_Q_SetDataConfig() after
+      ADV_LPBAM_ADC_Conversion_SetDataQ().
+      The ADV_LPBAM_Q_SetDataConfig() is in the module stm32_adv_lpbam_common.c.
+      Because of the HW implementation, the following parameters should be kept at default value :
+          (+) SrcInc            : DMA_SINC_FIXED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_HALFWORD.
+
+    [..]
+      Use ADV_LPBAM_ADC_Conversion_SetFullQ() API to build a linked-list queue that setup the ADC configuration
+      and conversion operation according to parameters in the LPBAM_ADC_FullAdvConf_t structure.
+      The configuration parameters are :
           (+) ScanConvMode          : Configure the sequencer of ADC groups regular.
                                       This parameter can be a value of @ref LPBAM_ADC_Sequence_Scan_Mode.
           (+) ContinuousConvMode    : Specify whether the conversion is performed in single or continuous mode.
@@ -163,9 +181,29 @@
               (++) HighThreshold        : Specifies the ADC watchdog high threshold.
                                           This parameter can be a value from 0 to 0xFFF.
           (+) pData                 : Specifies the address of data buffer.
-          (+) Size                  : Specifies DMA transfer number of ADC conversion data.
+          (+) Size                  : Specifies the number of conversion to be transferred from ADC peripheral to
+                                      memory.
 
-      Configuration parameters through ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() are :
+      The data transfer default configuration is as follow:
+          (+) SrcInc            : DMA_SINC_FIXED.
+          (+) DestInc           : DMA_DINC_INCREMENTED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_HALFWORD.
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_HALFWORD.
+          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
+      The data transfer configuration can be customized using ADV_LPBAM_Q_SetDataConfig() after
+      ADV_LPBAM_ADC_Conversion_SetFullQ().
+      The ADV_LPBAM_Q_SetDataConfig() is in the module stm32_adv_lpbam_common.c.
+      Because of the HW implementation, the following parameters should be kept at default value:
+          (+) SrcInc            : DMA_SINC_FIXED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_HALFWORD.
+
+    [..]
+      Use ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() API to build a linked-list queue that setup the ADC analog watchdog
+      monitoring configuration according to parameters in the LPBAM_ADC_AWDGFullAdvConf_t structure (without
+      any data transfer).
+      The configuration parameters are :
           (+) WatchdogNumber : Select which ADC analog watchdog is monitoring the selected channel.
           (+) WatchdogMode   : Configure the ADC analog watchdog mode.
           (+) Channel        : Select which ADC channel to monitor by analog watchdog.
@@ -173,44 +211,61 @@
           (+) LowThreshold   : Specifies the ADC watchdog low threshold.
           (+) HighThreshold  : Specifies the ADC watchdog high threshold.
 
-      Configuration parameters through ADV_LPBAM_ADC_ChannelConfig() are :
+    [..]
+      Use ADV_LPBAM_ADC_ChannelConfig() API to build a linked-list queue that setup the ADC channel configuration
+      after calling ADV_LPBAM_ADC_Conversion_SetConfigQ() and ADV_LPBAM_ADC_Conversion_SetFullQ() APIs according to
+      parameters in the LPBAM_ADC_ChannelConfig_t structure.
+      The configuration parameters are :
           (+) Channel : Specify the channel to configure into ADC regular group.
           (+) Rank    : Specify the rank in the regular group sequencer.
+                        This parameter can be a value of @ref LPBAM_ADC_Channel_RANK.
+                        This parameter is discarded when the ScanConvMode field in LPBAM_ADC_ConfigAdvConf_t or
+                        LPBAM_ADC_FullAdvConf_t is configured as LPBAM_ADC_SCAN_DIRECTION_FORWARD or
+                        LPBAM_ADC_SCAN_DIRECTION_BACKWARD.
+      When ScanConvMode field in LPBAM_ADC_ConfigAdvConf_t or LPBAM_ADC_FullAdvConf_t is configured as
+      LPBAM_ADC_SCAN_ENABLE, only one channel can be configured at each
+      API call.
+      When ScanConvMode field in LPBAM_ADC_ConfigAdvConf_t or LPBAM_ADC_FullAdvConf_t is configured as
+      LPBAM_ADC_SCAN_DIRECTION_FORWARD or LPBAM_ADC_SCAN_DIRECTION_BACKWARD, this API can be called only one time by
+      oring all needed channels in the user application.
+      Example : Channel = LPBAM_ADC_CHANNEL_5 | LPBAM_ADC_CHANNEL_11;
 
     [..]
-      These APIs must be called when the ADC instance is well initialized.
+      These APIs must be called when the ADC instance is initialized.
           (+) Recommended ADC instance initialization sequence
               (++) Call HAL_ADC_Init() to initialize the ADC instance. (Mandatory).
-                   (+++) ClockPrescaler           : ADC_CLOCK_ASYNC_DIV4.
-                   (+++) Resolution               : ADC_RESOLUTION_12B.
-                   (+++) ScanConvMode             : ADC_SCAN_DIRECTION_FORWARD.
-                   (+++) EOCSelection             : ADC_EOC_SINGLE_CONV.
-                   (+++) LowPowerAutoWait         : DISABLE.
-                   (+++) ContinuousConvMode       : ENABLE.
-                   (+++) DiscontinuousConvMode    : DISABLE.
-                   (+++) ExternalTrigConv         : ADC4_EXTERNALTRIG_LPTIM1_CH1.
-                   (+++) ExternalTrigConvEdge     : ADC_EXTERNALTRIGCONVEDGE_RISING.
-                   (+++) ConversionDataManagement : ADC_CONVERSIONDATA_DMA_CIRCULAR.
-                   (+++) DMAContinuousRequests    : ENABLE.
-                   (+++) Overrun                  : ADC_OVR_DATA_OVERWRITTEN.
-                   (+++) OversamplingMode         : DISABLE.
-                   (+++) Oversampling             : Specify the Oversampling parameters.
-                   (+++) SamplingTimeCommon1      : ADC4_SAMPLETIME_160CYCLES_5.
-                   (+++) LowPowerAutoPowerOff     : ADC_LOW_POWER_AUTOFF_DPD.
-              (++) Call HAL_ADCEx_Calibration_Start() to start the ADC instance calibration.
-                   (+++) CalibrationMode : ADC_CALIB_OFFSET.
-                   (+++) SingleDiff      : ADC_SINGLE_ENDED.
-                                           No linearity calibration neither differential mode for ADC4.
+                   (+++) ClockPrescaler           : Any according to application needs.
+                   (+++) Resolution               : Any according to application needs.
+                   (+++) ScanConvMode             : Any according to application needs.
+                   (+++) EOCSelection             : Any according to application needs.
+                   (+++) LowPowerAutoWait         : Any according to application needs.
+                   (+++) ContinuousConvMode       : Any according to application needs.
+                   (+++) DiscontinuousConvMode    : Any according to application needs.
+                   (+++) ExternalTrigConv         : Any according to application needs.
+                   (+++) ExternalTrigConvEdge     : Any according to application needs.
+                   (+++) DMAContinuousRequests    : ENABLE. (Mandatory value)
+                   (+++) Overrun                  : ADC_OVR_DATA_OVERWRITTEN. (Mandatory value)
+                   (+++) OversamplingMode         : DISABLE. (Mandatory value)
+                   (+++) SamplingTimeCommon1      : Any according to application needs.
+                   (+++) SamplingTimeCommon2      : Any according to application needs.
+                   (+++) LowPowerAutoPowerOff     : ADC_LOW_POWER_AUTOFF_DPD. (Recommended value)
+                   (+++) VrefProtection           : ADC_VREF_PROT_NONE. (Mandatory value when there no share between
+                                                    multiple instance of ADC)
               (++) Call HAL_ADC_ConfigChannel() to configure the channels to be used for ADC conversion. (Optional).
-                   (+++) Channel      : ADC_CHANNEL_4.
-                   (+++) Rank         : ADC4_REGULAR_RANK_1.
-                   (+++) SamplingTime : ADC4_SAMPLINGTIME_COMMON_1.
+                   (+++) Channel      : Any according to application needs.
+                   (+++) Rank         : ADC4_REGULAR_RANK_1. This parameter is discarded when the ScanConvMode field in
+                                                             LPBAM_ADC_ConfigAdvConf_t or LPBAM_ADC_FullAdvConf_t is
+                                                             configured as LPBAM_ADC_SCAN_ENABLE.
+                   (+++) SamplingTime : ADC4_SAMPLINGTIME_COMMON_1. This parameter is discarded when the ScanConvMode
+                                                                    field in LPBAM_ADC_ConfigAdvConf_t or
+                                                                    LPBAM_ADC_FullAdvConf_t is configured as
+                                                                    LPBAM_ADC_SCAN_ENABLE.
               (++) Call HAL_ADC_AnalogWDGConfig() to configure the ADC analog watchdog settings. (Optional).
-                   (+++) WatchdogNumber : ADC_ANALOGWATCHDOG_1.
-                   (+++) WatchdogMode   : ADC_ANALOGWATCHDOG_ALL_REG.
-                   (+++) ITMode         : ENABLE.
-                   (+++) HighThreshold  : ADC_AWD_THRESHOLD_HIGH_VAL.
-                   (+++) LowThreshold   : ADC_AWD_THRESHOLD_LOW_VAL.
+                   (+++) WatchdogNumber : Any according to application needs.
+                   (+++) WatchdogMode   : Any according to application needs.
+                   (+++) ITMode         : Any according to application needs.
+                   (+++) HighThreshold  : Any according to application needs.
+                   (+++) LowThreshold   : Any according to application needs.
               (++) Call __HAL_ADC_ENABLE_IT() to enable error interrupts. (Optional).
                    ADC error interrupts can be :
                    (+++) ADC_IT_OVR   : ADC overrun interrupt source.
@@ -218,21 +273,19 @@
     [..]
       When using ADV_LPBAM_ADC_Conversion_SetConfigQ(), ADV_LPBAM_ADC_Conversion_SetDataQ()
       and ADV_LPBAM_ADC_Conversion_SetFullQ() APIs, the following parameters must be configured
-      carefully when initializing ADC peripheral as they are not configurable by LPBAM APIs :
+      carefully when initializing ADC peripheral as they are not reconfigurable by LPBAM APIs :
           (+) ClockPrescaler       : This parameter can be a value of @ref ADC_HAL_EC_COMMON_CLOCK_SOURCE.
           (+) Resolution           : This parameter can be a value of @ref ADC_HAL_EC_RESOLUTION.
           (+) Overrun              : This parameter can be a value of @ref ADC_HAL_EC_REG_OVR_DATA_BEHAVIOR.
           (+) OversamplingMode     : This parameter can be set to ENABLE or DISABLE.
           (+) Oversampling         : This parameter can be set by filling the structure @ref ADC_OversamplingTypeDef.
           (+) SamplingTimeCommon1  : This parameter can be value of @ref ADC_HAL_EC_CHANNEL_SAMPLINGTIME.
+          (+) SamplingTimeCommon2  : This parameter can be value of @ref ADC_HAL_EC_CHANNEL_SAMPLINGTIME.
           (+) LowPowerAutoPowerOff : This parameter can be value of @ref ADC_HAL_LowPower_DPD.
-          (+) CalibrationMode      : This parameter should be @ref ADC_CALIB_OFFSET.
-          (+) SingleDiff           : This parameter should be @ref ADC_SINGLE_ENDED.
-                                     No linearity calibration neither differential mode for ADC4.
 
     [..]
       When using only ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() API, the following parameters must be configured
-      carefully when initializing ADC peripheral as they are not configurable by LPBAM API :
+      carefully when initializing ADC peripheral as they are not reconfigurable by LPBAM API :
           (+) ClockPrescaler        : This parameter can be a value of @ref ADC_HAL_EC_COMMON_CLOCK_SOURCE.
           (+) Resolution            : This parameter can be a value of @ref ADC_HAL_EC_RESOLUTION.
           (+) ScanConvMode          : This parameter can be a value of @ref ADC_Scan_mode.
@@ -246,27 +299,19 @@
           (+) OversamplingMode      : This parameter can be set to ENABLE or DISABLE.
           (+) Oversampling          : This parameter can be set by filling the structure @ref ADC_OversamplingTypeDef.
           (+) SamplingTimeCommon1   : This parameter can be value of @ref ADC_HAL_EC_CHANNEL_SAMPLINGTIME.
+          (+) SamplingTimeCommon2   : This parameter can be value of @ref ADC_HAL_EC_CHANNEL_SAMPLINGTIME.
           (+) LowPowerAutoPowerOff  : This parameter can be value of @ref ADC_HAL_LowPower_DPD.
-          (+) CalibrationMode       : This parameter should be @ref ADC_CALIB_OFFSET.
-          (+) SingleDiff              This parameter should be @ref ADC_SINGLE_ENDED.
-                                      No linearity calibration neither differential mode for ADC4.
           (+) Channel               : This parameter can be a value of @ref ADC_HAL_EC_CHANNEL.
           (+) Rank                  : This parameter can be a value of @ref ADC_HAL_EC_REG_SEQ_RANKS.
           (+) SamplingTime          : This parameter can be a value of @ref ADC_HAL_EC_CHANNEL_SAMPLINGTIME.
 
     [..]
-      The channels configuration for the ADC peripheral is optional as it could be reconfigured by LPBAM APIs except for
-      analog watchdog API (where channels configuration for the ADC peripheral is mandatory).
+      The channels configuration for the ADC peripheral through HAL or LL is optional as it could be reconfigured by
+      LPBAM APIs except for analog watchdog API (where channels configuration for the ADC peripheral is mandatory).
 
     [..]
-      The channels configuration for the ADC peripheral depends from the sequencer mode :
-          (+) In case of sequencer configured to fully configurable, ADV_LPBAM_ADC_ChannelConfig() API could be called
-              for 8 time maximum (number of possible sequencer ranks).
-          (+) In case of sequencer configured to not fully configurable, ADV_LPBAM_ADC_ChannelConfig() API could
-              be called for 23 time maximum (number of possible channels).
-
-    [..]
-      The analog watchdog configuration for the ADC peripheral is optional as it could be reconfigured by LPBAM APIs.
+      The analog watchdog configuration for the ADC peripheral through HAL or LL is optional as it could be reconfigured
+      by LPBAM APIs.
 
     [..]
       When the WatchdogMode is LPBAM_ADC_ANALOGWATCHDOG_SINGLE_REG (only for AWD2 and AWD3), one or a combination of
@@ -275,92 +320,91 @@
     *** Driver user sequence ***
     ============================
     [..]
+      This section provides the steps to follow to build an LPBAM application based on HAL/LL and LPBAM drivers. (refer
+      to LPBAM_Utility_GettingStarted.html for linked-list feature description).
+
+    [..]
       Generic user sequence is :
+          (+) Initialize all used GPIOs for input channels. (Mandatory)
           (+) Initialize the ADC (Using HAL/LL). (Mandatory)
           (+) Call ADV_LPBAM_ADC_EnableDMARequests() to enable ADC DMA requests. (Mandatory)
-          (+) There are three possibilities to call advanced API:
-              (++) Conversion with full API :
-                   (+++) Repeat calling ADV_LPBAM_ADC_Conversion_SetFullQ() until complete LPBAM scenario. (Mandatory)
-                   (+++) Repeat calling ADV_LPBAM_ADC_ChannelConfig() after each ADV_LPBAM_ADC_Conversion_SetFullQ()
-                         call to add ADC channels for conversion. (Mandatory)
-              (++) Conversion with configuration and data APIs :
-                   (+++) Call ADV_LPBAM_ADC_Conversion_SetConfigQ() only one time. (Mandatory)
-                   (+++) Repeat calling ADV_LPBAM_ADC_ChannelConfig() after each ADV_LPBAM_ADC_Conversion_SetConfigQ()
-                         call to add ADC channels for conversion. (Mandatory)
-                   (+++) Repeat calling ADV_LPBAM_ADC_Conversion_SetDataQ() until complete LPBAM scenario. (Mandatory)
-          (+) Call ADV_LPBAM_Q_SetCircularMode() to circularize your linked-list queue for infinite scenarios
-              cases. (Optional)
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call ADV_LPBAM_Q_SetTriggerConfig() to add hardware trigger condition for executing
-              ADV_LPBAM_ADC_Conversion_SetFullQ() output queue. (Optional)
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call HAL_DMAEx_List_Init() to initialize the DMA in linked-list mode. (Mandatory)
-          (+) Call HAL_DMAEx_List_LinkQ() to link the built queue to the DMA channel. (Mandatory)
+          (+) There are three possibilities to call LPBAM advanced APIs:
+              (++) Single API making configuration and data setup :
+                   (+++) Call ADV_LPBAM_ADC_Conversion_SetFullQ(). (Mandatory)
+                   (+++) Call ADV_LPBAM_ADC_ChannelConfig() after each ADV_LPBAM_ADC_Conversion_SetFullQ() call to add
+                         ADC channels for conversion. (Mandatory)
+              (++) Two APIs making configuration and data setup separately :
+                   (+++) Call ADV_LPBAM_ADC_Conversion_SetConfigQ(). (Mandatory)
+                   (+++) Call ADV_LPBAM_ADC_ChannelConfig() after each ADV_LPBAM_ADC_Conversion_SetConfigQ() call to add
+                         ADC channels for conversion. (Mandatory)
+                   (+++) Call ADV_LPBAM_ADC_Conversion_SetDataQ(). (Mandatory)
+              (++) Single API making only the configuration of the ADC analog watchdog :
+                   (+++) Call ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ().
+          (+) Call, optionally, ADV_LPBAM_Q_SetTriggerConfig() in stm32_adv_lpbam_common.c to add hardware trigger
+              condition for executing of ADV_LPBAM_ADC_Conversion_SetConfigQ(), ADV_LPBAM_ADC_Conversion_SetDataQ(),
+              ADV_LPBAM_ADC_Conversion_SetFullQ() and ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() output queue.
+          (+) Call, optionally, ADV_LPBAM_Q_SetCircularMode() in stm32_adv_lpbam_common.c to circularize your
+              linked-list master queue for infinite scenarios cases.
+          (+) Call HAL_DMAEx_List_Init() to initialize a master DMA channel in linked-list mode. (Mandatory)
+          (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized master DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
-              Any DMA error occurred in low power block the LPBAM sub-system mechanisms.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
               DMA error interrupts can be :
               (++) DMA_IT_DTE : data transfer error.
               (++) DMA_IT_ULE : update link error.
               (++) DMA_IT_USE : user setting error.
-          (+) Call HAL_DMAEx_List_Start() or HAL_DMAEx_List_Start_IT() to start DMA linked list. (Mandatory)
+          (+) Call HAL_DMAEx_List_Start() to start the master DMA channel linked-list execution. (Mandatory)
+
+    *** Recommendations ***
+    =======================
+    [..]
+      This section provides tips and tricks to consider while using LPBAM module drivers to build a user application.
 
     [..]
-      When the ADC configuration matches with application needs, it's strongly recommended to use
-      ADV_LPBAM_ADC_Conversion_SetDataQ() API instead of ADV_LPBAM_ADC_Conversion_SetFullQ() for memory optimization
-      purpose.
+      For memory optimization purpose, when no reconfiguration is necessary, it's recommended to use
+      ADV_LPBAM_ADC_Conversion_SetDataQ().
 
     [..]
-      Use ADV_LPBAM_ADC_Conversion_SetFullQ() when ADC reconfiguration is needed instead of calling
-      ADV_LPBAM_ADC_Conversion_SetConfigQ() then ADV_LPBAM_ADC_Conversion_SetDataQ() for memory optimization purpose.
+      For memory optimization purpose, when a reconfiguration is necessary, it's recommended to use
+      ADV_LPBAM_ADC_Conversion_SetFullQ() instead of ADV_LPBAM_ADC_Conversion_SetConfigQ() then
+      ADV_LPBAM_ADC_Conversion_SetDataQ().
 
     [..]
-      Use ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() when only ADC analog watchdog reconfiguration is needed instead of
-      calling ADV_LPBAM_ADC_Conversion_SetConfigQ() or ADV_LPBAM_ADC_Conversion_SetFullQ() for memory optimization
-      purpose if the ADC configuration matches with application needs (channels).
-
-    *** Recommendation ***
-    ======================
-    [..]
-      It's useless to call ADV_LPBAM_ADC_Conversion_SetConfigQ() consecutively as the first configuration will be
-      overwritten.
-
-    [..]
-      It's useless to call ADV_LPBAM_ADC_Conversion_SetConfigQ() before ADV_LPBAM_ADC_Conversion_SetFullQ() as
-      ADV_LPBAM_ADC_Conversion_SetFullQ() API contains configuration process.
+      For memory optimization purpose, when only ADC analog watchdog reconfiguration is needed, use
+      ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() instead of ADV_LPBAM_ADC_Conversion_SetConfigQ() or
+      ADV_LPBAM_ADC_Conversion_SetFullQ().
 
     [..]
       It's mandatory to call ADV_LPBAM_ADC_ChannelConfig() after ADV_LPBAM_ADC_Conversion_SetFullQ()
       or ADV_LPBAM_ADC_Conversion_SetConfigQ() to configure ADC channels to be used.
 
     [..]
-      It's strongly recommended to call ADV_LPBAM_ADC_ChannelConfig() staring from LPBAM_ADC_REGULAR_RANK_1
-      incrementally to LPBAM_ADC_REGULAR_RANK_8 in case of "ScanConvMode" is set to LPBAM_ADC_SCAN_ENABLE.
+      When ScanConvMode field in LPBAM_ADC_ConfigAdvConf_t structure is set to LPBAM_ADC_SCAN_ENABLE, configuring ranks
+      shall be done contiguously.
 
     [..]
-      It's strongly not recommended to call ADV_LPBAM_ADC_Conversion_SetFullQ() with the same instance by more than one
-      linked-list queue. When the ADC nodes will be executed simultaneously unexpected behavior will appear.
+      It's not allowed to configure analog watchdogs separately through ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ().
+      At each call, the three watchdogs are reconfigured.
+      It's recommended to ensure the consistency between analog watchdog configurations when calling
+      ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() or ADV_LPBAM_ADC_Conversion_SetConfigQ() or
+      ADV_LPBAM_ADC_Conversion_SetFullQ().
 
     [..]
-      It's strongly not recommended to execute the same linked-list queue that contains ADC configuration and data
-      nodes by two different DMA channels as unexpected behavior can appear.
+      It's forbidden to execute simultaneously the same linked-list queue with different DMA channels.
 
     [..]
-      When using ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ() with LPBAM_ADC_ANALOGWATCHDOG_NONE value, it's worth to
-      mention that registers will be reset to default values and the Analog Watchdog will be disabled.
-
-    [..]
-      When using ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ(), it's worth to mention that previous settings will be
-      overwritten (for all analog watchdogs). Therefore, modifying one AWD settings will erase other AWDs settings.
+      It's forbidden to execute simultaneously two linked-list queue using the same peripheral.
 
     *** Driver status description ***
     =================================
     [..]
-      This driver detects and reports any detected issue.
+      This section provides reported LPBAM module status.
+
+    [..]
+      This advanced module reports any detected issue.
           (+) returned values are :
               (++) LPBAM_OK when no error is detected.
-              (++) LPBAM_ERROR when error is detected.
-              (++) LPBAM_INVALID_ID when an invalid node ID is detected. This error value is specific for LPBAM basic
-                   layer.
+              (++) LPBAM_ERROR when any error is detected.
 
     @endverbatim
   **********************************************************************************************************************
@@ -391,7 +435,7 @@
   */
 
 /**
-  * @brief  Build the ADC conversion configuration nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the configuration of ADC conversion according to parameters in
   *         LPBAM_ADC_ConfigAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a ADC_TypeDef structure that selects ADC instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -853,7 +897,7 @@ LPBAM_Status_t ADV_LPBAM_ADC_Conversion_SetConfigQ(ADC_TypeDef                *c
 }
 
 /**
-  * @brief  Build the ADC conversion data nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the data ADC conversion according to parameters in
   *         LPBAM_ADC_DataAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a ADC_TypeDef structure that selects ADC instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -948,8 +992,8 @@ LPBAM_Status_t ADV_LPBAM_ADC_Conversion_SetDataQ(ADC_TypeDef              *const
 }
 
 /**
-  * @brief  Build the ADC conversion full nodes in DMA linked-list queue according to configured parameters in
-  *         LPBAM_ADC_FullAdvConf_t.
+  * @brief  Build DMA linked-list queue to setup the configuration and the data ADC conversion according to parameters
+  *         in LPBAM_ADC_FullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a ADC_TypeDef structure that selects ADC instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
   *                              queue type information.
@@ -1480,8 +1524,8 @@ LPBAM_Status_t ADV_LPBAM_ADC_Conversion_SetFullQ(ADC_TypeDef              *const
 }
 
 /**
-  * @brief  Build the ADC analog watchdog full nodes in DMA linked-list queue according to configured parameters in
-  *         LPBAM_ADC_AWDGFullAdvConf_t.
+  * @brief  Build DMA linked-list queue to setup the configuration of the ADC analog watchdog according to parameters
+  *         in LPBAM_ADC_AWDGFullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a ADC_TypeDef structure that selects ADC instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
   *                              queue type information.

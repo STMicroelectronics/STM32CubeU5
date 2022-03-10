@@ -1,3 +1,4 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file    stm32u5xx_hal_conf.h
@@ -15,6 +16,7 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32U5xx_HAL_CONF_H
@@ -42,8 +44,11 @@
 /*#define HAL_CRYP_MODULE_ENABLED */
 /*#define HAL_DAC_MODULE_ENABLED */
 /*#define HAL_DMA2D_MODULE_ENABLED */
+/*#define HAL_DSI_MODULE_ENABLED */
 /*#define HAL_FDCAN_MODULE_ENABLED */
 /*#define HAL_FMAC_MODULE_ENABLED */
+/*#define HAL_GFXMMU_MODULE_ENABLED */
+/*#define HAL_GPU2D_MODULE_ENABLED */
 /*#define HAL_GTZC_MODULE_ENABLED */
 /*#define HAL_HASH_MODULE_ENABLED */
 /*#define HAL_HRTIM_MODULE_ENABLED */
@@ -52,6 +57,7 @@
 /*#define HAL_I2C_MODULE_ENABLED */
 /*#define HAL_I2S_MODULE_ENABLED */
 /*#define HAL_LPTIM_MODULE_ENABLED */
+/*#define HAL_LTDC_MODULE_ENABLED */
 /*#define HAL_NAND_MODULE_ENABLED */
 /*#define HAL_NOR_MODULE_ENABLED */
 /*#define HAL_OPAMP_MODULE_ENABLED */
@@ -82,6 +88,7 @@
 /*#define HAL_DCACHE_MODULE_ENABLED */
 /*#define HAL_PCD_MODULE_ENABLED */
 /*#define HAL_HCD_MODULE_ENABLED */
+/*#define HAL_XSPI_MODULE_ENABLED */
 #define HAL_GPIO_MODULE_ENABLED
 #define HAL_EXTI_MODULE_ENABLED
 #define HAL_DMA_MODULE_ENABLED
@@ -200,11 +207,14 @@
 #define  USE_HAL_DAC_REGISTER_CALLBACKS        0U /* DAC register callback disabled       */
 #define  USE_HAL_DCMI_REGISTER_CALLBACKS       0U /* DCMI register callback disabled      */
 #define  USE_HAL_DMA2D_REGISTER_CALLBACKS      0U /* DMA2D register callback disabled     */
+#define  USE_HAL_DSI_REGISTER_CALLBACKS        0U /* DSI register callback disabled       */
 #define  USE_HAL_ETH_REGISTER_CALLBACKS        0U /* ETH register callback disabled       */
 #define  USE_HAL_FDCAN_REGISTER_CALLBACKS      0U /* FDCAN register callback disabled     */
 #define  USE_HAL_FMAC_REGISTER_CALLBACKS       0U /* FMAC register callback disabled      */
 #define  USE_HAL_HASH_REGISTER_CALLBACKS       0U /* HASH register callback disabled      */
 #define  USE_HAL_HCD_REGISTER_CALLBACKS        0U /* HCD register callback disabled       */
+#define  USE_HAL_GFXMMU_REGISTER_CALLBACKS     0U /* GFXMMU register callback disabled    */
+#define  USE_HAL_GPU2D_REGISTER_CALLBACKS      0U /* GPU2D register callback disabled     */
 #define  USE_HAL_I2C_REGISTER_CALLBACKS        0U /* I2C register callback disabled       */
 #define  USE_HAL_IWDG_REGISTER_CALLBACKS       0U /* IWDG register callback disabled      */
 #define  USE_HAL_IRDA_REGISTER_CALLBACKS       0U /* IRDA register callback disabled      */
@@ -279,6 +289,10 @@
   #include "stm32u5xx_hal_dma2d.h"
 #endif /* HAL_DMA2D_MODULE_ENABLED */
 
+#ifdef HAL_DSI_MODULE_ENABLED
+#include "stm32u5xx_hal_dsi.h"
+#endif /* HAL_DSI_MODULE_ENABLED */
+
 #ifdef HAL_CORTEX_MODULE_ENABLED
   #include "stm32u5xx_hal_cortex.h"
 #endif /* HAL_CORTEX_MODULE_ENABLED */
@@ -342,6 +356,10 @@
 #ifdef HAL_LPTIM_MODULE_ENABLED
 #include "stm32u5xx_hal_lptim.h"
 #endif /* HAL_LPTIM_MODULE_ENABLED */
+
+#ifdef HAL_LTDC_MODULE_ENABLED
+#include "stm32u5xx_hal_ltdc.h"
+#endif /* HAL_LTDC_MODULE_ENABLED */
 
 #ifdef HAL_OPAMP_MODULE_ENABLED
 #include "stm32u5xx_hal_opamp.h"
@@ -435,6 +453,14 @@
  #include "stm32u5xx_hal_fmac.h"
 #endif /* HAL_FMAC_MODULE_ENABLED */
 
+#ifdef HAL_GFXMMU_MODULE_ENABLED
+  #include "stm32u5xx_hal_gfxmmu.h"
+#endif /* HAL_GFXMMU_MODULE_ENABLED */
+
+#ifdef HAL_GPU2D_MODULE_ENABLED
+  #include "stm32u5xx_hal_gpu2d.h"
+#endif /* HAL_GPU2D_MODULE_ENABLED */
+
 #ifdef HAL_OTFDEC_MODULE_ENABLED
  #include "stm32u5xx_hal_otfdec.h"
 #endif /* HAL_OTFDEC_MODULE_ENABLED */
@@ -450,6 +476,10 @@
 #ifdef HAL_MDF_MODULE_ENABLED
  #include "stm32u5xx_hal_mdf.h"
 #endif /* HAL_MDF_MODULE_ENABLED */
+
+#ifdef HAL_XSPI_MODULE_ENABLED
+ #include "stm32u5xx_hal_xspi.h"
+#endif /* HAL_XSPI_MODULE_ENABLED */
 
 /* Exported macro ------------------------------------------------------------*/
 #ifdef  USE_FULL_ASSERT
@@ -473,3 +503,4 @@
 #endif
 
 #endif /* STM32U5xx_HAL_CONF_H */
+

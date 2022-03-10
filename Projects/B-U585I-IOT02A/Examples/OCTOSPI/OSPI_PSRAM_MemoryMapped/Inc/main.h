@@ -46,14 +46,14 @@ extern "C" {
 /* APS6408L APMemory memory */
 
 /* Read Operations */
-#define READ_CMD                                0x00
-#define READ_LINEAR_BURST_CMD                   0x20
-#define READ_HYBRID_BURST_CMD                   0x3F
+#define READ_CMD                                0x0000
+#define READ_LINEAR_BURST_CMD                   0x2020
+#define READ_HYBRID_BURST_CMD                   0x3F3F
 
 /* Write Operations */
-#define WRITE_CMD                               0x80
-#define WRITE_LINEAR_BURST_CMD                  0xA0
-#define WRITE_HYBRID_BURST_CMD                  0xBF
+#define WRITE_CMD                               0x8080
+#define WRITE_LINEAR_BURST_CMD                  0xA0A0
+#define WRITE_HYBRID_BURST_CMD                  0xBFBF
 
 /* Reset definition */
 #define MR0                                     0x00000000
@@ -71,11 +71,8 @@ extern "C" {
 #define WRITE_REG_CMD                           0xC0
 
 /* Default dummy clocks cycles */
-#define DUMMY_CLOCK_CYCLES_READ                 5
+#define DUMMY_CLOCK_CYCLES_READ                 8
 #define DUMMY_CLOCK_CYCLES_WRITE                4
-
-/* End address of the OSPI memory */
-#define OSPI_END_ADDR                          (1 << OSPI_FLASH_SIZE)
 
 /* Size of buffers */
 #define BUFFERSIZE                              10240

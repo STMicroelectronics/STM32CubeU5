@@ -182,7 +182,7 @@ enum mpu_armv8m_error_t mpu_armv8m_region_enable_check(
   base_cfg |= (region_cfg->attr_exec << MPU_RBAR_XN_Pos) & MPU_RBAR_XN_Msk;
 
   /*This 0s the lower bits of base address but they are treated as 1 */
-  limit_cfg = (region_cfg->region_limit - 1) & MPU_RLAR_LIMIT_Msk;
+  limit_cfg = (region_cfg->region_limit) & MPU_RLAR_LIMIT_Msk;
 
   limit_cfg |= (region_cfg->region_attridx << MPU_RLAR_AttrIndx_Pos) &
                MPU_RLAR_AttrIndx_Msk;

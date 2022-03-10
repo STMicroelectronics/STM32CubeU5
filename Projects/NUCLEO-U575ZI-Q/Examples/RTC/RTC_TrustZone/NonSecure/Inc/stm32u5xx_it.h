@@ -62,4 +62,3 @@ void RTC_IRQHandler(void);
 #endif
 
 #endif /* __STM32U5xx_IT_H */
-

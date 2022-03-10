@@ -44,12 +44,12 @@ PROCESSING_FINISHED       = 44
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define DEFAULT_STACK_SIZE         1024
+#define DEFAULT_STACK_SIZE         3*1024
 #define DEFAULT_BYTE_POOL_SIZE     9120
 #define DEFAULT_BLOCK_POOL_SIZE    1024
 
-#define READONLY_REGION            0x2003FF00
-#define READWRITE_REGION           0x2003FE00
+#define READONLY_REGION            0x20010000
+#define READWRITE_REGION           0x20010100
 
 #define MAIN_THREAD_PRIO                         2
 #define MAIN_THREAD_PREEMPTION_THRESHOLD         MAIN_THREAD_PRIO
@@ -61,7 +61,11 @@ PROCESSING_FINISHED       = 44
 
 /* Define the pool space in the bss section of the module. ULONG is used to
    get word alignment. */
+#if defined(__GNUC__) || defined(__CC_ARM)
+ULONG  default_module_pool_space[DEFAULT_BYTE_POOL_SIZE / 4] __attribute__ ((aligned(32)));
+#else /* __ICCARM__ */
 _Pragma("data_alignment=32") ULONG  default_module_pool_space[DEFAULT_BYTE_POOL_SIZE / 4];
+#endif
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/

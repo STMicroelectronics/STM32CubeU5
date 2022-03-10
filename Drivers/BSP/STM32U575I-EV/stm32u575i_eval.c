@@ -24,7 +24,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32u575i_eval.h"
-
+#include <stdio.h>
 #if (USE_BSP_IO_CLASS > 0)
 #include "stm32u575i_eval_io.h"
 #endif /* USE_BSP_IO_CLASS */
@@ -95,14 +95,14 @@ static void JOY1_EXTI_Callback(void);
 /** @defgroup STM32U575I_EVAL_LOW_LEVEL_Exported_Variables LOW LEVEL Exported Variables
   * @{
   */
-EXTI_HandleTypeDef hpb_exti[BUTTONn];
+EXTI_HandleTypeDef hpb_exti[BUTTON_NBR];
 #if (USE_BSP_COM_FEATURE > 0)
-UART_HandleTypeDef hcom_uart[COMn];
-USART_TypeDef *COM_UART[COMn]   = {COM1_UART, COM2_UART};
+UART_HandleTypeDef hcom_uart[COM_NBR];
+USART_TypeDef *COM_UART[COM_NBR]   = {COM1_UART, COM2_UART};
 #endif /* USE_BSP_COM_FEATURE */
 
 #if (USE_BSP_POT_FEATURE > 0)
-ADC_HandleTypeDef hpot_adc[POTn];
+ADC_HandleTypeDef hpot_adc[POT_NBR];
 #endif /* USE_BSP_POT_FEATURE */
 /**
   * @}
@@ -111,31 +111,31 @@ ADC_HandleTypeDef hpot_adc[POTn];
 /** @defgroup STM32U575I_EVAL_LOW_LEVEL_Private_Variables LOW LEVEL Private Variables
   * @{
   */
-static GPIO_TypeDef *LED_PORT[LEDn] = {LED5_GPIO_PORT,
-                                       LED6_GPIO_PORT,
+static GPIO_TypeDef *LED_PORT[LED_NBR] = {LED5_GPIO_PORT,
+                                          LED6_GPIO_PORT,
 #if (USE_BSP_IO_CLASS > 0)
-                                       0,
-                                       0
+                                          0,
+                                          0
 #endif /* USE_BSP_IO_CLASS */
-                                      };
+                                         };
 
-static const uint32_t LED_PIN[LEDn] = {LED5_PIN,
-                                       LED6_PIN,
+static const uint32_t LED_PIN[LED_NBR] = {LED5_PIN,
+                                          LED6_PIN,
 #if (USE_BSP_IO_CLASS > 0)
-                                       LED7_PIN,
-                                       LED8_PIN
+                                          LED7_PIN,
+                                          LED8_PIN
 #endif /* USE_BSP_IO_CLASS */
-                                      };
+                                         };
 
-static GPIO_TypeDef *BUTTON_PORT[BUTTONn] = {BUTTON_USER_GPIO_PORT,
-                                             BUTTON_TAMPER_GPIO_PORT
-                                            };
-static const uint16_t BUTTON_PIN[BUTTONn] = {BUTTON_USER_PIN,
-                                             BUTTON_TAMPER_PIN
-                                            };
-static const IRQn_Type BUTTON_IRQn[BUTTONn] = {BUTTON_USER_EXTI_IRQn,
-                                               BUTTON_TAMPER_EXTI_IRQn
-                                              };
+static GPIO_TypeDef *BUTTON_PORT[BUTTON_NBR] = {BUTTON_USER_GPIO_PORT,
+                                                BUTTON_TAMPER_GPIO_PORT
+                                               };
+static const uint16_t BUTTON_PIN[BUTTON_NBR] = {BUTTON_USER_PIN,
+                                                BUTTON_TAMPER_PIN
+                                               };
+static const IRQn_Type BUTTON_IRQn[BUTTON_NBR] = {BUTTON_USER_EXTI_IRQ,
+                                                  BUTTON_TAMPER_EXTI_IRQ
+                                                 };
 
 #if (USE_COM_LOG > 0)
 static COM_TypeDef COM_ActiveLogPort = COM1;
@@ -143,26 +143,26 @@ static COM_TypeDef COM_ActiveLogPort = COM1;
 
 #if (USE_BSP_COM_FEATURE > 0)
 #if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
-static uint32_t IsComMspCbValid[COMn] = {0};
+static uint32_t IsComMspCbValid[COM_NBR] = {0};
 #endif /* USE_HAL_UART_REGISTER_CALLBACKS */
 #endif /* USE_BSP_COM_FEATURE */
 
 #if (USE_BSP_POT_FEATURE > 0)
-static ADC_TypeDef      *POT_ADC[POTn] = {POT1_ADC};
+static ADC_TypeDef      *POT_ADC[POT_NBR] = {POT1_ADC};
 #if (USE_HAL_ADC_REGISTER_CALLBACKS == 1)
-static uint32_t          IsPotMspCbValid[POTn] = {0U};
+static uint32_t          IsPotMspCbValid[POT_NBR] = {0U};
 #endif /* USE_HAL_ADC_REGISTER_CALLBACKS */
 #endif /* (USE_BSP_POT_FEATURE > 0) */
 
 #if (USE_BSP_IO_CLASS > 0)
-static uint8_t           JOY_SEL_PIN[JOYn]     = {JOY1_SEL_PIN};
-static uint8_t           JOY_DOWN_PIN[JOYn]    = {JOY1_DOWN_PIN};
-static uint8_t           JOY_LEFT_PIN[JOYn]    = {JOY1_LEFT_PIN};
-static uint8_t           JOY_RIGHT_PIN[JOYn]   = {JOY1_RIGHT_PIN};
-static uint8_t           JOY_UP_PIN[JOYn]      = {JOY1_UP_PIN};
-static uint8_t           JOY_ALL_PIN[JOYn]     = {JOY1_ALL_PIN};
-static uint8_t           CurrentJoyPins[JOYn]  = {0};
-static EXTI_HandleTypeDef hjoy_exti[JOYn];
+static uint8_t           JOY_SEL_PIN[JOY_NBR]     = {JOY1_SEL_PIN};
+static uint8_t           JOY_DOWN_PIN[JOY_NBR]    = {JOY1_DOWN_PIN};
+static uint8_t           JOY_LEFT_PIN[JOY_NBR]    = {JOY1_LEFT_PIN};
+static uint8_t           JOY_RIGHT_PIN[JOY_NBR]   = {JOY1_RIGHT_PIN};
+static uint8_t           JOY_UP_PIN[JOY_NBR]      = {JOY1_UP_PIN};
+static uint8_t           JOY_ALL_PIN[JOY_NBR]     = {JOY1_ALL_PIN};
+static uint8_t           CurrentJoyPins[JOY_NBR]  = {0};
+static EXTI_HandleTypeDef hjoy_exti[JOY_NBR];
 #endif /* USE_BSP_IO_CLASS */
 /**
   * @}
@@ -446,17 +446,17 @@ int32_t BSP_LED_GetState(Led_TypeDef Led)
 int32_t BSP_PB_Init(Button_TypeDef Button, ButtonMode_TypeDef ButtonMode)
 {
   GPIO_InitTypeDef gpio_init_structure;
-  static BSP_EXTI_LineCallback ButtonCallback[BUTTONn] =
+  static BSP_EXTI_LineCallback ButtonCallback[BUTTON_NBR] =
   {
     BUTTON_USER_EXTI_Callback,
     BUTTON_TAMPER_EXTI_Callback
   };
-  static uint32_t  BSP_BUTTON_PRIO [BUTTONn] =
+  static uint32_t  BSP_BUTTON_PRIO [BUTTON_NBR] =
   {
     BSP_BUTTON_USER_IT_PRIORITY,
     BSP_BUTTON_TAMPER_IT_PRIORITY,
   };
-  static const uint32_t BUTTON_EXTI_LINE[BUTTONn] =
+  static const uint32_t BUTTON_EXTI_LINE[BUTTON_NBR] =
   {
     BUTTON_USER_EXTI_LINE,
     BUTTON_TAMPER_EXTI_LINE,
@@ -566,7 +566,7 @@ int32_t BSP_COM_Init(COM_TypeDef COM, COM_InitTypeDef *COM_Init)
 {
   int32_t ret = BSP_ERROR_NONE;
 
-  if (COM >= COMn)
+  if (COM >= COM_NBR)
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -617,7 +617,7 @@ int32_t BSP_COM_DeInit(COM_TypeDef COM)
 {
   int32_t ret = BSP_ERROR_NONE;
 
-  if (COM >= COMn)
+  if (COM >= COM_NBR)
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -691,7 +691,7 @@ int32_t BSP_COM_RegisterDefaultMspCallbacks(COM_TypeDef COM)
 {
   int32_t ret = BSP_ERROR_NONE;
 
-  if (COM >= COMn)
+  if (COM >= COM_NBR)
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -728,7 +728,7 @@ int32_t BSP_COM_RegisterMspCallbacks(COM_TypeDef COM, BSP_COM_Cb_t *Callback)
 {
   int32_t ret = BSP_ERROR_NONE;
 
-  if (COM >= COMn)
+  if (COM >= COM_NBR)
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -771,11 +771,15 @@ int32_t BSP_COM_SelectLogPort(COM_TypeDef COM)
   return BSP_ERROR_NONE;
 }
 
-#ifdef __GNUC__
-int __io_putchar(int ch)
-#else
-int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
+#if defined (__ICCARM__) || defined (__ARMCC_VERSION)
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#elif defined(__GNUC__)
+/* With GCC, small printf (option LD Linker->Libraries->Small printf
+set to 'Yes') calls __io_putchar() */
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#endif /* __ICCARM__ || __ARMCC_VERSION */
+
+PUTCHAR_PROTOTYPE
 {
   (void)HAL_UART_Transmit(&hcom_uart [COM_ActiveLogPort], (uint8_t *) &ch, 1, COM_POLL_TIMEOUT);
   return ch;
@@ -947,7 +951,7 @@ __weak HAL_StatusTypeDef MX_ADC1_Init(ADC_HandleTypeDef *hadc)
 {
   HAL_StatusTypeDef        status = HAL_ERROR;
   ADC_ChannelConfTypeDef   CHANNEL_Config;
-  uint32_t                 POT_ADC_CHANNEL[POTn] = {POT1_ADC_CHANNEL};
+  uint32_t                 POT_ADC_CHANNEL[POT_NBR] = {POT1_ADC_CHANNEL};
 
   /* ADC configuration */
   hadc->Instance                   = POT1_ADC;

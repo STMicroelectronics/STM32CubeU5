@@ -29,7 +29,7 @@
 <li><p>The <i>ARP</i>, <i>ICMP</i>, <i>UDP</i> and <i>TCP</i> protocols are enabled for the <i>NX_IP</i> instance</p></li>
 <li><p>A <i>DHCP client is created.</i></p></li>
 </ul>
-<p>The application then creates 2 threads with the same priorities:</p>
+<p>The application then creates 3 threads with the different priorities:</p>
 <ul>
 <li><p><strong>AppMainThread</strong> (priority 10, PreemtionThreashold 10) : created with the <i>TX_AUTO_START</i> flag to start automatically.</p></li>
 <li><p><strong>AppMQTTClientThread</strong> (priority 10, PreemtionThreashold 10) : created with the <i>TX_DONT_START</i> flag to be started later.</p></li>
@@ -38,7 +38,11 @@
 <ul>
 <li><p>Starts the DHCP client</p></li>
 <li><p>Waits for the IP address resolution</p></li>
-<li><p>Resumes the <strong>AppMQTTClientThread</strong></p></li>
+<li><p>Resumes the <strong>AppSNTPThread</strong></p></li>
+</ul>
+<p>The <strong>AppSNTPThread</strong>, once started:</p>
+<ul>
+<li>it connects to an SNTP server to get current time in order to check x509 certificate validation then it resumes <strong>AppMQTTClientThread</strong>.</li>
 </ul>
 <p>The <strong>AppMQTTClientThread</strong>, once started:</p>
 <ul>

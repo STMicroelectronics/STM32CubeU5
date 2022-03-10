@@ -1,0 +1,276 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2018-2021, Arm Limited. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+{
+  "name": "TF-M secure partition manifests",
+  "type": "manifest_list",
+  "version_major": 0,
+  "version_minor": 1,
+  "manifest_list": [
+    {
+      "name": "Protected Storage Service",
+      "short_name": "TFM_SP_PS",
+      "manifest": "${projectdir}/tfm_protected_storage.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_PROTECTED_STORAGE",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 256,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_ps.*"
+         ],
+      }
+    },
+    {
+      "name": "TF-M Internal Trusted Storage Service",
+      "short_name": "TFM_SP_ITS",
+      "manifest": "${projectdir}/tfm_internal_trusted_storage.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_INTERNAL_TRUSTED_STORAGE",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 257,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_its.*"
+         ]
+      }
+    },
+    {
+      "name": "TFM Crypto Service",
+      "short_name": "TFM_SP_CRYPTO",
+      "manifest": "${projectdir}/tfm_crypto.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_CRYPTO",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 259,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_crypto.*"
+         ]
+      }
+    },
+    {
+      "name": "TFM Platform Service",
+      "short_name": "TFM_SP_PLATFORM",
+      "manifest": "${projectdir}/tfm_platform.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_PLATFORM",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 260,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_platform.*"
+         ]
+      }
+    },
+    {
+      "name": "TFM Initial Attestation Service",
+      "short_name": "TFM_SP_INITIAL_ATTESTATION",
+      "manifest": "${projectdir}/tfm_initial_attestation.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_INITIAL_ATTESTATION",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 261,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_attestation.*"
+         ]
+      }
+    },
+    {
+      "name": "TFM Core Test Service",
+      "short_name": "TFM_SP_CORE_TEST",
+      "manifest": "${projectdir}/tfm_ss_core_test.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_TEST_CORE",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 262,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_core_test.*"
+         ]
+      }
+    },
+    {
+      "name": "TFM Core Test Service 2",
+      "short_name": "TFM_SP_CORE_TEST_2",
+      "manifest": "${projectdir}/tfm_ss_core_test_2.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_TEST_CORE",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 263,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_core_test_2.*"
+         ]
+      }
+    },
+    {
+      "name": "TFM Secure Client Service",
+      "short_name": "TFM_SP_SECURE_TEST_PARTITION",
+      "manifest": "${projectdir}/tfm_secure_client_service.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_TEST_SECURE_SERVICES",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 264,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_secure_client_service.*"
+         ]
+      }
+    },
+    {
+      "name": "TFM IPC Service Test",
+      "short_name": "TFM_SP_IPC_SERVICE_TEST",
+      "manifest": "${projectdir}/tfm_ipc_service_test.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_TEST_CORE_IPC",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 265,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_ipc_service.*"
+         ]
+      }
+    },
+    {
+      "name": "TFM IPC Client Service",
+      "short_name": "TFM_SP_IPC_CLIENT_TEST",
+      "manifest": "${projectdir}/tfm_ipc_client_test.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_TEST_CORE_IPC",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 266,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_ipc_client.*"
+         ]
+      }
+    },
+    {
+      "name": "TFM IRQ Test Service 1",
+      "short_name": "TFM_IRQ_TEST_1",
+      "manifest": "${projectdir}/tfm_irq_test_service_1.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_ENABLE_IRQ_TEST",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 267,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_irq_test_1.*"
+         ]
+      }
+    },
+    {
+      "name": "TF-M PS Test Service",
+      "short_name": "TFM_SP_PS_TEST",
+      "manifest": "${projectdir}/tfm_ps_test_service.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_TEST_PS",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 268,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_ps_test.*"
+         ]
+      }
+    },
+    {
+      "name": "TF-M Secure Client 2 Service",
+      "short_name": "TFM_SP_SECURE_CLIENT_2",
+      "manifest": "${projectdir}/tfm_secure_client_2.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_TEST_SECURE_SERVICES",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 269,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_secure_client_2.*"
+         ]
+      }
+    },
+    {
+      "name": "TFM Firmware Update Service",
+      "short_name": "TFM_SP_FWU",
+      "manifest": "${projectdir}/tfm_firmware_update.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_FIRMWARE_UPDATE",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 271,
+      "linker_pattern": {
+        "library_list": [
+          "*tfm_*partition_fwu*"
+         ]
+      }
+    },
+    
+    {
+      "name": "TFM APP Rot",
+      "short_name": "TFM_APP_ROT",
+      "manifest": "${projectdir}/tfm_app_rot.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_APP_ROT",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 275,
+      "linker_pattern": {
+        "library_list": [
+          "*tfm_app_rot.*"
+        ]
+      }
+    },
+    #-----------------------------------------------------------------------
+    #one partition Version 1.1 is required to fix build issue, even if it is
+    #not used 
+    #-----------------------------------------------------------------------
+    {
+      "name": "TFM FFM11 Partition Service",
+      "short_name": "TFM_SP_FFM11",
+      "manifest": "${projectdir}/tfm_ffm11_partition.yaml",
+      "source_path": "${projectdir}",
+      "tfm_partition_ipc": true,
+      "conditional": "TFM_PARTITION_FFM11",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 272,
+      "linker_pattern": {
+        "library_list": [
+          "*tfm_*partition_ffm11.*"
+        ]
+      }
+    },
+  ]
+}

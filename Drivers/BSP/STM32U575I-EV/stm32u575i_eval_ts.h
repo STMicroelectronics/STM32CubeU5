@@ -48,7 +48,7 @@ extern "C" {
   * @{
   */
 /* TS instances */
-#define TS_INSTANCES_NBR 1U
+#define TS_INSTANCES_NBR 1UL
 
 /* TS orientations */
 #define TS_ORIENTATION_PORTRAIT          0U

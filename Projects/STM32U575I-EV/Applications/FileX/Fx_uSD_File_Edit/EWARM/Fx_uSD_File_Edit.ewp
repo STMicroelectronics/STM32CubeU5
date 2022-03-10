@@ -355,7 +355,7 @@
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$/../FileX/App</state>
                     <state>$PROJ_DIR$/../FileX/Target</state>
-                    <state>$PROJ_DIR$/../Core/Inc</state>
+                    <state>$PROJ_DIR$\..\Core\Inc</state>
                     <state>$PROJ_DIR$/../AZURE_RTOS/App</state>
                     <state>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc</state>
                     <state>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy</state>
@@ -365,7 +365,6 @@
                     <state>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/ports/generic/inc</state>
                     <state>$PROJ_DIR$/../../../../../../Middlewares/ST/threadx/ports/cortex_m33/iar/inc</state>
                     <state>$PROJ_DIR$/../../../../../../Drivers/CMSIS/Include</state>
-                    <state>$PROJ_DIR$/../../../../../../Drivers/BSP/STM32U575I-EV</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1021,7 +1020,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>Fx_uSD_File_Edit_import_lib.o</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1114,7 +1113,7 @@
                     <name>$PROJ_DIR$\..\Core\Src\stm32u5xx_it.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\Core\Src\tx_initialize_low_level.s</name>
+                    <name>$PROJ_DIR$\..\Core\Src\tx_initialize_low_level.S</name>
                 </file>
             </group>
             <group>
@@ -1142,18 +1141,6 @@
     </group>
     <group>
         <name>Drivers</name>
-        <group>
-            <name>BSP</name>
-            <group>
-                <name>STM32U575I-EV</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\BSP\STM32U575I-EV\stm32u575i_eval.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\BSP\STM32U575I-EV\stm32u575i_eval_sd.c</name>
-                </file>
-            </group>
-        </group>
         <group>
             <name>CMSIS</name>
             <file>

@@ -21,8 +21,11 @@ define block PERSO_AREA with fixed order {
                                     readonly section .bootutil_key_cnt,
                                     readonly section .bootutil_key,
                                     readonly section .bootutil_enc_key,
-                                    readonly section .bootutil_priv_key_cnt,
-                                    readonly section .bootutil_priv_key,
+                                    readonly section .bootutil_priv_huk_key_cnt,
+                                    readonly section .bootutil_priv_huk_key,
+                                    readonly section .bootutil_priv_eat_key_cnt,
+                                    readonly section .bootutil_priv_eat_key,
+                                    readonly section .eat_curve_type_len,
                                     readonly section .eat_curve_type,
                                     readonly object keys.o};
 

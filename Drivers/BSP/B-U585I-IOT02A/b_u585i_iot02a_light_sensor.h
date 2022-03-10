@@ -7,13 +7,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -60,7 +59,7 @@ typedef struct
 {
   uint32_t Gain;
   uint32_t ExposureTime;
-  uint32_t Persistance;
+  uint32_t Persistence;
 } LIGHT_SENSOR_Ctx_t;
 /**
   * @}
@@ -135,8 +134,8 @@ int32_t BSP_LIGHT_SENSOR_ReadID(uint32_t Instance, uint32_t *pId);
 int32_t BSP_LIGHT_SENSOR_GetCapabilities(uint32_t Instance, LIGHT_SENSOR_Capabilities_t *pCapabilities);
 int32_t BSP_LIGHT_SENSOR_SetExposureTime(uint32_t Instance, uint32_t ExposureTime);
 int32_t BSP_LIGHT_SENSOR_GetExposureTime(uint32_t Instance, uint32_t *pExposureTime);
-int32_t BSP_LIGHT_SENSOR_SetGain(uint32_t Instance, uint8_t Channel,uint32_t Gain);
-int32_t BSP_LIGHT_SENSOR_GetGain(uint32_t Instance, uint8_t Channel,uint32_t *Gain);
+int32_t BSP_LIGHT_SENSOR_SetGain(uint32_t Instance, uint8_t Channel, uint32_t Gain);
+int32_t BSP_LIGHT_SENSOR_GetGain(uint32_t Instance, uint8_t Channel, uint32_t *Gain);
 int32_t BSP_LIGHT_SENSOR_SetInterMeasurementTime(uint32_t Instance, uint32_t InterMeasurementTime);
 int32_t BSP_LIGHT_SENSOR_GetInterMeasurementTime(uint32_t Instance, uint32_t *pInterMeasurementTime);
 int32_t BSP_LIGHT_SENSOR_Start(uint32_t Instance, uint8_t Mode);
@@ -167,4 +166,3 @@ int32_t BSP_LIGHT_SENSOR_SetControlMode(uint32_t Instance, uint32_t ControlMode,
 
 #endif /* B_U585I_IOT02A_LIGHT_SENSORS_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

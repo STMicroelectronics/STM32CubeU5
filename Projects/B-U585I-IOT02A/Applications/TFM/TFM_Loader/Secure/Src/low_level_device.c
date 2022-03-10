@@ -20,7 +20,10 @@
 
 static struct flash_range access_vect[] =
 {
-  { FLASH_AREA_0_OFFSET, FLASH_AREA_0_OFFSET + FLASH_AREA_0_SIZE - 1}
+  { FLASH_AREA_0_OFFSET, FLASH_AREA_0_OFFSET + FLASH_AREA_0_SIZE - 1},
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+  { FLASH_AREA_4_OFFSET, FLASH_AREA_4_OFFSET + FLASH_AREA_4_SIZE - 1},
+#endif /* (MCUBOOT_S_DATA_IMAGE_NUMBER == 1) */
 };
 
 struct low_level_device FLASH0_DEV =

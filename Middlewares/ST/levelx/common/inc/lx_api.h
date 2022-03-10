@@ -26,7 +26,7 @@
 /*  APPLICATION INTERFACE DEFINITION                       RELEASE        */
 /*                                                                        */
 /*    lx_api.h                                            PORTABLE C      */
-/*                                                           6.1.7        */
+/*                                                           6.1.9        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    William E. Lamie, Microsoft Corporation                             */
@@ -55,6 +55,13 @@
 /*  06-02-2021     Bhupendra Naphade        Modified comment(s),          */
 /*                                            added standalone support,   */
 /*                                            resulting in version 6.1.7  */
+/*  08-02-2021     William E. Lamie         Modified comment(s), and      */
+/*                                            updated product constants,  */
+/*                                            resulting in version 6.1.8  */
+/*  10-15-2021     Bhupendra Naphade        Modified comment(s),          */
+/*                                            updated configuration for   */
+/*                                            nand flash                  */
+/*                                            resulting in version 6.1.9  */
 /*                                                                        */
 /**************************************************************************/
 
@@ -159,7 +166,7 @@ typedef unsigned long long                      ULONG64;
 #define AZURE_RTOS_LEVELX
 #define LEVELX_MAJOR_VERSION                        6
 #define LEVELX_MINOR_VERSION                        1
-#define LEVELX_PATCH_VERSION                        7
+#define LEVELX_PATCH_VERSION                        9
 
 
 /* Define general LevelX Constants.  */
@@ -250,6 +257,10 @@ typedef unsigned long long                      ULONG64;
 #ifndef LX_NAND_ERASE_COUNT_WRITE_SIZE
 #define LX_NAND_ERASE_COUNT_WRITE_SIZE              (nand_flash -> lx_nand_flash_pages_per_block + 1)
 #endif  
+
+#ifndef LX_NAND_FLASH_MAPPING_LIST_UPDATE_DISABLE
+#define LX_NAND_FLASH_MAPPING_LIST_UPDATE_DISABLE
+#endif 
 
 
 /* Define the mask for the hash index into the NAND sector mapping cache table.  The sector mapping cache is divided 

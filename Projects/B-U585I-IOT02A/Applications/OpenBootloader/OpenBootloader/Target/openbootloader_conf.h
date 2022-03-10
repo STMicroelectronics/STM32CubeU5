@@ -20,6 +20,10 @@
 #ifndef OPENBOOTLOADER_CONF_H
 #define OPENBOOTLOADER_CONF_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Includes ------------------------------------------------------------------*/
 #include "platform.h"
 
@@ -32,7 +36,7 @@
 
 /* -------------------------- Definitions for Memories ---------------------- */
 #define FLASH_BL_SIZE                     (2048U * 1024U)  /* Size of FLASH 2 MByte */
-#define FLASH_START_ADDRESS               0x08000000U  /* start of Flash  */
+#define FLASH_START_ADDRESS               FLASH_BASE  /* start of Flash  */
 #define FLASH_END_ADDRESS                 (FLASH_BASE + FLASH_BL_SIZE)  /* end of Flash  */
 
 #define RAM_SIZE                          (768U * 1024U)  /* Size of RAM 768 kByte */
@@ -55,7 +59,9 @@
 #define EB_START_ADDRESS                  0x0BFA0500U  /* Engi bytes start address */
 #define EB_END_ADDRESS                    (EB_START_ADDRESS + EB_SIZE)  /* Engi bytes end address  */
 
-#define OPENBL_RAM_SIZE                   0x16800U  /* RAM used by the Open Bootloader 90 kBytes */
+#define OPENBL_RAM_SIZE                   0x11800U  /* RAM used by the Open Bootloader 71680 Bytes */
+
+#define OPENBL_DEFAULT_MEM                FLASH_START_ADDRESS  /* Default address used for erase and write/read protect commands */
 
 #define RDP_LEVEL_0                       OB_RDP_LEVEL_0
 #define RDP_LEVEL_1                       OB_RDP_LEVEL_1
@@ -77,5 +83,9 @@
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* OPENBOOTLOADER_CONF_H */

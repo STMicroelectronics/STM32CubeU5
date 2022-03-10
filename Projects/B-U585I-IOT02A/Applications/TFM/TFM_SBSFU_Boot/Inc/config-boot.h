@@ -31,6 +31,7 @@
 
 /* HW accelerators activation in BL2 */
 #define BL2_HW_ACCEL_ENABLE
+#define MBEDTLS_ECP_NO_INTERNAL_RNG
 
 #ifdef CONFIG_MCUBOOT_SERIAL
 /* Mcuboot uses mbedts-base64 for serial protocol encoding. */
@@ -41,8 +42,19 @@
 #define MBEDTLS_PLATFORM_C
 #define MBEDTLS_PLATFORM_MEMORY
 #define MBEDTLS_MEMORY_BUFFER_ALLOC_C
+
+
 #define MBEDTLS_NO_PLATFORM_ENTROPY
 #define MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES
+ /* Changes for FIH profile HIGH */
+#undef MBEDTLS_TEST_NULL_ENTROPY
+#undef MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES
+#undef MBEDTLS_ECP_NIST_OPTIM
+#define MBEDTLS_PLATFORM_ENTROPY
+#define MBEDTLS_ENTROPY_C
+#define MBEDTLS_CTR_DRBG_C
+#define MBEDTLS_ENTROPY_HARDWARE_ALT
+
 
 /* STD functions */
 #define MBEDTLS_PLATFORM_NO_STD_FUNCTIONS
@@ -103,6 +115,9 @@
 
 /* Allow DPA resistance in using SAES instead of AES HW crypto */
 #define HW_CRYPTO_DPA_AES
+
+/* Use hardware device HUK, else use software HUK provisioned in Perso area, for TFM PS */
+//#define BL2_USE_HUK_HW
 
 /* Allow HW DPA protected exponentiation instead of doing CRT operation */
 #define MBEDTLS_RSA_NO_CRT

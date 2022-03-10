@@ -62,6 +62,8 @@ Code structure
 ==============
 The code structure of the service will be as follows:
 
+TF-M repo:
+
 ``interface/``
 
 - ``include/psa/internal_trusted_storage.h`` - PSA ITS API
@@ -70,7 +72,7 @@ The code structure of the service will be as follows:
 ``secure_fw/ns_callable/tfm_veneers.c`` - ITS veneers (auto-generated from
 manifest)
 
-``secure_fw/services/internal_trusted_storage/``
+``secure_fw/partitions/internal_trusted_storage/``
 
 - ``tfm_internal_trusted_storage.yaml`` - Partition manifest
 - ``tfm_its_secure_api.c`` - PSA ITS API implementation for SPE
@@ -80,6 +82,8 @@ manifest)
   flash_fs as a backend
 - ``flash_fs/`` - Filesystem
 - ``flash/`` - Flash interface
+
+tf-m-tests repo:
 
 ``test/suites/its/``
 

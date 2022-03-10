@@ -1,21 +1,32 @@
 
 # To compile on SunOS: add "-lsocket -lnsl" to LDFLAGS
+# To compile with PKCS11: add "-lpkcs11-helper" to LDFLAGS
 
 CFLAGS	?= -O2
-WARNING_CFLAGS ?= -Wall -W -Wdeclaration-after-statement
-WARNING_CXXFLAGS ?= -Wall -W
+WARNING_CFLAGS ?= -Wall -Wextra
+WARNING_CXXFLAGS ?= -Wall -Wextra
 LDFLAGS ?=
 
-LOCAL_CFLAGS = $(WARNING_CFLAGS) -I../include -D_FILE_OFFSET_BITS=64
+MBEDTLS_TEST_PATH:=../tests/src
+MBEDTLS_TEST_OBJS:=$(patsubst %.c,%.o,$(wildcard ${MBEDTLS_TEST_PATH}/*.c ${MBEDTLS_TEST_PATH}/drivers/*.c))
+
+LOCAL_CFLAGS = $(WARNING_CFLAGS) -I../tests/include -I../include -D_FILE_OFFSET_BITS=64
 LOCAL_CXXFLAGS = $(WARNING_CXXFLAGS) -I../include -D_FILE_OFFSET_BITS=64
-LOCAL_LDFLAGS = -L../library 			\
+LOCAL_LDFLAGS = ${MBEDTLS_TEST_OBJS} 		\
+		-L../library 			\
+		-lmbedtls$(SHARED_SUFFIX)	\
+		-lmbedx509$(SHARED_SUFFIX)	\
 		-lmbedcrypto$(SHARED_SUFFIX)
 
+include ../3rdparty/Makefile.inc
+LOCAL_CFLAGS+=$(THIRDPARTY_INCLUDES)
+
 ifndef SHARED
-DEP=../library/libmbedcrypto.a
+MBEDLIBS=../library/libmbedcrypto.a ../library/libmbedx509.a ../library/libmbedtls.a
 else
-DEP=../library/libmbedcrypto.$(DLEXT)
+MBEDLIBS=../library/libmbedcrypto.$(DLEXT) ../library/libmbedx509.$(DLEXT) ../library/libmbedtls.$(DLEXT)
 endif
+DEP=${MBEDLIBS} ${MBEDTLS_TEST_OBJS}
 
 ifdef DEBUG
 LOCAL_CFLAGS += -g3
@@ -39,12 +50,19 @@ EXEXT=
 SHARED_SUFFIX=
 endif
 
+# Zlib shared library extensions:
+ifdef ZLIB
+LOCAL_LDFLAGS += -lz
+endif
+
 APPS = \
 	aes/aescrypt2$(EXEXT) \
 	aes/crypt_and_hash$(EXEXT) \
-	hash/hello$(EXEXT) \
 	hash/generic_sum$(EXEXT) \
+	hash/hello$(EXEXT) \
+	pkey/dh_client$(EXEXT) \
 	pkey/dh_genprime$(EXEXT) \
+	pkey/dh_server$(EXEXT) \
 	pkey/ecdh_curve25519$(EXEXT) \
 	pkey/ecdsa$(EXEXT) \
 	pkey/gen_key$(EXEXT) \
@@ -55,51 +73,71 @@ APPS = \
 	pkey/pk_encrypt$(EXEXT) \
 	pkey/pk_sign$(EXEXT) \
 	pkey/pk_verify$(EXEXT) \
-	pkey/rsa_genkey$(EXEXT) \
 	pkey/rsa_decrypt$(EXEXT) \
 	pkey/rsa_encrypt$(EXEXT) \
+	pkey/rsa_genkey$(EXEXT) \
 	pkey/rsa_sign$(EXEXT) \
-	pkey/rsa_verify$(EXEXT) \
 	pkey/rsa_sign_pss$(EXEXT) \
+	pkey/rsa_verify$(EXEXT) \
 	pkey/rsa_verify_pss$(EXEXT) \
 	psa/crypto_examples$(EXEXT) \
 	psa/key_ladder_demo$(EXEXT) \
 	psa/psa_constant_names$(EXEXT) \
 	random/gen_entropy$(EXEXT) \
-	random/gen_random_havege$(EXEXT) \
 	random/gen_random_ctr_drbg$(EXEXT) \
+	random/gen_random_havege$(EXEXT) \
+	ssl/dtls_client$(EXEXT) \
+	ssl/dtls_server$(EXEXT) \
+	ssl/mini_client$(EXEXT) \
+	ssl/ssl_client1$(EXEXT) \
+	ssl/ssl_client2$(EXEXT) \
+	ssl/ssl_context_info$(EXEXT) \
+	ssl/ssl_fork_server$(EXEXT) \
+	ssl/ssl_mail_client$(EXEXT) \
+	ssl/ssl_server$(EXEXT) \
+	ssl/ssl_server2$(EXEXT) \
 	test/benchmark$(EXEXT) \
-	test/selftest$(EXEXT) \
-	test/zeroize$(EXEXT) \
 	test/query_compile_time_config$(EXEXT) \
+	test/selftest$(EXEXT) \
+	test/udp_proxy$(EXEXT) \
+	test/zeroize$(EXEXT) \
 	util/pem2der$(EXEXT) \
 	util/strerror$(EXEXT) \
+	x509/cert_app$(EXEXT) \
+	x509/cert_req$(EXEXT) \
+	x509/cert_write$(EXEXT) \
+	x509/crl_app$(EXEXT) \
+	x509/req_app$(EXEXT) \
 # End of APPS
+
+ifdef PTHREAD
+APPS +=	ssl/ssl_pthread_server$(EXEXT)
+endif
 
 ifdef TEST_CPP
 APPS += test/cpp_dummy_build$(EXEXT)
 endif
 
-EXTRA_GENERATED =
-
 .SILENT:
 
-.PHONY: all clean list
+.PHONY: all clean list fuzz
 
 all: $(APPS)
-
-$(DEP):
-	$(MAKE) -C ../library
-
-ifdef WINDOWS
-EXTRA_GENERATED += psa\psa_constant_names_generated.c
-else
-EXTRA_GENERATED += psa/psa_constant_names_generated.c
+ifndef WINDOWS
+# APPS doesn't include the fuzzing programs, which aren't "normal"
+# sample or test programs, and don't build with MSVC which is
+# warning about fopen
+all: fuzz
 endif
 
-psa/psa_constant_names$(EXEXT): psa/psa_constant_names_generated.c
-psa/psa_constant_names_generated.c: ../scripts/generate_psa_constants.py ../include/psa/crypto_values.h ../include/psa/crypto_extra.h
-	../scripts/generate_psa_constants.py
+fuzz: ${MBEDTLS_TEST_OBJS}
+	$(MAKE) -C fuzz THIRDPARTY_INCLUDES=$(THIRDPARTY_INCLUDES)
+
+$(MBEDLIBS):
+	$(MAKE) -C ../library
+
+${MBEDTLS_TEST_OBJS}:
+	$(MAKE) -C ../tests mbedtls_test
 
 aes/aescrypt2$(EXEXT): aes/aescrypt2.c $(DEP)
 	echo "  CC    aes/aescrypt2.c"
@@ -117,9 +155,17 @@ hash/generic_sum$(EXEXT): hash/generic_sum.c $(DEP)
 	echo "  CC    hash/generic_sum.c"
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) hash/generic_sum.c $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
 
+pkey/dh_client$(EXEXT): pkey/dh_client.c $(DEP)
+	echo "  CC    pkey/dh_client.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) pkey/dh_client.c   $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
 pkey/dh_genprime$(EXEXT): pkey/dh_genprime.c $(DEP)
 	echo "  CC    pkey/dh_genprime.c"
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) pkey/dh_genprime.c $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+pkey/dh_server$(EXEXT): pkey/dh_server.c $(DEP)
+	echo "  CC    pkey/dh_server.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) pkey/dh_server.c   $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
 
 pkey/ecdh_curve25519$(EXEXT): pkey/ecdh_curve25519.c $(DEP)
 	echo "  CC    pkey/ecdh_curve25519.c"
@@ -209,6 +255,50 @@ random/gen_random_ctr_drbg$(EXEXT): random/gen_random_ctr_drbg.c $(DEP)
 	echo "  CC    random/gen_random_ctr_drbg.c"
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) random/gen_random_ctr_drbg.c $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
 
+ssl/dtls_client$(EXEXT): ssl/dtls_client.c $(DEP)
+	echo "  CC    ssl/dtls_client.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) ssl/dtls_client.c  $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+ssl/dtls_server$(EXEXT): ssl/dtls_server.c $(DEP)
+	echo "  CC    ssl/dtls_server.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) ssl/dtls_server.c  $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+ssl/ssl_client1$(EXEXT): ssl/ssl_client1.c $(DEP)
+	echo "  CC    ssl/ssl_client1.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) ssl/ssl_client1.c  $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+ssl/ssl_client2$(EXEXT): ssl/ssl_client2.c test/query_config.c $(DEP)
+	echo "  CC    ssl/ssl_client2.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) ssl/ssl_client2.c test/query_config.c $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+ssl/ssl_server$(EXEXT): ssl/ssl_server.c $(DEP)
+	echo "  CC    ssl/ssl_server.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) ssl/ssl_server.c   $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+ssl/ssl_server2$(EXEXT): ssl/ssl_server2.c test/query_config.c $(DEP)
+	echo "  CC    ssl/ssl_server2.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) ssl/ssl_server2.c test/query_config.c $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+ssl/ssl_context_info$(EXEXT): ssl/ssl_context_info.c test/query_config.c $(DEP)
+	echo "  CC    ssl/ssl_context_info.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) ssl/ssl_context_info.c test/query_config.c $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+ssl/ssl_fork_server$(EXEXT): ssl/ssl_fork_server.c $(DEP)
+	echo "  CC    ssl/ssl_fork_server.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) ssl/ssl_fork_server.c   $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+ssl/ssl_pthread_server$(EXEXT): ssl/ssl_pthread_server.c $(DEP)
+	echo "  CC    ssl/ssl_pthread_server.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) ssl/ssl_pthread_server.c   $(LOCAL_LDFLAGS) -lpthread  $(LDFLAGS) -o $@
+
+ssl/ssl_mail_client$(EXEXT): ssl/ssl_mail_client.c $(DEP)
+	echo "  CC    ssl/ssl_mail_client.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) ssl/ssl_mail_client.c   $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+ssl/mini_client$(EXEXT): ssl/mini_client.c $(DEP)
+	echo "  CC    ssl/mini_client.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) ssl/mini_client.c   $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
 test/benchmark$(EXEXT): test/benchmark.c $(DEP)
 	echo "  CC    test/benchmark.c"
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) test/benchmark.c   $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
@@ -220,6 +310,10 @@ test/cpp_dummy_build$(EXEXT): test/cpp_dummy_build.cpp $(DEP)
 test/selftest$(EXEXT): test/selftest.c $(DEP)
 	echo "  CC    test/selftest.c"
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) test/selftest.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+test/udp_proxy$(EXEXT): test/udp_proxy.c $(DEP)
+	echo "  CC    test/udp_proxy.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) test/udp_proxy.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
 
 test/zeroize$(EXEXT): test/zeroize.c $(DEP)
 	echo "  CC    test/zeroize.c"
@@ -237,18 +331,40 @@ util/strerror$(EXEXT): util/strerror.c $(DEP)
 	echo "  CC    util/strerror.c"
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) util/strerror.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
 
+x509/cert_app$(EXEXT): x509/cert_app.c $(DEP)
+	echo "  CC    x509/cert_app.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) x509/cert_app.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+x509/cert_write$(EXEXT): x509/cert_write.c $(DEP)
+	echo "  CC    x509/cert_write.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) x509/cert_write.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+x509/crl_app$(EXEXT): x509/crl_app.c $(DEP)
+	echo "  CC    x509/crl_app.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) x509/crl_app.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+x509/cert_req$(EXEXT): x509/cert_req.c $(DEP)
+	echo "  CC    x509/cert_req.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) x509/cert_req.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+x509/req_app$(EXEXT): x509/req_app.c $(DEP)
+	echo "  CC    x509/req_app.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) x509/req_app.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
 psa/crypto_examples$(EXEXT): psa/crypto_examples.c $(DEP)
 	echo "  CC    psa/crypto_examples.c"
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) psa/crypto_examples.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
 
 clean:
 ifndef WINDOWS
-	rm -f $(APPS) $(EXTRA_GENERATED)
+	rm -f $(APPS)
+	-rm -f ssl/ssl_pthread_server$(EXEXT)
+	-rm -f test/cpp_dummy_build$(EXEXT)
 else
-	if exist *.o del /S /Q /F *.o
-	if exist *.exe del /S /Q /F *.exe
-	if exist $(EXTRA_GENERATED) del /S /Q /F $(EXTRA_GENERATED)
+	if exist *.o del /Q /F *.o
+	if exist *.exe del /Q /F *.exe
 endif
+	$(MAKE) -C fuzz clean
 
 list:
 	echo $(APPS)

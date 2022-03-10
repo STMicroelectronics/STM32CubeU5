@@ -50,17 +50,17 @@ extern "C" {
 /* Motion sensor axes */
 typedef struct
 {
-  int32_t x;
-  int32_t y;
-  int32_t z;
+  int32_t xval;
+  int32_t yval;
+  int32_t zval;
 } BSP_MOTION_SENSOR_Axes_t;
 
 /* Motion sensor raw axes */
 typedef struct
 {
-  int16_t x;
-  int16_t y;
-  int16_t z;
+  int16_t xval;
+  int16_t yval;
+  int16_t zval;
 } BSP_MOTION_SENSOR_AxesRaw_t;
 
 /* Motion sensor capabilities */

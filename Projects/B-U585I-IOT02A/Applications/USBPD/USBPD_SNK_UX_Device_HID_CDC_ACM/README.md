@@ -122,7 +122,7 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
 
 ### <b>Keywords</b>
 
-RTOS, ThreadX, USBX, Device, USB_OTG, Full Speed, CDC, HID, VCP, USART, DMA, Mouse, USBPD.
+RTOS, ThreadX, USBX, USBXDevice, USB_OTG, Full Speed, CDC, HID, VCP, USART, DMA, Mouse, USBPD.
 USB_PD_Lib, UCPD, Type C, USBPD
 
 ### <b>Hardware and Software environment</b>

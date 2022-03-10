@@ -33,7 +33,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 #define DEFAULT_STACK_SIZE               (2 * 1024)
 /* Thread_0 priority */
 #define DEFAULT_THREAD_PRIO              10
@@ -41,9 +40,7 @@
 #define DEFAULT_PREEMPTION_THRESHOLD     DEFAULT_THREAD_PRIO
 
 /* fx media buffer of size equals a one sector */
-#define DEFAULT_MEDIA_BUF_LENGTH         LX_STM32_DEFAULT_SECTOR_SIZE
-
-
+#define DEFAULT_MEDIA_BUF_LENGTH         512
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -53,25 +50,19 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
 /* Buffer for FileX FX_MEDIA sector cache. */
-UINT            *media_memory;
-
+ULONG media_memory[DEFAULT_MEDIA_BUF_LENGTH/sizeof(ULONG)];
 /* Define FileX global data structures.  */
 FX_MEDIA        nor_flash_disk;
 FX_FILE         fx_file;
 /* Define ThreadX global data structures.  */
 TX_THREAD       fx_thread;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
 void fx_thread_entry(ULONG thread_input);
 void Error_Handler(void);
-static VOID os_delay(ULONG delay);
-
 /* USER CODE END PFP */
 
 /**
@@ -89,11 +80,12 @@ UINT MX_FileX_Init(VOID *memory_ptr)
   /* USER CODE END App_FileX_MEM_POOL */
 
   /* USER CODE BEGIN MX_FileX_Init */
-  VOID *pointer;
 
-  /* Allocate memory for the main thread's stack */
-  ret = tx_byte_allocate(byte_pool, &pointer, DEFAULT_STACK_SIZE, TX_NO_WAIT);
+  CHAR *pointer;
 
+  ret = tx_byte_allocate(byte_pool, (VOID **) &pointer, DEFAULT_STACK_SIZE, TX_NO_WAIT);
+
+  /* Check DEFAULT_STACK_SIZE allocation*/
   if (ret != FX_SUCCESS)
   {
     /* Failed at allocating memory */
@@ -101,12 +93,10 @@ UINT MX_FileX_Init(VOID *memory_ptr)
   }
 
   /* Create the main thread.  */
-  tx_thread_create(&fx_thread, "thread 0", fx_thread_entry, 0, pointer, DEFAULT_STACK_SIZE, DEFAULT_THREAD_PRIO,
-                   DEFAULT_PREEMPTION_THRESHOLD, TX_NO_TIME_SLICE, TX_AUTO_START);
+  ret = tx_thread_create(&fx_thread, "thread 0", fx_thread_entry, 0, pointer, DEFAULT_STACK_SIZE,
+                          DEFAULT_THREAD_PRIO, DEFAULT_PREEMPTION_THRESHOLD, TX_NO_TIME_SLICE, TX_AUTO_START);
 
-  /* Allocate memory for the media cache */
-  ret = tx_byte_allocate(byte_pool, (VOID**) &media_memory, DEFAULT_MEDIA_BUF_LENGTH, TX_NO_WAIT);
-
+  /* Check main thread creation */
   if (ret != FX_SUCCESS)
   {
     /* Failed at allocating memory */
@@ -116,19 +106,12 @@ UINT MX_FileX_Init(VOID *memory_ptr)
   /* Initialize FileX.  */
   fx_system_initialize();
 
-  /* USER CODE BEGIN MX_FileX_Init */
   /* USER CODE END MX_FileX_Init */
 
   return ret;
 }
 
 /* USER CODE BEGIN 1 */
-static VOID os_delay(ULONG delay)
-{
-  ULONG start = tx_time_get();
-  while ((tx_time_get() - start) < delay) {}
-}
-
 void fx_thread_entry(ULONG thread_input)
 {
 
@@ -138,18 +121,11 @@ void fx_thread_entry(ULONG thread_input)
   ULONG available_space_post;
   CHAR read_buffer[32];
   CHAR data[] = "This is FileX working on STM32";
-  BSP_OSPI_NOR_Info_t ospi_info;
 
   printf("FileX/LevelX NOR OCTO-SPI Application Start.\n");
 
-  /* Get NOR chip info */
-  if(BSP_OSPI_NOR_GetInfo(LX_STM32_OSPI_INSTANCE, &ospi_info) != BSP_ERROR_NONE)
-  {
-    while(1);
-  }
-
   /* Print the absolute size of the NOR chip*/
-  printf("Total NOR Flash Chip size is: %lu bytes.\n", (unsigned long)ospi_info.FlashSize);
+  printf("Total NOR Flash Chip size is: %lu bytes.\n",(ULONG)LX_STM32_OSPI_FLASH_SIZE);
 
   /* Format the NOR flash as FAT */
   status =  fx_media_format(&nor_flash_disk,
@@ -161,8 +137,8 @@ void fx_thread_entry(ULONG thread_input)
                             1,                            // Number of FATs
                             32,                           // Directory Entries
                             0,                            // Hidden sectors
-                            ospi_info.FlashSize / LX_STM32_DEFAULT_SECTOR_SIZE,      // Total sectors
-                            LX_STM32_DEFAULT_SECTOR_SIZE,          // Sector size
+                            LX_STM32_OSPI_FLASH_SIZE / 512,    // Total sectors
+                            512,                          // Sector size
                             8,                            // Sectors per cluster
                             1,                            // Heads
                             1);                           // Sectors per track
@@ -185,13 +161,13 @@ void fx_thread_entry(ULONG thread_input)
   /* Get the available usable space */
   status =  fx_media_space_available(&nor_flash_disk, &available_space_pre);
 
-  printf("User available NOR Flash disk space size before file is written: %lu bytes.\n", available_space_pre);
-
   /* Check the get available state request status.  */
   if (status != FX_SUCCESS)
   {
     Error_Handler();
   }
+
+  printf("User available NOR Flash disk space size before file is written: %lu bytes.\n", available_space_pre);
 
   /* Create a file called STM32.TXT in the root directory.  */
   status =  fx_file_create(&nor_flash_disk, "STM32.TXT");
@@ -300,16 +276,16 @@ void fx_thread_entry(ULONG thread_input)
   /* Get the available usable space, after the file has been created */
   status =  fx_media_space_available(&nor_flash_disk, &available_space_post);
 
-  printf("User available NOR Flash disk space size after file is written: %lu bytes.\n", available_space_post);
-  printf("The test file occupied a total of %lu cluster(s) (%u per cluster).",
-         (available_space_pre - available_space_post) / (nor_flash_disk.fx_media_bytes_per_sector * nor_flash_disk.fx_media_sectors_per_cluster),
-         nor_flash_disk.fx_media_bytes_per_sector * nor_flash_disk.fx_media_sectors_per_cluster);
-
   /* Check the get available state request status.  */
   if (status != FX_SUCCESS)
   {
     Error_Handler();
   }
+
+  printf("User available NOR Flash disk space size after file is written: %lu bytes.\n", available_space_post);
+  printf("The test file occupied a total of %lu cluster(s) (%u per cluster).\n",
+         (available_space_pre - available_space_post) / (nor_flash_disk.fx_media_bytes_per_sector * nor_flash_disk.fx_media_sectors_per_cluster),
+         nor_flash_disk.fx_media_bytes_per_sector * nor_flash_disk.fx_media_sectors_per_cluster);
 
   /* Close the media.  */
   status =  fx_media_close(&nor_flash_disk);
@@ -323,8 +299,8 @@ void fx_thread_entry(ULONG thread_input)
 
   while(1)
   {
-      BSP_LED_Toggle(LED_GREEN);
-      os_delay(40);
+      HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+      tx_thread_sleep(TX_TIMER_TICKS_PER_SECOND / 2);
   }
 
 }

@@ -18,8 +18,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usb_interface.h"
-#include "stm32u5xx.h"
-#include "stm32u5xx_hal.h"
 #include "app_usbx_device.h"
 #include "app_azure_rtos.h"
 #include "openbl_core.h"
@@ -28,8 +26,10 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+static uint8_t UsbDetected = 0U;
+
 /* Exported variables --------------------------------------------------------*/
-uint8_t USB_Detection = 0;
+uint8_t UsbSofDetected = 0U;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
@@ -66,17 +66,30 @@ void OPENBL_USB_Configuration(void)
 }
 
 /**
+ * @brief  This function is used to De-initialize the USB pins and instance.
+ * @retval None.
+ */
+void OPENBL_USB_DeInit(void)
+{
+  /* Only de-initialize the USB if it is not the current detected interface */
+  if (UsbDetected == 0U)
+  {
+    HAL_PCD_DeInit(&hpcd_USB_OTG_FS);
+  }
+}
+
+/**
  * @brief  This function is used to detect if there is any activity on USB protocol.
  * @retval Returns 1 if interface is detected else 0.
  */
 uint8_t OPENBL_USB_ProtocolDetection(void)
 {
-  uint8_t detected = 0;
-
-  if (USB_Detection == 1)
+  if (UsbSofDetected == 1U)
   {
+    UsbDetected = 0U;
+
     /* Disable the other interfaces */
-    OPENBL_DeInit();
+    OPENBL_InterfacesDeInit();
 
     /* The value of the variable "detect" will always be 0 and this is due to the fact that if this function returns 1,
        the USB interface will be disabled.
@@ -85,28 +98,16 @@ uint8_t OPENBL_USB_ProtocolDetection(void)
   }
   else
   {
-    detected = 0;
+    UsbDetected = 0U;
   }
 
-  return detected;
+  return UsbDetected;
 }
 
 /**
- * @brief  This function is used to De-initialize the I2C pins and instance.
- * @retval None.
- */
-void OPENBL_USB_DeInit(void)
-{
-  __HAL_RCC_USB_CLK_DISABLE();
-  HAL_NVIC_DisableIRQ(OTG_FS_IRQn);
-  __HAL_RCC_USB_FORCE_RESET();
-  __HAL_RCC_USB_RELEASE_RESET();
-}
-
-/**
-  * @brief  Gets the page of a given address
-  * @param  Address Address of the FLASH Memory
-  * @retval The page of a given address
+  * @brief  Gets the page of a given address.
+  * @param  Address Address of the FLASH Memory.
+  * @retval The page of a given address.
   */
 uint32_t OPENBL_USB_GetPage(uint32_t Address)
 {

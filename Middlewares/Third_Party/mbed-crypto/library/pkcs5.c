@@ -5,7 +5,7 @@
  *
  * \author Mathias Olsson <mathias@kompetensum.com>
  *
- *  Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
+ *  Copyright The Mbed TLS Contributors
  *  SPDX-License-Identifier: Apache-2.0
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -19,8 +19,6 @@
  *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 /*
  * PKCS#5 includes PBKDF2 and more
@@ -29,15 +27,12 @@
  * http://tools.ietf.org/html/rfc6070 (Test vectors)
  */
 
-#if !defined(MBEDTLS_CONFIG_FILE)
-#include "mbedtls/config.h"
-#else
-#include MBEDTLS_CONFIG_FILE
-#endif
+#include "common.h"
 
 #if defined(MBEDTLS_PKCS5_C)
 
 #include "mbedtls/pkcs5.h"
+#include "mbedtls/error.h"
 
 #if defined(MBEDTLS_ASN1_PARSE_C)
 #include "mbedtls/asn1.h"
@@ -59,7 +54,7 @@ static int pkcs5_parse_pbkdf2_params( const mbedtls_asn1_buf *params,
                                       mbedtls_asn1_buf *salt, int *iterations,
                                       int *keylen, mbedtls_md_type_t *md_type )
 {
-    int ret;
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     mbedtls_asn1_buf prf_alg_oid;
     unsigned char *p = params->p;
     const unsigned char *end = params->p + params->len;
@@ -226,7 +221,8 @@ int mbedtls_pkcs5_pbkdf2_hmac( mbedtls_md_context_t *ctx,
                        unsigned int iteration_count,
                        uint32_t key_length, unsigned char *output )
 {
-    int ret, j;
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
+    int j;
     unsigned int i;
     unsigned char md1[MBEDTLS_MD_MAX_SIZE];
     unsigned char work[MBEDTLS_MD_MAX_SIZE];
@@ -243,21 +239,23 @@ int mbedtls_pkcs5_pbkdf2_hmac( mbedtls_md_context_t *ctx,
         return( MBEDTLS_ERR_PKCS5_BAD_INPUT_DATA );
 #endif
 
+    if( ( ret = mbedtls_md_hmac_starts( ctx, password, plen ) ) != 0 )
+        return( ret );
     while( key_length )
     {
         // U1 ends up in work
         //
-        if( ( ret = mbedtls_md_hmac_starts( ctx, password, plen ) ) != 0 )
-            return( ret );
-
         if( ( ret = mbedtls_md_hmac_update( ctx, salt, slen ) ) != 0 )
-            return( ret );
+            goto cleanup;
 
         if( ( ret = mbedtls_md_hmac_update( ctx, counter, 4 ) ) != 0 )
-            return( ret );
+            goto cleanup;
 
         if( ( ret = mbedtls_md_hmac_finish( ctx, work ) ) != 0 )
-            return( ret );
+            goto cleanup;
+
+        if( ( ret = mbedtls_md_hmac_reset( ctx ) ) != 0 )
+            goto cleanup;
 
         memcpy( md1, work, md_size );
 
@@ -265,14 +263,14 @@ int mbedtls_pkcs5_pbkdf2_hmac( mbedtls_md_context_t *ctx,
         {
             // U2 ends up in md1
             //
-            if( ( ret = mbedtls_md_hmac_starts( ctx, password, plen ) ) != 0 )
-                return( ret );
-
             if( ( ret = mbedtls_md_hmac_update( ctx, md1, md_size ) ) != 0 )
-                return( ret );
+                goto cleanup;
 
             if( ( ret = mbedtls_md_hmac_finish( ctx, md1 ) ) != 0 )
-                return( ret );
+                goto cleanup;
+
+            if( ( ret = mbedtls_md_hmac_reset( ctx ) ) != 0 )
+                goto cleanup;
 
             // U1 xor U2
             //
@@ -291,7 +289,12 @@ int mbedtls_pkcs5_pbkdf2_hmac( mbedtls_md_context_t *ctx,
                 break;
     }
 
-    return( 0 );
+cleanup:
+    /* Zeroise buffers to clear sensitive data from memory. */
+    mbedtls_platform_zeroize( work, MBEDTLS_MD_MAX_SIZE );
+    mbedtls_platform_zeroize( md1, MBEDTLS_MD_MAX_SIZE );
+
+    return( ret );
 }
 
 #if defined(MBEDTLS_SELF_TEST)

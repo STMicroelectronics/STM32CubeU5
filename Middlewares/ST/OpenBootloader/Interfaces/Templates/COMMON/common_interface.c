@@ -18,12 +18,16 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "platform.h"
+#include "flash_interface.h"
+#include "openbootloader_conf.h"
 #include "common_interface.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+static Function_Pointer ResetCallback;
+
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
@@ -50,5 +54,33 @@ void Common_EnableIrq(void)
   * @retval None.
   */
 void Common_DisableIrq(void)
+{
+}
+
+/**
+  * @brief  Checks whether the target Protection Status is set or not.
+  * @retval Returns SET if protection is enabled else return RESET.
+  */
+FlagStatus Common_GetProtectionStatus(void)
+{
+  FlagStatus status;
+
+  return status;
+}
+
+/**
+  * @brief  Register a callback function to be called at the end of commands processing.
+  * @retval None.
+  */
+void Common_SetPostProcessingCallback(Function_Pointer Callback)
+{
+  ResetCallback = Callback;
+}
+
+/**
+  * @brief  Start post processing task.
+  * @retval None.
+  */
+void Common_StartPostProcessing()
 {
 }

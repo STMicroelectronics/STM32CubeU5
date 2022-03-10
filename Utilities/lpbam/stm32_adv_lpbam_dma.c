@@ -19,52 +19,80 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
-      developing an LPBAM application.
+      It is recommended to read the LPBAM_Utility_GettingStarted.html document, available at the root of LPBAM utility
+      folder, prior to any LPBAM application development start.
 
     *** Driver description ***
     ==========================
     [..]
-      This driver is dedicated for DMA that supports linked-list feature.
-      This advanced LPBAM module counts 3 files :
-          (+) stm32_adv_lpbam_dma.c
-              (++) This file provides the DMA advanced files body.
-          (+) stm32_adv_lpbam_dma.h
-              (++) This file is the header file of stm32_adv_lpbam_dma.c. It provides advanced used types.
-          (+) stm32_platform_lpbam_dma.h
-              (++) This header file contains all defines to be used in applicative side.
+      This section provide description of the driver files content (refer to LPBAM_Utility_GettingStarted.html document
+      for more information)
+
+    [..]
+      This LPBAM modules deals with the peripheral instances that support autonomous mode.
+      It is composed of 3 files :
+          (+) stm32_adv_lpbam_dma.c file
+              (++) This file provides the implementation of the advanced LPBAM DMA functions.
+          (+) stm32_adv_lpbam_dma.h file
+              (++) This file is the header file of stm32_adv_lpbam_dma.c. It provides advanced LPBAM DMA functions
+                   prototypes and the declaration of their needed exported types and structures.
+          (+) STM32xx/stm32_platform_lpbam_dma.h file
+              (++) This header file contains all defines to be used on applicative side.
+                   (+++) STM32xx stands for the device supporting LPBAM sub-system.
+
+    *** Driver functions model ***
+    ==============================
+    [..]
+      This section precises this module supported advanced functions model (refer to LPBAM_Utility_GettingStarted.html
+      document for function model definition).
+
+    [..]
+      This driver provides 1 model of API :
+          (+) ADV_LPBAM_{Module}_{Mode}_SetFullQ() : provides one peripheral configuration queue.
 
     *** Driver features ***
     =======================
     [..]
-      This driver provides the following list of features :
-          (+) Links a built linked-list queue and starts a DMA channel execution in linked-list mode.
+      This section describes this LPBAM module supported features.
+
+    [..]
+      This driver provides services covering the LPBAM management of the following DMA features :
+          (+) Links a built linked-list queue and starts a slave DMA channel execution in linked-list mode.
 
     *** Functional description ***
     ==============================
     [..]
+      This section describes the peripheral features covered by this LPBAM module.
+
+    [..]
+      The output of this driver is a queue to be executed by the DMA master channel.
+
       A master DMA channel can link a built linked-list queue and start a slave DMA channel execution in linked-list
       mode. At first step, the DMA master will update the slave DMA channel registers to point on the queue address
-      (queue to be executed by the slave DMA).
-
-      The output of this driver is the queue to be executed by the DMA master channel.
+      (queue to be executed by the slave DMA). Then, the DMA master will start the slave DMA channel in linked-list
+      mode.
 
     *** Driver APIs description ***
     ===============================
     [..]
-      Use ADV_LPBAM_DMA_Start_SetFullQ() API to build a linked-list queue (to be executed by master DMA channel) that
-      links a built linked-list queue (to be executed by slave DMA channel) to a DMA channel and start execution
-      according to configured parameters in LPBAM_DMA_StartFullAdvConf_t structure.
-      Configuration parameters are :
+      This section provides LPBAM module exhaustive APIs description without considering application user call sequence.
+      For user call sequence information, please refer to 'Driver user sequence' section below.
+
+    [..]
+      Use ADV_LPBAM_DMA_Start_SetFullQ() API to build a linked-list queue (to be executed by a master DMA channel) that
+      links a built linked-list queue to a slave DMA channel and start execution according to configured parameters in
+      LPBAM_DMA_StartFullAdvConf_t structure.
+      The configuration parameters are :
           (+) HeadQAddress : Specifies the head node address of queue to be executed.
           (+) WakeupIT     : Specifies the wake up source interrupt.
                              This parameter can be one or a combination of @ref LPBAM_DMA_Wakeup_Interrupt.
+      Example : HeadQAddress = (uint32_t)User_Q.Head where User_Q is a variable of type DMA_QListTypeDef.
 
-      This API must be called when the slave DMA channel is well initialization in linked-list mode.
-          (+) Recommended DMA channel initialization sequence
-              (++) Call HAL_DMAEx_List_Init() to initialize the DMA in linked-list mode.
-              (++) Call __HAL_DMA_ENABLE_IT() to enable DMA channel error interrupts.
-                   Any DMA error occurred in low power block the LPBAM sub-system mechanisms.
+      This API must be called when the slave DMA channel is initialization in linked-list mode.
+          (+) Recommended slave DMA channel initialization sequence
+              (++) Call HAL_DMAEx_List_Init() to initialize the slave DMA in linked-list mode.
+              (++) Call __HAL_DMA_ENABLE_IT() to enable slave DMA channel error interrupts.
+                   Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
                    DMA error interrupts can be :
                    (+++) DMA_IT_DTE : data transfer error.
                    (+++) DMA_IT_ULE : update link error.
@@ -73,43 +101,58 @@
     *** Driver user sequence ***
     ============================
     [..]
+      This section provides the steps to follow to build an LPBAM application based on HAL/LL and LPBAM drivers. (refer
+      to LPBAM_Utility_GettingStarted.html for linked-list feature description).
+
+    [..]
       This driver user sequence is :
           (+) Initialize the slave DMA channel in linked-list mode (Using HAL/LL). (Mandatory)
-          (+) Call __HAL_DMA_ENABLE_IT() to enable DMA channel error interrupts.
-          (+) Repeat calling ADV_LPBAM_DMA_Start_SetFullQ() until complete LPBAM scenario. (Mandatory)
-          (+) Call ADV_LPBAM_Q_SetTriggerConfig() to add hardware trigger condition for executing
-              ADV_LPBAM_DMA_Start_SetFullQ() output queue.
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Call ADV_LPBAM_Q_SetCircularMode() to circularize your linked-list queue for infinite scenarios cases.
-              (++) Please check stm32_adv_lpbam_common.c (how to use section) for more information.
-          (+) Initialize the master DMA channel in linked-list mode (Using HAL/LL). (Mandatory)
-          (+) Call HAL_DMAEx_List_Link() to link the output queue to a master DMA channel.
-          (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution.
+          (+) Call __HAL_DMA_ENABLE_IT() to enable slave DMA channel error interrupts.
+          (+) Call ADV_LPBAM_DMA_Start_SetFullQ() to link queue and start a DMA channel in linked-list mode. (Mandatory)
+          (+) Call, optionally, ADV_LPBAM_Q_SetTriggerConfig() in stm32_adv_lpbam_common.c to add hardware trigger
+              condition for executing of ADV_LPBAM_DMA_Start_SetFullQ() output queue.
+          (+) Call, optionally, ADV_LPBAM_Q_SetCircularMode() in stm32_adv_lpbam_common.c to circularize your
+              linked-list master queue for infinite scenarios cases.
+          (+) Call HAL_DMAEx_List_Init() to initialize a master DMA channel in linked-list mode. (Mandatory)
+              (++) Master DMA channel must be configured as privileged. (Mandatory)
+          (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized master DMA channel. (Mandatory)
+          (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
+              DMA error interrupts can be :
+              (++) DMA_IT_DTE : data transfer error.
+              (++) DMA_IT_ULE : update link error.
+              (++) DMA_IT_USE : user setting error.
+          (+) Call HAL_DMAEx_List_Start() to start the master DMA channel linked-list execution. (Mandatory)
 
     *** Recommendation ***
     ======================
     [..]
-      Access to DMA slave channel must be done, only by one DMA channel master at the same time.
-      When called to build a linked-list queue scenario, recalling ADV_LPBAM_DMA_Start_SetFullQ() in another queue shall
-      be studied carefully. In fact, output queues that starts linked-list execution for the same slave DMA channel must
-      not be executed simultaneously.
+      This section provides tips and tricks to consider while using LPBAM module drivers to build a user application.
 
     [..]
-      When calling ADV_LPBAM_DMA_Start_SetFullQ() API to start two different DMA channel but for the same queue, it is
-      useless to execute them simultaneously as the two masters will access to the same memories to transmit the same
-      data content.
-      It's strongly not recommended to execute the same linked-list queue that contains nodes ensuring data transfer
-      to/from a peripheral by two different slave DMA channels as unexpected behavior can appear.
+      It's recommended to ensure the consistency of used master DMA channel and linked-list queues when using
+      ADV_LPBAM_DMA_Start_SetFullQ() API at run time.
+
+    [..]
+      Ensure the consistency between slave queue circularity mode to be linked and the slave DMA channel linked-list
+      circularity configuration.
+
+    [..]
+      It's forbidden to execute simultaneously the same linked-list queue with different slave DMA channels.
+
+    [..]
+      It's forbidden to execute simultaneously two linked-list queue using the same slave DMA channel.
 
     *** Driver status description ***
     =================================
     [..]
-      This driver detects and reports any detected issue.
+      This section provides reported LPBAM module status.
+
+    [..]
+      This advanced module reports any detected issue.
           (+) returned values are :
               (++) LPBAM_OK when no error is detected.
-              (++) LPBAM_ERROR when error is detected.
-              (++) LPBAM_INVALID_ID when an invalid node ID is detected. This error value is specific for LPBAM basic
-                   layer.
+              (++) LPBAM_ERROR when any error is detected.
 
     @endverbatim
   **********************************************************************************************************************
@@ -141,8 +184,8 @@
   */
 
 /**
-  * @brief  Build DMA linked-list queue to link and start executing an existing queues in memory according to configured
-  *         parameters in the LPBAM_DMA_StartFullAdvConf_t.
+  * @brief  Build DMA linked-list queue to link and start executing an existing queues in memory according to parameters
+  *         in the LPBAM_DMA_StartFullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a DMA_Channel_TypeDef structure that selects DMA channel instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
   *                              queue type information.

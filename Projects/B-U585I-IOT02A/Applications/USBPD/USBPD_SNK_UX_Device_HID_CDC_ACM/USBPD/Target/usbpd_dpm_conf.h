@@ -30,9 +30,6 @@
 #include "usbpd_dpm_user.h"
 #include "usbpd_vdm_user.h"
 
-#include "gui_api.h"
-#include "usbpd_gui_memmap.h"
-
 /* USER CODE BEGIN Includes */
 /* Section where include file can be added */
 
@@ -40,8 +37,8 @@
 
 /* Define   ------------------------------------------------------------------*/
 /* Define VID, PID,... manufacturer parameters */
-#define USBPD_VID (0x0483u)     /*!< Vendor ID (assigned by the USB-IF)                     */
-#define USBPD_PID (0x0002u)     /*!< Product ID (assigned by the manufacturer)              */
+#define USBPD_VID (1155u)     /*!< Vendor ID (assigned by the USB-IF)                     */
+#define USBPD_PID (0x5750u)     /*!< Product ID (assigned by the manufacturer)              */
 #define USBPD_XID (0xF0000003u) /*!< Value provided by the USB-IF assigned to the product   */
 
 /* USER CODE BEGIN Define */

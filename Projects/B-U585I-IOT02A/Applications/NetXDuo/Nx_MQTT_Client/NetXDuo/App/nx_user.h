@@ -49,6 +49,10 @@
 #ifndef NX_USER_H
 #define NX_USER_H
 
+/* USER CODE BEGIN 1 */
+
+/* USER CODE END 1 */
+
 /* Define various build options for the NetX Duo port. The application should
    either make changes here by commenting or un-commenting the conditional
    compilation defined OR supply the defines though the compiler's equivalent
@@ -2247,9 +2251,7 @@
 
 /* The lowest level (highest numeric stratum level) SNTP Server stratum the
    Client will accept. The NetX Duo SNTP Client default is 2. */
-/*
-#define NX_SNTP_CLIENT_MIN_SERVER_STRATUM       2
-*/
+#define NX_SNTP_CLIENT_MIN_SERVER_STRATUM		5
 
 /* The minimum time adjustment in milliseconds the Client will make to its
    local clock time. Time adjustments below this will be ignored. The NetX
@@ -2334,9 +2336,7 @@
    server clock precision, the Client will accept. To disable this requirement,
    set the maximum root dispersion to 0x0. The NetX Duo SNTP Client default is
    set to 50000. */
-/*
-#define NX_SNTP_CLIENT_MAX_ROOT_DISPERSION      50000
-*/
+#define NX_SNTP_CLIENT_MAX_ROOT_DISPERSION		500000
 
 /* The limit on the number of consecutive invalid updates received from the
    Client server in either broadcast or unicast mode. When this limit is
@@ -2529,5 +2529,9 @@
 /*
 #define NX_WEB_HTTP_SERVER_RETRY_MAX            10
 */
+
+/* USER CODE BEGIN 2 */
+
+/* USER CODE END 2 */
 
 #endif /* NX_USER_H */

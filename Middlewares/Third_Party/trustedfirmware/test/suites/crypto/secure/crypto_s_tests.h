@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2018-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-#include "test/framework/test_framework.h"
+#include "test_framework.h"
 
 void register_testsuite_s_crypto_interface(struct test_suite_t *p_test_suite);
 

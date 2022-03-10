@@ -101,6 +101,7 @@
   */
 
 #include "stm32u5xx.h"
+#include <math.h>
 
 /**
   * @}
@@ -134,7 +135,7 @@
 /*!< Uncomment the following line if you need to relocate your vector Table in
      Internal SRAM. */
 /* #define VECT_TAB_SRAM */
-#define VECT_TAB_OFFSET  0x00 /*!< Vector Table base offset field.
+#define VECT_TAB_OFFSET  0x00000000UL /*!< Vector Table base offset field.
                                    This value must be a multiple of 0x200. */
 /******************************************************************************/
 
@@ -270,8 +271,8 @@ void SystemInit(void)
   */
 void SystemCoreClockUpdate(void)
 {
-  uint32_t pllr = 6, pllsource = 0, pllm = 2, tmp = 0, pllfracen  = 0, msirange = 0;
-  float fracn1, pllvco = 0;
+  uint32_t pllr, pllsource, pllm, tmp, pllfracen, msirange;
+  float_t fracn1, pllvco;
 
   /* Get MSI Range frequency--------------------------------------------------*/
   if (READ_BIT(RCC->ICSCR1, RCC_ICSCR1_MSIRGSEL) == 0U)
@@ -310,30 +311,30 @@ void SystemCoreClockUpdate(void)
       pllsource = (RCC->PLL1CFGR & RCC_PLL1CFGR_PLL1SRC);
       pllm = ((RCC->PLL1CFGR & RCC_PLL1CFGR_PLL1M) >> RCC_PLL1CFGR_PLL1M_Pos) + 1U;
       pllfracen = ((RCC->PLL1CFGR & RCC_PLL1CFGR_PLL1FRACEN) >> RCC_PLL1CFGR_PLL1FRACEN_Pos);
-      fracn1 = (pllfracen * ((RCC->PLL1FRACR & RCC_PLL1FRACR_PLL1FRACN) >> RCC_PLL1FRACR_PLL1FRACN_Pos));
+      fracn1 = (float_t)(uint32_t)(pllfracen * ((RCC->PLL1FRACR & RCC_PLL1FRACR_PLL1FRACN) >> RCC_PLL1FRACR_PLL1FRACN_Pos));
 
       switch (pllsource)
       {
         case 0x00:  /* No clock sent to PLL*/
-          pllvco = 0U;
+          pllvco = (float_t)0U;
           break;
 
         case 0x02:  /* HSI used as PLL clock source */
-          pllvco = (HSI_VALUE / pllm);
+          pllvco = ((float_t)HSI_VALUE / (float_t)pllm);
           break;
 
         case 0x03:  /* HSE used as PLL clock source */
-          pllvco = (HSE_VALUE / pllm);
+          pllvco = ((float_t)HSE_VALUE / (float_t)pllm);
           break;
 
         default:    /* MSI used as PLL clock source */
-          pllvco = (msirange / pllm);
+          pllvco = ((float_t)msirange / (float_t)pllm);
           break;
       }
 
-      pllvco = pllvco * ((RCC->PLL1DIVR & RCC_PLL1DIVR_PLL1N) + (fracn1 / 0x2000) + 1U);
+      pllvco = pllvco * ((float_t)(uint32_t)(RCC->PLL1DIVR & RCC_PLL1DIVR_PLL1N) + (fracn1 / (float_t)0x2000) + (float_t)1U);
       pllr = (((RCC->PLL1DIVR & RCC_PLL1DIVR_PLL1R) >> RCC_PLL1DIVR_PLL1R_Pos) + 1U);
-      SystemCoreClock = (uint32_t)(pllvco / pllr);
+      SystemCoreClock = (uint32_t)((uint32_t)pllvco / pllr);
       break;
 
     default:
@@ -359,3 +360,4 @@ void SystemCoreClockUpdate(void)
 /**
   * @}
   */
+

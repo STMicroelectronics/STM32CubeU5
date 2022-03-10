@@ -20,7 +20,6 @@
 #include "openbl_mem.h"
 #include "openbl_core.h"
 
-#include "flash_interface.h"
 #include "interfaces_conf.h"
 
 /* Private typedef -----------------------------------------------------------*/
@@ -169,39 +168,31 @@ void OPENBL_MEM_Write(uint32_t Address, uint8_t *Data, uint32_t DataLength)
 
 /**
   * @brief  Enables or disables the read out protection.
+  * @param  Address The address where the memory protection will be.
   * @param  State The readout protection state that will be set.
   * @retval None.
   */
-void OPENBL_MEM_SetReadOutProtection(FunctionalState State)
+void OPENBL_MEM_SetReadOutProtection(uint32_t Address, FunctionalState State)
 {
-  if (State == ENABLE)
-  {
-    OPENBL_FLASH_SetReadOutProtectionLevel(RDP_LEVEL_1);
-  }
-  else
-  {
-    OPENBL_FLASH_SetReadOutProtectionLevel(RDP_LEVEL_0);
-  }
-}
+  uint32_t index;
 
-/**
-  * @brief  Checks whether the FLASH Read Out Protection Status is set or not.
-  * @retval Returns SET if readout protection is enabled else return RESET.
-  */
-FlagStatus OPENBL_MEM_GetReadOutProtectionStatus(void)
-{
-  FlagStatus status;
+  /* Get the memory index to know in which memory we will write */
+  index = OPENBL_MEM_GetMemoryIndex(Address);
 
-  if (OPENBL_FLASH_GetReadOutProtectionLevel() != RDP_LEVEL_0)
+  if (index < NumberOfMemories)
   {
-    status = SET;
+    if (a_MemoriesTable[index].SetReadoutProtect != NULL)
+    {
+      if (State == ENABLE)
+      {
+        a_MemoriesTable[index].SetReadoutProtect(RDP_LEVEL_1);
+      }
+      else
+      {
+        a_MemoriesTable[index].SetReadoutProtect(RDP_LEVEL_0);
+      }
+    }
   }
-  else
-  {
-    status = RESET;
-  }
-
-  return status;
 }
 
 /**
@@ -334,15 +325,6 @@ ErrorStatus OPENBL_MEM_Erase(uint32_t Address, uint8_t *p_Data, uint32_t DataLen
   }
 
   return status;
-}
-
-/**
-  * @brief  Launch the option byte loading.
-  * @retval None.
-  */
-void OPENBL_MEM_OptionBytesLaunch(void)
-{
-  OPENBL_FLASH_OB_Launch();
 }
 
 /**

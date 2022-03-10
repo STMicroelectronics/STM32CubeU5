@@ -1,0 +1,58 @@
+From 9e3049ccfda24cadd29f67a09c42f6caccd45be2 Mon Sep 17 00:00:00 2001
+From: Maulik  Patel <Maulik.Patel@arm.com>
+Date: Wed, 24 Mar 2021 11:01:49 +0000
+Subject: [PATCH] Fix psa arch test failures.
+
+Update expected return value of psa_cipher_finish Decrypt test
+with short input to PSA_ERROR_INVALID_ARGUMENT as per PSA Crypto 1.0.0
+Also update the invalid hash algorithm mask as per Mbedtls 2.25.0.
+
+Signed-off-by: Maulik Patel <maulik.patel@arm.com>
+---
+ api-tests/dev_apis/crypto/test_c037/test_data.h | 4 ++--
+ api-tests/val/nspe/val_crypto.h                 | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/api-tests/dev_apis/crypto/test_c037/test_data.h b/api-tests/dev_apis/crypto/test_c037/test_data.h
+index 36e05f0..317ed75 100644
+--- a/api-tests/dev_apis/crypto/test_c037/test_data.h
++++ b/api-tests/dev_apis/crypto/test_c037/test_data.h
+@@ -1,5 +1,5 @@
+ /** @file
+- * Copyright (c) 2019-2020, Arm Limited or its affiliates. All rights reserved.
++ * Copyright (c) 2019-2021, Arm Limited or its affiliates. All rights reserved.
+  * SPDX-License-Identifier : Apache-2.0
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+@@ -269,7 +269,7 @@ static const test_data check1[] = {
+     .output_size            = 0,
+     .expected_output        = NULL,
+     .expected_output_length = 0,
+-    .expected_status        = PSA_ERROR_BAD_STATE
++    .expected_status        = PSA_ERROR_INVALID_ARGUMENT
+ },
+ 
+ #endif
+diff --git a/api-tests/val/nspe/val_crypto.h b/api-tests/val/nspe/val_crypto.h
+index 7270a40..5045a3f 100644
+--- a/api-tests/val/nspe/val_crypto.h
++++ b/api-tests/val/nspe/val_crypto.h
+@@ -1,5 +1,5 @@
+ /** @file
+- * Copyright (c) 2018-2020, Arm Limited or its affiliates. All rights reserved.
++ * Copyright (c) 2018-2021, Arm Limited or its affiliates. All rights reserved.
+  * SPDX-License-Identifier : Apache-2.0
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+@@ -48,7 +48,7 @@
+ 
+ #define PSA_KEY_LIFETIME_INVALID        0xFFFFFFFF
+ #define PSA_KEY_USAGE_INVALID           0xFFFFFFFF
+-#define PSA_HASH_ALG_INVALID            0x01FFFFFF
++#define PSA_HASH_ALG_INVALID            0x02FFFFFF
+ #define PSA_ALG_INVALID                 0xFFFFFFFF
+ #define PSA_KEY_DERIVATION_STEP_INVALID 0x0000FFFF
+ 
+-- 
+2.17.1
+

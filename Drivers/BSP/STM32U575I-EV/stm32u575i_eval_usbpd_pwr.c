@@ -88,7 +88,7 @@ typedef struct
 /* Minimum time between 2 detected faults allowing to consider that
    fault could be due to a false detection (could be recovered).
    => if 2 faults occurred in less than that duration, no recovery will be executed */
-#define USBPD_PWR_FAULT_MIN_TIME_RECOVERY             (500U)             /* 500 ms */
+#define USBPD_PWR_FAULT_MIN_TIME_RECOVERY             (1000U)             /* 1s */
 
 /**
   * @}
@@ -115,8 +115,6 @@ static uint32_t PWR_TCPP0203_ConvertADCDataToVoltage(uint32_t ADCData, uint32_t 
 static int32_t  PWR_TCPP0203_ConvertADCDataToCurrent(uint32_t ADCData);
 
 static void MX_ADC1_Init(void);
-
-ADC_HandleTypeDef hadc1;
 
 /**
   * @}
@@ -187,7 +185,6 @@ int32_t BSP_USBPD_PWR_Init(uint32_t PortNum)
           /* Reset last detected fault Tick */
           USBPD_PWR_Port_Status[PortNum].LastFaultTick = 0;
 
-          /* Initialize required HW for GPIO, BUS communication, Interrupts */
           /* Initialize required GPIOs */
           PWR_TCPP0203_GPIOConfigInit(PortNum);
 
@@ -221,7 +218,7 @@ int32_t BSP_USBPD_PWR_Init(uint32_t PortNum)
 /**
   * @brief  Global de-initialization of PWR resource used by USB-PD
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @retval BSP status
   */
@@ -266,10 +263,10 @@ int32_t BSP_USBPD_PWR_Deinit(uint32_t PortNum)
 /**
   * @brief  Assign Power role for current Port (Source or Sink)
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  Role Type-C port role
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref POWER_ROLE_SOURCE
   *         @arg @ref POWER_ROLE_SINK
   * @retval BSP status
@@ -331,10 +328,10 @@ int32_t BSP_USBPD_PWR_SetRole(uint32_t PortNum, USBPD_PWR_PowerRoleTypeDef Role)
 /**
   * @brief  Set operating mode of Port regarding power saving constraints
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  PwrMode Type-C port power saving mode
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_MODE_OFF
   *         @arg @ref USBPD_PWR_MODE_HIBERNATE
   *         @arg @ref USBPD_PWR_MODE_LOWPOWER
@@ -455,7 +452,7 @@ int32_t BSP_USBPD_PWR_SetPowerMode(uint32_t PortNum, USBPD_PWR_PowerModeTypeDef 
 /**
   * @brief  Get operating mode of Port regarding power saving constraints
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  PwrMode Pointer on current Type-C port power saving mode value
   *         Following values are available :
@@ -491,7 +488,7 @@ int32_t BSP_USBPD_PWR_GetPowerMode(uint32_t PortNum, USBPD_PWR_PowerModeTypeDef 
   * @brief  Initialize the hardware resources used by the Type-C power delivery (PD)
   *         controller.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @retval BSP status
   */
@@ -538,7 +535,7 @@ int32_t BSP_USBPD_PWR_VBUSInit(uint32_t PortNum)
   * @brief  Release the hardware resources used by the Type-C power delivery (PD)
   *         controller.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @retval BSP status
   */
@@ -601,7 +598,7 @@ int32_t BSP_USBPD_PWR_VBUSDeInit(uint32_t PortNum)
 /**
   * @brief  Enable power supply over VBUS.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @retval BSP status
   */
@@ -622,14 +619,24 @@ int32_t BSP_USBPD_PWR_VBUSOn(uint32_t PortNum)
     /* Port Role is now SRC : Close Gate Driver Provider */
     if (USBPD_PWR_Port_Status[PortNum].PwrRole == POWER_ROLE_SOURCE)
     {
-      if (TCPP0203_SetGateDriverProvider(&USBPD_PWR_PortCompObj[PortNum],
-                                         TCPP0203_GD_PROVIDER_SWITCH_CLOSED) != TCPP0203_OK)
+      if (TCPP0203_SetGateDriverConsumer(&USBPD_PWR_PortCompObj[PortNum],
+                                         TCPP0203_GD_PROVIDER_SWITCH_OPEN) != TCPP0203_OK)
       {
         ret = BSP_ERROR_COMPONENT_FAILURE;
       }
+      else
+      {
+        HAL_Delay(2);
+
+        if (TCPP0203_SetGateDriverProvider(&USBPD_PWR_PortCompObj[PortNum],
+                                           TCPP0203_GD_PROVIDER_SWITCH_CLOSED) != TCPP0203_OK)
+        {
+          ret = BSP_ERROR_COMPONENT_FAILURE;
+        }
 #if (USE_BSP_USBPD_PWR_TRACE == 1)
-      BSP_USBPD_PWR_TRACE(PortNum, "-- GDP/GDC setting : SRC --");
+        BSP_USBPD_PWR_TRACE(PortNum, "-- GDP/GDC setting : SRC --");
 #endif /* (USE_BSP_USBPD_PWR_TRACE == 1) */
+      }
     }
     else
     {
@@ -642,7 +649,7 @@ int32_t BSP_USBPD_PWR_VBUSOn(uint32_t PortNum)
 /**
   * @brief  Disable power supply over VBUS.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @retval BSP status
   */
@@ -704,7 +711,7 @@ int32_t BSP_USBPD_PWR_VBUSOff(uint32_t PortNum)
 /**
   * @brief  Get actual VBUS status.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  pState VBUS status (1: On, 0: Off)
   * @retval BSP status
@@ -741,9 +748,9 @@ int32_t BSP_USBPD_PWR_VBUSIsOn(uint32_t PortNum, uint8_t *pState)
 }
 
 /**
-  * @brief  Set a fixed/variable PDO and manage the power control.
+  * @brief  Set a fixed PDO and manage the power control.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  VbusTargetInmv the vbus Target (in mV)
   * @param  OperatingCurrent the Operating Current (in mA)
@@ -769,9 +776,9 @@ int32_t BSP_USBPD_PWR_VBUSSetVoltage_Fixed(uint32_t PortNum,
 }
 
 /**
-  * @brief  Set a fixed/variable PDO and manage the power control.
+  * @brief  Set a variable PDO and manage the power control.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  VbusTargetMinInmv the vbus Target min (in mV)
   * @param  VbusTargetMaxInmv the vbus Target max (in mV)
@@ -806,7 +813,7 @@ int32_t BSP_USBPD_PWR_VBUSSetVoltage_Variable(uint32_t PortNum,
 /**
   * @brief  Set a Battery PDO and manage the power control.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  VbusTargetMin the vbus Target min (in mV)
   * @param  VbusTargetMax the vbus Target max (in mV)
@@ -845,7 +852,7 @@ int32_t BSP_USBPD_PWR_VBUSSetVoltage_Battery(uint32_t PortNum,
 /**
   * @brief  Set a APDO and manage the power control.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  VbusTargetInmv the vbus Target (in mV)
   * @param  OperatingCurrent the Operating current (in mA)
@@ -879,7 +886,7 @@ int32_t BSP_USBPD_PWR_VBUSSetVoltage_APDO(uint32_t PortNum,
   * @note   Callback function invoked when VBUS falls below programmed threshold.
   * @note   By default VBUS disconnection threshold is set to 3.3V
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  VoltageThreshold VBUS disconnection voltage threshold (in mV)
   * @retval BSP status
@@ -909,7 +916,7 @@ int32_t BSP_USBPD_PWR_SetVBUSDisconnectionThreshold(uint32_t PortNum,
   * @note   Callback function is un-registered when callback function pointer
   *         argument is NULL.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  pfnVBUSDetectCallback callback function pointer
   * @retval BSP status
@@ -935,7 +942,7 @@ int32_t BSP_USBPD_PWR_RegisterVBUSDetectCallback(uint32_t PortNum,
 /**
   * @brief  Get actual voltage level measured on the VBUS line.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  pVoltage Pointer on measured voltage level (in mV)
   * @retval BSP status
@@ -968,7 +975,7 @@ int32_t BSP_USBPD_PWR_VBUSGetVoltage(uint32_t PortNum, uint32_t *pVoltage)
 /**
   * @brief  Get actual current level measured on the VBUS line.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  pCurrent Pointer on measured current level (in mA)
   * @retval BSP status
@@ -998,7 +1005,7 @@ int32_t BSP_USBPD_PWR_VBUSGetCurrent(uint32_t PortNum, int32_t *pCurrent)
 /**
   * @brief  Activate discharge on VBUS.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @retval BSP status
   */
@@ -1036,7 +1043,7 @@ int32_t BSP_USBPD_PWR_VBUSDischargeOn(uint32_t PortNum)
 /**
   * @brief  Deactivate discharge on VBUS.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @retval BSP status
   */
@@ -1066,10 +1073,10 @@ int32_t BSP_USBPD_PWR_VBUSDischargeOff(uint32_t PortNum)
 /**
   * @brief  Initialize VCONN sourcing.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  CCPinId Type-C CC pin identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_CC1
   *         @arg @ref USBPD_PWR_TYPE_C_CC2
   * @retval BSP status
@@ -1109,12 +1116,12 @@ int32_t BSP_USBPD_PWR_VCONNInit(uint32_t PortNum,
 }
 
 /**
-  * @brief  Un-Initialize VCONN sourcing.
+  * @brief  De-initialize VCONN sourcing.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  CCPinId Type-C CC pin identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_CC1
   *         @arg @ref USBPD_PWR_TYPE_C_CC2
   * @retval BSP status
@@ -1158,10 +1165,10 @@ int32_t BSP_USBPD_PWR_VCONNDeInit(uint32_t PortNum,
 /**
   * @brief  Enable VCONN sourcing.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  CCPinId Type-C CC pin identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_CC1
   *         @arg @ref USBPD_PWR_TYPE_C_CC2
   * @retval BSP status
@@ -1202,10 +1209,10 @@ int32_t BSP_USBPD_PWR_VCONNOn(uint32_t PortNum,
 /**
   * @brief  Disable VCONN sourcing.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  CCPinId CC pin identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_CC1
   *         @arg @ref USBPD_PWR_TYPE_C_CC2
   * @retval BSP status
@@ -1252,10 +1259,10 @@ int32_t BSP_USBPD_PWR_VCONNOff(uint32_t PortNum,
 /**
   * @brief  Get actual VCONN status.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @param  CCPinId Type-C CC pin identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_CC1
   *         @arg @ref USBPD_PWR_TYPE_C_CC2
   * @param  pState VCONN status (1: On, 0: Off)
@@ -1299,7 +1306,7 @@ int32_t BSP_USBPD_PWR_VCONNIsOn(uint32_t PortNum,
 /**
   * @brief  Activate discharge on VCONN.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @retval BSP status
   */
@@ -1336,7 +1343,7 @@ int32_t BSP_USBPD_PWR_VCONNDischargeOn(uint32_t PortNum)
 /**
   * @brief  Deactivate discharge on VCONN.
   * @param  PortNum Type-C port identifier
-  *         This parameter can be take one of the following values:
+  *         This parameter can take one of the following values:
   *         @arg @ref USBPD_PWR_TYPE_C_PORT_1
   * @retval BSP status
   */
@@ -1439,6 +1446,8 @@ static void MX_ADC1_Init(void)
 {
 
   /* USER CODE BEGIN ADC1_Init 0 */
+  static ADC_HandleTypeDef hadc1;
+
   __HAL_RCC_ADC1_CLK_ENABLE();
 
   /* Configure the GPIO as analog */
@@ -1540,7 +1549,7 @@ static void PWR_TCPP0203_ITConfigInit(uint32_t PortNum)
 }
 
 /**
-  * @brief  I2C BUS regsitration for TCPP0203 communication
+  * @brief  I2C BUS registration for TCPP0203 communication
   * @param  PortNum   Port number
   * @param  Address   I2C Address
   * @retval BSP status
@@ -1711,8 +1720,6 @@ static void PWR_TCPP0203_EventCallback(uint32_t PortNum)
             if ((tickfault > USBPD_PWR_Port_Status[PortNum].LastFaultTick)
                 && ((tickfault - USBPD_PWR_Port_Status[PortNum].LastFaultTick) > USBPD_PWR_FAULT_MIN_TIME_RECOVERY))
             {
-              USBPD_PWR_Port_Status[PortNum].LastFaultTick = tickfault;
-
               /* Send Recovery word to TCPP0203 :
                  GDC and GDP open (TCPP0203_GD_PROVIDER_SWITCH_OPEN is 0) */
 #if (USE_BSP_USBPD_PWR_TRACE == 1)
@@ -1721,12 +1728,26 @@ static void PWR_TCPP0203_EventCallback(uint32_t PortNum)
               recoveryword = TCPP0203_GD_CONSUMER_SWITCH_OPEN | TCPP0203_POWER_MODE_NORMAL;
               (void)TCPP0203_WriteCtrlRegister(&USBPD_PWR_PortCompObj[PortNum], &recoveryword);
 
-              if (USBPD_PWR_Port_Status[PortNum].VBUSDetectCallback != NULL)
+              /* In case PWR Role is SRC, try to restore VBUS as soon as possible */
+              if (USBPD_PWR_Port_Status[PortNum].PwrRole == POWER_ROLE_SOURCE)
               {
-                /* Notify Error thanks to callback */
-                USBPD_PWR_Port_Status[PortNum].VBUSDetectCallback(PortNum, VBUS_NOT_CONNECTED);
+                (void)TCPP0203_SetPowerMode(&USBPD_PWR_PortCompObj[PortNum], TCPP0203_POWER_MODE_NORMAL);
+                (void)TCPP0203_SetGateDriverProvider(&USBPD_PWR_PortCompObj[PortNum],
+                                                     TCPP0203_GD_PROVIDER_SWITCH_CLOSED);
+#if (USE_BSP_USBPD_PWR_TRACE == 1)
+                BSP_USBPD_PWR_TRACE(PortNum, "-- GDP/GDC setting : SRC (Restored) --");
+#endif /* (USE_BSP_USBPD_PWR_TRACE == 1) */
+              }
+              else
+              {
+                if (USBPD_PWR_Port_Status[PortNum].VBUSDetectCallback != NULL)
+                {
+                  /* Notify Error thanks to callback */
+                  USBPD_PWR_Port_Status[PortNum].VBUSDetectCallback(PortNum, VBUS_NOT_CONNECTED);
+                }
               }
             }
+            USBPD_PWR_Port_Status[PortNum].LastFaultTick = tickfault;
           }
           if ((flg_reg & TCPP0203_FLAG_OVP_VBUS_SET) == TCPP0203_FLAG_OVP_VBUS_SET)
           {
@@ -1791,39 +1812,19 @@ static uint32_t PWR_TCPP0203_ConvertADCDataToVoltage(uint32_t ADCData, uint32_t 
 
 /**
   * @brief  Calculate the VBUS current level corresponding to ADC raw converted data.
-  * @note   Current level is measured though INA199x1 output voltage level.
-  * @note   VDD corresponds to the zero-input level state. The Vout responds
-  *         by increasing above VDD for positive differential signals (relative
-  *         to the IN? pin) and responds by decreasing below VDD for negative
-  *        differential signals.
-  *
-  *   VBUS -----. Rs .-....
-  *             |    |  .------------.
-  *             |    |  |  INA199x1  |
-  *             |    |  |            |
-  *             |    '--> IN+        > Vout (GAIN * Vs)
-  *             |  Vs ^ |            | 0 <= Vout < VDD   -  negative current
-  *             |     | |            | Vout = VDD        -  zero-input
-  *             '-------> IN-        | Vout > VDD        -  positive current
-  *                     |            |
-  *              Vref   >            |
-  *             (Vdd/2) |            |
-  *                     '------------'
-  *
-  * Is = Vout/(GAIN * Rs) = (Vout - 2*Vref)/(Gain * Rs)
-  *    where Vout = ADCData * (VDD/ADC_FULL_SCALE)
-  * Is = (ADCData * Vdd)/(ADC_FULL_SCALE * Gain * Rs) - Vdd/(Gain * Rs)
-  *   Vdd = 3300 mV, ADC_FULL_SCALE = 4095, Gain = 50, Rs = 5/1000
+  * @note   ADC measurement provides measurement on IANA pin.
   * @param  ADCData  ADC raw converted data (resolution 12 bits)
   * @retval VBUS analog current (unit: mA)
   */
 static int32_t PWR_TCPP0203_ConvertADCDataToCurrent(uint32_t ADCData)
 {
-  int32_t current;
+  /* Current level measurement is not yet implemented. */
+  uint32_t current;
 
-  current = (int32_t)(ADCData); /* Not yet implemented */
+  /* Example of computation based on ADC measurement : to be updated */
+  current = ((ADCData * VDD_VALUE) >> 10);
 
-  return current;
+  return ((int32_t)current);
 }
 
 /**

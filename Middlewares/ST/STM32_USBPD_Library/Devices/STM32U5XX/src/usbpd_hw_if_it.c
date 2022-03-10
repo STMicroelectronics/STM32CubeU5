@@ -24,6 +24,9 @@
 #if defined(_LOW_POWER)
 #include "usbpd_lowpower.h"
 #endif /* _LOW_POWER */
+#if defined(_FRS)
+#include "usbpd_timersserver.h"
+#endif /* _FRS */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -144,7 +147,14 @@ void PORTx_IRQHandler(uint8_t PortNum)
 
       /* disable DMA */
       SET_BIT(Ports[PortNum].hdmarx->CCR, DMA_CCR_SUSP | DMA_CCR_RESET);
+      while ((Ports[PortNum].hdmarx->CCR & DMA_CCR_EN) == DMA_CCR_EN);
 
+      /* Ready for next transaction */
+      WRITE_REG(Ports[PortNum].hdmarx->CDAR, (uint32_t)Ports[PortNum].ptr_RxBuff);
+      MODIFY_REG(Ports[PortNum].hdmarx->CBR1, DMA_CBR1_BNDT, (SIZE_MAX_PD_TRANSACTION_UNCHUNK & DMA_CBR1_BNDT));
+
+      /* enable the DMA */
+      SET_BIT(Ports[PortNum].hdmarx->CCR, DMA_CCR_EN);
 #if defined(_LOW_POWER)
       UTIL_LPM_SetOffMode(0 == PortNum ? LPM_PE_0 : LPM_PE_1, UTIL_LPM_ENABLE);
 #endif /* _LOW_POWER */
@@ -155,12 +165,6 @@ void PORTx_IRQHandler(uint8_t PortNum)
         Ports[PortNum].cbs.USBPD_HW_IF_RX_Completed(PortNum, hucpd->RX_ORDSET & UCPD_RX_ORDSET_RXORDSET);
       }
       ovrflag = 0;
-
-      /* Ready for next transaction */
-      WRITE_REG(Ports[PortNum].hdmarx->CDAR, (uint32_t)Ports[PortNum].ptr_RxBuff);
-      MODIFY_REG(Ports[PortNum].hdmarx->CBR1, DMA_CBR1_BNDT, (SIZE_MAX_PD_TRANSACTION_UNCHUNK & DMA_CBR1_BNDT));
-
-      SET_BIT(Ports[PortNum].hdmarx->CCR, DMA_CCR_EN);
       return;
     }
 
@@ -176,26 +180,30 @@ void PORTx_IRQHandler(uint8_t PortNum)
       return;
     }
 
+#if defined(_FRS)
     /* check FRSEVTIE */
     if (UCPD_SR_FRSEVT == (_interrupt & UCPD_SR_FRSEVT))
     {
       LL_UCPD_ClearFlag_FRS(hucpd);
       if ((USBPD_PORTPOWERROLE_SNK == Ports[PortNum].params->PE_PowerRole)
-       && (Ports[PortNum].params->PE_SwapOngoing == USBPD_FALSE))
+          && (Ports[PortNum].params->PE_SwapOngoing == USBPD_FALSE))
       {
         /* Confirm the FRS by checking if an RP is always present on the current CC line
-           we should wait min 6us to refresh the type C state machine */
-        for (uint32_t delay = 0; delay < 30; delay++)
-        {
-          __DSB();
-        }
+        we should wait for maximum FRS timing 120us */
+        USBPD_TIM_Start((TIM_identifier)(2 * PortNum), 150);
+        while ((USBPD_TIM_IsExpired((TIM_identifier)(2u * PortNum)) == 0u));
 
         if (0 != (hucpd->SR & (UCPD_SR_TYPEC_VSTATE_CC1 | UCPD_SR_TYPEC_VSTATE_CC2)))
         {
+          /* Switch the power to take the control of VBUS
+             when VBUS go under VSAFE5V the sink shall switch ON VBUS in timing < tSrcFRSwap (150us) */
+          BSP_USBPD_PWR_FRSVbusEnable(PortNum);
+          USBPD_TRACE_Add(USBPD_TRACE_DEBUG, PortNum, 0, "FRS received", 12u);
           Ports[PortNum].cbs.USBPD_HW_IF_TX_FRSReception(PortNum);
         }
       }
     }
+#endif /* _FRS */
   }
 }
 

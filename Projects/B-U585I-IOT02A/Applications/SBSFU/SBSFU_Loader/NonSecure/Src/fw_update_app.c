@@ -71,10 +71,16 @@ const uint32_t MagicTrailerValue[] =
   */
 static void FW_UPDATE_PrintWelcome(void);
 static HAL_StatusTypeDef FW_UPDATE_DownloadNewFirmware(SFU_FwImageFlashTypeDef *pFwImageDwlArea);
-static HAL_StatusTypeDef FW_UPDATE_SECURE_IMAGE(void);
-#if (MCUBOOT_IMAGE_NUMBER == 2)
-static HAL_StatusTypeDef FW_UPDATE_NONSECURE_IMAGE(void);
-#endif /* (MCUBOOT_IMAGE_NUMBER == 2) */
+static HAL_StatusTypeDef FW_UPDATE_SECURE_APP_IMAGE(void);
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
+static HAL_StatusTypeDef FW_UPDATE_NONSECURE_APP_IMAGE(void);
+#endif /* (MCUBOOT_APP_IMAGE_NUMBER == 2) */
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+static HAL_StatusTypeDef FW_UPDATE_SECURE_DATA_IMAGE(void);
+#endif /* (MCUBOOT_S_DATA_IMAGE_NUMBER == 1) */
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
+static HAL_StatusTypeDef FW_UPDATE_NONSECURE_DATA_IMAGE(void);
+#endif /* (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1) */
 /**
   * @}
   */
@@ -110,13 +116,23 @@ void FW_UPDATE_Run(void)
           NVIC_SystemReset();
           break;
       case '2' :
-          FW_UPDATE_SECURE_IMAGE();
+          FW_UPDATE_SECURE_APP_IMAGE();
           break;
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
       case '3' :
-          FW_UPDATE_NONSECURE_IMAGE();
+          FW_UPDATE_NONSECURE_APP_IMAGE();
           break;
-#endif /*  (MCUBOOT_IMAGE_NUMBER == 2) */
+#endif /*  (MCUBOOT_APP_IMAGE_NUMBER == 2) */
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+      case '4' :
+          FW_UPDATE_SECURE_DATA_IMAGE();
+          break;
+#endif /* (MCUBOOT_S_DATA_IMAGE_NUMBER == 1) */
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
+      case '5' :
+          FW_UPDATE_NONSECURE_DATA_IMAGE();
+          break;
+#endif /* (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1) */
       default:
           printf("Invalid Number !\r");
           break;
@@ -132,17 +148,17 @@ void FW_UPDATE_Run(void)
   * @param  None
   * @retval HAL Status.
   */
-static HAL_StatusTypeDef FW_UPDATE_SECURE_IMAGE(void)
+static HAL_StatusTypeDef FW_UPDATE_SECURE_APP_IMAGE(void)
 {
   HAL_StatusTypeDef ret = HAL_ERROR;
   SFU_FwImageFlashTypeDef fw_image_dwl_area;
   ARM_FLASH_INFO *data = LOADER_FLASH_DEV_NAME.GetInfo();
   /* Print Firmware Update welcome message */
-#if (MCUBOOT_IMAGE_NUMBER == 2)
-  printf("Download Secure Image\r\n");
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
+  printf("Download Secure App Image\r\n");
 #else
-  printf("Download Image\r\n");
-#endif /* (MCUBOOT_IMAGE_NUMBER == 2) */
+  printf("Download App Image\r\n");
+#endif /* (MCUBOOT_APP_IMAGE_NUMBER == 2) */
   /* Get Info about the download area */
 #if  defined(MCUBOOT_PRIMARY_ONLY)
   fw_image_dwl_area.DownloadAddr =  FLASH_AREA_0_OFFSET;
@@ -159,29 +175,29 @@ static HAL_StatusTypeDef FW_UPDATE_SECURE_IMAGE(void)
 
   if (HAL_OK == ret)
   {
-#if (MCUBOOT_IMAGE_NUMBER == 2)
-    printf("  -- Secure Image correctly downloaded \r\n\n");
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
+    printf("  -- Secure App Image correctly downloaded \r\n\n");
 #else
-    printf("  -- Image correctly downloaded \r\n\n");
-#endif /* (MCUBOOT_IMAGE_NUMBER == 2) */
+    printf("  -- App Image correctly downloaded \r\n\n");
+#endif /* (MCUBOOT_APP_IMAGE_NUMBER == 2) */
     HAL_Delay(1000U);
   }
 
   return ret;
 }
-#if (MCUBOOT_IMAGE_NUMBER == 2)
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
 /**
   * @brief  Run FW Update process.
   * @param  None
   * @retval HAL Status.
   */
-static HAL_StatusTypeDef FW_UPDATE_NONSECURE_IMAGE(void)
+static HAL_StatusTypeDef FW_UPDATE_NONSECURE_APP_IMAGE(void)
 {
   HAL_StatusTypeDef ret = HAL_ERROR;
   SFU_FwImageFlashTypeDef fw_image_dwl_area;
   ARM_FLASH_INFO *data = LOADER_FLASH_DEV_NAME.GetInfo();
   /* Print Firmware Update welcome message */
-  printf("Download NonSecure Image\r\n");
+  printf("Download NonSecure App Image\r\n");
 
   /* Get Info about the download area */
 #if  defined(MCUBOOT_PRIMARY_ONLY)
@@ -198,13 +214,89 @@ static HAL_StatusTypeDef FW_UPDATE_NONSECURE_IMAGE(void)
 
   if (HAL_OK == ret)
   {
-    printf("  -- NonSecure Image correctly downloaded \r\n\n");
+    printf("  -- NonSecure App Image correctly downloaded \r\n\n");
     HAL_Delay(1000U);
   }
 
   return ret;
 }
-#endif /* (MCUBOOT_IMAGE_NUMBER == 2) */
+#endif /* (MCUBOOT_APP_IMAGE_NUMBER == 2) */
+
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+/**
+  * @brief  Run FW Update process.
+  * @param  None
+  * @retval HAL Status.
+  */
+static HAL_StatusTypeDef FW_UPDATE_SECURE_DATA_IMAGE(void)
+{
+  HAL_StatusTypeDef ret = HAL_ERROR;
+  SFU_FwImageFlashTypeDef fw_image_dwl_area;
+  ARM_FLASH_INFO *data = LOADER_FLASH_DEV_NAME.GetInfo();
+  /* Print Firmware Update welcome message */
+  printf("Download Secure Data Image\r\n");
+  /* Get Info about the download area */
+#if  defined(MCUBOOT_PRIMARY_ONLY)
+  fw_image_dwl_area.DownloadAddr =  FLASH_AREA_4_OFFSET;
+  fw_image_dwl_area.MaxSizeInBytes = FLASH_AREA_4_SIZE;
+#else
+  fw_image_dwl_area.DownloadAddr =  FLASH_AREA_6_OFFSET;
+  fw_image_dwl_area.MaxSizeInBytes = FLASH_AREA_6_SIZE;
+#endif /* MCUBOOT_PRIMARY_ONLY */
+  fw_image_dwl_area.ImageOffsetInBytes = 0x0;
+  m_uFlashSectorSize = data->sector_size;
+  m_uFlashMinWriteSize = data->program_unit;
+  /* Download new firmware image*/
+  ret = FW_UPDATE_DownloadNewFirmware(&fw_image_dwl_area);
+
+  if (HAL_OK == ret)
+  {
+    printf("  -- Secure Data Image correctly downloaded \r\n\n");
+    HAL_Delay(1000U);
+  }
+
+  return ret;
+}
+#endif /* (MCUBOOT_S_DATA_IMAGE_NUMBER == 1) */
+
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
+/**
+  * @brief  Run FW Update process.
+  * @param  None
+  * @retval HAL Status.
+  */
+static HAL_StatusTypeDef FW_UPDATE_NONSECURE_DATA_IMAGE(void)
+{
+  HAL_StatusTypeDef ret = HAL_ERROR;
+  SFU_FwImageFlashTypeDef fw_image_dwl_area;
+  ARM_FLASH_INFO *data = LOADER_FLASH_DEV_NAME.GetInfo();
+  /* Print Firmware Update welcome message */
+  printf("Download NonSecure Data Image\r\n");
+  /* Get Info about the download area */
+#if  defined(MCUBOOT_PRIMARY_ONLY)
+  fw_image_dwl_area.DownloadAddr =  FLASH_AREA_5_OFFSET;
+  fw_image_dwl_area.MaxSizeInBytes = FLASH_AREA_5_SIZE;
+#else
+  fw_image_dwl_area.DownloadAddr =  FLASH_AREA_7_OFFSET;
+  fw_image_dwl_area.MaxSizeInBytes = FLASH_AREA_7_SIZE;
+#endif /* defined(MCUBOOT_PRIMARY_ONLY) */
+  fw_image_dwl_area.ImageOffsetInBytes = 0x0;
+  m_uFlashSectorSize = data->sector_size;
+  m_uFlashMinWriteSize = data->program_unit;
+  /* Download new firmware image*/
+  ret = FW_UPDATE_DownloadNewFirmware(&fw_image_dwl_area);
+
+  if (HAL_OK == ret)
+  {
+    printf("  -- NonSecure Data Image correctly downloaded \r\n\n");
+    HAL_Delay(1000U);
+  }
+
+  return ret;
+}
+
+#endif /* (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1) */
+
 /**
   * @}
   */
@@ -226,12 +318,18 @@ static void FW_UPDATE_PrintWelcome(void)
 {
   printf("\r\n================ New Fw Image ============================\r\n\n");
   printf("  Reset to trigger Installation ------------------------- 1\r\n\n");
-#if (MCUBOOT_IMAGE_NUMBER == 2)
-  printf("  Download Secure Image --------------------------------- 2\r\n\n");
-  printf("  Download NonSecure Image ------------------------------ 3\r\n\n");
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
+  printf("  Download Secure App Image ----------------------------- 2\r\n\n");
+  printf("  Download NonSecure App Image -------------------------- 3\r\n\n");
 #else
-  printf("  Download Image ---------------------------------------- 2\r\n\n");
-#endif /* (MCUBOOT_IMAGE_NUMBER == 2) */
+  printf("  Download App Image ------------------------------------ 2\r\n\n");
+#endif /* (MCUBOOT_APP_IMAGE_NUMBER == 2) */
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+  printf("  Download Secure Data Image ---------------------------- 4\r\n\n");
+#endif /* (MCUBOOT_S_DATA_IMAGE_NUMBER == 1) */
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
+  printf("  Download NonSecure Data Image ------------------------- 5\r\n\n");
+#endif /* (MCUBOOT_S_DATA_IMAGE_NUMBER == 1) */
 }
 /**
   * @brief Download a new Firmware from the host.

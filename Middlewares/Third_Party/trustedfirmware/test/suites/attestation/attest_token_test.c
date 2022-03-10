@@ -2,6 +2,7 @@
  * attest_token_test.c
  *
  * Copyright (c) 2018-2019, Laurence Lundblade.
+ * Copyright (c) 2020, Arm Limited.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -13,7 +14,8 @@
 #include "psa/initial_attestation.h"
 #include "attest_token_decode.h"
 #include "attest_token_test_values.h"
-#include "cmsis.h"
+#include "psa/crypto.h"
+
 
 /**
  * \file attest_token_test.c
@@ -44,7 +46,7 @@
  * \param[out] completed_token  Place to put pointer and length
  *                              of completed token.
  *
- * \return various errors. See \ref attest_token_err_t.
+ * \return various errors. See \ref psa_status_t.
  *
  */
 int token_main_alt(uint32_t option_flags,
@@ -52,8 +54,9 @@ int token_main_alt(uint32_t option_flags,
                    struct q_useful_buf buffer,
                    struct q_useful_buf_c *completed_token)
 {
-    int                          return_value;
-    uint32_t                     completed_token_len;
+    psa_status_t                 return_value;
+    size_t                       token_buf_size;
+    size_t                       completed_token_size;
     struct q_useful_buf_c        actual_nonce;
     Q_USEFUL_BUF_MAKE_STACK_UB(  actual_nonce_storage, 64);
 
@@ -68,18 +71,69 @@ int token_main_alt(uint32_t option_flags,
         actual_nonce = nonce;
     }
 
-    completed_token_len = (uint32_t)buffer.len;
+    token_buf_size = buffer.len;
     return_value = psa_initial_attest_get_token(actual_nonce.ptr,
-                                                (uint32_t)actual_nonce.len,
+                                                actual_nonce.len,
                                                 buffer.ptr,
-                                                &completed_token_len);
+                                                token_buf_size,
+                                                &completed_token_size);
 
-    *completed_token = (struct q_useful_buf_c){buffer.ptr, completed_token_len};
+    *completed_token =
+        (struct q_useful_buf_c){buffer.ptr, completed_token_size};
 
-    return return_value;
+    if (return_value != PSA_SUCCESS) {
+        return (int)return_value;
+    }
+
+    return 0;
 }
 
-#ifdef INCLUDE_TEST_CODE_AND_KEY_ID /* Remove them from release build */
+#ifdef INCLUDE_TEST_CODE /* Remove them from release build */
+#ifdef SYMMETRIC_INITIAL_ATTESTATION
+/**
+ * This is the expected output for the minimal test. It is the result
+ * of creating a token with \ref TOKEN_OPT_SHORT_CIRCUIT_SIGN and \ref
+ * TOKEN_OPT_OMIT_CLAIMS set. The nonce is the above constant string
+ * \ref nonce_bytes.  The token output is completely deterministic.
+ *
+ *     17(
+ *       [
+ *           / protected / h'A10105' / {
+ *               \ alg \ 1:5 \ HMAC-SHA256 \
+ *             } /,
+ *           / unprotected / {},
+ *           / payload / h'A13A000124FF5840000000C0000000000000000000000
+ *           00000000000000000000000000000000000000000000000000000000000
+ *           0000000000000000000000000000000000000000' / {
+ *               / arm_psa_nonce / -75008: h'000000C00000000000000000000
+ *               0000000000000000000000000000000000000000000000000000000
+ *               0000000000000000000000000000000000000000000000,
+ *           } /,
+ *           / tag / h'966840FC0A60AE968F906D7092E57B205D3BBE83ED47EBBC2
+ *           AD9D1CFB41C87F3'
+ *       ]
+ *     )
+ *
+ * The above is in CBOR Diagnostic notation. See RFC 8152.
+ */
+static const uint8_t expected_minimal_token_bytes[] = {
+    0xD1, 0x84, 0x43, 0xA1, 0x01, 0x05, 0xA0, 0x58,
+    0x48, 0xA1, 0x3A, 0x00, 0x01, 0x24, 0xFF, 0x58,
+    0x40, 0x00, 0x00, 0x00, 0xC0, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x58, 0x20, 0x96, 0x68, 0x40, 0xFC, 0x0A,
+    0x60, 0xAE, 0x96, 0x8F, 0x90, 0x6D, 0x70, 0x92,
+    0xE5, 0x7B, 0x20, 0x5D, 0x3B, 0xBE, 0x83, 0xED,
+    0x47, 0xEB, 0xBC, 0x2A, 0xD9, 0xD1, 0xCF, 0xB4,
+    0x1C, 0x87, 0xF3
+};
+#else /* SYMMETRIC_INITIAL_ATTESTATION */
 /**
  * This is the expected output for the minimal test. It is the result
  * of creating a token with \ref TOKEN_OPT_SHORT_CIRCUIT_SIGN and \ref
@@ -133,6 +187,7 @@ static const uint8_t expected_minimal_token_bytes[] = {
     0xA6, 0xFC, 0x7F, 0x51, 0x90, 0x35, 0x2D, 0x3A,
     0x16, 0xBC, 0x30, 0x7B, 0x50, 0x3D
 };
+#endif /* SYMMETRIC_INITIAL_ATTESTATION */
 
 
 /*
@@ -173,19 +228,17 @@ Done:
  */
 int_fast16_t minimal_get_size_test()
 {
-    int_fast16_t          return_value;
-    uint32_t              length;
+    int_fast16_t          return_value = 0;
+    size_t                length;
     struct q_useful_buf_c expected_token;
     struct q_useful_buf_c nonce;
-
-    return_value = 0;
 
     nonce = TOKEN_TEST_VALUE_NONCE;
     expected_token =
         Q_USEFUL_BUF_FROM_BYTE_ARRAY_LITERAL(expected_minimal_token_bytes);
 
 
-    return_value = psa_initial_attest_get_token_size((uint32_t)nonce.len,
+    return_value = psa_initial_attest_get_token_size(nonce.len,
                                                      &length);
 
     /*
@@ -210,19 +263,29 @@ int_fast16_t minimal_get_size_test()
 int_fast16_t buffer_too_small_test()
 {
     int_fast16_t return_value = 0;
-    Q_USEFUL_BUF_MAKE_STACK_UB(token_storage, 100); /* too small on purpose */
+    /*
+     * Construct a buffer with enough capacity in case buffer size check fails
+     * and the token is generated. If a smaller buffer is allocated, the
+     * incorrectly generated token may overwrite and corrupt the data following
+     * this buffer.
+     */
+    Q_USEFUL_BUF_MAKE_STACK_UB(token_storage,
+                               sizeof(expected_minimal_token_bytes));
     struct q_useful_buf_c completed_token;
     struct q_useful_buf_c nonce;
 
 
     nonce = TOKEN_TEST_VALUE_NONCE;
+    /* Fake the size and cheat the token generation process. */
+    token_storage.len = sizeof(expected_minimal_token_bytes) - 1;
 
-    return_value = token_main_alt(TOKEN_OPT_SHORT_CIRCUIT_SIGN,
+    return_value = token_main_alt(TOKEN_OPT_SHORT_CIRCUIT_SIGN |
+                                      TOKEN_OPT_OMIT_CLAIMS,
                                   nonce,
                                   token_storage,
                                   &completed_token);
 
-    if(return_value != ATTEST_TOKEN_ERR_TOO_SMALL) {
+    if(return_value != PSA_ERROR_BUFFER_TOO_SMALL) {
         return_value = -1;
     } else {
         return_value = 0;
@@ -230,39 +293,9 @@ int_fast16_t buffer_too_small_test()
 
     return return_value;
 }
-#endif /* INCLUDE_TEST_CODE_AND_KEY_ID */
+#endif /* INCLUDE_TEST_CODE */
 
-void get_hw_version(uint32_t *size, uint8_t *buf)
-{
-  uint32_t hw_version_size = 14;
-  uint16_t version;
-  uint16_t revision;
-  /* version is used a 3 hexadecimal print in decimal = 6 bytes*/
-  version = DBGMCU->IDCODE & 0xfff;
-  /* revision is used 4 hexadecimal print = 8 bytes */
-  revision = DBGMCU->IDCODE >> 16;
-  if (*size < hw_version_size)
-  {
-    return ;
-  }
-  buf[0] = '0' + (((version >> 8) & 0xf) / 10);
-  buf[1] = '0' + (((version >> 8) & 0xf) % 10);
-  buf[2] = '0' + (((version >> 4) & 0xf) / 10);
-  buf[3] = '0' + (((version >> 4) & 0xf) % 10);
-  buf[4] = '0' + (((version >> 0) & 0xf) / 10);
-  buf[5] = '0' + (((version >> 0) & 0xf) % 10);
-  buf[6] = '0' + (((revision >> 12) & 0xf) / 10);
-  buf[7] = '0' + (((revision >> 12) & 0xf) % 10);
-  buf[8] = '0' + (((revision >> 8) & 0xf) / 10);
-  buf[9] = '0' + (((revision >> 8) & 0xf) % 10);
-  buf[10] = '0' + (((revision >> 4) & 0xf) / 10);
-  buf[11] = '0' + (((revision >> 4) & 0xf) % 10);
-  buf[12] = '0' + (((revision >> 0) & 0xf) / 10);
-  buf[13] = '0' + (((revision >> 0) & 0xf) % 10);
-  *size = hw_version_size;
 
-  return ;
-}
 /**
  * \brief Check the simple IAT claims against compiled-in known values
  *
@@ -290,10 +323,9 @@ static int_fast16_t check_simple_claims(
     /* Use a temporary string variable to make the static analyzer
      * happy. It doesn't like comparing a string literal to NULL
      */
-    uint8_t* tmp_string;
+    const char *tmp_string;
 
     return_value = 0;
-
 
     /* -- check value of the nonce claim -- */
     if(!IS_ITEM_FLAG_SET(NONCE_FLAG, simple_claims->item_flags)) {
@@ -386,17 +418,15 @@ static int_fast16_t check_simple_claims(
     } else {
         /* Claim is present */
         /* Don't have to check if its presence is required */
-		uint8_t hw_version[15];
-		uint32_t hwversion_size=15;
-		get_hw_version(&hwversion_size,hw_version);
-
-            tmp = Q_USEFUL_BUF_FROM_SZ_LITERAL(hw_version);
+        tmp_string = TOKEN_TEST_VALUE_HW_VERSION;
+        if(tmp_string != NULL) {
+            tmp = Q_USEFUL_BUF_FROM_SZ_LITERAL(TOKEN_TEST_VALUE_HW_VERSION);
             if(q_useful_buf_compare(simple_claims->hw_version, tmp)) {
                 /* Check of its value was requested and failed */
                 return_value = -57;
                 goto Done;
             }
-
+        }
     }
 
     /* -- check value of the implementation ID -- */
@@ -419,8 +449,7 @@ static int_fast16_t check_simple_claims(
     }
 
     /* -- check value of the security lifecycle claim -- */
-    if(simple_claims->security_lifecycle !=
-       TOKEN_TEST_VALUE_SECURITY_LIFECYCLE) {
+    if(!IS_ITEM_FLAG_SET(SECURITY_LIFECYCLE_FLAG,simple_claims->item_flags)) {
         /* Claim is not present in token */
         if(TOKEN_TEST_REQUIRE_SECURITY_LIFECYCLE) {
             /* It should have been present */
@@ -451,9 +480,16 @@ static int_fast16_t check_simple_claims(
         /* Don't have to check if its presence is required */
         if(TOKEN_TEST_VALUE_CLIENT_ID != INT32_MAX &&
            simple_claims->client_id != TOKEN_TEST_VALUE_CLIENT_ID) {
-            /* Check of its value was requested and failed */
-            return_value = -63;
-            goto Done;
+#if DOMAIN_NS == 1U
+            /* Non-secure caller client ID has to be negative */
+            if(simple_claims->client_id > -1) {
+#else
+            /* Secure caller client ID has to be positive */
+            if(simple_claims->client_id < 1) {
+#endif
+                return_value = -63;
+                goto Done;
+            }
         }
     }
 
@@ -797,7 +833,6 @@ Done:
     return return_value;
 }
 
-
 /**
  * Modes for decode_test_internal()
  */
@@ -805,7 +840,11 @@ enum decode_test_mode_t {
     /** See documentation for decode_test_short_circuit_sig() */
     SHORT_CIRCUIT_SIGN,
     /** See documentation for decode_test_normal_sig() */
-    NORMAL_SIGN
+    NORMAL_SIGN,
+    /** See documentation for decode_test_symmetric_initial_attest() */
+    COSE_MAC0,
+    /** See documentation for decode_test_symmetric_iat_short_circuit_tag() */
+    COSE_MAC0_SHORT_CIRCUIT_TAG
 };
 
 /**
@@ -840,6 +879,16 @@ static int_fast16_t decode_test_internal(enum decode_test_mode_t mode)
         case NORMAL_SIGN:
             token_encode_options = 0;
             token_decode_options = 0;
+            break;
+
+        case COSE_MAC0:
+            token_encode_options = 0;
+            token_decode_options = 0;
+            break;
+
+        case COSE_MAC0_SHORT_CIRCUIT_TAG:
+            token_encode_options = TOKEN_OPT_SHORT_CIRCUIT_SIGN;
+            token_decode_options = TOKEN_OPT_SHORT_CIRCUIT_SIGN;
             break;
 
         default:
@@ -932,7 +981,17 @@ Done:
     return return_value;
 }
 
+#ifdef SYMMETRIC_INITIAL_ATTESTATION
+int_fast16_t decode_test_symmetric_initial_attest(void)
+{
+    return decode_test_internal(COSE_MAC0);
+}
 
+int_fast16_t decode_test_symmetric_iat_short_circuit_tag(void)
+{
+    return decode_test_internal(COSE_MAC0_SHORT_CIRCUIT_TAG);
+}
+#else /* SYMMETRIC_INITIAL_ATTESTATION */
 /*
  * Public function. See token_test.h
  */
@@ -949,3 +1008,4 @@ int_fast16_t decode_test_normal_sig(void)
 {
     return decode_test_internal(NORMAL_SIGN);
 }
+#endif /* SYMMETRIC_INITIAL_ATTESTATION */

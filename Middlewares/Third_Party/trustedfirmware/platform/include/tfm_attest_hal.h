@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -25,6 +25,7 @@ enum tfm_security_lifecycle_t {
     TFM_SLC_NON_PSA_ROT_DEBUG         = 0x4000u,
     TFM_SLC_RECOVERABLE_PSA_ROT_DEBUG = 0x5000u,
     TFM_SLC_DECOMMISSIONED            = 0x6000u,
+    TFM_SLC_MAX_VALUE                 = 0x60FFu,
 };
 
 /**

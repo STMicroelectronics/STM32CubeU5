@@ -1,21 +1,20 @@
 /**
- ******************************************************************************
- * @file    iis2mdc.c
- * @author  MEMS Software Solutions Team
- * @brief   IIS2MDC driver file
- ******************************************************************************
- * @attention
- *
- * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
- * All rights reserved.</center></h2>
- *
- * This software component is licensed by ST under BSD 3-Clause license,
- * the "License"; You may not use this file except in compliance with the
- * License. You may obtain a copy of the License at:
- *                        opensource.org/licenses/BSD-3-Clause
- *
- ******************************************************************************
- */
+  ******************************************************************************
+  * @file    iis2mdc.c
+  * @author  MEMS Software Solutions Team
+  * @brief   IIS2MDC driver file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2019 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
 
 /* Includes ------------------------------------------------------------------*/
 #include "iis2mdc.h"
@@ -115,26 +114,13 @@ int32_t IIS2MDC_RegisterBusIO(IIS2MDC_Object_t *pObj, IIS2MDC_IO_t *pIO)
     {
       if (pObj->IO.BusType != IIS2MDC_I2C_BUS) /* If the bus type is not I2C */
       {
-        /* Disable I2C interface support and enable eventually SPI 4-Wires only the first time */
+        /* Disable I2C interface support only the first time */
         if (pObj->is_initialized == 0U)
         {
-          if (pObj->IO.BusType == IIS2MDC_SPI_4WIRES_BUS) /* SPI 4-Wires */
+          /* Disable I2C interface on the component */
+          if (iis2mdc_i2c_interface_set(&(pObj->Ctx), IIS2MDC_I2C_DISABLE) != IIS2MDC_OK)
           {
-            /* Enable SPI 4-Wires and disable I2C support on the component */
-            uint8_t data = 0x34;
-
-            if (IIS2MDC_Write_Reg(pObj, IIS2MDC_CFG_REG_C, data) != IIS2MDC_OK)
-            {
-              ret = IIS2MDC_ERROR;
-            }
-          }
-          else
-          {
-            /* Disable I2C interface on the component */
-            if (iis2mdc_i2c_interface_set(&(pObj->Ctx), IIS2MDC_I2C_DISABLE) != IIS2MDC_OK)
-            {
-              ret = IIS2MDC_ERROR;
-            }
+            ret = IIS2MDC_ERROR;
           }
         }
       }
@@ -539,7 +525,7 @@ static int32_t ReadMagRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_
     /* Enable Multi-byte read */
     return pObj->IO.ReadReg(pObj->IO.Address, (Reg | 0x80U), pData, Length);
   }
-  else   /* SPI 3-Wires or SPI 4-Wires */
+  else   /* SPI 3-Wires */
   {
     /* Enable Multi-byte read */
     return pObj->IO.ReadReg(pObj->IO.Address, (Reg | 0x40U), pData, Length);
@@ -563,7 +549,7 @@ static int32_t WriteMagRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16
     /* Enable Multi-byte write */
     return pObj->IO.WriteReg(pObj->IO.Address, (Reg | 0x80U), pData, Length);
   }
-  else   /* SPI 3-Wires or SPI 4-Wires */
+  else   /* SPI 3-Wires */
   {
     /* Enable Multi-byte write */
     return pObj->IO.WriteReg(pObj->IO.Address, (Reg | 0x40U), pData, Length);
@@ -585,5 +571,3 @@ static int32_t WriteMagRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16
 /**
   * @}
   */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

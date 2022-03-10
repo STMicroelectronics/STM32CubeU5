@@ -17,11 +17,16 @@
   */
 #include "region_defs.h"
 #include "low_level_flash.h"
-#if !defined(MCUBOOT_OVERWRITE_ONLY) && (MCUBOOT_IMAGE_NUMBER == 2)
+#if !defined(MCUBOOT_OVERWRITE_ONLY) && ((MCUBOOT_APP_IMAGE_NUMBER == 2) || (MCUBOOT_S_DATA_IMAGE_NUMBER == 1))
 static struct flash_range write_vect[] =
 {
   /* Area for writing confirm flag on in installed image */
-  { S_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_S_PARTITION_SIZE - 32, S_IMAGE_SECONDARY_PARTITION_OFFSET + FLASH_PARTITION_SIZE - 16 -1}
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
+  { S_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_S_PARTITION_SIZE - 32, S_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_S_PARTITION_SIZE - 16 - 1},
+#endif /* (MCUBOOT_APP_IMAGE_NUMBER == 2) */
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+  { S_DATA_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_S_DATA_PARTITION_SIZE - 32, S_DATA_IMAGE_PRIMARY_PARTITION_OFFSET + FLASH_S_DATA_PARTITION_SIZE - 16 - 1},
+#endif /* (MCUBOOT_S_DATA_IMAGE_NUMBER == 1) */
 };
 struct low_level_device FLASH0_DEV =
 {
@@ -34,4 +39,4 @@ struct low_level_device FLASH0_DEV =
   .erase = { .nb = 0, .range = NULL},
   .write = { .nb = 0, .range = NULL}
 };
-#endif /* defined(MCUBOOT_OVERWRITE_ONLY) || (MCUBOOT_IMAGE_NUMBER == 1) */
+#endif /* defined(MCUBOOT_OVERWRITE_ONLY) */

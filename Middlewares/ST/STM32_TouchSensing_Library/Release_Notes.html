@@ -23,24 +23,20 @@
 <div class="sectione dark">
 <center>
 <h1 id="release-notes-for-stm32-middleware-touch-sensing-library-tsl"><small>Release Notes for</small> STM32 Middleware Touch Sensing Library TSL</h1>
-<p>Copyright © 2020 STMicroelectronics<br />
+<p>Copyright © 2022 STMicroelectronics<br />
 </p>
 <a href="https://www.st.com" class="logo"><img src="_htmresc/st_logo.png" alt="ST logo" /></a>
 </center>
 </div>
 </div>
-<h1 id="license">License</h1>
-<p>This software component is licensed by ST under Ultimate Liberty license SLA0044, the “License”;</p>
-<p>You may not use this file except in compliance with the License.</p>
-<p>You may obtain a copy of the License at: <a href="http://www.st.com/SLA0044">SLA0044</a></p>
 <h1 id="purpose">Purpose</h1>
 <p>Touch Sensor is use in a one of HMI (Human Machine Interface).</p>
 <p>Instead of using mechanical switch, using the finger touch on the surface.</p>
 <p>STM32 Touch Sensing Library, TSL, is used to support Touch Sensors with:</p>
 <ul>
-<li><p>Touch Sensing Controller or TSC on:</p></li>
+<li><p>Touch Sensing Controller peripheral (TSC) on:</p></li>
 <ul>
-<li><p>STM32L0, STM32L4, STM32F0, STM32F3, STM32WB</p></li>
+<li><p>STM32L0, STM32L4, STM32L4+, STM32L5, STM32F0, STM32F3, STM32WB, STM32U5</p></li>
 </ul>
 <li><p>Touch Sensing hardware assist on:</p></li>
 <ul>
@@ -80,7 +76,29 @@
 <h1 id="update-history">Update History</h1>
 
 <div class="collapse">
-<input type="checkbox" id="collapse-section22" aria-hidden="true"> <label for="collapse-section22" aria-hidden="true">V2.2.6 / 10-Dec-2020</label>
+  <input type="checkbox" id="collapse-section25" aria-hidden="true"> <label for="collapse-section25" aria-hidden="true">V2.2.8 / 3-February-2022</label>
+  <div>
+  <h2 id="main-changes">Main Changes</h2>
+  <ul>
+  <li>Updated the way licences are being declared, added Licence.txt file as per packaging guidelines</li>
+  <li>Updated ECS in tsl_conf.c file</li>
+  </ul>
+  </div>
+  </div>
+  
+<div class="collapse">
+<input type="checkbox" id="collapse-section24" aria-hidden="true"> <label for="collapse-section24" aria-hidden="true">V2.2.7 / 5-July-2021</label>
+<div>
+<h2 id="main-changes">Main Changes</h2>
+<ul>
+<li>Possible division by zero in tsl_linrot.c.</li>
+<li>Cleanup enable and disable Interrupts in tsl_asc_tsc.h.</li>
+</ul>
+</div>
+</div>
+
+<div class="collapse">
+<input type="checkbox" id="collapse-section23" aria-hidden="true"> <label for="collapse-section23" aria-hidden="true">V2.2.6 / 10-Dec-2020</label>
 <div>
 <h2 id="main-changes">Main Changes</h2>
 <ul>

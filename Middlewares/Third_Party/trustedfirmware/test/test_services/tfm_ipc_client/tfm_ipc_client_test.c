@@ -1,18 +1,18 @@
 /*
- * Copyright (c) 2018-2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2018-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
  */
 
-#include <stdio.h>
 #include <assert.h>
 #include "psa/client.h"
-#include "secure_utilities.h"
 #include "psa/service.h"
-#include "psa_manifest/tfm_ipc_client_partition.h"
-#include "tfm_utils.h"
 #include "psa_manifest/sid.h"
+#include "psa_manifest/tfm_ipc_client_test.h"
+#include "tfm_hal_isolation.h"
+#include "tfm_secure_client_2_api.h"
+#include "utilities.h"
 
 /* Define the return status */
 #define IPC_SP_TEST_SUCCESS     (1)
@@ -135,7 +135,7 @@ static int ipc_client_app_access_psa_mem_test(void)
     status = psa_call(handle, PSA_IPC_CALL, NULL, 0, outvecs, 1);
     if (status >= 0) {
         /*
-         * outvecs should contain the pointer pointed to ipc service parition
+         * outvecs should contain the pointer pointed to ipc service partition
          * memory. Read the pointed memory should cause panic.
          */
         uint8_t *psa_data_p = outvec_data[0];
@@ -169,7 +169,7 @@ static int ipc_client_mem_check_test(void)
     status = psa_call(handle, PSA_IPC_CALL, NULL, 0, outvecs, 1);
     if (status >= 0) {
         /*
-         * outvecs should contain the pointer pointed to ipc service parition
+         * outvecs should contain the pointer pointed to ipc service partition
          * memory. In psa_call, it checks whether the target partition has the
          * access right to the invecs indicated memory. If no, the system will
          * panic.
@@ -184,6 +184,47 @@ static int ipc_client_mem_check_test(void)
 
     /* The system should panic before here. */
     psa_close(handle);
+    return IPC_SP_TEST_FAILED;
+}
+#endif
+
+#ifdef TFM_IPC_ISOLATION_3_RETRIEVE_APP_MEM
+static int ipc_client_retrieve_app_mem_test(void)
+{
+    psa_handle_t handle;
+    psa_status_t status;
+    uint32_t attr = 0;
+    uint8_t *outvec_data[1] = {0};
+    struct psa_outvec outvecs[1] = {{outvec_data, sizeof(outvec_data[0])}};
+
+    handle = psa_connect(TFM_SECURE_CLIENT_2_SID, TFM_SECURE_CLIENT_2_VERSION);
+
+    if (handle <= 0) {
+        return IPC_SP_TEST_FAILED;
+    }
+
+    status = psa_call(handle, TFM_SECURE_CLIENT_2_ID_RETRIEVE_APP_MEM, NULL, 0,
+                      outvecs, 1);
+    psa_close(handle);
+
+    if (status == PSA_SUCCESS) {
+        /*
+         * outvecs should contain the pointer pointed to app service partition
+         * memory. Read the pointed memory should cause panic.
+         */
+        uint8_t *psa_data_p = outvec_data[0];
+        if (psa_data_p) {
+            attr |= (TFM_HAL_ACCESS_READABLE | TFM_HAL_ACCESS_WRITABLE
+                     | TFM_HAL_ACCESS_UNPRIVILEGED);
+            if (tfm_hal_memory_has_access((uintptr_t)psa_data_p, 1, attr) ==
+                                                      TFM_HAL_ERROR_MEM_FAULT) {
+                return IPC_SP_TEST_SUCCESS;
+            } else {
+                return IPC_SP_TEST_FAILED;
+            }
+        }
+    }
+
     return IPC_SP_TEST_FAILED;
 }
 #endif
@@ -255,6 +296,12 @@ void ipc_client_test_main(void)
         } else if (signals & IPC_CLIENT_TEST_MEM_CHECK_SIGNAL) {
             ipc_client_handle_ser_req(msg, IPC_CLIENT_TEST_MEM_CHECK_SIGNAL,
                                       &ipc_client_mem_check_test);
+#endif
+#ifdef TFM_IPC_ISOLATION_3_RETRIEVE_APP_MEM
+        } else if (signals & IPC_CLIENT_TEST_RETRIEVE_APP_MEM_SIGNAL) {
+            ipc_client_handle_ser_req(msg,
+            IPC_CLIENT_TEST_RETRIEVE_APP_MEM_SIGNAL,
+            &ipc_client_retrieve_app_mem_test);
 #endif
         } else {
             /* Should not go here. */

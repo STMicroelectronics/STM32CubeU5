@@ -36,6 +36,7 @@
             starting RX/TX transfers.
 
   @endverbatim
+  ******************************************************************************
   */
 
 /* Includes ------------------------------------------------------------------*/
@@ -653,3 +654,4 @@ static void USARTEx_SetNbDataToProcess(USART_HandleTypeDef *husart)
 /**
   * @}
   */
+

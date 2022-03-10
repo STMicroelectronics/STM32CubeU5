@@ -135,7 +135,6 @@ create too much change in the code base.
   returning the enumeration constants, but implicitly casted to an integer type
   like ``int32_t``.
 
-  * ``int32_t tfm_core_set_secure_exception_priorities``
   * ``int32_t check_address_range``
   * ``int32_t has_access_to_region``
   * ``int32_t tfm_core_check_sfn_parameters``
@@ -143,8 +142,8 @@ create too much change in the code base.
   * ``int32_t tfm_return_from_partition``
   * ``int32_t tfm_check_sfn_req_integrity``
   * ``int32_t tfm_core_check_sfn_req_rules``
-  * ``int32_t tfm_core_sfn_request_handler``
-  * ``int32_t tfm_core_sfn_request_thread_mode``
+  * ``int32_t tfm_spm_sfn_request_handler``
+  * ``int32_t tfm_spm_sfn_request_thread_mode``
 * ``enum tfm_buffer_share_region_e``: the following function prototypes will be
   changed:
 
@@ -187,5 +186,5 @@ casting.
 --------------
 
 
-*Copyright (c) 2019, Arm Limited. All rights reserved.*
+*Copyright (c) 2019-2020, Arm Limited. All rights reserved.*
 

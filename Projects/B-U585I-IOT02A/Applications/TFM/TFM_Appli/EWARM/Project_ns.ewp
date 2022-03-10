@@ -223,13 +223,18 @@
           <state>STM32U585xx</state>
           <state>USE_HAL_DRIVER</state>
           <state>BL2</state>
-          <state>SST_ENCRYPTION</state>
           <state>TFM_PSA_API</state>
+          <state>PS_ENCRYPTION</state>
+          <state>TFM_PARTITION_PROTECTED_STORAGE</state>
+          <state>TFM_PARTITION_INTERNAL_TRUSTED_STORAGE</state>
+          <state>TFM_PARTITION_CRYPTO</state>
           <state>TFM_PARTITION_PLATFORM</state>
+          <state>TFM_PARTITION_INITIAL_ATTESTATION</state>
           <state>TFM_LVL=2</state>
-          <state>TFM_LEGACY_API</state>
           <state>__INITIAL_SP=ARM_LIB_STACK$$Limit</state>
           <state>__STACK_LIMIT=ARM_LIB_STACK$$Base</state>
+          <state>DEFAULT_UART_BAUDRATE=115200</state>
+          <state>DOMAIN_NS=1</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -359,18 +364,20 @@
           <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Inc</state>
           <state>$PROJ_DIR$\..\..\Linker</state>
           <state>$PROJ_DIR$\..\NonSecure\Inc</state>
+          <state>$PROJ_DIR$\..\Secure_nsclib</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\spm</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\core\include</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\secure_fw\services</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\include</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\include</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\common</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\driver</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include\mbedtls</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include\psa</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\include\log</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\inc</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\bl2\include</state>
+          <state>$PROJ_DIR$\g\interface\include</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\cmsis</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\driver</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\test\framework</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\test\suites\crypto</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\secure_element\stm</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -704,7 +711,7 @@
       <name>BUILDACTION</name>
       <archiveVersion>1</archiveVersion>
       <data>
-        <prebuild>$PROJ_DIR$\prebuild_ns.cmd "$PROJ_DIR$"</prebuild>
+        <prebuild>$PROJ_DIR$\prebuild_ns.cmd "$PROJ_DIR$" "STM32U585xx"</prebuild>
         <postbuild>cmd /C "cmd /C $PROJ_DIR$\postbuild.bat "$PROJ_DIR$"  "1.0.0" "nonsecure""</postbuild>
       </data>
     </settings>
@@ -1146,13 +1153,13 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\src\tfm_psa_ns_api.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\src\tfm_sst_ipc_api.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\src\tfm_app_rot_ipc_api.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\src\tfm_ps_ipc_api.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\src\tfm_platform_ipc_api.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\interface\src\tfm_firmware_update_ipc_api.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\lib\ext\qcbor\src\UsefulBuf.c</name>
@@ -1168,6 +1175,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\test\framework\test_framework_helpers.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\log\tfm_log_raw.c</name>
         </file>
       </group>
     </group>
@@ -1198,6 +1208,9 @@
         <name>$PROJ_DIR$\..\NonSecure\Src\main.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\NonSecure\Src\ns_data.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\NonSecure\Src\test_protections.c</name>
       </file>
       <file>
@@ -1211,6 +1224,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\NonSecure\Src\mpu_armv8m_drv.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\NonSecure\Src\tfm_app_rot_ipc_api.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\NonSecure\Src\startup_stm32u5xx.c</name>

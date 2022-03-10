@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Arm Limited. All rights reserved.
+ * Copyright (c) 2019-2020, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -8,7 +8,7 @@
 #ifndef __ITS_S_TESTS_H__
 #define __ITS_S_TESTS_H__
 
-#include "test/framework/test_framework.h"
+#include "test_framework.h"
 
 #ifdef __cplusplus
 extern "C" {

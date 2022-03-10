@@ -64,6 +64,7 @@ void                USBPD_DPM_TimerCounter(void);
  /* USBPDCORE_LIB_NO_PD */
 __WEAK void         USBPD_DPM_ErrorHandler(void);
 /* USER CODE BEGIN functions */
+
 /* USER CODE END functions */
 
 #ifdef __cplusplus

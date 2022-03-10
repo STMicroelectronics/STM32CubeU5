@@ -67,16 +67,20 @@ extern "C" {
 #endif /* USBPD_THREADX */
 
 /**
-  * @brief macro definition used to initialize the OS environement
+  * @brief macro definition used to initialize the OS environment
   */
 #if defined(USBPD_THREADX)
-#define GUIOS_INIT()  TX_BYTE_POOL *gui_pool = (TX_BYTE_POOL*)MemoryPtr; \
-                      char *ptr;                                         \
-                      uint32_t _status = TX_SUCCESS;
+#define GUIOS_INIT()                                 \
+  TX_BYTE_POOL *gui_pool = (TX_BYTE_POOL*)MemoryPtr; \
+  char *ptr;                                         \
+  uint32_t _status = TX_SUCCESS;
+#elif defined(_RTOS)
+#define GUIOS_INIT()                                 \
+  (void)(MemoryPtr);                                 \
+  uint32_t _status = USBPD_ENABLE;
 #else
-
-#define GUIOS_INIT()  (void)(MemoryPtr);              \
-                      uint32_t _status = USBPD_ENABLE;
+#define GUIOS_INIT()                                 \
+  (void)(MemoryPtr);
 #endif /* USBPD_THREADX */
 
 /**
@@ -128,26 +132,29 @@ extern "C" {
 
 #if (osCMSIS < 0x20000U)
 
-#define GUIOS_CREATE_QUEUE(_ID_,_NAME_,_ELT_,_ELTSIZE_)   do {                                                   \
-                                                            osMessageQDef(queuetmp, (_ELT_), (_ELTSIZE_));       \
-                                                            (_ID_) = osMessageCreate(osMessageQ(queuetmp), NULL);\
-                                                            if((_ID_) == 0)                                      \
-                                                            {                                                    \
-                                                              _status = USBPD_DISABLE;                           \
-                                                              goto error;                                        \
-                                                            }                                                    \
-                                                          } while(0)
-
+#define GUIOS_CREATE_QUEUE(_ID_,_NAME_,_ELT_,_ELTSIZE_)    \
+  do                                                       \
+  {                                                        \
+    osMessageQDef(queuetmp, (_ELT_), (_ELTSIZE_));         \
+    (_ID_) = osMessageCreate(osMessageQ(queuetmp), NULL);  \
+    if((_ID_) == 0)                                        \
+    {                                                      \
+      _status = USBPD_DISABLE;                             \
+      goto error;                                          \
+    }                                                      \
+  } while(0);
 #else
 
-#define GUIOS_CREATE_QUEUE(_ID_,_NAME_,_ELT_,_ELTSIZE_) do {                                                    \
-                                                          (_ID_) = osMessageQueueNew((_ELT_),(_ELTSIZE_), NULL);\
-                                                          if((_ID_) == 0)                                       \
-                                                          {                                                     \
-                                                            _status = USBPD_DISABLE;                            \
-                                                            goto error;                                         \
-                                                          }                                                     \
-                                                        }while(0)
+#define GUIOS_CREATE_QUEUE(_ID_,_NAME_,_ELT_,_ELTSIZE_)    \
+  do                                                       \
+  {                                                        \
+    (_ID_) = osMessageQueueNew((_ELT_),(_ELTSIZE_), NULL); \
+    if((_ID_) == 0)                                        \
+    {                                                      \
+      _status = USBPD_DISABLE;                             \
+      goto error;                                          \
+    }                                                      \
+  }while(0);
 
 #endif /* osCMSIS < 0x20000U */
 #endif /* USBPD_THREADX */
@@ -166,23 +173,26 @@ extern "C" {
   */
 #if defined(USBPD_THREADX)
 
-#define GUIOS_GETMESSAGE_QUEUE(_ID_, _TIME_,_VALUE_)                           \
-  do {                                                                         \
-    tx_queue_receive(&(_ID_), (void*)&(_VALUE_), (_TIME_));                    \
-   } while(0)
+#define GUIOS_GETMESSAGE_QUEUE(_ID_, _TIME_,_VALUE_)        \
+  do                                                        \
+  {                                                         \
+    tx_queue_receive(&(_ID_), (void*)&(_VALUE_), (_TIME_)); \
+  } while(0);
 
 #else
 #if (osCMSIS < 0x20000U)
 #define GUIOS_GETMESSAGE_QUEUE(_ID_, _TIME_,_VALUE_)  \
-     do {                                             \
-      osEvent evt = osMessageGet((_ID_),(_TIME_));    \
-      (_VALUE_) = evt.value.v;                        \
-     } while(0);
+  do                                                  \
+  {                                                   \
+    osEvent evt = osMessageGet((_ID_),(_TIME_));      \
+    (_VALUE_) = evt.value.v;                          \
+  } while(0);
 #else
-#define GUIOS_GETMESSAGE_QUEUE(_ID_, _TIME_,_VALUE_)  do {                                                  \
-                                                osEvent event;                                              \
-                                                (void)osMessageQueueGet((_ID_),&(_VALUE_),NULL,(_TIME_));   \
-                                              } while(0)
+#define GUIOS_GETMESSAGE_QUEUE(_ID_, _TIME_,_VALUE_)          \
+  do                                                          \
+  {                                                           \
+    (void)osMessageQueueGet((_ID_),&(_VALUE_),NULL,(_TIME_)); \
+  } while(0);
 
 #endif /* (osCMSIS < 0x20000U) */
 #endif /* USBPD_THREADX */
@@ -192,22 +202,27 @@ extern "C" {
   */
 #if defined(USBPD_THREADX)
 
-#define GUIOS_PUT_MESSAGE_QUEUE(_ID_,_MSG_,_TIMEOUT_)                            \
-  do{                                                                            \
-    ULONG _msg = _MSG_;                                                          \
-    (void)tx_queue_send(&(_ID_), &_msg,(_TIMEOUT_));                             \
-  }while(0)
+#define GUIOS_PUT_MESSAGE_QUEUE(_ID_,_MSG_,_TIMEOUT_) \
+  do                                                  \
+  {                                                   \
+    ULONG _msg = _MSG_;                               \
+    (void)tx_queue_send(&(_ID_), &_msg,(_TIMEOUT_));  \
+  }while(0);
 #else
 
 #if (osCMSIS < 0x20000U)
-#define GUIOS_PUT_MESSAGE_QUEUE(_ID_,_MSG_,_TIMEOUT_)  do{                                                \
-                                                        (void)osMessagePut((_ID_),(_MSG_),(_TIMEOUT_));\
-                                                      }while(0)
+#define GUIOS_PUT_MESSAGE_QUEUE(_ID_,_MSG_,_TIMEOUT_) \
+  do                                                  \
+  {                                                   \
+    (void)osMessagePut((_ID_),(_MSG_),(_TIMEOUT_));   \
+  } while(0);
 #else
-#define GUIOS_PUT_MESSAGE_QUEUE(_ID_,_MSG_,_TIMEOUT_)  do {                                                      \
-                                                         uint32_t eventmsg = (_MSG_);                               \
-                                                         (void)osMessageQueuePut((_ID_), &eventmsg, 0U,(_TIMEOUT_));\
-                                                       } while(0)
+#define GUIOS_PUT_MESSAGE_QUEUE(_ID_,_MSG_,_TIMEOUT_)          \
+  do                                                           \
+  {                                                            \
+    uint32_t eventmsg = (_MSG_);                               \
+    (void)osMessageQueuePut((_ID_), &eventmsg, 0U,(_TIMEOUT_));\
+  } while(0);
 #endif /* osCMSIS < 0x20000U */
 #endif /* USBPD_THREADX */
 
@@ -245,15 +260,16 @@ extern "C" {
 #if defined(USBPD_THREADX)
 
 #define GUIOS_CREATE_TASK(_ID_,_NAME_,_FUNC_,_PRIORITY_,_STACK_SIZE_, _PARAM_)      \
-  do {                                                                              \
+  do                                                                                \
+  {                                                                                 \
     _status = tx_byte_allocate(gui_pool, (VOID **)&ptr,(_STACK_SIZE_),TX_NO_WAIT);  \
     if(_status != TX_SUCCESS)                                                       \
     {                                                                               \
       goto error;                                                                   \
     }                                                                               \
     _status = tx_thread_create(&(_ID_),#_NAME_,(_FUNC_), 0,                         \
-                         ptr,(_STACK_SIZE_),                                        \
-                         _PRIORITY_, 1, TX_NO_TIME_SLICE, TX_AUTO_START);           \
+                               ptr,(_STACK_SIZE_),                                  \
+                               _PRIORITY_, 1, TX_NO_TIME_SLICE, TX_AUTO_START);     \
     if(_status != TX_SUCCESS)                                                       \
     {                                                                               \
       goto error;                                                                   \
@@ -264,7 +280,8 @@ extern "C" {
 #if (osCMSIS < 0x20000U)
 
 #define GUIOS_CREATE_TASK(_ID_,_NAME_,_FUNC_,_PRIORITY_,_STACK_SIZE_, _PARAM_) \
-  do {                                                                         \
+  do                                                                           \
+  {                                                                            \
     osThreadDef(_NAME_, _FUNC_, _PRIORITY_, 0, _STACK_SIZE_);                  \
     (_ID_) = osThreadCreate(osThread(_NAME_), (void *)(_PARAM_));              \
     if (NULL == (_ID_))                                                        \
@@ -272,25 +289,21 @@ extern "C" {
       _status = USBPD_DISABLE;                                                 \
       goto error;                                                              \
     }                                                                          \
-  } while(0)
+  } while(0);
 #else
 
 #define GUIOS_CREATE_TASK(_ID_,_NAME_,_FUNC_,_PRIORITY_,_STACK_SIZE_, _PARAM_) \
-  do {                                                 \
-    osThreadAttr_t Thread_Atrr =                       \
-    {                                                  \
-      .name       = #_NAME_,                           \
-      .priority   = (_PRIORITY_),                      \
-      .stack_size = (_STACK_SIZE_)                     \
-    };                                                 \
-    (_ID_) = osThreadNew(_FUNC_, (void *)(_PARAM_),    \
-                         &Thread_Atrr);                \
-    if (NULL == (_ID_))                                \
-    {                                                  \
-      _status = USBPD_DISABLE;                         \
-      goto error;                                      \
-    }                                                  \
-  } while(0)
+  do                                                                           \
+  {                                                                            \
+    osThreadAttr_t Thread_Atrr = {.name = #_NAME_,.priority = (_PRIORITY_), .stack_size = (_STACK_SIZE_)}; \
+    (_ID_) = osThreadNew(_FUNC_, (void *)(_PARAM_),                            \
+                         &Thread_Atrr);                                        \
+    if (NULL == (_ID_))                                                        \
+    {                                                                          \
+      _status = USBPD_DISABLE;                                                 \
+      goto error;                                                              \
+    }                                                                          \
+  } while(0);
 #endif /* osCMSIS < 0x20000U */
 #endif /* USBPD_THREADX */
 

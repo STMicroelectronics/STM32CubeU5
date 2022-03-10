@@ -150,8 +150,8 @@ int32_t BSP_TS_Init(uint32_t Instance, TS_Init_t *TS_Init)
       TS_Capabilities_t Capabilities;
       uint32_t          i;
       /* Store parameters on TS context */
-      if ((TS_Init->Orientation == TS_ORIENTATION_LANDSCAPE ) ||
-          (TS_Init->Orientation == TS_ORIENTATION_LANDSCAPE_ROT180) )
+      if ((TS_Init->Orientation == TS_ORIENTATION_LANDSCAPE) ||
+          (TS_Init->Orientation == TS_ORIENTATION_LANDSCAPE_ROT180))
       {
         Ts_Ctx[Instance].Width       = TS_Init->Width;
         Ts_Ctx[Instance].Height      = TS_Init->Height;

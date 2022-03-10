@@ -243,9 +243,17 @@ uint8_t *USBD_Get_Language_Id_Framework(ULONG *Length);
 #define USBD_DFU_DetachTimeout                        0xFFU
 #define USBD_DFU_XFER_SIZE                            1024U
 
-#define USBD_DFU_STRING_DESC_INDEX                    0x06U
+#define USBD_DFU_STRING_FLASH_DESC_INDEX              0x06U
+#define USBD_DFU_STRING_FLASH_DESC                    "@Internal Flash   /0x08000000/256*8Kg"
 
-#define USBD_DFU_STRING_DESC                          "@Internal Flash   /0x08000000/16*8Ka,240*8Kg"
+#define USBD_DFU_STRING_OB_DESC_INDEX                 0x07U
+#define USBD_DFU_STRING_OB_DESC                       "@Option Bytes   /0x40022040/01*64 e"
+
+#define USBD_DFU_STRING_OTP_DESC_INDEX                0x08U
+#define USBD_DFU_STRING_OTP_DESC                      "@OTP Memory   /0x0BFA0000/01*512 e"
+
+#define USBD_DFU_STRING_DEVICE_ID_DESC_INDEX          0x14U
+#define USBD_DFU_STRING_DEVICE_ID_DESC                "@Device ID/0x482,@Revision ID/0x0001"
 
 /* This is the maximum supported configuration descriptor size
    User may redefine this value in order to optima */

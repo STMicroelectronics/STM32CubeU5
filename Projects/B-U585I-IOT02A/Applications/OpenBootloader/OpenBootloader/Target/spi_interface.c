@@ -17,16 +17,12 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32u5xx.h"
-#include "stm32u5xx_ll_spi.h"
-
+#include "platform.h"
+#include "interfaces_conf.h"
 #include "openbl_core.h"
 #include "openbl_spi_cmd.h"
-
 #include "spi_interface.h"
 #include "iwdg_interface.h"
-
-#include "interfaces_conf.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -37,6 +33,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 static volatile uint8_t SpiRxNotEmpty = 0U;
+static uint8_t SpiDetected = 0U;
 
 /* Exported variables --------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
@@ -44,7 +41,7 @@ static void OPENBL_SPI_Init(void);
 #if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_ClearFlag_OVR(void);
 #else
-__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_ClearFlag_OVR(void);
+__attribute__((section(".ramfunc"))) void OPENBL_SPI_ClearFlag_OVR(void);
 #endif /* (__ICCARM__) */
 
 /* Private functions ---------------------------------------------------------*/
@@ -142,28 +139,28 @@ void OPENBL_SPI_Configuration(void)
  */
 void OPENBL_SPI_DeInit(void)
 {
-  LL_SPI_DeInit(SPIx);
-  LL_SPI_Disable(SPIx);
+  /* Only de-initialize the SPI if it is not the current detected interface */
+  if (SpiDetected == 0U)
+  {
+    LL_SPI_Disable(SPIx);
 
-  SPIx_FORCE_RESET();
-  SPIx_RELEASE_RESET();
+    SPIx_CLK_DISABLE();
+  }
 }
 
 /**
  * @brief  This function is used to detect if there is any activity on SPI protocol.
- * @retval Returns 1 if interface is detected else 0.
+ * @retval None.
  */
 uint8_t OPENBL_SPI_ProtocolDetection(void)
 {
-  uint8_t detected;
-
   /* Check if there is any activity on SPI */
   if (LL_SPI_IsActiveFlag_RXP(SPIx) != 0)
   {
     /* Check that Synchronization byte has been received on SPI */
     if (LL_SPI_ReceiveData8(SPIx) == SPI_SYNC_BYTE)
     {
-      detected = 1U;
+      SpiDetected = 1U;
 
       /* Enable the interrupt of Rx not empty buffer */
       LL_SPI_EnableIT_RXP(SPIx);
@@ -171,19 +168,20 @@ uint8_t OPENBL_SPI_ProtocolDetection(void)
       /* Send synchronization byte */
       OPENBL_SPI_SendByte(SYNC_BYTE);
 
+      /* Send acknowledgment */
       OPENBL_SPI_SendAcknowledgeByte(ACK_BYTE);
     }
     else
     {
-      detected = 0U;
+      SpiDetected = 0U;
     }
   }
   else
   {
-    detected = 0U;
+    SpiDetected = 0U;
   }
 
-  return detected;
+  return SpiDetected;
 }
 
 /**
@@ -218,7 +216,7 @@ uint8_t OPENBL_SPI_GetCommandOpcode(void)
 #if defined (__ICCARM__)
 __ramfunc uint8_t OPENBL_SPI_ReadByte(void)
 #else
-__attribute__ ((section (".ramfunc"))) uint8_t OPENBL_SPI_ReadByte(void)
+__attribute__((section(".ramfunc"))) uint8_t OPENBL_SPI_ReadByte(void)
 #endif /* (__ICCARM__) */
 {
   uint8_t data;
@@ -250,7 +248,7 @@ __attribute__ ((section (".ramfunc"))) uint8_t OPENBL_SPI_ReadByte(void)
 #if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_SendBusyByte(void)
 #else
-__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_SendBusyByte(void)
+__attribute__((section(".ramfunc"))) void OPENBL_SPI_SendBusyByte(void)
 #endif /* (__ICCARM__) */
 {
   /* Wait until SPI Rx buffer not empty interrupt */
@@ -280,7 +278,7 @@ __attribute__ ((section (".ramfunc"))) void OPENBL_SPI_SendBusyByte(void)
 #if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_SendByte(uint8_t Byte)
 #else
-__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_SendByte(uint8_t Byte)
+__attribute__((section(".ramfunc"))) void OPENBL_SPI_SendByte(uint8_t Byte)
 #endif /* (__ICCARM__) */
 {
   /* Wait until SPI transmit buffer is empty */
@@ -319,9 +317,9 @@ void OPENBL_SPI_SendAcknowledgeByte(uint8_t Byte)
   * @retval None.
   */
 #if defined (__ICCARM__)
-__ramfunc void OPENBL_SPI_IRQHandler()
+__ramfunc void OPENBL_SPI_IRQHandler(void)
 #else
-__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_IRQHandler()
+__attribute__((section(".ramfunc"))) void OPENBL_SPI_IRQHandler(void)
 #endif /* (__ICCARM__) */
 {
   /* Check that SPI Rx buffer not empty interrupt has been raised */
@@ -360,11 +358,6 @@ void OPENBL_SPI_EnableBusyState(void)
   */
 void OPENBL_SPI_DisableBusyState(void)
 {
-  /*
-    In this product, we use the LL_SPI_UDR_CONFIG_REGISTER_PATTERN configuration,
-    where we send a busy byte in case an underrun error occurs.
-    This is why we don't need to send the busy byte manually.
-  */
 }
 
 /**
@@ -376,8 +369,40 @@ void OPENBL_SPI_DisableBusyState(void)
 #if defined (__ICCARM__)
 __ramfunc void OPENBL_SPI_ClearFlag_OVR(void)
 #else
-__attribute__ ((section (".ramfunc"))) void OPENBL_SPI_ClearFlag_OVR(void)
+__attribute__((section(".ramfunc"))) void OPENBL_SPI_ClearFlag_OVR(void)
 #endif /* (__ICCARM__) */
 {
   SET_BIT(SPIx->IFCR, SPI_IFCR_OVRC);
+}
+
+/**
+ * @brief  This function is used to process and execute the special commands.
+ *         The user must define the special commands routine here.
+ * @param  SpecialCmd Pointer to the OPENBL_SpecialCmdTypeDef structure.
+ * @retval Returns NACK status in case of error else returns ACK status.
+ */
+void OPENBL_SPI_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *SpecialCmd)
+{
+  switch (SpecialCmd->OpCode)
+  {
+    /* Unknown command opcode */
+    default:
+      if (SpecialCmd->CmdType == OPENBL_SPECIAL_CMD)
+      {
+        /* Send NULL data size */
+        OPENBL_SPI_SendByte(0x00U);
+        OPENBL_SPI_SendByte(0x00U);
+
+        /* Send NULL status size */
+        OPENBL_SPI_SendByte(0x00U);
+        OPENBL_SPI_SendByte(0x00U);
+      }
+      else if (SpecialCmd->CmdType == OPENBL_EXTENDED_SPECIAL_CMD)
+      {
+        /* Send NULL status size */
+        OPENBL_SPI_SendByte(0x00U);
+        OPENBL_SPI_SendByte(0x00U);
+      }
+      break;
+  }
 }

@@ -16,6 +16,7 @@
   ******************************************************************************
   */
 #include "stm32u5xx.h"
+
 /**
   * @brief This function configures the source of the time base:
   *        The time source is configured to have 1ms time base with a dedicated
@@ -46,7 +47,6 @@ uint32_t HAL_GetTick(void)
   static uint32_t m_uTick = 0U;
   static uint32_t t1 = 0U, tdelta = 0U;
   uint32_t t2;
-
   t2 =  SysTick->VAL;
 
   if (t2 <= t1)

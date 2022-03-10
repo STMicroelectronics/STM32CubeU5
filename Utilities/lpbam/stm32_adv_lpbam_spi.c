@@ -19,43 +19,85 @@
                                  ############### How to use this driver ###############
   ======================================================================================================================
     [..]
-      It is strongly recommended to read carefully the LPBAM_Utility_GettingStarted.html document before starting
-      developing an LPBAM application.
+      It is recommended to read the LPBAM_Utility_GettingStarted.html document, available at the root of LPBAM utility
+      folder, prior to any LPBAM application development start.
 
     *** Driver description ***
     ==========================
     [..]
-      This advanced LPBAM module counts 3 files :
-          (+) stm32_adv_lpbam_spi.c
-              (++) This file provides the SPI advanced files body.
-          (+) stm32_adv_lpbam_spi.h
-              (++) This file is the header file of stm32_adv_lpbam_spi.c. It provides advanced used types.
-          (+) stm32_platform_lpbam_spi.h
-              (++) This header file contains all defines to be used in applicative side.
+      This section provide description of the driver files content (refer to LPBAM_Utility_GettingStarted.html document
+      for more information)
+
+    [..]
+      It is composed of 3 files :
+          (+) stm32_adv_lpbam_spi.c file
+              (++) This file provides the implementation of the advanced LPBAM SPI functions.
+          (+) stm32_adv_lpbam_spi.h file
+              (++) This file is the header file of stm32_adv_lpbam_spi.c. It provides advanced LPBAM SPI functions
+                   prototypes and the declaration of their needed exported types and structures.
+          (+) STM32xx/stm32_platform_lpbam_spi.h file
+              (++) This header file contains all defines to be used on applicative side.
+                   (+++) STM32xx stands for the device supporting LPBAM sub-system.
+
+    *** Driver functions model ***
+    ==============================
+    [..]
+      This section precises this module supported advanced functions model (refer to LPBAM_Utility_GettingStarted.html
+      document for function model definition).
+
+    [..]
+      An advanced functionality in this module can be inserted using 3 main types of functions :
+          (+) ADV_LPBAM_{Peripheral}_{Operation}_SetConfigQ() : Inserts a {Peripheral} functional configuration for the
+                                                                selected {Operation} in a queue.
+          (+) ADV_LPBAM_{Peripheral}_{Operation}_SetDataQ()   : Inserts a {Peripheral} data transfer configuration for
+                                                                the selected {Operation} in a queue.
+          (+) ADV_LPBAM_{Peripheral}_{Operation}_SetFullQ()   : Inserts a {Peripheral} functional and data transfer
+                                                                configuration for the selected {Operation} in a queue.
 
     *** Driver features ***
     =======================
     [..]
-      This driver provides the following list of features :
-          (+) Configure the SPI transfers in simplex and full duplex.
-          (+) Starts the SPI data transfers in simplex and full duplex.
-          (+) Configure and starts the SPI data transfers in simplex and full duplex.
+      This section describes this LPBAM module supported features.
+
+    [..]
+      This driver provides services covering the LPBAM management of the following SPI features :
+          (+) SPI peripheral functional configuration:
+              (++) simplex transmit: ADV_LPBAM_SPI_Tx_SetConfigQ;
+              (++) simplex receive: ADV_LPBAM_SPI_Rx_SetConfigQ;
+              (++) full duplex: ADV_LPBAM_SPI_TxRx_SetConfigQ.
+          (+) SPI data transfers configuration:
+              (++) simplex transmit: ADV_LPBAM_SPI_Tx_SetDataQ;
+              (++) simplex receive: ADV_LPBAM_SPI_Rx_SetDataQ;
+              (++) full duplex: ADV_LPBAM_SPI_TxRx_SetDataQ.
+          (+) SPI peripheral and data transfers configuration:
+              (++) simplex transmit: ADV_LPBAM_SPI_Tx_SetFullQ;
+              (++) simplex receive: ADV_LPBAM_SPI_Rx_SetFullQ;
+              (++) full duplex: ADV_LPBAM_SPI_TxRx_SetFullQ
+          (+) Warning(s):
+              (++) The half-duplex is not supported by this driver.
+              (++) The SPI Master/Slave operating mode (configured at the initialization phase) cannot be modified by
+                   this driver.
 
     *** Functional description ***
     ==============================
     [..]
-      The SPI peripheral transfer is configured through a DMA channel thanks to a build DMA linked-list queue in simplex
-      and full duplex mode.
-      The SPI peripheral transfer is started through a DMA channel thanks to a build DMA linked-list queue in simplex
-      and full duplex mode.
-      The SPI peripheral transfer is configured and started through a DMA channel thanks to a build DMA linked-list
-      queue in simplex and full duplex mode.
+      This section describes the peripheral features covered by this LPBAM module.
 
-      The output of this driver can be only one queue to be executed by one DMA channel for simplex operations and can
-      be two queues to be executed by two DMA channel for full duplex operations.
+    [..]
+      The output of this driver can be :
+          (+) For simplex operations, only one queue to be executed by a DMA channel.
+          (+) For full duplex operations, two queues to be executed by two DMA channels.
+
+      The SPI peripheral transfer is configured in simplex or full duplex mode.
+      The SPI peripheral transfer is started in simplex or full duplex mode.
+      The SPI peripheral transfer is configured and started in simplex or full duplex mode.
 
     *** Driver APIs description ***
     ===============================
+    [..]
+      This section provides LPBAM module exhaustive APIs description without considering application user call sequence.
+      For user call sequence information, please refer to 'Driver user sequence' section below.
+
     [..]
       Use ADV_LPBAM_SPI_Tx_SetConfigQ() API to build a linked-list queue that setup the SPI simplex configuration
       transmission operation according to parameters in the LPBAM_SPI_ConfigAdvConf_t structure.
@@ -63,7 +105,7 @@
     [..]
       Use ADV_LPBAM_SPI_Tx_SetDataQ() API to build a linked-list queue that setup the SPI simplex transmission
       starting operation according to parameters in the LPBAM_SPI_DataAdvConf_t structure.
-      The data node default configuration is as follow:
+      The data transfers default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
           (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
           (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE or DMA_SRC_DATAWIDTH_HALFWORD according to programmed DataSize
@@ -71,13 +113,13 @@
           (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE or DMA_DEST_DATAWIDTH_HALFWORD according to programmed
                                   DataSize value. (Mandatory)
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
 
     [..]
       Use ADV_LPBAM_SPI_Tx_SetFullQ() API to build a linked-list queue that setup the SPI simplex configuration and
       transmission starting operation according to parameters in the LPBAM_SPI_FullAdvConf_t structure.
-      The data node default configuration is as follow:
+      The data transfers default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
           (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
           (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE or DMA_SRC_DATAWIDTH_HALFWORD according to programmed DataSize
@@ -85,8 +127,8 @@
           (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE or DMA_DEST_DATAWIDTH_HALFWORD according to programmed
                                   DataSize value. (Mandatory)
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
 
     [..]
       Use ADV_LPBAM_SPI_Rx_SetConfigQ() API to build a linked-list queue that setup the SPI simplex configuration
@@ -95,7 +137,7 @@
     [..]
       Use ADV_LPBAM_SPI_Rx_SetDataQ() API to build a linked-list queue that setup the SPI simplex reception starting
       operation according to parameters in the LPBAM_SPI_DataAdvConf_t structure.
-      The data node default configuration is as follow:
+      The data transfers default configuration is as follow:
           (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
           (+) DestInc           : DMA_DINC_INCREMENTED.
           (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE or DMA_SRC_DATAWIDTH_HALFWORD according to programmed DataSize
@@ -103,13 +145,13 @@
           (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE or DMA_DEST_DATAWIDTH_HALFWORD according to programmed
                                   DataSize value.
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
 
     [..]
       Use ADV_LPBAM_SPI_Rx_SetFullQ() API to build a linked-list queue that setup the SPI simplex configuration and
       reception starting operation according to parameters in the LPBAM_SPI_FullAdvConf_t structure.
-      The data node default configuration is as follow:
+      The data transfers default configuration is as follow:
           (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
           (+) DestInc           : DMA_DINC_INCREMENTED.
           (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE or DMA_SRC_DATAWIDTH_HALFWORD according to programmed DataSize
@@ -117,8 +159,8 @@
           (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE or DMA_DEST_DATAWIDTH_HALFWORD according to programmed
                                   DataSize value.
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
 
     [..]
       Use ADV_LPBAM_SPI_TxRx_SetConfigQ() API to build a linked-list queue that setup the SPI full duplex configuration
@@ -129,7 +171,7 @@
       Use ADV_LPBAM_SPI_TxRx_SetDataQ() API to build a linked-list queue that setup the SPI full duplex
       transmission and reception starting operation according to parameters in the LPBAM_SPI_DataAdvConf_t structure.
       The output of this API is two queues that must be executed by two different DMA channel.
-      The transmit data node default configuration is as follow:
+      The transmit data transfers default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
           (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
           (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE or DMA_SRC_DATAWIDTH_HALFWORD according to programmed DataSize
@@ -137,9 +179,9 @@
           (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE or DMA_DEST_DATAWIDTH_HALFWORD according to programmed
                                   DataSize value. (Mandatory)
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
-      The receive data node default configuration is as follow:
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
+      The receive data transfers default configuration is as follow:
           (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
           (+) DestInc           : DMA_DINC_INCREMENTED.
           (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE or DMA_SRC_DATAWIDTH_HALFWORD according to programmed DataSize
@@ -147,14 +189,14 @@
           (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE or DMA_DEST_DATAWIDTH_HALFWORD according to programmed
                                   DataSize value.
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
 
     [..]
       Use ADV_LPBAM_SPI_TxRx_SetFullQ() API to build a linked-list queue that setup the SPI full duplex configuration,
       transmission and reception starting operation according to parameters in the LPBAM_SPI_FullAdvConf_t structure.
       The output of this API is two queues that must be executed by two different DMA channel.
-      The transmit data node default configuration is as follow:
+      The transmit data transfers default configuration is as follow:
           (+) SrcInc            : DMA_SINC_INCREMENTED.
           (+) DestInc           : DMA_DINC_FIXED. (Mandatory)
           (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE or DMA_SRC_DATAWIDTH_HALFWORD according to programmed DataSize
@@ -162,9 +204,9 @@
           (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE or DMA_DEST_DATAWIDTH_HALFWORD according to programmed
                                   DataSize value. (Mandatory)
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
-      The receive data node default configuration is as follow:
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
+      The receive data transfers default configuration is as follow:
           (+) SrcInc            : DMA_SINC_FIXED. (Mandatory)
           (+) DestInc           : DMA_DINC_INCREMENTED.
           (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_BYTE or DMA_SRC_DATAWIDTH_HALFWORD according to programmed DataSize
@@ -172,8 +214,8 @@
           (+) DestDataWidth     : DMA_DEST_DATAWIDTH_BYTE or DMA_DEST_DATAWIDTH_HALFWORD according to programmed
                                   DataSize value.
           (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
-          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For trust zone devices)
-          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For trust zone devices)
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
 
     [..]
       Configuration parameters through LPBAM_SPI_ConfigAdvConf_t are :
@@ -238,25 +280,32 @@
                                   and full duplex operations.
 
     [..]
-      These APIs must be called when the SPI is well initialized.
+      These APIs must be called when the SPI is initialized.
           (+) Recommended SPI initialization sequence
               (++) call HAL_SPI_Init to initialize the SPI. (Mandatory)
                    Initialization parameters can be :
-                   (+++) Mode                  : SPI_MODE_MASTER.
-                   (+++) Direction             : SPI_DIRECTION_2LINES.
-                   (+++) DataSize              : SPI_DATASIZE_8BIT.
-                   (+++) CLKPolarity           : SPI_POLARITY_LOW.
-                   (+++) CLKPhase              : SPI_PHASE_1EDGE.
-                   (+++) NSS                   : SPI_NSS_SOFT.
-                   (+++) BaudRatePrescaler     : SPI_BAUDRATEPRESCALER_256.
-                   (+++) FirstBit              : SPI_FIRSTBIT_MSB.
-                   (+++) TIMode                : SPI_TIMODE_DISABLE.
-                   (+++) CRCCalculation        : SPI_CRCCALCULATION_DISABLE.
-                   (+++) NSSPMode              : SPI_NSS_PULSE_DISABLE.
-                   (+++) MasterKeepIOState     : SPI_MASTER_KEEP_IO_STATE_ENABLE.
-                   (+++) ReadyMasterManagement : SPI_RDY_MASTER_MANAGEMENT_INTERNALLY.
+                   (+++) Mode                    : SPI_MODE_MASTER.
+                   (+++) Direction               : SPI_DIRECTION_2LINES.
+                   (+++) DataSize                : SPI_DATASIZE_8BIT.
+                   (+++) CLKPolarity             : SPI_POLARITY_LOW.
+                   (+++) CLKPhase                : SPI_PHASE_1EDGE.
+                   (+++) NSS                     : SPI_NSS_SOFT.
+                   (+++) BaudRatePrescaler       : SPI_BAUDRATEPRESCALER_256.
+                   (+++) FirstBit                : SPI_FIRSTBIT_MSB.
+                   (+++) TIMode                  : SPI_TIMODE_DISABLE.
+                   (+++) CRCCalculation          : SPI_CRCCALCULATION_DISABLE.
+                   (+++) NSSPMode                : SPI_NSS_PULSE_DISABLE.
+                   (+++) MasterKeepIOState       : SPI_MASTER_KEEP_IO_STATE_ENABLE.
+                   (+++) ReadyMasterManagement   : SPI_RDY_MASTER_MANAGEMENT_INTERNALLY.
+                   (+++) FifoThreshold           : SPI_FIFO_THRESHOLD_04DATA. (Recommended when DataSize =
+                                                                               SPI_DATASIZE_16BIT)
+                   (+++) MasterSSIdleness        : SPI_MASTER_SS_IDLENESS_00CYCLE.
+                   (+++) MasterInterDataIdleness : SPI_MASTER_INTERDATA_IDLENESS_00CYCLE.
+                   (+++) MasterReceiverAutoSusp  : SPI_MASTER_RX_AUTOSUSP_DISABLE.
+                   (+++) IOSwap                  : SPI_IO_SWAP_DISABLE.
+                   (+++) ReadyPolarity           : SPI_RDY_POLARITY_HIGH.
               (++) call HAL_SPIEx_SetConfigAutonomousMode to configure the autonomous mode. (Mandatory)
-                   (+++) TriggerState     : Any.
+                   (+++) TriggerState     : SPI_AUTO_MODE_ENABLE. (Recommended)
                    (+++) TriggerSelection : Any.
                    (+++) TriggerPolarity  : Any.
               (++) Call __HAL_SPI_ENABLE_IT() to enable error interrupts.
@@ -268,96 +317,127 @@
                                                                                   will not be called)
 
     [..]
-      The following parameters must be configured carefully as they are not configurable by LPBAM APIs :
-          (+) Mode                  : This parameter can be a value of @ref SPI_Mode.
-          (+) NSS                   : This parameter can be a value of @ref SPI_Slave_Select_Management.
-          (+) TIMode                : This parameter should be this value SPI_TIMODE_DISABLE.
-          (+) CRCCalculation        : This parameter should be this value SPI_CRCCALCULATION_DISABLE.
-          (+) ReadyMasterManagement : This parameter should be this value SPI_RDY_MASTER_MANAGEMENT_INTERNALLY.
+      The following parameters can be configured by LPBAM APIs :
+          (+) CLKPolarity       : Specifies the serial clock steady state.
+                                  This parameter can be a value of @ref SPI_Clock_Polarity.
+          (+) CLKPhase          : Specifies the clock active edge for the bit capture.
+                                  This parameter can be a value of @ref SPI_Clock_Phase.
+          (+) FirstBit          : Specifies whether data transfers start from MSB or LSB bit.
+                                  This parameter can be a value of @ref LPBAM_SPI_FirstBit.
+          (+) BaudRatePrescaler : Specifies the Baud Rate prescaler value which will be used to configure the transmit
+                                  and receive SCK clock.
+                                  This parameter can be a value of @ref LPBAM_SPI_BaudRate.
+          (+) DataSize          : Specifies the SPI data size.
+                                  This parameter can be a value of @ref LPBAM_SPI_Data_Size.
+          (+) AutoModeConf      : Specifies the autonomous mode configuration.
+              (++) TriggerState     : Specifies the trigger state.
+                                      This parameter can be a value of @ref LPBAM_SPI_AutonomousMode_State.
+              (++) TriggerSelection : Specifies the autonomous mode trigger signal selection.
+                                      This parameter can be a value of @ref LPBAM_SPI_AutonomousMode_TriggerSelection.
+              (++) TriggerPolarity  : Specifies the autonomous mode trigger signal polarity sensitivity.
+                                      This parameter can be a value of @ref LPBAM_SPI_AutonomousMode_TriggerPolarity
+          (+) WakeupIT          : Specifies the wake up source interrupt.
+                                  This parameter can be a value of @ref LPBAM_SPI_Wakeup_Interrupt.
+          All other parameters are no reconfigured by the LPBAM APIs.
 
     *** Driver user sequence ***
     ============================
     [..]
+      This section provides the steps to follow to build an LPBAM application based on HAL/LL and LPBAM drivers. (refer
+      to LPBAM_Utility_GettingStarted.html for linked-list feature description).
+
+    [..]
       Generic user sequence is :
           (+) Initialize the SPI (Using HAL/LL). (Mandatory)
           (+) There are two possibilities to call advanced API:
-              (++) Transfer with full API :
-                   (+++) For a transmission mode repeat calling ADV_LPBAM_SPI_Tx_SetFullQ() until complete LPBAM
-                         scenario. (Mandatory)
-                   (+++) For a reception mode repeat calling ADV_LPBAM_SPI_Rx_SetFullQ() until complete LPBAM scenario.
+              (++) Invoking a single function performing peripheral configuration and data transfer setup :
+                   (+++) Call, when needed, ADV_LPBAM_SPI_Tx_SetFullQ(). (Mandatory)
+                   (+++) Call, when needed, ADV_LPBAM_SPI_Rx_SetFullQ(). (Mandatory)
+                   (+++) Call, when needed, ADV_LPBAM_SPI_TxRx_SetFullQ(). (Mandatory)
+              (++) Or Invoking two functions performing peripheral configuration and data transfer setup separately:
+                   (+++) Call, when needed, ADV_LPBAM_SPI_Tx_SetConfigQ() and/or ADV_LPBAM_SPI_Tx_SetDataQ().
                          (Mandatory)
-                   (+++) For a full duplex mode repeat calling ADV_LPBAM_SPI_TxRx_SetFullQ() until complete LPBAM
-                         scenario. (Mandatory)
-              (++) Transfer with configuration and data APIs :
-                   (+++) For a transmission mode call ADV_LPBAM_SPI_Tx_SetConfigQ only one time and repeat calling
-                         ADV_LPBAM_SPI_Tx_SetDataQ() until complete LPBAM scenario. (Mandatory)
-                   (+++) For a reception mode call ADV_LPBAM_SPI_Rx_SetConfigQ only one time and repeat calling
-                         ADV_LPBAM_SPI_Rx_SetDataQ() until complete LPBAM scenario. (Mandatory)
-                   (+++) For a full duplex mode call ADV_LPBAM_SPI_TxRx_SetConfigQ only one time and repeat calling
-                         ADV_LPBAM_SPI_TxRx_SetDataQ() until complete LPBAM scenario. (Mandatory)
-          (+) Call HAL_DMAEx_List_Init() to initialize the DMA in linked-list mode. (Mandatory)
-          (+) Call HAL_DMAEx_List_LinkQ() to link the built queue to the DMA channel. (Mandatory)
+                   (+++) Call, when needed, ADV_LPBAM_SPI_Rx_SetConfigQ() and/or ADV_LPBAM_SPI_Rx_SetDataQ().
+                         (Mandatory)
+                   (+++) Call, when needed, ADV_LPBAM_SPI_TxRx_SetConfigQ() and/or ADV_LPBAM_SPI_TxRx_SetDataQ().
+                         (Mandatory)
+          (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode. (Mandatory)
+          (+) Call HAL_DMAEx_List_LinkQ() to link the output queue to the initialized DMA channel. (Mandatory)
           (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
-              Any DMA error occurred in low power block the LPBAM sub-system mechanisms.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
               DMA error interrupts can be :
               (++) DMA_IT_DTE : data transfer error.
               (++) DMA_IT_ULE : update link error.
               (++) DMA_IT_USE : user setting error.
-          (+) Call HAL_DMAEx_List_Start() or HAL_DMAEx_List_Start_IT() to start DMA linked list. (Mandatory)
-
-    [..]
-      When the SPI configuration matches with application needs, it's strongly recommended to use
-      ADV_LPBAM_SPI_{Operation}_SetDataQ() APIs instead of ADV_LPBAM_SPI_{Operation}_SetFullQ() for memory optimization
-      purpose.
-      Use ADV_LPBAM_SPI_{Operation}_SetFullQ() when SPI reconfiguration is needed instead of calling
-      ADV_LPBAM_SPI_{Operation}_SetConfigQ() then ADV_LPBAM_SPI_{Operation}_SetDataQ() for memory optimization purpose.
-
-    [..]
-      When using ADV_LPBAM_SPI_TxRx_SetConfigQ() ensure that the Tx queue is passed as parameter.
+          (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
 
     *** Recommendation ***
     ======================
+    [..]
+      This section provides tips and tricks to consider while using LPBAM module drivers to build a user application.
+
+    [..]
+      Memory optimization:
+          (+) When the SPI peripheral doesn't need to be reconfigured, use ADV_LPBAM_SPI_{Operation}_SetDataQ() APIs
+              instead of ADV_LPBAM_SPI_{Operation}_SetFullQ().
+          (+) When the SPI peripheral needs to be reconfigured, use ADV_LPBAM_SPI_{Operation}_SetFullQ() instead of
+              ADV_LPBAM_SPI_{Operation}_SetConfigQ() then ADV_LPBAM_SPI_{Operation}_SetDataQ().
+
+    [..]
+      SPI full duplex transfer requires 2 dedicated queues (one for transmit Tx and one for receive Rx).
+      When SPI peripheral reconfiguration is needed, it is mandatory to invoke ADV_LPBAM_SPI_TxRx_SetConfigQ() only one
+      time before calling data transfer APIs in the Tx queue.
+
     [..]
       It's mandatory to set properly DataSize, TriggerSelection and TriggerPolarity while configuring
       LPBAM_SPI_ConfigAdvConf_t or LPBAM_SPI_FullAdvConf_t because their update can be only done with
       ADV_LPBAM_SPI_{Operation}_SetConfigQ() or ADV_LPBAM_SPI_{Operation}_SetFullQ().
 
     [..]
-      It's mandatory, while configuring LPBAM_SPI_DataAdvConf_t after calling ADV_LPBAM_SPI_{Operation}_SetConfigQ()
-      or ADV_LPBAM_SPI_{Operation}_SetFullQ(), to attribute to DataSize the same value that it has already been set to
-      it in LPBAM_SPI_ConfigAdvConf_t or LPBAM_SPI_FullAdvConf_t otherwise unexpected behavior can appear.
+      It's mandatory to ensure the consistency of DataSize parameter between ADV_LPBAM_SPI_{Operation}_SetConfigQ() and
+      ADV_LPBAM_SPI_{Operation}_SetDataQ() in LPBAM_SPI_ConfigAdvConf_t and LPBAM_SPI_DataAdvConf_t structures for the
+      same transfer setup.
 
     [..]
-      It's strongly not allowed to use the same DMA channel for transmission and reception when the SPI is
-      used for different directions.
-
-    [..]
-      It's strongly not recommended to execute the same linked-list queue that contains spi configuration and data
-      nodes by two different DMA channels as unexpected behavior can appear.
-
-    [..]
-      It's mandatory to use only one linked-list queue when spi is used in simplex duplex mode.
+      It's mandatory to use only one linked-list queue when spi is used in simplex mode.
 
     [..]
       It's mandatory to use two linked-list queues (One for the configuration and the transmission
-      and another one for the reception) which will be executed simultaneously when spi is used in full duplex mode.
+      and another one for the only reception) which will be executed simultaneously when spi is used in full duplex
+      mode.
 
     [..]
-      It's mandatory in full duplex mode to start the Rx linked-list queue before starting the Tx one.
+      To avoid missing Rx DMA request transfers in full duplex, it's mandatory to start the DMA channel execution of Rx
+      linked-list queue before starting the DMA channel execution of Tx linked-list queue.
 
     [..]
       It's mandatory to be sure that the slave is enabled and ready to the communication before the master starts
       generating its clock otherwise an unexpected behavior can appear.
 
+    [..]
+      When using different communication direction (Rx Receive/Tx Transmit/TxRx TransmitReceive) in the same queue,
+      it's mandatory to ensure that IOs are configured to support TxRx TransmitReceive mode (full duplex) at the
+      initialization stage (HAL_SPI_Init).
+
+    [..]
+      It's forbidden to use the same DMA channel for Tx transmission and Rx reception.
+
+    [..]
+      It's forbidden to execute simultaneously the same linked-list queue with different DMA channels.
+
+    [..]
+      It's forbidden to execute simultaneously two linked-list queue using the same peripheral.
+
     *** Driver status description ***
     =================================
     [..]
-      This driver detects and reports any detected issue.
+      This section provides reported LPBAM module status.
+
+    [..]
+      This advanced module reports any detected issue.
           (+) returned values are :
               (++) LPBAM_OK when no error is detected.
-              (++) LPBAM_ERROR when error is detected.
-              (++) LPBAM_INVALID_ID when an invalid node ID is detected. This error value is specific for LPBAM basic
-                   layer.
+              (++) LPBAM_ERROR when any error is detected.
 
     @endverbatim
   **********************************************************************************************************************
@@ -388,7 +468,7 @@
   */
 
 /**
-  * @brief  Build the SPI transmit configuration nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the configuration of SPI transmit according to parameters in
   *         LPBAM_SPI_ConfigAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a SPI_TypeDef structure that selects SPI instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -657,7 +737,7 @@ LPBAM_Status_t ADV_LPBAM_SPI_Tx_SetConfigQ(SPI_TypeDef               *const pIns
 }
 
 /**
-  * @brief  Build the SPI transmit data nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the data of SPI transmit according to parameters in
   *         LPBAM_SPI_DataAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a SPI_TypeDef structure that selects SPI instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -889,7 +969,7 @@ LPBAM_Status_t ADV_LPBAM_SPI_Tx_SetDataQ(SPI_TypeDef             *const pInstanc
 }
 
 /**
-  * @brief  Build the SPI transmit full nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the configuration and data of SPI transmit according to parameters in
   *         LPBAM_SPI_FullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a SPI_TypeDef structure that selects SPI instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -1260,7 +1340,7 @@ LPBAM_Status_t ADV_LPBAM_SPI_Tx_SetFullQ(SPI_TypeDef             *const pInstanc
 }
 
 /**
-  * @brief  Build the SPI receive configuration nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the configuration of SPI receive according to parameters in
   *         LPBAM_SPI_ConfigAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a SPI_TypeDef structure that selects SPI instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -1529,7 +1609,7 @@ LPBAM_Status_t ADV_LPBAM_SPI_Rx_SetConfigQ(SPI_TypeDef               *const pIns
 }
 
 /**
-  * @brief  Build the SPI receive data nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the data of SPI receive according to parameters in
   *         LPBAM_SPI_DataAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a SPI_TypeDef structure that selects SPI instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -1761,7 +1841,7 @@ LPBAM_Status_t ADV_LPBAM_SPI_Rx_SetDataQ(SPI_TypeDef             *const pInstanc
 }
 
 /**
-  * @brief  Build the SPI receive full nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the configuration and data of SPI receive according to parameters in
   *         LPBAM_SPI_FullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a SPI_TypeDef structure that selects SPI instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -2132,8 +2212,8 @@ LPBAM_Status_t ADV_LPBAM_SPI_Rx_SetFullQ(SPI_TypeDef             *const pInstanc
 }
 
 /**
-  * @brief  Build the SPI transmit and receive configuration nodes in DMA linked-list queue according to configured
-  *         parameters in LPBAM_SPI_ConfigAdvConf_t.
+  * @brief  Build DMA linked-list queue to setup the configuration of SPI transmit and receive according to parameters
+  *         in LPBAM_SPI_ConfigAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a SPI_TypeDef structure that selects SPI instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
   *                              queue type information.
@@ -2401,7 +2481,7 @@ LPBAM_Status_t ADV_LPBAM_SPI_TxRx_SetConfigQ(SPI_TypeDef                 *const 
 }
 
 /**
-  * @brief  Build the SPI transmit and receive data nodes in DMA linked-list queue according to configured parameters in
+  * @brief  Build DMA linked-list queue to setup the data of SPI transmit and receive according to parameters in
   *         LPBAM_SPI_DataAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a SPI_TypeDef structure that selects SPI instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
@@ -2669,8 +2749,8 @@ LPBAM_Status_t ADV_LPBAM_SPI_TxRx_SetDataQ(SPI_TypeDef                 *const pI
 }
 
 /**
-  * @brief  Build the SPI transmit and receive full nodes in DMA linked-list queue according to configured parameters in
-  *         LPBAM_SPI_FullAdvConf_t.
+  * @brief  Build DMA linked-list queue to setup the configuration and data of SPI transmit and receive according to
+  *         parameters in LPBAM_SPI_FullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a SPI_TypeDef structure that selects SPI instance.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
   *                              queue type information.

@@ -45,31 +45,46 @@
 
 /* USER CODE END PV */
 
-#if (USE_MEMORY_POOL_ALLOCATION == 1)
+#if (USE_STATIC_ALLOCATION == 1)
+
 /* USER CODE BEGIN TX_Pool_Buffer */
-__attribute__((aligned(4)))
- 
 /* USER CODE END TX_Pool_Buffer */
-static UCHAR tx_byte_pool_buffer[TX_APP_MEM_POOL_SIZE];
+#if defined ( __ICCARM__ )
+#pragma data_alignment=4
+#endif
+__ALIGN_BEGIN static UCHAR tx_byte_pool_buffer[TX_APP_MEM_POOL_SIZE] __ALIGN_END;
 static TX_BYTE_POOL tx_app_byte_pool;
 
 /* USER CODE BEGIN FX_Pool_Buffer */
- __attribute__((aligned(4)))
 /* USER CODE END FX_Pool_Buffer */
-static UCHAR  fx_byte_pool_buffer[FX_APP_MEM_POOL_SIZE];
+#if defined ( __ICCARM__ )
+#pragma data_alignment=4
+#endif
+__ALIGN_BEGIN static UCHAR  fx_byte_pool_buffer[FX_APP_MEM_POOL_SIZE] __ALIGN_END;
 static TX_BYTE_POOL fx_app_byte_pool;
 
 /* USER CODE BEGIN UX_HOST_Pool_Buffer */
-__attribute__((aligned(4)))
 /* USER CODE END UX_HOST_Pool_Buffer */
-static UCHAR  ux_host_byte_pool_buffer[UX_HOST_APP_MEM_POOL_SIZE];
+#if defined ( __ICCARM__ )
+#pragma data_alignment=4
+#endif
+__ALIGN_BEGIN static UCHAR  ux_host_byte_pool_buffer[UX_HOST_APP_MEM_POOL_SIZE] __ALIGN_END;
 static TX_BYTE_POOL ux_host_app_byte_pool;
 
 /* USER CODE BEGIN USBPD_Pool_Buffer */
-__attribute__((aligned(4)))
 /* USER CODE END USBPD_Pool_Buffer */
-static UCHAR  usbpd_byte_pool_buffer[USBPD_DEVICE_APP_MEM_POOL_SIZE];
+#if defined ( __ICCARM__ )
+#pragma data_alignment=4
+#endif
+__ALIGN_BEGIN static UCHAR  usbpd_byte_pool_buffer[USBPD_DEVICE_APP_MEM_POOL_SIZE] __ALIGN_END;
 static TX_BYTE_POOL usbpd_app_byte_pool;
+/* USER CODE BEGIN GUI_INTERFACE_Pool_Buffer */
+/* USER CODE END GUI_INTERFACE_Pool_Buffer */
+#if defined ( __ICCARM__ )
+#pragma data_alignment=4
+#endif
+__ALIGN_BEGIN static UCHAR  gui_interface_byte_pool_buffer[GUI_INTERFACE_APP_MEM_POOL_SIZE] __ALIGN_END;
+static TX_BYTE_POOL gui_interface_app_byte_pool;
 
 #endif
 
@@ -88,7 +103,7 @@ VOID tx_application_define(VOID *first_unused_memory)
   /* USER CODE BEGIN  tx_application_define_1*/
 
   /* USER CODE END  tx_application_define_1 */
-#if (USE_MEMORY_POOL_ALLOCATION == 1)
+#if (USE_STATIC_ALLOCATION == 1)
   UINT status = TX_SUCCESS;
   VOID *memory_ptr;
 
@@ -197,6 +212,32 @@ VOID tx_application_define(VOID *first_unused_memory)
     /* USER CODE BEGIN  MX_USBPD_Init */
 
     /* USER CODE END  MX_USBPD_Init */
+  }
+  if (tx_byte_pool_create(&gui_interface_app_byte_pool, "GUI_INTERFACE App memory pool", gui_interface_byte_pool_buffer, GUI_INTERFACE_APP_MEM_POOL_SIZE) != TX_SUCCESS)
+  {
+    /* USER CODE BEGIN GUI_INTERFACE_Byte_Pool_Error */
+
+    /* USER CODE END GUI_INTERFACE_Byte_Pool_Error */
+  }
+  else
+  {
+    /* USER CODE BEGIN GUI_INTERFACE_Byte_Pool_Success */
+
+    /* USER CODE END GUI_INTERFACE_Byte_Pool_Success */
+
+    memory_ptr = (VOID *)&gui_interface_app_byte_pool;
+    status = GUI_InitOS(memory_ptr);
+    if (status != USBPD_OK)
+    {
+      /* USER CODE BEGIN  MX_GUI_INTERFACE_Init_Error */
+      while(1)
+      {
+      }
+      /* USER CODE END  MX_GUI_INTERFACE_Init_Error */
+    }
+    /* USER CODE BEGIN  MX_GUI_INTERFACE_Init */
+
+    /* USER CODE END  MX_GUI_INTERFACE_Init */
   }
 #else
 /*

@@ -32,7 +32,7 @@ extern "C" {
   * @brief This is the list of modules to be used in the HAL driver
   */
 #define HAL_MODULE_ENABLED
-#define HAL_ADC_MODULE_ENABLED
+/* #define HAL_ADC_MODULE_ENABLED */
 /* #define HAL_COMP_MODULE_ENABLED */
 /* #define HAL_CORDIC_MODULE_ENABLED */
 #define HAL_CORTEX_MODULE_ENABLED
@@ -43,11 +43,14 @@ extern "C" {
 /* #define HAL_DCMI_MODULE_ENABLED */
 #define HAL_DMA_MODULE_ENABLED
 /* #define HAL_DMA2D_MODULE_ENABLED */
+/* #define HAL_DSI_MODULE_ENABLED */
 #define HAL_EXTI_MODULE_ENABLED
 #define HAL_FDCAN_MODULE_ENABLED
 #define HAL_FLASH_MODULE_ENABLED
 /* #define HAL_FMAC_MODULE_ENABLED */
+/* #define HAL_GFXMMU_MODULE_ENABLED */
 #define HAL_GPIO_MODULE_ENABLED
+/* #define HAL_GPU2D_MODULE_ENABLED */
 /* #define HAL_GTZC_MODULE_ENABLED */
 /* #define HAL_HASH_MODULE_ENABLED */
 #define HAL_HCD_MODULE_ENABLED
@@ -56,6 +59,7 @@ extern "C" {
 /* #define HAL_IRDA_MODULE_ENABLED */
 #define HAL_IWDG_MODULE_ENABLED
 /* #define HAL_LPTIM_MODULE_ENABLED */
+/* #define HAL_LTDC_MODULE_ENABLED */
 /* #define HAL_MDF_MODULE_ENABLED */
 /* #define HAL_MMC_MODULE_ENABLED */
 /* #define HAL_NAND_MODULE_ENABLED */
@@ -82,6 +86,7 @@ extern "C" {
 /* #define HAL_UART_MODULE_ENABLED */
 /* #define HAL_USART_MODULE_ENABLED */
 /* #define HAL_WWDG_MODULE_ENABLED */
+/* #define HAL_XSPI_MODULE_ENABLED */
 
 /* ########################## Oscillator Values adaptation ####################*/
 /**
@@ -90,11 +95,11 @@ extern "C" {
   *        (when HSE is used as system clock source, directly or through the PLL).
   */
 #if !defined  (HSE_VALUE)
-#define HSE_VALUE              16000000U /*!< Value of the External oscillator in Hz */
+#define HSE_VALUE              16000000UL /*!< Value of the External oscillator in Hz */
 #endif /* HSE_VALUE */
 
 #if !defined  (HSE_STARTUP_TIMEOUT)
-#define HSE_STARTUP_TIMEOUT    100U   /*!< Time out for HSE start up, in ms */
+#define HSE_STARTUP_TIMEOUT    100UL   /*!< Time out for HSE start up, in ms */
 #endif /* HSE_STARTUP_TIMEOUT */
 
 /**
@@ -102,7 +107,7 @@ extern "C" {
   *        This value is the default MSI range value after Reset.
   */
 #if !defined  (MSI_VALUE)
-#define MSI_VALUE              4000000U /*!< Value of the Internal oscillator in Hz*/
+#define MSI_VALUE              4000000UL /*!< Value of the Internal oscillator in Hz*/
 #endif /* MSI_VALUE */
 
 /**
@@ -111,7 +116,7 @@ extern "C" {
   *        (when HSI is used as system clock source, directly or through the PLL).
   */
 #if !defined  (HSI_VALUE)
-#define HSI_VALUE              16000000U /*!< Value of the Internal oscillator in Hz*/
+#define HSI_VALUE              16000000UL /*!< Value of the Internal oscillator in Hz*/
 #endif /* HSI_VALUE */
 
 /**
@@ -122,7 +127,7 @@ extern "C" {
   *        which is subject to manufacturing process variations.
   */
 #if !defined  (HSI48_VALUE)
-#define HSI48_VALUE             48000000U /*!< Value of the Internal High Speed oscillator for USB FS/SDMMC/RNG in Hz.
+#define HSI48_VALUE             48000000UL /*!< Value of the Internal High Speed oscillator for USB FS/SDMMC/RNG in Hz.
                                                 The real value my vary depending on manufacturing process variations.*/
 #endif /* HSI48_VALUE */
 
@@ -130,21 +135,25 @@ extern "C" {
   * @brief Internal Low Speed oscillator (LSI) value.
   */
 #if !defined  (LSI_VALUE)
-#define LSI_VALUE               32000U    /*!< LSI Typical Value in Hz*/
-#endif /* LSI_VALUE */                     /*!< Value of the Internal Low Speed oscillator in Hz
-The real value may vary depending on the variations
-in voltage and temperature.*/
+#define LSI_VALUE               32000UL    /*!< LSI Typical Value in Hz*/
+#endif /* LSI_VALUE */                     /*!< Value of the Internal Low Speed oscillator in Hz. The real value may
+vary depending on the variations in voltage and temperature.*/
+
+#if !defined  (LSI_STARTUP_TIMEOUT)
+#define LSI_STARTUP_TIMEOUT    130UL      /*!< Time out for LSI start up, in ms */
+#endif /* LSI_STARTUP_TIMEOUT */
+
 /**
   * @brief External Low Speed oscillator (LSE) value.
   *        This value is used by the UART, RTC HAL module to compute the system frequency
   */
 #if !defined  (LSE_VALUE)
-#define LSE_VALUE              32768U    /*!< Value of the External oscillator in Hz*/
+#define LSE_VALUE              32768UL   /*!< Value of the External oscillator in Hz*/
 #endif /* LSE_VALUE */
 
 #if !defined  (LSE_STARTUP_TIMEOUT)
-#define LSE_STARTUP_TIMEOUT    5000U     /*!< Time out for LSE start up, in ms */
-#endif /* HSE_STARTUP_TIMEOUT */
+#define LSE_STARTUP_TIMEOUT    5000UL     /*!< Time out for LSE start up, in ms */
+#endif /* LSE_STARTUP_TIMEOUT */
 
 /**
   * @brief External clock source for SAI1 peripheral
@@ -152,7 +161,7 @@ in voltage and temperature.*/
   *        frequency.
   */
 #if !defined  (EXTERNAL_SAI1_CLOCK_VALUE)
-#define EXTERNAL_SAI1_CLOCK_VALUE  48000U /*!< Value of the SAI1 External clock source in Hz*/
+#define EXTERNAL_SAI1_CLOCK_VALUE  48000UL /*!< Value of the SAI1 External clock source in Hz*/
 #endif /* EXTERNAL_SAI1_CLOCK_VALUE */
 
 /* Tip: To avoid modifying this file each time you need to use different HSE,
@@ -162,7 +171,7 @@ in voltage and temperature.*/
 /**
   * @brief This is the HAL system configuration section
   */
-#define  VDD_VALUE                    3300U /*!< Value of VDD in mv */
+#define  VDD_VALUE                    3300UL /*!< Value of VDD in mv */
 #define  TICK_INT_PRIORITY            ((1UL<<__NVIC_PRIO_BITS) - 1UL)  /*!< tick interrupt priority (lowest by default) */
 #define  USE_RTOS                     0U
 #define  PREFETCH_ENABLE              1U               /*!< Enable prefetch */
@@ -191,9 +200,12 @@ in voltage and temperature.*/
 #define  USE_HAL_DAC_REGISTER_CALLBACKS        0U /* DAC register callback disabled       */
 #define  USE_HAL_DCMI_REGISTER_CALLBACKS       0U /* DCMI register callback disabled      */
 #define  USE_HAL_DMA2D_REGISTER_CALLBACKS      0U /* DMA2D register callback disabled     */
+#define  USE_HAL_DSI_REGISTER_CALLBACKS        0U /* DSI register callback disabled       */
 #define  USE_HAL_ETH_REGISTER_CALLBACKS        0U /* ETH register callback disabled       */
 #define  USE_HAL_FDCAN_REGISTER_CALLBACKS      0U /* FDCAN register callback disabled     */
 #define  USE_HAL_FMAC_REGISTER_CALLBACKS       0U /* FMAC register callback disabled      */
+#define  USE_HAL_GFXMMU_REGISTER_CALLBACKS     0U /* GFXMMU register callback disabled    */
+#define  USE_HAL_GPU2D_REGISTER_CALLBACKS      0U /* GPU2D register callback disabled     */
 #define  USE_HAL_HASH_REGISTER_CALLBACKS       0U /* HASH register callback disabled      */
 #define  USE_HAL_HCD_REGISTER_CALLBACKS        0U /* HCD register callback disabled       */
 #define  USE_HAL_I2C_REGISTER_CALLBACKS        0U /* I2C register callback disabled       */
@@ -201,8 +213,8 @@ in voltage and temperature.*/
 #define  USE_HAL_IRDA_REGISTER_CALLBACKS       0U /* IRDA register callback disabled      */
 #define  USE_HAL_LPTIM_REGISTER_CALLBACKS      0U /* LPTIM register callback disabled     */
 #define  USE_HAL_LTDC_REGISTER_CALLBACKS       0U /* LTDC register callback disabled      */
-#define  USE_HAL_MMC_REGISTER_CALLBACKS        0U /* MMC register callback disabled       */
 #define  USE_HAL_MDF_REGISTER_CALLBACKS        0U /* MDF register callback disabled       */
+#define  USE_HAL_MMC_REGISTER_CALLBACKS        0U /* MMC register callback disabled       */
 #define  USE_HAL_NAND_REGISTER_CALLBACKS       0U /* NAND register callback disabled      */
 #define  USE_HAL_NOR_REGISTER_CALLBACKS        0U /* NOR register callback disabled       */
 #define  USE_HAL_OPAMP_REGISTER_CALLBACKS      0U /* MDIO register callback disabled      */
@@ -224,6 +236,7 @@ in voltage and temperature.*/
 #define  USE_HAL_UART_REGISTER_CALLBACKS       0U /* UART register callback disabled      */
 #define  USE_HAL_USART_REGISTER_CALLBACKS      0U /* USART register callback disabled     */
 #define  USE_HAL_WWDG_REGISTER_CALLBACKS       0U /* WWDG register callback disabled      */
+#define  USE_HAL_XSPI_REGISTER_CALLBACKS       0U /* XSPI register callback disabled      */
 
 /* ################## SPI peripheral configuration ########################## */
 
@@ -271,6 +284,10 @@ in voltage and temperature.*/
 #include "stm32u5xx_hal_dma2d.h"
 #endif /* HAL_DMA2D_MODULE_ENABLED */
 
+#ifdef HAL_DSI_MODULE_ENABLED
+#include "stm32u5xx_hal_dsi.h"
+#endif /* HAL_DSI_MODULE_ENABLED */
+
 #ifdef HAL_CORTEX_MODULE_ENABLED
 #include "stm32u5xx_hal_cortex.h"
 #endif /* HAL_CORTEX_MODULE_ENABLED */
@@ -303,6 +320,10 @@ in voltage and temperature.*/
 #include "stm32u5xx_hal_flash.h"
 #endif /* HAL_FLASH_MODULE_ENABLED */
 
+#ifdef HAL_GFXMMU_MODULE_ENABLED
+#include "stm32u5xx_hal_gfxmmu.h"
+#endif /* HAL_GFXMMU_MODULE_ENABLED */
+
 #ifdef HAL_HASH_MODULE_ENABLED
 #include "stm32u5xx_hal_hash.h"
 #endif /* HAL_HASH_MODULE_ENABLED */
@@ -334,6 +355,10 @@ in voltage and temperature.*/
 #ifdef HAL_LPTIM_MODULE_ENABLED
 #include "stm32u5xx_hal_lptim.h"
 #endif /* HAL_LPTIM_MODULE_ENABLED */
+
+#ifdef HAL_LTDC_MODULE_ENABLED
+#include "stm32u5xx_hal_ltdc.h"
+#endif /* HAL_LTDC_MODULE_ENABLED */
 
 #ifdef HAL_OPAMP_MODULE_ENABLED
 #include "stm32u5xx_hal_opamp.h"
@@ -443,6 +468,14 @@ in voltage and temperature.*/
 #include "stm32u5xx_hal_mdf.h"
 #endif /* HAL_MDF_MODULE_ENABLED */
 
+#ifdef HAL_GPU2D_MODULE_ENABLED
+#include "stm32u5xx_hal_gpu2d.h"
+#endif /* HAL_GPU2D_MODULE_ENABLED */
+
+#ifdef HAL_XSPI_MODULE_ENABLED
+#include "stm32u5xx_hal_xspi.h"
+#endif /* HAL_XSPI_MODULE_ENABLED */
+
 /* Exported macro ------------------------------------------------------------*/
 #ifdef  USE_FULL_ASSERT
 /**
@@ -465,4 +498,3 @@ void assert_failed(uint8_t *file, uint32_t line);
 #endif
 
 #endif /* STM32U5xx_HAL_CONF_H */
-

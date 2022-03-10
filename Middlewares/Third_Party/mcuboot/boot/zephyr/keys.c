@@ -28,6 +28,7 @@
  */
 #include <mcuboot_config/mcuboot_config.h>
 
+#if !defined(MCUBOOT_HW_KEY)
 #if defined(MCUBOOT_SIGN_RSA)
 #define HAVE_KEYS
 extern const unsigned char rsa_pub_key[];
@@ -40,8 +41,6 @@ extern unsigned int ecdsa_pub_key_len;
 #define HAVE_KEYS
 extern const unsigned char ed25519_pub_key[];
 extern unsigned int ed25519_pub_key_len;
-#else
-#error "No public key available for given signing algorithm."
 #endif
 
 /*
@@ -65,7 +64,17 @@ const struct bootutil_key bootutil_keys[] = {
     },
 };
 const int bootutil_key_cnt = 1;
-#endif
+#endif /* HAVE_KEYS */
+#else
+unsigned int pub_key_len;
+struct bootutil_key bootutil_keys[1] = {
+    {
+        .key = 0,
+        .len = &pub_key_len,
+    }
+};
+const int bootutil_key_cnt = 1;
+#endif /* !MCUBOOT_HW_KEY */
 
 #if defined(MCUBOOT_ENCRYPT_RSA)
 unsigned char enc_priv_key[] = {
@@ -189,6 +198,18 @@ static unsigned int enc_priv_key_len = 70;
 const struct bootutil_key bootutil_enc_key = {
     .key = enc_priv_key,
     .len = &enc_priv_key_len,
+};
+#elif defined(MCUBOOT_ENCRYPT_X25519)
+unsigned char enc_key[] = {
+  0x30, 0x2e, 0x02, 0x01, 0x00, 0x30, 0x05, 0x06, 0x03, 0x2b, 0x65, 0x6e,
+  0x04, 0x22, 0x04, 0x20, 0x28, 0x80, 0x2f, 0xef, 0xef, 0x82, 0x95, 0x50,
+  0xf1, 0x41, 0x93, 0x03, 0x6c, 0x1b, 0xb9, 0x49, 0x6c, 0x51, 0xe5, 0x26,
+  0x87, 0x8f, 0x77, 0x07, 0xf8, 0xb4, 0x1f, 0x04, 0x45, 0x6d, 0x84, 0x4f,
+};
+static unsigned int enc_key_len = 48;
+const struct bootutil_key bootutil_enc_key = {
+    .key = enc_key,
+    .len = &enc_key_len,
 };
 #elif defined(MCUBOOT_ENCRYPT_KW)
 #error "Encrypted images with AES-KW is not implemented yet."

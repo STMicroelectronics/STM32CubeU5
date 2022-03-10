@@ -231,3 +231,4 @@ __WEAK void USBPD_DPM_ErrorHandler(void)
      another solution could be to reset application */
   while (1u == 1u) {};
 }
+

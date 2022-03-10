@@ -1,9 +1,10 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * File Name          : linked_list.h
   * Description        : This file provides code for the configuration
   *                      of the LinkedList.
- ******************************************************************************
+  ******************************************************************************
   * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
@@ -15,6 +16,7 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef LINKED_LIST_H

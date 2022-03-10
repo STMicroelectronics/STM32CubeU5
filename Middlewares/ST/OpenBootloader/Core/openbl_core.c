@@ -18,6 +18,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "openbl_core.h"
+#include "app_openbootloader.h"
 #include <stdbool.h>
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,10 +51,19 @@ void OPENBL_Init(void)
 }
 
 /**
-  * @brief  This function is used to de-initialize the registered interfaces in the Open Bootloader MW.
+  * @brief  This function is used to de-initialize the Open Bootloader MW.
   * @retval None.
   */
 void OPENBL_DeInit(void)
+{
+  OpenBootloader_DeInit();
+}
+
+/**
+  * @brief  This function is used to de-initialize the registered interfaces in the Open Bootloader MW.
+  * @retval None.
+  */
+void OPENBL_InterfacesDeInit(void)
 {
   uint32_t counter;
 
@@ -135,12 +145,26 @@ void OPENBL_CommandProcess(void)
         {
           p_Interface->p_Cmd->GetCommand();
         }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
         break;
 
       case CMD_GET_VERSION:
         if (p_Interface->p_Cmd->GetVersion != NULL)
         {
           p_Interface->p_Cmd->GetVersion();
+        }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
         }
         break;
 
@@ -149,12 +173,26 @@ void OPENBL_CommandProcess(void)
         {
           p_Interface->p_Cmd->GetID();
         }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
         break;
 
       case CMD_READ_MEMORY:
         if (p_Interface->p_Cmd->ReadMemory != NULL)
         {
           p_Interface->p_Cmd->ReadMemory();
+        }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
         }
         break;
 
@@ -163,12 +201,26 @@ void OPENBL_CommandProcess(void)
         {
           p_Interface->p_Cmd->WriteMemory();
         }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
         break;
 
       case CMD_GO:
         if (p_Interface->p_Cmd->Go != NULL)
         {
           p_Interface->p_Cmd->Go();
+        }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
         }
         break;
 
@@ -177,12 +229,26 @@ void OPENBL_CommandProcess(void)
         {
           p_Interface->p_Cmd->ReadoutProtect();
         }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
         break;
 
       case CMD_READ_UNPROTECT:
         if (p_Interface->p_Cmd->ReadoutUnprotect != NULL)
         {
           p_Interface->p_Cmd->ReadoutUnprotect();
+        }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
         }
         break;
 
@@ -191,12 +257,40 @@ void OPENBL_CommandProcess(void)
         {
           p_Interface->p_Cmd->EraseMemory();
         }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
+        break;
+
+      case CMD_LEG_ERASE_MEMORY:
+        if (p_Interface->p_Cmd->EraseMemory != NULL)
+        {
+          p_Interface->p_Cmd->EraseMemory();
+        }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
         break;
 
       case CMD_WRITE_PROTECT:
         if (p_Interface->p_Cmd->WriteProtect != NULL)
         {
           p_Interface->p_Cmd->WriteProtect();
+        }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
         }
         break;
 
@@ -205,12 +299,26 @@ void OPENBL_CommandProcess(void)
         {
           p_Interface->p_Cmd->WriteUnprotect();
         }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
         break;
 
       case CMD_NS_WRITE_MEMORY:
         if (p_Interface->p_Cmd->NsWriteMemory != NULL)
         {
           p_Interface->p_Cmd->NsWriteMemory();
+        }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
         }
         break;
 
@@ -219,12 +327,26 @@ void OPENBL_CommandProcess(void)
         {
           p_Interface->p_Cmd->NsEraseMemory();
         }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
         break;
 
       case CMD_NS_WRITE_PROTECT:
         if (p_Interface->p_Cmd->NsWriteProtect != NULL)
         {
           p_Interface->p_Cmd->NsWriteProtect();
+        }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
         }
         break;
 
@@ -233,6 +355,13 @@ void OPENBL_CommandProcess(void)
         {
           p_Interface->p_Cmd->NsWriteUnprotect();
         }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
         break;
 
       case CMD_NS_READ_PROTECT:
@@ -240,12 +369,68 @@ void OPENBL_CommandProcess(void)
         {
           p_Interface->p_Cmd->NsReadoutProtect();
         }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
         break;
 
       case CMD_NS_READ_UNPROTECT:
         if (p_Interface->p_Cmd->NsReadoutUnprotect != NULL)
         {
           p_Interface->p_Cmd->NsReadoutUnprotect();
+        }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
+        break;
+
+      case CMD_SPEED:
+        if (p_Interface->p_Cmd->Speed != NULL)
+        {
+          p_Interface->p_Cmd->Speed();
+        }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
+        break;
+
+      case CMD_SPECIAL_COMMAND:
+        if (p_Interface->p_Cmd->SpecialCommand != NULL)
+        {
+          p_Interface->p_Cmd->SpecialCommand();
+        }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
+        }
+        break;
+
+      case CMD_EXTENDED_SPECIAL_COMMAND:
+        if (p_Interface->p_Cmd->ExtendedSpecialCommand != NULL)
+        {
+          p_Interface->p_Cmd->ExtendedSpecialCommand();
+        }
+        else
+        {
+          if (p_Interface->p_Ops->SendByte != NULL)
+          {
+            p_Interface->p_Ops->SendByte(NACK_BYTE);
+          }
         }
         break;
 

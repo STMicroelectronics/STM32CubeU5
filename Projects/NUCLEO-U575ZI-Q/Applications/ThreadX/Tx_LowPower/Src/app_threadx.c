@@ -72,7 +72,7 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   /* USER CODE END App_ThreadX_MEM_POOL */
 
   /* USER CODE BEGIN App_ThreadX_Init */
-#if (USE_MEMORY_POOL_ALLOCATION == 1)
+#if (USE_STATIC_ALLOCATION == 1)
   CHAR *pointer;
   
   /* Allocate the stack for MainThread.  */
@@ -122,11 +122,23 @@ void MX_ThreadX_Init(void)
 }
 
 /**
+  * @brief  App_ThreadX_LowPower_Timer_Setup
+  * @param  count : TX timer count
+  * @retval None
+  */
+void App_ThreadX_LowPower_Timer_Setup(ULONG count)
+{
+  /* USER CODE BEGIN  App_ThreadX_LowPower_Timer_Setup */
+
+  /* USER CODE END  App_ThreadX_LowPower_Timer_Setup */
+}
+
+/**
   * @brief  App_ThreadX_LowPower_Enter
   * @param  None
   * @retval None
   */
-void App_ThreadX_LowPower_Enter()
+void App_ThreadX_LowPower_Enter(void)
 {
   /* USER CODE BEGIN  App_ThreadX_LowPower_Enter */
   Enter_LowPower_Mode();
@@ -138,11 +150,23 @@ void App_ThreadX_LowPower_Enter()
   * @param  None
   * @retval None
   */
-void App_ThreadX_LowPower_Exit()
+void App_ThreadX_LowPower_Exit(void)
 {
   /* USER CODE BEGIN  App_ThreadX_LowPower_Exit */
   Exit_LowPower_Mode();
   /* USER CODE END  App_ThreadX_LowPower_Exit */
+}
+
+/**
+  * @brief  App_ThreadX_LowPower_Timer_Adjust
+  * @param  None
+  * @retval Amount of time (in ticks)
+  */
+ULONG App_ThreadX_LowPower_Timer_Adjust(void)
+{
+  /* USER CODE BEGIN  App_ThreadX_LowPower_Timer_Adjust */
+  return 0;
+  /* USER CODE END  App_ThreadX_LowPower_Timer_Adjust */
 }
 
 /* USER CODE BEGIN 1 */
@@ -406,9 +430,3 @@ void Exit_LowPower_Mode(void)
   BSP_LED_Init(LED_RED);
 }
 /* USER CODE END 1 */
-
-
-
-
-
-

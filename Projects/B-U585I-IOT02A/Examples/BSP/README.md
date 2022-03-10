@@ -31,6 +31,9 @@ Press User push-button to start the following test:
  ** LED **
 This example shows how to switch on, switch off and toggle all leds.
 
+ ** RANGING SENSOR **
+This example shows how to use the Time-of-Flight 8x8 multizone ranging sensor.
+
  ** CAMERA **
 This example shows how to use BSP drivers to test the camera.
 
@@ -41,6 +44,9 @@ available on the board. (STR and DTR in Normal mode and MemoryMapped)
  ** OSPI RAM **
 This example shows how to write and read data available on the Octal Sram memory
 available on the board. (Normal mode and MemoryMapped)
+
+ ** AUDIO RECORD **
+This example will record sound via digital microphones on the board (U6/U7).
 
  ** MOTION SENSOR **
 This example shows how to use the accelerometer and gyroscope of the motion sensor.
@@ -66,6 +72,7 @@ This example shows how to read and write data usint the EEPROM I2C M24256(U22)
 
 ### <b>Directory contents</b>
 
+  - BSP/Src/audio_record.c         AUDIO RECORD features
   - BSP/Src/camera.c               CAMERA features
   - BSP/Src/eeprom.c               EEPROM feature
   - BSP/Src/led.c                  Led display features

@@ -6,4 +6,6 @@ HALModule=SRAM;GTZC
 [Groups]
 Doc=../README.md;
 Application/User/Secure=../Secure/Src/hal_sram_helper.c;
+Drivers/BSP/Components=../../../../../../Drivers/BSP/Components/mfxstm32l152/mfxstm32l152_reg.c;../../../../../../Drivers/BSP/Components/mfxstm32l152/mfxstm32l152.c;
+Drivers/BSP/STM32U575I-EV=../../../../../../Drivers/BSP/STM32U575I-EV/stm32u575i_eval_bus.c;../../../../../../Drivers/BSP/STM32U575I-EV/stm32u575i_eval_io.c;../../../../../../Drivers/BSP/STM32U575I-EV/stm32u575i_eval.c;
 Drivers/STM32U5xx_HAL_Driver=../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_sram.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_fmc.c;
