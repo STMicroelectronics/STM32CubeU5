@@ -119,6 +119,7 @@ void boot_platform_noimage(void)
     __HAL_RCC_GPIOF_CLK_ENABLE();
     __HAL_RCC_GPIOG_CLK_ENABLE();
     __HAL_RCC_GPIOH_CLK_ENABLE();
+    __HAL_RCC_GPIOI_CLK_ENABLE();
     GPIOA_S->SECCFGR = 0x0;
     GPIOB_S->SECCFGR = 0x0;
     GPIOC_S->SECCFGR = 0x0;
@@ -127,6 +128,7 @@ void boot_platform_noimage(void)
     GPIOF_S->SECCFGR = 0x0;
     GPIOG_S->SECCFGR = 0x0;
     GPIOH_S->SECCFGR = 0x0;
+    GPIOI_S->SECCFGR = 0x0;
 #if defined(MCUBOOT_PRIMARY_ONLY)
     /* loader code is set secure after control being set successfully */
     /* MPU allowing execution of this area is set after HDP activation */

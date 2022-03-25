@@ -213,6 +213,7 @@ void pinmux_init_cfg(void)
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOI_CLK_ENABLE();
   GPIOA_S->SECCFGR = 0x0;
   GPIOB_S->SECCFGR = 0x0;
   GPIOC_S->SECCFGR = 0x0;
@@ -221,6 +222,7 @@ void pinmux_init_cfg(void)
   GPIOF_S->SECCFGR = 0x0;
   GPIOG_S->SECCFGR = 0x0;
   GPIOH_S->SECCFGR = 0x0;
+  GPIOI_S->SECCFGR = 0x0;
 #ifdef TFM_FIH_PROFILE_ON
   FIH_RET(fih_int_encode(TFM_PLAT_ERR_SUCCESS));
 #endif 
