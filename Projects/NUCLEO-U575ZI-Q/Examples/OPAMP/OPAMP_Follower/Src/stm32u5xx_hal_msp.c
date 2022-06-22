@@ -94,10 +94,11 @@ void HAL_COMP_MspInit(COMP_HandleTypeDef* hcomp)
 
     __HAL_RCC_GPIOB_CLK_ENABLE();
     /**COMP1 GPIO Configuration
+    PB1     ------> COMP1_INM
     PB2     ------> COMP1_INP
     PB10     ------> COMP1_OUT
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_2;
+    GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -133,10 +134,11 @@ void HAL_COMP_MspDeInit(COMP_HandleTypeDef* hcomp)
     __HAL_RCC_COMP_CLK_DISABLE();
 
     /**COMP1 GPIO Configuration
+    PB1     ------> COMP1_INM
     PB2     ------> COMP1_INP
     PB10     ------> COMP1_OUT
     */
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_2|GPIO_PIN_10);
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_10);
 
   /* USER CODE BEGIN COMP1_MspDeInit 1 */
 
@@ -153,7 +155,6 @@ void HAL_COMP_MspDeInit(COMP_HandleTypeDef* hcomp)
 */
 void HAL_DAC_MspInit(DAC_HandleTypeDef* hdac)
 {
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
   if(hdac->Instance==DAC1)
   {
@@ -173,16 +174,6 @@ void HAL_DAC_MspInit(DAC_HandleTypeDef* hdac)
 
     /* Peripheral clock enable */
     __HAL_RCC_DAC1_CLK_ENABLE();
-
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    /**DAC1 GPIO Configuration
-    PA4     ------> DAC1_OUT1
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_4;
-    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
   /* USER CODE BEGIN DAC1_MspInit 1 */
 
   /* USER CODE END DAC1_MspInit 1 */
@@ -205,12 +196,6 @@ void HAL_DAC_MspDeInit(DAC_HandleTypeDef* hdac)
   /* USER CODE END DAC1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_DAC1_CLK_DISABLE();
-
-    /**DAC1 GPIO Configuration
-    PA4     ------> DAC1_OUT1
-    */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4);
-
   /* USER CODE BEGIN DAC1_MspDeInit 1 */
 
   /* USER CODE END DAC1_MspDeInit 1 */

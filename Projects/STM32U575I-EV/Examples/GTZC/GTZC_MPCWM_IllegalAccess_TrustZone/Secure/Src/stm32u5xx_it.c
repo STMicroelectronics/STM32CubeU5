@@ -147,9 +147,9 @@ void UsageFault_Handler(void)
 void SecureFault_Handler(void)
 {
   /* USER CODE BEGIN SecureFault_IRQn 0 */
-  
+
   /* LED5 on */
-  HAL_GPIO_WritePin(LED5_PIN_GPIO_Port, LED5_PIN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED5_GPIO_PORT, LED5_PIN, GPIO_PIN_RESET);
   /* An illegal access has been detected on SAU side (1st obstacle before MPCWM)
   * It corresponds to the WakeUp button error case, where we do a read/write
   * operation from the non-secure world on a secure area.
@@ -237,9 +237,9 @@ void GTZC_IRQHandler(void)
 {
   /* USER CODE BEGIN GTZC_IRQn 0 */
   printf("\n\rGTZC-TZIC Interrupt!");
-  
+
   /* LED5 on */
-  HAL_GPIO_WritePin(LED5_PIN_GPIO_Port, LED5_PIN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED5_GPIO_PORT, LED5_PIN, GPIO_PIN_RESET);
   /* USER CODE END GTZC_IRQn 0 */
   HAL_GTZC_IRQHandler();
   /* USER CODE BEGIN GTZC_IRQn 1 */

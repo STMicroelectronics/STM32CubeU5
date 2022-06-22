@@ -100,11 +100,9 @@ RTOS, ThreadX, Thread, Message Queue, Module Manager, Module, MPU
 
 In order to make the program work, you must do the following :
 
- - Open your EWARM toolchain
- - Open Multi-projects workspace file Project.eww
+ - Open Multi-projects workspace using your pereferred IDE
  - Rebuild Tx_Module project
  - Rebuild Tx_Module_Manager project
- - Set the "Tx_Module" as active application (Set as Active)
- - Flash the Tx_Module binary with Project->Download->Download active application
+ - Flash the Tx_Module binary at address defined by MODULE_FLASH_ADDRESS
  - Set the "Tx_Module_Manager" as active application (Set as Active)
  - Run the example

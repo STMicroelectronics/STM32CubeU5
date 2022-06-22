@@ -120,11 +120,11 @@ int main(void)
       }
 
       /* on previous test success, blink green led */
-      HAL_GPIO_TogglePin(LED5_PIN_GPIO_Port, LED5_PIN_Pin);
+      HAL_GPIO_TogglePin(LED5_GPIO_PORT, LED5_PIN);
 
       /* Insert delay 1000 ms */
       HAL_Delay(1000U);
-      HAL_GPIO_TogglePin(LED5_PIN_GPIO_Port, LED5_PIN_Pin);
+      HAL_GPIO_TogglePin(LED5_GPIO_PORT, LED5_PIN);
 
 
       /* Insert delay 1000 ms */
@@ -221,7 +221,6 @@ static void MX_DCACHE1_Init(void)
   {
     Error_Handler();
   }
-
   /* USER CODE BEGIN DCACHE1_Init 2 */
 
   /* USER CODE END DCACHE1_Init 2 */
@@ -292,11 +291,11 @@ static void MX_GPIO_Init(void)
 */
 void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
 {
-  if (GPIO_Pin == BUTTON_USER_Pin)
+  if (GPIO_Pin == BUTTON_USER_PIN)
   {
     UserButtonPressed = 1U;
   }
-  else if (GPIO_Pin == BUTTON_TAMPER_Pin)
+  else if (GPIO_Pin == BUTTON_TAMPER_PIN)
   {
     TamperButtonPressed = 1U;
   }
@@ -332,7 +331,7 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-  
+
   /* Infinite loop */
   while (1)
   {

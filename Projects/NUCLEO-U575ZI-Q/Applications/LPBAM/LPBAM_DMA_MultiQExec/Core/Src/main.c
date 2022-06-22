@@ -315,7 +315,7 @@ static void MX_LPDMA1_Init(void)
   {
     Error_Handler();
   }
-  if (HAL_DMA_ConfigChannelAttributes(&handle_LPDMA1_Channel0, DMA_CHANNEL_NPRIV) != HAL_OK)
+  if (HAL_DMA_ConfigChannelAttributes(&handle_LPDMA1_Channel0, DMA_CHANNEL_PRIV) != HAL_OK)
   {
     Error_Handler();
   }

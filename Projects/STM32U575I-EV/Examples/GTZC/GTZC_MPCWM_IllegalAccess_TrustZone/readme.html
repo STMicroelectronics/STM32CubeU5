@@ -55,6 +55,7 @@
 <ol type="1">
 <li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise the caller ISR process will be blocked. To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>
 <li><p>The application need to ensure that the SysTick time base is always set to 1 millisecond to have correct HAL operation.</p></li>
+<li><p>When deleting MDK-ARM project folder and regenerating this application with STM32CubeMx tool, be sure to place the Veneer$$CMSE section into IROM2  “ROM_NSC_region”.</p>
 <li><p>The following sequence is needed to disable TrustZone:</p>
 <ul>
 <li><strong>Boot from user Flash memory</strong>:
@@ -153,6 +154,11 @@ SECWM2_PSTRT=0x1  SECWM2_PEND=0x0   No page of internal Flash Bank2 set as secur
 <li>Select the xxxxx_NS project</li>
 <li>Build configuration : Select Release/Debug</li>
 <li>Click Debug to debug the example</li>
+<ul>
+<p><strong>NOTE:</strong></p>
+<p>- The default Debug configuration runtime option sets "Halt on exception" which</p>
+<p>makes the code execution halt on SecureFault_Handler() on voluntary security violation.</p>
+<p>Press "Resume (F8)" to continue execution.</p>
 </ul>
 </div>
 </div>

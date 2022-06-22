@@ -1773,7 +1773,7 @@
                     <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\threadx\ports_module\cortex_m33\iar\module_manager\src\tx_thread_stack_build.s</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\threadx\ports_module\cortex_m33\iar\module_manager\src\tx_thread_stack_error_handler.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\threadx\common\src\tx_thread_stack_error_handler.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\threadx\ports_module\cortex_m33\iar\module_manager\src\tx_thread_stack_error_notify.c</name>

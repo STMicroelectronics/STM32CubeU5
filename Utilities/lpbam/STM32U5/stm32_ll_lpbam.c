@@ -763,6 +763,8 @@ LPBAM_Status_t LPBAM_DMA_FillStructInfo(LPBAM_DMA_ConfNode_t const *const pConfN
     {LPBAM_DMA_QUEUE_BASEADDRESS_OFFSET,   LPBAM_DMA_QUEUE_BASEADDRESS_DATASIZE  },
     /* LPBAM DMA offset address node ID */
     {LPBAM_DMA_QUEUE_OFFSETADDRESS_OFFSET, LPBAM_DMA_QUEUE_OFFSETADDRESS_DATASIZE},
+    /* LPBAM DMA clear data size node ID */
+    {LPBAM_DMA_CLEARDATASIZE_OFFSET,       LPBAM_DMA_CLEARDATASIZE_DATASIZE      },
     /* LPBAM DMA clear flag node ID     */
     {LPBAM_DMA_CLEARFLAG_OFFSET,           LPBAM_DMA_CLEARFLAG_DATASIZE          }
   };
@@ -833,6 +835,26 @@ LPBAM_Status_t LPBAM_DMA_FillStructInfo(LPBAM_DMA_ConfNode_t const *const pConfN
       /* Calculate CLLR value */
       dummy = (pConfNode->Config.HeadQAddress & DMA_CLLR_LA);
       dummy |= DMA_CLLR_UT1 | DMA_CLLR_UT2 | DMA_CLLR_UB1 | DMA_CLLR_USA | DMA_CLLR_UDA | DMA_CLLR_ULL;
+
+      /* Set value to be written */
+      *pConfNode->NodeDesc.pSrcVarReg = dummy;
+
+      /* Set DMA source address */
+      pDescInfo->SrcAddr  = (uint32_t)pConfNode->NodeDesc.pSrcVarReg;
+      /* Set DMA destination address */
+      pDescInfo->DstAddr  = dma_descitem_tbl[pConfNode->NodeDesc.NodeInfo.NodeID].RegOffset +
+                            (uint32_t)pConfNode->pInstance;
+      /* Set DMA data size */
+      pDescInfo->DataSize = dma_descitem_tbl[pConfNode->NodeDesc.NodeInfo.NodeID].RegDataSize;
+
+      break;
+    }
+
+    /* LPBAM DMA clear data size node ID */
+    case LPBAM_DMA_CLEARDATASIZE_ID:
+    {
+      /* Calculate clear flag mask */
+      dummy = 0U;
 
       /* Set value to be written */
       *pConfNode->NodeDesc.pSrcVarReg = dummy;

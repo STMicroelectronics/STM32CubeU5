@@ -75,13 +75,15 @@ typedef struct
   */
 typedef enum
 {
-  LPBAM_DMA_CONFIG_ID,              /*!< LPBAM DMA configuration node ID  */
+  LPBAM_DMA_CONFIG_ID,              /*!< LPBAM DMA configuration node ID   */
 
-  LPBAM_DMA_QUEUE_BASEADDRESS_ID,   /*!< LPBAM DMA base address node ID   */
+  LPBAM_DMA_QUEUE_BASEADDRESS_ID,   /*!< LPBAM DMA base address node ID    */
 
-  LPBAM_DMA_QUEUE_OFFSETADDRESS_ID, /*!< LPBAM DMA offset address node ID */
+  LPBAM_DMA_QUEUE_OFFSETADDRESS_ID, /*!< LPBAM DMA offset address node ID  */
 
-  LPBAM_DMA_CLEARFLAG_ID            /*!< LPBAM DMA clear flag node ID     */
+  LPBAM_DMA_CLEARDATASIZE_ID,       /*!< LPBAM DMA clear data size node ID */
+
+  LPBAM_DMA_CLEARFLAG_ID            /*!< LPBAM DMA clear flag node ID      */
 
 } LPBAM_DMA_ID_t;
 /**

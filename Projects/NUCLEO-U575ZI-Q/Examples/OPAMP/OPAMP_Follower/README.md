@@ -11,7 +11,7 @@ OPAMP1 is configured as following:
    - Follower mode.
    - OPAMP Non Inverting input is connected internally to DAC_OUT1 that perform a simple
      conversion in 8 bits right alignment of 0x7F value.
-   - OPAMP Output is connected to COMP1 inverting input internally (share same pin PC4).
+   - OPAMP Output (PA3 pin 37 CN12) should be connected to COMP1 inverting input (PB1 pin 24 CN12).
 
 Test Description:
 

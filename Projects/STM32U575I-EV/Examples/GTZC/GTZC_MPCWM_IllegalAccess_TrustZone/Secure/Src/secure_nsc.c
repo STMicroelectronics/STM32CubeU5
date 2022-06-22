@@ -84,7 +84,7 @@ CMSE_NS_ENTRY void SECURE_DisplayMessage(const uint8_t *format)
 */
 CMSE_NS_ENTRY void SECURE_ToggleRedLed(void)
 {
-  HAL_GPIO_TogglePin(LED6_GPIO_Port, LED6_Pin);
+  HAL_GPIO_TogglePin(LED6_GPIO_PORT, LED6_PIN);
 }
 
 /**
@@ -100,12 +100,12 @@ CMSE_NS_ENTRY void SECURE_ToggleRedLed(void)
 CMSE_NS_ENTRY void SECURE_SAU_MPCWM2_SetInitConfig(void)
 {
   MPCWM_ConfigTypeDef MPCWM_Desc;
-  
+
   /* protect this SAU/MPCWM setup section from any fault interrupt occurrence */
   __disable_fault_irq();
-  
+
   /* set first half of memory as non-secure, second half as secure */
-  
+
   /* SAU update based on partition_stm32u575xx.h used at setup      */
   /* Reduced non-secure area (SAU region 4) : 0x60000000-0x600FFFFF */
   /* memory from 0x60100000 are then secure */
@@ -114,7 +114,7 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM2_SetInitConfig(void)
   SAU->RLAR = (  ((FMC_BANK1 + 0x000FFFFF) & SAU_RLAR_LADDR_Msk)
                | ((0 << SAU_RLAR_NSC_Pos) & SAU_RLAR_NSC_Msk)
                  | 1U);
-  
+
   /* MPCWM2: set one non-secure area on first half */
   /* The second half is set as secure by default */
   MPCWM_Desc.AreaId     = GTZC_TZSC_MPCWM_ID1;
@@ -128,7 +128,7 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM2_SetInitConfig(void)
     /* Initialization error */
     while(1);
   }
-  
+
   /* re-enable fault interrupt occurrences after this SAU/MPCWM setup section */
   __enable_fault_irq();
 }
@@ -142,10 +142,10 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM2_SetInitConfig(void)
 CMSE_NS_ENTRY void SECURE_SAU_MPCWM2_SetUserButtonErrorCaseConfig(void)
 {
   MPCWM_ConfigTypeDef MPCWM_Desc;
-  
+
   /* protect this SAU/MPCWM setup section from any fault interrupt occurrence */
   __disable_fault_irq();
-  
+
   /* Here, with initial configuration, a non-secure access has already been done
   * in the secure area and the Secure Fault interrupt occurred. This function
   * is called from the handler to allow the SW to exit the handler (jump to the
@@ -154,14 +154,14 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM2_SetUserButtonErrorCaseConfig(void)
   * So the process here is to set the whole FMC NOR memory as non-secure,
   * on both SAU and MPCWM2 sides.
   */
-  
+
   /* Whole non-secure area (SAU region 4) : 0x60000000-0x601FFFFF */
   SAU->RNR  = (4 & SAU_RNR_REGION_Msk);
   SAU->RBAR = (FMC_BANK1 & SAU_RBAR_BADDR_Msk);
   SAU->RLAR = (  ((FMC_BANK1 + 0x001FFFFF) & SAU_RLAR_LADDR_Msk)
                | ((0 << SAU_RLAR_NSC_Pos) & SAU_RLAR_NSC_Msk)
                  | 1U);
-  
+
   /* MPCWM2: set one non-secure area on whole memory */
   MPCWM_Desc.AreaId = GTZC_TZSC_MPCWM_ID1;
   MPCWM_Desc.Offset = 0;
@@ -169,13 +169,13 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM2_SetUserButtonErrorCaseConfig(void)
   MPCWM_Desc.AreaStatus = ENABLE;
   MPCWM_Desc.Attribute  = GTZC_TZSC_MPCWM_REGION_NSEC;
   MPCWM_Desc.Lock       = GTZC_TZSC_MPCWM_LOCK_OFF;
-  
+
   if (HAL_GTZC_TZSC_MPCWM_ConfigMemAttributes(FMC_BANK1, &MPCWM_Desc) != HAL_OK)
   {
     /* Initialization error */
     while(1);
   }
-  
+
   /* re-enable fault interrupt occurrences after this SAU/MPCWM setup section */
   __enable_fault_irq();
 }
@@ -191,7 +191,7 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM2_SetTamperButtonErrorCaseConfig(void)
 {
   /* protect this SAU/MPCWM setup section from any fault interrupt occurrence */
   __disable_fault_irq();
-  
+
   /* Here the objective is to provoke a GTZC_IRQn occurrence.
   * We will do a non-secure access in the secure area, but before that, we need
   * to setup SAU, to have a whole non-secure area from its point of view.
@@ -199,16 +199,16 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM2_SetTamperButtonErrorCaseConfig(void)
   * access to the secure area will be allowed by SAU, but not by MPCWM2.
   * This will generate a GTZC_IRQn interrupt, which is our goal.
   */
-  
+
   /* Whole non-secure area (SAU region 4) : 0x60000000-0x601FFFFF */
   SAU->RNR  = (4 & SAU_RNR_REGION_Msk);
   SAU->RBAR = (FMC_BANK1 & SAU_RBAR_BADDR_Msk);
   SAU->RLAR = (  ((FMC_BANK1 + 0x00200000) & SAU_RLAR_LADDR_Msk)
                | ((0 << SAU_RLAR_NSC_Pos)  & SAU_RLAR_NSC_Msk)
                  | 1U);
-  
+
   /* MPCWM2: no change */
-  
+
   /* re-enable fault interrupt occurrences after this SAU/MPCWM setup section */
   __enable_fault_irq();
 }

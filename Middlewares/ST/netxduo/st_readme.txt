@@ -7,6 +7,14 @@
   ******************************************************************************
   */
 
+### 13-May-2022 ###
+========================
+- Use correct params to call az_span_create() function in NetXDuo azure_iot addons
+
+### 01-April-2022 ###
+========================
+- Upgrade to Azure RTOS NetXDuo 6.1.10
+
 ### 28-January-2022 ###
 ========================
 - Add STM32C0 series to Azure RTOS licensed hardware list

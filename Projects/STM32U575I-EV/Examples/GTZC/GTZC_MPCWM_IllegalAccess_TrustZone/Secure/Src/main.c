@@ -78,10 +78,10 @@ static void MX_ICACHE_Init(void);
 int main(void)
 {
   /* SAU/IDAU, FPU and interrupts secure/non-secure allocation setup done */
-  /* in SystemInit() based on partition_stm32u575xx.h file's definitions. */
+/* in SystemInit() based on partition_stm32u575xx.h file's definitions. */
   /* USER CODE BEGIN 1 */
   uint32_t i, temp_value, read_value;
-  
+
   /* Enable SecureFault handler (HardFault is default) */
   SCB->SHCSR |= SCB_SHCSR_SECUREFAULTENA_Msk;
   /* USER CODE END 1 */
@@ -119,7 +119,7 @@ int main(void)
     /* Initialization Error */
     while(1);
   }
-  
+
   /* Secure SysTick should rather be suspended before calling non-secure  */
   /* in order to avoid wake-up from sleep mode entered by non-secure      */
   /* The Secure SysTick shall be resumed on non-secure callable functions */

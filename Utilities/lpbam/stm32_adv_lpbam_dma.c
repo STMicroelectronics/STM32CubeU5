@@ -327,6 +327,33 @@ LPBAM_Status_t ADV_LPBAM_DMA_Start_SetFullQ(DMA_Channel_TypeDef          *const 
 
 
   /*
+   *               ######## Clear DMA data size ########
+   */
+
+  /* Set node descriptor */
+  config_node.NodeDesc.NodeInfo.NodeID = (uint32_t)LPBAM_DMA_CLEARDATASIZE_ID;
+  config_node.NodeDesc.pSrcVarReg      = &pDescriptor->pReg[4U];
+
+  /* Fill node configuration */
+  if (LPBAM_DMA_FillNodeConfig(&config_node, &dma_node_conf) != LPBAM_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Build clear DMA channel flags node */
+  if (HAL_DMAEx_List_BuildNode(&dma_node_conf, &pDescriptor->pNodes[4U]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Connect clear DMA channel flags node to DMA Queue */
+  if (HAL_DMAEx_List_InsertNode_Tail(pQueue, &pDescriptor->pNodes[4U]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+
+  /*
    *               ######## Set DMA configuration and enable channel ########
    */
 
@@ -334,7 +361,7 @@ LPBAM_Status_t ADV_LPBAM_DMA_Start_SetFullQ(DMA_Channel_TypeDef          *const 
   config_node.NodeDesc.NodeInfo.NodeID = (uint32_t)LPBAM_DMA_CONFIG_ID;
 
   /* Set node descriptor */
-  config_node.NodeDesc.pSrcVarReg      = &pDescriptor->pReg[4U];
+  config_node.NodeDesc.pSrcVarReg      = &pDescriptor->pReg[5U];
 
   /* Set DMA configuration */
   config_node.Config.State             = ENABLE;
@@ -347,13 +374,13 @@ LPBAM_Status_t ADV_LPBAM_DMA_Start_SetFullQ(DMA_Channel_TypeDef          *const 
   }
 
   /* Build configuration node */
-  if (HAL_DMAEx_List_BuildNode(&dma_node_conf, &pDescriptor->pNodes[4U]) != HAL_OK)
+  if (HAL_DMAEx_List_BuildNode(&dma_node_conf, &pDescriptor->pNodes[5U]) != HAL_OK)
   {
     return LPBAM_ERROR;
   }
 
   /* Connect configuration node to DMA Queue */
-  if (HAL_DMAEx_List_InsertNode_Tail(pQueue, &pDescriptor->pNodes[4U]) != HAL_OK)
+  if (HAL_DMAEx_List_InsertNode_Tail(pQueue, &pDescriptor->pNodes[5U]) != HAL_OK)
   {
     return LPBAM_ERROR;
   }

@@ -10,7 +10,7 @@
       <TargetName>GTZC_MPCWM_IllegalAccess_TrustZone_S</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6120000::V6.12::.\ARMCLANG</pCCUsed>
+      <pCCUsed>6140001::V6.14.1::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -48,7 +48,7 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>..\Secure_nsclib\</OutputDirectory>
+          <OutputDirectory>GTZC_MPCWM_IllegalAccess_TrustZone_S\</OutputDirectory>
           <OutputName>GTZC_MPCWM_IllegalAccess_TrustZone_S</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
@@ -185,10 +185,11 @@
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
             <RvdsMve>0</RvdsMve>
+            <RvdsCdeCp>0</RvdsCdeCp>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>1</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>0</useUlib>
+            <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>1</nSecure>
@@ -338,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32U575xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Secure/Inc;../Secure_nsclib;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Secure/Inc;../Secure_nsclib;../../../../../../Drivers/BSP/STM32U575I-EV;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -351,7 +352,7 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <uClangAs>0</uClangAs>
+            <ClangAsOpt>1</ClangAsOpt>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -360,7 +361,7 @@
             </VariousControls>
           </Aads>
           <LDads>
-            <umfTarg>1</umfTarg>
+            <umfTarg>0</umfTarg>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
             <noStLib>0</noStLib>
@@ -369,10 +370,10 @@
             <TextAddressRange></TextAddressRange>
             <DataAddressRange></DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile></ScatterFile>
+            <ScatterFile>GTZC_MPCWM_IllegalAccess_TrustZone_S\GTZC_MPCWM_IllegalAccess_TrustZone_S.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
-            <Misc>--import_cmse_lib_out=.\..\Secure_nsclib\secure_nsclib.o</Misc>
+            <Misc>--import_cmse_lib_out=../Secure_nsclib/secure_nsclib.o</Misc>
             <LinkerInputFile></LinkerInputFile>
             <DisabledWarnings></DisabledWarnings>
           </LDads>
@@ -430,6 +431,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drivers/BSP/STM32U575I-EV</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32u575i_eval.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Drivers/BSP/STM32U575I-EV/stm32u575i_eval.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Drivers/STM32U5xx_HAL_Driver</GroupName>
           <Files>
             <File>
@@ -443,14 +454,19 @@
               <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_fmc.c</FilePath>
             </File>
             <File>
-              <FileName>stm32u5xx_hal_gtzc.c</FileName>
+              <FileName>stm32u5xx_hal_exti.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_gtzc.c</FilePath>
+              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_exti.c</FilePath>
             </File>
             <File>
               <FileName>stm32u5xx_hal_cortex.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_cortex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32u5xx_hal_gtzc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_gtzc.c</FilePath>
             </File>
             <File>
               <FileName>stm32u5xx_hal.c</FileName>
@@ -503,11 +519,6 @@
               <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_dma_ex.c</FilePath>
             </File>
             <File>
-              <FileName>stm32u5xx_hal_exti.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_exti.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32u5xx_hal_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr.c</FilePath>
@@ -541,11 +552,6 @@
               <FileName>stm32u5xx_hal_uart_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_uart_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32u5xx_hal_dcache.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_dcache.c</FilePath>
             </File>
           </Files>
         </Group>

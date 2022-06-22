@@ -2916,18 +2916,6 @@
     </File>
     <File>
       <GroupNumber>4</GroupNumber>
-      <FileNumber>205</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\..\..\Middlewares\ST\threadx\ports_module\cortex_m33\ac6\module_manager\src\tx_thread_stack_error_handler.c</PathWithFileName>
-      <FilenameWithoutPath>tx_thread_stack_error_handler.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>4</GroupNumber>
       <FileNumber>206</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>

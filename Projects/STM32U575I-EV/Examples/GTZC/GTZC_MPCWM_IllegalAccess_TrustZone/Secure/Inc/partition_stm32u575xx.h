@@ -520,6 +520,7 @@
 
 /*
 // Interrupts 96..125
+
 //   <o.0>  HASH_IRQn             <0=> Secure state
 //   <o.1>  PKA_IRQn              <0=> Secure state
 //   <o.2>  LPTIM3_IRQn           <0=> Secure state

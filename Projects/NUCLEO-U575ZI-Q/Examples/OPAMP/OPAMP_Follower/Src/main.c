@@ -58,7 +58,7 @@ static void MX_DAC1_Init(void);
 static void MX_COMP1_Init(void);
 static void MX_OPAMP1_Init(void);
 /* USER CODE BEGIN PFP */
-void OPAMP_Config_Power(void);
+void OPAMP_Config_Power(uint32_t powermode);
 __IO uint32_t UserButtonStatus = 0;
 /* USER CODE END PFP */
 
@@ -106,6 +106,7 @@ int main(void)
   MX_GPIO_Init();
   MX_DAC1_Init();
   MX_COMP1_Init();
+  MX_OPAMP1_Init();
   /* USER CODE BEGIN 2 */
 /* Initialize LEDs on board */
   BSP_LED_Init(LED1);
@@ -129,7 +130,7 @@ int main(void)
         /* Turn LED2 off */
         BSP_LED_Off(LED2);
         /* normal mode */
-        MX_OPAMP1_Init();
+        OPAMP_Config_Power(OPAMP_POWERMODE_NORMALPOWER_NORMALSPEED);
         examplestate= 1;
       }
       else
@@ -139,7 +140,7 @@ int main(void)
         /* Turn LED1 off */
         BSP_LED_Off(LED1);
         /* Low power mode */
-        OPAMP_Config_Power();
+        OPAMP_Config_Power(OPAMP_POWERMODE_LOWPOWER_NORMALSPEED);
         examplestate= 0;
       }
     }
@@ -220,6 +221,14 @@ static void SystemPower_Config(void)
    * Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
    */
   HAL_PWREx_DisableUCPDDeadBattery();
+
+  /*
+   * Switch to SMPS regulator instead of LDO
+   */
+  if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 /**
@@ -239,7 +248,7 @@ static void MX_COMP1_Init(void)
   /* USER CODE END COMP1_Init 1 */
   hcomp1.Instance = COMP1;
   hcomp1.Init.InputPlus = COMP_INPUT_PLUS_IO2;
-  hcomp1.Init.InputMinus = COMP_INPUT_MINUS_1_4VREFINT;
+  hcomp1.Init.InputMinus = COMP_INPUT_MINUS_IO1;
   hcomp1.Init.OutputPol = COMP_OUTPUTPOL_NONINVERTED;
   hcomp1.Init.WindowOutput = COMP_WINDOWOUTPUT_EACH_COMP;
   hcomp1.Init.Hysteresis = COMP_HYSTERESIS_NONE;
@@ -296,8 +305,8 @@ static void MX_DAC1_Init(void)
   sConfig.DAC_SignedFormat = DISABLE;
   sConfig.DAC_SampleAndHold = DAC_SAMPLEANDHOLD_DISABLE;
   sConfig.DAC_Trigger = DAC_TRIGGER_NONE;
-  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
-  sConfig.DAC_ConnectOnChipPeripheral = DAC_CHIPCONNECT_EXTERNAL;
+  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_DISABLE;
+  sConfig.DAC_ConnectOnChipPeripheral = DAC_CHIPCONNECT_INTERNAL;
   sConfig.DAC_UserTrimming = DAC_TRIMMING_FACTORY;
   if (HAL_DAC_ConfigChannel(&hdac1, &sConfig, DAC_CHANNEL_1) != HAL_OK)
   {
@@ -419,7 +428,7 @@ static void MX_GPIO_Init(void)
   * @param  None
   * @retval None
   */
-void OPAMP_Config_Power(void)
+void OPAMP_Config_Power(uint32_t powermode)
 {
   /* Set OPAMP instance */
   hopamp1.Instance = OPAMP1;
@@ -429,8 +438,15 @@ void OPAMP_Config_Power(void)
 
   /*##-2- Configure OPAMP    ##################################################*/
 
-  /* Select power mode */
-  hopamp1.Init.PowerMode = OPAMP_POWERMODE_LOWPOWER_NORMALSPEED;
+    /* Select power mode */
+  if (powermode == OPAMP_POWERMODE_NORMALPOWER_NORMALSPEED)
+  {
+    hopamp1.Init.PowerMode = OPAMP_POWERMODE_NORMALPOWER_NORMALSPEED;
+  }
+  else
+  {
+    hopamp1.Init.PowerMode = OPAMP_POWERMODE_LOWPOWER_NORMALSPEED;
+  }
 
   /* Select FOLLOWER Mode */
   hopamp1.Init.Mode = OPAMP_FOLLOWER_MODE;

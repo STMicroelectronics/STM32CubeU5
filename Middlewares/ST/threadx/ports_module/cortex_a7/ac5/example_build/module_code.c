@@ -1,4 +1,4 @@
-/* 
+﻿/* 
    Input ELF file:           sample_threadx_module.axf
    Output C Array file:                  module_code.c
 */

@@ -56,8 +56,10 @@ This example configures the maximum system clock frequency at 160Mhz.
 
  2. The application need to ensure that the SysTick time base is always set to 1 millisecond
       to have correct HAL operation.
+	  
+ 3. When deleting MDK-ARM project folder and regenerating this application with STM32CubeMx tool, be sure to place the Veneer$$CMSE section into IROM2 “ROM_NSC_region”.
 
- 3. The following sequence is needed to disable TrustZone:
+ 4. The following sequence is needed to disable TrustZone:
  
       - **Boot from user Flash memory**: 
          a.	Make sure that secure and non-secure applications are well loaded and executed (jump done on non-secure application).
@@ -70,6 +72,7 @@ This example configures the maximum system clock frequency at 160Mhz.
          b.	If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution.
          c.	Use a power supply different from ST-LINK in order to be able to connect to the target.
          d.	Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply.
+		 
 		 
 	Please refer to AN5347 for more details.	 
 
@@ -167,4 +170,9 @@ In order to make the program work, you must do the following :
  - Select the xxxxx_NS project
  - Build configuration : Select Release/Debug
  - Click Debug to debug the example
+ 
+ NOTE:
+ - The default Debug configuration runtime option sets "Halt on exception" which 
+   makes the code execution halt on SecureFault_Handler() on voluntary security violation.
+   Press "Resume (F8)" to continue execution.
 
