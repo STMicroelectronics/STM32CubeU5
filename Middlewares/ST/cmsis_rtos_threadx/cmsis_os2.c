@@ -2420,13 +2420,21 @@ uint32_t osEventFlagsWait(osEventFlagsId_t ef_id, uint32_t flags,
   }
   else
   {
-    if (options == osFlagsNoClear)
+    if ((options & osFlagsNoClear) == osFlagsNoClear)
     {
-      get_option = TX_AND;
+    	if ((options & osFlagsWaitAll) == osFlagsWaitAll) {
+    		get_option = TX_AND;
+    	} else {
+    		get_option = TX_OR;
+    	}
     }
     else
     {
-      get_option = TX_AND_CLEAR;
+      if ((options & osFlagsWaitAll) == osFlagsWaitAll) {
+    	  get_option = TX_AND_CLEAR;
+      } else {
+    	  get_option = TX_OR_CLEAR;
+      }
     }
     /* Call the tx_event_flags_get to get flags */
     status = tx_event_flags_get(eventflags_ptr, requested_flags, get_option, &actual_flags, wait_option);
