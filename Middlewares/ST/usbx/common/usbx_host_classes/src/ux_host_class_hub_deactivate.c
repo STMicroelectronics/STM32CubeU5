@@ -35,7 +35,7 @@
 /*  FUNCTION                                               RELEASE        */ 
 /*                                                                        */ 
 /*    _ux_host_class_hub_deactivate                       PORTABLE C      */ 
-/*                                                           6.1          */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -61,8 +61,8 @@
 /*    _ux_host_stack_endpoint_transfer_abort                              */
 /*                                          Abort transfer                */ 
 /*    _ux_utility_memory_free               Release memory block          */ 
-/*    _ux_utility_semaphore_get             Get semaphore                 */ 
-/*    _ux_utility_semaphore_put             Release semaphore             */ 
+/*    _ux_host_semaphore_get                Get semaphore                 */ 
+/*    _ux_host_semaphore_put                Release semaphore             */ 
 /*    _ux_utility_thread_schedule_other     Schedule other threads        */
 /*                                                                        */ 
 /*  CALLED BY                                                             */ 
@@ -78,6 +78,12 @@
 /*                                            optimized based on compile  */
 /*                                            definitions,                */
 /*                                            resulting in version 6.1    */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            refined macros names,       */
+/*                                            resulting in version 6.1.10 */
+/*  07-29-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            added standalone support,   */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 UINT  _ux_host_class_hub_deactivate(UX_HOST_CLASS_COMMAND *command)
@@ -118,15 +124,17 @@ UINT                    port_index;
        it must be freed.  First get the transfer request. */
     transfer_request =  &hub -> ux_host_class_hub_interrupt_endpoint -> ux_endpoint_transfer_request;
 
-    /* Abort the data transfer on the interrupt endpoint.  */
-    _ux_host_stack_endpoint_transfer_abort(hub -> ux_host_class_hub_interrupt_endpoint);
-
     /* The enumeration thread needs to sleep a while to allow the application or the class that may be using
        endpoints to exit properly.  */
-    _ux_utility_thread_schedule_other(UX_THREAD_PRIORITY_ENUM); 
+    _ux_host_thread_schedule_other(UX_THREAD_PRIORITY_ENUM); 
 
     /* Then de allocate the memory.  */
     _ux_utility_memory_free(transfer_request -> ux_transfer_request_data_pointer);
+
+#if defined(UX_HOST_STANDALONE)
+    if (hub -> ux_host_class_hub_allocated)
+        _ux_utility_memory_free(hub -> ux_host_class_hub_allocated);
+#endif
 
     /* Destroy the instance.  */
     _ux_host_stack_class_instance_destroy(hub -> ux_host_class_hub_class, (VOID *) hub);

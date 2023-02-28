@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   ThreadX applicative file
   ******************************************************************************
-  * @attention
+    * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.
@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "app_azure_rtos_config.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,19 +42,18 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+  TX_THREAD tx_app_thread;
 /* USER CODE BEGIN PV */
-TX_THREAD MainThread;
-TX_THREAD ThreadOne;
-TX_THREAD ThreadTwo;
-TX_EVENT_FLAGS_GROUP EventFlag;
+  TX_THREAD ThreadOne;
+  TX_THREAD ThreadTwo;
+  TX_EVENT_FLAGS_GROUP EventFlag;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-void ThreadOne_Entry(ULONG thread_input);
-void ThreadTwo_Entry(ULONG thread_input);
-void MainThread_Entry(ULONG thread_input);
-void App_Delay(uint32_t Delay);
+  void ThreadOne_Entry(ULONG thread_input);
+  void ThreadTwo_Entry(ULONG thread_input);
+  void App_Delay(uint32_t Delay);
 /* USER CODE END PFP */
 
 /**
@@ -67,71 +66,122 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   UINT ret = TX_SUCCESS;
   TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
 
-   /* USER CODE BEGIN App_ThreadX_MEM_POOL */
+  /* USER CODE BEGIN App_ThreadX_MEM_POOL */
 
   /* USER CODE END App_ThreadX_MEM_POOL */
+CHAR *pointer;
+
+  /* Allocate the stack for Main Thread  */
+  if (tx_byte_allocate(byte_pool, (VOID**) &pointer,
+                       TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
+  {
+    return TX_POOL_ERROR;
+  }
+   /* Create Main Thread.  */
+  if (tx_thread_create(&tx_app_thread, "Main Thread", MainThread_Entry, 0, pointer,
+                       TX_APP_STACK_SIZE, TX_APP_THREAD_PRIO, TX_APP_THREAD_PREEMPTION_THRESHOLD,
+                       TX_APP_THREAD_TIME_SLICE, TX_APP_THREAD_AUTO_START) != TX_SUCCESS)
+  {
+    return TX_THREAD_ERROR;
+  }
 
   /* USER CODE BEGIN App_ThreadX_Init */
-#if (USE_STATIC_ALLOCATION == 1)
-  CHAR *pointer;
+   /* Allocate the stack for ThreadOne.  */
+  if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
+                        TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
+  {
+    ret = TX_POOL_ERROR;
+  }
 
-  /* Allocate the stack for MainThread.  */
-  if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
-                       APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
-  {
-    ret = TX_POOL_ERROR;
-  }
-  
-  /* Create MainThread.  */
-  if (tx_thread_create(&MainThread, "Main Thread", MainThread_Entry, 0,  
-                       pointer, APP_STACK_SIZE, 
-                       MAIN_THREAD_PRIO, MAIN_THREAD_PREEMPTION_THRESHOLD,
-                       TX_NO_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
-  {
-    ret = TX_THREAD_ERROR;
-  }
-  
-  /* Allocate the stack for ThreadOne.  */
-  if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
-                       APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
-  {
-    ret = TX_POOL_ERROR;
-  }
-  
   /* Create ThreadOne.  */
-  if (tx_thread_create(&ThreadOne, "Thread One", ThreadOne_Entry, 0,  
-                       pointer, APP_STACK_SIZE, 
+  if (tx_thread_create(&ThreadOne, "Thread One", ThreadOne_Entry, 0,
+                       pointer,  TX_APP_STACK_SIZE,
                        THREAD_ONE_PRIO, THREAD_ONE_PREEMPTION_THRESHOLD,
                        TX_NO_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
-  {
+  {  
     ret = TX_THREAD_ERROR;
   }
 
   /* Allocate the stack for ThreadTwo.  */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
-                       APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
+                        TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
   {
     ret = TX_POOL_ERROR;
   }
-  
+
   /* Create ThreadTwo.  */
-  if (tx_thread_create(&ThreadTwo, "Thread Two", ThreadTwo_Entry, 0,  
-                       pointer, APP_STACK_SIZE, 
+  if (tx_thread_create(&ThreadTwo, "Thread Two", ThreadTwo_Entry, 0,
+                       pointer,  TX_APP_STACK_SIZE,
                        THREAD_TWO_PRIO, THREAD_TWO_PREEMPTION_THRESHOLD,
                        TX_NO_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
   {
     ret = TX_THREAD_ERROR;
   }
-  
+
   /* Create the event flags group.  */
   if (tx_event_flags_create(&EventFlag, "Event Flag") != TX_SUCCESS)
   {
     ret = TX_GROUP_ERROR;
   }
-#endif
   /* USER CODE END App_ThreadX_Init */
 
   return ret;
+}
+/**
+  * @brief  Function implementing the MainThread_Entry thread.
+  * @param  thread_input: Not used.
+  * @retval None
+  */
+void MainThread_Entry(ULONG thread_input)
+{
+  /* USER CODE BEGIN MainThread_Entry */
+  UINT old_prio = 0;
+  UINT old_pre_threshold = 0;
+  ULONG   actual_flags = 0;
+  uint8_t count = 0;
+  (void) thread_input;
+
+  while (count < 3)
+  {
+    count++;
+    if (tx_event_flags_get(&EventFlag, THREAD_ONE_EVT, TX_OR_CLEAR,
+                           &actual_flags, TX_WAIT_FOREVER) != TX_SUCCESS)
+    {
+      Error_Handler();
+    }
+    else
+    {
+      /* Update the priority and preemption threshold of ThreadTwo
+      to allow the preemption of ThreadOne */
+      tx_thread_priority_change(&ThreadTwo, NEW_THREAD_TWO_PRIO, &old_prio);
+      tx_thread_preemption_change(&ThreadTwo, NEW_THREAD_TWO_PREEMPTION_THRESHOLD, &old_pre_threshold);
+
+      if (tx_event_flags_get(&EventFlag, THREAD_TWO_EVT, TX_OR_CLEAR,
+                             &actual_flags, TX_WAIT_FOREVER) != TX_SUCCESS)
+      {
+        Error_Handler();
+      }
+      else
+      {
+        /* Reset the priority and preemption threshold of ThreadTwo */
+        tx_thread_priority_change(&ThreadTwo, THREAD_TWO_PRIO, &old_prio);
+        tx_thread_preemption_change(&ThreadTwo, THREAD_TWO_PREEMPTION_THRESHOLD, &old_pre_threshold);
+      }
+    }
+  }
+
+  /* Destroy ThreadOne and ThreadTwo */
+  tx_thread_terminate(&ThreadOne);
+  tx_thread_terminate(&ThreadTwo);
+
+  /* Infinite loop */
+  while(1)
+  {
+    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+    /* Thread sleep for 1s */
+    tx_thread_sleep(100);
+  }
+  /* USER CODE END MainThread_Entry */
 }
 
   /**
@@ -154,73 +204,18 @@ void MX_ThreadX_Init(void)
 
 /* USER CODE BEGIN 1 */
 /**
-  * @brief  Function implementing the MainThread thread.
-  * @param  thread_input: Not used 
-  * @retval None
-  */
-void MainThread_Entry(ULONG thread_input)
-{
-  UINT old_prio = 0;
-  UINT old_pre_threshold = 0;
-  ULONG   actual_flags = 0;
-  uint8_t count = 0; 
-  (void) thread_input;
-  
-  while (count < 3)
-  {
-    count++;
-    if (tx_event_flags_get(&EventFlag, THREAD_ONE_EVT, TX_OR_CLEAR, 
-                           &actual_flags, TX_WAIT_FOREVER) != TX_SUCCESS)
-    {
-      Error_Handler();
-    }
-    else
-    {
-      /* Update the priority and preemption threshold of ThreadTwo 
-      to allow the preemption of ThreadOne */
-      tx_thread_priority_change(&ThreadTwo, NEW_THREAD_TWO_PRIO, &old_prio);
-      tx_thread_preemption_change(&ThreadTwo, NEW_THREAD_TWO_PREEMPTION_THRESHOLD, &old_pre_threshold);
-      
-      if (tx_event_flags_get(&EventFlag, THREAD_TWO_EVT, TX_OR_CLEAR, 
-                             &actual_flags, TX_WAIT_FOREVER) != TX_SUCCESS)
-      {
-        Error_Handler();
-      }
-      else
-      {
-        /* Reset the priority and preemption threshold of ThreadTwo */ 
-        tx_thread_priority_change(&ThreadTwo, THREAD_TWO_PRIO, &old_prio);
-        tx_thread_preemption_change(&ThreadTwo, THREAD_TWO_PREEMPTION_THRESHOLD, &old_pre_threshold);
-      }
-    }
-  }
-  
-  /* Destroy ThreadOne and ThreadTwo */
-  tx_thread_terminate(&ThreadOne);
-  tx_thread_terminate(&ThreadTwo);
-  
-  /* Infinite loop */
-  while(1)
-  {
-    BSP_LED_Toggle(LED_GREEN);
-    /* Thread sleep for 1s */
-    tx_thread_sleep(100);
-  }
-}
-
-/**
   * @brief  Function implementing the ThreadOne thread.
-  * @param  thread_input: Not used 
+  * @param  thread_input: Not used
   * @retval None
   */
 void ThreadOne_Entry(ULONG thread_input)
-{
+{ 
   (void) thread_input;
   uint8_t count = 0;
   /* Infinite loop */
   while(1)
   {
-    BSP_LED_Toggle(LED_GREEN);
+    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
     /* Delay for 500ms (App_Delay is used to avoid context change). */
     App_Delay(50);
     count ++;
@@ -237,7 +232,7 @@ void ThreadOne_Entry(ULONG thread_input)
 
 /**
   * @brief  Function implementing the ThreadTwo thread.
-  * @param  thread_input: Not used 
+  * @param  thread_input: Not used
   * @retval None
   */
 void ThreadTwo_Entry(ULONG thread_input)
@@ -247,7 +242,7 @@ void ThreadTwo_Entry(ULONG thread_input)
   /* Infinite loop */
   while (1)
   {
-    BSP_LED_Toggle(LED_GREEN);
+    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
     /* Delay for 200ms (App_Delay is used to avoid context change). */
     App_Delay(20);
     count ++;

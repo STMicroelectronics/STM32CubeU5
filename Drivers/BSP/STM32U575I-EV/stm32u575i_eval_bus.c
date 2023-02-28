@@ -171,15 +171,15 @@ I2C_HandleTypeDef hbus_i2c3;
 /** @defgroup STM32U575I_EVAL_BUS_Private_FunctionPrototypes BUS Private FunctionPrototypes
   * @{
   */
-static void     I2C2_MspInit(I2C_HandleTypeDef *hI2c);
-static void     I2C2_MspDeInit(I2C_HandleTypeDef *hI2c);
+static void     I2C2_MspInit(const I2C_HandleTypeDef *hI2c);
+static void     I2C2_MspDeInit(const I2C_HandleTypeDef *hI2c);
 static int32_t  I2C2_WriteReg(uint16_t DevAddr, uint16_t MemAddSize, uint16_t Reg, uint8_t *pData, uint16_t Length);
 static int32_t  I2C2_ReadReg(uint16_t DevAddr, uint16_t MemAddSize, uint16_t Reg, uint8_t *pData, uint16_t Length);
 static int32_t  I2C2_Recv(uint16_t DevAddr, uint8_t *pData, uint16_t Length);
 static int32_t  I2C2_Send(uint16_t DevAddr, uint8_t *pData, uint16_t Length);
 
-static void     I2C3_MspInit(I2C_HandleTypeDef *hI2c);
-static void     I2C3_MspDeInit(I2C_HandleTypeDef *hI2c);
+static void     I2C3_MspInit(const I2C_HandleTypeDef *hI2c);
+static void     I2C3_MspDeInit(const I2C_HandleTypeDef *hI2c);
 static int32_t  I2C3_WriteReg(uint16_t DevAddr, uint16_t MemAddSize, uint16_t Reg, uint8_t *pData, uint16_t Length);
 static int32_t  I2C3_ReadReg(uint16_t DevAddr, uint16_t MemAddSize, uint16_t Reg, uint8_t *pData, uint16_t Length);
 static int32_t  I2C3_Recv(uint16_t DevAddr, uint8_t *pData, uint16_t Length);
@@ -1326,7 +1326,7 @@ static uint32_t I2C_Compute_SCLL_SCLH(uint32_t clock_src_freq, uint32_t I2C_spee
   * @param  hI2c  I2C handler
   * @retval None
   */
-static void I2C2_MspInit(I2C_HandleTypeDef *hI2c)
+static void I2C2_MspInit(const I2C_HandleTypeDef *hI2c)
 {
   GPIO_InitTypeDef  gpio_init_structure;
 
@@ -1371,7 +1371,7 @@ static void I2C2_MspInit(I2C_HandleTypeDef *hI2c)
   * @param  hI2c  I2C handler
   * @retval None
   */
-static void I2C2_MspDeInit(I2C_HandleTypeDef *hI2c)
+static void I2C2_MspDeInit(const I2C_HandleTypeDef *hI2c)
 {
   GPIO_InitTypeDef  gpio_init_structure;
 
@@ -1465,7 +1465,7 @@ static int32_t I2C2_Send(uint16_t DevAddr, uint8_t *pData, uint16_t Length)
   * @param  hI2c  I2C handler
   * @retval None
   */
-static void I2C3_MspInit(I2C_HandleTypeDef *hI2c)
+static void I2C3_MspInit(const I2C_HandleTypeDef *hI2c)
 {
   GPIO_InitTypeDef  gpio_init_structure;
 
@@ -1515,7 +1515,7 @@ static void I2C3_MspInit(I2C_HandleTypeDef *hI2c)
   * @param  hI2c  I2C handler
   * @retval None
   */
-static void I2C3_MspDeInit(I2C_HandleTypeDef *hI2c)
+static void I2C3_MspDeInit(const I2C_HandleTypeDef *hI2c)
 {
   GPIO_InitTypeDef  gpio_init_structure;
 

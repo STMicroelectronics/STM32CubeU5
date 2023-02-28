@@ -2,7 +2,7 @@
   **********************************************************************************************************************
   * @file    webserver_wifi.c
   * @author  MCD Application Team
-  * @brief   This file implements the web server wifi services.
+  * @brief   This file implements the web server WiFi services.
   **********************************************************************************************************************
   * @attention
   *
@@ -21,25 +21,27 @@
 #include "net_connect.h"
 #include "net_interface.h"
 #include "mx_wifi.h"
+#include "io_pattern/mx_wifi_io.h"
 
 /* Private typedef ---------------------------------------------------------------------------------------------------*/
 /* Private define ----------------------------------------------------------------------------------------------------*/
 /* Private macro -----------------------------------------------------------------------------------------------------*/
 /* Private variables -------------------------------------------------------------------------------------------------*/
-/* MxChip Wifi SPI handle declaration */
-SPI_HandleTypeDef Wifi_SPIHandle;
+/* The STM32 network interface in use. */
+net_if_handle_t *Netif = NULL;
 
-/* DMA handlers declaration */
-DMA_HandleTypeDef handle_GPDMA1_Channel4;
-DMA_HandleTypeDef handle_GPDMA1_Channel5;
+/* MxChip WiFi SPI handle declaration */
+SPI_HandleTypeDef Wifi_SPIHandle;
 
 /* Console buffer declaration */
 extern char console_buffer[CONSOLE_BUFFER_SIZE];
+/* The network interface in use. */
+extern net_if_handle_t *Netif;
 
 /* Access point credentials declaration */
-char SSID[MX_WIFI_MAX_SSID_NAME_SIZE];
-char PassWord[MX_WIFI_MAX_PSWD_NAME_SIZE];
-ap_t net_wifi_registred_hotspot[] =
+static char SSID[MX_WIFI_MAX_SSID_NAME_SIZE];
+static char PassWord[MX_WIFI_MAX_PSWD_NAME_SIZE];
+static ap_t net_wifi_registred_hotspot[] =
 {
   {NULL, NULL},
   {NULL, NULL}
@@ -56,16 +58,16 @@ static WebServer_StatusTypeDef wifi_get_credentials(void);
 /* Functions prototypes ----------------------------------------------------------------------------------------------*/
 
 /**
-  * @brief  Initialize wifi interface
+  * @brief  Initialize WiFi interface
   * @param  None
   * @retval Web Server status
   */
 WebServer_StatusTypeDef webserver_wifi_init(void)
 {
-  /* Wifi IO configuration */
+  /* WiFi IO configuration */
   Wifi_IO_Init();
 
-  /* Wifi SPI initialization and configuration */
+  /* WiFi SPI initialization and configuration */
   if (Wifi_SPI_Config() != WEBSERVER_OK)
   {
     return WIFI_ERROR;
@@ -75,7 +77,7 @@ WebServer_StatusTypeDef webserver_wifi_init(void)
 }
 
 /**
-  * @brief  Get wifi credentials
+  * @brief  Get WiFi credentials
   * @param  None
   * @retval Web Server status
   */
@@ -97,20 +99,23 @@ static WebServer_StatusTypeDef wifi_get_credentials(void)
 }
 
 /**
-  * @brief  Connect wifi interface
+  * @brief  Connect WiFi interface
   * @param  None
   * @retval Web Server status
   */
 WebServer_StatusTypeDef webserver_wifi_connect(void)
 {
-  net_if_handle_t                *netif;
-  static net_wifi_credentials_t  WifiCredentials = {0};
+  static net_wifi_credentials_t  WifiCredentials = {
+  .ssid = "SSID-Not-Found",
+  .psk = "none",
+  .security_mode = 0
+  };
 
   /* start network interface */
-  netif = NetInterfaceOn(mx_wifi_driver, hnet_notify);
+  Netif = NetInterfaceOn(mx_wifi_driver, hnet_notify);
 
   /* Check if a valid WIFI interface is initialized */
-  if (NET_INTERFACE_IS_WIFI(netif))
+  if (NET_INTERFACE_IS_WIFI(Netif))
   {
     /* Scan available WIFIs */
     scan_cmd(0, NULL);
@@ -122,7 +127,7 @@ WebServer_StatusTypeDef webserver_wifi_connect(void)
     NetWifiGetDefaultStation(&WifiCredentials, net_wifi_registred_hotspot);
 
     /* Connect to selected WIFI */
-    NetInterfaceConnect(netif, true, &WifiCredentials, NET_WIFI_MODE_STA);
+    NetInterfaceConnect(Netif, true, &WifiCredentials, NET_WIFI_MODE_STA);
   }
 
   return WEBSERVER_OK;
@@ -136,6 +141,7 @@ WebServer_StatusTypeDef webserver_wifi_connect(void)
 static void hnet_notify(void *context, uint32_t event_class, uint32_t event_id, void  *event_data)
 {
   net_if_handle_t *netif = context;
+  ((void)event_data);
 
   if (NET_EVENT_STATE_CHANGE == event_class)
   {
@@ -145,26 +151,26 @@ static void hnet_notify(void *context, uint32_t event_class, uint32_t event_id, 
       /* Initialized state */
     case NET_STATE_INITIALIZED:
       {
-        printf("- Network Interface initialized: \r\n");
+        printf("- Network Interface initialized:\r\n");
         break;
       }
 
       /* Started state */
     case NET_STATE_STARTING:
       {
-        printf("- Network Interface starting: \r\n");
+        printf("- Network Interface starting:\r\n");
         break;
       }
 
       /* Ready state */
     case NET_STATE_READY:
       {
-        printf("- Network Interface ready: \r\n");
-        printf("   - Device Name : %s. \r\n", netif->DeviceName);
-        printf("   - Device ID   : %s. \r\n", netif->DeviceID);
-        printf("   - Device Version : %s. \r\n", netif->DeviceVer);
-        printf("   - MAC address: %x.%x.%x.%x.%x.%x\r\n", netif->macaddr.mac[0],
-               netif->macaddr.mac[1], netif->macaddr.mac[2],
+        printf("- Network Interface ready:\r\n");
+        printf("   - Device Name : %s.\r\n", netif->DeviceName);
+        printf("   - Device ID   : %s.\r\n", netif->DeviceID);
+        printf("   - Device Version : %s.\r\n", netif->DeviceVer);
+        printf("   - MAC address: %x.%x.%x.%x.%x.%x\r\n",
+               netif->macaddr.mac[0], netif->macaddr.mac[1], netif->macaddr.mac[2],
                netif->macaddr.mac[3], netif->macaddr.mac[4], netif->macaddr.mac[5]);
         break;
       }
@@ -172,14 +178,14 @@ static void hnet_notify(void *context, uint32_t event_class, uint32_t event_id, 
       /* Connecting state */
     case NET_STATE_CONNECTING:
       {
-        printf("- Network Interface connecting: \r\n");
+        printf("- Network Interface connecting:\r\n");
         break;
       }
 
       /* Connected state */
     case NET_STATE_CONNECTED:
       {
-        printf("- Network Interface connected: \r\n");
+        printf("- Network Interface connected:\r\n");
         printf("   - IP address :  %s. \r\n", NET_NTOA(&netif->ipaddr));
         break;
       }
@@ -235,16 +241,14 @@ static WebServer_StatusTypeDef Wifi_SPI_Config(void)
   Wifi_SPIHandle.Init.CLKPolarity                = SPI_POLARITY_LOW;
   Wifi_SPIHandle.Init.CLKPhase                   = SPI_PHASE_1EDGE;
   Wifi_SPIHandle.Init.NSS                        = SPI_NSS_SOFT;
-  Wifi_SPIHandle.Init.BaudRatePrescaler          = SPI_BAUDRATEPRESCALER_4;
+  Wifi_SPIHandle.Init.BaudRatePrescaler          = SPI_BAUDRATEPRESCALER_8;
   Wifi_SPIHandle.Init.FirstBit                   = SPI_FIRSTBIT_MSB;
   Wifi_SPIHandle.Init.TIMode                     = SPI_TIMODE_DISABLE;
   Wifi_SPIHandle.Init.CRCCalculation             = SPI_CRCCALCULATION_DISABLE;
-  Wifi_SPIHandle.Init.CRCPolynomial              = 0x0;
+  Wifi_SPIHandle.Init.CRCPolynomial              = 0x7;
   Wifi_SPIHandle.Init.NSSPMode                   = SPI_NSS_PULSE_DISABLE;
   Wifi_SPIHandle.Init.NSSPolarity                = SPI_NSS_POLARITY_LOW;
   Wifi_SPIHandle.Init.FifoThreshold              = SPI_FIFO_THRESHOLD_01DATA;
-  Wifi_SPIHandle.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
-  Wifi_SPIHandle.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
   Wifi_SPIHandle.Init.MasterSSIdleness           = SPI_MASTER_SS_IDLENESS_00CYCLE;
   Wifi_SPIHandle.Init.MasterInterDataIdleness    = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
   Wifi_SPIHandle.Init.MasterReceiverAutoSusp     = SPI_MASTER_RX_AUTOSUSP_DISABLE;
@@ -339,14 +343,14 @@ void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
   switch (GPIO_Pin)
   {
     /* MXCHIP flow pin notification */
-  case MXCHIP_FLOW_Pin:
+    case MXCHIP_FLOW_Pin:
     {
       mxchip_WIFI_ISR(MXCHIP_FLOW_Pin);
       break;
     }
 
     /* MXCHIP notify pin notification */
-  case (MXCHIP_NOTIFY_Pin):
+    case (MXCHIP_NOTIFY_Pin):
     {
       mxchip_WIFI_ISR(MXCHIP_NOTIFY_Pin);
       break;
@@ -361,7 +365,7 @@ void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
 
 /**
   * @brief Rx Transfer completed callback.
-  * @param SpiHandle : pointer to a SPI_HandleTypeDef structure that contains the configuration information for SPI
+  * @param hspi : pointer to a SPI_HandleTypeDef structure that contains the configuration information for SPI
   *                    module.
   * @retval None
   */
@@ -375,7 +379,7 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 
 /**
   * @brief Tx Transfer completed callback.
-  * @param SpiHandle : pointer to a SPI_HandleTypeDef structure that contains the configuration information for SPI
+  * @param hspi : pointer to a SPI_HandleTypeDef structure that contains the configuration information for SPI
   *                    module.
   * @retval None
   */
@@ -389,7 +393,7 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 
 /**
   * @brief Tx and Rx Transfer completed callback.
-  * @param SpiHandle : pointer to a SPI_HandleTypeDef structure that contains the configuration information for SPI
+  * @param hspi : pointer to a SPI_HandleTypeDef structure that contains the configuration information for SPI
   *                    module.
   * @retval None
   */

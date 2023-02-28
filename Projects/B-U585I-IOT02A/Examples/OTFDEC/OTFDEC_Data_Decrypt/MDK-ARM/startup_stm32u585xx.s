@@ -29,7 +29,7 @@
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Stack_Size		EQU     0x1000
+Stack_Size      EQU     0x00000400
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
@@ -40,7 +40,7 @@ __initial_sp
 ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Heap_Size      EQU     0x200
+Heap_Size       EQU     0x00000200
 
                 AREA    HEAP, NOINIT, READWRITE, ALIGN=3
 __heap_base
@@ -75,7 +75,7 @@ __Vectors       DCD     __initial_sp                     ; Top of Stack
                 DCD     SysTick_Handler                  ; SysTick Handler
                 ; External Interrupts
                 DCD     WWDG_IRQHandler                  ; Window WatchDog
-                DCD     PVD_AVD_IRQHandler               ; PVD/AVD through EXTI Line detection Interrupt
+                DCD     PVD_PVM_IRQHandler               ; PVD/PVM through EXTI Line detection Interrupt
                 DCD     RTC_IRQHandler                   ; RTC non-secure interrupt
                 DCD     RTC_S_IRQHandler                 ; RTC secure interrupt
                 DCD     TAMP_IRQHandler                  ; Tamper non-secure interrupt
@@ -154,7 +154,7 @@ __Vectors       DCD     __initial_sp                     ; Top of Stack
                 DCD     PWR_S3WU_IRQHandler              ; PWR wake up from Stop3 interrupt
                 DCD     SDMMC1_IRQHandler                ; SDMMC1 global interrupt
                 DCD     SDMMC2_IRQHandler                ; SDMMC2 global interrupt
-                DCD     GPDMA1_Channel8_IRQHandler       ; GPDMA Channel 8 global interrupt
+                DCD     GPDMA1_Channel8_IRQHandler       ; GPDMA1 Channel 8 global interrupt
                 DCD     GPDMA1_Channel9_IRQHandler       ; GPDMA1 Channel 9 global interrupt
                 DCD     GPDMA1_Channel10_IRQHandler      ; GPDMA1 Channel 10 global interrupt
                 DCD     GPDMA1_Channel11_IRQHandler      ; GPDMA1 Channel 11 global interrupt
@@ -199,6 +199,7 @@ __Vectors       DCD     __initial_sp                     ; Top of Stack
                 DCD     MDF1_FLT5_IRQHandler             ; MDF1 Filter 5 global interrupt
                 DCD     CORDIC_IRQHandler                ; CORDIC global interrupt
                 DCD     FMAC_IRQHandler                  ; FMAC global interrupt
+                DCD     LSECSSD_IRQHandler               ; LSECSSD global interrupt
 
 
 __Vectors_End
@@ -277,7 +278,7 @@ SysTick_Handler\
 Default_Handler PROC
 
                 EXPORT  WWDG_IRQHandler              [WEAK]
-                EXPORT  PVD_AVD_IRQHandler           [WEAK]
+                EXPORT  PVD_PVM_IRQHandler           [WEAK]
                 EXPORT  RTC_IRQHandler               [WEAK]
                 EXPORT  RTC_S_IRQHandler             [WEAK]
                 EXPORT  TAMP_IRQHandler              [WEAK]
@@ -401,9 +402,10 @@ Default_Handler PROC
                 EXPORT  MDF1_FLT5_IRQHandler         [WEAK]
                 EXPORT  CORDIC_IRQHandler            [WEAK]
                 EXPORT  FMAC_IRQHandler              [WEAK]
+                EXPORT  LSECSSD_IRQHandler           [WEAK]
 
 WWDG_IRQHandler
-PVD_AVD_IRQHandler
+PVD_PVM_IRQHandler
 RTC_IRQHandler
 RTC_S_IRQHandler
 TAMP_IRQHandler
@@ -527,6 +529,7 @@ MDF1_FLT4_IRQHandler
 MDF1_FLT5_IRQHandler
 CORDIC_IRQHandler
 FMAC_IRQHandler
+LSECSSD_IRQHandler
 
                 B       .
 
@@ -561,5 +564,3 @@ __user_initial_stackheap PROC
                 ENDIF
 
                 END
-
-

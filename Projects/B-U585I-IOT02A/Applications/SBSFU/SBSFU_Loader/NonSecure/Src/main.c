@@ -33,6 +33,17 @@ __asm("  .global __ARM_use_no_argv\n");
 
 #include "fw_update_app.h"
 
+#if defined(__ICCARM__)
+#include <LowLevelIOInterface.h>
+#endif /* __ICCARM__ */
+
+#if defined(__ICCARM__) || defined ( __CC_ARM ) || defined(__ARMCC_VERSION)
+int io_putchar(int ch);
+#define PUTCHAR_PROTOTYPE int io_putchar(int ch)
+#elif defined(__GNUC__)
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#endif /* __ICCARM__ */
+
 /** @defgroup  USER_APP  exported variable
    * @{
   */
@@ -49,9 +60,10 @@ __asm("  .global __ARM_use_no_argv\n");
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 
-static void uart_putc(unsigned char c)
+PUTCHAR_PROTOTYPE
 {
-  COM_Transmit(&c, 1, 1000U);
+  COM_Transmit((uint8_t*)&ch, 1, TX_TIMEOUT);
+  return ch;
 }
 
 /* Redirects printf to TFM_DRIVER_STDIO in case of ARMCLANG*/
@@ -62,7 +74,7 @@ FILE __stdout;
 int fputc(int ch, FILE *f)
 {
   /* Send byte to USART */
-  uart_putc(ch);
+  io_putchar(ch);
 
   /* Return character written */
   return ch;
@@ -76,20 +88,24 @@ int _write(int fd, char *str, int len)
   for (i = 0; i < len; i++)
   {
     /* Send byte to USART */
-    uart_putc(str[i]);
+    __io_putchar(str[i]);
   }
 
   /* Return the number of characters written */
   return len;
 }
 #elif defined(__ICCARM__)
-int putchar(int ch)
+size_t __write(int file, unsigned char const *ptr, size_t len)
 {
-  /* Send byte to USART */
-  uart_putc(ch);
+  size_t idx;
+  unsigned char const *pdata = ptr;
 
-  /* Return character written */
-  return ch;
+  for (idx=0; idx < len; idx++)
+  {
+    io_putchar((int)*pdata);
+    pdata++;
+  }
+  return len;
 }
 #endif /*  __GNUC__ */
 

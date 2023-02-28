@@ -49,7 +49,23 @@
  */
 #define PSA_INITIAL_ATTEST_TOKEN_MAX_SIZE   0x250
 
-#if defined(STM32U585xx) || defined(STM32U575xx)
+#if defined(STM32U535xx) || defined(STM32U545xx)
+#define _SRAM2_TOP              (0x40000) /* 256Kbytes */
+#define _SRAM1_SIZE_MAX         (0x30000) /*!< SRAM1=192k*/
+#define _SRAM2_SIZE_MAX         (0x10000) /*!< SRAM2=64k*/
+#define _SRAM4_SIZE_MAX         (0x04000) /* 16Kbytes */
+
+/* Flash and internal SRAMs base addresses - Non secure aliased */
+#define _FLASH_BASE_NS          (0x08000000) /*!< FLASH(512 KB) base address */
+#define _SRAM1_BASE_NS          (0x20000000) /*!< SRAM1(192 KB) base address */
+#define _SRAM2_BASE_NS          (0x20030000) /*!< SRAM2(64 KB) base address */
+#define _SRAM4_BASE_NS          (0x28000000) /*!< SRAM4(16 KB) base address */
+/* Flash and internal SRAMs base addresses - Secure aliased */
+#define _FLASH_BASE_S           (0x0C000000) /*!< FLASH(512 KB) base address */
+#define _SRAM1_BASE_S           (0x30000000) /*!< SRAM1(192 KB) base address */
+#define _SRAM2_BASE_S           (0x30030000) /*!< SRAM2(64 KB) base address */
+#define _SRAM4_BASE_S           (0x38000000) /*!< SRAM4(16 KB) base address */
+#elif defined(STM32U585xx) || defined(STM32U575xx)
 #define _SRAM2_TOP              (0x40000) /* 256Kbytes */
 #define _SRAM1_SIZE_MAX         (0x30000)  /*!< SRAM1=192k*/
 #define _SRAM2_SIZE_MAX         (0x10000)  /*!< SRAM2=64k*/
@@ -89,14 +105,18 @@
 #define _SRAM2_BASE_S           (0x300C0000) /*!< SRAM2(64 KB) base address */
 #define _SRAM3_BASE_S           (0x300D0000) /*!< SRAM3(832 KB) base address */
 #define _SRAM4_BASE_S           (0x38000000) /*!< SRAM4(16 KB) base address */
-#define _SRAM5_BASE_S           (0x301A0000) /*!< SRAM3(832 KB) base address */
+#define _SRAM5_BASE_S           (0x301A0000) /*!< SRAM5(832 KB) base address */
 #else
 #error "No STM32U5 version Defined"
 #endif
 
 #define TOTAL_ROM_SIZE          FLASH_TOTAL_SIZE
+#if defined(STM32U535xx) || defined(STM32U545xx)
+#define S_TOTAL_RAM_SIZE        (_SRAM2_SIZE_MAX) /*! size require for Secure part */
+#else
 #define SRAM3_S_SIZE            0x8000                           /* 32Kbytes */
 #define S_TOTAL_RAM_SIZE        (_SRAM2_SIZE_MAX + SRAM3_S_SIZE ) /*! size require for Secure part */
+#endif /* defined(STM32U535xx) || defined(STM32U545xx) */
 
 /*  This area in SRAM 2 is updated BL2 and can be lock to avoid any changes */
 #define BOOT_TFM_SHARED_DATA_SIZE        0
@@ -138,6 +158,11 @@
 #define IMAGE_NS_CODE_SIZE \
     (FLASH_NS_PARTITION_SIZE - BL2_HEADER_SIZE - BL2_TRAILER_SIZE)
 
+/* FIXME: veneer region size is increased temporarily while both legacy veneers
+ * and their iovec-based equivalents co-exist for secure partitions. To be
+ * adjusted as legacy veneers are eliminated
+ */
+#define CMSE_VENEER_REGION_SIZE             (0x00000380)
 
 /* Use SRAM1 memory to store Code data */
 #define S_ROM_ALIAS_BASE                    (_FLASH_BASE_S)
@@ -159,7 +184,7 @@
 
 #define S_IMAGE_PRIMARY_AREA_OFFSET         (S_IMAGE_PRIMARY_PARTITION_OFFSET + BL2_HEADER_SIZE)
 #define S_CODE_START                        (S_ROM_ALIAS(S_IMAGE_PRIMARY_AREA_OFFSET))
-#define S_CODE_SIZE                         (IMAGE_S_CODE_SIZE)
+#define S_CODE_SIZE                         (IMAGE_S_CODE_SIZE - CMSE_VENEER_REGION_SIZE)
 #define S_CODE_LIMIT                        ((S_CODE_START + S_CODE_SIZE) -1)
 #define S_DATA_START                        (_SRAM2_BASE_S)
 #define S_DATA_SIZE                         (S_TOTAL_RAM_SIZE)
@@ -169,6 +194,8 @@
 #define S_DATA_IMAGE_PRIMARY_AREA_OFFSET    (S_DATA_IMAGE_PRIMARY_PARTITION_OFFSET + BL2_DATA_HEADER_SIZE)
 #endif /* MCUBOOT_S_DATA_IMAGE_NUMBER == 1 */
 
+/* CMSE Veneers region */
+#define CMSE_VENEER_REGION_START            (S_CODE_LIMIT + 1)
 /* Non-secure regions */
 
 /* Secure regions , the end of secure regions must be aligned on page size for dual bank 0x800*/
@@ -180,10 +207,18 @@
 #define NS_CODE_SIZE                        (IMAGE_NS_CODE_SIZE)
 #define NS_CODE_LIMIT                       (NS_CODE_START + NS_CODE_SIZE - 1)
 #define NS_DATA_START                       (_SRAM1_BASE_NS)
+#ifdef SRAM3_BASE
 #define NS_DATA_START_2                     (_SRAM3_BASE_NS + SRAM3_S_SIZE)
+#else
+#define NS_DATA_START_2                     (_SRAM4_BASE_NS)
+#endif
 #define NS_NO_INIT_DATA_SIZE                (0x100)
 #define NS_DATA_SIZE                        (_SRAM1_SIZE_MAX)
+#ifdef SRAM3_BASE
 #define NS_DATA_SIZE_2                      (_SRAM3_SIZE_MAX - SRAM3_S_SIZE)
+#else
+#define NS_DATA_SIZE_2                      (_SRAM4_SIZE_MAX)
+#endif
 #define NS_DATA_LIMIT                       (NS_DATA_START + NS_DATA_SIZE - 1)
 #define NS_DATA_LIMIT_2                     (NS_DATA_START_2 + NS_DATA_SIZE_2 - 1)
 

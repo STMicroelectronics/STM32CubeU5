@@ -27,7 +27,8 @@ extern "C" {
   
 #include <stdint.h>
 #include "mx_wifi_azure_rtos_conf.h"
-  
+#include "main.h"
+
 int32_t mxwifi_probe(void **ll_drv_context);
 
   

@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -22,17 +22,19 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
-#include "common_interface.h"
+
 #include "openbl_core.h"
+
+#include "common_interface.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+/* Exported functions --------------------------------------------------------*/
 void OPENBL_I2C_Configuration(void);
 void OPENBL_I2C_DeInit(void);
 uint8_t OPENBL_I2C_ProtocolDetection(void);
@@ -41,8 +43,8 @@ uint8_t OPENBL_I2C_GetCommandOpcode(void);
 uint8_t OPENBL_I2C_ReadByte(void);
 void OPENBL_I2C_SendByte(uint8_t Byte);
 void OPENBL_I2C_WaitAddress(void);
-void OPENBL_I2C_SendAcknowledgeByte(uint8_t Byte);
-void OPENBL_I2C_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *Frame);
+void OPENBL_I2C_SendAcknowledgeByte(uint8_t Acknowledge);
+void OPENBL_I2C_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *pSpecialCmd);
 void OPENBL_Enable_BusyState_Sending(void);
 void OPENBL_Disable_BusyState_Sending(void);
 
@@ -58,6 +60,6 @@ __attribute__((section(".ramfunc"))) void OPENBL_I2C_SendBusyByte(void);
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* I2C_INTERFACE_H */

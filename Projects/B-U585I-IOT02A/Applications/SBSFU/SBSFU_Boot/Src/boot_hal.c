@@ -116,7 +116,9 @@ void boot_platform_noimage(void)
     __HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_GPIOD_CLK_ENABLE();
     __HAL_RCC_GPIOE_CLK_ENABLE();
+#ifdef GPIOF
     __HAL_RCC_GPIOF_CLK_ENABLE();
+#endif /* GPIOF */
     __HAL_RCC_GPIOG_CLK_ENABLE();
     __HAL_RCC_GPIOH_CLK_ENABLE();
     GPIOA_S->SECCFGR = 0x0;
@@ -124,7 +126,9 @@ void boot_platform_noimage(void)
     GPIOC_S->SECCFGR = 0x0;
     GPIOD_S->SECCFGR = 0x0;
     GPIOE_S->SECCFGR = 0x0;
+#ifdef GPIOF
     GPIOF_S->SECCFGR = 0x0;
+#endif /* GPIOF */
     GPIOG_S->SECCFGR = 0x0;
     GPIOH_S->SECCFGR = 0x0;
 #if defined(MCUBOOT_PRIMARY_ONLY)
@@ -180,7 +184,6 @@ void execute_loader(void)
 
     /* Lock Secure Vector Table */
     SYSCFG->CSLCKR |= SYSCFG_CSLCKR_LOCKSVTAIRCR;
-
     /*  change stack limit  */
     __set_MSPLIM(0);
     /* Restore the Main Stack Pointer Limit register's reset value
@@ -216,7 +219,6 @@ void execute_loader(void)
 
     /* Lock Secure Vector Table */
     SYSCFG->CSLCKR |= SYSCFG_CSLCKR_LOCKSVTAIRCR;
-
     /* Set non-secure main stack (MSP_NS) */
     __TZ_set_MSP_NS((*(uint32_t *)LOADER_NS_CODE_START));
     /* the function erase all internal SRAM , and unsecure all SRAM to adapt to any non secure loader mapping */
@@ -787,6 +789,10 @@ void __aeabi_assert(const char *expr, const char *file, int line)
     printf("assertion \" %s \" failed: file %s %d\n", expr, file, line);
 #endif /*  TFM_DEV_MODE  */
     Error_Handler();
+
+#if !defined(__ICCARM__)
+    __builtin_unreachable();
+#endif /* defined(__ICCARM__) */
 }
 #endif  /*  __ARMCC_VERSION */
 #ifdef  USE_FULL_ASSERT

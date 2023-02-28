@@ -17,7 +17,7 @@
   */
 
 /* Includes --------------------------------------------------------------------------------------------------------- */
-#include "stm32_lpbam.h"
+#include "stm32_ll_lpbam.h"
 
 #ifdef LPBAM_DAC_MODULE_ENABLED
 
@@ -34,9 +34,6 @@
 /* Private define ----------------------------------------------------------------------------------------------------*/
 /* Private macro -----------------------------------------------------------------------------------------------------*/
 /* Private function prototypes ---------------------------------------------------------------------------------------*/
-extern LPBAM_Status_t LPBAM_DAC_FillStructInfo(LPBAM_DAC_ConfNode_t const *const pConfNode,
-                                               LPBAM_InfoDesc_t     *const pDescInfo);
-
 /* Exported functions ------------------------------------------------------------------------------------------------*/
 /** @defgroup LPBAM_DAC_Basic_Exported_Functions LPBAM DAC Basic Exported Functions
   * @{

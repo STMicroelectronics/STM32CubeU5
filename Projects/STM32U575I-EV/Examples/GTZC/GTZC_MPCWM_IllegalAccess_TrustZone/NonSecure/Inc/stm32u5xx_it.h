@@ -1,8 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    stm32u5xx_it.h
-  * @brief   This file contains the headers of the interrupt handlers.
+  * @file    : NonSecure/Src/stm32u5xx_it.h
+  * @author  : MCD Application Team
+  * @brief   : This file contains the headers of the interrupt handlers.
   ******************************************************************************
   * @attention
   *
@@ -51,7 +52,6 @@ void UsageFault_Handler(void);
 void SVC_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
-void EXTI1_IRQHandler(void);
 void EXTI13_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 

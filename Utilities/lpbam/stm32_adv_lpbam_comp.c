@@ -57,6 +57,7 @@
     [..]
       This driver provides services covering the LPBAM management of the following COMP features :
           (+) Configure and start the comparator peripheral.
+          (+) Stop the comparator peripheral.
           (+) Read the comparator output comparison value.
 
     *** Functional description ***
@@ -68,8 +69,9 @@
       The comparator output can be read and stored in a buffer thanks to a built DMA linked-list queue.
 
       The comparator peripheral is configured and started.
-      Only the comparator polarity, the input minus and the input plus can be configured
+      Only the comparator polarity, the input minus and the input plus can be configured.
 
+      The comparator peripheral is stopped.
 
     *** Driver APIs description ***
     ===============================
@@ -84,6 +86,9 @@
           (+) OutputPol  : Specifies the comparator output polarity.
           (+) InputPlus  : Specifies the comparator input plus.
           (+) InputMinus : Specifies the comparator input minus.
+
+    [..]
+      Use ADV_LPBAM_COMP_Stop_SetFullQ() API to build a linked-list queue that stop the comparator peripheral.
 
     [..]
       Use ADV_LPBAM_COMP_OutputLevel_SetFullQ() API to build a linked-list queue to get the comparator output level
@@ -146,6 +151,7 @@
               (++) DMA_IT_ULE : update link error.
               (++) DMA_IT_USE : user setting error.
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
+          (+) Call, when needed, ADV_LPBAM_COMP_Stop_SetFullQ() to stop the comparator instance.
 
     *** Recommendation ***
     ======================
@@ -203,16 +209,15 @@
 
 /**
   * @brief  Build DMA linked-list queue to start comparator according to parameters in LPBAM_COMP_StartFullAdvConf_t.
-  * @param  pInstance         : [IN]  Pointer to a COMP_TypeDef structure that selects COMP instance.
-  * @param  pDMAListInfo      : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and
-  *                                   linked-list queue type information.
-  * @param  pStartFull        : [IN]  Pointer to a LPBAM_COMP_StartFullAdvConf_t structure that contains comparator
-  *                                   start configuration.
-  * @param  pDescriptor       : [IN]  Pointer to a LPBAM_COMP_StartFullDesc_t structure that contains descriptor
-  *                                   information.
-  * @param  pQueue            : [OUT] Pointer to a DMA_QListTypeDef structure that contains DMA linked-list queue
-  *                                   information.
-  * @retval LPBAM Status      : [OUT] Value from LPBAM_Status_t enumeration.
+  * @param  pInstance    : [IN]  Pointer to a COMP_TypeDef structure that selects COMP instance.
+  * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
+  *                              queue type information.
+  * @param  pStartFull   : [IN]  Pointer to a LPBAM_COMP_StartFullAdvConf_t structure that contains comparator start
+  *                              configuration.
+  * @param  pDescriptor  : [IN]  Pointer to a LPBAM_COMP_StartFullDesc_t structure that contains descriptor information.
+  * @param  pQueue       : [OUT] Pointer to a DMA_QListTypeDef structure that contains DMA linked-list queue
+  *                              information.
+  * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
 LPBAM_Status_t ADV_LPBAM_COMP_Start_SetFullQ(COMP_TypeDef                  *const pInstance,
                                              LPBAM_DMAListInfo_t           const *const pDMAListInfo,
@@ -254,6 +259,63 @@ LPBAM_Status_t ADV_LPBAM_COMP_Start_SetFullQ(COMP_TypeDef                  *cons
   }
 
   /* Connect configuration node to COMP Queue */
+  if (HAL_DMAEx_List_InsertNode_Tail(pQueue, &pDescriptor->pNodes[0U]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  return LPBAM_OK;
+}
+
+/**
+  * @brief  Build DMA linked-list queue to stop comparator.
+  * @param  pInstance    : [IN]  Pointer to a COMP_TypeDef structure that selects COMP instance.
+  * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
+  *                              queue type information.
+  * @param  pDescriptor  : [IN]  Pointer to a LPBAM_COMP_StopFullDesc_t structure that contains descriptor information.
+  * @param  pQueue       : [OUT] Pointer to a DMA_QListTypeDef structure that contains DMA linked-list queue
+  *                              information.
+  * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
+  */
+LPBAM_Status_t ADV_LPBAM_COMP_Stop_SetFullQ(COMP_TypeDef              *const pInstance,
+                                            LPBAM_DMAListInfo_t       const *const pDMAListInfo,
+                                            LPBAM_COMP_StopFullDesc_t *const pDescriptor,
+                                            DMA_QListTypeDef          *const pQueue)
+{
+  LPBAM_COMP_ConfNode_t config_node;
+  DMA_NodeConfTypeDef   dma_node_conf;
+
+  /*
+   *               ######## COMP Stop node ########
+   */
+
+  /* Set COMP instance */
+  config_node.Instance                   = pInstance;
+
+  /* Set node descriptor */
+  config_node.NodeDesc.NodeInfo.NodeID   = (uint32_t)LPBAM_COMP_CONFIG_ID;
+  config_node.NodeDesc.NodeInfo.NodeType = pDMAListInfo->QueueType;
+  config_node.NodeDesc.pSrcVarReg        = &pDescriptor->pReg[0U];
+
+  /* Set COMP configuration */
+  config_node.Config.State               = DISABLE;
+  config_node.Config.OutputPol           = LPBAM_COMP_OUTPUTPOL_NONINVERTED;
+  config_node.Config.InputPlus           = LPBAM_COMP_INPUT_PLUS_IO1;
+  config_node.Config.InputMinus          = LPBAM_COMP_INPUT_MINUS_1_4VREFINT;
+
+  /* Fill node configuration */
+  if (LPBAM_COMP_FillNodeConfig(&config_node, &dma_node_conf) != LPBAM_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Build node */
+  if (HAL_DMAEx_List_BuildNode(&dma_node_conf, &pDescriptor->pNodes[0U]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Connect stop node to COMP Queue */
   if (HAL_DMAEx_List_InsertNode_Tail(pQueue, &pDescriptor->pNodes[0U]) != HAL_OK)
   {
     return LPBAM_ERROR;

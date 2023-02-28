@@ -25,7 +25,7 @@
 /*  COMPONENT DEFINITION                                   RELEASE        */ 
 /*                                                                        */ 
 /*    ux_device_stack.h                                   PORTABLE C      */ 
-/*                                                           6.1.8        */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -46,6 +46,13 @@
 /*                                            added extern "C" keyword    */
 /*                                            for compatibility with C++, */
 /*                                            resulting in version 6.1.8  */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            added standalone support,   */
+/*                                            resulting in version 6.1.10 */
+/*  07-29-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            fixed parameter/variable    */
+/*                                            names conflict C++ keyword, */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 
@@ -86,11 +93,11 @@ UINT    _ux_device_stack_initialize(UCHAR * device_framework_high_speed, ULONG d
                     UCHAR * string_framework, ULONG string_framework_length,
                     UCHAR * language_id_framework, ULONG language_id_framework_length,
                     UINT (*ux_system_slave_change_function)(ULONG));
-UINT    _ux_device_stack_interface_delete(UX_SLAVE_INTERFACE *interface);
+UINT    _ux_device_stack_interface_delete(UX_SLAVE_INTERFACE *ux_interface);
 UINT    _ux_device_stack_interface_get(UINT interface_value);
 UINT    _ux_device_stack_interface_set(UCHAR * device_framework, ULONG device_framework_length,
                     ULONG alternate_setting_value);
-UINT    _ux_device_stack_interface_start(UX_SLAVE_INTERFACE *interface);
+UINT    _ux_device_stack_interface_start(UX_SLAVE_INTERFACE *ux_interface);
 UINT    _ux_device_stack_set_feature(ULONG request_type, ULONG request_value, ULONG request_index);
 UINT    _ux_device_stack_transfer_all_request_abort(UX_SLAVE_ENDPOINT *endpoint, ULONG completion_code);
 UINT    _ux_device_stack_transfer_request(UX_SLAVE_TRANSFER *transfer_request, ULONG slave_length, ULONG host_length);
@@ -99,11 +106,14 @@ UINT    _ux_device_stack_class_unregister(UCHAR *class_name, UINT (*class_entry_
 UINT    _ux_device_stack_microsoft_extension_register(ULONG vendor_request, UINT (*vendor_request_function)(ULONG, ULONG, ULONG, ULONG, UCHAR *, ULONG *));
 UINT    _ux_device_stack_uninitialize(VOID);
 
+UINT    _ux_device_stack_tasks_run(VOID);
+UINT    _ux_device_stack_transfer_run(UX_SLAVE_TRANSFER *transfer_request, ULONG slave_length, ULONG host_length);
+
 /* Determine if a C++ compiler is being used.  If so, complete the standard 
    C conditional started above.  */   
 #ifdef __cplusplus
 } 
-#endif 
+#endif
 
 #endif
 

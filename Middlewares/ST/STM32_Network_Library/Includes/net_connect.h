@@ -28,12 +28,9 @@ extern "C" {
 #include "net_types.h"
 #include "net_conf.h"
 #include "net_mem.h"
-#include "net_perf.h"
 #include "net_address.h"
 #include "net_errors.h"
 #include "net_wifi.h"
-#include "net_cellular.h"
-
 
 /* flags */
 
@@ -41,20 +38,18 @@ extern "C" {
 typedef enum
 {
   NET_INTERFACE_CLASS_WIFI,
-  NET_INTERFACE_CLASS_CELLULAR,
   NET_INTERFACE_CLASS_ETHERNET,
   NET_INTERFACE_CLASS_CUSTOM
 } net_interface_class_t;
 
 #define NET_INTERFACE_IS_WIFI(p)           (net_wifi_get_class(p) == NET_INTERFACE_CLASS_WIFI)
-#define NET_INTERFACE_IS_CELLULAR(p)       (net_wifi_get_class(p) == NET_INTERFACE_CLASS_CELLULAR)
 #define NET_INTERFACE_IS_ETHERNET(p)       (net_wifi_get_class(p) == NET_INTERFACE_CLASS_ETHERNET)
 
 
-/* Socket family */
-#define NET_AF_INET           2
-#define NET_AF_UNSPEC         0
-#define NET_AF_INET6          10
+/* Socket family. */
+#define NET_AF_INET            2
+#define NET_AF_UNSPEC          0
+#define NET_AF_INET6           10
 
 /* Socket types */
 #define NET_SOCK_STREAM         1
@@ -93,7 +88,8 @@ typedef enum
 #define NET_SHUTDOWN_W          1
 #define NET_SHUTDOWN_RW         2
 
-#define NET_SOL_SOCKET                  0xfff
+#define NET_SOL_SOCKET          0xfff
+
 /** @defgroup Socket
   * @{
   */
@@ -115,21 +111,25 @@ typedef enum
   NET_SO_TLS_SERVER_NAME    =      12,/**< to define server name to check again, option type is a pointer to a null terminated string */
   NET_SO_TLS_PASSWORD       =      13,/**< to define password (if any) used to encrypt the device key, option type is pointer to a null terminated string */
   NET_SO_TLS_CERT_PROF      =      14,/**< to set the X509 security profile, option type is pointer to mbedtls_x509_crt_profile structure */
-  NET_SO_BROADCAST          =  0x0020 /* permit to send and to receive broadcast messages (see IP_SOF_BROADCAST option) */
+  NET_SO_BROADCAST          =  0x0020 /**< permit to send and to receive broadcast messages (see IP_SOF_BROADCAST option) */
 } net_socketoption_t;
-
 
 /** @defgroup Socket
   * @}
   */
+
+
 #define NET_MSG_DONTWAIT      0x08U    /* Nonblocking i/o for this operation only */
 
+struct netif;
 typedef struct pbuf net_buf_t;
 
 
 /**
-  *  TOPPP transition are requested by application. "ING" state are transitioning state, meaning that application has required a transition and
-  *  the transition is ongoing. "ED" states are stable state.
+  *  TOPPP transition are requested by application.
+  *  "ING" state are transitioning state, meaning that application has required a transition and
+  *  the transition is ongoing.
+  *  "ED" states are stable state.
   */
 
 
@@ -143,8 +143,9 @@ typedef enum
 
 /** @defgroup State
   * @{
-  *  State transition are requested by application. "ING" state are transitioning state, meaning that application has required a transition and the transition is ongoing. "ED" states are stable state.
-
+  *  State transition are requested by application.
+  *  "ING" state are transitioning state, meaning that application has required a transition and the transition is ongoing.
+  *  "ED" states are stable state.
   */
 
 typedef enum enum_state
@@ -165,10 +166,10 @@ typedef enum enum_state
   NET_STATE_CONNECTION_LOST /**< Network interface connection is lost, this can be a transient state, it can return to connected state without application specific action*/
 } net_state_t;
 
-
 /** @defgroup State
   * @}
   */
+
 
 /** Network state events. */
 typedef enum
@@ -204,7 +205,7 @@ typedef enum
 typedef struct net_if_drv_s net_if_drv_t;
 typedef struct net_ip_if_s net_ip_if_t;
 
-typedef void(* net_if_notify_func)(void *context, uint32_t event_class, uint32_t event_id, void  *event_data);
+typedef void(* net_if_notify_func)(void *context, uint32_t event_class, uint32_t event_id, void *event_data);
 
 typedef struct
 {
@@ -222,24 +223,25 @@ struct net_if_handle_s
   net_ip_addr_t       static_gateway;
   net_ip_addr_t       static_netmask;
   net_ip_addr_t       static_dnserver;
+
 #if NET_USE_IPV6
   net_ip_addr_t       ipaddr6;
   net_ip_addr_t       gateway6;
   net_ip_addr_t       netmask6;
 #endif /* NET_USE_IPV6 */
 
-  bool_t           dhcp_mode;
-  bool_t           dhcp_server;
-  bool_t           dhcp_inform_flag;
-  bool_t           dhcp_release_on_link_lost;
-  dhcp_client_ver_t   dhcp_version;
-  char_t  DeviceName[NET_DEVICE_NAME_LEN];
-  char_t  DeviceID  [NET_DEVICE_ID_LEN];
-  char_t  DeviceVer [NET_DEVICE_VER_LEN];
-  macaddr_t  macaddr;
-  net_state_t    state;
-  net_if_drv_t   *pdrv;
-  struct netif   *netif;
+  bool_t            dhcp_mode;
+  bool_t            dhcp_server;
+  bool_t            dhcp_inform_flag;
+  bool_t            dhcp_release_on_link_lost;
+  dhcp_client_ver_t dhcp_version;
+  char_t            DeviceName[NET_DEVICE_NAME_LEN];
+  char_t            DeviceID  [NET_DEVICE_ID_LEN];
+  char_t            DeviceVer [NET_DEVICE_VER_LEN];
+  macaddr_t         macaddr;
+  net_state_t       state;
+  net_if_drv_t     *pdrv;
+  struct netif     *netif;
   const net_event_handler_t *event_handler;
 } ;
 
@@ -249,55 +251,49 @@ typedef int32_t(* net_if_driver_init_func)(net_if_handle_t *pnetif);
 net_interface_class_t net_wifi_get_class(net_if_handle_t *pnetif);
 
 
-/* network state control functions */
-int32_t net_if_init(net_if_handle_t *pnetif_in, net_if_driver_init_func driver_init,
+/* Network state control functions. */
+int32_t net_if_init(net_if_handle_t *pnetif, net_if_driver_init_func driver_init,
                     const net_event_handler_t *event_handler);
 int32_t net_if_deinit(net_if_handle_t *pnetif);
 
 int32_t net_if_start(net_if_handle_t *pnetif);
 int32_t net_if_stop(net_if_handle_t *pnetif);
 
-/* network IO data receive process, called in main loop */
-int32_t net_if_yield(net_if_handle_t *pnetif_in, uint32_t timeout);
+/* Network IO data receive process, called in main loop. */
+int32_t net_if_yield(net_if_handle_t *pnetif, uint32_t timeout);
 
 int32_t net_if_connect(net_if_handle_t *pnetif);
 int32_t net_if_disconnect(net_if_handle_t *pnetif);
-int32_t net_if_atcmd(net_if_handle_t *pnetif_in, char_t *cmd, char_t *resp);
+int32_t net_if_atcmd(net_if_handle_t *pnetif, char_t *cmd, char_t *resp);
 
-
-int32_t net_if_getState(net_if_handle_t *pnetif_in, net_state_t *state);
+int32_t net_if_getState(net_if_handle_t *pnetif, net_state_t *state);
 int32_t net_if_wait_state(net_if_handle_t *pnetif, net_state_t state, uint32_t timeout);
 
-/* network event management */
+/* Network event management. */
 void net_if_notify(net_if_handle_t *pnetif, net_evt_t event_class, uint32_t event_id, void *event_data);
 
-/* network parameter and status functions */
-int32_t net_if_set_dhcp_mode(net_if_handle_t *pnetif_in, bool_t mode);
-int32_t net_if_set_dhcp_server_mode(net_if_handle_t *pnetif_in, bool_t mode);
-int32_t net_if_set_dhcp_version(net_if_handle_t *pnetif_in, dhcp_client_ver_t version);
-int32_t net_if_set_ipaddr(net_if_handle_t *pnetif_in, net_ip_addr_t ipaddr,
+/* Network parameter and status functions. */
+int32_t net_if_set_dhcp_mode(net_if_handle_t *pnetif, bool_t mode);
+int32_t net_if_set_dhcp_server_mode(net_if_handle_t *pnetif, bool_t mode);
+int32_t net_if_set_dhcp_version(net_if_handle_t *pnetif, dhcp_client_ver_t version);
+int32_t net_if_set_ipaddr(net_if_handle_t *pnetif, net_ip_addr_t ipaddr,
                           net_ip_addr_t gateway, net_ip_addr_t netmask);
-int32_t net_if_get_mac_address(net_if_handle_t *pnetif_in, macaddr_t *mac);
-int32_t net_if_get_ip_address(net_if_handle_t *pnetif_in, net_ip_addr_t *ip);
-int32_t net_if_gethostbyname(net_if_handle_t *pnetif_in, net_sockaddr_t *addr, char_t *name);
-int32_t net_if_ping(net_if_handle_t *pnetif_in, net_sockaddr_t *addr, int32_t count, int32_t delay, int32_t response[]);
+int32_t net_if_get_mac_address(net_if_handle_t *pnetif, macaddr_t *mac);
+int32_t net_if_get_ip_address(net_if_handle_t *pnetif, net_ip_addr_t *ip);
+int32_t net_if_gethostbyname(net_if_handle_t *pnetif, net_sockaddr_t *addr, char_t *name);
+int32_t net_if_ping(net_if_handle_t *pnetif, net_sockaddr_t *addr, int32_t count, int32_t delay, int32_t response[]);
 
-/* network interface power management */
-int32_t net_if_powersave_enable(net_if_handle_t *pnetif_in);
+/* Network interface power management. */
+int32_t net_if_powersave_enable(net_if_handle_t *pnetif);
 int32_t net_if_powersave_disable(net_if_handle_t *pnetif_in);
 
-/* network services  */
+/* Network services. */
 int32_t service_sdhcp_create(struct netif *netif);
 int32_t service_sdhcp_delete(void);
 
-#if 0
-int32_t net_if_sleep(net_if_handle_t *pnetif);
-int32_t net_if_wakeup(net_if_handle_t *pnetif);
-#endif /* 0 */
 
 
-
-/* network socket API */
+/* Network socket API. */
 #ifdef NET_BYPASS_NET_SOCKET
 
 #include "lwip/netdb.h"
@@ -332,9 +328,9 @@ int32_t net_setsockopt(int32_t sock, int32_t level, net_socketoption_t optname, 
 int32_t net_getsockopt(int32_t sock, int32_t level, net_socketoption_t optname, void *optvalue, uint32_t *optlen);
 int32_t net_connect(int32_t sock, net_sockaddr_t *addr, uint32_t addrlen);
 int32_t net_listen(int32_t sock, int32_t backlog);
-int32_t net_send(int32_t sock, uint8_t *buf, uint32_t len, int32_t flags);
+int32_t net_send(int32_t sock, const uint8_t *buf, uint32_t len, int32_t flags);
 int32_t net_recv(int32_t sock, uint8_t *buf, uint32_t len, int32_t flags_in);
-int32_t net_sendto(int32_t sock, uint8_t *buf, uint32_t len, int32_t flags, net_sockaddr_t *to, uint32_t tolen);
+int32_t net_sendto(int32_t sock, const uint8_t *buf, uint32_t len, int32_t flags, net_sockaddr_t *to, uint32_t tolen);
 int32_t net_recvfrom(int32_t sock, uint8_t *buf, uint32_t len, int32_t flags_in, net_sockaddr_t *from,
                      uint32_t *fromlen);
 int32_t net_getsockname(int32_t sock, net_sockaddr_t *name, uint32_t *namelen);

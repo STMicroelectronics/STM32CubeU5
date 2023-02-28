@@ -60,6 +60,8 @@ defined in linker script */
 	.type	Reset_Handler, %function
 Reset_Handler:
   ldr   sp, =_estack    /* set stack pointer */
+/* Call the clock system initialization function.*/
+  bl  SystemInit
 
 /* Copy the data segment initializers from flash to SRAM */
   movs	r1, #0
@@ -89,8 +91,6 @@ LoopFillZerobss:
 	cmp	r2, r3
 	bcc	FillZerobss
 
-/* Call the clock system initialization function.*/
-    bl  SystemInit
 /* Call static constructors */
     bl __libc_init_array
 /* Call the application's entry point.*/
@@ -268,7 +268,7 @@ g_pfnVectors:
 	.word	MDF1_FLT5_IRQHandler
 	.word	CORDIC_IRQHandler
 	.word	FMAC_IRQHandler
-	.word	0
+	.word	LSECSSD_IRQHandler
 	.word	USART6_IRQHandler
 	.word	I2C5_ER_IRQHandler
 	.word	I2C5_EV_IRQHandler
@@ -548,13 +548,13 @@ g_pfnVectors:
 
 	.weak	OCTOSPI1_IRQHandler
 	.thumb_set OCTOSPI1_IRQHandler,Default_Handler
-	
+
 	.weak	PWR_S3WU_IRQHandler
 	.thumb_set PWR_S3WU_IRQHandler,Default_Handler
 
 	.weak	SDMMC1_IRQHandler
 	.thumb_set SDMMC1_IRQHandler,Default_Handler
-	
+
 	.weak	SDMMC2_IRQHandler
 	.thumb_set SDMMC2_IRQHandler,Default_Handler
 
@@ -635,87 +635,90 @@ g_pfnVectors:
 
 	.weak	ICACHE_IRQHandler
 	.thumb_set ICACHE_IRQHandler,Default_Handler
-	
+
 	.weak	LPTIM4_IRQHandler
 	.thumb_set LPTIM4_IRQHandler,Default_Handler
-	
+
 	.weak	DCACHE1_IRQHandler
 	.thumb_set DCACHE1_IRQHandler,Default_Handler
-	
+
 	.weak	ADF1_IRQHandler
 	.thumb_set ADF1_IRQHandler,Default_Handler
-	
+
 	.weak	ADC4_IRQHandler
 	.thumb_set ADC4_IRQHandler,Default_Handler
-	
+
 	.weak	LPDMA1_Channel0_IRQHandler
 	.thumb_set LPDMA1_Channel0_IRQHandler,Default_Handler
-	
+
 	.weak	LPDMA1_Channel1_IRQHandler
 	.thumb_set LPDMA1_Channel1_IRQHandler,Default_Handler
-	
+
 	.weak	LPDMA1_Channel2_IRQHandler
 	.thumb_set LPDMA1_Channel2_IRQHandler,Default_Handler
-	
+
 	.weak	LPDMA1_Channel3_IRQHandler
 	.thumb_set LPDMA1_Channel3_IRQHandler,Default_Handler
-	
+
 	.weak	DMA2D_IRQHandler
 	.thumb_set DMA2D_IRQHandler,Default_Handler
-	
+
 	.weak	DCMI_PSSI_IRQHandler
 	.thumb_set DCMI_PSSI_IRQHandler,Default_Handler
-	
+
 	.weak	OCTOSPI2_IRQHandler
 	.thumb_set OCTOSPI2_IRQHandler,Default_Handler
-	
+
 	.weak	MDF1_FLT4_IRQHandler
 	.thumb_set MDF1_FLT4_IRQHandler,Default_Handler
-	
+
 	.weak	MDF1_FLT5_IRQHandler
 	.thumb_set MDF1_FLT5_IRQHandler,Default_Handler
-	
+
 	.weak	CORDIC_IRQHandler
 	.thumb_set CORDIC_IRQHandler,Default_Handler
-	
+
 	.weak	FMAC_IRQHandler
 	.thumb_set FMAC_IRQHandler,Default_Handler
 
+	.weak	LSECSSD_IRQHandler
+	.thumb_set LSECSSD_IRQHandler,Default_Handler
+
 	.weak	USART6_IRQHandler
 	.thumb_set USART6_IRQHandler,Default_Handler
-	
+
 	.weak	I2C5_ER_IRQHandler
 	.thumb_set I2C5_ER_IRQHandler,Default_Handler
-	
+
 	.weak	I2C5_EV_IRQHandler
 	.thumb_set I2C5_EV_IRQHandler,Default_Handler
-	
+
 	.weak	I2C6_ER_IRQHandler
 	.thumb_set I2C6_ER_IRQHandler,Default_Handler
-	
+
 	.weak	I2C6_EV_IRQHandler
 	.thumb_set I2C6_EV_IRQHandler,Default_Handler
-	
+
 	.weak	HSPI1_IRQHandler
 	.thumb_set HSPI1_IRQHandler,Default_Handler
-	
+
 	.weak	GPU2D_IRQHandler
 	.thumb_set GPU2D_IRQHandler,Default_Handler
-	
+
 	.weak	GPU2D_ER_IRQHandler
 	.thumb_set GPU2D_ER_IRQHandler,Default_Handler
-	
+
 	.weak	GFXMMU_IRQHandler
 	.thumb_set GFXMMU_IRQHandler,Default_Handler
-	
+
 	.weak	LTDC_IRQHandler
 	.thumb_set LTDC_IRQHandler,Default_Handler
-	
+
 	.weak	LTDC_ER_IRQHandler
 	.thumb_set LTDC_ER_IRQHandler,Default_Handler
-	
+
 	.weak	DSI_IRQHandler
 	.thumb_set DSI_IRQHandler,Default_Handler
-	
+
 	.weak	DCACHE2_IRQHandler
 	.thumb_set DCACHE2_IRQHandler,Default_Handler

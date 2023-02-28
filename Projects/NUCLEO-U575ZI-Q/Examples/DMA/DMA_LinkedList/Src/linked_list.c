@@ -138,3 +138,4 @@ HAL_StatusTypeDef MX_Queue_Config(void)
 
    return ret;
 }
+

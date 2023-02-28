@@ -8,41 +8,42 @@
 
 #ifdef FIH_ENABLE_DELAY
 
-#include MBEDTLS_CONFIG_FILE
-#include "mbedtls/ctr_drbg.h"
-#include "mbedtls/entropy.h"
+#include "low_level_rng.h"
+#include "boot_hal_flowcontrol.h"
 
-/* Mbedtls implementation of the delay RNG. Can be replaced by any other RNG
- * implementation that is backed by an entropy source by altering these
- * functions. This is not provided as a header API and a C file implementation
- * due to issues with inlining.
+/* Mbedtls implementation of the delay RNG (based on a DRGB) is replaced by
+ * another RNG implementation (based on NDRBG) that is backed by a pure entropy
+ * source (physical process that provides full entropy outputs).
+ * This is not provided as a header API and a C file implementation due to
+ * issues with inlining.
  */
 
-#ifdef MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES
-#error "FIH_ENABLE_DELAY requires an entropy source"
-#endif /* MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES */
-
-mbedtls_entropy_context fih_entropy_ctx;
-mbedtls_ctr_drbg_context fih_drbg_ctx;
+#define RNG_NUMBER 10
+unsigned char seed_buf[RNG_NUMBER] = {0};
+size_t index_seed_buf = 0;
 
 int fih_delay_init(void)
 {
-    mbedtls_entropy_init(&fih_entropy_ctx);
-    mbedtls_ctr_drbg_init(&fih_drbg_ctx);
-    mbedtls_ctr_drbg_seed(&fih_drbg_ctx , mbedtls_entropy_func,
-                          &fih_entropy_ctx, NULL, 0);
+  size_t len = 0U;
 
-    return 1;
+  /* generate several random */
+  RNG_GetBytes((unsigned char *)seed_buf, sizeof(seed_buf),(size_t *)&len);
+  return (1);
 }
 
 unsigned char fih_delay_random_uchar(void)
 {
-    unsigned char delay;
+  unsigned char delay;
 
-    mbedtls_ctr_drbg_random(&fih_drbg_ctx,(unsigned char*) &delay,
-                            sizeof(delay));
+  delay = seed_buf[index_seed_buf];
+  index_seed_buf++;
 
-    return delay;
+  if ( RNG_NUMBER == index_seed_buf )
+  {
+    fih_delay_init();
+    index_seed_buf = 0;
+  }
+  return delay;
 }
 
 #endif /* FIH_ENABLE_DELAY */

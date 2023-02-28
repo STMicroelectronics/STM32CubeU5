@@ -74,13 +74,17 @@ int _write(int fd, char *str, int len)
     return stdio_output_string((const unsigned char *)str, (uint32_t)len);
 }
 #elif defined(__ICCARM__)
-int putchar(int ch)
+size_t __write(int file, unsigned char const *ptr, size_t len)
 {
-    /* Send byte to USART */
-    (void)stdio_output_string((const unsigned char *)&ch, 1);
+  size_t idx;
+  unsigned char const *pdata = ptr;
 
-    /* Return character written */
-    return ch;
+  for (idx = 0; idx < len; idx++)
+  {
+    stdio_output_string((const unsigned char *)pdata, 1);
+    pdata++;
+  }
+  return len;
 }
 #endif
 

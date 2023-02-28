@@ -101,7 +101,7 @@ uint8_t stm32wb_at_Received(uint8_t byte)
       buffer_rx[buffer_rx_cursor - 1U] = 0U;
       buffer_rx_cursor--;
 
-      /* remove null leading caractere if any*/
+      /* remove null leading character if any*/
       if( buffer_rx[0] == 0U)
       {
         i = 1U;
@@ -213,7 +213,7 @@ uint8_t str_to_byte_tab(char *str_in, uint8_t *tab, uint8_t* tab_len)
       }
       cpt++;
       str_p++;
-    }while( cpt < tab_limit  );
+    }while( cpt < (tab_limit * 2) );
     
     if(cpt == 1U)
     {

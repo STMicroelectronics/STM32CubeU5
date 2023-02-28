@@ -2,13 +2,11 @@
   ******************************************************************************
   * @file    mx25lm51245g_conf.h
   * @author  MCD Application Team
-  * @brief   MX25LM51245G OctoSPI memory configuration template file.
-  *          This file should be copied to the application folder and renamed
-  *          to mx25lm51245g_conf.h
+  * @brief   MX25LM51245G OctoSPI memory configuration file.
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2017-2019 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -23,7 +21,7 @@
 #define MX25LM51245G_CONF_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/

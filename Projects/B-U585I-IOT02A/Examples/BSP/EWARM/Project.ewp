@@ -1167,7 +1167,7 @@
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\lps22hh\lps22hh_reg.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\m24lr64\m24lr64.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\m24256\m24256.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx25lm51245g\mx25lm51245g.c</name>

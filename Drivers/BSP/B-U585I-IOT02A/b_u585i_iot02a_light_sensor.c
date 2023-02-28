@@ -124,7 +124,7 @@ int32_t BSP_LIGHT_SENSOR_DeInit(uint32_t Instance)
   * @param pId    Pointer to the device ID.
   * @retval BSP status
   */
-int32_t BSP_LIGHT_SENSOR_ReadID(uint32_t Instance, uint32_t *pId)
+int32_t BSP_LIGHT_SENSOR_ReadID(const uint32_t Instance, uint32_t *pId)
 {
   int32_t ret;
 
@@ -150,7 +150,7 @@ int32_t BSP_LIGHT_SENSOR_ReadID(uint32_t Instance, uint32_t *pId)
   * @param pCapabilities    Pointer to the light sensor capabilities.
   * @retval BSP status
   */
-int32_t BSP_LIGHT_SENSOR_GetCapabilities(uint32_t Instance, LIGHT_SENSOR_Capabilities_t *pCapabilities)
+int32_t BSP_LIGHT_SENSOR_GetCapabilities(const uint32_t Instance, LIGHT_SENSOR_Capabilities_t *pCapabilities)
 {
   int32_t ret;
 
@@ -204,7 +204,7 @@ int32_t BSP_LIGHT_SENSOR_SetGain(uint32_t Instance, uint8_t Channel, uint32_t Ga
   * @param  pGain  Pointer to integration time
   * @retval BSP status
   */
-int32_t BSP_LIGHT_SENSOR_GetGain(uint32_t Instance, uint8_t Channel, uint32_t *pGain)
+int32_t BSP_LIGHT_SENSOR_GetGain(const uint32_t Instance, uint8_t Channel, uint32_t *pGain)
 {
   int32_t status = BSP_ERROR_NONE;
 
@@ -259,7 +259,7 @@ int32_t BSP_LIGHT_SENSOR_SetExposureTime(uint32_t Instance, uint32_t ExposureTim
   * @param pExposureTime    Pointer to the current exposure time value.
   * @retval BSP status
   */
-int32_t BSP_LIGHT_SENSOR_GetExposureTime(uint32_t Instance, uint32_t *pExposureTime)
+int32_t BSP_LIGHT_SENSOR_GetExposureTime(const uint32_t Instance, uint32_t *pExposureTime)
 {
   int32_t ret;
 
@@ -284,7 +284,8 @@ int32_t BSP_LIGHT_SENSOR_GetExposureTime(uint32_t Instance, uint32_t *pExposureT
   * @brief Set the inter-measurement time.
   * @param Instance    Light sensor instance.
   * @param InterMeasurementTime    Inter-measurement to be applied.
-  * @note The InterMeasurementTime is the refresh time determined by Power Saving Mode (PSM) and the Integration Time (ALS_IT).
+  * @note The InterMeasurementTime is the refresh time determined by Power Saving Mode (PSM)
+  *       and the Integration Time (ALS_IT).
   * @note This should be configured only when using the device in continuous mode.
   * @warning This function must not be called when a capture is ongoing.
   * @retval BSP status
@@ -316,7 +317,7 @@ int32_t BSP_LIGHT_SENSOR_SetInterMeasurementTime(uint32_t Instance, uint32_t Int
   * @param pInterMeasurementTime    Pointer to the current inter-measurement time.
   * @retval BSP status
   */
-int32_t BSP_LIGHT_SENSOR_GetInterMeasurementTime(uint32_t Instance, uint32_t *pInterMeasurementTime)
+int32_t BSP_LIGHT_SENSOR_GetInterMeasurementTime(const uint32_t Instance, uint32_t *pInterMeasurementTime)
 {
   int32_t ret;
 
@@ -452,7 +453,7 @@ int32_t BSP_LIGHT_SENSOR_StopFlicker(uint32_t Instance)
   * @note The array size must match the number of channels of the device.
   * @retval BSP status
   */
-int32_t BSP_LIGHT_SENSOR_GetValues(uint32_t Instance, uint32_t *pResult)
+int32_t BSP_LIGHT_SENSOR_GetValues(const uint32_t Instance, uint32_t *pResult)
 {
   int32_t ret;
 

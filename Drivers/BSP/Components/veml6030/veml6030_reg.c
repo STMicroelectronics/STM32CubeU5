@@ -33,23 +33,23 @@
 
 /**
   * @brief  Read VEML6030 component registers
-  * @param  ctx component contex
+  * @param  ctx component context
   * @param  reg Register to read from
   * @param  pdata Pointer to data buffer
   * @param  length Number of data to read
   * @retval Component status
   */
-int32_t veml6030_read_reg(veml6030_ctx_t *ctx, uint16_t reg, uint16_t *pdata, uint16_t length)
+int32_t veml6030_read_reg(const veml6030_ctx_t *ctx, uint16_t reg, uint16_t *pdata, uint16_t length)
 {
   int32_t ret;
   uint16_t tmp;
 
   ret = ctx->ReadReg(ctx->handle, reg, (uint8_t *)pdata, length);
 
-  if(ret >= 0)
+  if (ret >= 0)
   {
-    tmp = ((uint16_t)(*pdata >> 8) & 0x00FF);
-    tmp |= ((uint16_t)(*pdata << 8) & 0xFF00);
+    tmp = ((uint16_t)(*pdata >> 8) & 0x00FFU);
+    tmp |= ((uint16_t)(*pdata << 8) & 0xFF00U);
     *pdata = tmp;
   }
   return ret;
@@ -57,17 +57,17 @@ int32_t veml6030_read_reg(veml6030_ctx_t *ctx, uint16_t reg, uint16_t *pdata, ui
 
 /**
   * @brief  Write VEML6030 component registers
-  * @param  ctx component contex
+  * @param  ctx component context
   * @param  reg Register to write to
   * @param  pdata Pointer to data buffer
   * @param  length Number of data to write
   * @retval Component status
   */
-int32_t veml6030_write_reg(veml6030_ctx_t *ctx, uint16_t reg, uint16_t *pdata, uint16_t length)
+int32_t veml6030_write_reg(const veml6030_ctx_t *ctx, uint16_t reg, const uint16_t *pdata, uint16_t length)
 {
   uint16_t tmp;
-  tmp = ((uint16_t)(*pdata >> 8) & 0x00FF);
-  tmp |= ((uint16_t)(*pdata << 8) & 0xFF00);
+  tmp = ((uint16_t)(*pdata >> 8) & 0x00FFU);
+  tmp |= ((uint16_t)(*pdata << 8) & 0xFF00U);
 
   return ctx->WriteReg(ctx->handle, reg, (uint8_t *)&tmp, length);
 }

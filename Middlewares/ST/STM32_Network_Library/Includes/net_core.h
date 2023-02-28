@@ -32,6 +32,14 @@ extern "C" {
 #include "net_class_extension.h"
 
 #ifdef NET_USE_RTOS
+void net_init_locks(void);
+void net_destroy_locks(void);
+
+void net_lock(int32_t idx, uint32_t to);
+void net_unlock(int32_t idx);
+
+void net_lock_nochk(int32_t idx, uint32_t to);
+void net_unlock_nochk(int32_t idx);
 
 #define NET_OS_WAIT_FOREVER     0xffffffffU
 
@@ -41,20 +49,19 @@ extern "C" {
 
 #define NET_LOCK_NUMBER        (NET_LOCK_STATE_EVENT+1)
 
-#define LOCK_SOCK(s)           net_lock((int32_t)s,NET_OS_WAIT_FOREVER)
+#define LOCK_SOCK(s)           net_lock((s), NET_OS_WAIT_FOREVER)
 #define UNLOCK_SOCK(s)         net_unlock(s)
 
-#define LOCK_SOCK_ARRAY()      net_lock(NET_LOCK_SOCKET_ARRAY,NET_OS_WAIT_FOREVER)
-#define UNLOCK_SOCK_ARRAY()    net_unlock(NET_LOCK_SOCKET_ARRAY )
+#define LOCK_SOCK_ARRAY()      net_lock(NET_LOCK_SOCKET_ARRAY, NET_OS_WAIT_FOREVER)
+#define UNLOCK_SOCK_ARRAY()    net_unlock(NET_LOCK_SOCKET_ARRAY)
 
-#define LOCK_NETIF_LIST()      net_lock(NET_LOCK_NETIF_LIST,NET_OS_WAIT_FOREVER )
-#define UNLOCK_NETIF_LIST()    net_unlock(NET_LOCK_NETIF_LIST )
+#define LOCK_NETIF_LIST()      net_lock(NET_LOCK_NETIF_LIST, NET_OS_WAIT_FOREVER)
+#define UNLOCK_NETIF_LIST()    net_unlock(NET_LOCK_NETIF_LIST)
 
-#define WAIT_STATE_CHANGE(to)  net_lock_nochk(NET_LOCK_STATE_EVENT,to )
-#define SIGNAL_STATE_CHANGE()  net_unlock_nochk(NET_LOCK_STATE_EVENT )
+#define WAIT_STATE_CHANGE(to)  net_lock_nochk(NET_LOCK_STATE_EVENT, (to))
+#define SIGNAL_STATE_CHANGE()  net_unlock_nochk(NET_LOCK_STATE_EVENT)
 
 #else
-
 #define LOCK_SOCK(s)
 #define UNLOCK_SOCK(s)
 #define LOCK_SOCK_ARRAY()
@@ -63,9 +70,7 @@ extern "C" {
 #define UNLOCK_NETIF_LIST()
 #define WAIT_STATE_CHANGE(to)  pnetif->pdrv->if_yield(pnetif, (to))
 #define SIGNAL_STATE_CHANGE()
-
 #endif /* NET_USE_RTOS */
-
 
 
 typedef enum
@@ -105,9 +110,9 @@ struct net_if_drv_s
   int32_t (* plisten)(int32_t sock, int32_t backlog);
   int32_t (* paccept)(int32_t sock, net_sockaddr_t *addr, uint32_t *addrlen);
   int32_t (* pconnect)(int32_t sock, const net_sockaddr_t *addr, uint32_t addrlen);
-  int32_t (* psend)(int32_t sock, uint8_t *buf, int32_t len, int32_t flags);
+  int32_t (* psend)(int32_t sock, const uint8_t *buf, int32_t len, int32_t flags);
   int32_t (* precv)(int32_t sock, uint8_t *buf, int32_t len, int32_t flags);
-  int32_t (* psendto)(int32_t sock, uint8_t *buf, int32_t len, int32_t flags, net_sockaddr_t *to, uint32_t tolen);
+  int32_t (* psendto)(int32_t sock, const uint8_t *buf, int32_t len, int32_t flags, net_sockaddr_t *to, uint32_t tolen);
   int32_t (* precvfrom)(int32_t sock, uint8_t *buf, int32_t len, int32_t flags, net_sockaddr_t *from, uint32_t *flen);
   int32_t (* psetsockopt)(int32_t sock, int32_t level, int32_t optname, const void *optvalue, uint32_t optlen);
   int32_t (* pgetsockopt)(int32_t sock, int32_t level, int32_t optname, void *optvalue, uint32_t *optlen);
@@ -124,14 +129,11 @@ struct net_if_drv_s
   /* class extension */
   struct
   {
-    net_if_wifi_class_extension_t         *wifi;
-    net_if_ethernet_class_extension_t     *ethernet;
-    net_if_cellular_class_extension_t     *cellular;
-    net_if_custom_class_extension_t       *custom;
+    net_if_wifi_class_extension_t     *wifi;
+    net_if_ethernet_class_extension_t *ethernet;
+    net_if_custom_class_extension_t   *custom;
   } extension;
 };
-
-typedef void (*sock_notify_func)(int32_t, int32_t, const uint8_t *, uint32_t);
 
 typedef struct net_tls_data net_tls_data_t;
 typedef int32_t net_ulsock_t;
@@ -170,24 +172,9 @@ typedef struct net_socket_s
 
 
 int32_t icmp_ping(net_if_handle_t *netif, net_sockaddr_t *addr, int32_t count, int32_t timeout, int32_t response[]);
-bool    net_access_control(net_if_handle_t *pnetif, net_access_t access, int32_t *l);
-net_if_handle_t *net_if_find(net_sockaddr_t  *addr);
-net_if_handle_t *netif_check(net_if_handle_t *pnetif_in);
-
-#ifdef NET_USE_RTOS
-
-void net_init_locks(void);
-void net_destroy_locks(void);
-
-void net_lock(int32_t idx, uint32_t to);
-void net_unlock(int32_t idx);
-
-void net_lock_nochk(int32_t idx, uint32_t to);
-void net_unlock_nochk(int32_t idx);
-
-#endif /* NET_USE_RTOS */
-
-
+bool    net_access_control(net_if_handle_t *pnetif, net_access_t func, int32_t *code);
+net_if_handle_t *net_if_find(net_sockaddr_t *addr);
+net_if_handle_t *netif_check(net_if_handle_t *pnetif);
 
 #ifdef __cplusplus
 }

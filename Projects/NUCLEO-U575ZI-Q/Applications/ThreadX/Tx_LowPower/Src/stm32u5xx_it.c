@@ -1,11 +1,8 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    ThreadX/Tx_Thread_Creation/Src/stm32u5xx_it.c
-  * @author  MCD Application Team
-  * @brief   Main Interrupt Service Routines.
-  *          This file provides template for all exceptions handler and 
-  *          peripherals interrupt service routine.
+  * @file    stm32u5xx_it.c
+  * @brief   Interrupt Service Routines.
   ******************************************************************************
   * @attention
   *
@@ -163,6 +160,20 @@ void DebugMon_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles EXTI Line13 interrupt.
+  */
+void EXTI13_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI13_IRQn 0 */
+
+  /* USER CODE END EXTI13_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(BUTTON_USER_Pin);
+  /* USER CODE BEGIN EXTI13_IRQn 1 */
+
+  /* USER CODE END EXTI13_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM6 global interrupt.
   */
 void TIM6_IRQHandler(void)
@@ -177,13 +188,5 @@ void TIM6_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-/**
-  * @brief  This function handles external line 13 interrupt request.
-  * @param  None
-  * @retval None
-  */
-void EXTI13_IRQHandler(void)
-{
-  HAL_GPIO_EXTI_IRQHandler(BUTTON_USER_PIN);
-}
+
 /* USER CODE END 1 */

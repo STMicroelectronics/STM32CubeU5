@@ -13,7 +13,7 @@
 ;*******************************************************************************
 ;* @attention
 ;*
-;* Copyright (c) 2022 STMicroelectronics.
+;* Copyright (c) 2021 STMicroelectronics.
 ;* All rights reserved.
 ;*
 ;* This software is licensed under terms that can be found in the LICENSE file
@@ -29,7 +29,7 @@
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Stack_Size		EQU     0x400
+Stack_Size      EQU     0x00000400
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
@@ -40,7 +40,7 @@ __initial_sp
 ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Heap_Size      EQU     0x400
+Heap_Size       EQU     0x00000400
 
                 AREA    HEAP, NOINIT, READWRITE, ALIGN=3
 __heap_base
@@ -199,6 +199,7 @@ __Vectors       DCD     __initial_sp                     ; Top of Stack
                 DCD     MDF1_FLT5_IRQHandler             ; MDF1 Filter 5 global interrupt
                 DCD     CORDIC_IRQHandler                ; CORDIC global interrupt
                 DCD     FMAC_IRQHandler                  ; FMAC global interrupt
+                DCD     LSECSSD_IRQHandler               ; LSECSSD global interrupt
 
 
 __Vectors_End
@@ -396,6 +397,7 @@ Default_Handler PROC
                 EXPORT  MDF1_FLT5_IRQHandler         [WEAK]
                 EXPORT  CORDIC_IRQHandler            [WEAK]
                 EXPORT  FMAC_IRQHandler              [WEAK]
+                EXPORT  LSECSSD_IRQHandler           [WEAK]
 
 
 WWDG_IRQHandler
@@ -518,6 +520,7 @@ MDF1_FLT4_IRQHandler
 MDF1_FLT5_IRQHandler
 CORDIC_IRQHandler
 FMAC_IRQHandler
+LSECSSD_IRQHandler
 
                 B       .
 
@@ -552,5 +555,3 @@ __user_initial_stackheap PROC
                 ENDIF
 
                 END
-
-

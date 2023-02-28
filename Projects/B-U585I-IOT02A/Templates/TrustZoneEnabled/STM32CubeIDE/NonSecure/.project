@@ -452,11 +452,6 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_light_sensor.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_light_sensor.c</locationURI>
-		</link>
-		<link>
 			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_bus.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_bus.c</locationURI>
@@ -475,6 +470,11 @@
 			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_env_sensors.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_env_sensors.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_light_sensor.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_light_sensor.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_motion_sensors.c</name>
@@ -537,9 +537,9 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/lps22hh/lps22hh_reg.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/m24lr64.c</name>
+			<name>Drivers/BSP/Components/m24256.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/m24lr64/m24lr64.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/m24256/m24256.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/Components/mx25lm51245g.c</name>
@@ -595,6 +595,36 @@
 			<name>Drivers/BSP/Components/veml6030_reg.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/veml6030/veml6030_reg.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/VL53L5CX/platform.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/porting/platform.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/VL53L5CX/vl53l5cx.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/vl53l5cx.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/VL53L5CX/vl53l5cx_api.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_api.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/VL53L5CX/vl53l5cx_plugin_detection_thresholds.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_detection_thresholds.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/VL53L5CX/vl53l5cx_plugin_motion_indicator.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_motion_indicator.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/VL53L5CX/vl53l5cx_plugin_xtalk.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_xtalk.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

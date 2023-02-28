@@ -59,7 +59,7 @@ void OTG_FS_IRQHandler(void);
 void SDMMC1_IRQHandler(void);
 void UCPD1_IRQHandler(void);
 /* USER CODE BEGIN EFP */
-
+void EXTI8_IRQHandler(void);
 /* USER CODE END EFP */
 
 #ifdef __cplusplus

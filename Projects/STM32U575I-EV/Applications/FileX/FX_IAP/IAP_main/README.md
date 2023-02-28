@@ -34,7 +34,7 @@ If the user button is pressed at application start-up, the program try to flash 
 
 #### <b>Loading the new software sequence</b>
 
-If the user button is found to be not pressed at application start-up, the program will try to load the previously programmed application from the address defined by **APP_ADDRESS**.
+If the user button is not pressed at application start-up, the program will try to load the previously programmed application from the address defined by **APP_ADDRESS**.
 
 For that the steps below will be followed:
 
@@ -61,7 +61,7 @@ In the loading new software sequence, the loaded application should start and ru
 
 ### <b>Error behaviors</b>
 
-On failure, the red LED starts toggeling while the green LED is switched OFF.
+On failure, the red LED starts toggling while the green LED is switched OFF.
 
 
 ### <b>Assumptions if any</b>
@@ -92,7 +92,7 @@ The name for the binary should also be specified there as defined by **FW_NAME_S
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.s" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
    It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL).
@@ -107,7 +107,7 @@ The name for the binary should also be specified there as defined by **FW_NAME_S
     + For MDK-ARM:
 	```
     either define the RW_IRAM1 region in the ".sct" file
-    or modify the line below in "tx_low_level_initilize.s to match the memory region being used
+    or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
 	```
     + For STM32CubeIDE add the following section into the .ld file:
@@ -127,7 +127,7 @@ The name for the binary should also be specified there as defined by **FW_NAME_S
        Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).	 
        Read more in STM32CubeIDE User Guide, chapter: "Linker script".
 	  
-    + The "tx_initialize_low_level.s" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
+    + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
                
                
 #### <b>FileX/LevelX usage hints</b>

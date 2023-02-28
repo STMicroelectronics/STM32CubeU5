@@ -98,7 +98,7 @@ SRAM_HandleTypeDef hsram[SRAM_INSTANCES_NBR];
   * @{
   */
 static void SRAM_MspInit(SRAM_HandleTypeDef *hSram);
-static void SRAM_MspDeInit(SRAM_HandleTypeDef *hSram);
+static void SRAM_MspDeInit(const SRAM_HandleTypeDef *hSram);
 
 /**
   * @}
@@ -439,7 +439,7 @@ static void SRAM_MspInit(SRAM_HandleTypeDef *hSram)
   * @param  hSram  SRAM handle
   * @retval None
   */
-static void SRAM_MspDeInit(SRAM_HandleTypeDef *hSram)
+static void SRAM_MspDeInit(const SRAM_HandleTypeDef *hSram)
 {
   GPIO_InitTypeDef gpio_init_structure;
   static DMA_HandleTypeDef dma_handle;

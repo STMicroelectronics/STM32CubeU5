@@ -119,7 +119,7 @@ typedef enum
 /**
   * @brief LPBAM Functional State enumeration definition.
   */
-#define LPBAM_FunctionalState FunctionalState
+typedef FunctionalState LPBAM_FunctionalState;
 /**
   * @}
   */

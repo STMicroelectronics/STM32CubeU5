@@ -92,6 +92,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   }
   /* Enable the TIM7 global Interrupt */
   HAL_NVIC_EnableIRQ(TIM7_IRQn);
+
  /* Return function status */
   return status;
 }

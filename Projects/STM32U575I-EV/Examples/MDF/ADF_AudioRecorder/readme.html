@@ -21,16 +21,16 @@
 <div class="col-sm-12 col-lg-8">
 <h2 id="adf_audiorecorder-example-description"><b>ADF_AudioRecorder Example Description</b></h2>
 <ul>
-<li><p>This example shows how to use the MDF HAL API (ADF instance) to perform mono audio recording. For this audio record we will use one MP34DT01 digital microphones mounted on the MB1550 module.</p></li>
+<li><p>This example shows how to use the MDF HAL API (ADF instance) to perform mono audio recording. For this audio record we will use one MP23DB01 digital microphones mounted on the MB1550 module.</p></li>
 <li><p>At the beginning of the main program the HAL_Init() function is called to reset all the peripherals initialize the Flash interface and the systick. The SystemClock_Config() function is used to configure the system clock for STM32U575xx Devices :</p>
 <ul>
 <li>The CPU at 160MHz</li>
 <li>The HCLK, AHB and APB1/APB2/APB3 peripherals at 160MHz.</li>
 </ul></li>
-<li><p>MP34DT01 runs with a clock frequency from 1MHz to 3,25MHz. This clock frequency should be delivered by MDF. So MDF_CCK1 (PF10) will be configured to enable output clock generation, to choose audio clock as an output clock source, and output clock divider will be set to generate an output clock in MP34DT01 frequency clock range. Audio clock will be configured to 11.291MHz, so MDF output clock divider will be set to 4.</p></li>
+<li><p>MP23DB01 runs with a clock frequency from 1MHz to 3,25MHz. This clock frequency should be delivered by ADF. So ADF1_CCK0 (PB3) will be configured to enable output clock generation, to choose audio clock as an output clock source, and output clock divider will be set to generate an output clock in MP23DB01 frequency clock range. Audio clock will be configured to 11.291MHz, so ADF output clock divider will be set to 4.</p></li>
 <li><p>The digital audio outputs from the microphones are coded in PDM (Pulse Density Modulation) and interlaced to use the same data wire connected to PB4.</p></li>
-<li><p>PE4 is configured as ADF_SDIN0 (MDF serial interface 3 as external serial data input). We will use MDF serial interface 0 to get channel. MDF bitstream will be configured to take inputs from external serial input 0 on raising edge. ADF serial interface 0 will also be configured to operate in SPI mode with rising edge and with internal clock.</p></li>
-<li><p>MDF filter 0 will be used to perform conversions. We will use a SINC4 filter with oversampling at 64 and integrator oversampling at 1. Oversampling is set to 64 in order to have an audio sample frequency at 44.1KHz (11.291MHz/(4*64)). Regular conversions in fast mode will be performed in DMA mode on MDF filter 0 to fill a buffer containing left audio samples at 44.1KHz. ADF filter 0 will be used to perform right channels conversions.</p></li>
+<li><p>PB4 is configured as ADF_SDI0 (ADF serial interface 0 as external serial data input). We will use ADF serial interface 0 to get channel. ADF bitstream will be configured to take inputs from external serial input 0 on raising edge. ADF serial interface 0 will also be configured to operate in SPI mode with rising edge and with internal clock.</p></li>
+<li><p>ADF filter 0 will be used to perform conversions. We will use a SINC4 filter with oversampling at 64 and integrator oversampling at 1. Oversampling is set to 64 in order to have an audio sample frequency at 44.1KHz (11.291MHz/(4*64)). Regular conversions in fast mode will be performed in DMA mode on ADF filter 0 to fill a buffer containing left audio samples at 44.1KHz. ADF filter 0 will be used to perform right channels conversions.</p></li>
 <li><p>Playback of the recorded data will be performed on headset using HAL_SAI and CS42L51 audio codec. A circular playback buffer will be filled as soon as recorded data are available. When half left and right buffers will be filled, we put first parts of left and right channels data on the first half of playback buffer. When left and right buffers will be full filled, we put second parts of left and right channels data on the second half of playback buffer.</p></li>
 </ul>
 <p>MB1550 board’s LEDs are used to monitor the example status:</p>
@@ -49,13 +49,16 @@
 <li>Transmit data from play buffer to the SAP via DMA (linked list circular mode).</li>
 </ol>
 <h3 id="keywords"><b>Keywords</b></h3>
-<p>Audio, SAI, DMA, Buffer update, play, headphone, audio protocol</p>
+<p>Audio, SAI, MDF, ADF, DMA, Buffer update, play, headphone, audio protocol</p>
 <h3 id="directory-contents"><b>Directory contents</b></h3>
 <ul>
 <li>MDF/ADF_AudioRecorder/Src/main.c Main program</li>
+<li>MDF/ADF_AudioRecorder/Src/linked_list.c LinkedList configuration file</li>
 <li>MDF/ADF_AudioRecorder/Src/system_stm32u5xx.c STM32U5xx system source file</li>
 <li>MDF/ADF_AudioRecorder/Src/stm32u5xx_it.c Interrupt handlers</li>
+<li>MDF/MDF_AudioSoundDetector/Src/stm32u5xx_hal_msp.c HAL MSP module</li>
 <li>MDF/ADF_AudioRecorder/Inc/main.h Main program header file</li>
+<li>MDF/ADF_AudioRecorder/Inc/linked_list.h LinkedList configuration header file</li>
 <li>MDF/ADF_AudioRecorder/Inc/stm32u575i_eval_conf.h STM32U575I-EVAL board configuration file</li>
 <li>MDF/ADF_AudioRecorder/Inc/stm32u5xx_hal_conf.h HAL configuration file</li>
 <li>MDF/ADF_AudioRecorder/Inc/stm32u5xx_it.h Interrupt handlers header file</li>

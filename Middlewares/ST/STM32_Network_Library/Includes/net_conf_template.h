@@ -25,23 +25,26 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* disable Misra rule to enable doxygen comment , A section of code appear to have been commented out */
+/* Disable MISRA rule to enable doxygen comment, A section of code appear to have been commented out */
 
 #include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include "net_types.h"
 
-/* Please uncomment if you want socket address definition from LWIP include file rather than local one  */
+/* Please uncomment if you want socket address definition from LWIP include file rather than local one */
 /* This is recommended if network interface uses LWIP to save some code size. This is required if      */
 /* project uses IPv6 */
 
 /* #define NET_USE_LWIP_DEFINITIONS  */
 
-/* Experimental : Please uncomment if you want to use only control part of network library              */
-/* net_socket APIs are directly redefined to LWIP, NET_MBEDTLS_HOST_SUPPORT is not supported with        */
-/* this mode, dedicated to save memory (4K code)                                                        */
+/* Experimental: Please uncomment if you want to use only control part of network library              */
+/* net_socket APIs are directly redefined to LWIP, NET_MBEDTLS_HOST_SUPPORT is not supported with      */
+/* this mode, dedicated to save memory (4K code)                                                       */
 /* #define NET_BYPASS_NET_SOCKET */
 
 
-/* Please uncomment if secure socket have to be supported and is implemented thanks to MBEDTLS running on MCU */
+/* Please uncomment if secure sockets have to be supported and is implemented thanks to MBEDTLS running on MCU */
 /* #define NET_MBEDTLS_HOST_SUPPORT */
 
 /* Please uncomment if device supports internally Secure TCP connection */
@@ -51,10 +54,10 @@ extern "C" {
 #include "cmsis_os.h"
 #endif /* NET_USE_RTOS */
 
-/* Please uncomment if dhcp server is required and not natively supported by network interface */
+/* Please uncomment if DHCP server is required and not natively supported by network interface */
 /* #define NET_DHCP_SERVER_HOST_SUPPORT*/
 
-/* when using LWIP , size of hostname */
+/* when using LWIP, size of hostname */
 #define NET_IP_HOSTNAME_MAX_LEN        32
 
 #ifndef NET_USE_IPV6
@@ -62,17 +65,16 @@ extern "C" {
 #endif /* NET_USE_IPV6 */
 
 #if NET_USE_IPV6 && !defined(NET_USE_LWIP_DEFINITIONS)
-#error "NET IPV6 required to define NET_USE_LWIP_DEFINTIONS"
+#error "NET IPV6 required to define NET_USE_LWIP_DEFINITIONS"
 #endif /* NET_USE_IPV6 */
 
 
 /* MbedTLS configuration */
 #ifdef NET_MBEDTLS_HOST_SUPPORT
 
-
 #if !defined NET_MBEDTLS_DEBUG_LEVEL
 #define NET_MBEDTLS_DEBUG_LEVEL 1
-#endif /*   NET_MBEDTLS_DEBUG_LEVEL */
+#endif /* NET_MBEDTLS_DEBUG_LEVEL */
 
 #if !defined NET_MBEDTLS_CONNECT_TIMEOUT
 #define NET_MBEDTLS_CONNECT_TIMEOUT     10000U
@@ -81,6 +83,7 @@ extern "C" {
 #if !defined(MBEDTLS_CONFIG_FILE)
 #define MBEDTLS_CONFIG_FILE "mbedtls/config.h"
 #endif /* MBEDTLS_CONFIG_FILE */
+
 #endif /* NET_MBEDTLS_HOST_SUPPORT */
 
 #if !defined(NET_MAX_SOCKETS_NBR)
@@ -103,7 +106,7 @@ extern "C" {
 
 #ifdef NET_USE_RTOS
 
-#if ( osCMSIS < 0x20000U)
+#if (osCMSIS < 0x20000U)
 #define NET_RTOS_SUSPEND  if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) { (void) vTaskSuspendAll(); }
 #define NET_RTOS_RESUME   if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) { (void) xTaskResumeAll(); }
 #else
@@ -179,6 +182,9 @@ extern "C" {
 #define NET_TASK_HISTORY_SIZE   0U
 #endif /* NET_PERF_MAXTHREAD  */
 
+
+/* The random provider to implement on the application side. */
+int mbedtls_rng_raw(void *data, uchar_t *output, size_t len);
 
 #ifdef __cplusplus
 }

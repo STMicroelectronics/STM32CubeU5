@@ -39,7 +39,7 @@
   * @param  length Length of data to read
   * @retval Component status
   */
-int32_t sx8651_read_reg(sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pdata, uint16_t length)
+int32_t sx8651_read_reg(const sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pdata, uint16_t length)
 {
   return ctx->ReadReg(ctx->handle, reg, pdata, length);
 }
@@ -52,7 +52,7 @@ int32_t sx8651_read_reg(sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pdata, uint16_t
   * @param  length Length of data to write
   * @retval Component status
   */
-int32_t sx8651_write_reg(sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pdata, uint16_t length)
+int32_t sx8651_write_reg(const sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pdata, uint16_t length)
 {
   return ctx->WriteReg(ctx->handle, reg, pdata, length);
 }
@@ -64,7 +64,7 @@ int32_t sx8651_write_reg(sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pdata, uint16_
   * @param  length Length of data to read
   * @retval Component status
   */
-int32_t sx8651_read_data(sx8651_ctx_t *ctx, uint8_t *pdata, uint16_t length)
+int32_t sx8651_read_data(const sx8651_ctx_t *ctx, uint8_t *pdata, uint16_t length)
 {
   return ctx->ReadData(ctx->handle, pdata, length);
 }
@@ -76,7 +76,7 @@ int32_t sx8651_read_data(sx8651_ctx_t *ctx, uint8_t *pdata, uint16_t length)
   * @param  length Length of data to write
   * @retval Component status
   */
-int32_t sx8651_write_cmd(sx8651_ctx_t *ctx, uint8_t *pdata, uint16_t length)
+int32_t sx8651_write_cmd(const sx8651_ctx_t *ctx, uint8_t *pdata, uint16_t length)
 {
   return ctx->WriteCmd(ctx->handle, pdata, length);
 }
@@ -89,7 +89,7 @@ int32_t sx8651_write_cmd(sx8651_ctx_t *ctx, uint8_t *pdata, uint16_t length)
   * @param  length Length of data to read
   * @retval Component status
   */
-int32_t sx8651_read_chan(sx8651_ctx_t *ctx, uint8_t chan, uint8_t *pdata, uint16_t length)
+int32_t sx8651_read_chan(const sx8651_ctx_t *ctx, uint8_t chan, uint8_t *pdata, uint16_t length)
 {
   uint8_t reg_r = 0x80;
 
@@ -103,7 +103,7 @@ int32_t sx8651_read_chan(sx8651_ctx_t *ctx, uint8_t chan, uint8_t *pdata, uint16
   * @param  value Value to write to SX8651_CTRL_0_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_rate_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_rate_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -127,7 +127,7 @@ int32_t  sx8651_ctrl_rate_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CTRL_0_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_rate_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_rate_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -148,7 +148,7 @@ int32_t  sx8651_ctrl_rate_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CTRL_0_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_powdly_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_powdly_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -172,7 +172,7 @@ int32_t  sx8651_ctrl_powdly_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CTRL_0_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_powdly_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_powdly_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -193,7 +193,7 @@ int32_t  sx8651_ctrl_powdly_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CTRL_1_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_auxaqc_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_auxaqc_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -217,7 +217,7 @@ int32_t  sx8651_ctrl_auxaqc_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CTRL_1_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_auxaqc_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_auxaqc_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -238,7 +238,7 @@ int32_t  sx8651_ctrl_auxaqc_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CTRL_1_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_condirq_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_condirq_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -262,7 +262,7 @@ int32_t  sx8651_ctrl_condirq_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CTRL_1_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_condirq_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_condirq_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -283,7 +283,7 @@ int32_t  sx8651_ctrl_condirq_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CTRL_1_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_rpdnt_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_rpdnt_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -307,7 +307,7 @@ int32_t  sx8651_ctrl_rpdnt_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CTRL_1_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_rpdnt_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_rpdnt_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -328,7 +328,7 @@ int32_t  sx8651_ctrl_rpdnt_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CTRL_1_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_filt_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_filt_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -352,7 +352,7 @@ int32_t  sx8651_ctrl_filt_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CTRL_1_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_filt_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_filt_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -373,7 +373,7 @@ int32_t  sx8651_ctrl_filt_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CTRL_2_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_setdly_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_setdly_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -397,7 +397,7 @@ int32_t  sx8651_ctrl_setdly_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CTRL_2_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_setdly_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_setdly_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -418,7 +418,7 @@ int32_t  sx8651_ctrl_setdly_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CTRL_3_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_rmsel_y_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_rmsel_y_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -442,7 +442,7 @@ int32_t  sx8651_ctrl_rmsel_y_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CTRL_3_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_rmsel_y_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_rmsel_y_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -463,7 +463,7 @@ int32_t  sx8651_ctrl_rmsel_y_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CTRL_3_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_rmsel_x_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_rmsel_x_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -487,7 +487,7 @@ int32_t  sx8651_ctrl_rmsel_x_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CTRL_3_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_rmsel_x_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_rmsel_x_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -508,7 +508,7 @@ int32_t  sx8651_ctrl_rmsel_x_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_xconv_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_xconv_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -532,7 +532,7 @@ int32_t  sx8651_ctrl_xconv_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_xconv_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_xconv_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -553,7 +553,7 @@ int32_t  sx8651_ctrl_xconv_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_yconv_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_yconv_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -577,7 +577,7 @@ int32_t  sx8651_ctrl_yconv_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_yconv_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_yconv_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -598,7 +598,7 @@ int32_t  sx8651_ctrl_yconv_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_z1conv_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_z1conv_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -622,7 +622,7 @@ int32_t  sx8651_ctrl_z1conv_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_z1conv_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_z1conv_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -643,7 +643,7 @@ int32_t  sx8651_ctrl_z1conv_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_z2conv_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_z2conv_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -667,7 +667,7 @@ int32_t  sx8651_ctrl_z2conv_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_z2conv_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_z2conv_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -688,7 +688,7 @@ int32_t  sx8651_ctrl_z2conv_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_auxconv_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_auxconv_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -712,7 +712,7 @@ int32_t  sx8651_ctrl_auxconv_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_auxconv_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_auxconv_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -733,7 +733,7 @@ int32_t  sx8651_ctrl_auxconv_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_rxconv_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_rxconv_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -757,7 +757,7 @@ int32_t  sx8651_ctrl_rxconv_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_rxconv_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_rxconv_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -778,7 +778,7 @@ int32_t  sx8651_ctrl_rxconv_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_ryconv_w(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_ryconv_w(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;
@@ -802,7 +802,7 @@ int32_t  sx8651_ctrl_ryconv_w(sx8651_ctx_t *ctx, uint8_t value)
   * @param  value pointer to the value of SX8651_CHANMSK_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_ryconv_r(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_ryconv_r(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -823,7 +823,7 @@ int32_t  sx8651_ctrl_ryconv_r(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_STAT_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_convirq(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_convirq(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -844,7 +844,7 @@ int32_t  sx8651_ctrl_convirq(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_STAT_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_penirq(sx8651_ctx_t *ctx, uint8_t *value)
+int32_t  sx8651_ctrl_penirq(const sx8651_ctx_t *ctx, uint8_t *value)
 {
   int32_t ret;
 
@@ -865,7 +865,7 @@ int32_t  sx8651_ctrl_penirq(sx8651_ctx_t *ctx, uint8_t *value)
   * @param  value pointer to the value of SX8651_SOFTRESET_REG register
   * @retval Component status
   */
-int32_t  sx8651_ctrl_softreset(sx8651_ctx_t *ctx, uint8_t value)
+int32_t  sx8651_ctrl_softreset(const sx8651_ctx_t *ctx, uint8_t value)
 {
   int32_t ret;
   uint8_t tmp;

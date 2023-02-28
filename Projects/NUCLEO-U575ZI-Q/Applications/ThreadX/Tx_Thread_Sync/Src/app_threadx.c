@@ -23,8 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "app_azure_rtos_config.h"
-#include "stdio.h"
+#include "app_azure_rtos.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -39,30 +38,22 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-#if defined ( __GNUC__) && !defined(__clang__)
-/* With GCC, small printf (option LD Linker->Libraries->Small printf
-   set to 'Yes') calls __io_putchar() */
-#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+  TX_THREAD tx_app_thread;
 /* USER CODE BEGIN PV */
-TX_THREAD ThreadOne;
-TX_THREAD ThreadTwo;
-APP_SYNC_TYPE SyncObject;
-
-extern UART_HandleTypeDef huart1;
+  TX_THREAD ThreadTwo;
+  APP_SYNC_TYPE SyncObject;
+  extern UART_HandleTypeDef huart1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-VOID ThreadOne_Entry(ULONG thread_input);
-VOID ThreadTwo_Entry(ULONG thread_input);
-static VOID Led_Toggle(Led_TypeDef led, UINT iter);
-static VOID App_Delay(ULONG Delay);
+  VOID ThreadTwo_Entry(ULONG thread_input);
+  static VOID Led_Toggle(uint16_t led_pin, GPIO_TypeDef *led_port, UINT iter);
+  static VOID App_Delay(ULONG Delay);
 /* USER CODE END PFP */
 
 /**
@@ -75,36 +66,36 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   UINT ret = TX_SUCCESS;
   TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
 
-   /* USER CODE BEGIN App_ThreadX_MEM_POOL */
-  
+  /* USER CODE BEGIN App_ThreadX_MEM_POOL */
+
   /* USER CODE END App_ThreadX_MEM_POOL */
+CHAR *pointer;
+
+  /* Allocate the stack for Thread One  */
+  if (tx_byte_allocate(byte_pool, (VOID**) &pointer,
+                       TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
+  {
+    return TX_POOL_ERROR;
+  }
+   /* Create Thread One.  */
+  if (tx_thread_create(&tx_app_thread, "Thread One", ThreadOne_Entry, 0, pointer,
+                       TX_APP_STACK_SIZE, TX_APP_THREAD_PRIO, TX_APP_THREAD_PREEMPTION_THRESHOLD,
+                       TX_APP_THREAD_TIME_SLICE, TX_APP_THREAD_AUTO_START) != TX_SUCCESS)
+  {
+    return TX_THREAD_ERROR;
+  }
 
   /* USER CODE BEGIN App_ThreadX_Init */
-#if (USE_STATIC_ALLOCATION == 1)
-  CHAR *pointer;
-
-  /* Allocate the stack for ThreadOne.  */
-  if (tx_byte_allocate(byte_pool, (VOID **) &pointer, APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
-  {
-    ret = TX_POOL_ERROR;
-  }
-
-  /* Create ThreadOne.  */
-  if (tx_thread_create(&ThreadOne, "Thread One", ThreadOne_Entry, 0, pointer, APP_STACK_SIZE, THREAD_ONE_PRIO,
-                       THREAD_ONE_PREEMPTION_THRESHOLD, DEFAULT_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
-  {
-    ret = TX_THREAD_ERROR;
-  }
 
   /* Allocate the stack for ThreadTwo.  */
-  if (tx_byte_allocate(byte_pool, (VOID **) &pointer, APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
+  if (tx_byte_allocate(byte_pool, (VOID **) &pointer,  TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
   {
     ret = TX_POOL_ERROR;
   }
 
   /* Create ThreadTwo.  */
-  if (tx_thread_create(&ThreadTwo, "Thread Two", ThreadTwo_Entry, 0, pointer, APP_STACK_SIZE, THREAD_TWO_PRIO,
-                       THREAD_TWO_PREEMPTION_THRESHOLD, DEFAULT_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
+  if (tx_thread_create(&ThreadTwo, "Thread Two", ThreadTwo_Entry, 0, pointer,  TX_APP_STACK_SIZE, TX_APP_THREAD_PRIO,
+		  TX_APP_THREAD_PREEMPTION_THRESHOLD, TX_APP_THREAD_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
   {
     ret = TX_THREAD_ERROR;
   }
@@ -114,10 +105,51 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   {
     ret = TX_SYNC_ERROR;
   }
-#endif
+
   /* USER CODE END App_ThreadX_Init */
 
   return ret;
+}
+/**
+  * @brief  Function implementing the ThreadOne_Entry thread.
+  * @param  thread_input: Not used.
+  * @retval None
+  */
+void ThreadOne_Entry(ULONG thread_input)
+{
+  /* USER CODE BEGIN ThreadOne_Entry */
+	UNUSED(thread_input);
+	  ULONG iteration = 0;
+
+	  /* Infinite loop */
+	  while(1)
+	  {
+	    /* try to acquire the sync object without waiting */
+	    if (APP_SYNC_GET(&SyncObject, TX_NO_WAIT) == TX_SUCCESS)
+	    {
+	      printf("** ThreadOne : SyncObject acquired ** \n");
+
+	      /*sync object acquired, toggle the LED_GREEN each 500ms for 5s */
+	      Led_Toggle(LED3_Pin, LED3_GPIO_Port, 10);
+
+	      /*release the sync object */
+	      APP_SYNC_PUT(&SyncObject);
+
+	      printf("** ThreadOne : SyncObject released ** \n");
+
+	      tx_thread_sleep(1);
+	    }
+	    else
+	    {
+
+	      if ((iteration % 2000000) == 0)
+	      {
+	        printf("** ThreadOne : waiting for SyncObject !! **\n");
+	      }
+	    }
+	    iteration++;
+	  }
+  /* USER CODE END ThreadOne_Entry */
 }
 
   /**
@@ -139,46 +171,6 @@ void MX_ThreadX_Init(void)
 }
 
 /* USER CODE BEGIN 1 */
-/**
-  * @brief  Function implementing the ThreadOne thread.
-  * @param  thread_input: Not used
-  * @retval None
-  */
-void ThreadOne_Entry(ULONG thread_input)
-{
-  UNUSED(thread_input);
-  ULONG iteration = 0;
-
-  /* Infinite loop */
-  while(1)
-  {
-    /* try to acquire the sync object without waiting */
-    if (APP_SYNC_GET(&SyncObject, TX_NO_WAIT) == TX_SUCCESS)
-    {
-      printf("** ThreadOne : SyncObject acquired ** \n");
-
-      /*sync object acquired, toggle the LED_GREEN each 500ms for 5s */
-      Led_Toggle(LED_GREEN, 10);
-
-
-      /*release the sync object */
-      APP_SYNC_PUT(&SyncObject);
-
-      printf("** ThreadOne : SyncObject released ** \n");
-
-      tx_thread_sleep(1);
-    }
-    else
-    {
-
-      if ((iteration % 2000000) == 0)
-      {
-        printf("** ThreadOne : waiting for SyncObject !! **\n");
-      }
-    }
-    iteration++;
-  }
-}
 
 /**
   * @brief  Function implementing the ThreadTwo thread.
@@ -199,7 +191,7 @@ void ThreadTwo_Entry(ULONG thread_input)
       printf("** ThreadTwo : SyncObject acquired ** \n");
 
       /*Sync object acquired toggle the LED_RED each 500ms for 5s*/
-      Led_Toggle(LED_RED, 10);
+      Led_Toggle(LED1_Pin, LED1_GPIO_Port, 10);
 
       /*release the sync object*/
       APP_SYNC_PUT(&SyncObject);
@@ -226,20 +218,20 @@ void ThreadTwo_Entry(ULONG thread_input)
   * @param  iter: Number of iterations
   * @retval None
   */
-static VOID Led_Toggle(Led_TypeDef led, UINT iter)
+static VOID Led_Toggle(uint16_t led_pin, GPIO_TypeDef *led_port, UINT iter)
 {
   UINT i;
 
-  BSP_LED_Off(led);
-
+  HAL_GPIO_WritePin(led_port, led_pin, GPIO_PIN_RESET);
+  
   for (i =0; i < iter; i++)
   {
-    BSP_LED_Toggle(led);
+    HAL_GPIO_TogglePin(led_port, led_pin);
     /* Toggle the Led each 500ms */
     App_Delay(50);
   }
 
-  BSP_LED_Off(led);
+  HAL_GPIO_WritePin(led_port, led_pin, GPIO_PIN_RESET);
 }
 
 /**
@@ -252,19 +244,4 @@ void App_Delay(ULONG Delay)
   ULONG initial_time = tx_time_get();
   while ((tx_time_get() - initial_time) < Delay);
 }
-
-/**
-  * @brief  Retargets the C library printf function to the USART.
-  * @param  None
-  * @retval None
-  */
-PUTCHAR_PROTOTYPE
-{
-  /* Place your implementation of fputc here */
-  /* e.g. write a character to the USART1 and Loop until the end of transmission */
-  HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);
-
-  return ch;
-}
-
 /* USER CODE END 1 */

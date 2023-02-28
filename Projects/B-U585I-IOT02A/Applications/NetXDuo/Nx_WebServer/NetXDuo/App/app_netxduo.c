@@ -98,6 +98,7 @@ static UINT webserver_request_notify_callback(NX_WEB_HTTP_SERVER *server_ptr, UI
 
 static uint8_t nx_server_pool[SERVER_POOL_SIZE];
 /* USER CODE END PFP */
+
 /**
   * @brief  Application NetXDuo Initialization.
   * @param memory_ptr: memory pointer
@@ -111,10 +112,16 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
    /* USER CODE BEGIN App_NetXDuo_MEM_POOL */
 
   /* USER CODE END App_NetXDuo_MEM_POOL */
+  /* USER CODE BEGIN 0 */
+
+  /* USER CODE END 0 */
 
   /* USER CODE BEGIN MX_NetXDuo_Init */
 #if (USE_STATIC_ALLOCATION == 1)
   printf("Nx_WebServer_Application_Started..\n");
+
+  /* Initialize the NetX system. */
+  nx_system_initialize();
 
   /* Allocate the memory for packet_pool.  */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer,  NX_PACKET_POOL_SIZE, TX_NO_WAIT) != TX_SUCCESS)
@@ -418,7 +425,7 @@ UINT webserver_request_notify_callback(NX_WEB_HTTP_SERVER *server_ptr, UINT requ
   else if (strcmp(resource, "/LedOff") == 0)
   {
     printf(" Loggling Green Led Off \n");
-    BSP_LED_Off(LED_GREEN);
+    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
     tx_thread_suspend(&LedThread);
   }
   else
@@ -511,7 +518,7 @@ void LedThread_Entry(ULONG thread_input)
   /* Infinite loop */
   while (1)
   {
-    BSP_LED_Toggle(LED_GREEN);
+    HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
     /* Delay for 500ms (App_Delay is used to avoid context change). */
     tx_thread_sleep(50);
   }

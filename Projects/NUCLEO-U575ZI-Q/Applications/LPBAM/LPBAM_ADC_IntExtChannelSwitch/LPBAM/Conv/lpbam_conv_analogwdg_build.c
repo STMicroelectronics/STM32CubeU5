@@ -22,8 +22,23 @@
 
 /* Private variables -------------------------------------------------------------------------------------------------*/
 /* LPBAM variables declaration */
-static LPBAM_ADC_ConvDataDesc_t Conversion_Data_1_Desc;
-static LPBAM_ADC_ConvFullDesc_t Conversion_1_Desc;
+/* USER CODE BEGIN Conv_AnalogWDG_Descs 0 */
+
+/* USER CODE END Conv_AnalogWDG_Descs 0 */
+
+/* USER CODE BEGIN Conversion_Q_Conversion_Data_1_Desc */
+
+/* USER CODE END Conversion_Q_Conversion_Data_1_Desc */
+static LPBAM_ADC_ConvDataDesc_t Conversion_Q_Conversion_Data_1_Desc;
+
+/* USER CODE BEGIN Conversion_Q_Conversion_1_Desc */
+
+/* USER CODE END Conversion_Q_Conversion_1_Desc */
+static LPBAM_ADC_ConvFullDesc_t Conversion_Q_Conversion_1_Desc;
+
+/* USER CODE BEGIN Conv_AnalogWDG_Descs 1 */
+
+/* USER CODE END Conv_AnalogWDG_Descs 1 */
 
 /* Exported variables ------------------------------------------------------------------------------------------------*/
 /* LPBAM queues declaration */
@@ -86,7 +101,7 @@ static void MX_Conversion_Q_Build(void)
   pConvData_ADC.DMAContinuousRequests = DISABLE;
   pConvData_ADC.Size = 32;
   pConvData_ADC.pData = (uint32_t*)&aData_Sequence1[0];
-  if (ADV_LPBAM_ADC_Conversion_SetDataQ(ADC4, &pDMAListInfo_ADC, &pConvData_ADC, &Conversion_Data_1_Desc, &Conversion_Q) != LPBAM_OK)
+  if (ADV_LPBAM_ADC_Conversion_SetDataQ(ADC4, &pDMAListInfo_ADC, &pConvData_ADC, &Conversion_Q_Conversion_Data_1_Desc, &Conversion_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -110,13 +125,13 @@ static void MX_Conversion_Q_Build(void)
   pConvFull_ADC.AnalogWDGConfig[0U].ITMode = ENABLE;
   pConvFull_ADC.AnalogWDGConfig[0U].LowThreshold = 0;
   pConvFull_ADC.AnalogWDGConfig[0U].HighThreshold = 2047;
-  if (ADV_LPBAM_ADC_Conversion_SetFullQ(ADC4, &pDMAListInfo_ADC, &pConvFull_ADC, &Conversion_1_Desc, &Conversion_Q) != LPBAM_OK)
+  if (ADV_LPBAM_ADC_Conversion_SetFullQ(ADC4, &pDMAListInfo_ADC, &pConvFull_ADC, &Conversion_Q_Conversion_1_Desc, &Conversion_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pChannel_ADC.ChannelConfig.Channel = LPBAM_ADC_CHANNEL_4;
   pChannel_ADC.ChannelConfig.Rank = LPBAM_ADC_REGULAR_RANK_1;
-  if (ADV_LPBAM_ADC_ChannelConfig(&pChannel_ADC, &Conversion_1_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_ADC_ChannelConfig(&pChannel_ADC, &Conversion_Q_Conversion_1_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -124,7 +139,7 @@ static void MX_Conversion_Q_Build(void)
   /**
     * Set circular mode
     */
-  if (ADV_LPBAM_Q_SetCircularMode(&Conversion_1_Desc, LPBAM_ADC_CONVERSION_FULLQ_DATA_NODE, &Conversion_Q) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetCircularMode(&Conversion_Q_Conversion_1_Desc, LPBAM_ADC_CONVERSION_FULLQ_DATA_NODE, &Conversion_Q) != LPBAM_OK)
   {
     Error_Handler();
   }

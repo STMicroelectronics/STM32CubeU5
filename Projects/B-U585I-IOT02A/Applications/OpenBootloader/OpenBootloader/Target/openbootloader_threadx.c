@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -18,19 +18,20 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "interfaces_conf.h"
+
 #include "openbl_core.h"
 #include "ux_device_dfu_media.h"
 #include "usb_interface.h"
+#include "interfaces_conf.h"
 #include "openbootloader_threadx.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 #define OPENBL_THREAD_MEMORY_SIZE         (2UL * 1024UL)
-#define UX_DETECT_INTERFACE               0x01
-#define OPENBL_USBX_ENTRY_INPUT           0
-#define OPENBL_USBX_PRIORITY              20
-#define OPENBL_USBX_PREEMT_THRESHOLD      20
+#define UX_DETECT_INTERFACE               0x01U
+#define OPENBL_USBX_ENTRY_INPUT           0U
+#define OPENBL_USBX_PRIORITY              20U
+#define OPENBL_USBX_PREEMT_THRESHOLD      20U
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -52,17 +53,16 @@ void OpenBootloader_ProcessCommandThread(ULONG arg);
 
 /**
   * @brief  Initialize and create the open Bootloader threads.
-  * @param  memory_ptr : memory pointer.
+  * @param  pMemory Pointer to the pool memory.
   * @retval returns UX_SUCCESS if there's no error else returns TX_GROUP_ERROR.
   */
-uint16_t OpenBootloader_ThreadxInit(void *memory_ptr)
+uint16_t OpenBootloader_ThreadxInit(void *pMemory)
 {
   UINT status = UX_SUCCESS;
-  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL *)memory_ptr;
+  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL *)pMemory;
 
   /* Allocate the stack for OpenBootloader_DetectInterfaceThread */
-  status = tx_byte_allocate(byte_pool, (VOID **) &OpenBootloaderPointer,
-                            OPENBL_THREAD_MEMORY_SIZE, TX_NO_WAIT);
+  status = tx_byte_allocate(byte_pool, (VOID **) &OpenBootloaderPointer, OPENBL_THREAD_MEMORY_SIZE, TX_NO_WAIT);
 
   /* Check the allocation operation status */
   if (UX_SUCCESS != status)
@@ -83,8 +83,7 @@ uint16_t OpenBootloader_ThreadxInit(void *memory_ptr)
   }
 
   /* Allocate the stack for OpenBootloader_ProcessCommandThread */
-  status = tx_byte_allocate(byte_pool, (VOID **) &OpenBootloaderPointer,
-                            OPENBL_THREAD_MEMORY_SIZE, TX_NO_WAIT);
+  status = tx_byte_allocate(byte_pool, (VOID **) &OpenBootloaderPointer, OPENBL_THREAD_MEMORY_SIZE, TX_NO_WAIT);
 
   /* Check the allocation operation status */
   if (UX_SUCCESS != status)
@@ -115,12 +114,12 @@ uint16_t OpenBootloader_ThreadxInit(void *memory_ptr)
 
 /**
   * @brief  Sends an event to the OpenBootloader_ProcessCommandThread thread as soon as it detects an interface.
-  * @param  arg: Not used
-  * @retval None
+  * @param  Arg Not used.
+  * @retval None.
   */
-void OpenBootloader_DetectInterfaceThread(ULONG arg)
+void OpenBootloader_DetectInterfaceThread(ULONG Arg)
 {
-  UNUSED(arg);
+  UNUSED(Arg);
 
   /*
      When we detect an interface other than USB, we disable the USB and the SysTick interrupt,
@@ -128,9 +127,9 @@ void OpenBootloader_DetectInterfaceThread(ULONG arg)
      If we detect an USB interface and a GO command is executed, we jump to the user application
      using the DFU_Jump() function.
   */
-  while (1)
+  while (true)
   {
-    if (OPENBL_InterfaceDetection() == 1)
+    if (OPENBL_InterfaceDetection() == 1U)
     {
       /* Disable the SysTick timer */
       NVIC_DisableIRQ(SysTick_IRQn);
@@ -148,30 +147,30 @@ void OpenBootloader_DetectInterfaceThread(ULONG arg)
       break;
     }
 
-    if (JumpUsb == 1)
+    if (JumpUsb == 1U)
     {
       DFU_Jump();
     }
 
     /* Sleep for 1 ms so we don't stay blocked in this thread */
-    tx_thread_sleep(1);
+    tx_thread_sleep(1U);
   }
 }
 
 /**
   * @brief  Wait for a detect interface event and process the command coming from the detected interface.
-  * @param  arg: Not used
-  * @retval None
+  * @param  Arg Not used.
+  * @retval None.
   */
-void OpenBootloader_ProcessCommandThread(ULONG arg)
+void OpenBootloader_ProcessCommandThread(ULONG Arg)
 {
-  ULONG download_flags = 0;
+  ULONG download_flags = 0U;
   UINT status          = 0U;
 
-  UNUSED(arg);
+  UNUSED(Arg);
 
   /* Infinite loop */
-  while (1)
+  while (true)
   {
     /* Wait until the requested flag UX_DETECT_INTERFACE is received */
     status = tx_event_flags_get(&EventDetectInterface, UX_DETECT_INTERFACE,
@@ -184,7 +183,7 @@ void OpenBootloader_ProcessCommandThread(ULONG arg)
       _tx_thread_terminate(&usbx_dfu_download_thread);
       _tx_thread_terminate(&ux_app_thread);
 
-      while (1)
+      while (true)
       {
         /* Process the commands from the detected interface */
         OPENBL_CommandProcess();

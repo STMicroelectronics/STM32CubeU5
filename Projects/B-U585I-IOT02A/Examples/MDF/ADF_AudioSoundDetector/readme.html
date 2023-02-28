@@ -20,20 +20,22 @@
 <div class="row">
 <div class="col-sm-12 col-lg-8">
 <h2 id="adf_audiosounddetector-example-description"><b>ADF_AudioSoundDetector Example Description</b></h2>
-<p>This example shows how to use the MDF HAL API (ADF instance) to use audio sound activity detection. For this audio record we will use one SPH0641LM4H digital microphones mounted on the MB1551 module.</p>
-<p>This project is targeted to run on STM32U585xx devices on B-U585I-IOT02A boards from STMicroelectronics.</p>
-<p>The project configures the maximum system clock frequency at 160Mhz.</p>
-<p>SPH0641LM4H runs with a clock frequency from 1MHz to 4,8MHz. This clock frequency should be delivered by ADF. So ADF_CCK0 (PE9) will be configured to enable output clock generation, to choose audio clock as an output clock source, and output clock divider will be set to generate an output clock in SPH0641LM4H frequency clock range. We will use ADF Clock to be 12MHz and ADF output clock divider will be set to 4 (output clock is 2MHz).</p>
-<p>The digital audio outputs from the microphones are coded in PDM (Pulse Density Modulation) and interlaced to use the same data wire connected to PE10.</p>
-<p>PE4 is configured as ADF_SDIN0 (MDF serial interface 3 as external serial data input). We will use MDF serial interface 0 to get channel. MDF bitstream will be configured to take inputs from external serial input 0 on raising edge. ADF serial interface 0 will also be configured to operate in SPI mode with rising edge and with internal clock.</p>
-<p>MDF filter 0 will be used to perform conversions. We will use a SINC4 filter with oversampling at 64 and integrator oversampling at 1. Oversampling is set to 64 in order to have an audio sample frequency at 44.1KHz (11.291MHz/(4*64)). Regular conversions in fast mode will be performed in DMA mode on ADF filter 0. ADF filter 0 will be used to perform right channels conversions.</p>
-<p>Sound Activity Detector (SAD) will detect sound when its level is bigger than the defined threshold. The ADF in this example is configured as a sound activity detector. The SAD triggers when the sound level (SDLVL) is bigger than the defined threshold. Sound activity detection interrupt will be rising and LEDs will be toggeled. User could configure the system to enter in STOP mode and Sound activity detection interrupt will allow to wakeup from STOP mode.</p>
+<ul>
+<li><p>This example shows how to use the MDF HAL API (ADF instance) to use audio sound activity detection. For this audio record we will use one MP23DB01 digital microphones mounted on the MB1551 module.</p></li>
+<li><p>This project is targeted to run on STM32U585xx devices on <b>B-U585I-IOT02A</b> boards from STMicroelectronics.</p></li>
+<li><p>The project configures the maximum system clock frequency at 160Mhz.</p></li>
+<li><p>MP23DB01 runs with a clock frequency from 1MHz to 3,25MHz. This clock frequency should be delivered by ADF. So ADF1_CCK0 (PE9) will be configured to enable output clock generation, to choose audio clock as an output clock source, and output clock divider will be set to generate an output clock in MP23DB01 frequency clock range. We will use ADF Clock to be 12MHz and ADF output clock divider will be set to 4 (output clock is 3MHz).</p></li>
+<li><p>The digital audio outputs from the microphones are coded in PDM (Pulse Density Modulation) and interlaced to use the same data wire connected to PE10.</p></li>
+<li><p>PE10 is configured as ADF1_SDI0 (ADF serial interface 0 as external serial data input). We will use ADF serial interface 0 to get channel. ADF bitstream will be configured to take inputs from external serial input 0 on raising edge. ADF serial interface 0 will also be configured to operate in SPI mode with rising edge and with internal clock.</p></li>
+<li><p>ADF filter 0 will be used to perform conversions. We will use a SINC4 filter with oversampling at 64 and integrator oversampling at 1. Oversampling is set to 64 in order to have an audio sample frequency at 44.1KHz (11.291MHz/(4*64)). Regular conversions in fast mode will be performed in DMA mode on ADF filter 0. ADF filter 0 will be used to perform right channels conversions.</p></li>
+<li><p>Sound Activity Detector (SAD) will detect sound when its level is bigger than the defined threshold. The ADF in this example is configured as a sound activity detector. The SAD triggers when the sound level (SDLVL) is bigger than the defined threshold. Sound activity detection interrupt will be rising and LEDs will be toggeled. User could configure the system to enter in STOP mode and Sound activity detection interrupt will allow to wakeup from STOP mode.</p></li>
+</ul>
 <p>MB1551 board’s LEDs are used to monitor the example status:</p>
 <ul>
 <li>GREEN LED will toggle as soon as an SAD detection occurs.</li>
 <li>RED LED is turned on when any error is occurred.</li>
 </ul>
-<p>Execution:</p>
+<p><b>Execution:</b></p>
 <p>The program configures system clocks and GPIO used by ADF. Then, program performs the following sequence:</p>
 <ol type="1">
 <li>Fine tune the clocks for audio</li>
@@ -43,14 +45,17 @@
 <li>Wait for SAD interrupt for system wakeup.</li>
 </ol>
 <h3 id="keywords"><b>Keywords</b></h3>
-<p>Audio, MDF, DMA, SAD, Stop2</p>
+<p>Audio, MDF, ADF, DMA, SAD, Stop2</p>
 <h3 id="directory-contents"><b>Directory contents</b></h3>
 <ul>
 <li>MDF/MDF_AudioSoundDetector/Src/main.c Main program</li>
+<li>MDF/MDF_AudioSoundDetector/Src/linked_list.c LinkedList configuration file</li>
 <li>MDF/MDF_AudioSoundDetector/Src/system_stm32u5xx.c STM32U5xx system source file</li>
 <li>MDF/MDF_AudioSoundDetector/Src/stm32u5xx_it.c Interrupt handlers</li>
+<li>MDF/MDF_AudioSoundDetector/Src/stm32u5xx_hal_msp.c HAL MSP module</li>
 <li>MDF/MDF_AudioSoundDetector/Inc/main.h Main program header file</li>
-<li>MDF/MDF_AudioSoundDetector/Inc/stm32u575i_eval_conf.h STM32U575I-EVAL board configuration file</li>
+<li>MDF/MDF_AudioSoundDetector/Inc/linked_list.h LinkedList configuration header file</li>
+<li>MDF/MDF_AudioSoundDetector/Inc/b_u585i_iot02a_conf.h B-U585I-IOT02A board configuration file</li>
 <li>MDF/MDF_AudioSoundDetector/Inc/stm32u5xx_hal_conf.h HAL configuration file</li>
 <li>MDF/MDF_AudioSoundDetector/Inc/stm32u5xx_it.h Interrupt handlers header file</li>
 </ul>

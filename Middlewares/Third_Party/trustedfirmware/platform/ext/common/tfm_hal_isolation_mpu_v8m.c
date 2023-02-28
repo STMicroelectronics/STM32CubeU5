@@ -12,9 +12,15 @@
 #include "tfm_hal_defs.h"
 #include "tfm_hal_isolation.h"
 
+#ifdef TFM_FIH_PROFILE_ON
+fih_int tfm_hal_memory_has_access(uintptr_t base,
+                                  size_t size,
+                                  uint32_t attr)
+#else
 enum tfm_hal_status_t tfm_hal_memory_has_access(uintptr_t base,
                                                 size_t size,
                                                 uint32_t attr)
+#endif
 {
     int flags = 0;
 
@@ -38,12 +44,24 @@ enum tfm_hal_status_t tfm_hal_memory_has_access(uintptr_t base,
     } else if (attr & TFM_HAL_ACCESS_READABLE) {
         flags |= CMSE_MPU_READ;
     } else {
+#ifdef TFM_FIH_PROFILE_ON
+        FIH_RET(fih_int_encode(TFM_HAL_ERROR_INVALID_INPUT));
+#else
         return TFM_HAL_ERROR_INVALID_INPUT;
+#endif
     }
 
     if (cmse_check_address_range((void *)base, size, flags) != NULL) {
+#ifdef TFM_FIH_PROFILE_ON
+        FIH_RET(fih_int_encode(TFM_HAL_SUCCESS));
+#else
         return TFM_HAL_SUCCESS;
+#endif
     } else {
-        return TFM_HAL_ERROR_MEM_FAULT;
+#ifdef TFM_FIH_PROFILE_ON
+	FIH_RET(fih_int_encode(TFM_HAL_ERROR_MEM_FAULT));
+#else
+	return TFM_HAL_ERROR_MEM_FAULT;
+#endif
     }
 }

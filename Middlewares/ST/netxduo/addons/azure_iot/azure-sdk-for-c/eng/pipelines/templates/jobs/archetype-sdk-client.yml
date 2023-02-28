@@ -67,7 +67,7 @@ jobs:
         OSVmImage: MMSUbuntu18.04
         vcpkg.deps: 'cmocka paho-mqtt'
         VCPKG_DEFAULT_TRIPLET: 'x64-linux'
-        build.args: '-DPRECONDITIONS=OFF -DUNIT_TESTING=ON -DUNIT_TESTING_MOCKS=ON -DTRANSPORT_PAHO=ON'
+        build.args: '-DPRECONDITIONS=OFF -DUNIT_TESTING=ON -DUNIT_TESTING_MOCKS=ON -DTRANSPORT_PAHO=ON -DADDRESS_SANITIZER=ON'
         PublishMapFiles: 'true'
         MapFileArtifactSuffix: 'lnx-x64-rel-noprc-log-samples'
         BuildType: Release
@@ -77,7 +77,7 @@ jobs:
         OSVmImage: MMSUbuntu18.04
         vcpkg.deps: 'curl[ssl] paho-mqtt cmocka'
         VCPKG_DEFAULT_TRIPLET: 'x64-linux'
-        build.args: '-DTRANSPORT_CURL=ON -DTRANSPORT_PAHO=ON -DAZ_PLATFORM_IMPL=POSIX -DPRECONDITIONS=OFF -DUNIT_TESTING=ON -DUNIT_TESTING_MOCKS=ON'
+        build.args: '-DTRANSPORT_CURL=ON -DTRANSPORT_PAHO=ON -DAZ_PLATFORM_IMPL=POSIX -DPRECONDITIONS=OFF -DUNIT_TESTING=ON -DADDRESS_SANITIZER=ON -DUNIT_TESTING_MOCKS=ON'
         PublishMapFiles: 'false'
         BuildType: Debug
 
@@ -86,7 +86,7 @@ jobs:
         OSVmImage: MMS2019
         vcpkg.deps: 'cmocka'
         VCPKG_DEFAULT_TRIPLET: 'x86-windows-static'
-        build.args: '-DPRECONDITIONS=OFF -DUNIT_TESTING=ON -DLOGGING=OFF'
+        build.args: '-DPRECONDITIONS=OFF -DUNIT_TESTING=ON -DLOGGING=OFF -DADDRESS_SANITIZER=ON'
         CMAKE_GENERATOR: 'Visual Studio 16 2019'
         CMAKE_GENERATOR_PLATFORM: Win32
         AZ_SDK_C_NO_SAMPLES: 'true'
@@ -96,7 +96,7 @@ jobs:
 
       MacOS_Release_MapFiles_Logging_UnitTests_Samples:
         Pool: Azure Pipelines
-        OSVmImage: 'macOS-10.15'
+        OSVmImage: 'macos-11'
         vcpkg.deps: 'curl[ssl] paho-mqtt cmocka'
         VCPKG_DEFAULT_TRIPLET: 'x64-osx'
         build.args: '-DTRANSPORT_CURL=ON -DTRANSPORT_PAHO=ON -DAZ_PLATFORM_IMPL=POSIX -DPRECONDITIONS=OFF -DUNIT_TESTING=ON'
@@ -105,7 +105,7 @@ jobs:
 
       MacOS_Logging_UnitTests_Samples:
         Pool: Azure Pipelines
-        OSVmImage: 'macOS-10.15'
+        OSVmImage: 'macos-11'
         vcpkg.deps: 'curl[ssl] paho-mqtt cmocka'
         VCPKG_DEFAULT_TRIPLET: 'x64-osx'
         build.args: '-DTRANSPORT_CURL=ON -DTRANSPORT_PAHO=ON -DAZ_PLATFORM_IMPL=POSIX -DPRECONDITIONS=OFF -DUNIT_TESTING=ON'
@@ -113,8 +113,9 @@ jobs:
         BuildType: Debug
 
       LinuxGCC5_Release_MapFiles_UnitTests:
-        Pool: azsdk-pool-mms-ubuntu-1604-general
-        OSVmImage: MMSUbuntu16.04
+        Pool: azsdk-pool-mms-ubuntu-1804-general
+        OSVmImage: MMSUbuntu18.04
+        AptDependencies: 'gcc-5'
         vcpkg.deps: 'cmocka'
         VCPKG_DEFAULT_TRIPLET: 'x64-linux'
         build.args: '-DPRECONDITIONS=OFF -DUNIT_TESTING=ON -DLOGGING=OFF'
@@ -125,8 +126,9 @@ jobs:
         BuildType: Release
 
       LinuxGCC5_UnitTests_Samples:
-        Pool: azsdk-pool-mms-ubuntu-1604-general
-        OSVmImage: MMSUbuntu16.04
+        Pool: azsdk-pool-mms-ubuntu-1804-general
+        OSVmImage: MMSUbuntu18.04
+        AptDependencies: 'gcc-5'
         vcpkg.deps: 'curl[ssl] paho-mqtt cmocka'
         VCPKG_DEFAULT_TRIPLET: 'x64-linux'
         build.args: '-DTRANSPORT_CURL=ON -DTRANSPORT_PAHO=ON -DAZ_PLATFORM_IMPL=POSIX -DPRECONDITIONS=OFF -DUNIT_TESTING=ON -DLOGGING=OFF'
@@ -182,7 +184,7 @@ jobs:
         OSVmImage: MMS2019
         vcpkg.deps: 'curl[winssl] paho-mqtt cmocka'
         VCPKG_DEFAULT_TRIPLET: 'x64-windows-static'
-        build.args: '-DTRANSPORT_CURL=ON -DTRANSPORT_PAHO=ON -DAZ_PLATFORM_IMPL=WIN32 -DUNIT_TESTING=ON -DLOGGING=OFF'
+        build.args: '-DTRANSPORT_CURL=ON -DTRANSPORT_PAHO=ON -DAZ_PLATFORM_IMPL=WIN32 -DUNIT_TESTING=ON -DLOGGING=OFF -DADDRESS_SANITIZER=ON'
         CMAKE_GENERATOR: 'Visual Studio 16 2019'
         CMAKE_GENERATOR_PLATFORM: x64
         PublishMapFiles: 'false'
@@ -190,7 +192,7 @@ jobs:
 
       MacOS_Release_Preconditions_Logging_UnitTests_Samples:
         Pool: Azure Pipelines
-        OSVmImage: 'macOS-10.15'
+        OSVmImage: 'macos-11'
         vcpkg.deps: 'curl[ssl] paho-mqtt cmocka'
         VCPKG_DEFAULT_TRIPLET: 'x64-osx'
         build.args: '-DTRANSPORT_CURL=ON -DTRANSPORT_PAHO=ON -DAZ_PLATFORM_IMPL=POSIX -DUNIT_TESTING=ON'
@@ -199,7 +201,7 @@ jobs:
 
       MacOS_Preconditions_Logging_UnitTests:
         Pool: Azure Pipelines
-        OSVmImage: 'macOS-10.15'
+        OSVmImage: 'macos-11'
         vcpkg.deps: 'cmocka'
         VCPKG_DEFAULT_TRIPLET: 'x64-osx'
         build.args: '-DUNIT_TESTING=ON'
@@ -208,8 +210,9 @@ jobs:
         BuildType: Debug
 
       LinuxGCC5_Release_Preconditions_UnitTests_Samples:
-        Pool: azsdk-pool-mms-ubuntu-1604-general
-        OSVmImage: MMSUbuntu16.04
+        Pool: azsdk-pool-mms-ubuntu-1804-general
+        OSVmImage: MMSUbuntu18.04
+        AptDependencies: 'gcc-5'
         vcpkg.deps: 'curl[ssl] paho-mqtt cmocka'
         VCPKG_DEFAULT_TRIPLET: 'x64-linux'
         build.args: '-DTRANSPORT_CURL=ON -DTRANSPORT_PAHO=ON -DAZ_PLATFORM_IMPL=POSIX -DUNIT_TESTING=ON -DLOGGING=OFF'
@@ -218,8 +221,9 @@ jobs:
         BuildType: Release
 
       LinuxGCC5_Preconditions_UnitTests:
-        Pool: azsdk-pool-mms-ubuntu-1604-general
-        OSVmImage: MMSUbuntu16.04
+        Pool: azsdk-pool-mms-ubuntu-1804-general
+        OSVmImage: MMSUbuntu18.04
+        AptDependencies: 'gcc-5'
         vcpkg.deps: 'cmocka'
         VCPKG_DEFAULT_TRIPLET: 'x64-linux'
         build.args: '-DUNIT_TESTING=ON -DLOGGING=OFF'
@@ -285,8 +289,6 @@ jobs:
     displayName: Install dependencies from apt
 
   - template: /eng/pipelines/templates/steps/vcpkg.yml
-    parameters:
-      DependenciesVariableName: vcpkg.deps
 
   - script: |
       dotnet tool install -g dotnet-reportgenerator-globaltool
@@ -367,7 +369,7 @@ jobs:
   # Validate all the files are saved as ASCII only without a UTF-8 BOM.
   - bash: |
       # Run grep recursive excluding git folder and known expected files and save a file with results.
-      grep -I -P -n "[^\x00-\x7F]" -r --exclude-dir ".git" --exclude-dir "docs" --exclude-dir "tools" --exclude "*CodeCoverage.cmake*" --exclude "grepResults" . > grepResults
+      grep -I -P -n "[^\x00-\x7F]" -r --exclude-dir ".git" --exclude-dir "vcpkg_installed" --exclude-dir "_deps" --exclude-dir "docs" --exclude-dir "tools" --exclude "*CodeCoverage.cmake*" --exclude "grepResults" . > grepResults
 
       # Display results to console.
       cat grepResults
@@ -377,7 +379,7 @@ jobs:
 
       # Show info about the total files that needs attention.
       echo Files found with non-ASCII characters: $files_with_non_ascii
-      
+
       # Remove the grepResults file.
       rm grepResults
 
@@ -408,10 +410,33 @@ jobs:
     displayName: Validate Clang Format
     condition: eq(variables['AZ_SDK_CODE_COV'], 1)
 
+  - pwsh: |
+      $artifactName = "$(Agent.JobName)"
+      $parts = $artifactName -split ' '
+      if ($parts[1]) {
+        $artifactName = $parts[1]
+      }
+      Write-Host "##vso[task.setvariable variable=BomArtifactName;]$artifactName"
+    displayName: Set bom file artifact name
+
+  - ${{if eq(variables['System.TeamProject'], 'internal') }}:
+    - task: AzureArtifacts.manifest-generator-task.manifest-generator-task.ManifestGeneratorTask@0
+      displayName: 'Generate BOM'
+      condition: succeededOrFailed()
+      inputs:
+        BuildDropPath: $(Build.ArtifactStagingDirectory)
+
+    - template: /eng/common/pipelines/templates/steps/publish-artifact.yml
+      parameters:
+        ArtifactPath: '$(Build.ArtifactStagingDirectory)/_manifest'
+        ArtifactName: 'bom_manifest_$(BomArtifactName)'
+
 - job: GenerateReleaseArtifacts
   pool:
     name: azsdk-pool-mms-win-2019-general
     vmImage: MMS2019
+  variables:
+    Package.EnableSBOMSigning: true
   steps:
     - template: /eng/common/pipelines/templates/steps/check-spelling.yml
 
@@ -493,7 +518,6 @@ jobs:
 
       displayName: Generate artifacts for docs.ms
 
-
     - pwsh: |
         New-Item -ItemType directory -Path $(Build.ArtifactStagingDirectory) -Name docs
         New-Item -ItemType directory -Path $(Build.ArtifactStagingDirectory) -Name docs.ms
@@ -533,3 +557,15 @@ jobs:
       displayName: 'Component Detection'
 
     - template: /eng/common/pipelines/templates/steps/eng-common-workflow-enforcer.yml
+
+    - ${{if eq(variables['System.TeamProject'], 'internal') }}:
+      - task: AzureArtifacts.manifest-generator-task.manifest-generator-task.ManifestGeneratorTask@0
+        displayName: 'Generate BOM'
+        condition: succeededOrFailed()
+        inputs:
+          BuildDropPath: $(Build.ArtifactStagingDirectory)
+
+      - template: /eng/common/pipelines/templates/steps/publish-artifact.yml
+        parameters:
+          ArtifactPath: '$(Build.ArtifactStagingDirectory)/_manifest'
+          ArtifactName: 'release_artifact_manifest'

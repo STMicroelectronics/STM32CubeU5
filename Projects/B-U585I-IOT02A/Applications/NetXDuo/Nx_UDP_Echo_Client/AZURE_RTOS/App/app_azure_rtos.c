@@ -61,7 +61,7 @@ static TX_BYTE_POOL tx_app_byte_pool;
 #pragma data_alignment=4
 #endif
 __ALIGN_BEGIN static UCHAR  nx_byte_pool_buffer[NX_APP_MEM_POOL_SIZE] __ALIGN_END;
-static TX_BYTE_POOL nx_app_byte_pool;
+static TX_BYTE_POOL NETXDUO_MEM_POOL_VAR_NAME;
 
 #endif
 
@@ -112,7 +112,7 @@ VOID tx_application_define(VOID *first_unused_memory)
 
   }
 
-  if (tx_byte_pool_create(&nx_app_byte_pool, "Nx App memory pool", nx_byte_pool_buffer, NX_APP_MEM_POOL_SIZE) != TX_SUCCESS)
+  if (tx_byte_pool_create(&NETXDUO_MEM_POOL_VAR_NAME, "Nx App memory pool", nx_byte_pool_buffer, NX_APP_MEM_POOL_SIZE) != TX_SUCCESS)
   {
     /* USER CODE BEGIN NX_Byte_Pool_Error */
 
@@ -120,11 +120,11 @@ VOID tx_application_define(VOID *first_unused_memory)
   }
   else
   {
-    /* USER CODE BEGIN TX_Byte_Pool_Success */
+    /* USER CODE BEGIN NX_Byte_Pool_Success */
 
-    /* USER CODE END TX_Byte_Pool_Success */
+    /* USER CODE END NX_Byte_Pool_Success */
 
-    memory_ptr = (VOID *)&nx_app_byte_pool;
+    memory_ptr = (VOID *)&NETXDUO_MEM_POOL_VAR_NAME;
     status = MX_NetXDuo_Init(memory_ptr);
     if (status != NX_SUCCESS)
     {
@@ -149,7 +149,7 @@ VOID tx_application_define(VOID *first_unused_memory)
      place in RAM_region    { last section FREE_MEM };
  * For MDK-ARM
      - either define the RW_IRAM1 region in the ".sct" file
-     - or modify the line below in "tx_low_level_initilize.s to match the memory region being used
+     - or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
 
  * For STM32CubeIDE add the following section into the .ld file:
@@ -166,7 +166,7 @@ VOID tx_application_define(VOID *first_unused_memory)
     * Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
     * Read more in STM32CubeIDE User Guide, chapter: "Linker script".
 
- * The "tx_initialize_low_level.s" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
+ * The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
  */
 
   /* USER CODE BEGIN DYNAMIC_MEM_ALLOC */

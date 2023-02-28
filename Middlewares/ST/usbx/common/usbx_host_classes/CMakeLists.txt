@@ -16,15 +16,27 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_alternate_setting_locate.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_configure.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_control_get.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_control_request.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_control_value_get.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_control_value_set.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_deactivate.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_descriptor_get.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_descriptors_parse.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_device_controls_list_get.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_device_type_get.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_endpoints_get.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_entity_control_get.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_entity_control_value_get.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_entity_control_value_set.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_entry.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_feedback_get.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_feedback_set.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_feedback_transfer_completed.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_interrupt_notification.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_interrupt_start.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_raw_sampling_parse.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_read.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_stop.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_streaming_sampling_get.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_streaming_sampling_set.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_audio_streaming_terminal_get.c
@@ -44,7 +56,9 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_cdc_acm_reception_start.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_cdc_acm_reception_stop.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_cdc_acm_transfer_request_completed.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_cdc_acm_transmission_callback.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_cdc_acm_write.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_cdc_acm_write_with_callback.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_cdc_ecm_activate.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_cdc_ecm_deactivate.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_cdc_ecm_endpoints_get.c
@@ -78,6 +92,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_global_item_parse.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_idle_get.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_idle_set.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_idle_set_run.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_instance_clean.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_interrupt_endpoint_search.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_item_data_get.c
@@ -87,6 +102,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_keyboard_entry.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_keyboard_ioctl.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_keyboard_key_get.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_keyboard_tasks_run.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_keyboard_thread.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_local_item_parse.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_main_item_parse.c
@@ -113,7 +129,9 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_report_id_get.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_report_item_analyse.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_report_set.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_report_set_run.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_resources_free.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_tasks_run.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hid_transfer_request_completed.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hub_activate.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hub_change_detect.c
@@ -134,6 +152,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hub_port_reset.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hub_ports_power.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hub_status_get.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hub_tasks_run.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_hub_transfer_request_completed.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_pima_activate.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_pima_command.c
@@ -191,6 +210,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_prolific_write.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_activate.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_cbw_initialize.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_check_run.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_configure.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_deactivate.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_device_initialize.c
@@ -199,9 +219,11 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_driver_entry.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_endpoints_get.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_entry.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_lock.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_max_lun_get.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_media_capacity_get.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_media_characteristics_get.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_media_check.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_media_format_capacity_get.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_media_get.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_media_lock.c
@@ -212,14 +234,17 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_media_recovery_sense_get.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_media_write.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_partition_read.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_read_write_run.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_request_sense.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_sense_code_translate.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_start_stop.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_tasks_run.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_thread_entry.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_transport.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_transport_bo.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_transport_cb.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_transport_cbi.c
+	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_transport_run.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_storage_unit_ready_test.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_swar_activate.c
 	${CMAKE_CURRENT_LIST_DIR}/src/ux_host_class_swar_configure.c

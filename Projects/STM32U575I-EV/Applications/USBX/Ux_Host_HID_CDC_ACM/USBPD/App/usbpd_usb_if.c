@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -111,7 +111,10 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN USB Private variables */
 extern TX_QUEUE        ux_app_MsgQueue_UCPD;
-extern USB_MODE_STATE  USB_Host_State_Msg;
+#if defined ( __ICCARM__ ) /* IAR Compiler */
+  #pragma data_alignment=4
+#endif /* defined ( __ICCARM__ ) */
+__ALIGN_BEGIN USB_MODE_STATE USB_Host_EVENT __ALIGN_END;
 
 /* USER CODE END USB Private variables */
 
@@ -152,10 +155,10 @@ void USBPD_USBIF_HostStart(uint32_t PortNum)
   USBPD_TRACE_Add(USBPD_TRACE_DEBUG, PortNum, 0, (uint8_t *) "USBIF host start", 16);
 
   /* Set Host state */
-  USB_Host_State_Msg = START_USB_HOST;
+  USB_Host_EVENT = START_USB_HOST;
 
   /* Send message to start device */
-  if (tx_queue_send(&ux_app_MsgQueue_UCPD, &USB_Host_State_Msg, TX_WAIT_FOREVER) != TX_SUCCESS)
+  if (tx_queue_send(&ux_app_MsgQueue_UCPD, &USB_Host_EVENT, TX_WAIT_FOREVER) != TX_SUCCESS)
   {
     Error_Handler();
   }
@@ -168,10 +171,10 @@ void USBPD_USBIF_HostStop(uint32_t PortNum)
 /* USER CODE BEGIN USBPD_USBIF_HostStop */
   USBPD_TRACE_Add(USBPD_TRACE_DEBUG, PortNum, 0, (uint8_t *) "USBIF host stop", 15);
   /* Set Host state */
-  USB_Host_State_Msg = STOP_USB_HOST;
+  USB_Host_EVENT = STOP_USB_HOST;
 
    /* Send message to start device */
-  if (tx_queue_send(&ux_app_MsgQueue_UCPD, &USB_Host_State_Msg, TX_WAIT_FOREVER) != TX_SUCCESS)
+  if (tx_queue_send(&ux_app_MsgQueue_UCPD, &USB_Host_EVENT, TX_WAIT_FOREVER) != TX_SUCCESS)
   {
     Error_Handler();
   }

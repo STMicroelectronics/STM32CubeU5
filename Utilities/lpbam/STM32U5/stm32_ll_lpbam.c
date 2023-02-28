@@ -628,43 +628,58 @@ LPBAM_Status_t LPBAM_DAC_FillStructInfo(LPBAM_DAC_ConfNode_t const *const pConfN
       /* Get CR value */
       dummy = pConfNode->pInstance->CR;
 
-      /* Check DAC channel */
-      if (pConfNode->Config.Channel == LPBAM_DAC_CHANNEL_1)
+      /* Check DAC channel1 */
+      if ((pConfNode->Config[0U].Channel & LPBAM_DAC_CHANNEL_1) == LPBAM_DAC_CHANNEL_1)
       {
         /* Set DAC state */
-        if (pConfNode->Config.State == ENABLE)
+        if (pConfNode->Config[0U].State == ENABLE)
         {
           dummy |= DAC_CR_EN1;
+
+          /* Set DAC trigger */
+          dummy &= ~DAC_CR_TSEL1;
+          dummy |= DAC_CR_TEN1 | (pConfNode->Config[0U].DAC_Trigger << DAC_CR_TSEL1_Pos);
         }
         else
         {
           dummy &= ~DAC_CR_EN1;
         }
-
-        /* Set DAC trigger */
-        dummy &= ~DAC_CR_TSEL1;
-        dummy |= DAC_CR_TEN1 | (pConfNode->Config.DAC_Trigger << DAC_CR_TSEL1_Pos);
       }
-      else if (pConfNode->Config.Channel == LPBAM_DAC_CHANNEL_2)
+
+      /* Check DAC channel 1 */
+      if ((pConfNode->Config[0U].Channel & LPBAM_DAC_CHANNEL_2) == LPBAM_DAC_CHANNEL_2)
       {
         /* Set DAC state */
-        if (pConfNode->Config.State == ENABLE)
+        if (pConfNode->Config[0U].State == ENABLE)
         {
           dummy |= DAC_CR_EN2;
+
+          /* Set trigger */
+          dummy &= ~DAC_CR_TSEL2;
+          dummy |= DAC_CR_TEN2 | (pConfNode->Config[0U].DAC_Trigger << DAC_CR_TSEL2_Pos);
         }
         else
         {
           dummy &= ~DAC_CR_EN2;
         }
-
-        /* Set trigger */
-        dummy &= ~DAC_CR_TSEL2;
-        dummy |= DAC_CR_TEN2 | (pConfNode->Config.DAC_Trigger << DAC_CR_TSEL2_Pos);
       }
-      else
+
+      /* Check DAC channel 2 */
+      if ((pConfNode->Config[1U].Channel & LPBAM_DAC_CHANNEL_2) == LPBAM_DAC_CHANNEL_2)
       {
-        /* Return LPBAM status */
-        return LPBAM_ERROR;
+        /* Set DAC state */
+        if (pConfNode->Config[1U].State == ENABLE)
+        {
+          dummy |= DAC_CR_EN2;
+
+          /* Set trigger */
+          dummy &= ~DAC_CR_TSEL2;
+          dummy |= DAC_CR_TEN2 | (pConfNode->Config[1U].DAC_Trigger << DAC_CR_TSEL2_Pos);
+        }
+        else
+        {
+          dummy &= ~DAC_CR_EN2;
+        }
       }
 
       /* Set value to be written */
@@ -691,12 +706,12 @@ LPBAM_Status_t LPBAM_DAC_FillStructInfo(LPBAM_DAC_ConfNode_t const *const pConfN
                            (uint32_t)pConfNode->pInstance;
 
       /* Check DAC channel */
-      if (pConfNode->Config.Channel == LPBAM_DAC_CHANNEL_1)
+      if (pConfNode->Config->Channel == LPBAM_DAC_CHANNEL_1)
       {
         /* Set DMA request */
         pDescInfo->Request = LPDMA1_REQUEST_DAC1_CH1;
       }
-      else if (pConfNode->Config.Channel == LPBAM_DAC_CHANNEL_2)
+      else if (pConfNode->Config->Channel == LPBAM_DAC_CHANNEL_2)
       {
         /* Set DMA request */
         pDescInfo->Request = LPDMA1_REQUEST_DAC1_CH2;
@@ -710,12 +725,12 @@ LPBAM_Status_t LPBAM_DAC_FillStructInfo(LPBAM_DAC_ConfNode_t const *const pConfN
       }
 
       /* Check data alignment */
-      if (pConfNode->Config.Alignment == LPBAM_DAC_ALIGN_12B_L)
+      if (pConfNode->Config->Alignment == LPBAM_DAC_ALIGN_12B_L)
       {
         /* Update destination address */
         pDescInfo->DstAddr += LPBAM_DAC_ALIGN_12B_L;
       }
-      else if (pConfNode->Config.Alignment == LPBAM_DAC_ALIGN_8B_R)
+      else if (pConfNode->Config->Alignment == LPBAM_DAC_ALIGN_8B_R)
       {
         /* Update destination address */
         pDescInfo->DstAddr += LPBAM_DAC_ALIGN_8B_R;
@@ -726,7 +741,7 @@ LPBAM_Status_t LPBAM_DAC_FillStructInfo(LPBAM_DAC_ConfNode_t const *const pConfN
       }
 
       /* Set DMA data size */
-      pDescInfo->DataSize = (uint32_t)pConfNode->Config.Size * 4U;
+      pDescInfo->DataSize = (uint32_t)pConfNode->Config->Size * 4U;
 
       break;
     }
@@ -1418,8 +1433,10 @@ LPBAM_Status_t LPBAM_LPTIM_FillStructInfo(LPBAM_LPTIM_ConfNode_t const *const pC
     {LPBAM_LPTIM_CONFIG_PULSE_OFFSET,      LPBAM_LPTIM_CONFIG_PULSE_DATASIZE     },
     /* LPBAM LPTIM Update Repetition node ID  */
     {LPBAM_LPTIM_CONFIG_REPETITION_OFFSET, LPBAM_LPTIM_CONFIG_REPETITION_DATASIZE},
+    /* LPBAM LPTIM Get Counter node ID       */
+    {LPBAM_LPTIM_GET_COUNTER_OFFSET,       0U                                    },
     /* LPBAM LPTIM Input Capture node ID      */
-    {LPBAM_LPTIM_INPUT_CAPTURE_OFFSET,     LPBAM_LPTIM_INPUT_CAPTURE_DATASIZE    },
+    {LPBAM_LPTIM_INPUT_CAPTURE_OFFSET,     0U                                    },
     /* LPBAM LPTIM Wakeup Interrupt node ID   */
     {LPBAM_LPTIM_WAKEUP_IT_OFFSET,         LPBAM_LPTIM_WAKEUP_IT_DATASIZE        },
     /* LPBAM LPTIM Clear Flag node ID         */
@@ -1625,6 +1642,20 @@ LPBAM_Status_t LPBAM_LPTIM_FillStructInfo(LPBAM_LPTIM_ConfNode_t const *const pC
                            (uint32_t)pConfNode->pInstance;
       /* Set DMA data size */
       pDescInfo->DataSize = lptim_descitem_tbl[pConfNode->NodeDesc.NodeInfo.NodeID].RegDataSize;
+
+      break;
+    }
+
+    /* LPBAM LPTIM Get Counter node ID */
+    case LPBAM_LPTIM_GET_COUNTER_ID:
+    {
+      /* Set DMA source address */
+      pDescInfo->SrcAddr = lptim_descitem_tbl[pConfNode->NodeDesc.NodeInfo.NodeID].RegOffset +
+                           (uint32_t)pConfNode->pInstance;
+      /* Set DMA destination address */
+      pDescInfo->DstAddr  = (uint32_t)&pConfNode->NodeDesc.pBuff[0U];
+      /* Set DMA data size */
+      pDescInfo->DataSize = pConfNode->Config.CaptureCount * 2U;
 
       break;
     }

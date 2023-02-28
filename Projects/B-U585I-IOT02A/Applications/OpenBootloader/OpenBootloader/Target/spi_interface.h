@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -22,7 +22,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
@@ -36,8 +36,8 @@ void OPENBL_SPI_Configuration(void);
 void OPENBL_SPI_DeInit(void);
 uint8_t OPENBL_SPI_ProtocolDetection(void);
 uint8_t OPENBL_SPI_GetCommandOpcode(void);
-void OPENBL_SPI_SendAcknowledgeByte(uint8_t Byte);
-void OPENBL_SPI_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *SpecialCmd);
+void OPENBL_SPI_SendAcknowledgeByte(uint8_t Acknowledge);
+void OPENBL_SPI_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *pSpecialCmd);
 
 void OPENBL_SPI_EnableBusyState(void);
 void OPENBL_SPI_DisableBusyState(void);
@@ -56,6 +56,6 @@ __attribute__((section(".ramfunc"))) void OPENBL_SPI_SendBusyByte(void);
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* SPI_INTERFACE_H */

@@ -54,7 +54,7 @@ typedef struct
 } LPBAM_DMA_StartFullAdvConf_t;
 
 /**
-  * @brief  LPBAM queue execution descriptor structure definition.
+  * @brief  LPBAM DMA start descriptor structure definition.
   */
 typedef struct
 {
@@ -64,10 +64,22 @@ typedef struct
   uint32_t pReg[6U];          /*!< Specifies the content of register to be updated : 6 different values are needed    */
 
 } LPBAM_DMA_StartFullDesc_t;
+
+/**
+  * @brief  LPBAM DMA stop descriptor structure definition.
+  */
+typedef struct
+{
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : only one node is
+                                   needed                                                                             */
+
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
+
+} LPBAM_DMA_StopFullDesc_t;
 /**
   * @}
   */
-/* Exported functions --------------------------------------------------------*/
+/* Exported functions ------------------------------------------------------------------------------------------------*/
 /** @addtogroup LPBAM_DMA_Advanced_Exported_Functions LPBAM DMA Advanced Exported Functions
   * @brief      LPBAM DMA Advanced Exported Functions
   * @{
@@ -81,6 +93,14 @@ LPBAM_Status_t ADV_LPBAM_DMA_Start_SetFullQ(DMA_Channel_TypeDef          *const 
                                             LPBAM_DMA_StartFullAdvConf_t const *const pStartFull,
                                             LPBAM_DMA_StartFullDesc_t    *const pDescriptor,
                                             DMA_QListTypeDef             *const pQueue);
+
+/**
+  * @brief  ADV_LPBAM_DMA_Stop_SetFullQ.
+  */
+LPBAM_Status_t ADV_LPBAM_DMA_Stop_SetFullQ(DMA_Channel_TypeDef      *const pInstance,
+                                           LPBAM_DMAListInfo_t      const *const pDMAListInfo,
+                                           LPBAM_DMA_StopFullDesc_t *const pDescriptor,
+                                           DMA_QListTypeDef         *const pQueue);
 /**
   * @}
   */

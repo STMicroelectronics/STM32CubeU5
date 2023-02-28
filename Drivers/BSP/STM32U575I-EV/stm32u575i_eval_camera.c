@@ -546,7 +546,7 @@ int32_t BSP_CAMERA_Resume(uint32_t Instance)
   *         from the camera sensor OV5640
   * @retval Component status
   */
-int32_t BSP_CAMERA_GetCapabilities(uint32_t Instance, CAMERA_Capabilities_t *Capabilities)
+int32_t BSP_CAMERA_GetCapabilities(const uint32_t Instance, CAMERA_Capabilities_t *Capabilities)
 {
   int32_t ret;
 

@@ -14,7 +14,7 @@ The transfer is started by setting the channel enable bit for DMA channelx.
 
 -   NUCLEO-U575ZI-Q board's LEDs can be used to monitor the transfer status:
 
-    -   **LED1 is ON** when the transfer is complete (into the Transfer Complete interrupt routine).
+    -   **LED1 toggles** when the transfer is complete (into the Transfer Complete interrupt routine).
     -   **LED2 is ON** when there is a transfer error.
     -   **LED3 is ON** when a Error_Handler is called.
 

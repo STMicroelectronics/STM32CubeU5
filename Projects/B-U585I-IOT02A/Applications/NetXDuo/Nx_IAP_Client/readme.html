@@ -5,11 +5,13 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Readme</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
   </style>
   <style type="text/css">@charset "UTF-8";
 
@@ -1486,73 +1488,116 @@ text-align: center;
 </head>
 <body>
 <div class="row">
-<div class="col-sm-12 col-lg-8">
-<div class="row">
-<div class="col-sm-12 col-lg-8">
-<h2 id="nx_iap_client-application-description"><b>Nx_IAP_Client application Description</b></h2>
-<p>The NX_IAP_Client application shows how to use the WiFi module to perform an IAP (“In Application Programming”) using STM32 Cube HAL. This application may be used with a Smartphone or PC server (more detailed setup instructions are described in section “Hardware and Software environment”).</p>
+<section id="nx_iap_client-application-description" class="col-sm-12 col-lg-8">
+<h2><b>Nx_IAP_Client Application Description</b></h2>
+<p>This application provides an example of Azure RTOS NetX/NetXDuo stack usage.</p>
+<p>It shows how to use the WiFi module to perform an IAP (“In Application Programming”) using STM32 Cube HAL.</p>
+<p>This application may be used with a Smartphone or PC server (more detailed setup instructions are described in section “Hardware and Software environment”).</p>
+<h4 id="expected-success-behavior"><b>Expected success behavior</b></h4>
 <ul>
 <li><p>If the “USER” Button is pressed when the application starts, then the WiFi IAP module is started. Otherwise, the user code downloaded into Flash offset is executed. If no code is downloaded yet into Flash memory offset, then the WiFi IAP application will start.</p></li>
-<li><p>At startup, the WiFi module is initialized, the UART terminal shows an <code>O.K!</code> message in case of success. Otherwise LED6 is blinking and an ERROR message is displayed on the UART terminal.</p></li>
+<li><p>At startup, the WiFi module is initialized, the UART terminal shows an <code>O.K!</code> message in case of success.</p></li>
 <li><p>Once initialized, the board attempts to join WiFi access point using the predefined SSID and password setup by user into configuration file at compilation time. In case of success the acquired IP address is displayed.</p></li>
 <li><p>After joining the access point, the board attempts to establish a connection to the remote HTTP server using the predefined address and port setup by user in configuration file.</p></li>
 <li><p>As soon as the connection to the remote server is established, the “hello.bin” file is downloaded. On success the following messages is displayed on the UART:</p>
-<p><code>Downloaded firmware &#39; hello_u5.bin &#39;, size = 26549 Bytes</code></p>
-<p>otherwise a failure message is shown and the LED6 is blinking.</p></li>
-<li><p>When downloading is finished, the message <code>State: Programming...</code> is displayed on the UART. The “hello_xxx.bin” fw is being written into the flash. On Success the message <code>Programming Done!</code> is displayed on the UART and LED7 is blinking. If the flashing operation fails, an error message is displayed and the LED6 is blinking instead.</p></li>
+<p><code>Downloaded firmware &#39; hello_u5.bin &#39;, size = 26549 Bytes</code></p></li>
+<li><p>When downloading is finished, the message <code>State: Programming...</code> is displayed on the UART. The “hello_xxx.bin” fw is being written into the flash. On Success the message <code>Programming Done!</code> is displayed on the UART and green LED is blinking.</p></li>
 <li><p>Reset the board (using “RESET” button) and keep “USER” button unpressed in order to execute the binary file downloaded into Flash memory.</p></li>
 </ul>
-<p>The following parameters should be configured by user at compilation time through configuration files:</p>
-<p>in <code>main.h</code>: - Host (server) address - Host Port number - File name - Maximum number of trials</p>
-<p>in <code>Core/Inc/mx_wifi_conf.h</code>: - Network SSID - Network Password</p>
-<p>It is possible to configure a PC to run as a WiFi hotspot alongside a webserver. For Windows PC you can use the <a href="http://www.wampserver.com/en">Wamp server</a></p>
-<p>At the beginning of the main program the HAL_Init() function is called to reset all the peripherals and initialize the Flash interface.</p>
-<p>The HAL initializes the TIM6 to generate an interrupt each 1ms, it will be used as time base for the HAL drivers.</p>
-<h4 id="notes"><b>Notes</b></h4>
-<ol type="1">
-<li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in HAL time base ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the HAL time base interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise the caller ISR process will be blocked. To change the HAL time base interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>
-<li><p>The application needs to ensure that the HAL time base is always set to 1 millisecond to have correct HAL operation.</p></li>
-</ol>
+<h4 id="error-behaviors"><b>Error behaviors</b></h4>
+<ul>
+<li>Failure message is shown and the red LED is toggling to indicate the download failed.</li>
+</ul>
+<h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
+<p>It is possible to configure a PC to run a webserver. For Windows PC you can use the <a href="http://www.wampserver.com/en">Wamp server</a></p>
+<h4 id="threadx-usage-hints"><b>ThreadX usage hints</b></h4>
+<ul>
+<li><p>ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.</p></li>
+<li><p>ThreadX is configured with 1000 ticks/sec, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the <code>tx_user.h</code>, the <code>TX_TIMER_TICKS_PER_SECOND</code> define, but this should be reflected in <code>tx_initialize_low_level.S</code> file too.</p></li>
+<li><p>ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.</p></li>
+<li><p>ThreadX offers the <code>tx_application_define()</code> function, that is automatically called by the tx_kernel_enter() API. It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools…) but it should not in any way contain a system API call (HAL or BSP).</p></li>
+<li><p>Using dynamic memory allocation requires to apply some changes to the linker file. ThreadX needs to pass a pointer to the first free memory location in RAM to the <code>tx_application_define()</code> function, using the <code>first_unused_memory</code> argument. This requires changes in the linker files to expose this memory location.</p>
+<ul>
+<li>For EWARM add the following section into the .icf file:</li>
+</ul>
+<pre><code>   place in RAM_region    { last section FREE_MEM };</code></pre>
+<ul>
+<li>For MDK-ARM: either define the RW_IRAM1 region in the “.sct” file or modify the line below in <code>tx_initialize_low_level.S</code> to match the memory region being used</li>
+</ul>
+<pre><code>    LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|</code></pre>
+<ul>
+<li>For STM32CubeIDE add the following section into the .ld file:</li>
+</ul>
+<pre><code>    ._threadx_heap :
+    {
+     . = ALIGN(8);
+     __RAM_segment_used_end__ = .;
+     . = . + 64K;
+     . = ALIGN(8);
+    } &gt;RAM_D1 AT&gt; RAM_D1</code></pre>
+<p>The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above. In the example above the ThreadX heap size is set to 64KBytes. The <code>._threadx_heap</code> must be located between the <code>.bss</code> and the <code>._user_heap_stack sections</code> in the linker script. Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example). Read more in STM32CubeIDE User Guide, chapter: “Linker script”.</p>
+<ul>
+<li>The <code>tx_initialize_low_level.S</code> should be also modified to enable the <code>USE_DYNAMIC_MEMORY_ALLOCATION</code> compilation flag.</li>
+</ul></li>
+</ul>
 <h3 id="keywords"><b>Keywords</b></h3>
-<p>RTOS, Network, ThreadX, NetXDuo, WiFi, Hotspot, IAP Client, HTTP, Web server, MXCHIP, SPI</p>
+<p>RTOS, Network, ThreadX, NetXDuo, WIFI, Hotspot, IAP Client, HTTP, Web server, MXCHIP, SPI</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
-<li><p>The EMW3080B MXCHIP Wi-Fi module firmware and the way to update your board with it are available at <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">x-wifi-emw3080b</a>.</p></li>
-<li><p>Before using this project, you shall update your B-U585I-IOT02A RevC board with the EMW3080B firmware version 2.1.11. To achieve this, follow the instructions given at the above link, using the EMW3080updateV2.1.11RevC.bin flasher under the V2.1.11/SPI folder.</p></li>
-<li><p>This application runs on STM32U585AII6Q devices without security enabled (TZEN=0).</p></li>
-<li><p>This application has been tested with the following environments:</p>
+<li><p>To use the EMW3080B MXCHIP Wi-Fi module functionality, 2 software components are required:</p>
+<ol type="1">
+<li>The module driver running on the STM32 device</li>
+<li>The module firmware running on the EMW3080B Wi-Fi module</li>
+</ol></li>
+<li><p>This application uses an updated version of the EMW3080B MXCHIP Wi-Fi module driver V2.3.4.</p></li>
+<li><p>The B-U585I-IOT02A Discovery board Revision C is delivered with the EMW3080B MXCHIP Wi-Fi module firmware V2.1.11; to upgrade your board with the required version V2.3.4, please visit <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">X-WIFI-EMW3080B</a>, using the <code>EMW3080update_B-U585I-IOT02A-RevC_V2.3.4_SPI.bin</code> file under the V2.3.4/SPI folder.</p></li>
+<li><p>Please note that module firmware version V2.1.11 is not backwards compatible with the driver V2.3.4 (the V2.1.11 module firmware is compatible with the driver versions from V2.1.11 to V2.1.13).</p></li>
+<li><p>The module driver is available under <a href="../../../../../Drivers/BSP/Components/mx_wifi/">/Drivers/BSP/Components/mx_wifi</a>, and its version is indicated in the <a href="../../../../../Drivers/BSP/Components/mx_wifi/Release_Notes.html">Release_Notes.html</a> file.</p></li>
+<li><p>Be aware that some STM32U5 SW packages (for examples X-CUBE-AZURE and X-CUBE-AWS) may continue to use older version of the EMW3080B MXCHIP module firmware; thanks to refer to the release notes of each SW package to know the recommended module firmware’s version which can be retrieved from this page <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">X-WIFI-EMW3080B</a>.</p></li>
+<li><p>This application runs on STM32U585xx devices without security enabled (TZEN=0).</p></li>
+<li><p>This application has been tested with STMicroelectronics B-U585I-IOT02A (MB1551C) board and can be easily tailored to any other supported device and development board.</p></li>
+<li><p>This application requires a WiFi access point to connect to</p>
 <ul>
-<li><p>B-U585I-IOT02A board</p></li>
-<li><p>A remote host running a web server (either Linux or Windows PC).</p></li>
-<li><p>Environment Setup</p>
+<li>With a transparent Internet connectivity: No proxy, no firewall blocking the outgoing traffic.</li>
+<li>Running a DHCP server delivering the IP to the board.</li>
+</ul></li>
+<li><p>This application uses USART1 to display logs, the hyperterminal configuration is as follows:</p>
 <ul>
-<li>When using Linux or Windows PC:
+<li>BaudRate = 115200 baud</li>
+<li>Word Length = 8 Bits</li>
+<li>Stop Bit = 1</li>
+<li>Parity = None</li>
+<li>Flow control = None</li>
+<li>Line endings set to LF (receive).</li>
+</ul></li>
+<li><p>A remote host running a web server (either Linux or Windows PC). &gt; The server listening port should be set according to the value of the <code>HOST_PORT</code> used to build the application.</p></li>
+</ul>
+<blockquote>
+<p>The access right on the server must be defined to allow the server to provide the binary requested by the application running on the device.</p>
+</blockquote>
 <ul>
+<li>When using Linux or Windows PC:</li>
 <li>Start the Apache or Wamp server respectively on the Linux or Windows machine.</li>
 <li>Copy the “hello.bin” file under an accessible path on the webserver</li>
 <li>The PC should be connected to the local network and accessible via the WiFi access point.</li>
-</ul></li>
-</ul></li>
+</ul>
+<h3 id="how-to-use-it"><b>How to use it?</b></h3>
+<p>In order to make the program work, you must do the following:</p>
+<ul>
+<li><p>WARNING: Before opening the project with any toolchain be sure your folder installation path is not too in-depth since the toolchain may report errors after building.</p></li>
+<li><p>Open your preferred toolchain</p></li>
+<li><p>Edit the file <code>Core/Inc/mx_wifi_conf.h</code> to enter the name of your WiFi access point (<code>WIFI_SSID</code>) to connect to and its password (<code>WIFI_PASSWORD</code>).</p></li>
 <li><p>Edit the file <code>main.h</code> and adjust the defines:</p>
 <p><code>HOST_ADDRESS</code> The IP Address of the PC or phone running the web server.</p>
 <p><code>HOST_PORT</code> The HTTP port used by the web server. When using Palpa WebServer on a mobile phone, it is possible to edit the ‘webserver root dir’ under (WebServer Settings-&gt;Components-&gt;lighttpd-&gt;Port)</p>
 <p><code>FW_FILE</code> The relative path of the “hello_u5.bin” w.r.t the web server root dir. When using Palpa WebServer on a mobile phone, it is possible to edit the ‘webserver root dir’ under (WebServer Settings-&gt;Components-&gt;lighttpd-&gt;Document Root)</p>
 <p><code>DATA_MAX_SIZE</code> Data size required to hold the “hello.bin”. (should take into account HTTP overhead size)</p></li>
-</ul></li>
-</ul>
-<h3 id="how-to-use-it"><b>How to use it ?</b></h3>
-<p>In order to make the program work, you must do the following:</p>
-<ul>
-<li><p>Open your preferred toolchain</p></li>
-<li><p>Edit the file <code>Core/Inc/mx_wifi_conf.h</code> to enter the name of your WiFi access point (SSID) to connect to and its password.</p></li>
 <li><p>Build all files and load your image into target memory</p></li>
 <li><p>Run the application</p></li>
 </ul>
-<h4 id="notes-1"><b>Notes</b></h4>
+<h4 id="notes"><b>Notes</b></h4>
 <p>To be correctly written into the Flash the fw binary maximum size can’t exceed 256 kb.</p>
-</div>
-</div>
-</div>
+</section>
 </div>
 </body>
 </html>

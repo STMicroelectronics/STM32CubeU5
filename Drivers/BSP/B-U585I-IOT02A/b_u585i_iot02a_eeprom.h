@@ -28,7 +28,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "b_u585i_iot02a_conf.h"
 #include "b_u585i_iot02a_errno.h"
-#include "../Components/m24lr64/m24lr64.h"
+#include "../Components/m24256/m24256.h"
 
 /** @addtogroup BSP
   * @{
@@ -67,7 +67,7 @@ extern "C" {
 /** @addtogroup B_U585I_IOT02A_EEPROM_Exported_Variables
   * @{
   */
-extern M24LR64_Object_t  *Eeprom_CompObj;
+extern M24256_Object_t  *Eeprom_CompObj;
 /**
   * @}
   */

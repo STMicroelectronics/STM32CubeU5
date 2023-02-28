@@ -168,7 +168,7 @@ typedef struct
   uint32_t PWR_AccessoryDetection                         : 1; /*!< It enables or disables powered accessory detection */
   uint32_t PWR_AccessoryTransition                        : 1; /*!< It enables or disables transition from Powered.accessory to Try.SNK */
   USBPD_CORE_PDO_ExtPowered_TypeDef PWR_UnconstrainedPower: 1; /*!< UUT has an external power source available that is sufficient to adequately power the system while charging external devices or the UUT primary function is to charge external devices. */
-  CAD_SNK_Source_Current_Adv_Typedef PWR_RpResistorValue  : 2; /*!< RP resitor value based on @ref CAD_SNK_Source_Current_Adv_Typedef */
+  CAD_SNK_Source_Current_Adv_Typedef PWR_RpResistorValue  : 2; /*!< RP resistor value based on @ref CAD_SNK_Source_Current_Adv_Typedef */
   USBPD_CORE_PDO_USBCommCapable_TypeDef USB_Support       : 1; /*!< USB_Comms_Capable, is the UUT capable of enumerating as a USB host or device? */
   uint32_t USB_Device                                     : 1; /*!< Type_C_Can_Act_As_Device, Indicates whether the UUT can communicate with USB 2.0 or USB 3.1 as a device or as the Upstream Facing Port of a hub. */
   uint32_t USB_Host                                       : 1; /*!<  Type_C_Can_Act_As_Host, Indicates whether the UUT can communicate with USB 2.0 or USB 3.1 as a host or as the Downstream Facing Port of a hub */

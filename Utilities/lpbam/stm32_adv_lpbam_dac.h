@@ -48,6 +48,7 @@ typedef struct
 {
   uint32_t DAC_Trigger; /*!< Specifies the external trigger for the selected DAC channel.
                              This parameter can be a value of @ref LPBAM_DAC_Trigger_Selection */
+
 } LPBAM_DAC_ConfigAdvConf_t;
 
 
@@ -117,8 +118,21 @@ typedef struct
 } LPBAM_DAC_ConvFullDesc_t;
 
 /**
+  * @brief  LPBAM stop conversion descriptor structure definition.
+  */
+typedef struct
+{
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DAC stop conversion transfers : only one
+                                   node is needed                                                                     */
+
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
+
+} LPBAM_DAC_StopConvDesc_t;
+
+/**
   * @}
   */
+
 /* Exported functions ------------------------------------------------------------------------------------------------*/
 /** @addtogroup LPBAM_DAC_Advanced_Exported_Functions LPBAM DAC Advanced Exported Functions
   * @{
@@ -151,6 +165,13 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetFullQ(DAC_TypeDef              *const
                                                  LPBAM_DAC_FullAdvConf_t  const *const pFull,
                                                  LPBAM_DAC_ConvFullDesc_t *const pDescriptor,
                                                  DMA_QListTypeDef         *const pQueue);
+/**
+  * @brief  ADV_LPBAM_DAC_Stop_SetFullQ.
+  */
+LPBAM_Status_t ADV_LPBAM_DAC_Stop_SetFullQ(DAC_TypeDef              *const pInstance,
+                                           LPBAM_DMAListInfo_t      const *const pDMAListInfo,
+                                           LPBAM_DAC_StopConvDesc_t *const pDescriptor,
+                                           DMA_QListTypeDef         *const pQueue);
 /**
   * @brief  ADV_LPBAM_DAC_EnableDMARequests.
   */

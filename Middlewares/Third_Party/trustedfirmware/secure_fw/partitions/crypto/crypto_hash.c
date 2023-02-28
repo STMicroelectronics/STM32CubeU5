@@ -59,10 +59,9 @@ psa_status_t tfm_crypto_hash_setup(psa_invec in_vec[],
     if (status != PSA_SUCCESS) {
         /* Release the operation context, ignore if the operation fails. */
         (void)tfm_crypto_operation_release(handle_out);
-        return status;
     }
 
-    return PSA_SUCCESS;
+    return status;
 #endif /* TFM_CRYPTO_HASH_MODULE_DISABLED */
 }
 
@@ -100,14 +99,7 @@ psa_status_t tfm_crypto_hash_update(psa_invec in_vec[],
         return status;
     }
 
-    status = psa_hash_update(operation, input, input_length);
-    if (status != PSA_SUCCESS) {
-        /* Release the operation context, ignore if the operation fails. */
-        (void)tfm_crypto_operation_release(handle_out);
-        return status;
-    }
-
-    return PSA_SUCCESS;
+    return psa_hash_update(operation, input, input_length);
 #endif /* TFM_CRYPTO_HASH_MODULE_DISABLED */
 }
 
@@ -149,13 +141,10 @@ psa_status_t tfm_crypto_hash_finish(psa_invec in_vec[],
     }
 
     status = psa_hash_finish(operation, hash, hash_size, &out_vec[1].len);
-    if (status != PSA_SUCCESS) {
+    if (status == PSA_SUCCESS) {
         /* Release the operation context, ignore if the operation fails. */
         (void)tfm_crypto_operation_release(handle_out);
-        return status;
     }
-
-    status = tfm_crypto_operation_release(handle_out);
 
     return status;
 #endif /* TFM_CRYPTO_HASH_MODULE_DISABLED */
@@ -196,13 +185,10 @@ psa_status_t tfm_crypto_hash_verify(psa_invec in_vec[],
     }
 
     status = psa_hash_verify(operation, hash, hash_length);
-    if (status != PSA_SUCCESS) {
+    if (status == PSA_SUCCESS) {
         /* Release the operation context, ignore if the operation fails. */
         (void)tfm_crypto_operation_release(handle_out);
-        return status;
     }
-
-    status = tfm_crypto_operation_release(handle_out);
 
     return status;
 #endif /* TFM_CRYPTO_HASH_MODULE_DISABLED */
@@ -248,9 +234,7 @@ psa_status_t tfm_crypto_hash_abort(psa_invec in_vec[],
         return status;
     }
 
-    status = tfm_crypto_operation_release(handle_out);
-
-    return status;
+    return tfm_crypto_operation_release(handle_out);
 #endif /* TFM_CRYPTO_HASH_MODULE_DISABLED */
 }
 
@@ -292,14 +276,7 @@ psa_status_t tfm_crypto_hash_clone(psa_invec in_vec[],
         return status;
     }
 
-    status = psa_hash_clone(source_operation, target_operation);
-    if (status != PSA_SUCCESS) {
-        /* Release the target operation context, ignore if it fails. */
-        (void)tfm_crypto_operation_release(target_handle);
-        return status;
-    }
-
-    return status;
+    return psa_hash_clone(source_operation, target_operation);
 #endif /* TFM_CRYPTO_HASH_MODULE_DISABLED */
 }
 

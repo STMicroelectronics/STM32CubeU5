@@ -58,6 +58,7 @@
     [..]
       This driver provides services covering the LPBAM management of the following DMA features :
           (+) Links a built linked-list queue and starts a slave DMA channel execution in linked-list mode.
+          (+) Stops a slave DMA channel execution.
 
     *** Functional description ***
     ==============================
@@ -71,6 +72,8 @@
       mode. At first step, the DMA master will update the slave DMA channel registers to point on the queue address
       (queue to be executed by the slave DMA). Then, the DMA master will start the slave DMA channel in linked-list
       mode.
+
+      A master DMA channel can stop a slave DMA channel execution.
 
     *** Driver APIs description ***
     ===============================
@@ -98,6 +101,9 @@
                    (+++) DMA_IT_ULE : update link error.
                    (+++) DMA_IT_USE : user setting error.
 
+    [..]
+      Use ADV_LPBAM_DMA_Stop_SetFullQ() API to build a linked-list queue that stop a slave DMA channel.
+
     *** Driver user sequence ***
     ============================
     [..]
@@ -123,6 +129,7 @@
               (++) DMA_IT_ULE : update link error.
               (++) DMA_IT_USE : user setting error.
           (+) Call HAL_DMAEx_List_Start() to start the master DMA channel linked-list execution. (Mandatory)
+          (+) Call, when needed, ADV_LPBAM_DMA_Stop_SetFullQ() to stop a slave DMA channel.
 
     *** Recommendation ***
     ======================
@@ -387,6 +394,63 @@ LPBAM_Status_t ADV_LPBAM_DMA_Start_SetFullQ(DMA_Channel_TypeDef          *const 
 
   return LPBAM_OK;
 }
+
+
+/**
+  * @brief  Build DMA linked-list queue to stop executing linked queue to a DMA channel.
+  * @param  pInstance    : [IN]  Pointer to a DMA_Channel_TypeDef structure that selects DMA channel instance.
+  * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
+  *                              queue type information.
+  * @param  pDescriptor  : [IN]  Pointer to a LPBAM_DMA_StopFullDesc_t structure that contains DMA stop descriptor
+  *                              information.
+  * @param  pQueue       : [OUT] Pointer to a DMA_QListTypeDef structure that contains DMA linked-list queue
+  *                              information.
+  * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
+  */
+LPBAM_Status_t ADV_LPBAM_DMA_Stop_SetFullQ(DMA_Channel_TypeDef      *const pInstance,
+                                           LPBAM_DMAListInfo_t      const *const pDMAListInfo,
+                                           LPBAM_DMA_StopFullDesc_t *const pDescriptor,
+                                           DMA_QListTypeDef         *const pQueue)
+{
+  LPBAM_DMA_ConfNode_t config_node;
+  DMA_NodeConfTypeDef  dma_node_conf;
+
+  /*
+   *               ######## DMA stop node ########
+   */
+
+  /* Set DMA instance */
+  config_node.pInstance                  = pInstance;
+
+  /* Set node descriptor */
+  config_node.NodeDesc.NodeInfo.NodeID   = (uint32_t)LPBAM_DMA_CONFIG_ID;
+  config_node.NodeDesc.NodeInfo.NodeType = pDMAListInfo->QueueType;
+  config_node.NodeDesc.pSrcVarReg        = &pDescriptor->pReg[0U];
+
+  /* Set DMA configuration */
+  config_node.Config.State               = DISABLE;
+
+  /* Fill node configuration */
+  if (LPBAM_DMA_FillNodeConfig(&config_node, &dma_node_conf) != LPBAM_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Build disable node */
+  if (HAL_DMAEx_List_BuildNode(&dma_node_conf, &pDescriptor->pNodes[0U]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Connect disable node to DMA Queue */
+  if (HAL_DMAEx_List_InsertNode_Tail(pQueue, &pDescriptor->pNodes[0U]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  return LPBAM_OK;
+}
+
 /**
   * @}
   */

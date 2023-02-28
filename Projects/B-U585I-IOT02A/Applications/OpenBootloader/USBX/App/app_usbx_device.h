@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -15,7 +15,6 @@
   *
   ******************************************************************************
   */
-
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __APP_USBX_DEVICE_H__
 #define __APP_USBX_DEVICE_H__
@@ -31,8 +30,8 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
-#define APP_QUEUE_SIZE                    5
-#define USBD_DFU_APP_DEFAULT_ADD          0x08020000
+#define APP_QUEUE_SIZE                    5U
+#define USBD_DFU_APP_DEFAULT_ADDRESS      0x08020000U
 
 /* Exported functions prototypes ---------------------------------------------*/
 UINT MX_USBX_Device_Init(VOID *memory_ptr);
@@ -40,7 +39,7 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr);
 /* Private defines -----------------------------------------------------------*/
 typedef enum
 {
-  STOP_USB_DEVICE = 1,
+  STOP_USB_DEVICE = 1U,
   START_USB_DEVICE,
 } USB_MODE_STATE;
 

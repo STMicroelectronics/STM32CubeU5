@@ -96,6 +96,7 @@ static void SystemClock_Config(void)
   }
 
   /* Enable MSI oscillator */
+  LL_RCC_MSI_EnableRangeSelection();
   LL_RCC_MSIS_SetRange(LL_RCC_MSISRANGE_4);
   LL_RCC_MSI_SetCalibTrimming(10, LL_RCC_MSI_OSCILLATOR_0);
   LL_RCC_MSIS_Enable();

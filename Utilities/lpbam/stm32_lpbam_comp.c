@@ -17,7 +17,7 @@
   */
 
 /* Includes --------------------------------------------------------------------------------------------------------- */
-#include "stm32_lpbam.h"
+#include "stm32_ll_lpbam.h"
 
 /** @addtogroup LPBAM_Utilities_Driver
   * @{
@@ -34,15 +34,6 @@
 /* Private define ----------------------------------------------------------------------------------------------------*/
 /* Private macro -----------------------------------------------------------------------------------------------------*/
 /* Private function prototypes ---------------------------------------------------------------------------------------*/
-/** @defgroup LPBAM_COMP_Private_Function_Prototypes LPBAM COMP Basic Private Function Prototypes
-  * @{
-  */
-extern LPBAM_Status_t LPBAM_COMP_FillStructInfo(LPBAM_COMP_ConfNode_t const *const pConfNode,
-                                                LPBAM_InfoDesc_t      *const pDescInfo);
-/**
-  * @}
-  */
-
 /* Exported functions ------------------------------------------------------------------------------------------------*/
 /** @defgroup LPBAM_COMP_Basic_Exported_Functions LPBAM COMP Basic Exported Functions
   * @{

@@ -39,7 +39,7 @@
 /*  FUNCTION                                               RELEASE        */ 
 /*                                                                        */ 
 /*    _ux_host_class_pima_read                            PORTABLE C      */ 
-/*                                                           6.1          */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -48,6 +48,8 @@
 /*                                                                        */ 
 /*    This function reads a data payload from the Pima device. This       */ 
 /*    function first read a header followed by some data.                 */ 
+/*                                                                        */
+/*    Note header only transfer and partial transfer is not accepted.     */
 /*                                                                        */ 
 /*  INPUT                                                                 */ 
 /*                                                                        */ 
@@ -68,7 +70,7 @@
 /*    _ux_host_stack_transfer_request       Process transfer request      */ 
 /*    _ux_host_stack_transfer_request_abort Abort transfer request        */ 
 /*    _ux_host_stack_endpoint_reset         Reset endpoint                */
-/*    _ux_utility_semaphore_get             Get protection semaphore      */ 
+/*    _ux_host_semaphore_get                Get protection semaphore      */ 
 /*    _ux_utility_long_get                  Get a long 32 bit value       */
 /*    _ux_utility_short_get                 Get a short 16 bit value      */
 /*    _ux_utility_memory_copy               Copy memory                   */
@@ -87,6 +89,12 @@
 /*                                            verified memset and memcpy  */
 /*                                            cases,                      */
 /*                                            resulting in version 6.1    */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            refined macros names,       */
+/*                                            resulting in version 6.1.10 */
+/*  07-29-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            improved length checks,     */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 UINT  _ux_host_class_pima_read(UX_HOST_CLASS_PIMA *pima, UCHAR *data_pointer, 
@@ -126,7 +134,7 @@ ULONG            payload_length;
     {
         
         /* Wait for the completion of the transfer request.  */
-        status =  _ux_utility_semaphore_get(&transfer_request -> ux_transfer_request_semaphore, UX_MS_TO_TICK(UX_HOST_CLASS_PIMA_CLASS_TRANSFER_TIMEOUT));
+        status =  _ux_host_semaphore_get(&transfer_request -> ux_transfer_request_semaphore, UX_MS_TO_TICK(UX_HOST_CLASS_PIMA_CLASS_TRANSFER_TIMEOUT));
 
         /* If the semaphore did not succeed we probably have a time out.  */
         if (status != UX_SUCCESS)
@@ -161,6 +169,11 @@ ULONG            payload_length;
     /* Get the expected length from the header. */
     header_length =  _ux_utility_long_get(ptp_payload + UX_HOST_CLASS_PIMA_DATA_HEADER_LENGTH);
 
+    /* Device reported data length should be equal or more than this packet
+     * (and UX_HOST_CLASS_PIMA_DATA_HEADER_LENGTH).  */
+    if (header_length < transfer_request -> ux_transfer_request_actual_length)
+        return(UX_CLASS_MALFORMED_PACKET_RECEIVED_ERROR);
+
     /* Check for remainder in last packet.  */
     if ((header_length % pima -> ux_host_class_pima_bulk_in_endpoint -> ux_endpoint_descriptor.wMaxPacketSize) == 0)
     
@@ -172,7 +185,7 @@ ULONG            payload_length;
         pima -> ux_host_class_pima_zlp_flag = UX_HOST_CLASS_PIMA_ZLP_NONE;
 
     /* The length returned should be smaller than the length requested.  */
-    if ((header_length - UX_HOST_CLASS_PIMA_DATA_HEADER_SIZE)> data_length)
+    if ((header_length - UX_HOST_CLASS_PIMA_DATA_HEADER_SIZE) > data_length)
         return(UX_ERROR);
 
     /* We may have had data in the first packet, if so adjust the data_length.  */
@@ -211,7 +224,7 @@ ULONG            payload_length;
         {
         
             /* Wait for the completion of the transfer request.  */
-            status =  _ux_utility_semaphore_get(&transfer_request -> ux_transfer_request_semaphore, UX_MS_TO_TICK(UX_HOST_CLASS_PIMA_CLASS_TRANSFER_TIMEOUT));
+            status =  _ux_host_semaphore_get(&transfer_request -> ux_transfer_request_semaphore, UX_MS_TO_TICK(UX_HOST_CLASS_PIMA_CLASS_TRANSFER_TIMEOUT));
 
             /* If the semaphore did not succeed we probably have a time out.  */
             if (status != UX_SUCCESS)
@@ -266,7 +279,7 @@ ULONG            payload_length;
         {
         
             /* Wait for the completion of the transfer request.  */
-            status =  _ux_utility_semaphore_get(&transfer_request -> ux_transfer_request_semaphore, UX_MS_TO_TICK(UX_HOST_CLASS_PIMA_CLASS_TRANSFER_TIMEOUT));
+            status =  _ux_host_semaphore_get(&transfer_request -> ux_transfer_request_semaphore, UX_MS_TO_TICK(UX_HOST_CLASS_PIMA_CLASS_TRANSFER_TIMEOUT));
 
             /* If the semaphore did not succeed we probably have a time out.  */
             if (status != UX_SUCCESS)

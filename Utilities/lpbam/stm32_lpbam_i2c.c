@@ -17,7 +17,7 @@
   */
 
 /* Includes --------------------------------------------------------------------------------------------------------- */
-#include "stm32_lpbam.h"
+#include "stm32_ll_lpbam.h"
 
 #ifdef LPBAM_I2C_MODULE_ENABLED
 
@@ -34,15 +34,6 @@
 /* Private define ----------------------------------------------------------------------------------------------------*/
 /* Private macro -----------------------------------------------------------------------------------------------------*/
 /* Private function prototypes ---------------------------------------------------------------------------------------*/
-/** @defgroup LPBAM_I2C_Basic_Private_Function_Prototypes LPBAM I2C Basic Private Function Prototypes
-  * @{
-  */
-extern LPBAM_Status_t LPBAM_I2C_FillStructInfo(LPBAM_I2C_ConfNode_t const *const pConfNode,
-                                               LPBAM_InfoDesc_t     *const pDescInfo);
-/**
-  * @}
-  */
-
 /* Exported functions ------------------------------------------------------------------------------------------------*/
 /** @defgroup LPBAM_I2C_Basic_Exported_Functions LPBAM I2C Basic Exported Functions
   * @{

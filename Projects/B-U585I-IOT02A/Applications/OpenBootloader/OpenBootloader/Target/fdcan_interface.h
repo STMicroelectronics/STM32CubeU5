@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -22,29 +22,29 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
-#include "openbl_core.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+/* External variables --------------------------------------------------------*/
+/* Exported functions --------------------------------------------------------*/
 void OPENBL_FDCAN_Configuration(void);
 void OPENBL_FDCAN_DeInit(void);
 uint8_t OPENBL_FDCAN_ProtocolDetection(void);
 
 uint8_t OPENBL_FDCAN_GetCommandOpcode(void);
 uint8_t OPENBL_FDCAN_ReadByte(void);
-void OPENBL_FDCAN_ReadBytes(uint8_t *Buffer, uint32_t BufferSize);
+void OPENBL_FDCAN_ReadBytes(uint8_t *pBuffer, uint32_t BufferSize);
 void OPENBL_FDCAN_SendByte(uint8_t Byte);
-void OPENBL_FDCAN_SendBytes(uint8_t *Buffer, uint32_t BufferSize);
-void OPENBL_FDCAN_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *Frame);
+void OPENBL_FDCAN_SendBytes(uint8_t *pBuffer, uint32_t BufferSize);
+void OPENBL_FDCAN_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *pSpecialCmd);
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* FDCAN_INTERFACE_H */

@@ -126,7 +126,9 @@ enum image_attributes
 #else
   RE_OVER_WRITE = (0x0),
 #endif
-#if defined(STM32U585xx) || defined(STM32U575xx)
+#if defined(STM32U535xx) || defined(STM32U545xx)
+  RE_FLASH_PAGE_NBR = (0x1F)
+#elif defined(STM32U585xx) || defined(STM32U575xx)
   RE_FLASH_PAGE_NBR = (0x7F)
 #elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
   RE_FLASH_PAGE_NBR = (0xFF)

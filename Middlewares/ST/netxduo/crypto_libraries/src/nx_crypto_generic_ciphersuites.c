@@ -29,7 +29,7 @@
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    nx_crypto_generic_ciphersuites                      PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Timothy Stapko, Microsoft Corporation                               */
@@ -66,6 +66,14 @@
 /*                                            curves in the crypto array, */
 /*                                            added TLS ciphersuite entry,*/
 /*                                            resulting in version 6.1    */
+/*  04-25-2022     Yuxin Zhou               Modified comment(s), added    */
+/*                                            x25519 and x448 curves,     */
+/*                                            resulting in version 6.1.11 */
+/*  07-29-2022     Yuxin Zhou               Modified comment(s),          */
+/*                                            added x448 curves,          */
+/*                                            resulting in version 6.1.12 */
+/*  10-31-2022     Yanwu Cai                Modified comment(s),          */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 
@@ -90,6 +98,8 @@ extern NX_CRYPTO_METHOD crypto_method_auth_psk;
 extern NX_CRYPTO_METHOD crypto_method_ec_secp256;
 extern NX_CRYPTO_METHOD crypto_method_ec_secp384;
 extern NX_CRYPTO_METHOD crypto_method_ec_secp521;
+extern NX_CRYPTO_METHOD crypto_method_ec_x25519;
+extern NX_CRYPTO_METHOD crypto_method_ec_x448;
 extern NX_CRYPTO_METHOD crypto_method_md5;
 extern NX_CRYPTO_METHOD crypto_method_sha1;
 extern NX_CRYPTO_METHOD crypto_method_sha224;
@@ -107,6 +117,7 @@ extern NX_CRYPTO_METHOD crypto_method_hmac;
 
 /* Ciphersuite table without ECC. */
 /* Lookup table used to map ciphersuites to cryptographic routines. */
+/* For TLS Web servers, define NX_SECURE_ENABLE_AEAD_CIPHER to allow web browsers to connect using AES_128_GCM cipher suites. */
 NX_SECURE_TLS_CIPHERSUITE_INFO _nx_crypto_ciphersuite_lookup_table[] =
 {
     /* Ciphersuite,                           public cipher,            public_auth,              session cipher & cipher mode,   iv size, key size,  hash method,                    hash size, TLS PRF */
@@ -210,6 +221,7 @@ const UINT _nx_crypto_ciphersuite_lookup_table_tls_1_3_size = sizeof(_nx_crypto_
 /* Ciphersuite table with ECC. */
 /* Lookup table used to map ciphersuites to cryptographic routines. */
 /* Ciphersuites are negotiated IN ORDER - top priority first. Ciphersuites lower in the list are considered less secure. */
+/* For TLS Web servers, define NX_SECURE_ENABLE_AEAD_CIPHER to allow web browsers to connect using AES_128_GCM cipher suites. */
 NX_SECURE_TLS_CIPHERSUITE_INFO _nx_crypto_ciphersuite_lookup_table_ecc[] =
 {
     /* Ciphersuite,                           public cipher,            public_auth,              session cipher & cipher mode,   iv size, key size,  hash method,                    hash size, TLS PRF */
@@ -284,6 +296,10 @@ const NX_SECURE_TLS_CRYPTO nx_crypto_tls_ciphers_ecc =
 const USHORT nx_crypto_ecc_supported_groups[] =
 {
     (USHORT)NX_CRYPTO_EC_SECP256R1,
+#ifdef NX_CRYPTO_ENABLE_CURVE25519_448
+    (USHORT)NX_CRYPTO_EC_X25519,
+    (USHORT)NX_CRYPTO_EC_X448,
+#endif /* NX_CRYPTO_ENABLE_CURVE25519_448 */
     (USHORT)NX_CRYPTO_EC_SECP384R1,
     (USHORT)NX_CRYPTO_EC_SECP521R1,
 };
@@ -291,6 +307,10 @@ const USHORT nx_crypto_ecc_supported_groups[] =
 const NX_CRYPTO_METHOD *nx_crypto_ecc_curves[] =
 {
     &crypto_method_ec_secp256,
+#ifdef NX_CRYPTO_ENABLE_CURVE25519_448
+    &crypto_method_ec_x25519,
+    &crypto_method_ec_x448,
+#endif /* NX_CRYPTO_ENABLE_CURVE25519_448 */
     &crypto_method_ec_secp384,
     &crypto_method_ec_secp521,
 };
@@ -598,6 +618,10 @@ const NX_CRYPTO_METHOD *supported_crypto[] =
     &crypto_method_tls_prf_sha256,
     &crypto_method_hkdf,
     &crypto_method_ec_secp256,
+#ifdef NX_CRYPTO_ENABLE_CURVE25519_448
+    &crypto_method_ec_x25519,
+    &crypto_method_ec_x448,
+#endif /* NX_CRYPTO_ENABLE_CURVE25519_448 */
     &crypto_method_ec_secp384,
     &crypto_method_ec_secp521,
 };

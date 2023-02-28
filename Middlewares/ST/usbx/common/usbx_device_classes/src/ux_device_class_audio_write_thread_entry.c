@@ -34,7 +34,7 @@
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _ux_device_class_audio_write_thread_entry           PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -55,7 +55,7 @@
 /*  CALLS                                                                 */
 /*                                                                        */
 /*    _ux_system_error_handler              System error trap             */
-/*    _ux_utility_thread_suspend            Suspend thread used           */
+/*    _ux_device_thread_suspend             Suspend thread used           */
 /*    _ux_device_stack_transfer_request     Issue transfer request        */
 /*    _ux_utility_memory_copy               Copy data                     */
 /*                                                                        */
@@ -72,6 +72,12 @@
 /*                                            verified memset and memcpy  */
 /*                                            cases,                      */
 /*                                            resulting in version 6.1    */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            refined macros names,       */
+/*                                            resulting in version 6.1.10 */
+/*  10-31-2022     Yajun Xia                Modified comment(s),          */
+/*                                            added standalone support,   */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 VOID _ux_device_class_audio_write_thread_entry(ULONG audio_stream)
@@ -150,7 +156,10 @@ ULONG                           actual_length;
 
                 /* Error trap!  */
                 if (next_frame -> ux_device_class_audio_frame_length == 0)
+                {
+                    stream -> ux_device_class_audio_stream_buffer_error_count ++;
                     _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_CLASS, UX_BUFFER_OVERFLOW);
+                }
             }
             else
             {
@@ -159,9 +168,12 @@ ULONG                           actual_length;
                 if (next_frame -> ux_device_class_audio_frame_length)
                     stream -> ux_device_class_audio_stream_transfer_pos = next_frame;
                 else
+                {
 
                     /* Error trap!  */
                     _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_CLASS, UX_BUFFER_OVERFLOW);
+                    stream -> ux_device_class_audio_stream_buffer_error_count ++;
+                }
             }
 
             /* Invoke notification callback.  */
@@ -170,7 +182,7 @@ ULONG                           actual_length;
         }
 
         /* We need to suspend ourselves. We will be resumed by the device enumeration module or when a change of alternate setting happens.  */
-        _ux_utility_thread_suspend(&stream -> ux_device_class_audio_stream_thread);
+        _ux_device_thread_suspend(&stream -> ux_device_class_audio_stream_thread);
     }
 }
 

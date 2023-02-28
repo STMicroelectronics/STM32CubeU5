@@ -111,6 +111,7 @@ INT fx_stm32_sd_read_blocks(UINT instance, UINT *buffer, UINT start_block, UINT 
 
   /* USER CODE BEGIN PRE_READ_BLOCKS */
   /* USER CODE END PRE_READ_BLOCKS */
+
   sd_rx_cplt = 0;
 
   if(HAL_SD_ReadBlocks_DMA(&hsd1, (uint8_t *)buffer, start_block, total_blocks) != HAL_OK)

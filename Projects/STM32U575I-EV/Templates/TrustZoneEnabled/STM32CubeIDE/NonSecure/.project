@@ -442,11 +442,6 @@
 			<locationURI>PARENT-2-PROJECT_LOC/NonSecure/Src/stm32u5xx_it.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/aps6408.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/aps6408/aps6408.c</locationURI>
-		</link>
-		<link>
 			<name>Drivers/BSP/Components/cs42l51.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/cs42l51/cs42l51.c</locationURI>
@@ -455,16 +450,6 @@
 			<name>Drivers/BSP/Components/cs42l51_reg.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/cs42l51/cs42l51_reg.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/BSP/Components/hts221.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/hts221/hts221.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/BSP/Components/hts221_reg.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/hts221/hts221_reg.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/Components/hx8347i.c</name>
@@ -487,9 +472,9 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/lsm6dso/lsm6dso_reg.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/m24lr64.c</name>
+			<name>Drivers/BSP/Components/m24256.c</name>
 			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/m24lr64/m24lr64.c</locationURI>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/m24256/m24256.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/Components/mfxstm32l152.c</name>

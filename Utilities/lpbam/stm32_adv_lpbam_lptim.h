@@ -65,7 +65,7 @@ typedef struct
 } LPBAM_LPTIM_PWMFullAdvConf_t;
 
 /**
-  * @brief LPBAM LPTIM input capture advanced information structure definition.
+  * @brief LPBAM LPTIM input capture and get counter advanced information structure definition.
   */
 typedef struct
 {
@@ -73,7 +73,7 @@ typedef struct
 
   uint16_t Size;   /*!< Specifies the size of data to be read */
 
-} LPBAM_LPTIM_ICFullAdvConf_t;
+} LPBAM_LPTIM_ICFullAdvConf_t, LPBAM_LPTIM_GetCounterFullAdvConf_t;
 
 /**
   * @brief LPBAM LPTIM update event detection advanced information structure definition.
@@ -122,16 +122,14 @@ typedef struct
 } LPBAM_LPTIM_PWMFullDesc_t;
 
 /**
-  * @brief LPBAM LPTIM input capture descriptor structure definition.
+  * @brief LPBAM LPTIM input capture and get counter descriptor structure definition.
   */
 typedef struct
 {
   DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : only one node is
                                    needed                                                                             */
 
-  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
-
-} LPBAM_LPTIM_ICFullDesc_t;
+} LPBAM_LPTIM_ICFullDesc_t, LPBAM_LPTIM_GetCounterFullDesc_t;
 
 /**
   * @brief LPBAM LPTIM update event detection descriptor structure definition.
@@ -202,6 +200,15 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_UE_SetFullQ(LPTIM_TypeDef              *const pIn
                                            LPBAM_LPTIM_UEFullAdvConf_t const *const pUEFull,
                                            LPBAM_LPTIM_UEFullDesc_t    *const pDescriptor,
                                            DMA_QListTypeDef            *const pQueue);
+/**
+  * @brief ADV_LPBAM_LPTIM_GetCounter_SetFullQ.
+  */
+LPBAM_Status_t ADV_LPBAM_LPTIM_GetCounter_SetFullQ(LPTIM_TypeDef                       *const pInstance,
+                                                   LPBAM_DMAListInfo_t                 const *const pDMAListInfo,
+                                                   LPBAM_LPTIM_GetCounterFullAdvConf_t const *const pGetCounterFull,
+                                                   LPBAM_LPTIM_GetCounterFullDesc_t    *const pDescriptor,
+                                                   DMA_QListTypeDef                    *const pQueue);
+
 /**
   * @brief ADV_LPBAM_LPTIM_Start_SetFullQ.
   */

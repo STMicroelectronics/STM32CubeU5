@@ -41,7 +41,7 @@ is pressed, the system wakes up from Stop2 mode.
 -   When pressing another time on the user push-button, the LPBAM scenario is stopped, unlinked and de-initialized and the
 green led turns on.
 
--   The typical average power consumption of the system performing DMA master trasnfers with a 1s period and DMA slave
+-   The typical average power consumption of the system performing DMA master transfers with a 1s period and DMA slave
 transfers with 100ms period is 4.2uA.
 
 -   NUCLEO-U575ZI-Q board LEDs are used to monitor the transfer status:

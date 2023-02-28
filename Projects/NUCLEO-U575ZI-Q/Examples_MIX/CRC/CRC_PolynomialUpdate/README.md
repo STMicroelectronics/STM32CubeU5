@@ -41,6 +41,7 @@ Security, CRC, CRC Polynomial, CRC-8-WCDMA, CRC-16-ANSI, hardware CRC, user-defi
 
   - CRC/CRC_PolynomialUpdate/Inc/stm32u5xx_hal_conf.h    HAL configuration file
   - CRC/CRC_PolynomialUpdate/Inc/stm32u5xx_it.h          Interrupt handlers header file
+  - CRC/CRC_PolynomialUpdate/Inc/stm32u5xx_nucleo_conf.h BSP Configuration file
   - CRC/CRC_PolynomialUpdate/Inc/main.h                  Header for main.c module
   - CRC/CRC_PolynomialUpdate/Src/stm32u5xx_it.c          Interrupt handlers
   - CRC/CRC_PolynomialUpdate/Src/main.c                  Main program

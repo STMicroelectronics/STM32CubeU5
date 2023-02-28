@@ -69,12 +69,13 @@ static __IO uint32_t transferCompleteDetected; /* Set to 1 if transfer is correc
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void SystemPower_Config(void);
-static void MX_ICACHE_Init(void);
 static void MX_GPDMA1_Init(void);
+static void MX_ICACHE_Init(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 static void TransferComplete(DMA_HandleTypeDef *handle_GPDMA1_Channel0);
 static void TransferError(DMA_HandleTypeDef *handle_GPDMA1_Channel0);
+static uint32_t Buffercmp(uint8_t* pBuffer1, uint8_t* pBuffer2, uint16_t BufferLength);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -117,17 +118,14 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_ICACHE_Init();
   MX_GPDMA1_Init();
+  MX_ICACHE_Init();
   /* USER CODE BEGIN 2 */
   /* Initialize LEDs */
   BSP_LED_Init(LED1);
   BSP_LED_Init(LED2);
   BSP_LED_Init(LED3);
-  /* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   /* Reset transferErrorDetected to 0, it will be set to 1 if a transfer error is detected */
   transferErrorDetected = 0;
   /* Reset transferCompleteDetected to 0, it will be set to 1 if a transfer is correctly completed */
@@ -139,30 +137,38 @@ int main(void)
 
   /* Configure the source, destination and buffer size DMA fields and Start DMA Channel/Stream transfer */
   /* Enable All the DMA interrupts */
-  if (HAL_DMA_Start_IT(&handle_GPDMA1_Channel0, (uint32_t)&aSRC_Const_Buffer, (uint32_t)&aDST_Buffer, BUFFER_SIZE) != HAL_OK)
+  if (HAL_DMA_Start_IT(&handle_GPDMA1_Channel0, (uint32_t)&aSRC_Const_Buffer, (uint32_t)&aDST_Buffer, (BUFFER_SIZE * 4U)) != HAL_OK)
   {
     /* Transfer Error */
     Error_Handler();
   }
 
+  /* Wait for end of transmission or an error occurred */
+  while ((transferCompleteDetected == 0) && (transferErrorDetected == 0U));
+
+  /* Check DMA error */
+  if (transferErrorDetected == 1U)
+  {
+    Error_Handler();
+  }
+
+  /* Check destination aDST_Buffer */
+  if (Buffercmp((uint8_t *)aSRC_Const_Buffer, (uint8_t *)aDST_Buffer, (BUFFER_SIZE * 4U)) != 0U)
+  {
+    /* Transfer Error */
+    Error_Handler();
+  }
+  /* USER CODE END 2 */
+
   /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    if (transferErrorDetected == 1)
-    {
-      /* Turn LED2 on*/
-      BSP_LED_On(LED2);
-      transferErrorDetected = 0;
-    }
-    if (transferCompleteDetected == 1)
-    {
-      /* Turn LED1 on*/
-      BSP_LED_On(LED1);
-      transferCompleteDetected = 0;
-    }
+    HAL_Delay(250);
+    BSP_LED_Toggle(LED1);
   }
   /* USER CODE END 3 */
 }
@@ -183,7 +189,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.MSIState = RCC_MSI_ON;
@@ -204,7 +210,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
@@ -240,6 +246,8 @@ static void SystemPower_Config(void)
   {
     Error_Handler();
   }
+/* USER CODE BEGIN PWR */
+/* USER CODE END PWR */
 }
 
 /**
@@ -347,6 +355,28 @@ static void TransferError(DMA_HandleTypeDef *handle_GPDMA1_Channel0)
   transferErrorDetected = 1;
 }
 
+/**
+  * @brief  Compares two buffers.
+  * @param  pBuffer1, pBuffer2: buffers to be compared.
+  * @param  BufferLength: buffer's length
+  * @retval 0   : pBuffer1 identical to pBuffer2
+  *         > 0 : pBuffer1 differs from pBuffer2
+  */
+static uint32_t Buffercmp(uint8_t* pBuffer1, uint8_t* pBuffer2, uint16_t BufferLength)
+{
+  while (BufferLength--)
+  {
+    if ((*pBuffer1) != *pBuffer2)
+    {
+      return BufferLength;
+    }
+
+    pBuffer1++;
+    pBuffer2++;
+  }
+
+  return 0;
+}
 /* USER CODE END 4 */
 
 /**
@@ -356,6 +386,7 @@ static void TransferError(DMA_HandleTypeDef *handle_GPDMA1_Channel0)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
+  __disable_irq();
   /* Turn LED3 on: Transfer Error */
   BSP_LED_On(LED3);
   while (1)

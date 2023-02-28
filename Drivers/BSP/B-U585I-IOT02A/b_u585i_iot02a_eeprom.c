@@ -56,7 +56,7 @@
 /** @defgroup B_U585I_IOT02A_EEPROM_Exported_Variables Exported Variables
   * @{
   */
-M24LR64_Object_t   *Eeprom_CompObj = NULL;
+M24256_Object_t   *Eeprom_CompObj = NULL;
 /**
   * @}
   */
@@ -64,7 +64,7 @@ M24LR64_Object_t   *Eeprom_CompObj = NULL;
 /** @defgroup B_U585I_IOT02A_EEPROM_Private_Variables Private Variables
   * @{
   */
-static M24LR64_EEPROM_Drv_t     *Eeprom_Drv = NULL;
+static M24256_EEPROM_Drv_t     *Eeprom_Drv = NULL;
 /**
   * @}
   */
@@ -72,7 +72,7 @@ static M24LR64_EEPROM_Drv_t     *Eeprom_Drv = NULL;
 /** @defgroup B_U585I_IOT02A_EEPROM_Private_Function_Prototypes Private Functions Prototypes
   * @{
   */
-static int32_t M24LR64_Probe(void);
+static int32_t M24256_Probe(void);
 static int32_t EEPROM_WriteBytes(uint32_t Instance, uint8_t *pBuffer, uint32_t WriteAddr, uint32_t NbrOfBytes);
 /**
   * @}
@@ -96,7 +96,7 @@ int32_t BSP_EEPROM_Init(uint32_t Instance)
   }
   else
   {
-    if (M24LR64_Probe() != BSP_ERROR_NONE)
+    if (M24256_Probe() != BSP_ERROR_NONE)
     {
       ret = BSP_ERROR_NO_INIT;
     }
@@ -139,7 +139,7 @@ int32_t BSP_EEPROM_DeInit(uint32_t Instance)
   * @param  PageNbr EEPROM's internal page number to write to.
   * @retval BSP status
   */
-int32_t BSP_EEPROM_WritePage(uint32_t Instance, uint8_t *pBuffer, uint32_t PageNbr)
+int32_t BSP_EEPROM_WritePage(const uint32_t Instance, uint8_t *pBuffer, uint32_t PageNbr)
 {
   int32_t ret = BSP_ERROR_NONE;
   uint16_t WriteAddr = (uint16_t)PageNbr * EEPROM_PAGESIZE;
@@ -172,7 +172,7 @@ int32_t BSP_EEPROM_WritePage(uint32_t Instance, uint8_t *pBuffer, uint32_t PageN
   * @param  PageNbr EEPROM's internal page number to read from.
   * @retval BSP status
   */
-int32_t BSP_EEPROM_ReadPage(uint32_t Instance, uint8_t *pBuffer, uint32_t PageNbr)
+int32_t BSP_EEPROM_ReadPage(const uint32_t Instance, uint8_t *pBuffer, uint32_t PageNbr)
 {
   int32_t ret = BSP_ERROR_NONE;
   uint16_t ReadAddr = (uint16_t)PageNbr * EEPROM_PAGESIZE;
@@ -202,7 +202,7 @@ int32_t BSP_EEPROM_ReadPage(uint32_t Instance, uint8_t *pBuffer, uint32_t PageNb
   * @param  NbrOfBytes  Number of bytes to be read from the EEPROM.
   * @retval BSP status
   */
-int32_t BSP_EEPROM_ReadBuffer(uint32_t Instance, uint8_t *pBuffer, uint32_t ReadAddr, uint32_t NbrOfBytes)
+int32_t BSP_EEPROM_ReadBuffer(const uint32_t Instance, uint8_t *pBuffer, uint32_t ReadAddr, uint32_t NbrOfBytes)
 {
   int32_t ret = BSP_ERROR_NONE;
 
@@ -231,7 +231,7 @@ int32_t BSP_EEPROM_ReadBuffer(uint32_t Instance, uint8_t *pBuffer, uint32_t Read
   * @param  NbrOfBytes  number of bytes to write to the EEPROM.
   * @retval BSP status
   */
-int32_t BSP_EEPROM_WriteBuffer(uint32_t Instance, uint8_t *pBuffer, uint32_t WriteAddr, uint32_t NbrOfBytes)
+int32_t BSP_EEPROM_WriteBuffer(const uint32_t Instance, uint8_t *pBuffer, uint32_t WriteAddr, uint32_t NbrOfBytes)
 {
   int32_t ret = BSP_ERROR_NONE;
   uint32_t numofpages;
@@ -421,7 +421,7 @@ int32_t BSP_EEPROM_IsDeviceReady(uint32_t Instance)
   * @param  NbrOfBytes  number of bytes to write to the EEPROM.
   * @retval BSP status
   */
-static int32_t EEPROM_WriteBytes(uint32_t Instance, uint8_t *pBuffer, uint32_t WriteAddr, uint32_t NbrOfBytes)
+static int32_t EEPROM_WriteBytes(const uint32_t Instance, uint8_t *pBuffer, uint32_t WriteAddr, uint32_t NbrOfBytes)
 {
   int32_t ret = BSP_ERROR_NONE;
 
@@ -445,11 +445,11 @@ static int32_t EEPROM_WriteBytes(uint32_t Instance, uint8_t *pBuffer, uint32_t W
   * @brief  Register Bus IOs
   * @retval BSP status
   */
-static int32_t M24LR64_Probe(void)
+static int32_t M24256_Probe(void)
 {
   int32_t ret;
-  M24LR64_IO_t              IOCtx;
-  static M24LR64_Object_t   M24LR64Obj;
+  M24256_IO_t              IOCtx;
+  static M24256_Object_t   M24256Obj;
 
   /* Configure the EEPROM driver */
   IOCtx.Init        = BSP_I2C2_Init;
@@ -459,15 +459,15 @@ static int32_t M24LR64_Probe(void)
   IOCtx.IsReady     = BSP_I2C2_IsReady;
   IOCtx.Address     = (uint16_t)EEPROM_I2C_ADDRESS;
 
-  if (M24LR64_RegisterBusIO(&M24LR64Obj, &IOCtx) != M24LR64_OK)
+  if (M24256_RegisterBusIO(&M24256Obj, &IOCtx) != M24256_OK)
   {
     ret = BSP_ERROR_BUS_FAILURE;
   }
   else
   {
-    Eeprom_Drv = &M24LR64_EEPROM_Driver;
-    Eeprom_CompObj = &M24LR64Obj;
-    if (Eeprom_Drv->Init(Eeprom_CompObj) != M24LR64_OK)
+    Eeprom_Drv = &M24256_EEPROM_Driver;
+    Eeprom_CompObj = &M24256Obj;
+    if (Eeprom_Drv->Init(Eeprom_CompObj) != M24256_OK)
     {
       ret = BSP_ERROR_COMPONENT_FAILURE;
     }

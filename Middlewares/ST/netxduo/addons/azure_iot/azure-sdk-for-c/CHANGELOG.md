@@ -1,5 +1,79 @@
 # Release History
 
+## 1.4.0 (2022-11-11)
+
+### Features Added
+
+- [[#2329](https://github.com/Azure/azure-sdk-for-c/pull/2329)] Add Base64 URL decoder.
+- [[#2375](https://github.com/Azure/azure-sdk-for-c/pull/2375)] Add Azure Device Update for IoT Hub, enabling Over-the-Air (OTA) updates for embedded devices.
+
+### Breaking Changes
+
+- Modified the `az_json_string_unescape()` function signature to accept `az_span` as the destination.
+
+### Bugs Fixed
+
+- [[#2372](https://github.com/Azure/azure-sdk-for-c/pull/2372)] Incorrect minimum buffer size calculation when logging an HTTP request.
+
+### Other Changes
+
+- [[#2400](https://github.com/Azure/azure-sdk-for-c/pull/2400)] Updated the vcpkg baseline for installing SDK dependencies to the October 2022 tag.
+
+## 1.4.0-beta.1 (2022-08-09)
+
+### Features Added
+
+- Added support in `az_json.h` to unescape JSON string tokens within an `az_span` using the `az_json_string_unescape()` API.
+
+## 1.3.2 (2022-07-07)
+
+### Other Changes
+ - Removed unreachable code in `az_http_policy_retry.c`.
+
+## 1.3.1 (2022-04-05)
+
+### Bugs Fixed
+
+- [[#2152]](https://github.com/Azure/azure-sdk-for-c/pull/2152) Fix value in user agent string.
+- [[#2162]](https://github.com/Azure/azure-sdk-for-c/pull/2162) Remove failure if $version is not present in IoT Twin reported properties response topic.
+
+## 1.3.0 (2022-02-08)
+
+### Features Added
+
+- Added a total bytes written field to the JSON writer.
+
+### Breaking Changes
+
+- Compared to the previous 1.2.0 release, there are **no** breaking changes.
+- Removed `az_storage_blobs.h`, which included some beta APIs for Azure Blob Storage such as `az_storage_blobs_blob_client()`.
+  - These will ship in a future release, and are still available from [the previous beta release](https://github.com/Azure/azure-sdk-for-c/releases/tag/1.3.0-beta.1).
+
+### Bugs Fixed
+
+- [[#2027]](https://github.com/Azure/azure-sdk-for-c/pull/2027) Update IoT user agent to append property name before property value in cases where a custom user agent was specified.
+- [[#1885]](https://github.com/Azure/azure-sdk-for-c/pull/1885) Fix compilation error C4576 with C++ and MSVC 2019. (A community contribution, courtesy of _[hwmaier](https://github.com/hwmaier)_)
+
+### Acknowledgments
+
+Thank you to our developer community members who helped to make Azure SDK for C better with their contributions to this release:
+
+- Henrik Maier _([GitHub](https://github.com/hwmaier))_
+
+## 1.3.0-beta.1 (2021-11-09)
+
+### Features Added
+
+- Added `az_http_response_get_status_code()` convenience function to get HTTP status code from requests.
+
+### Bugs Fixed
+
+- Fixed `az_curl` CMake dependency propagation on `libcurl`.
+
+### Other Changes
+
+- Improved HTTP request telemetry.
+
 ## 1.2.0 (2021-09-08)
 
 ### Features Added

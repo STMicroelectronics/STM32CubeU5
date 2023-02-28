@@ -176,7 +176,6 @@ const struct bootutil_key bootutil_enc_key __attribute__((section(".bootutil_enc
     .len = (const unsigned int *)0,
 };
 #endif/* MCUBOOT_ENC_IMAGES */
-#if !defined(BL2_USE_HUK_HW)
 /* HUK is provisioned in PERSO area (else HUK is in HW) */
 extern const uint8_t huk_value[];
 extern const unsigned int huk_len;
@@ -194,9 +193,7 @@ const struct bootutil_key bootutil_priv_huk_key[] __attribute__((section(".bootu
 #pragma location=".bootutil_priv_huk_key_cnt"
 #endif
 const int bootutil_priv_huk_key_cnt __attribute__((section(".bootutil_priv_huk_key_cnt"))) = sizeof(bootutil_priv_huk_key)/sizeof(struct bootutil_key);
-#endif /* BL2_USE_HUK_HW */
 
-#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 0)
 /* EAT key is provisioned in PERSO area (else EAT key is in Secure Data image) */
 extern const unsigned int initial_attestation_priv_key_len;
 extern const uint8_t initial_attestation_priv_key[];
@@ -228,4 +225,3 @@ const struct bootutil_key bootutil_priv_eat_key[] __attribute__((section(".bootu
 #endif
 const int bootutil_priv_eat_key_cnt __attribute__((section(".bootutil_priv_eat_key_cnt"))) = sizeof(bootutil_priv_eat_key)/sizeof(struct bootutil_key);
 
-#endif /* (MCUBOOT_S_DATA_IMAGE_NUMBER == 0) */

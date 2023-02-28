@@ -610,10 +610,6 @@ static void MX_InputSwitch_Q_Link(DMA_HandleTypeDef *hdma)
   __HAL_DMA_ENABLE_IT(hdma, DMA_IT_DTE|DMA_IT_ULE
                               |DMA_IT_USE|DMA_IT_TC
                               |DMA_IT_TO);
-  if (HAL_DMA_ConfigChannelAttributes(hdma, DMA_CHANNEL_NPRIV) != HAL_OK)
-  {
-    Error_Handler();
-  }
 
   /* Register DMA channel error callbacks */
   if (HAL_DMA_RegisterCallback(hdma, HAL_DMA_XFER_ERROR_CB_ID, MX_InputSwitch_Q_DMA_Error_Callback) != HAL_OK)

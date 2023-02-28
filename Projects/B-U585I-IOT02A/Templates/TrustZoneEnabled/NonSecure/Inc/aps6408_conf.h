@@ -3,8 +3,6 @@
   * @file    aps6408_conf.h
   * @author  MCD Application Team
   * @brief   APS6408 PSRAM OctoSPI memory configuration file.
-  *          This file should be copied to the application folder and renamed
-  *          to aps6408_conf.h
   ******************************************************************************
   * @attention
   *

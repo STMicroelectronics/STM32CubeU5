@@ -55,6 +55,7 @@ typedef enum
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
+void MX_LPUART1_UART_Init(void);
 
 /* USER CODE BEGIN EFP */
 
@@ -66,7 +67,7 @@ void Error_Handler(void);
 #define LPTIM1_PWM_PERIOD 640U
 #define LPTIM1_PWM_PULSE 320U
 #define LPTIM1_PWM_REPETITION 0U
-void   MX_LPUART1_UART_Init(void);
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

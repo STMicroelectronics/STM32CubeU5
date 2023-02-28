@@ -22,12 +22,43 @@
 
 /* Private variables -------------------------------------------------------------------------------------------------*/
 /* LPBAM variables declaration */
-static LPBAM_ADC_ConvDataDesc_t ConvData_Threshold1_Desc;
-static LPBAM_ADC_ConvDataDesc_t ConvData_Threshold2_Desc;
-static LPBAM_DMA_StartFullDesc_t Threshold1_Q_Start_Desc;
-static LPBAM_LPTIM_PWMFullDesc_t Period_10ms_Desc;
-static LPBAM_ADC_ConvConfigDesc_t Conversion_Config_Desc;
-static LPBAM_DMA_StartFullDesc_t Threshold2_Q_Start_Desc;
+/* USER CODE BEGIN TempSens_MultiThres_Descs 0 */
+
+/* USER CODE END TempSens_MultiThres_Descs 0 */
+
+/* USER CODE BEGIN Threshold1_Conversion_Q_ConvData_Threshold1_Desc */
+
+/* USER CODE END Threshold1_Conversion_Q_ConvData_Threshold1_Desc */
+static LPBAM_ADC_ConvDataDesc_t Threshold1_Conversion_Q_ConvData_Threshold1_Desc;
+
+/* USER CODE BEGIN Threshold2_Conversion_Q_ConvData_Threshold2_Desc */
+
+/* USER CODE END Threshold2_Conversion_Q_ConvData_Threshold2_Desc */
+static LPBAM_ADC_ConvDataDesc_t Threshold2_Conversion_Q_ConvData_Threshold2_Desc;
+
+/* USER CODE BEGIN Thresholdx_Config_Q_Threshold1_Q_Start_Desc */
+
+/* USER CODE END Thresholdx_Config_Q_Threshold1_Q_Start_Desc */
+static LPBAM_DMA_StartFullDesc_t Thresholdx_Config_Q_Threshold1_Q_Start_Desc;
+
+/* USER CODE BEGIN Thresholdx_Config_Q_Period_10ms_Desc */
+
+/* USER CODE END Thresholdx_Config_Q_Period_10ms_Desc */
+static LPBAM_LPTIM_PWMFullDesc_t Thresholdx_Config_Q_Period_10ms_Desc;
+
+/* USER CODE BEGIN Thresholdx_Config_Q_Conversion_Config_Desc */
+
+/* USER CODE END Thresholdx_Config_Q_Conversion_Config_Desc */
+static LPBAM_ADC_ConvConfigDesc_t Thresholdx_Config_Q_Conversion_Config_Desc;
+
+/* USER CODE BEGIN Thresholdx_Config_Q_Threshold2_Q_Start_Desc */
+
+/* USER CODE END Thresholdx_Config_Q_Threshold2_Q_Start_Desc */
+static LPBAM_DMA_StartFullDesc_t Thresholdx_Config_Q_Threshold2_Q_Start_Desc;
+
+/* USER CODE BEGIN TempSens_MultiThres_Descs 1 */
+
+/* USER CODE END TempSens_MultiThres_Descs 1 */
 
 /* Exported variables ------------------------------------------------------------------------------------------------*/
 /* LPBAM queues declaration */
@@ -96,7 +127,7 @@ static void MX_Threshold1_Conversion_Q_Build(void)
   pConvData_ADC.DMAContinuousRequests = DISABLE;
   pConvData_ADC.Size = 512;
   pConvData_ADC.pData = (uint32_t*)&Threshold1_Data_Buffer[0];
-  if (ADV_LPBAM_ADC_Conversion_SetDataQ(ADC4, &pDMAListInfo_ADC, &pConvData_ADC, &ConvData_Threshold1_Desc, &Threshold1_Conversion_Q) != LPBAM_OK)
+  if (ADV_LPBAM_ADC_Conversion_SetDataQ(ADC4, &pDMAListInfo_ADC, &pConvData_ADC, &Threshold1_Conversion_Q_ConvData_Threshold1_Desc, &Threshold1_Conversion_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -104,7 +135,7 @@ static void MX_Threshold1_Conversion_Q_Build(void)
   /**
     * Set circular mode
     */
-  if (ADV_LPBAM_Q_SetCircularMode(&ConvData_Threshold1_Desc, LPBAM_ADC_CONVERSION_DATAQ_DATA_NODE, &Threshold1_Conversion_Q) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetCircularMode(&Threshold1_Conversion_Q_ConvData_Threshold1_Desc, LPBAM_ADC_CONVERSION_DATAQ_DATA_NODE, &Threshold1_Conversion_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -129,7 +160,7 @@ static void MX_Threshold2_Conversion_Q_Build(void)
   pConvData_ADC.DMAContinuousRequests = DISABLE;
   pConvData_ADC.Size = 512;
   pConvData_ADC.pData = (uint32_t*)&Threshold2_Data_Buffer[0];
-  if (ADV_LPBAM_ADC_Conversion_SetDataQ(ADC4, &pDMAListInfo_ADC, &pConvData_ADC, &ConvData_Threshold2_Desc, &Threshold2_Conversion_Q) != LPBAM_OK)
+  if (ADV_LPBAM_ADC_Conversion_SetDataQ(ADC4, &pDMAListInfo_ADC, &pConvData_ADC, &Threshold2_Conversion_Q_ConvData_Threshold2_Desc, &Threshold2_Conversion_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -137,7 +168,7 @@ static void MX_Threshold2_Conversion_Q_Build(void)
   /**
     * Set circular mode
     */
-  if (ADV_LPBAM_Q_SetCircularMode(&ConvData_Threshold2_Desc, LPBAM_ADC_CONVERSION_DATAQ_DATA_NODE, &Threshold2_Conversion_Q) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetCircularMode(&Threshold2_Conversion_Q_ConvData_Threshold2_Desc, LPBAM_ADC_CONVERSION_DATAQ_DATA_NODE, &Threshold2_Conversion_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -167,7 +198,7 @@ static void MX_Thresholdx_Config_Q_Build(void)
   pDMAListInfo_LPDMA.pInstance = LPDMA1;
   pStartFull_LPDMA.WakeupIT = LPBAM_DMA_IT_NONE;
   pStartFull_LPDMA.HeadQAddress = (uint32_t)Threshold1_Conversion_Q.Head;
-  if (ADV_LPBAM_DMA_Start_SetFullQ(LPDMA1_Channel0, &pDMAListInfo_LPDMA, &pStartFull_LPDMA, &Threshold1_Q_Start_Desc, &Thresholdx_Config_Q) != LPBAM_OK)
+  if (ADV_LPBAM_DMA_Start_SetFullQ(LPDMA1_Channel0, &pDMAListInfo_LPDMA, &pStartFull_LPDMA, &Thresholdx_Config_Q_Threshold1_Q_Start_Desc, &Thresholdx_Config_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -183,14 +214,14 @@ static void MX_Thresholdx_Config_Q_Build(void)
   pPWMFull_LPTIM.PulseValue = 159;
   pPWMFull_LPTIM.UpdateRepetition = DISABLE;
   pPWMFull_LPTIM.RepetitionValue = 0;
-  if (ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM1, LPBAM_LPTIM_CHANNEL_1, &pDMAListInfo_LPTIM, &pPWMFull_LPTIM, &Period_10ms_Desc, &Thresholdx_Config_Q) != LPBAM_OK)
+  if (ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM1, LPBAM_LPTIM_CHANNEL_1, &pDMAListInfo_LPTIM, &pPWMFull_LPTIM, &Thresholdx_Config_Q_Period_10ms_Desc, &Thresholdx_Config_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_LPTIM.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_BLOCK_TRANSFER;
   pTrigConfig_LPTIM.TriggerConfig.TriggerPolarity = LPBAM_DMA_TRIG_POLARITY_RISING;
   pTrigConfig_LPTIM.TriggerConfig.TriggerSelection = LPBAM_LPDMA1_TRIGGER_ADC4_AWD1;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPTIM, LPBAM_LPTIM_PWM_FULLQ_CONFIG_NODE, &Period_10ms_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPTIM, LPBAM_LPTIM_PWM_FULLQ_CONFIG_NODE, &Thresholdx_Config_Q_Period_10ms_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -214,18 +245,18 @@ static void MX_Thresholdx_Config_Q_Build(void)
   pConvConfig_ADC.AnalogWDGConfig[0U].ITMode = ENABLE;
   pConvConfig_ADC.AnalogWDGConfig[0U].LowThreshold = 0;
   pConvConfig_ADC.AnalogWDGConfig[0U].HighThreshold = 1100;
-  if (ADV_LPBAM_ADC_Conversion_SetConfigQ(ADC4, &pDMAListInfo_ADC, &pConvConfig_ADC, &Conversion_Config_Desc, &Thresholdx_Config_Q) != LPBAM_OK)
+  if (ADV_LPBAM_ADC_Conversion_SetConfigQ(ADC4, &pDMAListInfo_ADC, &pConvConfig_ADC, &Thresholdx_Config_Q_Conversion_Config_Desc, &Thresholdx_Config_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pChannel_ADC.ChannelConfig.Channel = LPBAM_ADC_CHANNEL_TEMPSENSOR;
   pChannel_ADC.ChannelConfig.Rank = LPBAM_ADC_REGULAR_RANK_1;
-  if (ADV_LPBAM_ADC_ChannelConfig(&pChannel_ADC, &Conversion_Config_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_ADC_ChannelConfig(&pChannel_ADC, &Thresholdx_Config_Q_Conversion_Config_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
   pChannel_ADC.ChannelConfig.Channel = LPBAM_ADC_CHANNEL_1;
-  if (ADV_LPBAM_ADC_ChannelConfig(&pChannel_ADC, &Conversion_Config_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_ADC_ChannelConfig(&pChannel_ADC, &Thresholdx_Config_Q_Conversion_Config_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -234,7 +265,7 @@ static void MX_Thresholdx_Config_Q_Build(void)
     * Thresholdx_Config queue Threshold2_Q_Start build
     */
   pStartFull_LPDMA.HeadQAddress = (uint32_t)Threshold2_Conversion_Q.Head;
-  if (ADV_LPBAM_DMA_Start_SetFullQ(LPDMA1_Channel0, &pDMAListInfo_LPDMA, &pStartFull_LPDMA, &Threshold2_Q_Start_Desc, &Thresholdx_Config_Q) != LPBAM_OK)
+  if (ADV_LPBAM_DMA_Start_SetFullQ(LPDMA1_Channel0, &pDMAListInfo_LPDMA, &pStartFull_LPDMA, &Thresholdx_Config_Q_Threshold2_Q_Start_Desc, &Thresholdx_Config_Q) != LPBAM_OK)
   {
     Error_Handler();
   }

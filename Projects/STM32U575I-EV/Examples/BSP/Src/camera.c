@@ -98,7 +98,6 @@ void Camera_demo(void)
 
   UserButtonPressed = RESET;
   CameraTest = 0;
-  BSP_CAMERA_DeInit(0);
   return;
 }
 

@@ -54,6 +54,7 @@ extern "C" {
  */
 typedef struct {
     uint32_t aes_key[8];           /* Decryption key */
+    uint32_t Algorithm;            /* Algorithm set (or not) in driver */
     CRYP_HandleTypeDef hcryp_aes;  /* HW driver handle */
     uint32_t ctx_save_cr;          /* Saved HW context for multi-instance */
 }

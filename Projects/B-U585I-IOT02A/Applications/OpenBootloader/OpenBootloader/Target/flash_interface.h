@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -22,35 +22,35 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 /* Includes ------------------------------------------------------------------*/
 #include "common_interface.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
-#define FLASH_BUSY_STATE_ENABLED       ((uint32_t)0xAAAA0000)
-#define FLASH_BUSY_STATE_DISABLED      ((uint32_t)0x0000DDDD)
-#define PROGRAM_TIMEOUT                ((uint32_t)0x00FFFFFF)
+#define FLASH_BUSY_STATE_ENABLED       0xAAAA0000U
+#define FLASH_BUSY_STATE_DISABLED      0x0000DDDDU
+#define PROGRAM_TIMEOUT                0x00FFFFFFU
 
 /* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+/* Exported functions --------------------------------------------------------*/
 void OPENBL_FLASH_JumpToAddress(uint32_t Address);
 void OPENBL_FLASH_Lock(void);
 void OPENBL_FLASH_OB_Unlock(void);
 uint8_t OPENBL_FLASH_Read(uint32_t Address);
 void OPENBL_FLASH_SetReadOutProtectionLevel(uint32_t Level);
-void OPENBL_FLASH_Write(uint32_t Address, uint8_t *Data, uint32_t DataLength);
+void OPENBL_FLASH_Write(uint32_t Address, uint8_t *pData, uint32_t DataLength);
 void OPENBL_FLASH_Unlock(void);
-ErrorStatus OPENBL_FLASH_MassErase(uint8_t *p_Data, uint32_t DataLength);
-ErrorStatus OPENBL_FLASH_Erase(uint8_t *p_Data, uint32_t DataLength);
-ErrorStatus OPENBL_FLASH_SetWriteProtection(FunctionalState State, uint8_t *ListOfPages, uint32_t Length);
+ErrorStatus OPENBL_FLASH_MassErase(uint8_t *pData, uint32_t DataLength);
+ErrorStatus OPENBL_FLASH_Erase(uint8_t *pData, uint32_t DataLength);
+ErrorStatus OPENBL_FLASH_SetWriteProtection(FunctionalState State, uint8_t *pListOfPages, uint32_t Length);
 uint32_t OPENBL_FLASH_GetReadOutProtectionLevel(void);
 void OPENBL_Enable_BusyState_Flag(void);
 void OPENBL_Disable_BusyState_Flag(void);
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* FLASH_INTERFACE_H */

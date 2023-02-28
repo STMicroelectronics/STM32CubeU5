@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.50.6.28950</state>
+                    <state>8.50.9.33458</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -354,6 +354,10 @@
                     <state>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\Common</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\porting</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\core</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx_wifi</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -485,7 +489,7 @@
             <name>AARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>10</version>
+                <version>11</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -640,6 +644,10 @@
                 <option>
                     <name>AsmNoLiteralPool</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>PreInclude</name>
+                    <state></state>
                 </option>
             </data>
         </settings>
@@ -1145,7 +1153,7 @@
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\lps22hh\lps22hh_reg.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\m24lr64\m24lr64.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\m24256\m24256.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx25lm51245g\mx25lm51245g.c</name>

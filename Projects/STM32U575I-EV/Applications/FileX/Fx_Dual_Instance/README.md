@@ -6,7 +6,7 @@ This is to demonstrate the coexistence capability of two FileX/Levelx stacks run
 
 Two independent media storage: µSD and OSPI NOR Flash will be used on STM32U575I-EV board.
 
-Each Thread will create her own file system using one instance:
+Each Thread will create its own file system using one instance:
 
   - fx_thread_one: will create file system on µSD using FileX stack.
   - fx_thread_two: will create file system on OSPI NOR Flash using FileX/LevelX stacks.
@@ -27,7 +27,7 @@ fx_thread_two:
 
 The fx_thread_two will start by formatting the NOR Flash using FileX services. The resulting file system is a FAT32 compatible, with 512 bytes per sector and 8 sectors per cluster.
 Optionally, the NOR flash can be erased prior to format, this allows LevelX and FileX to create a clean FAT FileSystem. Chip erase operation takes considerable time to finish whole flash reset, therefore it is disabled by default. 
-To enable it, please set the following flags in "lx_stm32_qspi_driver.h":
+To enable it, please set the following flags in "lx_stm32_ospi_driver.h":
 
   - LX_STM32_OSPI_INIT
   - LX_STM32_OSPI_ERASE
@@ -42,7 +42,7 @@ Through all the steps, FileX/LevelX services are called to print (using USRAT1) 
   - A file named STM32_FILE1.TXT should be visible in the root directory of the SD card.
   - A blinking green led light marks the success of the file operations.
 - Nor Flash:	  
-  - Successful operation is marked by a toggeling green led.
+  - Successful operation is marked by a toggling green led.
   - Information regarding the total and available size of the flash media is printed to the serial port(USART1).
 
 #### <b> Error behaviors</b>
@@ -66,7 +66,7 @@ No SD card insertion/removal mechanisms are implemented.
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.s" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
    It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL).
@@ -81,7 +81,7 @@ No SD card insertion/removal mechanisms are implemented.
     + For MDK-ARM:
 	```
     either define the RW_IRAM1 region in the ".sct" file
-    or modify the line below in "tx_low_level_initilize.s to match the memory region being used
+    or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
 	```
     + For STM32CubeIDE add the following section into the .ld file:
@@ -101,7 +101,7 @@ No SD card insertion/removal mechanisms are implemented.
        Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).	 
        Read more in STM32CubeIDE User Guide, chapter: "Linker script".
 	  
-    + The "tx_initialize_low_level.s" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
+    + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
                
                
 #### <b>FileX/LevelX usage hints</b>

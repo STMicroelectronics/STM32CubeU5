@@ -88,11 +88,13 @@ static uint8_t _vl53l5cx_poll_for_answer(
 
 		if(timeout >= (uint8_t)200)	/* 2s timeout */
 		{
-			status |= p_dev->temp_buffer[2];
+			status |= (uint8_t)VL53L5CX_STATUS_TIMEOUT_ERROR;
+			break;
 		}else if((size >= (uint8_t)4) 
                          && (p_dev->temp_buffer[2] >= (uint8_t)0x7f))
 		{
 			status |= VL53L5CX_MCU_ERROR;
+			break;
 		}
 		else
 		{
@@ -115,15 +117,15 @@ static uint8_t _vl53l5cx_poll_for_mcu_boot(
 
    do {
 		status |= RdByte(&(p_dev->platform), 0x06, &go2_status0);
-		if(go2_status0 & 0x80){
+		if((go2_status0 & (uint8_t)0x80) != (uint8_t)0){
 			status |= RdByte(&(p_dev->platform), 0x07, &go2_status1);
 			status |= go2_status1;
 			break;
 		}
-		WaitMs(&(p_dev->platform), 1);
+		(void)WaitMs(&(p_dev->platform), 1);
 		timeout++;
 
-		if(go2_status0 & (uint8_t)0x1){
+		if((go2_status0 & (uint8_t)0x1) != (uint8_t)0){
 			break;
 		}
 
@@ -322,6 +324,9 @@ uint8_t vl53l5cx_init(
 	/* Wait for sensor booted (several ms required to get sensor ready ) */
 	status |= WrByte(&(p_dev->platform), 0x7fff, 0x00);
 	status |= _vl53l5cx_poll_for_answer(p_dev, 1, 0, 0x06, 0xff, 1);
+	if(status != (uint8_t)0){
+		goto exit;
+	}
 
 	status |= WrByte(&(p_dev->platform), 0x000E, 0x01);
 	status |= WrByte(&(p_dev->platform), 0x7fff, 0x02);
@@ -333,7 +338,7 @@ uint8_t vl53l5cx_init(
 	status |= WrByte(&(p_dev->platform), 0x7fff, 0x00);
 
 	/* Enable host access to GO1 */
-	status += RdByte(&(p_dev->platform), 0x7fff, &tmp);
+	status |= RdByte(&(p_dev->platform), 0x7fff, &tmp);
 	status |= WrByte(&(p_dev->platform), 0x0C, 0x01);
 
 	/* Power ON status */
@@ -355,7 +360,7 @@ uint8_t vl53l5cx_init(
 
 	/* Wake up MCU */
 	status |= WrByte(&(p_dev->platform), 0x7fff, 0x00);
-	status += RdByte(&(p_dev->platform), 0x7fff, &tmp);
+	status |= RdByte(&(p_dev->platform), 0x7fff, &tmp);
 	status |= WrByte(&(p_dev->platform), 0x0C, 0x00);
 	status |= WrByte(&(p_dev->platform), 0x7fff, 0x01);
 	status |= WrByte(&(p_dev->platform), 0x20, 0x07);
@@ -378,8 +383,12 @@ uint8_t vl53l5cx_init(
 	status |= WrByte(&(p_dev->platform), 0x03, 0x0D);
 	status |= WrByte(&(p_dev->platform), 0x7fff, 0x01);
 	status |= _vl53l5cx_poll_for_answer(p_dev, 1, 0, 0x21, 0x10, 0x10);
+	if(status != (uint8_t)0){
+		goto exit;
+	}
+
 	status |= WrByte(&(p_dev->platform), 0x7fff, 0x00);
-	status += RdByte(&(p_dev->platform), 0x7fff, &tmp);
+	status |= RdByte(&(p_dev->platform), 0x7fff, &tmp);
 	status |= WrByte(&(p_dev->platform), 0x0C, 0x01);
 
 	/* Reset MCU and wait boot */
@@ -389,10 +398,14 @@ uint8_t vl53l5cx_init(
 	status |= WrByte(&(p_dev->platform), 0x116, 0x42);
 	status |= WrByte(&(p_dev->platform), 0x117, 0x00);
 	status |= WrByte(&(p_dev->platform), 0x0B, 0x00);
-	status += RdByte(&(p_dev->platform), 0x7fff, &tmp);
+	status |= RdByte(&(p_dev->platform), 0x7fff, &tmp);
 	status |= WrByte(&(p_dev->platform), 0x0C, 0x00);
 	status |= WrByte(&(p_dev->platform), 0x0B, 0x01);
 	status |= _vl53l5cx_poll_for_mcu_boot(p_dev);
+	if(status != (uint8_t)0){
+		goto exit;
+	}
+
 	status |= WrByte(&(p_dev->platform), 0x7fff, 0x02);
 
 	/* Get offset NVM data and store them into the offset buffer */
@@ -430,7 +443,7 @@ uint8_t vl53l5cx_init(
 	status |= vl53l5cx_dci_write_data(p_dev, (uint8_t*)&single_range,
 			VL53L5CX_DCI_SINGLE_RANGE,
 			(uint16_t)sizeof(single_range));
-
+exit:
 	return status;
 }
 
@@ -598,8 +611,8 @@ uint8_t vl53l5cx_start_ranging(
 			}
 			else
 			{
-				bh_ptr->size = (uint8_t)(resolution 
-                                  * (uint8_t)VL53L5CX_NB_TARGET_PER_ZONE);
+				bh_ptr->size = (uint16_t)((uint16_t)resolution
+                                  * (uint16_t)VL53L5CX_NB_TARGET_PER_ZONE);
 			}
 			p_dev->data_read_size += bh_ptr->type * bh_ptr->size;
 		}
@@ -609,7 +622,7 @@ uint8_t vl53l5cx_start_ranging(
 		}
 		p_dev->data_read_size += (uint32_t)4;
 	}
-	p_dev->data_read_size += (uint32_t)20;
+	p_dev->data_read_size += (uint32_t)24;
 
 	status |= vl53l5cx_dci_write_data(p_dev,
 			(uint8_t*)&(output), VL53L5CX_DCI_OUTPUT_LIST,
@@ -638,9 +651,9 @@ uint8_t vl53l5cx_start_ranging(
 			VL53L5CX_UI_CMD_STATUS, 0xff, 0x03);
 
 	/* Read ui range data content and compare if data size is the correct one */
-	status += vl53l5cx_dci_read_data(p_dev,
+	status |= vl53l5cx_dci_read_data(p_dev,
 			(uint8_t*)p_dev->temp_buffer, 0x5440, 12);
-	memcpy(&tmp, &(p_dev->temp_buffer[0x8]), sizeof(tmp));
+	(void)memcpy(&tmp, &(p_dev->temp_buffer[0x8]), sizeof(tmp));
 	if(tmp != p_dev->data_read_size)
 	{
 		status |= VL53L5CX_STATUS_ERROR;
@@ -682,10 +695,10 @@ uint8_t vl53l5cx_stop_ranging(
 	}
 
 	/* Check GO2 status 1 if status is still OK */
-	status += RdByte(&(p_dev->platform), 0x6, &tmp);
-	if(tmp & (uint8_t)0x80){
-		status += RdByte(&(p_dev->platform), 0x7, &tmp);
-		if(tmp != 0x84 && tmp != 0x85){
+	status |= RdByte(&(p_dev->platform), 0x6, &tmp);
+	if((tmp & (uint8_t)0x80) != (uint8_t)0){
+		status |= RdByte(&(p_dev->platform), 0x7, &tmp);
+		if((tmp != (uint8_t)0x84) && (tmp != (uint8_t)0x85)){
 		   status |= tmp;
 		}
 	}
@@ -722,7 +735,7 @@ uint8_t vl53l5cx_check_data_ready(
 	}
 	else
 	{
-        if (p_dev->temp_buffer[3] & 0x80)
+        if ((p_dev->temp_buffer[3] & (uint8_t)0x80) != (uint8_t)0)
         {
         	status |= p_dev->temp_buffer[2];	/* Return GO2 error status */
         }
@@ -739,19 +752,20 @@ uint8_t vl53l5cx_get_ranging_data(
 {
 	uint8_t status = VL53L5CX_STATUS_OK;
 	union Block_header *bh_ptr;
+	uint16_t header_id, footer_id;
 	uint32_t i, j, msize;
+
 	status |= RdMulti(&(p_dev->platform), 0x0,
 			p_dev->temp_buffer, p_dev->data_read_size);
 	p_dev->streamcount = p_dev->temp_buffer[0];
 	SwapBuffer(p_dev->temp_buffer, (uint16_t)p_dev->data_read_size);
 
 	/* Start conversion at position 16 to avoid headers */
-	for (i = (uint32_t)16; i 
-             < (uint32_t)p_dev->data_read_size; i+=(uint32_t)4)
+	for (i = 16U; i < (uint32_t)p_dev->data_read_size; i+=4U)
 	{
 		bh_ptr = (union Block_header *)&(p_dev->temp_buffer[i]);
-		if ((bh_ptr->type > (uint32_t)0x1) 
-                    && (bh_ptr->type < (uint32_t)0xd))
+		if ((bh_ptr->type > 0x1U) 
+                    && (bh_ptr->type < 0xdU))
 		{
 			msize = bh_ptr->type * bh_ptr->size;
 		}
@@ -846,6 +860,9 @@ uint8_t vl53l5cx_get_ranging_data(
 			p_results->distance_mm[i] = 0;
 		}
 #endif
+#ifndef VL53L5CX_DISABLE_REFLECTANCE_PERCENT
+		p_results->reflectance[i] /= (uint8_t)2;
+#endif
 #ifndef VL53L5CX_DISABLE_RANGE_SIGMA_MM
 		p_results->range_sigma_mm[i] /= (uint16_t)128;
 #endif
@@ -880,6 +897,22 @@ uint8_t vl53l5cx_get_ranging_data(
 #endif
 
 #endif
+
+	/* Check if footer id and header id are matching. This allows to detect
+	 * corrupted frames */
+	header_id = ((uint16_t)(p_dev->temp_buffer[0x8])<<8) & 0xFF00U;
+	header_id |= ((uint16_t)(p_dev->temp_buffer[0x9])) & 0x00FFU;
+
+	footer_id = ((uint16_t)(p_dev->temp_buffer[p_dev->data_read_size
+		- (uint32_t)4]) << 8) & 0xFF00U;
+	footer_id |= ((uint16_t)(p_dev->temp_buffer[p_dev->data_read_size
+		- (uint32_t)3])) & 0xFFU;
+
+	if(header_id != footer_id)
+	{
+		status |= VL53L5CX_STATUS_CORRUPTED_FRAME;
+	}
+
 	return status;
 }
 
@@ -1154,6 +1187,42 @@ uint8_t vl53l5cx_set_ranging_mode(
 	status |= vl53l5cx_dci_write_data(p_dev, (uint8_t*)&single_range,
 			VL53L5CX_DCI_SINGLE_RANGE, 
                         (uint16_t)sizeof(single_range));
+
+	return status;
+}
+
+uint8_t vl53l5cx_enable_internal_cp(
+		VL53L5CX_Configuration *p_dev)
+{
+	uint8_t status = VL53L5CX_STATUS_OK;
+	uint8_t vcsel_bootup_fsm = 1;
+	uint8_t analog_dynamic_pad_0 = 0;
+
+	status |= vl53l5cx_dci_replace_data(p_dev, p_dev->temp_buffer,
+			VL53L5CX_DCI_INTERNAL_CP, 16,
+			(uint8_t*)&vcsel_bootup_fsm, 1, 0x0A);
+
+	status |= vl53l5cx_dci_replace_data(p_dev, p_dev->temp_buffer,
+			VL53L5CX_DCI_INTERNAL_CP, 16,
+			(uint8_t*)&analog_dynamic_pad_0, 1, 0x0E);
+
+	return status;
+}
+
+uint8_t vl53l5cx_disable_internal_cp(
+		VL53L5CX_Configuration *p_dev)
+{
+	uint8_t status = VL53L5CX_STATUS_OK;
+	uint8_t vcsel_bootup_fsm = 0;
+	uint8_t analog_dynamic_pad_0 = 1;
+
+	status |= vl53l5cx_dci_replace_data(p_dev, p_dev->temp_buffer,
+			VL53L5CX_DCI_INTERNAL_CP, 16,
+			(uint8_t*)&vcsel_bootup_fsm, 1, 0x0A);
+
+	status |= vl53l5cx_dci_replace_data(p_dev, p_dev->temp_buffer,
+			VL53L5CX_DCI_INTERNAL_CP, 16,
+			(uint8_t*)&analog_dynamic_pad_0, 1, 0x0E);
 
 	return status;
 }

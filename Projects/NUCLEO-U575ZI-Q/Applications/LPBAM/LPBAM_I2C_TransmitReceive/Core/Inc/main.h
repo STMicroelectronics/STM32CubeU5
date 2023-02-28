@@ -68,6 +68,7 @@ void Error_Handler(void);
 #define TX_BUFFER1_SIZE 55U
 #define RTC_SYNCH_PREDIV 0x00F9
 #define TX_BUFFER2_SIZE 310U
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

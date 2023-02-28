@@ -104,9 +104,15 @@ enum tfm_hal_status_t tfm_hal_mpu_update_partition_boundary(uintptr_t start,
  *         TFM_HAL_ERROR_INVALID_INPUT - Invalid inputs.
  *         TFM_HAL_ERROR_GENERIC - An error occurred.
  */
+#ifdef TFM_FIH_PROFILE_ON
+fih_int tfm_hal_memory_has_access(uintptr_t base,
+                                  size_t size,
+                                  uint32_t attr);
+#else
 enum tfm_hal_status_t tfm_hal_memory_has_access(uintptr_t base,
                                                 size_t size,
                                                 uint32_t attr);
+#endif
 
 #ifdef __cplusplus
 }

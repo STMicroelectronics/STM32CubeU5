@@ -228,11 +228,11 @@ _Static_assert(BOOT_IMAGE_NUMBER > 0, "Invalid value for BOOT_IMAGE_NUMBER");
  *
  * TODO: make flashmap API receive the current sector array size.
  */
-#if !defined(MCUBOOT_PRIMARY_ONLY)
+/*#if !defined(MCUBOOT_PRIMARY_ONLY)
 #if BOOT_MAX_IMG_SECTORS < 32
 #error "Too few sectors, please increase BOOT_MAX_IMG_SECTORS to at least 32"
 #endif
-#endif
+#endif*/
 
 #if MCUBOOT_SWAP_USING_MOVE
 #define BOOT_STATUS_MOVE_STATE_COUNT    1

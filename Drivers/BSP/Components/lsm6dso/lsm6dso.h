@@ -30,24 +30,25 @@ extern "C"
 #include <string.h>
 
 /** @addtogroup BSP BSP
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup Component Component
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup LSM6DSO LSM6DSO
- * @{
- */
+  * @{
+  */
 
 /** @defgroup LSM6DSO_Exported_Types LSM6DSO Exported Types
- * @{
- */
+  * @{
+  */
 
 typedef int32_t (*LSM6DSO_Init_Func)(void);
 typedef int32_t (*LSM6DSO_DeInit_Func)(void);
 typedef int32_t (*LSM6DSO_GetTick_Func)(void);
+typedef void    (*LSM6DSO_Delay_Func)(uint32_t);
 typedef int32_t (*LSM6DSO_WriteReg_Func)(uint16_t, uint16_t, uint8_t *, uint16_t);
 typedef int32_t (*LSM6DSO_ReadReg_Func)(uint16_t, uint16_t, uint8_t *, uint16_t);
 
@@ -79,6 +80,7 @@ typedef struct
   LSM6DSO_WriteReg_Func      WriteReg;
   LSM6DSO_ReadReg_Func       ReadReg;
   LSM6DSO_GetTick_Func       GetTick;
+  LSM6DSO_Delay_Func         Delay;
 } LSM6DSO_IO_t;
 
 
@@ -167,33 +169,37 @@ typedef struct
   int32_t (*GetAxesRaw)(LSM6DSO_Object_t *, LSM6DSO_AxesRaw_t *);
 } LSM6DSO_GYRO_Drv_t;
 
-typedef union{
+typedef union
+{
   int16_t i16bit[3];
   uint8_t u8bit[6];
 } lsm6dso_axis3bit16_t;
 
-typedef union{
+typedef union
+{
   int16_t i16bit;
   uint8_t u8bit[2];
 } lsm6dso_axis1bit16_t;
 
-typedef union{
+typedef union
+{
   int32_t i32bit[3];
   uint8_t u8bit[12];
 } lsm6dso_axis3bit32_t;
 
-typedef union{
+typedef union
+{
   int32_t i32bit;
   uint8_t u8bit[4];
 } lsm6dso_axis1bit32_t;
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup LSM6DSO_Exported_Constants LSM6DSO Exported Constants
- * @{
- */
+  * @{
+  */
 
 #define LSM6DSO_OK                       0
 #define LSM6DSO_ERROR                   -1
@@ -214,12 +220,12 @@ typedef union{
 #define LSM6DSO_GYRO_SENSITIVITY_FS_2000DPS  70.000f
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @addtogroup LSM6DSO_Exported_Functions LSM6DSO Exported Functions
- * @{
- */
+  * @{
+  */
 
 int32_t LSM6DSO_RegisterBusIO(LSM6DSO_Object_t *pObj, LSM6DSO_IO_t *pIO);
 int32_t LSM6DSO_Init(LSM6DSO_Object_t *pObj);
@@ -243,7 +249,8 @@ int32_t LSM6DSO_GYRO_Disable(LSM6DSO_Object_t *pObj);
 int32_t LSM6DSO_GYRO_GetSensitivity(LSM6DSO_Object_t *pObj, float_t *Sensitivity);
 int32_t LSM6DSO_GYRO_GetOutputDataRate(LSM6DSO_Object_t *pObj, float_t *Odr);
 int32_t LSM6DSO_GYRO_SetOutputDataRate(LSM6DSO_Object_t *pObj, float_t Odr);
-int32_t LSM6DSO_GYRO_SetOutputDataRate_With_Mode(LSM6DSO_Object_t *pObj, float_t Odr, LSM6DSO_GYRO_Operating_Mode_t Mode);
+int32_t LSM6DSO_GYRO_SetOutputDataRate_With_Mode(LSM6DSO_Object_t *pObj, float_t Odr,
+                                                 LSM6DSO_GYRO_Operating_Mode_t Mode);
 int32_t LSM6DSO_GYRO_GetFullScale(LSM6DSO_Object_t *pObj, int32_t *FullScale);
 int32_t LSM6DSO_GYRO_SetFullScale(LSM6DSO_Object_t *pObj, int32_t FullScale);
 int32_t LSM6DSO_GYRO_GetAxesRaw(LSM6DSO_Object_t *pObj, LSM6DSO_AxesRaw_t *Value);
@@ -316,7 +323,8 @@ int32_t LSM6DSO_ACC_Enable_DRDY_On_INT1(LSM6DSO_Object_t *pObj);
 int32_t LSM6DSO_ACC_Disable_DRDY_On_INT1(LSM6DSO_Object_t *pObj);
 int32_t LSM6DSO_ACC_Set_Power_Mode(LSM6DSO_Object_t *pObj, uint8_t PowerMode);
 int32_t LSM6DSO_ACC_Set_Filter_Mode(LSM6DSO_Object_t *pObj, uint8_t LowHighPassFlag, uint8_t FilterMode);
-int32_t LSM6DSO_ACC_Enable_Inactivity_Detection(LSM6DSO_Object_t *pObj, lsm6dso_inact_en_t InactMode, LSM6DSO_SensorIntPin_t IntPin);
+int32_t LSM6DSO_ACC_Enable_Inactivity_Detection(LSM6DSO_Object_t *pObj, lsm6dso_inact_en_t InactMode,
+                                                LSM6DSO_SensorIntPin_t IntPin);
 int32_t LSM6DSO_ACC_Disable_Inactivity_Detection(LSM6DSO_Object_t *pObj);
 int32_t LSM6DSO_ACC_Set_Sleep_Duration(LSM6DSO_Object_t *pObj, uint8_t Duration);
 
@@ -327,20 +335,20 @@ int32_t LSM6DSO_GYRO_Set_Filter_Mode(LSM6DSO_Object_t *pObj, uint8_t LowHighPass
 int32_t LSM6DSO_DRDY_Set_Mode(LSM6DSO_Object_t *pObj, uint8_t Mode);
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @addtogroup LSM6DSO_Exported_Variables LSM6DSO Exported Variables
- * @{
- */
+  * @{
+  */
 
 extern LSM6DSO_CommonDrv_t LSM6DSO_COMMON_Driver;
 extern LSM6DSO_ACC_Drv_t LSM6DSO_ACC_Driver;
 extern LSM6DSO_GYRO_Drv_t LSM6DSO_GYRO_Driver;
 
 /**
- * @}
- */
+  * @}
+  */
 
 #ifdef __cplusplus
 }
@@ -349,13 +357,13 @@ extern LSM6DSO_GYRO_Drv_t LSM6DSO_GYRO_Driver;
 #endif
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */

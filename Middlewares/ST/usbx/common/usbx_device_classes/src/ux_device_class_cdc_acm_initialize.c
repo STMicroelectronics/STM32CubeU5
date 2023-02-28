@@ -37,7 +37,7 @@
 /*  FUNCTION                                               RELEASE        */ 
 /*                                                                        */ 
 /*    _ux_device_class_cdc_acm_initialize                 PORTABLE C      */ 
-/*                                                           6.1.6        */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -59,7 +59,7 @@
 /*    _ux_utility_memory_allocate           Allocate memory               */ 
 /*    _ux_utility_memory_free               Free memory                   */ 
 /*    _ux_utility_mutex_create              Create mutex                  */ 
-/*    _ux_utility_mutex_delete              Delete mutex                  */ 
+/*    _ux_device_mutex_delete               Delete mutex                  */ 
 /*                                                                        */ 
 /*  CALLED BY                                                             */ 
 /*                                                                        */ 
@@ -78,6 +78,15 @@
 /*                                            moved transmission resource */
 /*                                            allocate to here (init),    */
 /*                                            resulting in version 6.1.6  */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            added standalone support,   */
+/*                                            resulting in version 6.1.10 */
+/*  04-25-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            resulting in version 6.1.11 */
+/*  07-29-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            fixed parameter/variable    */
+/*                                            names conflict C++ keyword, */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 UINT  _ux_device_class_cdc_acm_initialize(UX_SLAVE_CLASS_COMMAND *command)
@@ -85,11 +94,13 @@ UINT  _ux_device_class_cdc_acm_initialize(UX_SLAVE_CLASS_COMMAND *command)
                                           
 UX_SLAVE_CLASS_CDC_ACM                  *cdc_acm;
 UX_SLAVE_CLASS_CDC_ACM_PARAMETER        *cdc_acm_parameter;
-UX_SLAVE_CLASS                          *class;
+UX_SLAVE_CLASS                          *class_ptr;
+#if !defined(UX_DEVICE_STANDALONE)
 UINT                                    status;
+#endif
 
     /* Get the class container.  */
-    class =  command -> ux_slave_class_command_class_ptr;
+    class_ptr =  command -> ux_slave_class_command_class_ptr;
 
     /* Create an instance of the device cdc_acm class.  */
     cdc_acm =  _ux_utility_memory_allocate(UX_NO_ALIGN, UX_REGULAR_MEMORY, sizeof(UX_SLAVE_CLASS_CDC_ACM));
@@ -99,7 +110,7 @@ UINT                                    status;
         return(UX_MEMORY_INSUFFICIENT);
 
     /* Save the address of the CDC instance inside the CDC container.  */
-    class -> ux_slave_class_instance = (VOID *) cdc_acm;
+    class_ptr -> ux_slave_class_instance = (VOID *) cdc_acm;
 
     /* Get the pointer to the application parameters for the cdc_acm class.  */
     cdc_acm_parameter =  command -> ux_slave_class_command_parameter;
@@ -108,6 +119,8 @@ UINT                                    status;
     cdc_acm -> ux_slave_class_cdc_acm_parameter.ux_slave_class_cdc_acm_instance_activate = cdc_acm_parameter -> ux_slave_class_cdc_acm_instance_activate;
     cdc_acm -> ux_slave_class_cdc_acm_parameter.ux_slave_class_cdc_acm_instance_deactivate = cdc_acm_parameter -> ux_slave_class_cdc_acm_instance_deactivate;
     cdc_acm -> ux_slave_class_cdc_acm_parameter.ux_slave_class_cdc_acm_parameter_change = cdc_acm_parameter -> ux_slave_class_cdc_acm_parameter_change;
+
+#if !defined(UX_DEVICE_STANDALONE)
 
     /* Create the Mutex for each endpoint as multiple threads cannot access each pipe at the same time.  */
     status =  _ux_utility_mutex_create(&cdc_acm -> ux_slave_class_cdc_acm_endpoint_in_mutex, "ux_slave_class_cdc_acm_in_mutex");
@@ -131,7 +144,7 @@ UINT                                    status;
     {
 
         /* Delete the endpoint IN mutex.  */
-        _ux_utility_mutex_delete(&cdc_acm -> ux_slave_class_cdc_acm_endpoint_in_mutex);
+        _ux_device_mutex_delete(&cdc_acm -> ux_slave_class_cdc_acm_endpoint_in_mutex);
 
         /* Free the resources.  */
         _ux_utility_memory_free(cdc_acm);
@@ -139,7 +152,9 @@ UINT                                    status;
         /* Return fatal error.  */
         return(UX_MUTEX_ERROR);
     }        
-    
+
+#endif
+
     /* Update the line coding fields with default values.  */
     cdc_acm -> ux_slave_class_cdc_acm_baudrate  =  UX_SLAVE_CLASS_CDC_ACM_LINE_CODING_BAUDRATE;
     cdc_acm -> ux_slave_class_cdc_acm_stop_bit  =  UX_SLAVE_CLASS_CDC_ACM_LINE_CODING_STOP_BIT;
@@ -147,6 +162,12 @@ UINT                                    status;
     cdc_acm -> ux_slave_class_cdc_acm_data_bit  =  UX_SLAVE_CLASS_CDC_ACM_LINE_CODING_DATA_BIT;
 
 #ifndef UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE
+
+#if defined(UX_DEVICE_STANDALONE)
+
+    /* Set task function.  */
+    class_ptr -> ux_slave_class_task_function = _ux_device_class_cdc_acm_tasks_run;
+#else
 
     /* We need to prepare the 2 threads for sending and receiving.  */
     /* Allocate some memory for the bulk out and in thread stack. */
@@ -246,12 +267,13 @@ UINT                                    status;
             _ux_utility_event_flags_delete(&cdc_acm -> ux_slave_class_cdc_acm_event_flags_group);
         if (cdc_acm -> ux_slave_class_cdc_acm_bulkout_thread_stack)
             _ux_utility_memory_free(cdc_acm -> ux_slave_class_cdc_acm_bulkout_thread_stack);
-        _ux_utility_mutex_delete(&cdc_acm -> ux_slave_class_cdc_acm_endpoint_in_mutex);
-        _ux_utility_mutex_delete(&cdc_acm -> ux_slave_class_cdc_acm_endpoint_out_mutex);
+        _ux_device_mutex_delete(&cdc_acm -> ux_slave_class_cdc_acm_endpoint_in_mutex);
+        _ux_device_mutex_delete(&cdc_acm -> ux_slave_class_cdc_acm_endpoint_out_mutex);
         _ux_utility_memory_free(cdc_acm);
         return(status);
     }
 
+#endif
 #endif
 
     /* Return completion status.  */

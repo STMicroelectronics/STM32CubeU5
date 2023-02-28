@@ -223,7 +223,7 @@ void              BSP_AUDIO_IN_Error_CallBack(uint32_t Instance);
 
 void              BSP_AUDIO_IN_IRQHandler(uint32_t Instance, uint32_t Device);
 
-HAL_StatusTypeDef MX_MDF1_ClockConfig(MDF_HandleTypeDef *hDfsdmBlock, uint32_t SampleRate);
+HAL_StatusTypeDef MX_MDF1_ClockConfig(const MDF_HandleTypeDef *hDfsdmBlock, uint32_t SampleRate);
 HAL_StatusTypeDef MX_MDF1_Init(MDF_HandleTypeDef *hAdfBlock, MX_MDF_InitTypeDef *MXInit);
 /**
   * @}

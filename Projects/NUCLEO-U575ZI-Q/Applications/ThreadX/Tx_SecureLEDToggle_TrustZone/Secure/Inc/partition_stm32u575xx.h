@@ -3,7 +3,7 @@
   ******************************************************************************
   * @file    partition_stm32u575xx.h
   * @author  MCD Application Team
-  * @brief   CMSIS STM32U575xx] Device Initial Setup for Secure / Non-Secure Zones
+  * @brief   CMSIS STM32U575xx Device Initial Setup for Secure / Non-Secure Zones
   *          for ARMCM33 based on CMSIS CORE partition_ARMCM33.h Template.
   *
   *          This file contains:
@@ -15,7 +15,7 @@
   ******************************************************************************/
 /*
   * Copyright (c) 2009-2016 ARM Limited. All rights reserved.
-  * Portions Copyright (c) 2020 STMicroelectronics, all rights reserved
+  * Portions Copyright (c) 2021 STMicroelectronics, all rights reserved
   *
   * SPDX-License-Identifier: Apache-2.0
 

@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -75,9 +75,7 @@ void NMI_Handler(void)
 
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
-  while (1)
-  {
-  }
+
   /* USER CODE END NonMaskableInt_IRQn 1 */
 }
 
@@ -148,18 +146,19 @@ void SecureFault_Handler(void)
 {
   /* USER CODE BEGIN SecureFault_IRQn 0 */
 
-  /* LED5 on */
-  HAL_GPIO_WritePin(LED5_GPIO_PORT, LED5_PIN, GPIO_PIN_RESET);
+  /* RED toggle */
+  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+
   /* An illegal access has been detected on SAU side (1st obstacle before MPCWM)
   * It corresponds to the WakeUp button error case, where we do a read/write
   * operation from the non-secure world on a secure area.
   * At the end of handler execution, SW jumps to the address where the problem
-  * occurred. We need to change FMC NOR memory security properties, in order to
-  * avoid an infinite loop. So we setup the whole FMC NOR memory as non-secure,
+  * occurred. We need to change FMC SRAM memory security properties, in order to
+  * avoid an infinite loop. So we setup the whole FMC memory as non-secure,
   * on both SAU and MPCWM sides.
   */
-  printf("\n\rAdapt SAU/MPCWM2 properties to exit from Secure Fault context");
-  SECURE_SAU_MPCWM2_SetUserButtonErrorCaseConfig();
+  printf("%s","\n\rAdapt SAU/MPCWM2 properties to exit from Secure Fault context");
+  SECURE_SAU_MPCWM_SetSecureFaultConfig();
   /* USER CODE END SecureFault_IRQn 0 */
   while (1)
   {
@@ -238,8 +237,9 @@ void GTZC_IRQHandler(void)
   /* USER CODE BEGIN GTZC_IRQn 0 */
   printf("\n\rGTZC-TZIC Interrupt!");
 
-  /* LED5 on */
-  HAL_GPIO_WritePin(LED5_GPIO_PORT, LED5_PIN, GPIO_PIN_RESET);
+  /* Red LED on */
+  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+
   /* USER CODE END GTZC_IRQn 0 */
   HAL_GTZC_IRQHandler();
   /* USER CODE BEGIN GTZC_IRQn 1 */

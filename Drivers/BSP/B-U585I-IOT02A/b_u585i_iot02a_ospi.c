@@ -153,8 +153,8 @@ static uint32_t OspiRam_IsMspCbValid[OSPI_RAM_INSTANCES_NUMBER] = {0};
 /** @defgroup B-U585I-IOT02A_OSPI_NOR_Private_Functions OSPI_NOR Private Functions
   * @{
   */
-static void    OSPI_NOR_MspInit(OSPI_HandleTypeDef *hospi);
-static void    OSPI_NOR_MspDeInit(OSPI_HandleTypeDef *hospi);
+static void    OSPI_NOR_MspInit(const OSPI_HandleTypeDef *hospi);
+static void    OSPI_NOR_MspDeInit(const OSPI_HandleTypeDef *hospi);
 static int32_t OSPI_NOR_ResetMemory(uint32_t Instance);
 static int32_t OSPI_NOR_EnterDOPIMode(uint32_t Instance);
 static int32_t OSPI_NOR_EnterSOPIMode(uint32_t Instance);
@@ -166,8 +166,8 @@ static int32_t OSPI_NOR_ExitOPIMode(uint32_t Instance);
 /** @defgroup B_U585I_IOT02A_OSPI_RAM_Private_Functions OSPI_RAM Private Functions
   * @{
   */
-static void OSPI_RAM_MspInit(OSPI_HandleTypeDef *hospi);
-static void OSPI_RAM_MspDeInit(OSPI_HandleTypeDef *hospi);
+static void OSPI_RAM_MspInit(const OSPI_HandleTypeDef *hospi);
+static void OSPI_RAM_MspDeInit(const OSPI_HandleTypeDef *hospi);
 static int32_t OSPI_DLYB_Enable(OSPI_HandleTypeDef *hospi);
 /**
   * @}
@@ -480,7 +480,7 @@ int32_t BSP_OSPI_NOR_Read(uint32_t Instance, uint8_t *pData, uint32_t ReadAddr, 
   * @param  Size      Size of data to write
   * @retval BSP status
   */
-int32_t BSP_OSPI_NOR_Write(uint32_t Instance, uint8_t *pData, uint32_t WriteAddr, uint32_t Size)
+int32_t BSP_OSPI_NOR_Write(const uint32_t Instance, uint8_t *pData, uint32_t WriteAddr, uint32_t Size)
 {
   int32_t ret = BSP_ERROR_NONE;
   uint32_t end_addr;
@@ -1449,7 +1449,7 @@ int32_t BSP_OSPI_RAM_ReadID(uint32_t Instance, uint8_t *Id)
   * @param  hospi OSPI handle
   * @retval None
   */
-static void OSPI_NOR_MspInit(OSPI_HandleTypeDef *hospi)
+static void OSPI_NOR_MspInit(const OSPI_HandleTypeDef *hospi)
 {
   GPIO_InitTypeDef GPIO_InitStruct;
 
@@ -1541,7 +1541,7 @@ static void OSPI_NOR_MspInit(OSPI_HandleTypeDef *hospi)
   * @param  hospi OSPI handle
   * @retval None
   */
-static void OSPI_NOR_MspDeInit(OSPI_HandleTypeDef *hospi)
+static void OSPI_NOR_MspDeInit(const OSPI_HandleTypeDef *hospi)
 {
   /* hospi unused argument(s) compilation warning */
   UNUSED(hospi);
@@ -1856,12 +1856,12 @@ static int32_t OSPI_NOR_ExitOPIMode(uint32_t Instance)
 
 /**
   * @brief  This function enables delay block.
-  * @param  ospi_Instance  OSPI instance
+  * @param  hospi OSPI handle
   * @retval BSP status
   */
 static int32_t OSPI_DLYB_Enable(OSPI_HandleTypeDef *hospi)
 {
-  LL_DLYB_CfgTypeDef dlyb_cfg, dlyb_cfg_test;
+  HAL_OSPI_DLYB_CfgTypeDef dlyb_cfg, dlyb_cfg_test;
   int32_t ret = BSP_ERROR_NONE;
   uint32_t div_value = 4;
 
@@ -1910,7 +1910,7 @@ static int32_t OSPI_DLYB_Enable(OSPI_HandleTypeDef *hospi)
   * @param  hospi OSPI handle
   * @retval None
   */
-static void OSPI_RAM_MspInit(OSPI_HandleTypeDef *hospi)
+static void OSPI_RAM_MspInit(const OSPI_HandleTypeDef *hospi)
 {
   GPIO_InitTypeDef GPIO_InitStruct;
 
@@ -2004,7 +2004,7 @@ static void OSPI_RAM_MspInit(OSPI_HandleTypeDef *hospi)
   * @param  hospi OSPI handle
   * @retval None
   */
-static void OSPI_RAM_MspDeInit(OSPI_HandleTypeDef *hospi)
+static void OSPI_RAM_MspDeInit(const OSPI_HandleTypeDef *hospi)
 {
   /* hospi unused argument(s) compilation warning */
   UNUSED(hospi);

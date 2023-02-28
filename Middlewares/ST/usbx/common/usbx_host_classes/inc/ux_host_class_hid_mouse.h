@@ -26,7 +26,7 @@
 /*  COMPONENT DEFINITION                                   RELEASE        */ 
 /*                                                                        */ 
 /*    ux_host_class_hid_mouse.h                           PORTABLE C      */ 
-/*                                                           6.1.8        */
+/*                                                           6.1.11       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -47,6 +47,12 @@
 /*                                            added extern "C" keyword    */
 /*                                            for compatibility with C++, */
 /*                                            resulting in version 6.1.8  */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            added standalone support,   */
+/*                                            resulting in version 6.1.10 */
+/*  04-25-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            fixed clients management,   */
+/*                                            resulting in version 6.1.11 */
 /*                                                                        */
 /**************************************************************************/
 
@@ -90,14 +96,23 @@ typedef struct UX_HOST_CLASS_HID_MOUSE_STRUCT
 
     ULONG           ux_host_class_hid_mouse_state; 
     UX_HOST_CLASS_HID   *ux_host_class_hid_mouse_hid;
-    USHORT          ux_host_class_hid_mouse_id;    
+    USHORT          ux_host_class_hid_mouse_id;
     SLONG           ux_host_class_hid_mouse_x_position;
     SLONG           ux_host_class_hid_mouse_y_position;
     ULONG           ux_host_class_hid_mouse_buttons;
     SLONG           ux_host_class_hid_mouse_wheel;
-    
-    
+#if defined(UX_HOST_STANDALONE)
+    UINT            ux_host_class_hid_mouse_enum_state;
+    UINT            ux_host_class_hid_mouse_status;
+#endif
+
 } UX_HOST_CLASS_HID_MOUSE;
+
+typedef struct UX_HOST_CLASS_HID_CLIENT_MOUSE_STRUCT
+{
+    UX_HOST_CLASS_HID_MOUSE     ux_host_class_hid_client_mouse_mouse;
+    UX_HOST_CLASS_HID_CLIENT    ux_host_class_hid_client_mouse_client;
+} UX_HOST_CLASS_HID_CLIENT_MOUSE;
 
 /* Define HID Mouse Class function prototypes.  */
 
@@ -124,6 +139,6 @@ UINT  _ux_host_class_hid_mouse_wheel_get(UX_HOST_CLASS_HID_MOUSE *mouse_instance
    C conditional started above.  */   
 #ifdef __cplusplus
 } 
-#endif 
+#endif
 
 #endif

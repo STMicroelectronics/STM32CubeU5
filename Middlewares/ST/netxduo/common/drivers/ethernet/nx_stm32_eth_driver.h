@@ -66,10 +66,6 @@ extern   "C" {
 #define NX_DRIVER_STATE_INITIALIZED             3
 #define NX_DRIVER_STATE_LINK_ENABLED            4
 
-#ifdef NX_DRIVER_INTERNAL_TRANSMIT_QUEUE
-#define NX_DRIVER_MAX_TRANSMIT_QUEUE_DEPTH      10
-#endif
-
 #define NX_DRIVER_ERROR                         90
 
 
@@ -85,19 +81,11 @@ extern   "C" {
 /* Define the number of descriptors and attached packets for transmit and receive operations. */
 
 #ifndef NX_DRIVER_TX_DESCRIPTORS
-#ifdef STM32_ETH_HAL_LEGACY
-#define NX_DRIVER_TX_DESCRIPTORS   ETH_TXBUFNB
-#else
 #define NX_DRIVER_TX_DESCRIPTORS   ETH_TX_DESC_CNT
-#endif
 #endif
 
 #ifndef NX_DRIVER_RX_DESCRIPTORS
-#ifdef STM32_ETH_HAL_LEGACY
-#define NX_DRIVER_RX_DESCRIPTORS   ETH_RXBUFNB
-#else
 #define NX_DRIVER_RX_DESCRIPTORS   ETH_RX_DESC_CNT
-#endif
 #endif
 
 /****** DRIVER SPECIFIC ****** End of part/vendor specific constant area!  */
@@ -113,11 +101,6 @@ extern   "C" {
                                NX_INTERFACE_CAPABILITY_ICMPV6_TX_CHECKSUM | \
                                NX_INTERFACE_CAPABILITY_ICMPV6_RX_CHECKSUM )
 
-/* Define the duplex mode for Legacy. */
-#ifdef STM32_ETH_HAL_LEGACY
-#define ETH_FULLDUPLEX_MODE   ETH_MODE_FULLDUPLEX
-#define ETH_HALFDUPLEX_MODE   ETH_MODE_HALFDUPLEX
-#endif
 
 /* Define basic Ethernet driver information typedef. Note that this typedefs is designed to be used only
    in the driver's C file. */
@@ -153,11 +136,6 @@ typedef struct NX_DRIVER_INFORMATION_STRUCT
     /* Define the number of transmit buffers in use.  */
     UINT                nx_driver_information_number_of_transmit_buffers_in_use;
 
-#ifdef STM32_ETH_HAL_LEGACY
-    ETH_DMADescTypeDef  nx_driver_information_dma_rx_descriptors[NX_DRIVER_RX_DESCRIPTORS];
-    ETH_DMADescTypeDef  nx_driver_information_dma_tx_descriptors[NX_DRIVER_TX_DESCRIPTORS];
-#endif
-
     /* Define the association between buffer descriptors and NetX packets.  */
     NX_PACKET           *nx_driver_information_transmit_packets[NX_DRIVER_TX_DESCRIPTORS];
     NX_PACKET           *nx_driver_information_receive_packets[NX_DRIVER_RX_DESCRIPTORS];
@@ -166,17 +144,6 @@ typedef struct NX_DRIVER_INFORMATION_STRUCT
     ULONG               nx_driver_information_rx_buffer_size;
 
     ULONG               nx_driver_information_multicast_count;
-
-#ifdef NX_DRIVER_INTERNAL_TRANSMIT_QUEUE
-
-    /* Define the parameters in the internal driver transmit queue.  The queue is maintained as a singularly
-       linked-list with head and tail pointers.  The maximum number of packets on the queue is regulated by
-       the constant NX_DRIVER_MAX_TRANSMIT_QUEUE_DEPTH, which is defined above. When this number is reached,
-       the oldest packet is discarded after the new packet is queued.  */
-    ULONG               nx_driver_transmit_packets_queued;
-    NX_PACKET           nx_driver_transmit_queue_head;
-    NX_PACKET           nx_driver_transmit_queue_tail;
-#endif /* NX_DRIVER_INTERNAL_TRANSMIT_QUEUE */
 
     /****** DRIVER SPECIFIC ****** End of part/vendor specific driver information area.  */
 

@@ -155,7 +155,7 @@ static uint32_t AudioIn_IsMspCbValid[AUDIO_IN_INSTANCES_NBR] = {0};
   * @{
   */
 static void    MDF_BlockMspInit(MDF_HandleTypeDef *hmdf);
-static void    MDF_BlockMspDeInit(MDF_HandleTypeDef *hmdf);
+static void    MDF_BlockMspDeInit(const MDF_HandleTypeDef *hmdf);
 
 #if (USE_HAL_MDF_REGISTER_CALLBACKS == 1)
 static void    MDF_AcquisitionCpltCallback(MDF_HandleTypeDef *hmdf_filter);
@@ -1389,7 +1389,7 @@ static void MDF_BlockMspInit(MDF_HandleTypeDef *hmdf)
   * @param  hmdf MDF filter handle.
   * @retval None.
   */
-static void MDF_BlockMspDeInit(MDF_HandleTypeDef *hmdf)
+static void MDF_BlockMspDeInit(const MDF_HandleTypeDef *hmdf)
 {
   if (hmdf->Instance == ADF1_Filter0)
   {
@@ -1550,7 +1550,7 @@ void HAL_MDF_ErrorCallback(MDF_HandleTypeDef *hmdf)
   * @param  SampleRate Audio sample rate used to record the audio stream.
   * @retval HAL status.
   */
-__weak HAL_StatusTypeDef MX_MDF1_ClockConfig(MDF_HandleTypeDef *hMdfBlock, uint32_t SampleRate)
+__weak HAL_StatusTypeDef MX_MDF1_ClockConfig(const MDF_HandleTypeDef *hMdfBlock, uint32_t SampleRate)
 {
   HAL_StatusTypeDef status = HAL_OK;
   RCC_PeriphCLKInitTypeDef RCC_ExCLKInitStruct;

@@ -644,7 +644,7 @@ ARM_DRIVER_FLASH TFM_Driver_FLASH0 =
   * @param  None.
   * @retval LR Register value
   */
-__attribute__((always_inline)) __STATIC_INLINE uint32_t __get_LR(void)
+__attribute__((always_inline)) __STATIC_INLINE uint32_t get_LR(void)
 {
   register uint32_t result;
 
@@ -681,7 +681,7 @@ void NMI_Handler(void)
     /* Memorize error to ignore the read value */
     DoubleECC_Error_Counter++;
 
-    lr = __get_LR();
+    lr = get_LR();
 
     /* Check EXC_RETURN value in LR to know which SP was used prior entering exception */
     if (((lr) & (0xFU)) == 0xDU)

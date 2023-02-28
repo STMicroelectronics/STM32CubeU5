@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -27,10 +27,10 @@
 /* Private function prototypes -----------------------------------------------*/
 
 /**
-* @brief  MX_ThreadX_Init
-* @param  None
-* @retval None
-*/
+  * @brief  MX_ThreadX_Init
+  * @param  None
+  * @retval None
+  */
 void MX_ThreadX_Init(void)
 {
   tx_kernel_enter();

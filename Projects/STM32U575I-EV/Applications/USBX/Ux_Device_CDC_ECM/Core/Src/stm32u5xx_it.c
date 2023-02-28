@@ -240,7 +240,7 @@ void SDMMC1_IRQHandler(void)
 void UCPD1_IRQHandler(void)
 {
   /* USER CODE BEGIN UCPD1_IRQn 0 */
-  USBPD_PORT0_IRQHandler();
+
   /* USER CODE END UCPD1_IRQn 0 */
   USBPD_PORT0_IRQHandler();
 

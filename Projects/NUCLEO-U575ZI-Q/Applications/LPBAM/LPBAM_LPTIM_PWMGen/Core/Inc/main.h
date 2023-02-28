@@ -64,6 +64,7 @@ void Error_Handler(void);
 #define LPTIM1_PWM_DEFAULT_PERIOD 320U
 #define LPTIM1_PWM_DEFAULT_PULSE 160U
 #define LPTIM1_PWM_DEFAULT_REPETITION 0U
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

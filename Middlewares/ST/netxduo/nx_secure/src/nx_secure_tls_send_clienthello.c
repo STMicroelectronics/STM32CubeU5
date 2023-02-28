@@ -38,7 +38,7 @@ UINT _nx_secure_tls_send_clienthello_psk_extension(NX_SECURE_TLS_SESSION *tls_se
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nx_secure_tls_send_clienthello                     PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.1.11       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Timothy Stapko, Microsoft Corporation                               */
@@ -81,6 +81,9 @@ UINT _nx_secure_tls_send_clienthello_psk_extension(NX_SECURE_TLS_SESSION *tls_se
 /*  09-30-2020     Timothy Stapko           Modified comment(s),          */
 /*                                            verified memcpy use cases,  */
 /*                                            resulting in version 6.1    */
+/*  04-25-2022     Zhen Kong                Modified comment(s), removed  */
+/*                                            the code to copy session    */
+/*                                            id, resulting in version 6.1.11*/
 /*                                                                        */
 /**************************************************************************/
 UINT _nx_secure_tls_send_clienthello(NX_SECURE_TLS_SESSION *tls_session, NX_PACKET *send_packet)
@@ -174,7 +177,7 @@ ULONG                      extension_length, total_extensions_length;
         gmt_time = tls_session -> nx_secure_tls_session_time_function();
     }
     NX_CHANGE_ULONG_ENDIAN(gmt_time);
-    NX_SECURE_MEMCPY(tls_session -> nx_secure_tls_key_material.nx_secure_tls_client_random, (UCHAR *)&gmt_time, sizeof(gmt_time)); /* Use case of memcpy is verified. */
+    NX_SECURE_MEMCPY(tls_session -> nx_secure_tls_key_material.nx_secure_tls_client_random, (UCHAR *)&gmt_time, sizeof(gmt_time)); /* Use case of memcpy is verified. lgtm[cpp/banned-api-usage-required-any] */
 
 #if (NX_SECURE_TLS_TLS_1_3_ENABLED)
     if (tls_session -> nx_secure_tls_client_state == NX_SECURE_TLS_CLIENT_STATE_HELLO_RETRY)
@@ -197,22 +200,15 @@ ULONG                      extension_length, total_extensions_length;
         }
 
         /* Copy the random data into the packet. */
-        NX_SECURE_MEMCPY(&packet_buffer[length], tls_session -> nx_secure_tls_key_material.nx_secure_tls_client_random,
+        NX_SECURE_MEMCPY(&packet_buffer[length], tls_session -> nx_secure_tls_key_material.nx_secure_tls_client_random, /* lgtm[cpp/banned-api-usage-required-any] */
                          sizeof(tls_session -> nx_secure_tls_key_material.nx_secure_tls_client_random)); /* Use case of memcpy is verified. */
     }
     length += sizeof(tls_session -> nx_secure_tls_key_material.nx_secure_tls_client_random);
 
-    /* Session ID length is one byte. */
+    /* Session ID length is one byte. As session resumption is not implemented yet, ClientHello doesn't include Session ID now. */
     tls_session -> nx_secure_tls_session_id_length  = 0;
     packet_buffer[length] = tls_session -> nx_secure_tls_session_id_length;
     length++;
-
-    /* Session ID follows. */
-    if (tls_session -> nx_secure_tls_session_id_length > 0)
-    {
-        NX_SECURE_MEMCPY(&packet_buffer[length], tls_session -> nx_secure_tls_session_id, tls_session -> nx_secure_tls_session_id_length); /* Use case of memcpy is verified. */
-        length += tls_session -> nx_secure_tls_session_id_length;
-    }
 
     /* TLS 1.0-1.2. */
     ciphersuites_length_ptr = &packet_buffer[length];

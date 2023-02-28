@@ -55,7 +55,7 @@ typedef struct
                                     Note:  When the comparator is configured as input window mode, the input plus will
                                            be shared between the two comparator instances. For the comparator instance
                                            which is not driving the window mode InputPlus parameter has no effect.
-                                    This parameter can be a value of @ref LPBAM_COMP_InputPlus                        */
+                                           This parameter can be a value of @ref LPBAM_COMP_InputPlus                 */
 
   uint32_t InputMinus;         /*!< Specifies the COMP input minus.
                                     This parameter can be a value of @ref LPBAM_COMP_InputMinus                       */
@@ -74,7 +74,7 @@ typedef struct
 } LPBAM_COMP_OutLevelFullAdvConf_t;
 
 /**
-  * @brief LPBAM start descriptor structure definition.
+  * @brief LPBAM startand stop descriptor structure definition.
   */
 typedef struct
 {
@@ -83,7 +83,7 @@ typedef struct
 
   uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
 
-} LPBAM_COMP_StartFullDesc_t;
+} LPBAM_COMP_StartFullDesc_t, LPBAM_COMP_StopFullDesc_t;
 
 /**
   * @brief LPBAM output level descriptor structure definition.
@@ -110,6 +110,13 @@ LPBAM_Status_t ADV_LPBAM_COMP_Start_SetFullQ(COMP_TypeDef                  *cons
                                              LPBAM_COMP_StartFullAdvConf_t const *const pStartFull,
                                              LPBAM_COMP_StartFullDesc_t    *const pDescriptor,
                                              DMA_QListTypeDef              *const pQueue);
+/**
+  * @brief ADV_LPBAM_COMP_Stop_SetFullQ.
+  */
+LPBAM_Status_t ADV_LPBAM_COMP_Stop_SetFullQ(COMP_TypeDef              *const pInstance,
+                                            LPBAM_DMAListInfo_t       const *const pDMAListInfo,
+                                            LPBAM_COMP_StopFullDesc_t *const pDescriptor,
+                                            DMA_QListTypeDef          *const pQueue);
 /**
   * @brief ADV_LPBAM_COMP_OutputLevel_SetFullQ.
   */

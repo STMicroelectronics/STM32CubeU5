@@ -103,7 +103,6 @@ int32_t Led_demo(void)
  if (CheckResult() != 0U) result--;
 
   /* De-Initialize the LEDs */
-  if (BSP_LED_DeInit(LED6) != BSP_ERROR_NONE) result--;
   if (BSP_LED_DeInit(LED7) != BSP_ERROR_NONE) result--;
   
   printf("LEDs Example Ended\n");

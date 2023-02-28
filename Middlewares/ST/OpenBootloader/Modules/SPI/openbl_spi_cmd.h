@@ -20,6 +20,10 @@
 #ifndef OPENBL_SPI_CMD_H
 #define OPENBL_SPI_CMD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /* Includes ------------------------------------------------------------------*/
 #include "openbl_core.h"
 
@@ -45,5 +49,9 @@ void OPENBL_SPI_WriteProtect(void);
 void OPENBL_SPI_WriteUnprotect(void);
 void OPENBL_SPI_SpecialCommand(void);
 void OPENBL_SPI_ExtendedSpecialCommand(void);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* OPENBL_SPI_CMD_H */

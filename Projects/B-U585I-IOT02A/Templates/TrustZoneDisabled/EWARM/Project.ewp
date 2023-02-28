@@ -352,6 +352,8 @@
                     <state>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\Common</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\porting</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1116,6 +1118,27 @@
             </group>
             <group>
                 <name>Components</name>
+                <group>
+                    <name>VL53L5CX</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\porting\platform.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\vl53l5cx.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_api.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_plugin_detection_thresholds.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_plugin_motion_indicator.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_plugin_xtalk.c</name>
+                    </file>
+                </group>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\aps6408\aps6408.c</name>
                 </file>
@@ -1144,7 +1167,7 @@
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\lps22hh\lps22hh_reg.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\m24lr64\m24lr64.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\m24256\m24256.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx25lm51245g\mx25lm51245g.c</name>

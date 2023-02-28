@@ -61,10 +61,11 @@
 
     [..]
       This driver provides services covering the LPBAM management of the following ADC features :
-          (+) Configure the ADC peripheral for conversion and analog watchdog monitoring.
           (+) Starts the ADC conversion.
           (+) Configure and starts the ADC conversion and analog watchdog monitoring.
           (+) Configure and starts only the analog watchdog monitoring without data transfer.
+          (+) Configure the ADC peripheral for conversion and analog watchdog monitoring.
+          (+) Stop the ADC conversion.
 
     *** Functional description ***
     ==============================
@@ -78,6 +79,7 @@
       The ADC peripheral channels are configured.
       The ADC peripheral converted data is stored in a buffer.
       The ADC peripheral analog watchdog monitoring is configured and started without any data transfer.
+      The ADC peripheral conversion is stopped.
 
     *** Driver APIs description ***
     ===============================
@@ -212,6 +214,9 @@
           (+) HighThreshold  : Specifies the ADC watchdog high threshold.
 
     [..]
+      Use ADV_LPBAM_ADC_Stop_SetFullQ() API to build a linked-list queue that stop the ADC conversion.
+
+    [..]
       Use ADV_LPBAM_ADC_ChannelConfig() API to build a linked-list queue that setup the ADC channel configuration
       after calling ADV_LPBAM_ADC_Conversion_SetConfigQ() and ADV_LPBAM_ADC_Conversion_SetFullQ() APIs according to
       parameters in the LPBAM_ADC_ChannelConfig_t structure.
@@ -248,7 +253,7 @@
                    (+++) OversamplingMode         : DISABLE. (Mandatory value)
                    (+++) SamplingTimeCommon1      : Any according to application needs.
                    (+++) SamplingTimeCommon2      : Any according to application needs.
-                   (+++) LowPowerAutoPowerOff     : ADC_LOW_POWER_AUTOFF_DPD. (Recommended value)
+                   (+++) LowPowerAutoPowerOff     : ADC_LOW_POWER_AUTOFF_DPD. (Mandatory value)
                    (+++) VrefProtection           : ADC_VREF_PROT_NONE. (Mandatory value when there no share between
                                                     multiple instance of ADC)
               (++) Call HAL_ADC_ConfigChannel() to configure the channels to be used for ADC conversion. (Optional).
@@ -354,6 +359,7 @@
               (++) DMA_IT_ULE : update link error.
               (++) DMA_IT_USE : user setting error.
           (+) Call HAL_DMAEx_List_Start() to start the master DMA channel linked-list execution. (Mandatory)
+          (+) Call, when needed, ADV_LPBAM_ADC_Stop_SetFullQ() to stop the ADC conversion.
 
     *** Recommendations ***
     =======================
@@ -1896,6 +1902,61 @@ LPBAM_Status_t ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ(ADC_TypeDef               
 
   /* Insert Node to ADC queue */
   if (HAL_DMAEx_List_InsertNode_Tail(pQueue, &pDescriptor->pNodes[node_idx]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  return LPBAM_OK;
+}
+
+/**
+  * @brief  Build DMA linked-list queue to stop of the ADC conversion
+  * @param  pInstance    : [IN]  Pointer to a ADC_TypeDef structure that selects ADC instance.
+  * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
+  *                              queue type information.
+  * @param  pDescriptor  : [IN]  Pointer to a LPBAM_ADC_ConvStopDesc_t structure that contains stop conversion
+  *                              configuration descriptor information.
+  * @param  pQueue       : [OUT] Pointer to a DMA_QListTypeDef structure that contains DMA linked-list queue
+  *                              information.
+  * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
+  */
+LPBAM_Status_t ADV_LPBAM_ADC_Stop_SetFullQ(ADC_TypeDef              *const pInstance,
+                                           LPBAM_DMAListInfo_t      const *const pDMAListInfo,
+                                           LPBAM_ADC_ConvStopDesc_t *const pDescriptor,
+                                           DMA_QListTypeDef         *const pQueue)
+{
+  LPBAM_ADC_ConfNode_t config_node;
+  DMA_NodeConfTypeDef  dmaNodeConfig;
+
+  /*
+   *               ######## ADC stop node ########
+   */
+
+  /* Set ADC instance */
+  config_node.pInstance                  = pInstance;
+
+  /* Set node descriptor */
+  config_node.NodeDesc.NodeInfo.NodeID   = (uint32_t)LPBAM_ADC_STATE_ID;
+  config_node.NodeDesc.NodeInfo.NodeType = pDMAListInfo->QueueType;
+  config_node.NodeDesc.pSrcVarReg        = &pDescriptor->pReg[0];
+
+  /* Set ADC configuration */
+  config_node.Config.State               = DISABLE;
+
+  /* Fill node configuration */
+  if (LPBAM_ADC_FillNodeConfig(&config_node, &dmaNodeConfig) != LPBAM_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Build stop node */
+  if (HAL_DMAEx_List_BuildNode(&dmaNodeConfig, &pDescriptor->pNodes[0]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Insert Node to ADC queue */
+  if (HAL_DMAEx_List_InsertNode_Tail(pQueue, &pDescriptor->pNodes[0]) != HAL_OK)
   {
     return LPBAM_ERROR;
   }

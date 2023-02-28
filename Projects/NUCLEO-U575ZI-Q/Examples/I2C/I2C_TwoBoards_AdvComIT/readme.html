@@ -80,7 +80,7 @@
 <p>These operations are repeated periodically and the start of communication is triggered by pushing the key button of the Master board.</p><br>
 <h4 id="notes"><b>Notes</b></h4>
 <ol type="1">
-<li><p>In Master side, only Acknowledge failure error is handled. When this error occurs Master restart the current operation until Slave acknowledges it’s address.</p></li>
+<li><p>In Master side, only Acknowledge failure error is handled. When this error occurs Master restart the current operation until Slave acknowledges it's address.</p></li>
 <li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise the caller ISR process will be blocked. To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>
 <li><p>The application need to ensure that the SysTick time base is always set to 1 millisecond to have correct HAL operation.</p></li>
 </ol>

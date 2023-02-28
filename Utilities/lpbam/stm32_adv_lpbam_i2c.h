@@ -115,7 +115,7 @@ typedef struct
 
   uint8_t *pData;                              /*!< Specifies the transfer data buffer.                              */
 
-  uint16_t DevAddress;                         /*!< Specifies the target device address.                             
+  uint16_t DevAddress;                         /*!< Specifies the target device address.
                                                     This field is useless for slave device                           */
 
   uint16_t Size;                               /*!< Specifies the I2C data number of bytes to transfer               */
@@ -381,10 +381,10 @@ LPBAM_Status_t ADV_LPBAM_I2C_EnableDMARequests(I2C_TypeDef *const pInstance);
   * @brief ADV_LPBAM_I2C_RegisterISR.
   */
 LPBAM_Status_t ADV_LPBAM_I2C_RegisterISR(I2C_HandleTypeDef *const hi2c);
+#endif /* defined (HAL_I2C_MODULE_ENABLED) */
 /**
   * @}
   */
-#endif /* defined (HAL_I2C_MODULE_ENABLED) */
 
 /**
   * @}

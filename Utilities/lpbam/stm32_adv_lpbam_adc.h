@@ -284,6 +284,18 @@ typedef struct
 } LPBAM_ADC_AWDGFullDesc_t;
 
 /**
+  * @brief LPBAM Stop conversion descriptor structure definition.
+  */
+typedef struct
+{
+  DMA_NodeTypeDef pNodes[1U]; /*!< Specifies the content of nodes required for DMA queue execution : only one node is
+                                   needed                                                                             */
+
+  uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
+
+} LPBAM_ADC_ConvStopDesc_t;
+
+/**
   * @brief LPBAM Channel Settings descriptor structure definition.
   */
 typedef struct
@@ -327,6 +339,7 @@ LPBAM_Status_t ADV_LPBAM_ADC_Conversion_SetFullQ(ADC_TypeDef              *const
                                                  LPBAM_ADC_FullAdvConf_t  const *const pConvFull,
                                                  LPBAM_ADC_ConvFullDesc_t *const pDescriptor,
                                                  DMA_QListTypeDef         *const pQueue);
+
 /**
   * @brief ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ.
   */
@@ -335,6 +348,13 @@ LPBAM_Status_t ADV_LPBAM_ADC_AnalogWDGConfig_SetFullQ(ADC_TypeDef               
                                                       LPBAM_ADC_AWDGFullAdvConf_t const *const pAWDGFull,
                                                       LPBAM_ADC_AWDGFullDesc_t    *const pDescriptor,
                                                       DMA_QListTypeDef            *const pQueue);
+/**
+  * @brief ADV_LPBAM_ADC_Stop_SetFullQ.
+  */
+LPBAM_Status_t ADV_LPBAM_ADC_Stop_SetFullQ(ADC_TypeDef              *const pInstance,
+                                           LPBAM_DMAListInfo_t      const *const pDMAListInfo,
+                                           LPBAM_ADC_ConvStopDesc_t *const pDescriptor,
+                                           DMA_QListTypeDef         *const pQueue);
 /**
   * @brief ADV_LPBAM_ADC_ChannelConfig.
   */

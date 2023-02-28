@@ -24,7 +24,7 @@
 /*  PORT SPECIFIC C INFORMATION                            RELEASE        */
 /*                                                                        */
 /*    fx_user.h                                           PORTABLE C      */
-/*                                                           6.0          */
+/*                                                           6.1.10       */
 /*                                                                        */
 /*  AUTHOR                                                                */
 /*                                                                        */
@@ -43,11 +43,27 @@
 /*    DATE              NAME                      DESCRIPTION             */
 /*                                                                        */
 /*  05-19-2020     William E. Lamie         Initial Version 6.0           */
+/*  09-30-2020     William E. Lamie         Modified comment(s), and      */
+/*                                            added product constants     */
+/*                                            to enable code              */
+/*                                            size optimization,          */
+/*                                            resulting in version 6.1    */
+/*  03-02-2021     William E. Lamie         Modified comment(s), and      */
+/*                                            added standalone support,   */
+/*                                            resulting in version 6.1.5  */
+/*  01-31-2022     Bhupendra Naphade        Modified comment(s), and      */
+/*                                            added product constant to   */
+/*                                            support variable sector     */
+/*                                            size in exFAT,              */
+/*                                            resulting in version 6.1.10 */
 /*                                                                        */
 /**************************************************************************/
-
 #ifndef FX_USER_H
 #define FX_USER_H
+
+/* USER CODE BEGIN 1 */
+
+/* USER CODE END 1 */
 
 /* Define various build options for the FileX port.  The application should either make changes
    here by commenting or un-commenting the conditional compilation defined OR supply the defines though the compiler's equivalent of the -D option.  */
@@ -58,7 +74,7 @@
 /* Avoid doule definition warning, as ULONG64 typedef is already defined by ThreadX */
 #define ULONG64_DEFINED
 
-/* Defined, the direct read sector update of cache is disabled.  */
+/* Direct read sector cache will be disabled if cache is disabled.  */
 
 /* #define FX_DISABLE_DIRECT_DATA_READ_CACHE_FILL */
 
@@ -120,8 +136,6 @@
 
 /* #define FX_MAX_LAST_NAME_LEN         256 */
 
-#define FX_MAX_SHORT_NAME_LEN                  13       /* Only allowed value is 13.  */
-
 /* #define FX_MAX_LONG_NAME_LEN         256 */
 
 /* Defines the maximum number of logical sectors that can be cached by FileX. The cache memory
@@ -160,6 +174,8 @@
 
 /* #define FX_SINGLE_THREAD */
 
+/* Configure the FileX in Standalone mode */
+
 /* #define FX_STANDALONE_ENABLE */
 
 /* Defines the number of seconds the time parameters are updated in FileX.  */
@@ -172,7 +188,7 @@
 
 #define FX_UPDATE_RATE_IN_TICKS     10000
 
-/* If defined, cache is disabled.  */
+/* Determine if cache is disabled.  */
 
 /*#define FX_DISABLE_CACHE   */
 
@@ -203,5 +219,23 @@
 /* If defined, consecutive detect is disabled.  */
 
 /* #define FX_DISABLE_CONSECUTIVE_DETECT */
+
+/* Define bitmap cache size for exFAT. Size should be minimum one sector size and maximum 4096. For applications using multiple media devices with varying sector size, the value should be set to the size of largest sector size.
+The FX_EXFAT_MAX_CACHE_SIZE is 2 power of FX_EXFAT_MAX_CACHE_SIZE_NB_BIT.  */
+
+/*
+#define FX_EXFAT_MAX_CACHE_SIZE            512
+*/
+
+/* Define the size of fault tolerant cache, which is used when freeing FAT chain.
+	The FX_FAULT_TOLERANT_CACHE_SIZE is 2 power of FX_FAULT_TOLERANT_CACHE_SIZE_NB_SIZE.  */
+
+/*
+#define FX_FAULT_TOLERANT_CACHE_SIZE            1024
+*/
+
+/* USER CODE BEGIN 2 */
+
+/* USER CODE END 2 */
 
 #endif

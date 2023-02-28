@@ -199,6 +199,7 @@ __Vectors       DCD     __initial_sp                     ; Top of Stack
                 DCD     MDF1_FLT5_IRQHandler             ; MDF1 Filter 5 global interrupt
                 DCD     CORDIC_IRQHandler                ; CORDIC global interrupt
                 DCD     FMAC_IRQHandler                  ; FMAC global interrupt
+                DCD     LSECSSD_IRQHandler               ; LSECSSD global interrupt
 
 
 __Vectors_End
@@ -396,6 +397,7 @@ Default_Handler PROC
                 EXPORT  MDF1_FLT5_IRQHandler         [WEAK]
                 EXPORT  CORDIC_IRQHandler            [WEAK]
                 EXPORT  FMAC_IRQHandler              [WEAK]
+                EXPORT  LSECSSD_IRQHandler           [WEAK]
 
 
 WWDG_IRQHandler
@@ -518,6 +520,7 @@ MDF1_FLT4_IRQHandler
 MDF1_FLT5_IRQHandler
 CORDIC_IRQHandler
 FMAC_IRQHandler
+LSECSSD_IRQHandler
 
                 B       .
 

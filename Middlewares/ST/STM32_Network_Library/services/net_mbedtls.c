@@ -17,42 +17,48 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "net_connect.h"
+#include <stdint.h>
+#include <inttypes.h>
+
+#define NET_IMPLEMENTATION_USES_PLATFORM_DECLS
+#include "net_conf.h"
+
 #include "net_internals.h"
+#include "net_perf.h"
+
+
 #ifdef NET_MBEDTLS_HOST_SUPPORT
 
-#if (osCMSIS >= 0x20000U)
-#define OSSEMAPHOREWAIT         osSemaphoreAcquire
+#if defined(HAL_RNG_MODULE_ENABLED)
+extern RNG_HandleTypeDef hrng;
+
 #else
-#define OSSEMAPHOREWAIT         osSemaphoreWait
-#endif /* osCMSIS */
-
-int32_t mbedtls_rng_raw(void *data, uchar_t *output, size_t len);
-
+/* Forward a declaration.*/
 extern struct __RNG_HandleTypeDef hrng;
+#endif /* HAL_RNG_MODULE_ENABLED */
+
 
 /* Private defines -----------------------------------------------------------*/
 /* Private typedef -----------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 static void mbedtls_free_resource(net_socket_t *sock);
-static int32_t  mbedtls_net_recv(void *ctx, uchar_t *buf, size_t len, uint32_t timeout);
-static int32_t  mbedtls_net_send(void *ctx, const uchar_t *buf, size_t len);
+static int32_t mbedtls_net_recv(void *ctx, uchar_t *buf, size_t len, uint32_t timeout);
+static int32_t mbedtls_net_send(void *ctx, const uchar_t *buf, size_t len);
 
 #ifdef NET_USE_RTOS
 extern void *pxCurrentTCB;
 
+#ifdef MBEDTLS_THREADING_ALT
 
-#ifdef  MBEDTLS_THREADING_ALT
+typedef int (*mutex_t)(mbedtls_threading_mutex_t *);
 
-typedef int (*mutex_t)(mbedtls_threading_mutex_t *)  ;
+static void mutex_init(mbedtls_threading_mutex_t *mutex);
+static void mutex_free(mbedtls_threading_mutex_t *mutex);
+static int32_t mutex_lock(mbedtls_threading_mutex_t *mutex);
+static int32_t mutex_unlock(mbedtls_threading_mutex_t *mutex);
 
-void mutex_init(mbedtls_threading_mutex_t *mutex);
-void mutex_free(mbedtls_threading_mutex_t *mutex);
-int32_t mutex_lock(mbedtls_threading_mutex_t *mutex);
-int32_t mutex_unlock(mbedtls_threading_mutex_t *mutex);
-
-void mutex_init(mbedtls_threading_mutex_t *mutex)
+static void mutex_init(mbedtls_threading_mutex_t *mutex)
 {
 #if (osCMSIS >= 0x20000U)
   mutex->id = osSemaphoreNew(1, 1, NULL);
@@ -61,30 +67,40 @@ void mutex_init(mbedtls_threading_mutex_t *mutex)
 #endif /* osCMSIS */
 }
 
-void mutex_free(mbedtls_threading_mutex_t   *mutex)
+
+static void mutex_free(mbedtls_threading_mutex_t *mutex)
 {
-  (void) osSemaphoreDelete(mutex->id);
+  (void)osSemaphoreDelete(mutex->id);
 }
 
 #define WAITFOREVER     0xFFFFFFFFU     /* redefined for  MISRA checks */
 
-int32_t mutex_lock(mbedtls_threading_mutex_t *mutex)
+static int32_t mutex_lock(mbedtls_threading_mutex_t *mutex)
 {
   BaseType_t ret;
-  ret = (BaseType_t)  OSSEMAPHOREWAIT(mutex->id, WAITFOREVER);
+
+#if (osCMSIS >= 0x20000U)
+  ret = (BaseType_t)osSemaphoreAcquire(mutex->id, WAITFOREVER);
+
+#else
+  ret = (BaseType_t)osSemaphoreWait(mutex->id, WAITFOREVER);
+
+#endif /* osCMSIS */
+
   return (ret >= 0) ? 0 : -1;
 }
 
-int32_t mutex_unlock(mbedtls_threading_mutex_t *mutex)
+
+static int32_t mutex_unlock(mbedtls_threading_mutex_t *mutex)
 {
   BaseType_t ret;
-  ret = (BaseType_t) osSemaphoreRelease(mutex->id);
+  ret = (BaseType_t)osSemaphoreRelease(mutex->id);
   return (ret >= 0) ? 0 : -1;
 }
-
 
 #endif /* MBEDTLS_THREADING_ALT */
 #endif /* NET_USE_RTOS */
+
 
 void net_tls_init(void)
 {
@@ -93,6 +109,7 @@ void net_tls_init(void)
 #endif /* MBEDTLS_THREADING_ALT */
 }
 
+
 void net_tls_destroy(void)
 {
 #ifdef MBEDTLS_THREADING_ALT
@@ -100,14 +117,15 @@ void net_tls_destroy(void)
 #endif /* MBEDTLS_THREADING_ALT */
 }
 
+
 /* Functions Definition ------------------------------------------------------*/
 bool net_mbedtls_check_tlsdata(net_socket_t *sock)
 {
   bool ret = true;
-  void  *p;
+
   if (NULL == sock->tlsData)
   {
-    p = NET_MALLOC(sizeof(net_tls_data_t));
+    void *const p = NET_MALLOC(sizeof(net_tls_data_t));
     if (p == NULL)
     {
       NET_DBG_ERROR("Error during setting option.\n");
@@ -116,7 +134,7 @@ bool net_mbedtls_check_tlsdata(net_socket_t *sock)
     else
     {
       sock->tlsData = p;
-      (void) memset(sock->tlsData, 0, sizeof(net_tls_data_t));
+      (void) memset(sock->tlsData, 0, sizeof(*sock->tlsData));
       sock->tlsData->tls_srv_verification = true;
     }
   }
@@ -124,6 +142,7 @@ bool net_mbedtls_check_tlsdata(net_socket_t *sock)
 }
 
 
+#if defined(MBEDTLS_DEBUG_C)
 static void DebugPrint(void *ctx,
                        int32_t level,
                        const char_t *file,
@@ -133,29 +152,32 @@ static void DebugPrint(void *ctx,
 {
   /* Unused parameters. */
   (void)ctx;
-  (void) level;
+  (void)level;
+
 #ifdef NET_USE_RTOS
-  NET_PRINT_WO_CR("%p => %s:%04ld: %s\n", pxCurrentTCB, file, (int32_t) line, str);
+  NET_PRINT_WO_CR("%p => %s:%04" PRId32 ": %s\n", pxCurrentTCB, file, line, str);
+
 #else
-  NET_PRINT_WO_CR("%s:%04ld: %s\n", file, (uint32_t) line, str);
+  NET_PRINT_WO_CR("%s:%04" PRId32 ": %s\n", file, line, str);
 #endif /* NET_USE_RTOS */
 }
+#endif /* MBEDTLS_DEBUG_C */
 
 
 void net_mbedtls_set_read_timeout(net_socket_t *sock)
 {
-  net_tls_data_t *tlsData = sock->tlsData;
-  if (tlsData != NULL)
+  net_tls_data_t *const tls_data = sock->tlsData;
+
+  if (tls_data != NULL)
   {
-    mbedtls_ssl_conf_read_timeout(&tlsData->conf, (uint32_t) sock->read_timeout);
+    mbedtls_ssl_conf_read_timeout(&tls_data->conf, (uint32_t)sock->read_timeout);
   }
 }
 
 
-
-static  void *net_wrapper_calloc(size_t  n, size_t m)
+static void *net_wrapper_calloc(size_t num, size_t size)
 {
-  return NET_CALLOC(n, m);
+  return NET_CALLOC(num, size);
 }
 
 typedef void (*mbedtls_debug_func_t)(void *, int, const char *, int, const char *);
@@ -167,41 +189,49 @@ static void net_wrapper_free(void *p)
   NET_FREE(p);
 }
 
-uint32_t        NET_TICK(void);
 
 int32_t net_mbedtls_start(net_socket_t *sock)
 {
-  int32_t       ret = NET_OK;
-  net_tls_data_t *tlsData = sock->tlsData;
-  uint32_t      start_tick;
+  int32_t ret = NET_OK;
+  net_tls_data_t *const tls_data = sock->tlsData;
+  uint32_t start_tick;
 
-  (void)   mbedtls_platform_set_calloc_free(net_wrapper_calloc, net_wrapper_free);
-  mbedtls_ssl_init(&tlsData->ssl);
-  mbedtls_ssl_config_init(&tlsData->conf);
-  mbedtls_ssl_conf_dbg(&tlsData->conf, (mbedtls_debug_func_t) DebugPrint, NULL);
+  (void)mbedtls_platform_set_calloc_free(net_wrapper_calloc, net_wrapper_free);
+  mbedtls_ssl_init(&tls_data->ssl);
+  mbedtls_ssl_config_init(&tls_data->conf);
 
+#if defined(MBEDTLS_DEBUG_C)
+  mbedtls_ssl_conf_dbg(&tls_data->conf, (mbedtls_debug_func_t) DebugPrint, NULL);
   mbedtls_debug_set_threshold(NET_MBEDTLS_DEBUG_LEVEL);
-  mbedtls_x509_crt_init(&tlsData->cacert);
-  if (tlsData->tls_dev_cert != NULL)
+
+#else
+  mbedtls_ssl_conf_dbg(&tls_data->conf, (mbedtls_debug_func_t) NULL, NULL);
+#endif /* MBEDTLS_DEBUG_C */
+
+  mbedtls_x509_crt_init(&tls_data->cacert);
+
+  if (tls_data->tls_dev_cert != NULL)
   {
-    mbedtls_x509_crt_init(&tlsData->clicert);
+    mbedtls_x509_crt_init(&tls_data->clicert);
   }
-  if (tlsData->tls_dev_key != NULL)
+
+  if (tls_data->tls_dev_key != NULL)
   {
-    mbedtls_pk_init(&tlsData->pkey);
+    mbedtls_pk_init(&tls_data->pkey);
   }
 
   /* Root CA */
-  if (tlsData->tls_ca_certs != NULL)
+  if (tls_data->tls_ca_certs != NULL)
   {
-    ret = mbedtls_x509_crt_parse(&tlsData->cacert, (uchar_t const *) tlsData->tls_ca_certs,
-                                 strlen((char_t const *) tlsData->tls_ca_certs) + 1U);
+    ret = mbedtls_x509_crt_parse(&tls_data->cacert, (uchar_t const *) tls_data->tls_ca_certs,
+                                 strlen((char_t const *) tls_data->tls_ca_certs) + 1U);
 
     if (ret != 0)
     {
-      NET_DBG_ERROR(" failed\n  !  mbedtls_x509_crt_parse returned 0x%lx while parsing root cert\n", ret);
+      NET_DBG_ERROR("Failed!\n mbedtls_x509_crt_parse returned 0x%" PRIx32 " while parsing root certificate\n",
+                    (uint32_t)ret);
       mbedtls_free_resource(sock);
-      ret =  NET_ERROR_MBEDTLS_CRT_PARSE;
+      ret = NET_ERROR_MBEDTLS_CRT_PARSE;
     }
   }
   else
@@ -211,25 +241,26 @@ int32_t net_mbedtls_start(net_socket_t *sock)
   }
 
 
-  /* Client cert. and key */
-  if ((ret == NET_OK) && (tlsData->tls_dev_cert != NULL) && (tlsData->tls_dev_key != NULL))
+  /* Client certificate and key. */
+  if ((ret == NET_OK) && (tls_data->tls_dev_cert != NULL) && (tls_data->tls_dev_key != NULL))
   {
-    ret = mbedtls_x509_crt_parse(&tlsData->clicert, (uchar_t const *) tlsData->tls_dev_cert,
-                                 strlen((char_t const *)tlsData->tls_dev_cert) + 1U);
+    ret = mbedtls_x509_crt_parse(&tls_data->clicert, (uchar_t const *) tls_data->tls_dev_cert,
+                                 strlen((char_t const *)tls_data->tls_dev_cert) + 1U);
     if (ret != 0)
     {
-      NET_DBG_ERROR(" failed\n  !  mbedtls_x509_crt_parse returned -0x%lx while parsing device cert\n", -ret);
+      NET_DBG_ERROR("Failed!\n mbedtls_x509_crt_parse returned -0x%" PRIx32 " while parsing device certificate\n",
+                    (uint32_t)(-ret));
       mbedtls_free_resource(sock);
       ret = NET_ERROR_MBEDTLS_CRT_PARSE;
     }
     else
     {
-      ret = mbedtls_pk_parse_key(&tlsData->pkey, (uchar_t const *)tlsData->tls_dev_key,
-                                 strlen((char_t const *)tlsData->tls_dev_key) + 1U,
-                                 (uchar_t const *)tlsData->tls_dev_pwd, tlsData->tls_dev_pwd_len);
+      ret = mbedtls_pk_parse_key(&tls_data->pkey, (uchar_t const *)tls_data->tls_dev_key,
+                                 strlen((char_t const *)tls_data->tls_dev_key) + 1U,
+                                 (uchar_t const *)tls_data->tls_dev_pwd, tls_data->tls_dev_pwd_len);
       if (ret != 0)
       {
-        NET_DBG_ERROR(" failed\n  !  mbedtls_pk_parse_key returned -0x%lx while parsing private key\n\n", -ret);
+        NET_DBG_ERROR("Failed!\n mbedtls_pk_parse_key returned -0x%" PRIx32 " while parsing private key\n\n", (uint32_t)(-ret));
         mbedtls_free_resource(sock);
         ret = NET_ERROR_MBEDTLS_KEY_PARSE;
       }
@@ -239,11 +270,11 @@ int32_t net_mbedtls_start(net_socket_t *sock)
   /* TLS Connection */
   if (ret == NET_OK)
   {
-    ret = mbedtls_ssl_config_defaults(&tlsData->conf, MBEDTLS_SSL_IS_CLIENT, MBEDTLS_SSL_TRANSPORT_STREAM,
+    ret = mbedtls_ssl_config_defaults(&tls_data->conf, MBEDTLS_SSL_IS_CLIENT, MBEDTLS_SSL_TRANSPORT_STREAM,
                                       MBEDTLS_SSL_PRESET_DEFAULT);
     if (ret != 0)
     {
-      NET_DBG_ERROR(" failed\n  ! mbedtls_ssl_config_defaults returned -0x%lx\n\n", -ret);
+      NET_DBG_ERROR("Failed!\n mbedtls_ssl_config_defaults returned -0x%" PRIu32 "\n\n", (uint32_t)(-ret));
       mbedtls_free_resource(sock);
       ret = NET_ERROR_MBEDTLS_CONFIG;
     }
@@ -252,29 +283,29 @@ int32_t net_mbedtls_start(net_socket_t *sock)
   if (ret == NET_OK)
   {
     /* Allow the user to select a TLS profile? */
-    if (tlsData->tls_cert_prof != NULL)
+    if (tls_data->tls_cert_prof != NULL)
     {
-      mbedtls_ssl_conf_cert_profile(&tlsData->conf, tlsData->tls_cert_prof);
+      mbedtls_ssl_conf_cert_profile(&tls_data->conf, tls_data->tls_cert_prof);
     }
     /* Only for debug  mbedtls_ssl_conf_verify  _iot_tls_verify_cert  NULL */
-    if (tlsData->tls_srv_verification == true)
+    if (tls_data->tls_srv_verification == true)
     {
-      mbedtls_ssl_conf_authmode(&tlsData->conf, MBEDTLS_SSL_VERIFY_REQUIRED);
+      mbedtls_ssl_conf_authmode(&tls_data->conf, MBEDTLS_SSL_VERIFY_REQUIRED);
     }
     else
     {
-      mbedtls_ssl_conf_authmode(&tlsData->conf, MBEDTLS_SSL_VERIFY_OPTIONAL);
+      mbedtls_ssl_conf_authmode(&tls_data->conf, MBEDTLS_SSL_VERIFY_OPTIONAL);
     }
 
-    mbedtls_ssl_conf_rng(&tlsData->conf, (mbedtls_rng_func_t) mbedtls_rng_raw, &hrng);
-    mbedtls_ssl_conf_ca_chain(&tlsData->conf, &tlsData->cacert, NULL);
+    mbedtls_ssl_conf_rng(&tls_data->conf, (mbedtls_rng_func_t) mbedtls_rng_raw, &hrng);
+    mbedtls_ssl_conf_ca_chain(&tls_data->conf, &tls_data->cacert, NULL);
 
-    if ((tlsData->tls_dev_cert != NULL) && (tlsData->tls_dev_key != NULL))
+    if ((tls_data->tls_dev_cert != NULL) && (tls_data->tls_dev_key != NULL))
     {
-      ret = mbedtls_ssl_conf_own_cert(&tlsData->conf, &tlsData->clicert, &tlsData->pkey);
+      ret = mbedtls_ssl_conf_own_cert(&tls_data->conf, &tls_data->clicert, &tls_data->pkey);
       if (ret != 0)
       {
-        NET_DBG_ERROR(" failed\n  ! mbedtls_ssl_conf_own_cert returned -0x%lx\n\n", -ret);
+        NET_DBG_ERROR("Failed!\n mbedtls_ssl_conf_own_cert returned -0x%" PRIx32 "\n\n", (uint32_t)(-ret));
         mbedtls_free_resource(sock);
         ret = NET_ERROR_MBEDTLS_CONFIG;
       }
@@ -282,21 +313,21 @@ int32_t net_mbedtls_start(net_socket_t *sock)
   }
   if (ret == NET_OK)
   {
-    ret = mbedtls_ssl_setup(&tlsData->ssl, &tlsData->conf);
+    ret = mbedtls_ssl_setup(&tls_data->ssl, &tls_data->conf);
     if (ret != 0)
     {
-      NET_DBG_ERROR(" failed\n  ! mbedtls_ssl_setup returned -0x%lx\n\n", -ret);
+      NET_DBG_ERROR("Failed!\n mbedtls_ssl_setup returned -0x%" PRIx32 "\n\n", (uint32_t)(-ret));
       mbedtls_free_resource(sock);
       ret = NET_ERROR_MBEDTLS_SSL_SETUP;
     }
   }
 
-  if ((ret == NET_OK) && (tlsData->tls_srv_name != NULL))
+  if ((ret == NET_OK) && (tls_data->tls_srv_name != NULL))
   {
-    ret = mbedtls_ssl_set_hostname(&tlsData->ssl, (char_t const *)tlsData->tls_srv_name);
+    ret = mbedtls_ssl_set_hostname(&tls_data->ssl, (char_t const *)tls_data->tls_srv_name);
     if (ret  != 0)
     {
-      NET_DBG_ERROR(" failed\n  ! mbedtls_ssl_set_hostname returned %ld\n\n", ret);
+      NET_DBG_ERROR("Failed!\n mbedtls_ssl_set_hostname returned %" PRId32 "\n\n", ret);
       mbedtls_free_resource(sock);
       ret = NET_ERROR_MBEDTLS_SET_HOSTNAME;
     }
@@ -304,22 +335,18 @@ int32_t net_mbedtls_start(net_socket_t *sock)
 
   if (ret == NET_OK)
   {
-    mbedtls_ssl_set_bio(&tlsData->ssl,  sock, (mbedtls_ssl_send_t *) mbedtls_net_send, NULL,
+    mbedtls_ssl_set_bio(&tls_data->ssl, sock, (mbedtls_ssl_send_t *) mbedtls_net_send, NULL,
                         (mbedtls_ssl_recv_timeout_t *) mbedtls_net_recv);
-    mbedtls_ssl_conf_read_timeout(&tlsData->conf, (uint32_t)sock->read_timeout);
+    mbedtls_ssl_conf_read_timeout(&tls_data->conf, (uint32_t)sock->read_timeout);
 
+    NET_DBG_INFO("\n\nSSL state connect: %d", sock->tls_data->ssl.state);
+    NET_DBG_INFO(" . Performing the SSL/TLS handshake...");
 
-    NET_DBG_INFO("\n\nSSL state connect : %d ", sock->tlsData->ssl.state);
-
-
-    NET_DBG_INFO("\n\nSSL state connect : %d ", sock->tlsData->ssl.state);
-    NET_DBG_INFO("  . Performing the SSL/TLS handshake...");
-
-    ret = mbedtls_ssl_handshake(&tlsData->ssl);
+    ret = mbedtls_ssl_handshake(&tls_data->ssl);
     start_tick = NET_TICK();
     while (ret != 0)
     {
-      uint32_t  elapsed_tick = NET_TICK() - start_tick;
+      uint32_t elapsed_tick = NET_TICK() - start_tick;
 
       if (elapsed_tick > NET_MBEDTLS_CONNECT_TIMEOUT)
       {
@@ -330,44 +357,44 @@ int32_t net_mbedtls_start(net_socket_t *sock)
 
       if ((ret != MBEDTLS_ERR_SSL_WANT_READ) && (ret != MBEDTLS_ERR_SSL_WANT_WRITE))
       {
-        tlsData->flags = mbedtls_ssl_get_verify_result(&tlsData->ssl);
-        if (tlsData->flags != 0U)
+        tls_data->flags = mbedtls_ssl_get_verify_result(&tls_data->ssl);
+        if (tls_data->flags != 0U)
         {
-          char_t vrfy_buf[512];
-          (void) mbedtls_x509_crt_verify_info(vrfy_buf, sizeof(vrfy_buf), "  ! ", tlsData->flags);
-          if (tlsData->tls_srv_verification == true)
+          char_t verify_buf[512];
+          (void) mbedtls_x509_crt_verify_info(verify_buf, sizeof(verify_buf), "  ! ", tls_data->flags);
+          if (tls_data->tls_srv_verification == true)
           {
-            NET_DBG_ERROR("Server verification:\n%s\n", vrfy_buf);
+            NET_DBG_ERROR("Server verification:\n%s\n", verify_buf);
           }
           else
           {
-            NET_DBG_INFO("Server verification:\n%s\n", vrfy_buf);
+            NET_DBG_INFO("Server verification:\n%s\n", verify_buf);
           }
         }
-        NET_DBG_ERROR(" failed\n  ! mbedtls_ssl_handshake returned -0x%lx\n", -ret);
+        NET_DBG_ERROR("Failed!\n mbedtls_ssl_handshake returned -0x%" PRIx32 "\n", (uint32_t)(-ret));
 
         mbedtls_free_resource(sock);
         ret = (ret == MBEDTLS_ERR_X509_CERT_VERIFY_FAILED) ? NET_ERROR_MBEDTLS_REMOTE_AUTH : NET_ERROR_MBEDTLS_CONNECT;
         break;
       }
-      ret = mbedtls_ssl_handshake(&tlsData->ssl);
+      ret = mbedtls_ssl_handshake(&tls_data->ssl);
     }
 
     if (ret == NET_OK)
     {
       int32_t exp;
-      NET_DBG_INFO(" ok\n    [ Protocol is %s ]\n    [ Ciphersuite is %s ]\n",
-                   mbedtls_ssl_get_version(&sock->tlsData->ssl),
-                   mbedtls_ssl_get_ciphersuite(&sock->tlsData->ssl));
+      NET_DBG_INFO(" OK\n [Protocol is %s]\n [Ciphersuite is %s]\n",
+                   mbedtls_ssl_get_version(&sock->tls_data->ssl),
+                   mbedtls_ssl_get_ciphersuite(&sock->tls_data->ssl));
 
-      exp = mbedtls_ssl_get_record_expansion(&tlsData->ssl);
+      exp = mbedtls_ssl_get_record_expansion(&tls_data->ssl);
       if (exp >= 0)
       {
-        NET_DBG_INFO("    [ Record expansion is %d ]\n", exp);
+        NET_DBG_INFO("    [Record expansion is %d]\n", exp);
       }
       else
       {
-        NET_DBG_INFO("    [ Record expansion is unknown (compression) ]\n");
+        NET_DBG_INFO("    [Record expansion is unknown (compression)]\n");
       }
 
       NET_DBG_INFO("  . Verifying peer X.509 certificate...");
@@ -377,20 +404,19 @@ int32_t net_mbedtls_start(net_socket_t *sock)
 #define NET_CERTIFICATE_DISPLAY_LEN     2048U
       if (mbedtls_ssl_get_peer_cert(&sock->tlsData->ssl) != NULL)
       {
-        char_t        *buf = NET_MALLOC(sizeof(char_t) * NET_CERTIFICATE_DISPLAY_LEN);
+        char_t *buf = NET_MALLOC(sizeof(char_t) * NET_CERTIFICATE_DISPLAY_LEN);
 
         if (buf != NULL)
         {
-          NET_DBG_INFO("  . Peer certificate information    ...\n");
+          NET_DBG_INFO("  . Peer certificate information ...\n");
           (void) mbedtls_x509_crt_info(buf, NET_CERTIFICATE_DISPLAY_LEN - 1U, "      ",
                                        mbedtls_ssl_get_peer_cert(&sock->tlsData->ssl));
           NET_DBG_INFO("%s\n", buf);
           NET_FREE(buf);
-
         }
         else
         {
-          NET_DBG_INFO("  . Cannot allocate memory to display certificate information    ...\n");
+          NET_DBG_INFO(" . Cannot allocate memory to display certificate information ...\n");
         }
       }
 #endif /* NET_DBG_INFO */
@@ -403,10 +429,11 @@ int32_t net_mbedtls_start(net_socket_t *sock)
 
 int32_t net_mbedtls_sock_recv(net_socket_t *sock, uint8_t *buf, size_t len)
 {
-  net_tls_data_t *tlsData = sock->tlsData;
+  net_tls_data_t *const tls_data = sock->tlsData;
   int32_t ret;
 
-  ret = mbedtls_ssl_read(&tlsData->ssl, buf, len);
+  ret = mbedtls_ssl_read(&tls_data->ssl, buf, len);
+
   if (ret <= 0)
   {
     switch (ret)
@@ -424,7 +451,7 @@ int32_t net_mbedtls_sock_recv(net_socket_t *sock, uint8_t *buf, size_t len)
         break;
 
       default:
-        NET_DBG_ERROR(" failed\n  ! mbedtls_ssl_read returned -0x%lx\n\n", -ret);
+        NET_DBG_ERROR("Failed!\n mbedtls_ssl_read returned -0x%" PRIx32 "\n\n", (uint32_t)(-ret));
         ret = NET_ERROR_MBEDTLS;
         break;
     }
@@ -436,25 +463,27 @@ int32_t net_mbedtls_sock_recv(net_socket_t *sock, uint8_t *buf, size_t len)
 int32_t net_mbedtls_sock_send(net_socket_t *sock, const uint8_t *buf, size_t len)
 {
   int32_t ret;
-  net_tls_data_t *tlsData = sock->tlsData;
+  net_tls_data_t *const tls_data = sock->tlsData;
+
 #if PERF
   stat.mbedtls_send_cycle -= net_get_cycle();
 #endif /* PERF */
 
-  ret = mbedtls_ssl_write(&tlsData->ssl, buf, len);
+  ret = mbedtls_ssl_write(&tls_data->ssl, buf, len);
   if (ret == 0)
   {
     ret = NET_ERROR_DISCONNECTED;
   }
   else if (ret < 0)
   {
-    NET_DBG_ERROR(" failed\n  ! mbedtls_ssl_write returned -0x%lx\n\n", -ret);
+    NET_DBG_ERROR("Failed!\n mbedtls_ssl_write returned -0x%" PRIx32 "\n\n", (uint32_t)(-ret));
     ret = NET_ERROR_MBEDTLS;
   }
   else
   {
-    /* ret > 0 nothing to do , MISRA checks */
+    /* ret > 0 nothing to do, MISRA checks */
   }
+
 #if PERF
   stat.mbedtls_send_cycle += net_get_cycle();
 #endif /* PERF */
@@ -467,10 +496,10 @@ int32_t net_mbedtls_stop(net_socket_t *sock)
 {
   int32_t ret;
   /* Closure notification is required by TLS if the session was not already closed by the remote host. */
-  net_tls_data_t *tlsData = sock->tlsData;
+  net_tls_data_t *const tls_data = sock->tlsData;
   do
   {
-    ret = mbedtls_ssl_close_notify(&tlsData->ssl);
+    ret = mbedtls_ssl_close_notify(&tls_data->ssl);
   } while ((ret == MBEDTLS_ERR_SSL_WANT_WRITE) || (ret == MBEDTLS_ERR_SSL_WANT_READ));
 
   /* All other negative return values indicate connection needs to be reset.
@@ -483,14 +512,14 @@ int32_t net_mbedtls_stop(net_socket_t *sock)
 
 static void mbedtls_free_resource(net_socket_t *sock)
 {
-  net_tls_data_t *tlsData = sock->tlsData;
+  net_tls_data_t *const tls_data = sock->tlsData;
 
-  mbedtls_x509_crt_free(&tlsData->clicert);
-  mbedtls_pk_free(&tlsData->pkey);
-  mbedtls_x509_crt_free(&tlsData->cacert);
-  mbedtls_ssl_free(&tlsData->ssl);
-  mbedtls_ssl_config_free(&tlsData->conf);
-  NET_FREE(tlsData);
+  mbedtls_x509_crt_free(&tls_data->clicert);
+  mbedtls_pk_free(&tls_data->pkey);
+  mbedtls_x509_crt_free(&tls_data->cacert);
+  mbedtls_ssl_free(&tls_data->ssl);
+  mbedtls_ssl_config_free(&tls_data->conf);
+  NET_FREE(tls_data);
   sock->tlsData = 0;
   return;
 }
@@ -500,29 +529,29 @@ static void mbedtls_free_resource(net_socket_t *sock)
 /* received interface implementation.*/
 static int32_t mbedtls_net_recv(void *ctx, uchar_t *buf, size_t len, uint32_t timeout)
 {
-  int32_t ret =  NET_OK;
+  int32_t ret = NET_OK;
   int32_t flags = 0;
-  net_socket_t  *pSocket = (net_socket_t *) ctx;
+  net_socket_t *const p_socket = (net_socket_t *) ctx;
 
-  if (pSocket->read_timeout != (int32_t)timeout)
+  if (p_socket->read_timeout != (int32_t)timeout)
   {
-    ret = pSocket->pnetif->pdrv->psetsockopt(pSocket->ulsocket,
-                                             NET_SOL_SOCKET, NET_SO_RCVTIMEO, &timeout, sizeof(uint32_t));
+    ret = p_socket->pnetif->pdrv->psetsockopt(p_socket->ulsocket,
+                                              NET_SOL_SOCKET, NET_SO_RCVTIMEO, &timeout, sizeof(uint32_t));
     if (ret == NET_OK)
     {
-      pSocket->read_timeout = (int32_t) timeout;
+      p_socket->read_timeout = (int32_t) timeout;
     }
   }
 
   if (ret == NET_OK)
   {
-    if (pSocket->read_timeout == 0)
+    if (p_socket->read_timeout == 0)
     {
       flags = (int8_t) NET_MSG_DONTWAIT;
     }
-    UNLOCK_SOCK(pSocket->idx);
-    ret = pSocket->pnetif->pdrv->precv(pSocket->ulsocket, buf, len, flags);
-    LOCK_SOCK(pSocket->idx);
+    UNLOCK_SOCK(p_socket->idx);
+    ret = p_socket->pnetif->pdrv->precv(p_socket->ulsocket, buf, len, flags);
+    LOCK_SOCK(p_socket->idx);
 
     if (ret <= 0)
     {
@@ -534,14 +563,14 @@ static int32_t mbedtls_net_recv(void *ctx, uchar_t *buf, size_t len, uint32_t ti
 
         case NET_TIMEOUT:
           /* According to mbedtls headers, MBEDTLS_ERR_SSL_TIMEOUT should be returned. */
-          /* But it saturates the error log with false errors. By contrast,     */
-          /*    MBEDTLS_ERR_SSL_WANT_READ does not raise any error. */
+          /* But it saturates the error log with false errors. By contrast,            */
+          /* MBEDTLS_ERR_SSL_WANT_READ does not raise any error.                       */
           ret =  MBEDTLS_ERR_SSL_WANT_READ;
           break;
 
         default:
-          NET_DBG_ERROR("mbedtls_net_recv() : error %ld in recv() - requestedLen=%d\n", ret, len);
-          ret =    MBEDTLS_ERR_SSL_INTERNAL_ERROR;
+          NET_DBG_ERROR("mbedtls_net_recv(): error %" PRId32 " in recv() - requestedLen=%" PRIu32 "\n", ret, (uint32_t)len);
+          ret = MBEDTLS_ERR_SSL_INTERNAL_ERROR;
           break;
       }
     }
@@ -553,18 +582,18 @@ static int32_t mbedtls_net_recv(void *ctx, uchar_t *buf, size_t len, uint32_t ti
 
 static int32_t mbedtls_net_send(void *ctx, const uchar_t *buf, size_t len)
 {
-  net_socket_t  *pSocket = (net_socket_t *) ctx;
+  net_socket_t *const p_socket = (net_socket_t *) ctx;
   int32_t ret;
   int32_t flags = 0;
 
-  if (pSocket->write_timeout == 0)
+  if (p_socket->write_timeout == 0)
   {
     flags = (int8_t) NET_MSG_DONTWAIT;
   }
-  UNLOCK_SOCK(pSocket->idx);
-  ret = pSocket->pnetif->pdrv->psend(pSocket->ulsocket, (uchar_t *) buf, len, flags);
-  LOCK_SOCK(pSocket->idx);
 
+  UNLOCK_SOCK(p_socket->idx);
+  ret = p_socket->pnetif->pdrv->psend(p_socket->ulsocket, (uchar_t *) buf, len, flags);
+  LOCK_SOCK(p_socket->idx);
 
   if (ret >= 0)
   {
@@ -575,13 +604,14 @@ static int32_t mbedtls_net_send(void *ctx, const uchar_t *buf, size_t len)
   }
   else
   {
-    NET_DBG_ERROR("mbedtls_net_send(): error %ld in send() - requestedLen=%d\n", ret, len);
+    NET_DBG_ERROR("mbedtls_net_send(): error %" PRIu32 " in send() - requestedLen=%" PRId32 "\n", ret, (uint32_t)len);
 
-    /* The underlying layers do not allow to distinguish between
-    *          MBEDTLS_ERR_SSL_INTERNAL_ERROR,
-    *          MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY,
-    *          MBEDTLS_ERR_SSL_CONN_EOF.
-    *  Most often, the error is due to the closure of the connection by the remote host. */
+    /** The underlying layers do not allow to distinguish between
+      *          MBEDTLS_ERR_SSL_INTERNAL_ERROR,
+      *          MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY,
+      *          MBEDTLS_ERR_SSL_CONN_EOF.
+      * Most often, the error is due to the closure of the connection by the remote host.
+      */
 
     ret =  MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY;
   }

@@ -958,7 +958,14 @@ uint32_t CAD_StateMachine(uint8_t PortNum, USBPD_CAD_EVENT *pEvent, CCxPin_TypeD
 #if !defined(_LOW_POWER) && !defined(USBPDM1_VCC_FEATURE_ENABLED)
       LL_UCPD_EnableIT_TypeCEventCC2(Ports[PortNum].husbpd);
       LL_UCPD_EnableIT_TypeCEventCC1(Ports[PortNum].husbpd);
-#endif /* !_LOW_POWER */
+#elif defined(_LOW_POWER)
+      if (USBPD_PORTPOWERROLE_SRC == Ports[PortNum].params->PE_PowerRole)
+      {
+        LL_UCPD_EnableIT_TypeCEventCC2(Ports[PortNum].husbpd);
+        LL_UCPD_EnableIT_TypeCEventCC1(Ports[PortNum].husbpd);
+      }
+#endif /* !_LOW_POWER && !USBPDM1_VCC_FEATURE_ENABLED */
+
       UCPD_INSTANCE0_ENABLEIRQ;
 #if defined(_DRP) || defined(_ACCESSORY_SNK)
       _handle->CAD_tToggle_start = HAL_GetTick();
@@ -1066,7 +1073,14 @@ uint32_t CAD_StateMachine(uint8_t PortNum, USBPD_CAD_EVENT *pEvent, CCxPin_TypeD
 #ifndef _LOW_POWER
       LL_UCPD_EnableIT_TypeCEventCC2(Ports[PortNum].husbpd);
       LL_UCPD_EnableIT_TypeCEventCC1(Ports[PortNum].husbpd);
-#endif /* _LOW_POWER */
+#else
+      if (USBPD_PORTPOWERROLE_SRC == Ports[PortNum].params->PE_PowerRole)
+      {
+        LL_UCPD_EnableIT_TypeCEventCC2(Ports[PortNum].husbpd);
+        LL_UCPD_EnableIT_TypeCEventCC1(Ports[PortNum].husbpd);
+      }
+#endif /* !_LOW_POWER */
+
       UCPD_INSTANCE0_ENABLEIRQ;
 #if defined(_DRP) || defined(_ACCESSORY_SNK)
       _handle->CAD_tToggle_start = HAL_GetTick();
@@ -1207,24 +1221,8 @@ void CAD_Check_HW_SRC(uint8_t PortNum)
   -----------------------------------------------------------------------------
   */
 
-#ifdef _LOW_POWER
-  /* Enable type C state machine */
-  CLEAR_BIT(Ports[PortNum].husbpd->CR, UCPD_CR_CC1TCDIS | UCPD_CR_CC2TCDIS);
-
-  for (int32_t index = 0; index < CAD_DELAY_READ_CC_STATUS; index++)
-  {
-    __DSB();
-  };
-#endif /* _LOW_POWER */
-
   CC1_value = (Ports[PortNum].husbpd->SR & UCPD_SR_TYPEC_VSTATE_CC1) >> UCPD_SR_TYPEC_VSTATE_CC1_Pos;
   CC2_value = (Ports[PortNum].husbpd->SR & UCPD_SR_TYPEC_VSTATE_CC2) >> UCPD_SR_TYPEC_VSTATE_CC2_Pos;
-
-#ifdef _LOW_POWER
-  /* Disable the C state machine */
-  SET_BIT(Ports[PortNum].husbpd->CR, UCPD_CR_CC1TCDIS | UCPD_CR_CC2TCDIS);
-#endif /* _LOW_POWER */
-
 
 #if !defined(_RTOS)
   /* Workaround linked to issue with Ellisys test TD.PC.E5
@@ -1341,8 +1339,8 @@ static uint32_t ManageStateDetached_SRC(uint8_t PortNum)
   if (_handle->CurrentHWcondition == HW_Detachment)
   {
 #ifdef _LOW_POWER
-    /* value returned by a SRC or a SINK */
-    _timing = CAD_DETACH_POLLING; /* 100ms in the sink cases */
+    /* value returned for a SRC */
+    _timing = CAD_DETACH_POLLING;
 #else
     _timing = CAD_INFINITE_TIME;
 #endif /* _LOW_POWER */
@@ -1542,6 +1540,8 @@ static uint32_t ManageStateEMC(uint8_t PortNum, USBPD_CAD_EVENT *pEvent, CCxPin_
         }
         _timing = 0;
       }
+#else
+      _timing = 2;
 #endif /* _DRP */
       break;
   }

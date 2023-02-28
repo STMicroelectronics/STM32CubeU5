@@ -159,7 +159,7 @@ static void  unsecure_sram1(uint32_t offset_start, uint32_t offset_end)
     Error_Handler();
   }
 
-  for (index = 0; index < 768; index++)
+  for (index = 0; index < SRAM1_SIZE / GTZC_MPCBB_BLOCK_SIZE; index++)
   {
     /* clean register on index aligned */
     if (!(index & 0x1f))

@@ -17,7 +17,7 @@
   */
 
 /* Includes --------------------------------------------------------------------------------------------------------- */
-#include "stm32_lpbam.h"
+#include "stm32_ll_lpbam.h"
 
 #ifdef LPBAM_ADC_MODULE_ENABLED
 
@@ -34,16 +34,6 @@
 /* Private define ----------------------------------------------------------------------------------------------------*/
 /* Private macro -----------------------------------------------------------------------------------------------------*/
 /* Private function prototypes ---------------------------------------------------------------------------------------*/
-/** @addtogroup LPBAM_ADC_Basic_Private_Function_Prototypes LPBAM ADC Basic Private Function Prototypes
-  * @{
-  */
-
-extern LPBAM_Status_t LPBAM_ADC_FillStructInfo(LPBAM_ADC_ConfNode_t const *const pConfNode,
-                                               LPBAM_InfoDesc_t     *const pDescInfo);
-/**
-  * @}
-  */
-
 /* Exported functions ------------------------------------------------------------------------------------------------*/
 /** @defgroup LPBAM_ADC_Basic_Exported_Functions LPBAM ADC Basic Exported Functions
   * @{

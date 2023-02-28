@@ -80,7 +80,7 @@ void PORTx_IRQHandler(uint8_t PortNum)
       return;
     }
 
-    /* HRSTDISC : the sent of the hrad reset has been discarded */
+    /* HRSTDISC : the sent of the hard reset has been discarded */
     if (UCPD_SR_HRSTDISC == (_interrupt & UCPD_SR_HRSTDISC))
     {
       LL_UCPD_ClearFlag_TxHRSTDISC(hucpd);
@@ -193,11 +193,12 @@ void PORTx_IRQHandler(uint8_t PortNum)
         USBPD_TIM_Start((TIM_identifier)(2 * PortNum), 150);
         while ((USBPD_TIM_IsExpired((TIM_identifier)(2u * PortNum)) == 0u));
 
-        if (0 != (hucpd->SR & (UCPD_SR_TYPEC_VSTATE_CC1 | UCPD_SR_TYPEC_VSTATE_CC2)))
+        if ((0 != (hucpd->SR & (UCPD_SR_TYPEC_VSTATE_CC1 | UCPD_SR_TYPEC_VSTATE_CC2))) &&
+            (USBPD_POWER_EXPLICITCONTRACT == Ports[PortNum].params->PE_Power))
         {
           /* Switch the power to take the control of VBUS
              when VBUS go under VSAFE5V the sink shall switch ON VBUS in timing < tSrcFRSwap (150us) */
-          BSP_USBPD_PWR_FRSVbusEnable(PortNum);
+          BSP_USBPD_PWR_FRSVBUSEnable(PortNum);
           USBPD_TRACE_Add(USBPD_TRACE_DEBUG, PortNum, 0, "FRS received", 12u);
           Ports[PortNum].cbs.USBPD_HW_IF_TX_FRSReception(PortNum);
         }

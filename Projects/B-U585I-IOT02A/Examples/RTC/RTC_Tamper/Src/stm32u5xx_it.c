@@ -200,7 +200,7 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles Tamper non-secure interrupt.
+  * @brief This function handles Tamper global interrupt.
   */
 void TAMP_IRQHandler(void)
 {

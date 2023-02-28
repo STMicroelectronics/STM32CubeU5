@@ -64,7 +64,6 @@ static int32_t net_state_connected(net_if_handle_t *pnetif, net_state_event_t ev
 static int32_t net_state_disconnecting(net_if_handle_t *pnetif, net_state_event_t event);
 static int32_t net_state_stopping(net_if_handle_t *pnetif, net_state_event_t event);
 static int32_t net_state_connection_lost(net_if_handle_t *pnetif, net_state_event_t event);
-int32_t net_state_manage_event(net_if_handle_t *pnetif_in, net_state_event_t event);
 
 
 static void set_state(net_if_handle_t *pnetif, net_state_t state)
@@ -78,24 +77,25 @@ static void set_state(net_if_handle_t *pnetif, net_state_t state)
 static int32_t net_state_initialized(net_if_handle_t *pnetif, net_state_event_t event)
 {
   int32_t ret = NET_OK;
+
   switch (event)
   {
-    case  NET_EVENT_CMD_START:
+    case NET_EVENT_CMD_START:
       set_state(pnetif, NET_STATE_STARTING);
       ret = pnetif->pdrv->if_start(pnetif);
       if (NET_OK != ret)
       {
-        NET_DBG_ERROR("Interface cannot be started.");
+        NET_DBG_ERROR("Interface cannot be started.\n");
         ret = NET_ERROR_INTERFACE_FAILURE;
       }
       break;
 
-    case  NET_EVENT_CMD_DEINIT:
+    case NET_EVENT_CMD_DEINIT:
       ret = pnetif->pdrv->if_deinit(pnetif);
       set_state(pnetif, NET_STATE_DEINITIALIZED);
       if (NET_OK != ret)
       {
-        NET_DBG_ERROR("Interface cannot be deinitialized.");
+        NET_DBG_ERROR("Interface cannot be de-initialized.\n");
         ret = NET_ERROR_INTERFACE_FAILURE;
       }
       break;
@@ -110,18 +110,19 @@ static int32_t net_state_initialized(net_if_handle_t *pnetif, net_state_event_t 
 static int32_t net_state_starting(net_if_handle_t *pnetif, net_state_event_t event)
 {
   int32_t ret = NET_OK;
+
   switch (event)
   {
-    case  NET_EVENT_INTERFACE_READY:
+    case NET_EVENT_INTERFACE_READY:
       set_state(pnetif, NET_STATE_READY);
       break;
 
-    case  NET_EVENT_CMD_STOP:
+    case NET_EVENT_CMD_STOP:
       set_state(pnetif, NET_STATE_INITIALIZED);
       ret = pnetif->pdrv->if_stop(pnetif);
       if (NET_OK != ret)
       {
-        NET_DBG_ERROR("Interface cannot stop.");
+        NET_DBG_ERROR("Interface cannot stop.\n");
         ret = NET_ERROR_INTERFACE_FAILURE;
       }
       break;
@@ -135,24 +136,25 @@ static int32_t net_state_starting(net_if_handle_t *pnetif, net_state_event_t eve
 static int32_t net_state_ready(net_if_handle_t *pnetif, net_state_event_t event)
 {
   int32_t ret = NET_OK;
+
   switch (event)
   {
-    case  NET_EVENT_CMD_CONNECT:
+    case NET_EVENT_CMD_CONNECT:
       set_state(pnetif, NET_STATE_CONNECTING);
       ret = pnetif->pdrv->if_connect(pnetif);
       if (NET_OK != ret)
       {
-        NET_DBG_ERROR("Interface cannot connect.");
+        NET_DBG_ERROR("Interface cannot connect.\n");
         ret = NET_ERROR_INTERFACE_FAILURE;
       }
       break;
 
-    case  NET_EVENT_CMD_STOP:
+    case NET_EVENT_CMD_STOP:
       set_state(pnetif, NET_STATE_STOPPING);
       ret = pnetif->pdrv->if_stop(pnetif);
       if (NET_OK != ret)
       {
-        NET_DBG_ERROR("Interface cannot stop.");
+        NET_DBG_ERROR("Interface cannot stop.\n");
         ret = NET_ERROR_INTERFACE_FAILURE;
       }
       break;
@@ -167,6 +169,7 @@ static int32_t net_state_ready(net_if_handle_t *pnetif, net_state_event_t event)
 static int32_t net_state_connecting(net_if_handle_t *pnetif, net_state_event_t event)
 {
   int32_t ret = NET_OK;
+
   switch (event)
   {
     case NET_EVENT_IPADDR:
@@ -187,19 +190,20 @@ static int32_t net_state_connecting(net_if_handle_t *pnetif, net_state_event_t e
 static int32_t net_state_connected(net_if_handle_t *pnetif, net_state_event_t event)
 {
   int32_t ret = NET_OK;
+
   switch (event)
   {
-    case  NET_EVENT_CMD_DISCONNECT:
+    case NET_EVENT_CMD_DISCONNECT:
       set_state(pnetif, NET_STATE_DISCONNECTING);
       ret = pnetif->pdrv->if_disconnect(pnetif);
       if (NET_OK != ret)
       {
-        NET_DBG_ERROR("Interface cannot disconnect.");
+        NET_DBG_ERROR("Interface cannot disconnect.\n");
         ret = NET_ERROR_INTERFACE_FAILURE;
       }
       break;
 
-    case  NET_EVENT_LINK_DOWN:
+    case NET_EVENT_LINK_DOWN:
       set_state(pnetif, NET_STATE_CONNECTION_LOST);
       break;
 
@@ -217,9 +221,10 @@ static int32_t net_state_connected(net_if_handle_t *pnetif, net_state_event_t ev
 static int32_t net_state_disconnecting(net_if_handle_t *pnetif, net_state_event_t event)
 {
   int32_t ret = NET_OK;
+
   switch (event)
   {
-    case  NET_EVENT_INTERFACE_READY:
+    case NET_EVENT_INTERFACE_READY:
       set_state(pnetif, NET_STATE_READY);
       break;
 
@@ -233,9 +238,10 @@ static int32_t net_state_disconnecting(net_if_handle_t *pnetif, net_state_event_
 static int32_t net_state_stopping(net_if_handle_t *pnetif, net_state_event_t event)
 {
   int32_t ret = NET_OK;
+
   switch (event)
   {
-    case  NET_EVENT_INTERFACE_INITIALIZED:
+    case NET_EVENT_INTERFACE_INITIALIZED:
       set_state(pnetif, NET_STATE_INITIALIZED);
       break;
 
@@ -249,6 +255,7 @@ static int32_t net_state_stopping(net_if_handle_t *pnetif, net_state_event_t eve
 static int32_t net_state_connection_lost(net_if_handle_t *pnetif, net_state_event_t event)
 {
   int32_t ret = NET_OK;
+
   switch (event)
   {
     case NET_EVENT_LINK_UP:
@@ -262,56 +269,57 @@ static int32_t net_state_connection_lost(net_if_handle_t *pnetif, net_state_even
 }
 
 
-
-int32_t net_state_manage_event(net_if_handle_t *pnetif_in, net_state_event_t event)
+int32_t net_state_manage_event(net_if_handle_t *pnetif, net_state_event_t state_to)
 {
   int32_t ret;
-  net_if_handle_t *pnetif;
+  net_if_handle_t *const p_netif = netif_check(pnetif);
 
-  pnetif = netif_check(pnetif_in);
-  if (pnetif == NULL)
+  if (p_netif == NULL)
   {
-    NET_DBG_ERROR("Invalid interface.");
+    NET_DBG_ERROR("Invalid interface.\n");
     ret = NET_ERROR_PARAMETER;
   }
   else
   {
 #ifdef DEBUGSTATE
-    printf("In state %s , received event %s\n", statestr[pnetif->state], eventstr[event]);
+    printf("In state %s, received event %s\n", statestr[p_netif->state], eventstr[state_to]);
 #endif /* DEBUGSTATE */
-    switch (pnetif->state)
+
+    switch (p_netif->state)
     {
-      case  NET_STATE_INITIALIZED:
-        ret = net_state_initialized(pnetif, event);
+      case NET_STATE_INITIALIZED:
+        ret = net_state_initialized(p_netif, state_to);
         break;
 
-      case  NET_STATE_STARTING:
-        ret = net_state_starting(pnetif, event);
+      case NET_STATE_STARTING:
+        ret = net_state_starting(p_netif, state_to);
         break;
 
-      case  NET_STATE_READY:
-        ret = net_state_ready(pnetif, event);
+      case NET_STATE_READY:
+        ret = net_state_ready(p_netif, state_to);
         break;
 
-      case  NET_STATE_CONNECTING:
-        ret = net_state_connecting(pnetif, event);
+      case NET_STATE_CONNECTING:
+        ret = net_state_connecting(p_netif, state_to);
         break;
 
-      case  NET_STATE_CONNECTED:
-        ret = net_state_connected(pnetif, event);
-        break;
-      case  NET_STATE_DISCONNECTING:
-        ret = net_state_disconnecting(pnetif, event);
+      case NET_STATE_CONNECTED:
+        ret = net_state_connected(p_netif, state_to);
         break;
 
-      case  NET_STATE_CONNECTION_LOST:
-        ret = net_state_connection_lost(pnetif, event);
+      case NET_STATE_DISCONNECTING:
+        ret = net_state_disconnecting(p_netif, state_to);
         break;
 
-      case  NET_STATE_STOPPING:
-        ret = net_state_stopping(pnetif, event);
+      case NET_STATE_CONNECTION_LOST:
+        ret = net_state_connection_lost(p_netif, state_to);
         break;
 
+      case NET_STATE_STOPPING:
+        ret = net_state_stopping(p_netif, state_to);
+        break;
+
+      case NET_STATE_DEINITIALIZED:
       default:
         ret = NET_ERROR_INVALID_STATE;
         break;

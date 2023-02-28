@@ -80,6 +80,8 @@ HAL_StatusTypeDef MX_ADCQueue_Config(void)
   /* Insert ADCNode to Queue */
   ret |= HAL_DMAEx_List_InsertNode_Tail(&ADCQueue, &ADCNode);
 
+  ret |= HAL_DMAEx_List_SetCircularMode(&ADCQueue);
+
    return ret;
 }
 

@@ -20,7 +20,7 @@
 #include "tfm_secure_api.h"
 #include "flash_layout.h"
 
-#if !defined(MCUBOOT_PRIMARY_ONLY) && !defined(MCUBOOT_OVERWRITE_ONLY)
+#if !defined(MCUBOOT_PRIMARY_ONLY)
 #define MAX_IMAGE_INFO_LENGTH  (MCUBOOT_IMAGE_NUMBER *(sizeof(struct image_version) + \
                                   SHARED_DATA_ENTRY_HEADER_SIZE))
 

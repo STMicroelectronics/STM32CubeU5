@@ -64,7 +64,7 @@ extern void Error_Handler(void);
 MCUBOOT_LOG_MODULE_DECLARE(mcuboot);
 
 static struct boot_loader_state boot_data;
-
+void boot_status_reset(struct boot_status *bs);
 #if (BOOT_IMAGE_NUMBER > 1)
 #define IMAGES_ITER(x) for ((x) = 0; (x) < BOOT_IMAGE_NUMBER; ++(x))
 #else
@@ -659,8 +659,18 @@ boot_validate_slot(struct boot_loader_state *state, int slot,
     }
 #endif
 
+    /* Check header, if not valid, do not erase slot as slot may be shared
+     * with other images using another magic. Addtionally, no need to perform
+     * image check in this case if header is not valid.
+     */
+    if (!boot_is_header_valid(hdr, fap))
+    {
+        fih_rc = fih_int_encode(1);
+        goto out;
+    }
+
     FIH_CALL(boot_image_check, fih_rc, state, hdr, fap, bs);
-    if (!boot_is_header_valid(hdr, fap) || fih_not_eq(fih_rc, FIH_SUCCESS)) {
+    if (fih_not_eq(fih_rc, FIH_SUCCESS)) {
         if ((slot != BOOT_PRIMARY_SLOT) || ARE_SLOTS_EQUIVALENT()) {
             flash_area_erase(fap, 0, fap->fa_size);
             /* Image is invalid, erase it to prevent further unnecessary
@@ -870,9 +880,9 @@ boot_copy_region(struct boot_loader_state *state,
                     /* do not decrypt header */
 #if defined(MCUBOOT_PRIMARY_ONLY)
                 /* remove encryption flag in primary only */
-                BOOT_LOG_INF("ih_flags %x",((struct image_header *)buf)->ih_flags);
+                BOOT_LOG_INF("ih_flags %x",(unsigned int)((struct image_header *)buf)->ih_flags);
                 ((struct image_header *)buf)->ih_flags &=~IMAGE_F_ENCRYPTED;
-                BOOT_LOG_INF("ih_flags %x",((struct image_header *)buf)->ih_flags);
+                BOOT_LOG_INF("ih_flags %x",(unsigned int)((struct image_header *)buf)->ih_flags);
 #endif
                 blk_off = 0;
                 blk_sz = chunk_sz - hdr->ih_hdr_size;
@@ -2421,7 +2431,7 @@ boot_load_image_to_sram(struct boot_loader_state *state, uint32_t slot,
 
         rc = boot_verify_ram_load_address(*img_dst, *img_sz);
         if (rc != 0) {
-            BOOT_LOG_INF("Image RAM load address 0x%x is invalid.", *img_dst);
+            BOOT_LOG_INF("Image RAM load address 0x%lx is invalid.", *img_dst);
             return rc;
         }
 
@@ -2430,9 +2440,9 @@ boot_load_image_to_sram(struct boot_loader_state *state, uint32_t slot,
          */
         rc = boot_copy_image_to_sram(slot, *img_dst, *img_sz);
         if (rc != 0) {
-            BOOT_LOG_INF("RAM loading to 0x%x is failed.", *img_dst);
+            BOOT_LOG_INF("RAM loading to 0x%lx is failed.", *img_dst);
         } else {
-            BOOT_LOG_INF("RAM loading to 0x%x is succeeded.", *img_dst);
+            BOOT_LOG_INF("RAM loading to 0x%lx is succeeded.", *img_dst);
         }
     } else {
         /* Only images that support IMAGE_F_RAM_LOAD are allowed if
@@ -2457,7 +2467,7 @@ boot_load_image_to_sram(struct boot_loader_state *state, uint32_t slot,
 static inline int
 boot_remove_image_from_sram(uint32_t img_dst, uint32_t img_sz)
 {
-    BOOT_LOG_INF("Removing image from SRAM at address 0x%x", img_dst);
+    BOOT_LOG_INF("Removing image from SRAM at address 0x%lx", img_dst);
     memset((void*)img_dst, 0, img_sz);
 
     return 0;

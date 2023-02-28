@@ -22,10 +22,33 @@
 
 /* Private variables -------------------------------------------------------------------------------------------------*/
 /* LPBAM variables declaration */
-static LPBAM_GPIO_WritePinSeqFullDesc_t WritePinSequence_0_Desc;
-static LPBAM_GPIO_WritePinSeqFullDesc_t WritePinSequence_1_Desc;
-static LPBAM_DMA_StartFullDesc_t Start_1_Desc;
-static LPBAM_DMA_StartFullDesc_t Start_2_Desc;
+/* USER CODE BEGIN SwitchQ_TwoQExec_Descs 0 */
+
+/* USER CODE END SwitchQ_TwoQExec_Descs 0 */
+
+/* USER CODE BEGIN Slave_Toggle_IO0_Q_WritePinSequence_0_Desc */
+
+/* USER CODE END Slave_Toggle_IO0_Q_WritePinSequence_0_Desc */
+static LPBAM_GPIO_WritePinSeqFullDesc_t Slave_Toggle_IO0_Q_WritePinSequence_0_Desc;
+
+/* USER CODE BEGIN Slave_Toggle_IO1_Q_WritePinSequence_1_Desc */
+
+/* USER CODE END Slave_Toggle_IO1_Q_WritePinSequence_1_Desc */
+static LPBAM_GPIO_WritePinSeqFullDesc_t Slave_Toggle_IO1_Q_WritePinSequence_1_Desc;
+
+/* USER CODE BEGIN Master_SwitchQueues_Q_Start_1_Desc */
+
+/* USER CODE END Master_SwitchQueues_Q_Start_1_Desc */
+static LPBAM_DMA_StartFullDesc_t Master_SwitchQueues_Q_Start_1_Desc;
+
+/* USER CODE BEGIN Master_SwitchQueues_Q_Start_2_Desc */
+
+/* USER CODE END Master_SwitchQueues_Q_Start_2_Desc */
+static LPBAM_DMA_StartFullDesc_t Master_SwitchQueues_Q_Start_2_Desc;
+
+/* USER CODE BEGIN SwitchQ_TwoQExec_Descs 1 */
+
+/* USER CODE END SwitchQ_TwoQExec_Descs 1 */
 
 /* Exported variables ------------------------------------------------------------------------------------------------*/
 /* LPBAM queues declaration */
@@ -94,14 +117,14 @@ static void MX_Slave_Toggle_IO0_Q_Build(void)
   pWritePinSeqFull_LPGPIO.Pin = LPBAM_GPIO_PIN_0;
   pWritePinSeqFull_LPGPIO.Size = 2;
   pWritePinSeqFull_LPGPIO.pData = (uint32_t*)&ToggleIO0_Buffer[0];
-  if (ADV_LPBAM_GPIO_WritePinSequence_SetFullQ(LPGPIO1, &pDMAListInfo_LPGPIO, &pWritePinSeqFull_LPGPIO, &WritePinSequence_0_Desc, &Slave_Toggle_IO0_Q) != LPBAM_OK)
+  if (ADV_LPBAM_GPIO_WritePinSequence_SetFullQ(LPGPIO1, &pDMAListInfo_LPGPIO, &pWritePinSeqFull_LPGPIO, &Slave_Toggle_IO0_Q_WritePinSequence_0_Desc, &Slave_Toggle_IO0_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_LPGPIO.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_SINGLE_BURST_TRANSFER;
   pTrigConfig_LPGPIO.TriggerConfig.TriggerPolarity = LPBAM_DMA_TRIG_POLARITY_RISING;
   pTrigConfig_LPGPIO.TriggerConfig.TriggerSelection = LPBAM_LPDMA1_TRIGGER_LPTIM3_CH1;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPGPIO, LPBAM_GPIO_WRITEPINSEQ_FULLQ_DATA_NODE, &WritePinSequence_0_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPGPIO, LPBAM_GPIO_WRITEPINSEQ_FULLQ_DATA_NODE, &Slave_Toggle_IO0_Q_WritePinSequence_0_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -109,7 +132,7 @@ static void MX_Slave_Toggle_IO0_Q_Build(void)
   /**
     * Set circular mode
     */
-  if (ADV_LPBAM_Q_SetCircularMode(&WritePinSequence_0_Desc, LPBAM_GPIO_WRITEPINSEQ_FULLQ_DATA_NODE, &Slave_Toggle_IO0_Q) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetCircularMode(&Slave_Toggle_IO0_Q_WritePinSequence_0_Desc, LPBAM_GPIO_WRITEPINSEQ_FULLQ_DATA_NODE, &Slave_Toggle_IO0_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -135,14 +158,14 @@ static void MX_Slave_Toggle_IO1_Q_Build(void)
   pWritePinSeqFull_LPGPIO.Pin = LPBAM_GPIO_PIN_1;
   pWritePinSeqFull_LPGPIO.Size = 2;
   pWritePinSeqFull_LPGPIO.pData = (uint32_t*)&ToggleIO1_Buffer[0];
-  if (ADV_LPBAM_GPIO_WritePinSequence_SetFullQ(LPGPIO1, &pDMAListInfo_LPGPIO, &pWritePinSeqFull_LPGPIO, &WritePinSequence_1_Desc, &Slave_Toggle_IO1_Q) != LPBAM_OK)
+  if (ADV_LPBAM_GPIO_WritePinSequence_SetFullQ(LPGPIO1, &pDMAListInfo_LPGPIO, &pWritePinSeqFull_LPGPIO, &Slave_Toggle_IO1_Q_WritePinSequence_1_Desc, &Slave_Toggle_IO1_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_LPGPIO.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_SINGLE_BURST_TRANSFER;
   pTrigConfig_LPGPIO.TriggerConfig.TriggerPolarity = LPBAM_DMA_TRIG_POLARITY_RISING;
   pTrigConfig_LPGPIO.TriggerConfig.TriggerSelection = LPBAM_LPDMA1_TRIGGER_LPTIM3_CH1;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPGPIO, LPBAM_GPIO_WRITEPINSEQ_FULLQ_DATA_NODE, &WritePinSequence_1_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPGPIO, LPBAM_GPIO_WRITEPINSEQ_FULLQ_DATA_NODE, &Slave_Toggle_IO1_Q_WritePinSequence_1_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -150,7 +173,7 @@ static void MX_Slave_Toggle_IO1_Q_Build(void)
   /**
     * Set circular mode
     */
-  if (ADV_LPBAM_Q_SetCircularMode(&WritePinSequence_1_Desc, LPBAM_GPIO_WRITEPINSEQ_FULLQ_DATA_NODE, &Slave_Toggle_IO1_Q) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetCircularMode(&Slave_Toggle_IO1_Q_WritePinSequence_1_Desc, LPBAM_GPIO_WRITEPINSEQ_FULLQ_DATA_NODE, &Slave_Toggle_IO1_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -175,14 +198,14 @@ static void MX_Master_SwitchQueues_Q_Build(void)
   pDMAListInfo_LPDMA.pInstance = LPDMA1;
   pStartFull_LPDMA.WakeupIT = LPBAM_DMA_IT_NONE;
   pStartFull_LPDMA.HeadQAddress = (uint32_t)Slave_Toggle_IO0_Q.Head;
-  if (ADV_LPBAM_DMA_Start_SetFullQ(LPDMA1_Channel3, &pDMAListInfo_LPDMA, &pStartFull_LPDMA, &Start_1_Desc, &Master_SwitchQueues_Q) != LPBAM_OK)
+  if (ADV_LPBAM_DMA_Start_SetFullQ(LPDMA1_Channel3, &pDMAListInfo_LPDMA, &pStartFull_LPDMA, &Master_SwitchQueues_Q_Start_1_Desc, &Master_SwitchQueues_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_LPDMA.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_BLOCK_TRANSFER;
   pTrigConfig_LPDMA.TriggerConfig.TriggerPolarity = LPBAM_DMA_TRIG_POLARITY_RISING;
   pTrigConfig_LPDMA.TriggerConfig.TriggerSelection = LPBAM_LPDMA1_TRIGGER_LPTIM1_CH1;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPDMA, LPBAM_DMA_START_FULLQ_CONFIG_NODE, &Start_1_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPDMA, LPBAM_DMA_START_FULLQ_CONFIG_NODE, &Master_SwitchQueues_Q_Start_1_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -191,11 +214,11 @@ static void MX_Master_SwitchQueues_Q_Build(void)
     * Master_SwitchQueues queue Start_2 build
     */
   pStartFull_LPDMA.HeadQAddress = (uint32_t)Slave_Toggle_IO1_Q.Head;
-  if (ADV_LPBAM_DMA_Start_SetFullQ(LPDMA1_Channel3, &pDMAListInfo_LPDMA, &pStartFull_LPDMA, &Start_2_Desc, &Master_SwitchQueues_Q) != LPBAM_OK)
+  if (ADV_LPBAM_DMA_Start_SetFullQ(LPDMA1_Channel3, &pDMAListInfo_LPDMA, &pStartFull_LPDMA, &Master_SwitchQueues_Q_Start_2_Desc, &Master_SwitchQueues_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPDMA, LPBAM_DMA_START_FULLQ_CONFIG_NODE, &Start_2_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPDMA, LPBAM_DMA_START_FULLQ_CONFIG_NODE, &Master_SwitchQueues_Q_Start_2_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -203,7 +226,7 @@ static void MX_Master_SwitchQueues_Q_Build(void)
   /**
     * Set circular mode
     */
-  if (ADV_LPBAM_Q_SetCircularMode(&Start_1_Desc, LPBAM_DMA_START_FULLQ_CONFIG_NODE, &Master_SwitchQueues_Q) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetCircularMode(&Master_SwitchQueues_Q_Start_1_Desc, LPBAM_DMA_START_FULLQ_CONFIG_NODE, &Master_SwitchQueues_Q) != LPBAM_OK)
   {
     Error_Handler();
   }

@@ -34,7 +34,7 @@
 /*  FUNCTION                                               RELEASE        */ 
 /*                                                                        */ 
 /*    _ux_host_stack_endpoint_instance_create             PORTABLE C      */ 
-/*                                                           6.1.7        */
+/*                                                           6.1.10       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -78,6 +78,9 @@
 /*                                            filled default endpoint     */
 /*                                            request endpoint pointer,   */
 /*                                            resulting in version 6.1.7  */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            added standalone support,   */
+/*                                            resulting in version 6.1.10 */
 /*                                                                        */
 /**************************************************************************/
 UINT  _ux_host_stack_endpoint_instance_create(UX_ENDPOINT *endpoint)
@@ -141,7 +144,7 @@ UCHAR           endpoint_type;
     }
 
     /* Create a semaphore for this endpoint to be attached to its transfer request.  */
-    status =  _ux_utility_semaphore_create(&endpoint -> ux_endpoint_transfer_request.ux_transfer_request_semaphore,
+    status =  _ux_host_semaphore_create(&endpoint -> ux_endpoint_transfer_request.ux_transfer_request_semaphore,
                                                                 "ux_transfer_request_semaphore", 0);
 
     /* Check status.  */
@@ -151,6 +154,8 @@ UCHAR           endpoint_type;
         /* If trace is enabled, register this object.  */
         UX_TRACE_OBJECT_REGISTER(UX_TRACE_HOST_OBJECT_TYPE_ENDPOINT, endpoint, 0, 0, 0)
 
+        /* By default transfer request contained is for endpoint itself.  */
+        endpoint -> ux_endpoint_transfer_request.ux_transfer_request_endpoint = endpoint;
     }
 
     /* Return completion status.  */

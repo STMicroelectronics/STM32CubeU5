@@ -1,12 +1,11 @@
 /**
   ******************************************************************************
   * @file    test_echo_server.c
-  * @author  MCD Application Team
   * @brief   Test a echo with a server.
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -25,7 +24,7 @@
 
 /* Using the ARM Mbed echo server. */
 #define REMOTE_IP_ADDR     "52.215.34.155"
-#define REMOTE_PORT        7
+#define REMOTE_PORT        ((uint16_t)(7))
 
 #define TRANSFER_SIZE      2000
 #define ITERATION_COUNT    10
@@ -34,42 +33,46 @@ static uint8_t buffer_out[TRANSFER_SIZE + ITERATION_COUNT];
 static uint8_t buffer_in[TRANSFER_SIZE + ITERATION_COUNT];
 
 
-int32_t test_echo_server(int32_t argc, char **argv);
-
 static void fillbuffer(uint8_t *buff, uint32_t n);
 static uint32_t checkbuffer(uint8_t *buff, uint32_t n, uint32_t offset);
-static void EchoServerTest(uint32_t loop, uint32_t n);
+static void EchoServerTest(uint32_t Loop, uint32_t n);
 
 
 static void fillbuffer(uint8_t *buff, uint32_t n)
 {
   for (uint32_t i = 0; i < n; i++)
   {
-    buff[i] = (uint8_t)i;
+    *buff++ = (uint8_t)i;
   }
 }
+
 
 static uint32_t checkbuffer(uint8_t *buff, uint32_t n, uint32_t offset)
 {
   uint32_t error_count = 0;
+
   for (uint32_t i = 0; i < n; i++)
   {
     if (buff[i] != ((i + offset) & 0xff))
     {
-      MSG_ERROR("Received data are different from data sent %"PRId32" <> %d at index %"PRId32"\n", i & 0xff, buff[i], i);
+      MSG_ERROR("Received data are different from data sent "
+                "\"%" PRIu32 "\" <> \"%" PRIu32 "\" at index %" PRIu32 "\n",
+                i & 0xff, (uint32_t)buff[i], i);
       error_count++;
     }
   }
   return error_count;
 }
 
-static void EchoServerTest(uint32_t loop, uint32_t n)
-{
-  struct sockaddr_in addr = {0};
-  addr.sin_port = htons(REMOTE_PORT);
-  addr.sin_family = AF_INET;
 
-  const INT convert_status = inet_aton(REMOTE_IP_ADDR, &addr.sin_addr);
+static void EchoServerTest(uint32_t Loop, uint32_t n)
+{
+  struct sockaddr_in s_addr_in = {0};
+  const INT domain = AF_INET;
+  s_addr_in.sin_port = htons(REMOTE_PORT);
+  s_addr_in.sin_family = domain;
+
+  const INT convert_status = inet_aton(REMOTE_IP_ADDR, &s_addr_in.sin_addr);
 
   if (NX_SOC_ERROR == convert_status)
   {
@@ -77,7 +80,7 @@ static void EchoServerTest(uint32_t loop, uint32_t n)
     return;
   }
 
-  const INT sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+  const INT sock = socket(domain, SOCK_STREAM, IPPROTO_TCP);
 
   if (NX_SOC_ERROR == sock)
   {
@@ -102,82 +105,87 @@ static void EchoServerTest(uint32_t loop, uint32_t n)
     }
   }
 
-  MSG_INFO("- Trying to connect to echo server %s\n", REMOTE_IP_ADDR);
-
-  const INT connect_status = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
-
-  if (NX_SOC_OK == connect_status)
   {
-    uint32_t transfer = 0;
-    uint32_t error_count = 0;
-    MSG_INFO("- Device connected to the %s\n", REMOTE_IP_ADDR);
-    MSG_INFO("- Starting transfer ");
+    MSG_INFO("- Trying to connect to echo server %s\n", REMOTE_IP_ADDR);
 
-    fillbuffer(buffer_out, n + loop);
+    const INT connect_status = connect(sock, (struct sockaddr *)&s_addr_in, sizeof(s_addr_in));
 
-    const uint32_t tstart = HAL_GetTick();
-    uint32_t tstop = HAL_GetTick();
-
-    for (uint32_t i = 0; i < loop; i++)
+    if (NX_SOC_OK == connect_status)
     {
+      uint32_t transfer = 0;
+      uint32_t error_count = 0;
+      MSG_INFO("- Device connected to the %s\n", REMOTE_IP_ADDR);
+      MSG_INFO("- Starting transfer ");
+
+      fillbuffer(buffer_out, n + Loop);
+
+      const uint32_t tstart = HAL_GetTick();
+      uint32_t tstop = HAL_GetTick();
+
+      for (uint32_t i = 0; i < Loop; i++)
       {
-        uint32_t transfer_out = 0;
-        do
         {
-          INT count_done = send(sock, (const CHAR *)&buffer_out[i + transfer_out], (INT)(n - transfer_out), 0);
-
-          MSG_INFO(".");
-          /*MSG_INFO("%"PRId32"", (int32_t)count_done);*/
-
-          if (count_done < 0)
+          uint32_t transfer_out = 0;
+          do
           {
-            MSG_INFO("Failed to send data to echo server, try again %"PRId32" : ", (int32_t)count_done);
-            count_done = 0;
-          }
-          transfer_out += (uint32_t)count_done;
-        } while (transfer_out < n);
+            INT count_done = send(sock, (const CHAR *)&buffer_out[i + transfer_out], (INT)(n - transfer_out), 0);
 
-        /* Update cumulative number with data that have been sent.*/
-        transfer += transfer_out;
+            MSG_INFO(".");
+            /*MSG_INFO("%" PRId32 "", (int32_t)count_done);*/
+
+            if (count_done < 0)
+            {
+              MSG_INFO("Failed to send data to echo server (%" PRId32 "), try again\n", (int32_t)count_done);
+              count_done = 0;
+            }
+            transfer_out += (uint32_t)count_done;
+          } while (transfer_out < n);
+
+          /* Update cumulative number with data that have been sent. */
+          transfer += transfer_out;
+        }
+
+        /* Reset the buffer of data reception. */
+        memset(buffer_in, 0x00, sizeof(buffer_in));
+
+        {
+          uint32_t transfer_in = 0;
+          do
+          {
+            INT count_done = recv(sock, &buffer_in[transfer_in], (INT)(n - transfer_in), 0);
+            if (count_done < 0)
+            {
+              MSG_ERROR("\nReceive failed with %" PRId32 "\n", (int32_t)count_done);
+              goto end;
+            }
+            transfer_in += (uint32_t)count_done;
+          } while (transfer_in < n);
+
+          tstop = HAL_GetTick();
+
+          error_count = checkbuffer(buffer_in, n, i);
+
+          MSG_INFO("x");
+
+          /* Update cumulative number with data that have been received. */
+          transfer += transfer_in;
+        }
       }
-
-      /* Reset the buffer of data reception. */
-      memset(buffer_in, 0x00, sizeof(buffer_in));
-
+      if (error_count == 0)
       {
-        uint32_t transfer_in = 0;
-        do
-        {
-          INT count_done = recv(sock, &buffer_in[transfer_in], (INT)(n - transfer_in), 0);
-          if (count_done < 0)
-          {
-            MSG_ERROR("\nReceive failed with %"PRId32"\n", (int32_t)count_done);
-            goto end;
-          }
-          transfer_in += (uint32_t)count_done;
-        } while (transfer_in < n);
-
-        tstop = HAL_GetTick();
-
-        error_count = checkbuffer(buffer_in, n, i);
-        MSG_INFO("x");
-        /* Update cumulative number with data that have been received.*/
-        transfer += transfer_in;
+        MSG_INFO("\nSuccessfull Echo Transfer and receive %" PRId32 " x %" PRId32 " with %" PRId32 " bytes"\
+                 " in %" PRId32 " ms, br = %" PRId32 " Kbit/sec\n",
+                 Loop, n, transfer, tstop - tstart, (transfer * 8) / (tstop - tstart));
       }
-    }
-    if (error_count == 0)
-    {
-      MSG_INFO("\nSuccessfull Echo Transfer and receive %"PRId32" x %"PRId32" with %"PRId32" bytes in %"PRId32" ms, br = %"PRId32" Kbit/sec\n",
-               loop, n, transfer, tstop - tstart, (transfer * 8) / (tstop - tstart));
+      else
+      {
+        MSG_INFO("\nError: Echo transfer, find %" PRId32 " different bytes\n", error_count);
+      }
     }
     else
     {
-      MSG_INFO("\nError: Echo transfer, find %"PRId32" different bytes\n", error_count);
+      MSG_ERROR("Failed to connect to %s (%" PRId32 ")\n", REMOTE_IP_ADDR, (int32_t)connect_status);
     }
-  }
-  else
-  {
-    MSG_ERROR("Failed to connect to %s (%"PRId32")\n", REMOTE_IP_ADDR, (int32_t)connect_status);
   }
 
 end:
@@ -185,14 +193,24 @@ end:
 }
 
 
-int32_t test_echo_server(int32_t argc, char **argv)
+int32_t test_echo_server(int32_t argc, char *argv[])
 {
-  UNUSED(argc);
-  UNUSED(argv);
+  int count = 1;
 
-  for (uint32_t transfer_size = 1000; transfer_size <= TRANSFER_SIZE; transfer_size += 200)
+  if (argc == 2)
   {
-    EchoServerTest(ITERATION_COUNT, transfer_size);
+    sscanf(argv[1], "%i", &count);
   }
+
+  for (int i = 1; i <= count; i++)
+  {
+    MSG_INFO("\n\n*************** %" PRIi32 "/%" PRIi32 " ***************\n", (int32_t)i, (int32_t)count);
+
+    for (uint32_t transfer_size = 1000; transfer_size <= TRANSFER_SIZE; transfer_size += 200)
+    {
+      EchoServerTest(ITERATION_COUNT, transfer_size);
+    }
+  }
+
   return 0;
 }

@@ -35,7 +35,7 @@
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _fx_utility_logical_sector_cache_entry_read         PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.1.10       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    William E. Lamie, Microsoft Corporation                             */
@@ -75,6 +75,9 @@
 /*                                            added conditional to        */
 /*                                            disable cache,              */
 /*                                            resulting in version 6.1    */
+/*  01-31-2022     William E. Lamie         Modified comment(s), fixed    */
+/*                                            errors without cache,       */
+/*                                            resulting in version 6.1.10 */
 /*                                                                        */
 /**************************************************************************/
 FX_CACHED_SECTOR  *_fx_utility_logical_sector_cache_entry_read(FX_MEDIA *media_ptr, ULONG64 logical_sector,

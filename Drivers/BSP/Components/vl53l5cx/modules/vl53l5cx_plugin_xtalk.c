@@ -87,10 +87,10 @@ static uint8_t _vl53l5cx_poll_for_answer(
 			status |= VL53L5CX_MCU_ERROR;		
 			break;
 		}
-                else
-                {
-                  timeout++;
-                }
+		else
+		{
+		  timeout++;
+		}
 	}while ((p_dev->temp_buffer[0x1]) != expected_value);
         
 	return status;
@@ -106,8 +106,8 @@ static uint8_t _vl53l5cx_program_output_config(
 {
 	uint8_t resolution, status = VL53L5CX_STATUS_OK;
 	uint32_t i;
-	uint64_t header_config;
 	union Block_header *bh_ptr;
+	uint32_t header_config[2] = {0, 0};
 
 	status |= vl53l5cx_get_resolution(p_dev, &resolution);
 	p_dev->data_read_size = 0;
@@ -171,22 +171,21 @@ static uint8_t _vl53l5cx_program_output_config(
 		{
 			p_dev->data_read_size += bh_ptr->size;
 		}
-
 		p_dev->data_read_size += (uint32_t)4;
 	}
-	p_dev->data_read_size += (uint32_t)20;
+	p_dev->data_read_size += (uint32_t)24;
 
 	status |= vl53l5cx_dci_write_data(p_dev,
 			(uint8_t*)&(output), 
                         VL53L5CX_DCI_OUTPUT_LIST, (uint16_t)sizeof(output));
         
-        header_config = (uint64_t)i + (uint64_t)1;
-	header_config = header_config << 32;
-	header_config += (uint64_t)p_dev->data_read_size;
+	header_config[0] = p_dev->data_read_size;
+	header_config[1] = i + (uint32_t)1;
 
-	status |= vl53l5cx_dci_write_data(p_dev, (uint8_t*)&(header_config),
-			VL53L5CX_DCI_OUTPUT_CONFIG, 
-                        (uint16_t)sizeof(header_config));
+	status |= vl53l5cx_dci_write_data(p_dev,
+			(uint8_t*)&(header_config), VL53L5CX_DCI_OUTPUT_CONFIG,
+			(uint16_t)sizeof(header_config));
+
 	status |= vl53l5cx_dci_write_data(p_dev, (uint8_t*)&(output_bh_enable),
 			VL53L5CX_DCI_OUTPUT_ENABLES, 
                         (uint16_t)sizeof(output_bh_enable));
@@ -273,6 +272,7 @@ uint8_t vl53l5cx_calibrate_xtalk(
 		do {
 			status |= RdMulti(&(p_dev->platform), 
                                           0x0, p_dev->temp_buffer, 4);
+
 			if(p_dev->temp_buffer[0] != VL53L5CX_STATUS_ERROR)
 			{
 				/* Coverglass too good for Xtalk calibration */

@@ -26,9 +26,9 @@
 <p>The application starts by calling the ThreadX’s initialization routine which executes the main thread that handles file operations. At this stage,</p>
 <p>all FileX resources are created, the MX25LM51245G driver is initialized and a single thread is created:</p>
 <ul>
-<li>fx_thread (Prio : 10; PreemptionPrio : 10) used for file operations.</li>
+<li>fx_app_thread (Prio : 10; PreemptionPrio : 10) used for file operations.</li>
 </ul>
-<p>The fx_thread will start by formatting the NOR Flash using FileX services. The resulting file system is a FAT32 compatible, with 512 bytes per sector</p>
+<p>The fx_app_thread will start by formatting the NOR Flash using FileX services. The resulting file system is a FAT32 compatible, with 512 bytes per sector</p>
 <p>and 8 sectors per cluster. Optionally, the NOR flash can be erased prior to format, this allows LevelX and FileX to create a clean FAT FileSystem.</p>
 <p>Chip erase operation takes considerable time to finish whole flash reset, therefore it is disabled by default. To enable it, please set the</p>
 <p>following flags in “lx_stm32_ospi_driver.h”:</p>
@@ -41,10 +41,10 @@
 <p>Through all the steps, FileX/LevelX services are called to print the flash size available before and after the example file is written into the flash.</p>
 <p>The number of occupied sectors is also shown.</p>
 <h4 id="expected-success-behavior"><b>Expected success behavior</b></h4>
-<p>Successful operation is marked by a toggeling green led light.</p>
+<p>Successful operation is marked by a toggling green led light.</p>
 <p>Also, information regarding the total and available size of the flash media is printed to the serial port.</p>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
-<p>On failure, the red led starts toggeling while the green led is switched off.</p>
+<p>On failure, the red led starts toggling while the green led is switched off.</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
 <p>None</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
@@ -54,7 +54,7 @@
 <h4 id="threadx-usage-hints"><b>ThreadX usage hints</b></h4>
 <ul>
 <li>ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.</li>
-<li>ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the “tx_user.h”, the “TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in “tx_initialize_low_level.s” file too.</li>
+<li>ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the “tx_user.h”, the “TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in “tx_initialize_low_level.S” file too.</li>
 <li>ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL) should be done either at the beginning of the application or inside the thread entry functions.</li>
 <li>ThreadX offers the “tx_application_define()” function, that is automatically called by the tx_kernel_enter() API. It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools…) but it should not in any way contain a system API call (HAL).</li>
 <li>Using dynamic memory allocation requires to apply some changes to the linker file. ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function, using the “first_unused_memory” argument. This require changes in the linker files to expose this memory location.
@@ -66,7 +66,7 @@
 <li>For MDK-ARM:</li>
 </ul>
 <pre><code>either define the RW_IRAM1 region in the &quot;.sct&quot; file
-or modify the line below in &quot;tx_low_level_initilize.s to match the memory region being used
+or modify the line below in &quot;tx_initialize_low_level.S to match the memory region being used
     LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|</code></pre>
 <ul>
 <li>For STM32CubeIDE add the following section into the .ld file:</li>
@@ -84,7 +84,7 @@ The ._threadx_heap must be located between the .bss and the ._user_heap_stack se
 Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).  
 Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code></pre>
 <ul>
-<li>The “tx_initialize_low_level.s” should be also modified to enable the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
+<li>The “tx_initialize_low_level.S” should be also modified to enable the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 </ul></li>
 </ul>
 <h4 id="filexlevelx-usage-hints"><b>FileX/LevelX usage hints</b></h4>
@@ -92,7 +92,7 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <li>When calling the fx_media_format() API, it is highly recommended to understand all the parameters used by the API to correctly generate a valid filesystem.</li>
 </ul>
 <h3 id="keywords"><b>Keywords</b></h3>
-<p>RTOS, ThreadX, FileX, LevelX, File System, NOR, OCTO SPI, FAT32</p>
+<p>RTOS, ThreadX, FileX, LevelX, File System, NOR, OCTOSPI, FAT32</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
 <li>This application runs on STM32U575/85xx devices.</li>

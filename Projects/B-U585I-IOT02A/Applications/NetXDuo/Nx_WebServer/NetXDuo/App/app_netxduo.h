@@ -22,11 +22,13 @@
 #define __APP_NETXDUO_H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "nx_api.h"
+
+/* Private includes ----------------------------------------------------------*/
 
 /* USER CODE BEGIN Includes */
 #include "main.h"

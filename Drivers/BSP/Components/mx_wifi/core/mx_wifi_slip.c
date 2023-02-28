@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -16,26 +16,31 @@
   ******************************************************************************
   */
 
-
 /* Includes ------------------------------------------------------------------*/
-/*cstat -MISRAC2012-* */
-#include "stdio.h"
-#include "stdlib.h"
-/*cstat +MISRAC2012-* */
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#include <inttypes.h>
 
 #include "mx_wifi_conf.h"
 #include "mx_wifi_slip.h"
 #include "mx_wifi_ipc.h"
 
-/* debug function */
-#ifdef MX_WIFI_SLIP_DEBUG
-#define DEBUG_LOG(M, ...)  printf((M), ##__VA_ARGS__)
+
+
+#if defined(MX_WIFI_SLIP_DEBUG)
+#define DEBUG_LOG(...)       (void)printf(__VA_ARGS__) /*;*/
 #else
-#define DEBUG_LOG(M, ...)
+#define DEBUG_LOG(...)
 #endif /* MX_WIFI_SLIP_DEBUG */
 
 #define DEBUG_WARNING(...)
-/* slip buffer number */
+
+#define DEBUG_ERROR(...)     (void)printf(__VA_ARGS__) /*;*/
+
+/* SLIP buffer size. */
 #define SLIP_BUFFER_SIZE        (MIPC_PKT_MAX_SIZE + 100)
 
 
@@ -47,7 +52,7 @@ enum
 };
 
 
-uint8_t *slip_transfer(uint8_t *data, uint16_t len, uint16_t *outlen)
+uint8_t *slip_transfer(uint8_t data[], uint16_t len, uint16_t *outlen)
 {
   uint16_t i;
   uint16_t j;
@@ -63,36 +68,36 @@ uint8_t *slip_transfer(uint8_t *data, uint16_t len, uint16_t *outlen)
   }
 
   buff = (uint8_t *)MX_WIFI_MALLOC(len + inc);
-  if (buff == NULL)
-  {
-    return NULL;
-  }
 
-  buff[0] = SLIP_START;
-  for (i = 0, j = 1; i < len; i++)
+  if (buff != NULL)
   {
-    if (data[i] == SLIP_START)
+
+    buff[0] = SLIP_START;
+    for (i = 0, j = 1; i < len; i++)
     {
-      buff[j++] = SLIP_ESCAPE;
-      buff[j++] = SLIP_ESCAPE_START;
+      if (data[i] == SLIP_START)
+      {
+        buff[j++] = SLIP_ESCAPE;
+        buff[j++] = SLIP_ESCAPE_START;
+      }
+      else if (data[i] == SLIP_END)
+      {
+        buff[j++] = SLIP_ESCAPE;
+        buff[j++] = SLIP_ESCAPE_END;
+      }
+      else if (data[i] == SLIP_ESCAPE)
+      {
+        buff[j++] = SLIP_ESCAPE;
+        buff[j++] = SLIP_ESCAPE_ES;
+      }
+      else
+      {
+        buff[j++] = data[i];
+      }
     }
-    else if (data[i] == SLIP_END)
-    {
-      buff[j++] = SLIP_ESCAPE;
-      buff[j++] = SLIP_ESCAPE_END;
-    }
-    else if (data[i] == SLIP_ESCAPE)
-    {
-      buff[j++] = SLIP_ESCAPE;
-      buff[j++] = SLIP_ESCAPE_ES;
-    }
-    else
-    {
-      buff[j++] = data[i];
-    }
+    buff[j++] = SLIP_END;
+    *outlen = j;
   }
-  buff[j++] = SLIP_END;
-  *outlen = j;
 
   return buff;
 }
@@ -105,6 +110,7 @@ mx_buf_t *slip_input_byte(uint8_t data)
   static uint16_t slip_index = 0;
   static uint8_t *slip_buffer = NULL;
   static mx_buf_t *nbuf = NULL;
+  bool do_reset = false;
 
   if (slip_buffer == NULL)
   {
@@ -114,15 +120,16 @@ mx_buf_t *slip_input_byte(uint8_t data)
       nbuf = MX_NET_BUFFER_ALLOC(SLIP_BUFFER_SIZE);
       if (nbuf == NULL)
       {
-        DELAYms(1);
+        DELAY_MS(1);
         if (true == first_miss)
         {
           first_miss = false;
-          DEBUG_WARNING("Running Out of buffer for RX\n");
+          DEBUG_WARNING("Running out of buffer for RX\n");
         }
       }
     } while (NULL == nbuf);
     slip_buffer = MX_NET_BUFFER_PAYLOAD(nbuf);
+    DEBUG_LOG("SLIP buffer: %p\n", slip_buffer);
   }
 
   if (slip_index >= SLIP_BUFFER_SIZE)
@@ -134,6 +141,7 @@ mx_buf_t *slip_input_byte(uint8_t data)
   switch (slip_state)
   {
     case SLIP_STATE_GOT_ESCAPE:
+    {
       if (data == SLIP_START)
       {
         slip_index = 0;
@@ -152,20 +160,28 @@ mx_buf_t *slip_input_byte(uint8_t data)
       }
       else
       {
-        goto RESET;
+        do_reset = true;
       }
-      slip_state = SLIP_STATE_CONTINUE;
-      break;
+
+      if (!do_reset)
+      {
+        slip_state = SLIP_STATE_CONTINUE;
+      }
+    }
+    break;
 
     case SLIP_STATE_IDLE:
+    {
       if (data == SLIP_START)
       {
         slip_index = 0;
         slip_state = SLIP_STATE_CONTINUE;
       }
-      break;
+    }
+    break;
 
-    case SLIP_STATE_CONTINUE: /* continue */
+    case SLIP_STATE_CONTINUE:
+    {
       if (data == SLIP_START)
       {
         slip_index = 0;
@@ -177,7 +193,7 @@ mx_buf_t *slip_input_byte(uint8_t data)
         slip_buffer = NULL;
         MX_NET_BUFFER_SET_PAYLOAD_SIZE(nbuf, slip_index);
         nbuf = NULL;
-        goto RESET;
+        do_reset = true;
       }
       else if (data == SLIP_ESCAPE)
       {
@@ -187,17 +203,18 @@ mx_buf_t *slip_input_byte(uint8_t data)
       {
         slip_buffer[slip_index++] = data;
       }
-      break;
+    }
+    break;
 
     default:
       break;
   }
 
-  return outgoing_nbuf;
+  if (do_reset)
+  {
+    slip_index = 0;
+    slip_state = SLIP_STATE_IDLE;
+  }
 
-RESET:
-  slip_index = 0;
-  slip_state = SLIP_STATE_IDLE;
   return outgoing_nbuf;
 }
-

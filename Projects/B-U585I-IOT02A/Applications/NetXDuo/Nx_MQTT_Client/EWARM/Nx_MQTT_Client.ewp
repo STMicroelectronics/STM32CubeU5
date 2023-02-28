@@ -66,7 +66,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>8.32.3.20186</state>
+          <state>8.50.1.24770</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -116,7 +116,7 @@
         </option>
         <option>
           <name>GBECoreSlave</name>
-          <version>27</version>
+          <version>28</version>
           <state></state>
         </option>
         <option>
@@ -133,8 +133,8 @@
         </option>
         <option>
           <name>CoreVariant</name>
-          <version>27</version>
-          <state>59</state>
+          <version>28</version>
+          <state>39</state>
         </option>
         <option>
           <name>GFPUDeviceSlave</name>
@@ -156,8 +156,8 @@
         </option>
         <option>
           <name>GFPUCoreSlave2</name>
-          <version>27</version>
-          <state>59</state>
+          <version>28</version>
+          <state>39</state>
         </option>
         <option>
           <name>OGCMSISPackSelectDevice</name>
@@ -215,7 +215,7 @@
       <name>ICCARM</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>35</version>
+        <version>36</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -225,6 +225,7 @@
         <option>
           <name>CCDefines</name>
           <state>NX_INCLUDE_USER_DEFINE_FILE</state>
+          <state>NX_SECURE_INCLUDE_USER_DEFINE_FILE</state>
           <state>TX_INCLUDE_USER_DEFINE_FILE</state>
           <state>TX_SINGLE_MODE_NON_SECURE=1</state>
           <state>USE_HAL_DRIVER</state>
@@ -375,7 +376,6 @@
           <state>$PROJ_DIR$/../../../../../../Drivers/CMSIS/Include</state>
           <state>$PROJ_DIR$/../../../../../../Drivers/BSP/Components/mx_wifi</state>
           <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip</state>
-          <state>$PROJ_DIR$/../../../../../../Drivers/BSP/B-U585I-IOT02A</state>
           <state>$PROJ_DIR$/../NetXDuo/Target</state>
         </option>
         <option>
@@ -493,6 +493,10 @@
         <option>
           <name>OICompilerExtraOption</name>
           <state>1</state>
+        </option>
+        <option>
+          <name>CCStackProtection</name>
+          <state>0</state>
         </option>
       </data>
     </settings>
@@ -626,7 +630,7 @@
         </option>
         <option>
           <name>AOutputFile</name>
-          <state>$FILE_BNAME$.o</state>
+          <state></state>
         </option>
         <option>
           <name>ALimitErrorsCheck</name>
@@ -714,7 +718,7 @@
       <name>ILINK</name>
       <archiveVersion>0</archiveVersion>
       <data>
-        <version>22</version>
+        <version>23</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -1034,6 +1038,22 @@
           <name>OILinkExtraOption</name>
           <state>1</state>
         </option>
+        <option>
+          <name>IlinkRawBinaryFile2</name>
+          <state></state>
+        </option>
+        <option>
+          <name>IlinkRawBinarySymbol2</name>
+          <state></state>
+        </option>
+        <option>
+          <name>IlinkRawBinarySegment2</name>
+          <state></state>
+        </option>
+        <option>
+          <name>IlinkRawBinaryAlign2</name>
+          <state></state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -1130,12 +1150,6 @@
     <group>
       <name>BSP</name>
       <group>
-        <name>B-U585I-IOT02A</name>
-        <file>
-          <name>$PROJ_DIR$/../../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</name>
-        </file>
-      </group>
-      <group>
         <name>Components</name>
         <group>
           <name>mx_wifi</name>
@@ -1152,6 +1166,9 @@
             </file>
             <file>
               <name>$PROJ_DIR$/../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_wifi_ipc.c</name>
+            </file>
+            <file>
+              <name>$PROJ_DIR$/../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_address.c</name>
             </file>
           </group>
           <file>
@@ -1257,18 +1274,6 @@
       </group>
       <group>
         <name>NX Core</name>
-        <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_server_socket_driver_listen.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_socket_driver_establish.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_socket_driver_packet_receive.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_udp_socket_driver_packet_receive.c</name>
-        </file>
         <file>
           <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_arp_announce_send.c</name>
         </file>
@@ -1691,9 +1696,6 @@
         </file>
         <file>
           <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_packet_transmit_release.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_ram_network_driver.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_rarp_disable.c</name>
@@ -2715,6 +2717,9 @@
         <file>
           <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nxd_nd_cache_ip_address_find.c</name>
         </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_http_proxy_client.c</name>
+        </file>
       </group>
       <group>
         <name>Addons MQTT</name>
@@ -2825,9 +2830,6 @@
         </file>
         <file>
           <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/crypto_libraries/src/nx_crypto_methods.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/crypto_libraries/src/nx_crypto_module_start.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/crypto_libraries/src/nx_crypto_null_cipher.c</name>
@@ -3704,6 +3706,45 @@
         </file>
         <file>
           <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nxe_secure_x509_key_usage_extension_parse.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nx_secure_generate_client_key_exchange.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nx_secure_generate_master_secret.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nx_secure_generate_premaster_secret.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nx_secure_generate_server_key_exchange.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nx_secure_generate_session_keys.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nx_secure_process_client_key_exchange.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nx_secure_process_server_key_exchange.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nx_secure_remote_certificate_verify.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nx_secure_session_keys_set.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nx_secure_tls_session_packet_pool_set.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nx_secure_trusted_certificate_add.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nx_secure_verify_mac.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/nx_secure/src/nxe_secure_tls_session_packet_pool_set.c</name>
         </file>
       </group>
     </group>

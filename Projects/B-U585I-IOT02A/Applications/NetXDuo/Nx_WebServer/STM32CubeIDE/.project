@@ -204,11 +204,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/tx_initialize_low_level.S</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</locationURI>
-		</link>
-		<link>
 			<name>Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_ospi.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_ospi.c</locationURI>
@@ -1619,6 +1614,11 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_arp_static_entry_delete_internal.c</locationURI>
 		</link>
 		<link>
+			<name>Middlewares/NetXDuo/NX Core/nx_http_proxy_client.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_http_proxy_client.c</locationURI>
+		</link>
+		<link>
 			<name>Middlewares/NetXDuo/NX Core/nx_icmp_cleanup.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_icmp_cleanup.c</locationURI>
@@ -2387,11 +2387,6 @@
 			<name>Middlewares/NetXDuo/NX Core/nx_packet_transmit_release.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_packet_transmit_release.c</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/NetXDuo/NX Core/nx_ram_network_driver.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_ram_network_driver.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/NetXDuo/NX Core/nx_rarp_disable.c</name>
@@ -4842,6 +4837,11 @@
 			<name>Middlewares/Interfaces/Network/wifi/nx_driver_emw3080.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/drivers/wifi/mxchip/nx_driver_emw3080.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/mx_wifi/core/mx_address.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/mx_wifi/core/mx_address.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/Components/mx_wifi/core/mx_wifi_hci.c</name>

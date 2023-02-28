@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   NetXDuo applicative header file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
@@ -22,17 +22,18 @@
 #define __APP_NETXDUO_H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "nx_api.h"
 
+/* Private includes ----------------------------------------------------------*/
+
 /* USER CODE BEGIN Includes */
 #include <inttypes.h>
 #include "main.h"
 #include "nx_ip.h"
-#include "nxd_dhcp_client.h"
 #include "nxd_dns.h"
 #include "mx_wifi.h"
 #include "nx_driver_emw3080.h"
@@ -41,7 +42,6 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -49,36 +49,34 @@
 #define PAYLOAD_SIZE                         NX_DRIVER_PACKET_SIZE
 #define NX_PACKET_POOL_SIZE                  ((PAYLOAD_SIZE + sizeof(NX_PACKET)) * 20)
 
-#define DEFAULT_MEMORY_SIZE                  1024
 #define ARP_MEMORY_SIZE                      DEFAULT_MEMORY_SIZE
 
-#define MAIN_THREAD_STACK_SIZE               3 * DEFAULT_MEMORY_SIZE
-#define MAIN_THREAD_PRIORITY                 11
+#define MAIN_THREAD_STACK_SIZE               (3 * DEFAULT_MEMORY_SIZE)
+#define MAIN_THREAD_PRIORITY                 (NETX_IP_THREAD_PRIORITY + 3)
 
-#define MAIN2_THREAD_STACK_SIZE              2 * DEFAULT_MEMORY_SIZE
-#define MAIN2_THREAD_PRIORITY                11
+#define MAIN2_THREAD_STACK_SIZE              (2 * DEFAULT_MEMORY_SIZE)
+#define MAIN2_THREAD_PRIORITY                (NETX_IP_THREAD_PRIORITY + 3)
 
-#define MAIN_IP_THREAD_STACK_SIZE            6 * DEFAULT_MEMORY_SIZE
-#define MAIN_IP_THREAD_PRIORITY              10
 
-#define BSD_COMPAT_LAYER_THREAD_STACK_SIZE   2 * DEFAULT_MEMORY_SIZE
-#define BSD_COMPAT_LAYER_THREAD_PRIORITY     11
+#define BSD_COMPAT_LAYER_THREAD_STACK_SIZE   (2 * DEFAULT_MEMORY_SIZE)
+#define BSD_COMPAT_LAYER_THREAD_PRIORITY     (NETX_IP_THREAD_PRIORITY + 2)
 
-#define WIFI_BASICS_THREAD_STACK_SIZE        6 * DEFAULT_MEMORY_SIZE
-#define WIFI_BASICS_THREAD_PRIORITY          11
+#define NETWORK_BASICS_THREAD_STACK_SIZE     (6 * DEFAULT_MEMORY_SIZE)
+#define NETWORK_BASICS_THREAD_PRIORITY       (NETX_IP_THREAD_PRIORITY + 2)
 
-#define NULL_ADDRESS                         (void*)0
+
+#define NULL_ADDRESS                         ((void*)0)
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define PRINT_IP_ADDRESS(addr) \
-  do { \
-    MSG_INFO("%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"\n", \
-             ((uint32_t)(addr) >> 24) & 0xff, \
-             ((uint32_t)(addr) >> 16) & 0xff, \
-             ((uint32_t)(addr) >> 8) & 0xff, \
-             ((uint32_t)(addr) & 0xff)); \
+#define PRINT_IP_ADDRESS(addr)                                    \
+  do {                                                            \
+    MSG_INFO("%" PRIu32 ".%" PRIu32 ".%" PRIu32 ".%" PRIu32 "\n", \
+            ((uint32_t)(addr) >> 24) & 0xff,                      \
+            ((uint32_t)(addr) >> 16) & 0xff,                      \
+            ((uint32_t)(addr) >> 8) & 0xff,                       \
+            ((uint32_t)(addr) & 0xff));                           \
   } while(0)
 /* USER CODE END EM */
 
@@ -91,10 +89,20 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr);
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 /* USER CODE END PD */
 
 /* USER CODE BEGIN 1 */
+extern TX_BYTE_POOL *AppBytePool;
+extern NX_IP IpInstance;
+
+
+int32_t http_download_cmd(int32_t argc, char *argv[]);
+
+int32_t ping_cmd(int32_t argc, char *argv[]);
+
+int32_t scan_cmd(int32_t argc, char *argv[]);
+
+int32_t test_echo_server(int32_t argc, char *argv[]);
 
 /* USER CODE END 1 */
 

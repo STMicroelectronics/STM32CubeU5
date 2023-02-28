@@ -44,8 +44,8 @@ extern "C" {
 /** @defgroup LPBAM_DAC_Channel LPBAM DAC Channel
   * @{
   */
-#define LPBAM_DAC_CHANNEL_1 (0x00U) /*!< LPBAM DAC Channel 1 */
-#define LPBAM_DAC_CHANNEL_2 (0x01U) /*!< LPBAM DAC Channel 2 */
+#define LPBAM_DAC_CHANNEL_1 (0x01U) /*!< LPBAM DAC Channel 1 */
+#define LPBAM_DAC_CHANNEL_2 (0x02U) /*!< LPBAM DAC Channel 2 */
 /**
   * @}
   */

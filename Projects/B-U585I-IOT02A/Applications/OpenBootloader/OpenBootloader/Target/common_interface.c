@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -18,9 +18,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "platform.h"
+#include "common_interface.h"
+
 #include "flash_interface.h"
 #include "openbootloader_conf.h"
-#include "common_interface.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/

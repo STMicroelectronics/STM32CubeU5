@@ -6,10 +6,9 @@ This application provides an example of Azure RTOS USBX stack usage. It shows ho
 The application is designed to behave as an USB MSC Host able to operate with an USB flash disk using the Bulk Only Transfer (BOT) and Small Computer System Interface (SCSI) transparent commands combined with a file system Azure RTOS FileX.
 
 The main entry function tx_application_define() is then called by ThreadX during kernel start, at this stage, all USBx resources are initialized, the MSC Class driver is registered.
-The application creates three threads :
+The application creates two threads :
 
-  - ucpd_app_thread_entry    (Priority : 20; Preemption threshold : 20) used to start the Host after USB Device attachment.
-  - usbx_app_thread_entry    (Priority : 25; Preemption threshold : 25) used to initialize USB OTG HAL HCD driver.
+  - usbx_app_thread_entry    (Priority : 10; Preemption threshold : 10) used to initialize USB DRD HAL HCD driver.
   - msc_process_thread_entry (Priority : 30; Preemption threshold : 30) used to proceed to file operations once the device is properly enumerated.
 
 ####  <b>Expected success behavior</b>
@@ -42,7 +41,7 @@ None.
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.s" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
    It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL or BSP).
@@ -52,16 +51,16 @@ None.
    This require changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
-	 place in RAM_region    { last section FREE_MEM };
-	 ```
+     place in RAM_region    { last section FREE_MEM };
+     ```
     + For MDK-ARM:
-	```
+    ```
     either define the RW_IRAM1 region in the ".sct" file
-    or modify the line below in "tx_low_level_initilize.s to match the memory region being used
+    or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
-	```
+    ```
     + For STM32CubeIDE add the following section into the .ld file:
-	``` 
+    ```
     ._threadx_heap :
       {
          . = ALIGN(8);
@@ -69,17 +68,16 @@ None.
          . = . + 64K;
          . = ALIGN(8);
        } >RAM_D1 AT> RAM_D1
-	``` 
-	
+    ```
+
        The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
        In the example above the ThreadX heap size is set to 64KBytes.
-       The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.	 
-       Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).	 
+       The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
+       Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
        Read more in STM32CubeIDE User Guide, chapter: "Linker script".
-	  
-    + The "tx_initialize_low_level.s" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
 
-#### <b>USBX usage hints</b>
+    + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
+
 
 ### <b>Keywords</b>
 
@@ -98,13 +96,13 @@ Connectivity, USBXHost, USBPD, FILEX, ThreadX, MSC, Mass Storage, BOT, SCSI, Rem
     - Connect ST-Link cable to the PC USB port to display data on the HyperTerminal.
 
     A virtual COM port will then appear in the HyperTerminal:
-	
+
      - Hyperterminal configuration
-       - Data Length = 8 Bits
-       - One Stop Bit
-       - No parity
-       - BaudRate = 115200 baud
-       - Flow control: None
+     - Data Length = 8 Bits
+     - One Stop Bit
+     - No parity
+     - BaudRate = 115200 baud
+     - Flow control: None
 
 <b>Note</b>
 It is mandatory to check that the Jumpers below are fitted:
@@ -114,7 +112,7 @@ It is mandatory to check that the Jumpers below are fitted:
 	
 ### <b>How to use it ?</b>
 
-In order to make the program work, you must do the following :
+In order to make the program work, you must do the following:
 
  - Open your preferred toolchain
  - Rebuild all files and load your image into target memory
@@ -124,5 +122,5 @@ In order to make the program work, you must do the following :
 <b>Note</b>
 
    The user has to check the list of the COM ports in Device Manager to find out the number of the
-   COM ports that have been assigned (by OS) to the Stlink VCP .
+   COM ports that have been assigned (by OS) to the Stlink VCP.
    The application uses the external HSE clock as USB source clock.

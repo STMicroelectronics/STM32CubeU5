@@ -24,7 +24,7 @@
 /*  PORT SPECIFIC C INFORMATION                            RELEASE        */
 /*                                                                        */
 /*    nx_secure_user.h                                    PORTABLE C      */
-/*                                                           6.0          */
+/*                                                           6.1.9        */
 /*                                                                        */
 /*  AUTHOR                                                                */
 /*                                                                        */
@@ -44,11 +44,24 @@
 /*    DATE              NAME                      DESCRIPTION             */
 /*                                                                        */
 /*  05-19-2020     Timothy Stapko           Initial Version 6.0           */
+/*  09-30-2020     Timothy Stapko           Modified comment(s),          */
+/*                                            resulting in version 6.1    */
+/*  08-02-2021     Timothy Stapko           Modified comment(s),          */
+/*                                            resulting in version 6.1.8  */
+/*  10-15-2021     Timothy Stapko           Modified comment(s), added    */
+/*                                            macro to disable client     */
+/*                                            initiated renegotiation for */
+/*                                            TLS server instances,       */
+/*                                            resulting in version 6.1.9  */
 /*                                                                        */
 /**************************************************************************/
 
 #ifndef NX_SECURE_USER_H
 #define NX_SECURE_USER_H
+
+/* USER CODE BEGIN 1 */
+
+/* USER CODE END 1 */
 
 /* Define various build options for the NetX Secure port.  The application should either make changes
    here by commenting or un-commenting the conditional compilation defined OR supply the defines
@@ -157,26 +170,6 @@
    Verification for TLS Servers4. */
 /*
 #define NX_SECURE_ENABLE_CLIENT_CERTIFICATE_VERIFY
-*/
-
-/* Defined, this option removes all TLS logic for Elliptic Curve Cryptography
-  (ECC) ciphersuites. These ciphersuites are optional in TLS 1.2 and earlier
-  and disabling them can result in significant code and data size reduction. */
-/*
-#define NX_SECURE_DISABLE_ECC_CIPHERSUITE
-*/
-
-/* Defined, this option disables TLSv1.1 mode. It is defined by default.
-   TLSv1.1 is disabled in favor of using only the more-secure TLSv1.25. */
-/*
-#define NX_SECURE_TLS_DISABLE_TLS_1_1
-*/
-
-/* Defined, this option enables the legacy TLSv1.0 mode. TLSv1.0 is considered
-   obsolete so it should only be enabled for backward-compatibility with older
-   applications. */
-/*
-#define NX_SECURE_TLS_ENABLE_TLS_1_0
 */
 
 /* Defined, this option enables the legacy TLSv1.1 mode. TLSv1.1 is considered
@@ -379,27 +372,12 @@
 #define NX_SECURE_X509_USE_EXTENDED_DISTINGUISHED_NAMES
 */
 
-/* Defined, this option enables TLS initialisation. */
-/*
-#define NX_SECURE_DTLS_INIT
-*/
-
 /* Defined, this option enables the ECC support in TLS. */
 #define NX_SECURE_ENABLE_ECC_CIPHERSUITE
 
 /* Defined, this option enables SSL 3.0 . */
 /*
 #define NX_SECURE_TLS_ENABLE_SSL_3_0
-*/
-
-/* Defined, this option enables TLS 1.2 .*/
-/*
-#define NX_SECURE_TLS_TLS_1_2_ENABLED
-*/
-
-/* Defined, this option enables TLS 1.3 .*/
-/*
-*#define NX_SECURE_TLS_TLS_1_3_ENABLED
 */
 
 /* This option defines the TLS maximum psk monce size.
@@ -411,11 +389,6 @@
 /* Defined, this option enables secure renegotiation.*/
 /*
 #define NX_SECURE_TLS_ENABLE_SECURE_RENEGOTIATION
-*/
-
-/* Defined, this option enables TLS initialisation.*/
-/*
-#define NX_SECURE_TLS_INIT
 */
 
 /* Defined, this option enables certificate verify extension.*/
@@ -443,5 +416,31 @@
 /*
 #define NX_SECURE_TLS_SERVER_DISABLED
 */
+
+/* When defined the AES Tabled are  moved to RAM. */
+/*
+#define NX_CRYPTO_AES_USE_RAM_TABLES
+*/
+
+/* Defines whether or not the connection should be terminated immediately upon failure to receive the secure renegotiation extension during the initial handshake.
+   By default, the connection is not terminated.*/
+/*
+#define NX_SECURE_TLS_REQUIRE_RENEGOTIATION_EXT
+*/
+
+/* Disables client-initiated renegotiation for TLS servers.
+   In some instances, client-initiated renegotiation can become a possible denial-of-service vulnerability. */
+/*
+#define NX_SECURE_TLS_DISABLE_CLIENT_INITIATED_RENEGOTIATION
+*/
+
+/* Disable secure session renegotiation extension. */
+/*
+#define NX_SECURE_TLS_DISABLE_SECURE_RENEGOTIATION
+*/
+
+/* USER CODE BEGIN 2 */
+
+/* USER CODE END 2 */
 
 #endif /* NX_SECURE_USER_H */

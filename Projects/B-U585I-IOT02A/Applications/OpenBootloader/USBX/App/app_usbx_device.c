@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -33,15 +33,15 @@
 /* Private define ------------------------------------------------------------*/
 
 /* Thread priority */
-#define DEFAULT_THREAD_PRIO                   10
+#define DEFAULT_THREAD_PRIO                   10U
 /* Thread preemption priority */
 #define DEFAULT_PREEMPTION_THRESHOLD          DEFAULT_THREAD_PRIO
 
 /* USB App Stack Size */
-#define USBX_APP_STACK_SIZE                   (2 * 1024)
+#define USBX_APP_STACK_SIZE                   (2U * 1024U)
 
 /* Usb Memory Size */
-#define USBX_MEMORY_SIZE                      (32 * 1024)
+#define USBX_MEMORY_SIZE                      (32U * 1024U)
 
 #if defined ( __ICCARM__ ) /* IAR Compiler */
 #pragma data_alignment=4
@@ -50,11 +50,11 @@ __ALIGN_BEGIN ux_dfu_downloadInfotypeDef  ux_dfu_download  __ALIGN_END;
 
 /* Private macro -------------------------------------------------------------*/
 /* Exported variables --------------------------------------------------------*/
-UX_SYSTEM_SLAVE                     *ux_system;
-TX_QUEUE                            ux_app_MsgQueue;
-TX_THREAD                           ux_app_thread;
-TX_THREAD                           usbx_dfu_download_thread;
-UX_SLAVE_CLASS_DFU_PARAMETER        dfu_parameter;
+UX_SYSTEM_SLAVE              *ux_system;
+TX_QUEUE                     ux_app_MsgQueue;
+TX_THREAD                    ux_app_thread;
+TX_THREAD                    usbx_dfu_download_thread;
+UX_SLAVE_CLASS_DFU_PARAMETER dfu_parameter;
 
 /* Private variables ---------------------------------------------------------*/
 static TX_QUEUE ux_usbpd_app_MsgQueue;
@@ -73,7 +73,7 @@ void MX_USB_Device_Init(void);
   */
 UINT MX_USBX_Device_Init(VOID *memory_ptr)
 {
-  UINT ret = UX_SUCCESS;
+  UINT ret;
   TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL *)memory_ptr;
 
   CHAR *pointer;
@@ -85,11 +85,10 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
   UCHAR *device_framework_full_speed;
   UCHAR *string_framework;
   UCHAR *language_id_framework;
-  UINT tx_status = UX_SUCCESS;
+  UINT tx_status;
 
   /* Allocate USBX_MEMORY_SIZE. */
-  tx_status = tx_byte_allocate(byte_pool, (VOID **) &pointer,
-                               USBX_MEMORY_SIZE, TX_NO_WAIT);
+  tx_status = tx_byte_allocate(byte_pool, (VOID **) &pointer, USBX_MEMORY_SIZE, TX_NO_WAIT);
 
   /* Check memory allocation */
   if (UX_SUCCESS != tx_status)
@@ -99,15 +98,13 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
   }
 
   /* Initialize USBX Memory */
-  ux_system_initialize(pointer, USBX_MEMORY_SIZE, UX_NULL, 0);
+  ux_system_initialize(pointer, USBX_MEMORY_SIZE, UX_NULL, 0U);
 
   /* Get_Device_Framework_High_Speed and get the length */
-  device_framework_high_speed = USBD_Get_Device_Framework_Speed(USBD_HIGH_SPEED,
-                                &device_framework_hs_length);
+  device_framework_high_speed = USBD_Get_Device_Framework_Speed(USBD_HIGH_SPEED, &device_framework_hs_length);
 
   /* Get_Device_Framework_Full_Speed and get the length */
-  device_framework_full_speed = USBD_Get_Device_Framework_Speed(USBD_FULL_SPEED,
-                                &device_framework_fs_length);
+  device_framework_full_speed = USBD_Get_Device_Framework_Speed(USBD_FULL_SPEED, &device_framework_fs_length);
 
   /* Get_String_Framework and get the length */
   string_framework = USBD_Get_String_Framework(&string_framework_length);
@@ -163,7 +160,7 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
 
   /* Initialize the device dfu class. The class is connected with interface 0 */
   ret = ux_device_stack_class_register(_ux_system_slave_class_dfu_name,
-                                       ux_device_class_dfu_entry, 1, 0,
+                                       ux_device_class_dfu_entry, 1U, 0U,
                                        (VOID *)&dfu_parameter);
 
   /* Check the device stack class status */
@@ -174,8 +171,7 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
   }
 
   /* Allocate the stack for main_usbx_app_thread_entry */
-  tx_byte_allocate(byte_pool, (VOID **) &pointer,
-                   USBX_APP_STACK_SIZE, TX_NO_WAIT);
+  tx_byte_allocate(byte_pool, (VOID **) &pointer, USBX_APP_STACK_SIZE, TX_NO_WAIT);
 
   /* Create the usbx_app_thread_entry */
   ret = tx_thread_create(&ux_app_thread, "main_usbx_app_thread_entry",
@@ -192,28 +188,25 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
   }
 
   /* Allocate the stack for usbx_dfu_download_thread_entry. */
-  tx_status = tx_byte_allocate(byte_pool, (VOID **) &pointer,
-                               USBX_APP_STACK_SIZE, TX_NO_WAIT);
+  tx_status = tx_byte_allocate(byte_pool, (VOID **) &pointer, USBX_APP_STACK_SIZE, TX_NO_WAIT);
 
   /* Check usbx_dfu_download_thread_entry creation */
   if (UX_SUCCESS != tx_status)
   {
-    Error_Handler();
     return tx_status;
   }
 
   /* Create the usbx_dfu_download_thread_entry thread. */
   tx_status = tx_thread_create(&usbx_dfu_download_thread,
                                "usbx_dfu_download_thread_entry",
-                               usbx_dfu_download_thread_entry, 0,
-                               pointer, USBX_APP_STACK_SIZE, 20, 20,
+                               usbx_dfu_download_thread_entry, 0U,
+                               pointer, USBX_APP_STACK_SIZE, 20U, 20U,
                                TX_NO_TIME_SLICE,
                                TX_AUTO_START);
 
   /* Check usbx_cdc_acm_read_thread_entry creation */
   if (UX_SUCCESS != tx_status)
   {
-    Error_Handler();
     return tx_status;
   }
   /* Allocate Memory for the Queue */
@@ -223,7 +216,6 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
 
   if (ret != TX_SUCCESS)
   {
-    Error_Handler();
     ret = TX_POOL_ERROR;
   }
 
@@ -235,7 +227,6 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
 
   if (ret != TX_SUCCESS)
   {
-    Error_Handler();
     ret = TX_QUEUE_ERROR;
   }
 
@@ -260,27 +251,25 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
 
 /**
   * @brief  Function implementing usbx_app_thread_entry.
-  * @param arg: Not used
+  * @param Arg: Not used
   * @retval None
   */
-void usbx_app_thread_entry(ULONG arg)
+void usbx_app_thread_entry(ULONG Arg)
 {
   /* Initialization of USB device */
   MX_USB_Device_Init();
 }
 
 /**
-  * @brief MX_USB_Device_Init
-  *        Initialization of USB device.
-  * Init USB device Library, add supported class and start the library
+  * @brief  Initialization of USB device.
   * @retval None
   */
 void MX_USB_Device_Init(void)
 {
   /* Set Rx FIFO */
-  HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_FS, 0x100);
+  HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_FS, 0x100U);
   /* Set Tx FIFO 0 */
-  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, 0x40);
+  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, 0x40U);
 
   /* initialize the device controller driver*/
   _ux_dcd_stm32_initialize((ULONG)USB_OTG_FS, (ULONG)&hpcd_USB_OTG_FS);

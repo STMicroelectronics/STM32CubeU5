@@ -110,23 +110,24 @@ WebServer_StatusTypeDef webserver_console_get_ssid(ap_t *net_wifi_registred_hots
   /* Repeat receiving character until getting all SSID */
   do
   {
-    /* Get entred character */
+    /* Get entered character */
     if (HAL_UART_Receive(&Console_UARTHandle, (uint8_t *) &ch, 1, HAL_MAX_DELAY) != HAL_OK)
     {
       return CONSOLE_ERROR;
     }
 
-    /* Store entred character */
+    /* Store entered character */
     SSID[count] = ch;
     count++;
 
-    /* Print entred character */
-    if ((ch != 0) && (ch != '\r'))
+    /* Print entered character */
+    if ((ch != 0) && (ch != '\r') && (ch != '\n'))
     {
       printf("%c",ch);
     }
 
-  } while ((ch != '\r') && (ch != 0));
+  }
+  while ((ch != '\r') && (ch != 0) && (ch !='\n'));
 
   /* Clear end of characters symbols */
   do
@@ -134,7 +135,8 @@ WebServer_StatusTypeDef webserver_console_get_ssid(ap_t *net_wifi_registred_hots
     SSID[count] = 0;
     count--;
 
-  } while (SSID[count] == '\r');
+  }
+  while((SSID[count] == '\r') || (SSID[count] == '\n'));
 
   /* Store user SSID */
   net_wifi_registred_hotspot->ssid = SSID;
@@ -174,13 +176,14 @@ WebServer_StatusTypeDef webserver_console_get_password(ap_t *net_wifi_registred_
     PassWord[count] = ch;
     count++;
 
-    /* Print entred character */
+    /* Print entered character */
     if ((ch != '\n') && (ch != 0) && (ch != '\r'))
     {
       printf("*");
     }
 
-  } while ((ch != '\n') && (ch != '\r') && (ch != 0));
+  }
+  while ((ch != '\n') && (ch != '\r') && (ch != 0));
 
   /* Clear end of characters symbols */
   do
@@ -188,7 +191,8 @@ WebServer_StatusTypeDef webserver_console_get_password(ap_t *net_wifi_registred_
     PassWord[count] = 0;
     count--;
 
-  } while ((PassWord[count] == '\n') || (PassWord[count] == ' ') || (PassWord[count] == '\r'));
+  }
+  while ((PassWord[count] == '\n') || (PassWord[count] == ' ') || (PassWord[count] == '\r'));
 
   /* Store user PWD */
   net_wifi_registred_hotspot->pwd = PassWord;

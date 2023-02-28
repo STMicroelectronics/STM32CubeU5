@@ -1,0 +1,8 @@
+[ProjectFiles]
+HeaderPath=../../../../../../Drivers/BSP/STM32U5xx_Nucleo;
+[Others]
+Define=
+HALModule=
+[Groups]
+Drivers\BSP\NUCLEO-U5A5ZJ-Q=../../../../../../Drivers/BSP/STM32U5xx_Nucleo/stm32u5xx_nucleo.c; ../../../../../../Drivers/BSP/STM32U5xx_Nucleo/stm32u5xx_nucleo_usbpd_pwr.c;
+Doc=../README.md;

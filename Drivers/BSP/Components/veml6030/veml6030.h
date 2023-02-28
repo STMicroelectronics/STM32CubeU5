@@ -47,9 +47,8 @@ extern "C" {
 typedef int32_t (*VEML6030_Init_Func)(void);
 typedef int32_t (*VEML6030_DeInit_Func)(void);
 typedef int32_t (*VEML6030_GetTick_Func)(void);
-typedef int32_t (*VEML6030_Delay_Func)(uint32_t);
-typedef int32_t (*VEML6030_WriteReg_Func)(uint16_t, uint16_t, uint8_t*, uint16_t);
-typedef int32_t (*VEML6030_ReadReg_Func)(uint16_t, uint16_t, uint8_t*, uint16_t);
+typedef int32_t (*VEML6030_WriteReg_Func)(uint16_t, uint16_t, uint8_t *, uint16_t);
+typedef int32_t (*VEML6030_ReadReg_Func)(uint16_t, uint16_t, uint8_t *, uint16_t);
 typedef int32_t (*VEML6030_IsReady_Func)(uint16_t, uint32_t);
 
 typedef struct
@@ -100,7 +99,7 @@ typedef struct
   int32_t (*StopFlicker)(VEML6030_Object_t *);
   int32_t (*GetValues)(VEML6030_Object_t *, uint32_t *);
   int32_t (*SetControlMode)(VEML6030_Object_t *, uint32_t, uint32_t);
-}VEML6030_Drv_t;
+} VEML6030_Drv_t;
 
 /**
   * @}
@@ -135,7 +134,7 @@ typedef struct
 #define VEML6030_INT_TH_LOW 1U
 #define VEML6030_INT_TH_HIGH 2U
 
- /* VEML6030 I2C ADDRESS */
+/* VEML6030 I2C ADDRESS */
 #define VEML6030_I2C_READ_ADD 0x21
 #define VEML6030_I2C_WRITE_ADD 0x20
 
@@ -168,40 +167,40 @@ extern VEML6030_Drv_t VEML6030_Driver;
   */
 
 /** @addtogroup VEML6030_Exported_Functions VEML6030 Exported Functions
- * @{
- */
+  * @{
+  */
 
- int32_t VEML6030_RegisterBusIO(VEML6030_Object_t *pObj, VEML6030_IO_t *pIO);
- int32_t VEML6030_Init(VEML6030_Object_t *pObj);
- int32_t VEML6030_DeInit(VEML6030_Object_t *pObj);
- int32_t VEML6030_ReadID(VEML6030_Object_t *pObj, uint32_t *pId);
- int32_t VEML6030_SetExposureTime(VEML6030_Object_t *pObj, uint32_t ExposureTime);
- int32_t VEML6030_GetExposureTime(VEML6030_Object_t *pObj, uint32_t *pExposureTime);
- int32_t VEML6030_GetCapabilities(VEML6030_Object_t *pObj,  VEML6030_Capabilities_t *pCapabilities);
- int32_t VEML6030_SetGain(VEML6030_Object_t *pObj, uint8_t Channel, uint32_t Gain);
- int32_t VEML6030_GetGain(VEML6030_Object_t *pObj, uint8_t Channel, uint32_t *Gain);
- int32_t VEML6030_SetInterMeasurementTime(VEML6030_Object_t *pObj, uint32_t InterMeasurementTime);
- int32_t VEML6030_GetInterMeasurementTime(VEML6030_Object_t *pObj, uint32_t *InterMeasurementTime);
- int32_t VEML6030_Start(VEML6030_Object_t *pObj, uint32_t);
- int32_t VEML6030_Stop(VEML6030_Object_t *pObj);
- int32_t VEML6030_GetValues(VEML6030_Object_t *, uint32_t *Values);
- int32_t VEML6030_StartFlicker(VEML6030_Object_t *pObj, uint8_t Channel, uint8_t OutputMode);
- int32_t VEML6030_StopFlicker(VEML6030_Object_t *pObj);
- int32_t VEML6030_SetControlMode(VEML6030_Object_t *pObj, uint32_t ControlMode, uint32_t Value);
+int32_t VEML6030_RegisterBusIO(VEML6030_Object_t *pObj, VEML6030_IO_t *pIO);
+int32_t VEML6030_Init(VEML6030_Object_t *pObj);
+int32_t VEML6030_DeInit(VEML6030_Object_t *pObj);
+int32_t VEML6030_ReadID(VEML6030_Object_t *pObj, uint32_t *pId);
+int32_t VEML6030_SetExposureTime(VEML6030_Object_t *pObj, uint32_t ExposureTime);
+int32_t VEML6030_GetExposureTime(VEML6030_Object_t *pObj, uint32_t *pExposureTime);
+int32_t VEML6030_GetCapabilities(VEML6030_Object_t *pObj,  VEML6030_Capabilities_t *pCapabilities);
+int32_t VEML6030_SetGain(VEML6030_Object_t *pObj, uint8_t Channel, uint32_t Gain);
+int32_t VEML6030_GetGain(VEML6030_Object_t *pObj, uint8_t Channel, uint32_t *Gain);
+int32_t VEML6030_SetInterMeasurementTime(VEML6030_Object_t *pObj, uint32_t InterMeasurementTime);
+int32_t VEML6030_GetInterMeasurementTime(VEML6030_Object_t *pObj, uint32_t *pInterMeasurementTime);
+int32_t VEML6030_Start(VEML6030_Object_t *pObj, uint32_t Mode);
+int32_t VEML6030_Stop(VEML6030_Object_t *pObj);
+int32_t VEML6030_GetValues(VEML6030_Object_t *pObj, uint32_t *Values);
+int32_t VEML6030_StartFlicker(VEML6030_Object_t *pObj, uint8_t Channel, uint8_t OutputMode);
+int32_t VEML6030_StopFlicker(VEML6030_Object_t *pObj);
+int32_t VEML6030_SetControlMode(VEML6030_Object_t *pObj, uint32_t ControlMode, uint32_t Value);
 
- int32_t VEML6030_SetPowerSavingMode(VEML6030_Object_t *pObj, uint32_t PowerMode);
- int32_t VEML6030_GetPowerSavingMode(VEML6030_Object_t *pObj, uint32_t *pPowerMode);
- int32_t VEML6030_SetPersistence(VEML6030_Object_t *pObj, uint32_t Persistence);
- int32_t VEML6030_GetPersistence(VEML6030_Object_t *pObj, uint32_t *Persistence);
- int32_t VEML6030_GetWhiteValues(VEML6030_Object_t *pObj, uint32_t *Values);
- /* interrupt Mangement Functions */
- int32_t VEML6030_SetHighThreshold(VEML6030_Object_t *pObj , uint16_t Threshold);
- int32_t VEML6030_GetHighThreshold(VEML6030_Object_t *pObj , uint32_t *Threshold);
- int32_t VEML6030_SetLowThreshold(VEML6030_Object_t *pObj , uint16_t Threshold);
- int32_t VEML6030_GetLowThreshold(VEML6030_Object_t *pObj , uint32_t *Threshold);
- int32_t VEML6030_GetIntStatus(VEML6030_Object_t *pObj,uint32_t *status);
- int32_t VEML6030_Disable_IT(VEML6030_Object_t *pObj);
- int32_t VEML6030_Enable_IT(VEML6030_Object_t *pObj);
+int32_t VEML6030_SetPowerSavingMode(VEML6030_Object_t *pObj, uint32_t PowerMode);
+int32_t VEML6030_GetPowerSavingMode(VEML6030_Object_t *pObj, uint32_t *pPowerMode);
+int32_t VEML6030_SetPersistence(VEML6030_Object_t *pObj, uint32_t Persistence);
+int32_t VEML6030_GetPersistence(VEML6030_Object_t *pObj, uint32_t *PPersistence);
+int32_t VEML6030_GetWhiteValues(VEML6030_Object_t *pObj, uint32_t *Values);
+/* interrupt Mangement Functions */
+int32_t VEML6030_SetHighThreshold(VEML6030_Object_t *pObj, uint16_t Threshold);
+int32_t VEML6030_GetHighThreshold(VEML6030_Object_t *pObj, uint32_t *Threshold);
+int32_t VEML6030_SetLowThreshold(VEML6030_Object_t *pObj, uint16_t Threshold);
+int32_t VEML6030_GetLowThreshold(VEML6030_Object_t *pObj, uint32_t *Threshold);
+int32_t VEML6030_GetIntStatus(VEML6030_Object_t *pObj, uint32_t *status);
+int32_t VEML6030_Disable_IT(VEML6030_Object_t *pObj);
+int32_t VEML6030_Enable_IT(VEML6030_Object_t *pObj);
 
 /**
   * @}

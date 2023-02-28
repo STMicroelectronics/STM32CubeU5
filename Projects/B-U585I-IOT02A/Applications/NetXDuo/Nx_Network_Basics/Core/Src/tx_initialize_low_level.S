@@ -257,6 +257,8 @@ __tx_DBGHandler:
     EXTERN  _tx_thread_system_stack_ptr
     EXTERN  _tx_initialize_unused_memory
     EXTERN  _tx_timer_interrupt
+    EXTERN  _tx_execution_isr_enter
+    EXTERN  _tx_execution_isr_exit
     EXTERN  __vector_table
 ;
 ;

@@ -65,6 +65,7 @@ void Error_Handler(void);
 #define LPTIM1_PWM_PULSE 15999
 #define LPTIM1_PWM_REPETITION 0U
 #define LPGPIO_BUFFER_SIZE 2U
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

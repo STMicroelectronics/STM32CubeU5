@@ -38,7 +38,7 @@
 /* Define   ------------------------------------------------------------------*/
 /* Define VID, PID,... manufacturer parameters */
 #define USBPD_VID (1155u)     /*!< Vendor ID (assigned by the USB-IF)                     */
-#define USBPD_PID (0x5750u)     /*!< Product ID (assigned by the manufacturer)              */
+#define USBPD_PID (22288u)     /*!< Product ID (assigned by the manufacturer)              */
 #define USBPD_XID (0xF0000003u) /*!< Value provided by the USB-IF assigned to the product   */
 
 /* USER CODE BEGIN Define */

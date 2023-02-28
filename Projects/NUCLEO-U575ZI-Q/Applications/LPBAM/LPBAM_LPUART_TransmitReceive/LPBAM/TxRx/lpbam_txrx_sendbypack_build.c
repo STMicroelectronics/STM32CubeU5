@@ -22,9 +22,28 @@
 
 /* Private variables -------------------------------------------------------------------------------------------------*/
 /* LPBAM variables declaration */
-static LPBAM_UART_RxDataDesc_t Receive_Data_1_Desc;
-static LPBAM_UART_TxFullDesc_t Transmit_1_Desc;
-static LPBAM_UART_TxFullDesc_t Transmit_2_Desc;
+/* USER CODE BEGIN TxRx_SendByPack_Descs 0 */
+
+/* USER CODE END TxRx_SendByPack_Descs 0 */
+
+/* USER CODE BEGIN Receive_Q_Receive_Data_1_Desc */
+
+/* USER CODE END Receive_Q_Receive_Data_1_Desc */
+static LPBAM_UART_RxDataDesc_t Receive_Q_Receive_Data_1_Desc;
+
+/* USER CODE BEGIN Transmit_Q_Transmit_1_Desc */
+
+/* USER CODE END Transmit_Q_Transmit_1_Desc */
+static LPBAM_UART_TxFullDesc_t Transmit_Q_Transmit_1_Desc;
+
+/* USER CODE BEGIN Transmit_Q_Transmit_2_Desc */
+
+/* USER CODE END Transmit_Q_Transmit_2_Desc */
+static LPBAM_UART_TxFullDesc_t Transmit_Q_Transmit_2_Desc;
+
+/* USER CODE BEGIN TxRx_SendByPack_Descs 1 */
+
+/* USER CODE END TxRx_SendByPack_Descs 1 */
 
 /* Exported variables ------------------------------------------------------------------------------------------------*/
 /* LPBAM queues declaration */
@@ -89,7 +108,7 @@ static void MX_Receive_Q_Build(void)
   pDMAListInfo_LPUART.pInstance = LPDMA1;
   pRxData_LPUART.pData = (uint8_t*)&Receive_Buffer[0];
   pRxData_LPUART.Size = 130;
-  if (ADV_LPBAM_UART_Receive_SetDataQ(LPUART1, &pDMAListInfo_LPUART, &pRxData_LPUART, &Receive_Data_1_Desc, &Receive_Q) != LPBAM_OK)
+  if (ADV_LPBAM_UART_Receive_SetDataQ(LPUART1, &pDMAListInfo_LPUART, &pRxData_LPUART, &Receive_Q_Receive_Data_1_Desc, &Receive_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -121,14 +140,14 @@ static void MX_Transmit_Q_Build(void)
   pTxFull_LPUART.WakeupIT = LPBAM_UART_IT_NONE;
   pTxFull_LPUART.pData = (uint8_t*)&Transmit_Buffer_1[0];
   pTxFull_LPUART.Size = 65;
-  if (ADV_LPBAM_UART_Transmit_SetFullQ(LPUART1, &pDMAListInfo_LPUART, &pTxFull_LPUART, &Transmit_1_Desc, &Transmit_Q) != LPBAM_OK)
+  if (ADV_LPBAM_UART_Transmit_SetFullQ(LPUART1, &pDMAListInfo_LPUART, &pTxFull_LPUART, &Transmit_Q_Transmit_1_Desc, &Transmit_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_LPUART.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_BLOCK_TRANSFER;
   pTrigConfig_LPUART.TriggerConfig.TriggerPolarity = LPBAM_DMA_TRIG_POLARITY_RISING;
   pTrigConfig_LPUART.TriggerConfig.TriggerSelection = LPBAM_LPDMA1_TRIGGER_LPTIM1_CH1;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPUART, LPBAM_UART_TX_FULLQ_CONFIG_NODE, &Transmit_1_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPUART, LPBAM_UART_TX_FULLQ_CONFIG_NODE, &Transmit_Q_Transmit_1_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -138,11 +157,11 @@ static void MX_Transmit_Q_Build(void)
     */
   pTxFull_LPUART.AutoModeConf.DataSize = 4;
   pTxFull_LPUART.pData = (uint8_t*)&Transmit_Buffer_2[0];
-  if (ADV_LPBAM_UART_Transmit_SetFullQ(LPUART1, &pDMAListInfo_LPUART, &pTxFull_LPUART, &Transmit_2_Desc, &Transmit_Q) != LPBAM_OK)
+  if (ADV_LPBAM_UART_Transmit_SetFullQ(LPUART1, &pDMAListInfo_LPUART, &pTxFull_LPUART, &Transmit_Q_Transmit_2_Desc, &Transmit_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPUART, LPBAM_UART_TX_FULLQ_CONFIG_NODE, &Transmit_2_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPUART, LPBAM_UART_TX_FULLQ_CONFIG_NODE, &Transmit_Q_Transmit_2_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }

@@ -2432,7 +2432,7 @@ NX_SNTP_TIME local_time;
 /*  FUNCTION                                               RELEASE        */ 
 /*                                                                        */ 
 /*    _nx_sntp_client_receive_time_update                 PORTABLE C      */ 
-/*                                                           6.1          */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -2480,6 +2480,9 @@ NX_SNTP_TIME local_time;
 /*                                            added support for disabling */
 /*                                            message check,              */
 /*                                            resulting in version 6.1    */
+/*  07-29-2022     Yuxin Zhou               Modified comment(s), and      */
+/*                                            corrected the port check,   */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 UINT  _nx_sntp_client_receive_time_update(NX_SNTP_CLIENT *client_ptr, ULONG timeout)
@@ -2521,7 +2524,7 @@ NXD_ADDRESS     source_ip_address, destination_ip_address;
         sender_port = (UINT)udp_header_ptr -> nx_udp_header_word_0 >> NX_SHIFT_BY_16; 
 
         /* Check if this is the server port the Client expects.  */
-        if (sender_port != NX_SNTP_CLIENT_UDP_PORT) 
+        if (sender_port != NX_SNTP_SERVER_UDP_PORT) 
         {
 
             /* No, reject the packet.  */
@@ -4846,7 +4849,7 @@ UINT status;
 /*  FUNCTION                                               RELEASE        */ 
 /*                                                                        */ 
 /*    _nx_sntp_client_utility_display_date_time           PORTABLE C      */ 
-/*                                                           6.1.8        */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -4893,6 +4896,9 @@ UINT status;
 /*                                            improved the logic of       */
 /*                                            converting number to string,*/
 /*                                            resulting in version 6.1.8  */
+/*  10-31-2022     Yuxin Zhou               Modified comment(s), fixed    */
+/*                                            the typo of August string,  */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 UINT _nx_sntp_client_utility_display_date_time(NX_SNTP_CLIENT *client_ptr, CHAR *buffer, UINT length)
@@ -4903,7 +4909,7 @@ UINT                offset;
 UINT                return_length;
 NX_SNTP_DATE_TIME   DisplayTime;
 const CHAR         *months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                                  "Jul", "Aud", "Sep", "Oct", "Nov", "Dec"};
+                                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 
 #ifndef  NX_SNTP_CURRENT_YEAR  

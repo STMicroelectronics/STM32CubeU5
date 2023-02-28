@@ -88,9 +88,17 @@ uint32_t App_TX_CmsisRTOS_Init(void)
     /* definition and creation of ThreadOne */
     attr.name = "ThreadOne";
     ThreadOne = osThreadNew(ThreadOne_Entry, NULL, (const osThreadAttr_t *)&attr);
-    /* definition and creation of ThreadOne */
+    if(ThreadOne == NULL)
+    {
+      return ((uint32_t)osError);
+    }
+    /* definition and creation of ThreadTwo */
     attr.name = "ThreadTwo";
-    ThreadOne = osThreadNew(ThreadTwo_Entry, NULL, (const osThreadAttr_t *)&attr);
+    ThreadTwo = osThreadNew(ThreadTwo_Entry, NULL, (const osThreadAttr_t *)&attr);
+    if(ThreadTwo == NULL)
+    {
+      return ((uint32_t)osError);
+    }
 
     SyncObject = APP_SYNC_CREATE();
     /* Start scheduler */

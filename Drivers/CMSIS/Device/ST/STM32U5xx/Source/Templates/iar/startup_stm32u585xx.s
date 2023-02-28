@@ -199,6 +199,7 @@ __vector_table
         DCD     MDF1_FLT5_IRQHandler             ; MDF1 Filter 5 global interrupt
         DCD     CORDIC_IRQHandler                ; CORDIC global interrupt
         DCD     FMAC_IRQHandler                  ; FMAC global interrupt
+        DCD     LSECSSD_IRQHandler               ; LSECSSD global interrupt
 
 __Vectors_End
 
@@ -892,5 +893,10 @@ CORDIC_IRQHandler
         SECTION .text:CODE:NOROOT:REORDER(1)
 FMAC_IRQHandler
         B FMAC_IRQHandler
+
+        PUBWEAK LSECSSD_IRQHandler
+        SECTION .text:CODE:NOROOT:REORDER(1)
+LSECSSD_IRQHandler
+        B LSECSSD_IRQHandler
 
         END

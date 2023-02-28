@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -17,10 +17,13 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "main.h"
 #include "platform.h"
-#include "openbl_mem.h"
-#include "app_openbootloader.h"
 #include "common_interface.h"
+
+#include "openbl_mem.h"
+
+#include "app_openbootloader.h"
 #include "optionbytes_interface.h"
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,7 +56,7 @@ OPENBL_MemoryTypeDef OB_Descriptor =
 void OPENBL_OB_Launch(void)
 {
   /* Set the option start bit */
-  HAL_FLASH_OB_Launch();
+  (void)HAL_FLASH_OB_Launch();
 }
 
 /**
@@ -69,58 +72,93 @@ uint8_t OPENBL_OB_Read(uint32_t Address)
 /**
   * @brief  This function is used to write data in Option bytes.
   * @param  Address The address where that data will be written.
-  * @param  Data The data to be written.
+  * @param  pData The data to be written.
   * @param  DataLength The length of the data to be written.
   * @retval None.
   */
-void OPENBL_OB_Write(uint32_t Address, uint8_t *Data, uint32_t DataLength)
+void OPENBL_OB_Write(uint32_t Address, uint8_t *pData, uint32_t DataLength)
 {
   /* Unlock the FLASH & Option Bytes Registers access */
-  HAL_FLASH_Unlock();
-  HAL_FLASH_OB_Unlock();
+  if (HAL_FLASH_Unlock() != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  if (HAL_FLASH_OB_Unlock() != HAL_OK)
+  {
+    Error_Handler();
+  }
 
   /* Clear error programming flags */
   __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_ALL_ERRORS);
 
   /* Write RDP Level */
-  if (DataLength >= 1)
+  if (DataLength >= 1U)
   {
-    WRITE_REG(FLASH->OPTR, *(Data));
+    WRITE_REG(FLASH->OPTR, *(pData));
   }
+
   /* Write OPTR */
-  if (DataLength >= 4)
+  if (DataLength >= 4U)
   {
-    WRITE_REG(FLASH->OPTR, (*(Data) | (*(Data + 1) << 8) | (*(Data + 2) << 16) | (*(Data + 3) << 24)));
+    WRITE_REG(FLASH->OPTR, ((uint32_t)pData[0]
+                            | ((uint32_t)pData[1] << 8U)
+                            | ((uint32_t)pData[2] << 16U)
+                            | ((uint32_t)pData[3] << 24U)));
   }
+
   /* Write NSBOOTADD0R */
-  if (DataLength >= 8)
+  if (DataLength >= 8U)
   {
-    WRITE_REG(FLASH->NSBOOTADD0R, (*(Data + 4) | (*(Data + 5) << 8) | (*(Data + 6) << 16) | (*(Data + 7) << 24)));
+    WRITE_REG(FLASH->NSBOOTADD0R, ((uint32_t)pData[4]
+                                   | ((uint32_t)pData[5] << 8U)
+                                   | ((uint32_t)pData[6] << 16U)
+                                   | ((uint32_t)pData[7] << 24U)));
   }
+
   /* Write NSBOOTADD1R */
-  if (DataLength >= 12)
+  if (DataLength >= 12U)
   {
-    WRITE_REG(FLASH->NSBOOTADD1R, (*(Data + 8) | (*(Data + 9) << 8) | (*(Data + 10) << 16) | (*(Data + 11) << 24)));
+    WRITE_REG(FLASH->NSBOOTADD1R, ((uint32_t)pData[8]
+                                   | ((uint32_t)pData[9] << 8U)
+                                   | ((uint32_t)pData[10U] << 16U)
+                                   | ((uint32_t)pData[11] << 24U)));
   }
+
   /* Write WRP1AR */
-  if (DataLength >= 28)
+  if (DataLength >= 28U)
   {
-    WRITE_REG(FLASH->WRP1AR, (*(Data + 24) | (*(Data + 25) << 8) | (*(Data + 26) << 16) | (*(Data + 27) << 24)));
+    WRITE_REG(FLASH->WRP1AR, ((uint32_t)pData[24]
+                              | ((uint32_t)pData[25] << 8U)
+                              | ((uint32_t)pData[26] << 16U)
+                              | ((uint32_t)pData[27] << 24U)));
   }
+
   /* Write WRP1BR */
-  if (DataLength >= 32)
+  if (DataLength >= 32U)
   {
-    WRITE_REG(FLASH->WRP1BR, (*(Data + 28) | (*(Data + 29) << 8) | (*(Data + 30) << 16) | (*(Data + 31) << 24)));
+    WRITE_REG(FLASH->WRP1BR, ((uint32_t)pData[28]
+                              | ((uint32_t)pData[29] << 8U)
+                              | ((uint32_t)pData[30] << 16U)
+                              | ((uint32_t)pData[31] << 24U)));
   }
+
   /* Write WRP2AR */
-  if (DataLength >= 44)
+  if (DataLength >= 44U)
   {
-    WRITE_REG(FLASH->WRP2AR, (*(Data + 40) | (*(Data + 41) << 8) | (*(Data + 42) << 16) | (*(Data + 43) << 24)));
+    WRITE_REG(FLASH->WRP2AR, ((uint32_t)pData[40]
+                              | ((uint32_t)pData[41] << 8U)
+                              | ((uint32_t)pData[42] << 16U)
+                              | ((uint32_t)pData[43] << 24U)));
   }
+
   /* Write WRP2BR */
-  if (DataLength >= 48)
+  if (DataLength >= 48U)
   {
-    WRITE_REG(FLASH->WRP2BR, (*(Data + 44) | (*(Data + 45) << 8) | (*(Data + 46) << 16) | (*(Data + 47) << 24)));
+    WRITE_REG(FLASH->WRP2BR, ((uint32_t)pData[44]
+                              | ((uint32_t)pData[45] << 8U)
+                              | ((uint32_t)pData[46] << 16U)
+                              | ((uint32_t)pData[47] << 24U)));
   }
 
   /* OEMKEYR OB can be added by user if needed */

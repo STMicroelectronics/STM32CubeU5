@@ -34,7 +34,7 @@
 /*  FUNCTION                                               RELEASE        */ 
 /*                                                                        */ 
 /*    _ux_device_class_cdc_acm_ioctl                      PORTABLE C      */ 
-/*                                                           6.1.9        */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -59,8 +59,8 @@
 /*    _ux_utility_memory_free                   Free memory               */
 /*    _ux_utility_event_flags_create            Create event flags        */
 /*    _ux_utility_event_flags_delete            Delete event flags        */
-/*    _ux_utility_thread_create                 Create thread             */
-/*    _ux_utility_thread_delete                 Delete thread             */
+/*    _ux_device_thread_create                  Create thread             */
+/*    _ux_device_thread_delete                  Delete thread             */
 /*                                                                        */ 
 /*  CALLED BY                                                             */ 
 /*                                                                        */ 
@@ -88,6 +88,14 @@
 /*  10-15-2021     Chaoqiong Xiao           Modified comment(s),          */
 /*                                            fixed compile issue,        */
 /*                                            resulting in version 6.1.9  */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            added standalone support,   */
+/*                                            fixed aborting return code, */
+/*                                            resulting in version 6.1.10 */
+/*  07-29-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            fixed parameter/variable    */
+/*                                            names conflict C++ keyword, */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 UINT _ux_device_class_cdc_acm_ioctl(UX_SLAVE_CLASS_CDC_ACM *cdc_acm, ULONG ioctl_function,
@@ -101,7 +109,7 @@ UX_SLAVE_CLASS_CDC_ACM_LINE_STATE_PARAMETER         *line_state;
 UX_SLAVE_CLASS_CDC_ACM_CALLBACK_PARAMETER           *callback;
 #endif
 UX_SLAVE_ENDPOINT                                   *endpoint;
-UX_SLAVE_INTERFACE                                  *interface;
+UX_SLAVE_INTERFACE                                  *interface_ptr;
 UX_SLAVE_TRANSFER                                   *transfer_request;
 
     /* Let's be optimist ! */
@@ -164,10 +172,10 @@ UX_SLAVE_TRANSFER                                   *transfer_request;
         case UX_SLAVE_CLASS_CDC_ACM_IOCTL_ABORT_PIPE:
 
             /* Get the interface from the instance.  */
-            interface =  cdc_acm -> ux_slave_class_cdc_acm_interface;
+            interface_ptr =  cdc_acm -> ux_slave_class_cdc_acm_interface;
     
             /* Locate the endpoints.  */
-            endpoint =  interface -> ux_slave_interface_first_endpoint;
+            endpoint =  interface_ptr -> ux_slave_interface_first_endpoint;
             
             /* What direction ?  */
             switch( (ULONG) (ALIGN_TYPE) parameter)
@@ -204,26 +212,36 @@ UX_SLAVE_TRANSFER                                   *transfer_request;
         
             /* Get the transfer request associated with the endpoint.  */
             transfer_request =  &endpoint -> ux_slave_endpoint_transfer_request;
-            
+
+#if defined(UX_DEVICE_STANDALONE)
+
+            /* Abort the transfer.  */
+            _ux_device_stack_transfer_abort(transfer_request, UX_TRANSFER_STATUS_ABORT);
+            if ((ULONG) (ALIGN_TYPE) parameter == UX_SLAVE_CLASS_CDC_ACM_ENDPOINT_XMIT)
+                cdc_acm -> ux_device_class_cdc_acm_write_state = UX_STATE_RESET;
+            else
+                cdc_acm -> ux_device_class_cdc_acm_read_state = UX_STATE_RESET;
+#else
+
             /* Check the status of the transfer. */ 
             if (transfer_request -> ux_slave_transfer_request_status ==  UX_TRANSFER_STATUS_PENDING)
             {
 
                 /* Abort the transfer.  */
-                _ux_device_stack_transfer_abort(transfer_request, UX_TRANSFER_STATUS_ABORT);
+            _ux_device_stack_transfer_abort(transfer_request, UX_ABORTED);
 
-            } 
-            
+            }
+#endif
             break;
 
         case UX_SLAVE_CLASS_CDC_ACM_IOCTL_SET_READ_TIMEOUT:
         case UX_SLAVE_CLASS_CDC_ACM_IOCTL_SET_WRITE_TIMEOUT:
 
             /* Get the interface from the instance.  */
-            interface =  cdc_acm -> ux_slave_class_cdc_acm_interface;
+            interface_ptr =  cdc_acm -> ux_slave_class_cdc_acm_interface;
 
             /* Locate the endpoints.  */
-            endpoint =  interface -> ux_slave_interface_first_endpoint;
+            endpoint =  interface_ptr -> ux_slave_interface_first_endpoint;
 
             /* If it's reading timeout but endpoint is OUT, it should be the next one.  */
             if ((endpoint -> ux_slave_endpoint_descriptor.bEndpointAddress & UX_ENDPOINT_DIRECTION) !=
@@ -255,16 +273,19 @@ UX_SLAVE_TRANSFER                                   *transfer_request;
             
             /* Properly cast the parameter pointer.  */
             callback = (UX_SLAVE_CLASS_CDC_ACM_CALLBACK_PARAMETER *) parameter;
-            
+
             /* Save the callback function for write.  */
             cdc_acm -> ux_device_class_cdc_acm_write_callback  = callback -> ux_device_class_cdc_acm_parameter_write_callback;
 
             /* Save the callback function for read.  */
             cdc_acm -> ux_device_class_cdc_acm_read_callback = callback -> ux_device_class_cdc_acm_parameter_read_callback;
 
+#if !defined(UX_DEVICE_STANDALONE)
+
             /* Start transmission threads.  */
             _ux_utility_thread_resume(&cdc_acm -> ux_slave_class_cdc_acm_bulkin_thread);
             _ux_utility_thread_resume(&cdc_acm -> ux_slave_class_cdc_acm_bulkout_thread);
+#endif
 
             /* Declare the transmission with callback on.  */
             cdc_acm -> ux_slave_class_cdc_acm_transmission_status = UX_TRUE;
@@ -279,29 +300,32 @@ UX_SLAVE_TRANSFER                                   *transfer_request;
             {
         
                 /* Get the interface from the instance.  */
-                interface =  cdc_acm -> ux_slave_class_cdc_acm_interface;
+                interface_ptr =  cdc_acm -> ux_slave_class_cdc_acm_interface;
     
                 /* Locate the endpoints.  */
-                endpoint =  interface -> ux_slave_interface_first_endpoint;
+                endpoint =  interface_ptr -> ux_slave_interface_first_endpoint;
 
-                    /* Get the transfer request associated with the endpoint.  */
-                    transfer_request =  &endpoint -> ux_slave_endpoint_transfer_request;
-                    
-                        /* Abort the transfer.  */
-                        _ux_device_stack_transfer_abort(transfer_request, UX_TRANSFER_STATUS_ABORT);
+                /* Get the transfer request associated with the endpoint.  */
+                transfer_request =  &endpoint -> ux_slave_endpoint_transfer_request;
+                
+                /* Abort the transfer.  */
+                _ux_device_stack_transfer_abort(transfer_request, UX_ABORTED);
         
                 /* Next endpoint.  */
                 endpoint =  endpoint -> ux_slave_endpoint_next_endpoint;
 
-                    /* Get the transfer request associated with the endpoint.  */
-                    transfer_request =  &endpoint -> ux_slave_endpoint_transfer_request;
-                    
-                        /* Abort the transfer.  */
-                        _ux_device_stack_transfer_abort(transfer_request, UX_TRANSFER_STATUS_ABORT);
-        
+                /* Get the transfer request associated with the endpoint.  */
+                transfer_request =  &endpoint -> ux_slave_endpoint_transfer_request;
+                
+                /* Abort the transfer.  */
+                _ux_device_stack_transfer_abort(transfer_request, UX_ABORTED);
+
+#if !defined(UX_DEVICE_STANDALONE)
+
                 /* Suspend threads.  */
-                _ux_utility_thread_suspend(&cdc_acm -> ux_slave_class_cdc_acm_bulkin_thread);
-                _ux_utility_thread_suspend(&cdc_acm -> ux_slave_class_cdc_acm_bulkout_thread);
+                _ux_device_thread_suspend(&cdc_acm -> ux_slave_class_cdc_acm_bulkin_thread);
+                _ux_device_thread_suspend(&cdc_acm -> ux_slave_class_cdc_acm_bulkout_thread);
+#endif
 
                 /* Clear scheduled write flag.  */
                 cdc_acm -> ux_slave_class_cdc_acm_scheduled_write = UX_FALSE;
@@ -316,7 +340,7 @@ UX_SLAVE_TRANSFER                                   *transfer_request;
 
             break;                
 #endif
-    
+
         default: 
 
             /* Error trap. */

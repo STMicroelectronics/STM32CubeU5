@@ -154,7 +154,7 @@ __Vectors       DCD     __initial_sp                     ; Top of Stack
                 DCD     PWR_S3WU_IRQHandler              ; PWR wake up from Stop3 interrupt
                 DCD     SDMMC1_IRQHandler                ; SDMMC1 global interrupt
                 DCD     SDMMC2_IRQHandler                ; SDMMC2 global interrupt
-                DCD     GPDMA1_Channel8_IRQHandler       ; GPDMA Channel 8 global interrupt
+                DCD     GPDMA1_Channel8_IRQHandler       ; GPDMA1 Channel 8 global interrupt
                 DCD     GPDMA1_Channel9_IRQHandler       ; GPDMA1 Channel 9 global interrupt
                 DCD     GPDMA1_Channel10_IRQHandler      ; GPDMA1 Channel 10 global interrupt
                 DCD     GPDMA1_Channel11_IRQHandler      ; GPDMA1 Channel 11 global interrupt
@@ -199,20 +199,20 @@ __Vectors       DCD     __initial_sp                     ; Top of Stack
                 DCD     MDF1_FLT5_IRQHandler             ; MDF1 Filter 5 global interrupt
                 DCD     CORDIC_IRQHandler                ; CORDIC global interrupt
                 DCD     FMAC_IRQHandler                  ; FMAC global interrupt
-				DCD     0                                ; Reserved
-				DCD     USART6_IRQHandler                ; USART6 global interrupt      
-				DCD     I2C5_ER_IRQHandler               ; I2C5 error interrupt
-				DCD     I2C5_EV_IRQHandler               ; I2C5 event interrupt
-				DCD     I2C6_ER_IRQHandler               ; I2C6 error interrupt
-				DCD     I2C6_EV_IRQHandler               ; I2C6 event interrupt
-				DCD     HSPI1_IRQHandler                 ; HSPI1 global interrupt
-				DCD     GPU2D_IRQHandler                 ; GPU2D global interrupt
-				DCD     GPU2D_ER_IRQHandler              ; GPU2D error interrupt
-				DCD     GFXMMU_IRQHandler                ; GFXMMU global interrupt
-				DCD     LTDC_IRQHandler                  ; LCD-TFT global interrupt
-				DCD     LTDC_ER_IRQHandler               ; LCD-TFT error interrupt
-				DCD     DSI_IRQHandler                   ; DSIHOST global interrupt
-				DCD     DCACHE2_IRQHandler               ; GPU2D Data cache global interrupt
+                DCD     LSECSSD_IRQHandler               ; LSECSSD global interrupt
+                DCD     USART6_IRQHandler                ; USART6 global interrupt
+                DCD     I2C5_ER_IRQHandler               ; I2C5 error interrupt
+                DCD     I2C5_EV_IRQHandler               ; I2C5 event interrupt
+                DCD     I2C6_ER_IRQHandler               ; I2C6 error interrupt
+                DCD     I2C6_EV_IRQHandler               ; I2C6 event interrupt
+                DCD     HSPI1_IRQHandler                 ; HSPI1 global interrupt
+                DCD     GPU2D_IRQHandler                 ; GPU2D global interrupt
+                DCD     GPU2D_ER_IRQHandler              ; GPU2D error interrupt
+                DCD     GFXMMU_IRQHandler                ; GFXMMU global interrupt
+                DCD     LTDC_IRQHandler                  ; LCD-TFT global interrupt
+                DCD     LTDC_ER_IRQHandler               ; LCD-TFT error interrupt
+                DCD     DSI_IRQHandler                   ; DSIHOST global interrupt
+                DCD     DCACHE2_IRQHandler               ; GPU2D Data cache global interrupt
 
 __Vectors_End
 
@@ -414,19 +414,20 @@ Default_Handler PROC
                 EXPORT  MDF1_FLT5_IRQHandler         [WEAK]
                 EXPORT  CORDIC_IRQHandler            [WEAK]
                 EXPORT  FMAC_IRQHandler              [WEAK]
-				EXPORT  USART6_IRQHandler            [WEAK]
-				EXPORT  I2C5_ER_IRQHandler           [WEAK]
-				EXPORT  I2C5_EV_IRQHandler           [WEAK]
-				EXPORT  I2C6_ER_IRQHandler           [WEAK]
-				EXPORT  I2C6_EV_IRQHandler           [WEAK]
-				EXPORT  HSPI1_IRQHandler             [WEAK]
-				EXPORT  GPU2D_IRQHandler             [WEAK]
-				EXPORT  GPU2D_ER_IRQHandler          [WEAK]
-				EXPORT  GFXMMU_IRQHandler            [WEAK]
-				EXPORT  LTDC_IRQHandler              [WEAK]
-				EXPORT  LTDC_ER_IRQHandler           [WEAK]
-				EXPORT  DSI_IRQHandler               [WEAK]
-				EXPORT  DCACHE2_IRQHandler           [WEAK]
+                EXPORT  LSECSSD_IRQHandler           [WEAK]
+                EXPORT  USART6_IRQHandler            [WEAK]
+                EXPORT  I2C5_ER_IRQHandler           [WEAK]
+                EXPORT  I2C5_EV_IRQHandler           [WEAK]
+                EXPORT  I2C6_ER_IRQHandler           [WEAK]
+                EXPORT  I2C6_EV_IRQHandler           [WEAK]
+                EXPORT  HSPI1_IRQHandler             [WEAK]
+                EXPORT  GPU2D_IRQHandler             [WEAK]
+                EXPORT  GPU2D_ER_IRQHandler          [WEAK]
+                EXPORT  GFXMMU_IRQHandler            [WEAK]
+                EXPORT  LTDC_IRQHandler              [WEAK]
+                EXPORT  LTDC_ER_IRQHandler           [WEAK]
+                EXPORT  DSI_IRQHandler               [WEAK]
+                EXPORT  DCACHE2_IRQHandler           [WEAK]
 
 
 WWDG_IRQHandler
@@ -554,19 +555,20 @@ MDF1_FLT4_IRQHandler
 MDF1_FLT5_IRQHandler
 CORDIC_IRQHandler
 FMAC_IRQHandler
-USART6_IRQHandler  
-I2C5_ER_IRQHandler 
-I2C5_EV_IRQHandler 
-I2C6_ER_IRQHandler 
-I2C6_EV_IRQHandler 
-HSPI1_IRQHandler   
-GPU2D_IRQHandler   
+LSECSSD_IRQHandler
+USART6_IRQHandler
+I2C5_ER_IRQHandler
+I2C5_EV_IRQHandler
+I2C6_ER_IRQHandler
+I2C6_EV_IRQHandler
+HSPI1_IRQHandler
+GPU2D_IRQHandler
 GPU2D_ER_IRQHandler
-GFXMMU_IRQHandler  
-LTDC_IRQHandler    
-LTDC_ER_IRQHandler 
-DSI_IRQHandler     
-DCACHE2_IRQHandler 
+GFXMMU_IRQHandler
+LTDC_IRQHandler
+LTDC_ER_IRQHandler
+DSI_IRQHandler
+DCACHE2_IRQHandler
 
 
                 B       .

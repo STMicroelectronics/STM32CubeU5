@@ -17,6 +17,23 @@
   ******************************************************************************
   @endverbatim
 
+### 16-December-2022 ###
+========================
+    + Fix Keil and STM32CubeIDE compilation errors and warnings
+
+### 05-September-2022 ###
+========================
+    + Backport advisory TFMV-3 (to avoid memory leakage)
+
+### 18-August-2022 ###
+========================
+    + Backport advisory TFMV-5 (psa_fwu_write() may cause buffer overflow)
+    + Add FIH latency on tfm memory check
+
+### 07-July-2022 ###
+========================
+    + Update printf() implementation
+
 ### 26-January-2022 ###
 ========================
     + FOSS Audit Neutral license and removal of external targets

@@ -28,7 +28,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32u575i_eval_conf.h"
 #include "stm32u575i_eval_errno.h"
-#include "../Components/m24lr64/m24lr64.h"
+#include "../Components/m24256/m24256.h"
 
 /** @addtogroup BSP
   * @{

@@ -20,8 +20,8 @@
 #include "webserver_http_response.h"
 #include "webserver_http_encoder.h"
 #include "net_connect.h"
+#include "net_interface.h"
 #include "mx_wifi.h"
-#include <stdio.h>
 
 /* Private typedef ---------------------------------------------------------------------------------------------------*/
 /* Private define ----------------------------------------------------------------------------------------------------*/
@@ -34,33 +34,22 @@
 
 /* Private macro -----------------------------------------------------------------------------------------------------*/
 /* Private variables -------------------------------------------------------------------------------------------------*/
-/* Sensors acquisition variables declaration */
-float temperature_value = 0;
-float pressure_value    = 0;
-float humidity_value    = 0;
-
-/* Treat responses variables declaration */
-int sock, newconn, size;
-
-/* Socket variables declaration */
-struct net_sockaddr address, remotehost;
-
 /* HTTP buffers declaration */
 char http_sensor_value[HTTP_SENSORS_BUFFER_SIZE];
 char http_header_response[HTTP_HEADERS_BUFFER_SIZE];
 
 /* Private function prototypes ---------------------------------------------------------------------------------------*/
-static WebServer_StatusTypeDef http_treat_request(uint32_t socket);
-static WebServer_StatusTypeDef http_send_headers_response(uint32_t headers_id,
-                                                          uint32_t socket,
+static WebServer_StatusTypeDef http_treat_request(int32_t socket);
+static WebServer_StatusTypeDef http_send_headers_response(int32_t socket,
+                                                          uint32_t headers_id,
                                                           char *headers_buff,
                                                           uint32_t data_size);
-static WebServer_StatusTypeDef http_send_response(uint32_t headers_id,
-                                                  uint32_t socket,
+static WebServer_StatusTypeDef http_send_response(int32_t socket,
+                                                  uint32_t headers_id,
                                                   char *headers_buff,
                                                   const char *body_buff,
                                                   uint32_t data_size);
-static WebServer_StatusTypeDef http_send(uint32_t socket,
+static WebServer_StatusTypeDef http_send(int32_t socket,
                                          const char *frame,
                                          uint32_t frame_size);
 
@@ -73,52 +62,76 @@ static WebServer_StatusTypeDef http_send(uint32_t socket,
   */
 WebServer_StatusTypeDef webserver_http_start(void)
 {
-  /* create a TCP socket */
+  /* The IPv4 network socket for this server, to bind with the port to listen to. */
+  struct net_sockaddr_in s_addr_in = {0};
+  net_ip_addr_t ip_addr_in = {0};
+  int32_t timeout = MX_WIFI_CMD_TIMEOUT;
+  int32_t sock = 0;
+
+  /* Create a TCP socket. */
   printf("\r\n");
-  printf("*** Create TCP socket \r\n");
+  printf("*** Create TCP socket\r\n");
   if ((sock = net_socket(NET_AF_INET, NET_SOCK_STREAM, NET_IPPROTO_TCP)) < 0)
   {
-    printf("*** Fail : Socket not created !!!! \r\n");
+    printf("*** Fail : Socket not created !!!!\r\n");
     return SOCKET_ERROR;
   }
-  printf("*** TCP socket created \r\n");
+  printf("*** TCP socket created\r\n");
+
+  printf("*** net_setsockopt ...\r\n");
+  net_setsockopt(sock, NET_SOL_SOCKET, NET_SO_BINDTODEVICE, Netif, sizeof(&Netif));
+  net_setsockopt(sock, NET_SOL_SOCKET, NET_SO_RCVTIMEO, &timeout, sizeof(timeout));
 
   /* Bind socket */
-  printf("*** Set port and bind socket \r\n");
-  address.sa_family = NET_AF_INET;
-  address.sa_len    = sizeof(net_sockaddr_t);
-  net_set_port((struct net_sockaddr *)&address, HTTP_SERVER_PORT);
-  if (net_bind(sock, (struct net_sockaddr *)&address, sizeof(address)) != 0U)
+  printf("*** Set port and bind socket\r\n");
+  s_addr_in.sin_family = NET_AF_INET;
+  s_addr_in.sin_len    = sizeof(s_addr_in);
+
+  net_if_get_ip_address(Netif, &ip_addr_in);
+  s_addr_in.sin_addr.s_addr = ip_addr_in.addr;
+
+  net_set_port((struct net_sockaddr *)&s_addr_in, HTTP_SERVER_PORT);
+  if (net_bind(sock, (struct net_sockaddr *)&s_addr_in, sizeof(s_addr_in)) != 0U)
   {
-    printf("*** Fail : Socket not binded !!!! \r\n");
+    printf("*** Fail : Socket not binded !!!!\r\n");
     return SOCKET_ERROR;
   }
-  printf("*** Port and socket binded \r\n");
+  printf("*** Port and socket binded\r\n");
 
   /* listen for incoming connections */
-  printf("*** Listen for incoming connections \r\n");
+  printf("*** Listen for incoming connections\r\n");
   if (net_listen(sock, 5) != 0U)
   {
-    printf("*** Fail : Listening not started !!!! \r\n");
+    printf("*** Fail : Listening not started !!!!\r\n");
     return SOCKET_ERROR;
   }
   printf("*** Listening started \r\n");
 
-  size = sizeof(remotehost);
+  printf("--> Please connect to %s:%" PRIu32 "\n",
+         net_ntoa(&ip_addr_in), (uint32_t)NET_NTOHS(s_addr_in.sin_port));
 
   /* Infinite loop to serve socket communication */
   while (1)
   {
+    struct net_sockaddr_in s_addr_in_remote_host = {0};
+    uint32_t s_addr_in_remote_host_len = sizeof(s_addr_in_remote_host);
+
     /* Accept net socket requests */
-    newconn = net_accept(sock, (struct net_sockaddr *)&remotehost, (uint32_t *)&size);
+    const int32_t newconn = net_accept(sock, (struct net_sockaddr *)&s_addr_in_remote_host, (uint32_t *)&s_addr_in_remote_host_len);
 
     /* Check if a valid new connection is requested */
     if (newconn > 0)
     {
+      net_ip_addr_t ip_addr_in_remote_host = {0};
+      ip_addr_in_remote_host.addr = s_addr_in_remote_host.sin_addr.s_addr;
+
+      printf("Request from %s:%" PRIu32 "\n",
+             net_ntoa(&ip_addr_in_remote_host), (uint32_t)NET_NTOHS(s_addr_in_remote_host.sin_port));
+
       /* Treat net socket requests */
       if (http_treat_request(newconn) != WEBSERVER_OK)
       {
-        printf("*** Fail : Invalid HTTP request !!!! \r\n");
+        printf("*** Fail : Invalid HTTP request !!!!\r\n");
         return SOCKET_ERROR;
       }
     }
@@ -135,15 +148,15 @@ WebServer_StatusTypeDef webserver_http_start(void)
   * @param  socket : connection socket
   * @retval Web Server status
   */
-static WebServer_StatusTypeDef http_treat_request(uint32_t socket)
+static WebServer_StatusTypeDef http_treat_request(int32_t socket)
 {
-  unsigned char recv_buffer[HTTP_RECEIVE_BUFFER_SIZE];
+  static unsigned char recv_buffer[HTTP_RECEIVE_BUFFER_SIZE];
 
   /* Clear receive buffer */
-  memset((void*)recv_buffer, 0, HTTP_RECEIVE_BUFFER_SIZE);
+  memset((void*)recv_buffer, 0, sizeof(recv_buffer));
 
   /* Read the http request */
-  if (net_recvfrom(socket, recv_buffer, HTTP_RECEIVE_BUFFER_SIZE, 0, (struct net_sockaddr *)&remotehost, (uint32_t *)&size) < 0)
+  if (net_recv(socket, recv_buffer, HTTP_RECEIVE_BUFFER_SIZE, 0) < 0)
   {
     return HTTP_ERROR;
   }
@@ -154,68 +167,71 @@ static WebServer_StatusTypeDef http_treat_request(uint32_t socket)
     /* Send html */
     if (strncmp((char *)&recv_buffer[http_get_cmd_size], http_html_cmd, http_html_cmd_size) == 0U)
     {
-      http_send_response(HTTP_HEADER_HTML_ID, socket, http_header_response, html_buff, html_buff_size);
+      http_send_response(socket, HTTP_HEADER_HTML_ID, http_header_response, html_buff, html_buff_size);
     }
     /* Send css shunk */
     else if (strncmp((char *)&recv_buffer[http_get_cmd_size], http_css_chunk_cmd, http_css_chunk_cmd_size) == 0U)
     {
-      http_send_response(HTTP_HEADER_CSS_ID, socket, http_header_response, css_shunk_buff, css_shunk_buff_size);
+      http_send_response(socket, HTTP_HEADER_CSS_ID, http_header_response, css_shunk_buff, css_shunk_buff_size);
     }
     /* Send main css */
     else if (strncmp((char *)&recv_buffer[http_get_cmd_size], http_css_main_cmd, http_css_main_cmd_size) == 0U)
     {
-      http_send_response(HTTP_HEADER_CSS_ID, socket, http_header_response, css_main_buff, css_main_buff_size);
+      http_send_response(socket, HTTP_HEADER_CSS_ID, http_header_response, css_main_buff, css_main_buff_size);
     }
     /* Send js shunk */
     else if (strncmp((char *)&recv_buffer[http_get_cmd_size], http_js_chunk_cmd, http_js_chunk_cmd_size) == 0U)
     {
-      http_send_response(HTTP_HEADER_JS_ID, socket, http_header_response, js_shunk_buff, js_shunk_buff_size);
+      http_send_response(socket, HTTP_HEADER_JS_ID, http_header_response, js_shunk_buff, js_shunk_buff_size);
     }
     /* Send main js */
     else if (strncmp((char *)&recv_buffer[http_get_cmd_size], http_js_main_cmd, http_js_main_cmd_size) == 0U)
     {
-      http_send_response(HTTP_HEADER_JS_ID, socket, http_header_response, js_main_buff, js_main_buff_size);
+      http_send_response(socket, HTTP_HEADER_JS_ID, http_header_response, js_main_buff, js_main_buff_size);
     }
     /* Send favicon */
     else if (strncmp((char *)&recv_buffer[http_get_cmd_size], http_favicon_cmd, http_favicon_cmd_size) == 0U)
     {
-      http_send_response(HTTP_HEADER_FAVICON_ID, socket, http_header_response, favicon_buff, favicon_buff_size);
+      http_send_response(socket, HTTP_HEADER_FAVICON_ID, http_header_response, favicon_buff, favicon_buff_size);
     }
     /* Send json */
     else if (strncmp((char *)&recv_buffer[http_get_cmd_size], http_json_cmd, http_json_cmd_size) == 0U)
     {
-      http_send_response(HTTP_HEADER_JSON_ID, socket, http_header_response, json_buff, json_buff_size);
+      http_send_response(socket, HTTP_HEADER_JSON_ID, http_header_response, json_buff, json_buff_size);
     }
     /* Send font */
     else if (strncmp((char *)&recv_buffer[http_get_cmd_size], http_font_cmd, http_font_cmd_size) == 0U)
     {
-      http_send_response(HTTP_HEADER_FONT_ID, socket, http_header_response, font_buff, font_buff_size);
+      http_send_response(socket, HTTP_HEADER_FONT_ID, http_header_response, font_buff, font_buff_size);
     }
     /* Send image */
     else if (strncmp((char *)&recv_buffer[http_get_cmd_size], http_image_cmd, http_image_cmd_size) == 0U)
     {
-      http_send_response(HTTP_HEADER_IMAGE_ID, socket, http_header_response, image_buff, image_buff_size);
+      http_send_response(socket, HTTP_HEADER_IMAGE_ID, http_header_response, image_buff, image_buff_size);
     }
     /* Send read temperature response */
     else if (strncmp((char *)&recv_buffer[http_get_cmd_size], http_read_temperature_cmd, http_read_temperature_cmd_size) == 0U)
     {
+      float temperature_value = 0;
       webserver_temp_sensor_read(&temperature_value);
       sprintf(http_sensor_value, "%g", temperature_value);
-      http_send_response(HTTP_HEADER_SENSOR_ID, socket, http_header_response, http_sensor_value, strlen(http_sensor_value));
+      http_send_response(socket, HTTP_HEADER_SENSOR_ID, http_header_response, http_sensor_value, strlen(http_sensor_value));
     }
     /* Send read pressure response */
     else if (strncmp((char *)&recv_buffer[http_get_cmd_size], http_read_pressure_cmd, http_read_pressure_cmd_size) == 0U)
     {
+      float pressure_value = 0;
       webserver_press_sensor_read(&pressure_value);
       sprintf(http_sensor_value, "%g", pressure_value);
-      http_send_response(HTTP_HEADER_SENSOR_ID, socket, http_header_response, http_sensor_value, strlen(http_sensor_value));
+      http_send_response(socket, HTTP_HEADER_SENSOR_ID, http_header_response, http_sensor_value, strlen(http_sensor_value));
     }
     /* Send read humidity response */
     else if (strncmp((char *)&recv_buffer[http_get_cmd_size], http_read_humidity_cmd, http_read_humidity_cmd_size) == 0U)
     {
+      float humidity_value = 0;
       webserver_humid_sensor_read(&humidity_value);
       sprintf(http_sensor_value, "%g", humidity_value);
-      http_send_response(HTTP_HEADER_SENSOR_ID, socket, http_header_response, http_sensor_value, strlen(http_sensor_value));
+      http_send_response(socket, HTTP_HEADER_SENSOR_ID, http_header_response, http_sensor_value, strlen(http_sensor_value));
     }
   }
   else
@@ -224,7 +240,7 @@ static WebServer_StatusTypeDef http_treat_request(uint32_t socket)
   }
 
   /* Close connection socket */
-  if (net_closesocket(socket) != 0U)
+  if (net_closesocket(socket) != 0)
   {
     return HTTP_ERROR;
   }
@@ -240,14 +256,14 @@ static WebServer_StatusTypeDef http_treat_request(uint32_t socket)
   * @param  data_size    : size of body web resources
   * @retval Web Server status
   */
-static WebServer_StatusTypeDef http_send_response(uint32_t headers_id,
-                                                  uint32_t socket,
+static WebServer_StatusTypeDef http_send_response(int32_t socket,
+                                                  uint32_t headers_id,
                                                   char *headers_buff,
                                                   const char *body_buff,
                                                   uint32_t data_size)
 {
   /* Send HTTP header response */
-  if (http_send_headers_response(headers_id, socket, headers_buff, data_size) != WEBSERVER_OK)
+  if (http_send_headers_response(socket, headers_id, headers_buff, data_size) != WEBSERVER_OK)
   {
     return HTTP_ERROR;
   }
@@ -269,7 +285,7 @@ static WebServer_StatusTypeDef http_send_response(uint32_t headers_id,
   * @param  data_size    : size of body web resources
   * @retval Web Server status
   */
-static WebServer_StatusTypeDef http_send_headers_response(uint32_t socket,
+static WebServer_StatusTypeDef http_send_headers_response(int32_t socket,
                                                           uint32_t headers_id,
                                                           char *headers_buff,
                                                           uint32_t data_size)
@@ -387,7 +403,7 @@ static WebServer_StatusTypeDef http_send_headers_response(uint32_t socket,
   * @param  frame_size  : size of frame to be sent
   * @retval Web Server status
   */
-static WebServer_StatusTypeDef http_send(uint32_t socket,
+static WebServer_StatusTypeDef http_send(int32_t socket,
                                          const char *frame,
                                          uint32_t frame_size)
 {

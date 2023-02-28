@@ -36,7 +36,7 @@
 
 /**
   * @brief  Read OV5640 component registers
-  * @param  ctx component contex
+  * @param  ctx component context
   * @param  reg Register to read from
   * @param  pdata Pointer to data buffer
   * @param  length Number of data to read
@@ -49,7 +49,7 @@ int32_t ov5640_read_reg(ov5640_ctx_t *ctx, uint16_t reg, uint8_t *pdata, uint16_
 
 /**
   * @brief  Write OV5640 component registers
-  * @param  ctx component contex
+  * @param  ctx component context
   * @param  reg Register to write to
   * @param  pdata Pointer to data buffer
   * @param  length Number of data to write

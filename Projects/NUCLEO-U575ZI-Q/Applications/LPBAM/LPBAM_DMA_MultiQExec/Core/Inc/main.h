@@ -68,6 +68,7 @@ void Error_Handler(void);
 #define LPTIM3_PWM_PERIOD 3226U
 #define LPTIM1_PWM_REPETITION 0U
 #define TOGGLE_BUFFER_SIZE 2U
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

@@ -36,7 +36,7 @@
 /*  FUNCTION                                               RELEASE        */ 
 /*                                                                        */ 
 /*    _ux_host_class_hid_keyboard_deactivate              PORTABLE C      */ 
-/*                                                           6.1          */
+/*                                                           6.1.11       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -58,7 +58,7 @@
 /*    _ux_host_class_hid_periodic_report_stop                             */
 /*                                          Stop periodic report          */ 
 /*    _ux_utility_memory_free               Release memory block          */
-/*    _ux_utility_semaphore_delete          Delete semaphore              */
+/*    _ux_host_semaphore_delete             Delete semaphore              */
 /*    _ux_utility_thread_delete             Delete thread                 */
 /*                                                                        */ 
 /*  CALLED BY                                                             */ 
@@ -72,6 +72,12 @@
 /*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
 /*  09-30-2020     Chaoqiong Xiao           Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            added standalone support,   */
+/*                                            resulting in version 6.1.10 */
+/*  04-25-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            internal clean up,          */
+/*                                            resulting in version 6.1.11 */
 /*                                                                        */
 /**************************************************************************/
 UINT  _ux_host_class_hid_keyboard_deactivate(UX_HOST_CLASS_HID_CLIENT_COMMAND *command)
@@ -80,14 +86,14 @@ UINT  _ux_host_class_hid_keyboard_deactivate(UX_HOST_CLASS_HID_CLIENT_COMMAND *c
 UX_HOST_CLASS_HID              *hid;
 UX_HOST_CLASS_HID_CLIENT       *hid_client;
 UX_HOST_CLASS_HID_KEYBOARD     *keyboard_instance;
-UINT                            status;
+UINT                            status = UX_SUCCESS;
 
 
     /* Get the instance to the HID class.  */
     hid =  command -> ux_host_class_hid_client_command_instance;
 
     /* Stop the periodic report.  */
-    status =  _ux_host_class_hid_periodic_report_stop(hid);
+    _ux_host_class_hid_periodic_report_stop(hid);
 
     /* Get the HID client pointer.  */
     hid_client =  hid -> ux_host_class_hid_client;
@@ -95,17 +101,20 @@ UINT                            status;
     /* Get the remote control local instance.  */
     keyboard_instance =  (UX_HOST_CLASS_HID_KEYBOARD *) hid_client -> ux_host_class_hid_client_local_instance;
 
-    /* Stop the semaphore.  */
-    status =  _ux_utility_semaphore_delete(&keyboard_instance -> ux_host_class_hid_keyboard_semaphore);
+#if !defined(UX_HOST_STANDALONE)
 
-    /* Free memory for key states.  */
-    _ux_utility_memory_free(keyboard_instance -> ux_host_class_hid_keyboard_key_state);
+    /* Stop the semaphore.  */
+    status =  _ux_host_semaphore_delete(&keyboard_instance -> ux_host_class_hid_keyboard_semaphore);
 
     /* Terminate the thread.  */
     _ux_utility_thread_delete(&keyboard_instance -> ux_host_class_hid_keyboard_thread);
 
     /* Return to the pool the thread stack.  */
     _ux_utility_memory_free(keyboard_instance -> ux_host_class_hid_keyboard_thread_stack);
+#endif
+
+    /* Free memory for key states.  */
+    _ux_utility_memory_free(keyboard_instance -> ux_host_class_hid_keyboard_key_state);
 
     /* If trace is enabled, insert this event into the trace buffer.  */
     UX_TRACE_IN_LINE_INSERT(UX_TRACE_HOST_CLASS_HID_KEYBOARD_DEACTIVATE, hid, keyboard_instance, 0, 0, UX_TRACE_HOST_CLASS_EVENTS, 0, 0)

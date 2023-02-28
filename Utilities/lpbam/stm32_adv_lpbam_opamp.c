@@ -57,6 +57,7 @@
     [..]
       This driver provides services covering the LPBAM management of the following OPAMP features :
           (+) Configure and start the opamp peripheral.
+          (+) Stop the opamp peripheral.
 
     *** Functional description ***
     ==============================
@@ -68,6 +69,8 @@
 
       The opamp peripheral is configured and started.
       The opamp non inverting input, the inverting input, the mode and the gain can be configured.
+
+      The opamp peripheral is stopped.
 
     *** Driver APIs description ***
     ===============================
@@ -96,6 +99,9 @@
                    (+++) PgaGain           : OPAMP_PGA_GAIN_2.
                    (+++) PowerSupplyRange  : OPAMP_POWERSUPPLY_HIGH.
 
+    [..]
+      Use ADV_LPBAM_OPAMP_Stop_SetFullQ() API to build a linked-list queue that stop the opamp peripheral.
+
     *** Driver user sequence ***
     ============================
     [..]
@@ -107,7 +113,7 @@
           (+) Initialize all used GPIOs for NonInvertingInput, InvertingInput. (Mandatory)
           (+) Initialize all used GPIOs for opamp Output. (Optional)
           (+) Initialize the opamp (Using HAL/LL). (Mandatory)
-          (+) Call, when needed, ADV_LPBAM_OPAMP_Start_SetFullQ(). (Mandatory)
+          (+) Call ADV_LPBAM_OPAMP_Start_SetFullQ() to configure and start the OPAMP peripheral. (Mandatory)
           (+) Call, optionally, ADV_LPBAM_Q_SetTriggerConfig() in stm32_adv_lpbam_common.c to add hardware trigger
               condition for executing of ADV_LPBAM_OPAMP_Start_SetFullQ() output queue.
           (+) Call, optionally, ADV_LPBAM_Q_SetCircularMode() in stm32_adv_lpbam_common.c to circularize your
@@ -121,6 +127,7 @@
               (++) DMA_IT_ULE : update link error.
               (++) DMA_IT_USE : user setting error.
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
+          (+) Call, when needed, ADV_LPBAM_OPAMP_Stop_SetFullQ() to stop the OPAMP peripheral.
 
     *** Recommendation ***
     ======================
@@ -208,8 +215,8 @@ LPBAM_Status_t ADV_LPBAM_OPAMP_Start_SetFullQ(OPAMP_TypeDef                  *co
   config_node.Instance                    = pInstance;
 
   /* Set node descriptor */
-  config_node.NodeDesc.NodeInfo.NodeID   = (uint32_t)LPBAM_OPAMP_CONFIG_ID;
-  config_node.NodeDesc.NodeInfo.NodeType = pDMAListInfo->QueueType;
+  config_node.NodeDesc.NodeInfo.NodeID     = (uint32_t)LPBAM_OPAMP_CONFIG_ID;
+  config_node.NodeDesc.NodeInfo.NodeType   = pDMAListInfo->QueueType;
   config_node.NodeDesc.pSrcVarReg          = &pDescriptor->pReg[0U];
 
   /* Set OPAMP configuration */
@@ -232,6 +239,64 @@ LPBAM_Status_t ADV_LPBAM_OPAMP_Start_SetFullQ(OPAMP_TypeDef                  *co
   }
 
   /* Connect configuration node to OPAMP Queue */
+  if (HAL_DMAEx_List_InsertNode_Tail(pQueue, &pDescriptor->pNodes[0U]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  return LPBAM_OK;
+}
+
+/**
+  * @brief  Build DMA linked-list queue to stop the OPAMP peripheral.
+  * @param  pInstance    : [IN]  Pointer to a OPAMP_TypeDef structure that selects OPAMP instance.
+  * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
+  *                              queue type information.
+  * @param  pDescriptor  : [IN]  Pointer to a LPBAM_OPAMP_StopFullDesc_t structure that contains descriptor information.
+  * @param  pQueue       : [OUT] Pointer to a DMA_QListTypeDef structure that contains DMA linked-list queue
+  *                              information.
+  * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
+  */
+LPBAM_Status_t ADV_LPBAM_OPAMP_Stop_SetFullQ(OPAMP_TypeDef              *const pInstance,
+                                             LPBAM_DMAListInfo_t        const *const pDMAListInfo,
+                                             LPBAM_OPAMP_StopFullDesc_t *const pDescriptor,
+                                             DMA_QListTypeDef           *const pQueue)
+{
+  LPBAM_OPAMP_ConfNode_t config_node;
+  DMA_NodeConfTypeDef    dma_node_conf;
+
+  /*
+   *               ######## OPAMP Stop node ########
+   */
+
+  /* Set OPAMP instance */
+  config_node.Instance                   = pInstance;
+
+  /* Set node descriptor */
+  config_node.NodeDesc.NodeInfo.NodeID   = (uint32_t)LPBAM_OPAMP_CONFIG_ID;
+  config_node.NodeDesc.NodeInfo.NodeType = pDMAListInfo->QueueType;
+  config_node.NodeDesc.pSrcVarReg        = &pDescriptor->pReg[0U];
+
+  /* Set OPAMP configuration */
+  config_node.Config.State               = DISABLE;
+  config_node.Config.Mode                = LPBAM_OPAMP_STANDALONE_MODE;
+  config_node.Config.PgaGain             = LPBAM_OPAMP_PGA_GAIN_2;
+  config_node.Config.InvertingInput      = LPBAM_OPAMP_INVERTINGINPUT_IO0;
+  config_node.Config.NonInvertingInput   = LPBAM_OPAMP_NONINVERTINGINPUT_IO0;
+
+  /* Fill node configuration */
+  if (LPBAM_OPAMP_FillNodeConfig(&config_node, &dma_node_conf) != LPBAM_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Build node */
+  if (HAL_DMAEx_List_BuildNode(&dma_node_conf, &pDescriptor->pNodes[0U]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Connect stop node to OPAMP Queue */
   if (HAL_DMAEx_List_InsertNode_Tail(pQueue, &pDescriptor->pNodes[0U]) != HAL_OK)
   {
     return LPBAM_ERROR;

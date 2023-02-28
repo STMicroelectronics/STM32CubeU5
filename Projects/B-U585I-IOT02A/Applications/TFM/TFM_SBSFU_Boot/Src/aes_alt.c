@@ -121,12 +121,12 @@ static int aes_set_key(mbedtls_aes_context *ctx,
     if ( 0 == keybits )
     {
         ctx->hcryp_aes.Init.KeyMode = CRYP_KEYMODE_NORMAL;
-        ctx->hcryp_aes.Init.KeyProtection = CRYP_KEYSEL_HW;
+        ctx->hcryp_aes.Init.KeySelect = CRYP_KEYSEL_HW;
     }
     else
     {
         ctx->hcryp_aes.Init.KeyMode = CRYP_KEYMODE_NORMAL;
-        ctx->hcryp_aes.Init.KeyProtection = CRYP_KEYSEL_NORMAL;
+        ctx->hcryp_aes.Init.KeySelect = CRYP_KEYSEL_NORMAL;
     }
 #endif
 
@@ -168,7 +168,7 @@ void mbedtls_aes_init(mbedtls_aes_context *ctx)
 
     memset(ctx, 0, sizeof(mbedtls_aes_context));
 
-    ctx->hcryp_aes.Init.Algorithm  = ST_AES_NO_ALGO;
+    ctx->Algorithm = ST_AES_NO_ALGO;
 }
 
 
@@ -315,9 +315,9 @@ int mbedtls_aes_crypt_ecb(mbedtls_aes_context *ctx,
     ctx->hcryp_aes.Instance->CR = ctx->ctx_save_cr;
 
     /* Set the Algo if not configured till now */
-    if (CRYP_AES_ECB != ctx->hcryp_aes.Init.Algorithm)
+    if (CRYP_AES_ECB != ctx->Algorithm)
     {
-        ctx->hcryp_aes.Init.Algorithm  = CRYP_AES_ECB;
+        ctx->hcryp_aes.Init.Algorithm = ctx->Algorithm = CRYP_AES_ECB;
 
         /* Configure the CRYP  */
         if (HAL_CRYP_SetConfig(&ctx->hcryp_aes, &ctx->hcryp_aes.Init) != HAL_OK)
@@ -386,9 +386,9 @@ int mbedtls_aes_crypt_cbc(mbedtls_aes_context *ctx,
         return (ret);
 
     /* Set the Algo if not configured till now */
-    if (CRYP_AES_CBC != ctx->hcryp_aes.Init.Algorithm)
+    if (CRYP_AES_CBC != ctx->Algorithm)
     {
-        ctx->hcryp_aes.Init.Algorithm  = CRYP_AES_CBC;
+        ctx->hcryp_aes.Init.Algorithm = ctx->Algorithm = CRYP_AES_CBC;
     }
 
     /* Set IV with invert endianness */

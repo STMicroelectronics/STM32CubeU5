@@ -38,3 +38,4 @@ HAL_StatusTypeDef MX_Queue_Config(void);
 #endif
 
 #endif /* LINKED_LIST_H */
+

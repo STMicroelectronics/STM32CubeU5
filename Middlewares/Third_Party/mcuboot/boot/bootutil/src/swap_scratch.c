@@ -81,6 +81,9 @@ done:
     return rc;
 }
 #if !defined(MCUBOOT_DIRECT_XIP) && !defined(MCUBOOT_RAM_LOAD) && !defined(MCUBOOT_PRIMARY_ONLY)
+int
+swap_read_status_bytes(const struct flash_area *fap,
+        struct boot_loader_state *state, struct boot_status *bs);
 /**
  * Reads the status of a partially-completed swap, if any.  This is necessary
  * to recover in case the boot lodaer was reset in the middle of a swap
@@ -350,7 +353,8 @@ static const struct boot_status_table boot_status_tables[] = {
 
 #define BOOT_STATUS_TABLES_COUNT \
     (sizeof boot_status_tables / sizeof boot_status_tables[0])
-
+int
+swap_status_source(struct boot_loader_state *state);
 /**
  * Determines where in flash the most recent boot status is stored. The boot
  * status is necessary for completing a swap that was interrupted by a boot

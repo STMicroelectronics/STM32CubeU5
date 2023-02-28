@@ -90,6 +90,7 @@ void HAL_OSPI_MspInit(OSPI_HandleTypeDef* hospi)
     }
 
     /* Peripheral clock enable */
+    __HAL_RCC_OSPIM_CLK_ENABLE();
     __HAL_RCC_OSPI1_CLK_ENABLE();
 
     __HAL_RCC_GPIOI_CLK_ENABLE();
@@ -183,6 +184,7 @@ void HAL_OSPI_MspDeInit(OSPI_HandleTypeDef* hospi)
   /* USER CODE BEGIN OCTOSPI1_MspDeInit 0 */
   /* USER CODE END OCTOSPI1_MspDeInit 0 */
     /* Peripheral clock disable */
+    __HAL_RCC_OSPIM_CLK_DISABLE();
     __HAL_RCC_OSPI1_CLK_DISABLE();
 
     /**OCTOSPI1 GPIO Configuration

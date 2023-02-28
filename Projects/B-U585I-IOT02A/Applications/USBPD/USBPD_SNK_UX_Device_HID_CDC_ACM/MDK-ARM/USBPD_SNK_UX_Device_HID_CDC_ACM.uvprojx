@@ -10,15 +10,15 @@
       <TargetName>USBPD_SNK_UX_Device_HID_CDC_ACM</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6140000::V6.14::ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32U585AIIx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32U5xx_DFP.1.0.5</PackID>
-          <PackURL>http://www.keil.com/pack</PackURL>
-          <Cpu>IRAM(0x20000000-0x200BFFFF) IROM(0x08000000-0x81FFFFF) CLOCK(8000000) FPU3(SFPU) CPUTYPE("Cortex-M33") ELITTLE TZ</Cpu>
+          <PackID>Keil.STM32U5xx_DFP.1.1.1</PackID>
+          <PackURL>http://www.keil.com/pack/</PackURL>
+          <Cpu>IRAM(0x20000000-0x200BFFFF) IROM(0x08000000-0x81FFFFF)  CLOCK(8000000) FPU3(SFPU) CPUTYPE("Cortex-M33") ELITTLE TZ DSP</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
           <FlashDriverDll></FlashDriverDll>
@@ -186,6 +186,7 @@
             <RvdsVP>2</RvdsVP>
             <RvdsMve>0</RvdsMve>
             <RvdsCdeCp>0</RvdsCdeCp>
+            <nBranchProt>0</nBranchProt>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -313,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -339,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>TCPP0203_SUPPORT,USE_FULL_LL_DRIVER,TX_INCLUDE_USER_DEFINE_FILE,TX_SINGLE_MODE_NON_SECURE=1,USBPD_PORT_COUNT=1,USBPD_THREADX,_SNK,USBPDCORE_LIB_PD3_FULL,UX_INCLUDE_USER_DEFINE_FILE,USE_HAL_DRIVER,STM32U585xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc; ../AZURE_RTOS/App; ../USBPD/App; ../USBPD/Target; ../USBX/App; ../USBX/Target; ../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc; ../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy; ../../../../../../Middlewares/ST/threadx/common/inc; ../../../../../../Middlewares/ST/STM32_USBPD_Library/Core/inc; ../../../../../../Middlewares/ST/STM32_USBPD_Library/Devices/STM32U5XX/inc; ../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include; ../../../../../../Middlewares/ST/threadx/ports/cortex_m33/ac6/inc; ../../../../../../Middlewares/ST/usbx/common/core/inc; ../../../../../../Middlewares/ST/usbx/ports/generic/inc; ../../../../../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers; ../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/inc; ../../../../../../Drivers/CMSIS/Include; ../../../../../../Drivers/BSP/B-U585I-IOT02A</IncludePath>
+              <IncludePath>../Core/Inc;../AZURE_RTOS/App;../USBPD/App;../USBPD/Target;../USBX/App;../USBX/Target;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Middlewares/ST/threadx/common/inc;../../../../../../Middlewares/ST/STM32_USBPD_Library/Core/inc;../../../../../../Middlewares/ST/STM32_USBPD_Library/Devices/STM32U5XX/inc;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Middlewares/ST/threadx/ports/cortex_m33/ac6/inc;../../../../../../Middlewares/ST/usbx/common/core/inc;../../../../../../Middlewares/ST/usbx/ports/generic/inc;../../../../../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers;../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/BSP/B-U585I-IOT02A</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1673,6 +1674,11 @@
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_uninitialize.c</FilePath>
             </File>
+            <File>
+              <FileName>ux_dcd_stm32_transfer_abort.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_transfer_abort.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2014,6 +2020,46 @@
               <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_hid_interrupt_thread.c</FilePath>
             </File>
             <File>
+              <FileName>ux_device_class_hid_read.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_hid_read.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_device_class_hid_read_run.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_hid_read_run.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_device_class_hid_receiver_event_free.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_hid_receiver_event_free.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_device_class_hid_receiver_event_get.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_hid_receiver_event_get.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_device_class_hid_receiver_initialize.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_hid_receiver_initialize.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_device_class_hid_receiver_tasks_run.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_hid_receiver_tasks_run.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_device_class_hid_receiver_thread.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_hid_receiver_thread.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_device_class_hid_receiver_uninitialize.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_hid_receiver_uninitialize.c</FilePath>
+            </File>
+            <File>
               <FileName>ux_device_class_hid_report_get.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_hid_report_get.c</FilePath>
@@ -2022,6 +2068,11 @@
               <FileName>ux_device_class_hid_report_set.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_hid_report_set.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_device_class_hid_tasks_run.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_hid_tasks_run.c</FilePath>
             </File>
             <File>
               <FileName>ux_device_class_hid_uninitialize.c</FileName>
@@ -2239,20 +2290,5 @@
     </components>
     <files/>
   </RTE>
-
-  <LayerInfo>
-    <Layers>
-      <Layer>
-        <LayName>&lt;Project Info&gt;</LayName>
-        <LayDesc></LayDesc>
-        <LayUrl></LayUrl>
-        <LayKeys></LayKeys>
-        <LayCat></LayCat>
-        <LayLic></LayLic>
-        <LayTarg>0</LayTarg>
-        <LayPrjMark>1</LayPrjMark>
-      </Layer>
-    </Layers>
-  </LayerInfo>
 
 </Project>

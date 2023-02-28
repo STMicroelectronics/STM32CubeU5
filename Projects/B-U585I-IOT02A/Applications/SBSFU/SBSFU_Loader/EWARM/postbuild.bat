@@ -5,8 +5,8 @@ set "userAppBinary=%projectdir%\..\Binary"
 ::dummy nsc is generated only in config without secure
 set "secure_nsc=%projectdir%\..\Secure_nsclib\secure_nsclib.o"
 set "maxbytesize=440"
-set "loader_s=%projectdir%\B-U585I-IOT02A_S\Exe\Project.bin"
-set "loader_ns=%projectdir%\B-U585I-IOT02A_NS\Exe\Project.bin"
+set "loader_s=%projectdir%\Secure\B-U585I-IOT02A_S\Exe\Project.bin"
+set "loader_ns=%projectdir%\NonSecure\B-U585I-IOT02A_NS\Exe\Project.bin"
 set "binarydir=%projectdir%\..\Binary"
 set "loader=%binarydir%\loader.bin"
 set loader_ns_size=
@@ -57,7 +57,7 @@ exit 1
 exit 0
 :secure_operation
 set "nsclib_destination=%projectdir%\..\Secure_nsclib\secure_nsclib.o"
-set "nsclib_source=%projectdir%\B-U585I-IOT02A_S\Exe\Project_import_lib.o"
+set "nsclib_source=%projectdir%\Secure\B-U585I-IOT02A_S\Exe\Project_import_lib.o"
 :: recopy non secure callable .o
 set "command=copy %nsclib_source% %nsclib_destination%"
 %command%

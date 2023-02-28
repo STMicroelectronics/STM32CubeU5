@@ -167,7 +167,7 @@ int32_t BSP_ENV_SENSOR_DeInit(uint32_t Instance)
   * @param  Capabilities Pointer to environmental sensor capabilities.
   * @retval BSP status.
   */
-int32_t BSP_ENV_SENSOR_GetCapabilities(uint32_t Instance, ENV_SENSOR_Capabilities_t *Capabilities)
+int32_t BSP_ENV_SENSOR_GetCapabilities(const uint32_t Instance, ENV_SENSOR_Capabilities_t *Capabilities)
 {
   int32_t status = BSP_ERROR_NONE;
 
@@ -197,7 +197,7 @@ int32_t BSP_ENV_SENSOR_GetCapabilities(uint32_t Instance, ENV_SENSOR_Capabilitie
   * @param  Id Pointer to environmental sensor ID.
   * @retval BSP status.
   */
-int32_t BSP_ENV_SENSOR_ReadID(uint32_t Instance, uint8_t *Id)
+int32_t BSP_ENV_SENSOR_ReadID(const uint32_t Instance, uint8_t *Id)
 {
   int32_t status = BSP_ERROR_NONE;
 
@@ -314,7 +314,7 @@ int32_t BSP_ENV_SENSOR_Disable(uint32_t Instance, uint32_t Function)
   * @param  Odr Pointer to output data rate.
   * @retval BSP status.
   */
-int32_t BSP_ENV_SENSOR_GetOutputDataRate(uint32_t Instance, uint32_t Function, float_t *Odr)
+int32_t BSP_ENV_SENSOR_GetOutputDataRate(const uint32_t Instance, uint32_t Function, float_t *Odr)
 {
   int32_t status = BSP_ERROR_NONE;
   uint8_t index;
@@ -400,7 +400,7 @@ int32_t BSP_ENV_SENSOR_SetOutputDataRate(uint32_t Instance, uint32_t Function, f
   * @param  Value Pointer to environmental sensor value.
   * @retval BSP status.
   */
-int32_t BSP_ENV_SENSOR_GetValue(uint32_t Instance, uint32_t Function, float_t *Value)
+int32_t BSP_ENV_SENSOR_GetValue(const uint32_t Instance, uint32_t Function, float_t *Value)
 {
   int32_t status = BSP_ERROR_NONE;
   uint8_t index;

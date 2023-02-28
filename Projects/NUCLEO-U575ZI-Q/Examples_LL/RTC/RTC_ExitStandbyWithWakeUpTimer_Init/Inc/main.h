@@ -90,6 +90,7 @@ void Error_Handler(void);
 #define NVIC_PRIORITYGROUP_4         ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority,
                                                                  0 bit  for subpriority */
 #endif
+
 /* USER CODE BEGIN Private defines */
 #define __DBGMCU_EnableDBGStandbyMode()             SET_BIT(DBGMCU->CR, DBGMCU_CR_DBG_STANDBY)
 #define __DBGMCU_FREEZE_RTC()                       SET_BIT(DBGMCU->APB3FZR, DBGMCU_APB3FZR_DBG_RTC_STOP)

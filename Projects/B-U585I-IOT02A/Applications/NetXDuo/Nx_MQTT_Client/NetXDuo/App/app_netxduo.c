@@ -96,6 +96,7 @@ static VOID time_update_callback(NX_SNTP_TIME_MESSAGE *time_update_ptr, NX_SNTP_
 static ULONG nx_secure_tls_session_time_function(void);
 static UINT dns_create(NX_DNS *dns_ptr);
 /* USER CODE END PFP */
+
 /**
   * @brief  Application NetXDuo Initialization.
   * @param memory_ptr: memory pointer
@@ -109,12 +110,18 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
    /* USER CODE BEGIN App_NetXDuo_MEM_POOL */
 
   /* USER CODE END App_NetXDuo_MEM_POOL */
+  /* USER CODE BEGIN 0 */
+
+  /* USER CODE END 0 */
 
   /* USER CODE BEGIN MX_NetXDuo_Init */
 #if (USE_STATIC_ALLOCATION == 1)
   printf("Nx_MQTT_Client application started..\n");
 
   CHAR *pointer;
+
+  /* Initialize the NetX system. */
+  nx_system_initialize();
 
   /* Allocate the memory for packet_pool.  */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer,  NX_PACKET_POOL_SIZE, TX_NO_WAIT) != TX_SUCCESS)

@@ -1,10 +1,8 @@
 /**
   ******************************************************************************
-  * @file    aps6408_conf_template.h
+  * @file    aps6408_conf.h
   * @author  MCD Application Team
-  * @brief   APS6408 PSRAM OctoSPI memory configuration template file.
-  *          This file should be copied to the application folder and renamed
-  *          to aps6408_conf.h
+  * @brief   APS6408 PSRAM OctoSPI memory configuration file.
   ******************************************************************************
   * @attention
   *
@@ -44,3 +42,5 @@ extern "C" {
 #endif
 
 #endif /* APS6408_CONF_H */
+
+

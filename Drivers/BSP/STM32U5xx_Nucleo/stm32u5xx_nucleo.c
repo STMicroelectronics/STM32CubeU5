@@ -65,15 +65,27 @@ USART_TypeDef *COM_USART[COMn]   = {COM1_UART};
 /** @defgroup STM32U5XX_NUCLEO_LOW_LEVEL_Private_Variables LOW LEVEL Private Variables
   * @{
   */
-static GPIO_TypeDef *LED_PORT[LEDn] = {LED1_GPIO_PORT,
-                                       LED2_GPIO_PORT,
-                                       LED3_GPIO_PORT
-                                      };
+static GPIO_TypeDef *LED_PORT[LEDn] =
+{
+#if defined (USE_NUCLEO_144)
+  LED1_GPIO_PORT,
+#endif /* defined (USE_NUCLEO_144) */
+  LED2_GPIO_PORT,
+#if defined (USE_NUCLEO_144)
+  LED3_GPIO_PORT
+#endif /* defined (USE_NUCLEO_144) */
+};
 
-static const uint16_t LED_PIN[LEDn] = {LED1_PIN,
-                                       LED2_PIN,
-                                       LED3_PIN
-                                      };
+static const uint16_t LED_PIN[LEDn] =
+{
+#if defined (USE_NUCLEO_144)
+  LED1_PIN,
+#endif /* defined (USE_NUCLEO_144) */
+  LED2_PIN,
+#if defined (USE_NUCLEO_144)
+  LED3_PIN
+#endif /* defined (USE_NUCLEO_144) */
+};
 
 static GPIO_TypeDef *BUTTON_PORT[BUTTONn]   = {BUTTON_USER_GPIO_PORT};
 static const uint16_t BUTTON_PIN[BUTTONn]   = {BUTTON_USER_PIN};
@@ -148,22 +160,29 @@ int32_t BSP_LED_Init(Led_TypeDef Led)
 {
   int32_t ret = BSP_ERROR_NONE;
   GPIO_InitTypeDef  gpio_init_structure;
+#if defined (USE_NUCLEO_144)
   uint32_t pwrenabled = 0U;
+#endif /* USE_NUCLEO_144 */
 
-  if ((Led != LED1) && (Led != LED2) && (Led != LED3))
+  if ((Led != LED2)
+#if defined (USE_NUCLEO_144)
+      && (Led != LED1) && (Led != LED3)
+#endif /* defined (USE_NUCLEO_144) */
+     )
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
   else
   {
     /* Enable the GPIO LED Clock */
-    if (Led == LED1)
-    {
-      LED1_GPIO_CLK_ENABLE();
-    }
-    else if (Led == LED2)
+    if (Led == LED2)
     {
       LED2_GPIO_CLK_ENABLE();
+    }
+#if defined (USE_NUCLEO_144)
+    else if (Led == LED1)
+    {
+      LED1_GPIO_CLK_ENABLE();
     }
     else /* Led == Led3 */
     {
@@ -183,6 +202,7 @@ int32_t BSP_LED_Init(Led_TypeDef Led)
 
       LED3_GPIO_CLK_ENABLE();
     }
+#endif /* defined (USE_NUCLEO_144) */
     /* Configure the GPIO_LED pin */
     gpio_init_structure.Pin   = LED_PIN[Led];
     gpio_init_structure.Mode  = GPIO_MODE_OUTPUT_PP;
@@ -210,7 +230,11 @@ int32_t BSP_LED_DeInit(Led_TypeDef Led)
   int32_t ret = BSP_ERROR_NONE;
   GPIO_InitTypeDef  gpio_init_structure;
 
-  if ((Led != LED1) && (Led != LED2) && (Led != LED3))
+  if ((Led != LED2)
+#if defined (USE_NUCLEO_144)
+      && (Led != LED1) && (Led != LED3)
+#endif /* defined (USE_NUCLEO_144) */
+     )
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -239,7 +263,11 @@ int32_t BSP_LED_On(Led_TypeDef Led)
 {
   int32_t ret = BSP_ERROR_NONE;
 
-  if ((Led != LED1) && (Led != LED2) && (Led != LED3))
+  if ((Led != LED2)
+#if defined (USE_NUCLEO_144)
+      && (Led != LED1) && (Led != LED3)
+#endif /* defined (USE_NUCLEO_144) */
+     )
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -264,7 +292,11 @@ int32_t BSP_LED_Off(Led_TypeDef Led)
 {
   int32_t ret = BSP_ERROR_NONE;
 
-  if ((Led != LED1) && (Led != LED2) && (Led != LED3))
+  if ((Led != LED2)
+#if defined (USE_NUCLEO_144)
+      && (Led != LED1) && (Led != LED3)
+#endif /* defined (USE_NUCLEO_144) */
+     )
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -289,7 +321,11 @@ int32_t BSP_LED_Toggle(Led_TypeDef Led)
 {
   int32_t ret = BSP_ERROR_NONE;
 
-  if ((Led != LED1) && (Led != LED2) && (Led != LED3))
+  if ((Led != LED2)
+#if defined (USE_NUCLEO_144)
+      && (Led != LED1) && (Led != LED3)
+#endif /* defined (USE_NUCLEO_144) */
+     )
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -314,7 +350,11 @@ int32_t BSP_LED_GetState(Led_TypeDef Led)
 {
   int32_t ret;
 
-  if ((Led != LED1) && (Led != LED2) && (Led != LED3))
+  if ((Led != LED2)
+#if defined (USE_NUCLEO_144)
+      && (Led != LED1) && (Led != LED3)
+#endif /* defined (USE_NUCLEO_144) */
+     )
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }

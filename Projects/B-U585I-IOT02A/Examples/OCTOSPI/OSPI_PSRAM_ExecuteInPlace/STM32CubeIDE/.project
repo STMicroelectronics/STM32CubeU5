@@ -38,6 +38,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/OSPI_PSRAM_ExecuteInPlace.ioc</locationURI>
 		</link>
 		<link>
+			<name>Doc/README.md</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/README.md</locationURI>
+		</link>
+		<link>
 			<name>Application/User/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Src/main.c</locationURI>
@@ -56,11 +61,6 @@
 			<name>Drivers/CMSIS/system_stm32u5xx.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Src/system_stm32u5xx.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/Doc/README.md</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/README.md</locationURI>
 		</link>
 		<link>
 			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal.c</name>

@@ -151,11 +151,6 @@
 			<locationURI>PARENT-7-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_tim_ex.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/STM32U5xx_Nucleo/stm32u5xx_nucleo.c</name>
-			<type>1</type>
-			<locationURI>PARENT-7-PROJECT_LOC/Drivers/BSP/STM32U5xx_Nucleo/stm32u5xx_nucleo.c</locationURI>
-		</link>
-		<link>
 			<name>Middlewares/threadx/Core/tx_thread_secure_stack.c</name>
 			<type>1</type>
 			<locationURI>PARENT-7-PROJECT_LOC/Middlewares/ST/threadx/ports/cortex_m33/gnu/src/tx_thread_secure_stack.c</locationURI>

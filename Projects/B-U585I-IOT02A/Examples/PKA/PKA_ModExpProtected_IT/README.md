@@ -37,7 +37,7 @@ Security, PKA, RSA, modular exponentiation, cipher, decipher
   - PKA/PKA_ModExpProtected_IT/Src/stm32u5xx_it.c          Interrupt handlers
   - PKA/PKA_ModExpProtected_IT/Src/stm32u5xx_hal_msp.c     HAL MSP module
   - PKA/PKA_ModExpProtected_IT/Inc/main.h                  Main program header file
-  - PKA/PKA_ModExpProtected_IT/Inc/stm32u5xx_hal_conf.h    BSP Configuration file
+  - PKA/PKA_ModExpProtected_IT/Inc/b_u585i_iot02a_conf.h   BSP Configuration file
   - PKA/PKA_ModExpProtected_IT/Inc/stm32u5xx_hal_conf.h    HAL Configuration file
   - PKA/PKA_ModExpProtected_IT/Inc/stm32u5xx_it.h          Interrupt handlers header file
 

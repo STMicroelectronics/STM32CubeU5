@@ -52,7 +52,7 @@
 /*                                                                        */
 /*  INPUT                                                                 */
 /*                                                                        */
-/*    dcd                                   Address of DCD, not used      */
+/*    dcd_io                                Address of DCD, not used      */
 /*    parameter                             Parameter, STM32 HAL PCD      */
 /*                                            pointer is expected         */
 /*                                                                        */

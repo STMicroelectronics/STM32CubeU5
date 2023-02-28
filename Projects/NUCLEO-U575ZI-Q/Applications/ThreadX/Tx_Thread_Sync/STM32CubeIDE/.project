@@ -183,11 +183,6 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_uart_ex.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/STM32U5xx_Nucleo/stm32u5xx_nucleo.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U5xx_Nucleo/stm32u5xx_nucleo.c</locationURI>
-		</link>
-		<link>
 			<name>Middlewares/ThreadX/Core/tx_block_allocate.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/threadx/common/src/tx_block_allocate.c</locationURI>

@@ -35,7 +35,7 @@
 /*  FUNCTION                                               RELEASE        */ 
 /*                                                                        */ 
 /*    _ux_hcd_ohci_interrupt_handler                      PORTABLE C      */ 
-/*                                                           6.1          */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -64,7 +64,7 @@
 /*                                                                        */ 
 /*    _ux_hcd_ohci_register_read            Read OHCI register            */ 
 /*    _ux_hcd_ohci_register_write           Write OHCI register           */ 
-/*    _ux_utility_semaphore_put             Put semaphore                 */ 
+/*    _ux_host_semaphore_put                Put semaphore                 */ 
 /*                                                                        */ 
 /*  CALLED BY                                                             */ 
 /*                                                                        */ 
@@ -77,6 +77,12 @@
 /*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
 /*  09-30-2020     Chaoqiong Xiao           Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            refined macros names,       */
+/*                                            resulting in version 6.1.10 */
+/*  07-29-2022     Yajun Xia                Modified comment(s),          */
+/*                                            fixed OHCI PRSC issue,      */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 VOID  _ux_hcd_ohci_interrupt_handler(VOID)
@@ -120,7 +126,7 @@ ULONG           port_index;
                     hcd_ohci -> ux_hcd_ohci_done_head =  hcd_ohci -> ux_hcd_ohci_hcca -> ux_hcd_ohci_hcca_done_head;
                     hcd_ohci -> ux_hcd_ohci_hcca -> ux_hcd_ohci_hcca_done_head =  UX_NULL;                    
                     hcd -> ux_hcd_thread_signal++;
-                    _ux_utility_semaphore_put(&_ux_system_host -> ux_system_host_hcd_semaphore);
+                    _ux_host_semaphore_put(&_ux_system_host -> ux_system_host_hcd_semaphore);
 
                     /* Since we have delayed the processing of the done queue to a thread.
                        We need to ensure the host controller will not overwrite the done
@@ -137,7 +143,7 @@ ULONG           port_index;
                     _ux_hcd_ohci_register_write(hcd_ohci, OHCI_HC_COMMAND_STATUS, OHCI_HC_CS_HCR);
                     hcd -> ux_hcd_thread_signal++;
                     hcd -> ux_hcd_status =  UX_HCD_STATUS_DEAD;
-                    _ux_utility_semaphore_put(&_ux_system_host -> ux_system_host_hcd_semaphore);
+                    _ux_host_semaphore_put(&_ux_system_host -> ux_system_host_hcd_semaphore);
                 }
 
                 if (ohci_register & OHCI_HC_INT_RHSC)
@@ -161,14 +167,19 @@ ULONG           port_index;
                             root_hub_thread_wakeup ++;
                         }
                         
-                        /* Clear the root hub interrupt signal.  We do not turn off Port Reset status change here.
-                           This will be done when the root hub requests a Port Reset.  */
-                        _ux_hcd_ohci_register_write(hcd_ohci, OHCI_HC_RH_PORT_STATUS + port_index, (OHCI_HC_PS_CSC | OHCI_HC_PS_PESC | OHCI_HC_PS_PSSC | OHCI_HC_PS_OCIC ));
+                        if (ohci_register_port_status &  OHCI_HC_PS_PRSC)
+                        {
+                            _ux_host_event_flags_set(&hcd_ohci -> ux_hcd_ohci_event_flags_group, UX_OHCI_PRSC_EVENT, UX_OR);
+                        }
+
+                        /* Clear the root hub interrupt signal. */
+                        _ux_hcd_ohci_register_write(hcd_ohci, OHCI_HC_RH_PORT_STATUS + port_index,
+                                                    (OHCI_HC_PS_CSC | OHCI_HC_PS_PESC | OHCI_HC_PS_PSSC | OHCI_HC_PS_OCIC | OHCI_HC_PS_PRSC));
                     }
 
                     /* We only wake up the root hub thread if there has been device insertion/extraction.  */
                     if (root_hub_thread_wakeup != 0)
-                        _ux_utility_semaphore_put(&_ux_system_host -> ux_system_host_enum_semaphore);
+                        _ux_host_semaphore_put(&_ux_system_host -> ux_system_host_enum_semaphore);
                 }
             }
 

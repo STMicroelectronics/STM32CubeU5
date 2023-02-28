@@ -22,9 +22,28 @@
 
 /* Private variables -------------------------------------------------------------------------------------------------*/
 /* LPBAM variables declaration */
-static LPBAM_SPI_TxRx_TxDataDesc_t TransmitReceive_Data_1_Tx_Desc;
-static LPBAM_SPI_TxFullDesc_t Transmit_1_Tx_Desc;
-static LPBAM_SPI_TxRx_RxDataDesc_t TransmitReceive_Data_1_Rx_Desc;
+/* USER CODE BEGIN TxRx_MultiConf_Descs 0 */
+
+/* USER CODE END TxRx_MultiConf_Descs 0 */
+
+/* USER CODE BEGIN Transmit_Q_TransmitReceive_Data_1_Tx_Desc */
+
+/* USER CODE END Transmit_Q_TransmitReceive_Data_1_Tx_Desc */
+static LPBAM_SPI_TxRx_TxDataDesc_t Transmit_Q_TransmitReceive_Data_1_Tx_Desc;
+
+/* USER CODE BEGIN Transmit_Q_Transmit_1_Tx_Desc */
+
+/* USER CODE END Transmit_Q_Transmit_1_Tx_Desc */
+static LPBAM_SPI_TxFullDesc_t Transmit_Q_Transmit_1_Tx_Desc;
+
+/* USER CODE BEGIN Coupled_Transmit_Q_TransmitReceive_Data_1_Rx_Desc */
+
+/* USER CODE END Coupled_Transmit_Q_TransmitReceive_Data_1_Rx_Desc */
+static LPBAM_SPI_TxRx_RxDataDesc_t Coupled_Transmit_Q_TransmitReceive_Data_1_Rx_Desc;
+
+/* USER CODE BEGIN TxRx_MultiConf_Descs 1 */
+
+/* USER CODE END TxRx_MultiConf_Descs 1 */
 
 /* Exported variables ------------------------------------------------------------------------------------------------*/
 /* LPBAM queues declaration */
@@ -91,7 +110,7 @@ static void MX_Transmit_Q_Build(void)
   pTxRxData_SPI.Size = 56;
   pTxRxData_SPI.pTxData = (uint8_t*)&aTxBuffer1[0];
   pTxRxData_SPI.pRxData = (uint8_t*)&aRxBuffer1[0];
-  if (ADV_LPBAM_SPI_TxRx_SetDataQ(SPI3, &pDMAListInfo_SPI, &pTxRxData_SPI, &TransmitReceive_Data_1_Tx_Desc, &TransmitReceive_Data_1_Rx_Desc, &Transmit_Q, &Coupled_Transmit_Q) != LPBAM_OK)
+  if (ADV_LPBAM_SPI_TxRx_SetDataQ(SPI3, &pDMAListInfo_SPI, &pTxRxData_SPI, &Transmit_Q_TransmitReceive_Data_1_Tx_Desc, &Coupled_Transmit_Q_TransmitReceive_Data_1_Rx_Desc, &Transmit_Q, &Coupled_Transmit_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -110,14 +129,14 @@ static void MX_Transmit_Q_Build(void)
   pTxFull_SPI.WakeupIT = LPBAM_SPI_IT_EOT;
   pTxFull_SPI.Size = 36;
   pTxFull_SPI.pTxData = (uint8_t*)&aTxBuffer2[0];
-  if (ADV_LPBAM_SPI_Tx_SetFullQ(SPI3, &pDMAListInfo_SPI, &pTxFull_SPI, &Transmit_1_Tx_Desc, &Transmit_Q) != LPBAM_OK)
+  if (ADV_LPBAM_SPI_Tx_SetFullQ(SPI3, &pDMAListInfo_SPI, &pTxFull_SPI, &Transmit_Q_Transmit_1_Tx_Desc, &Transmit_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_SPI.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_BLOCK_TRANSFER;
   pTrigConfig_SPI.TriggerConfig.TriggerPolarity = LPBAM_DMA_TRIG_POLARITY_RISING;
   pTrigConfig_SPI.TriggerConfig.TriggerSelection = LPBAM_LPDMA1_TRIGGER_LPTIM1_CH1;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_SPI, LPBAM_SPI_TX_FULLQ_CONFIG_NODE, &Transmit_1_Tx_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_SPI, LPBAM_SPI_TX_FULLQ_CONFIG_NODE, &Transmit_Q_Transmit_1_Tx_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }

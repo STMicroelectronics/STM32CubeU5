@@ -298,7 +298,7 @@ void              BSP_AUDIO_OUT_Error_CallBack(uint32_t Instance);
 
 void              BSP_AUDIO_OUT_IRQHandler(uint32_t Instance, uint32_t Device);
 
-HAL_StatusTypeDef MX_SAI1_ClockConfig(SAI_HandleTypeDef *hsai, uint32_t SampleRate);
+HAL_StatusTypeDef MX_SAI1_ClockConfig(const SAI_HandleTypeDef *hsai, uint32_t SampleRate);
 HAL_StatusTypeDef MX_SAI1_Init(SAI_HandleTypeDef *hsai, MX_SAI_InitTypeDef *MXInit);
 /**
   * @}
@@ -336,7 +336,7 @@ void              BSP_AUDIO_IN_Error_CallBack(uint32_t Instance);
 
 void              BSP_AUDIO_IN_IRQHandler(uint32_t Instance, uint32_t Device);
 
-HAL_StatusTypeDef MX_ADF1_ClockConfig(MDF_HandleTypeDef *hDfsdmBlock, uint32_t SampleRate);
+HAL_StatusTypeDef MX_ADF1_ClockConfig(const MDF_HandleTypeDef *hDfsdmBlock, uint32_t SampleRate);
 HAL_StatusTypeDef MX_ADF1_Init(MDF_HandleTypeDef *hAdfBlock, MX_ADF_InitTypeDef *MXInit);
 /**
   * @}

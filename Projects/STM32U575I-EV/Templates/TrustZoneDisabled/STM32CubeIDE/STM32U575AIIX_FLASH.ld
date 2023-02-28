@@ -7,7 +7,7 @@
 **
 **  Abstract    : Linker script for STM32U575xx Device from STM32U5 series
 **                      2048Kbytes ROM
-**                      768Kbytes RAM
+**                      784Kbytes RAM
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.
@@ -39,14 +39,15 @@ ENTRY(Reset_Handler)
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM);	/* end of "RAM" Ram type memory */
 
-_Min_Heap_Size = 0x200 ;	/* required amount of heap  */
-_Min_Stack_Size = 0x400 ;	/* required amount of stack */
+_Min_Heap_Size = 0x200;	/* required amount of heap  */
+_Min_Stack_Size = 0x400;	/* required amount of stack */
 
 /* Memories definition */
 MEMORY
 {
   RAM	(xrw)	: ORIGIN = 0x20000000,	LENGTH = 768K
   ROM	(rx)	: ORIGIN = 0x08000000,	LENGTH = 2048K
+  SRAM4	(xrw)	: ORIGIN = 0x28000000,	LENGTH = 16K
 }
 
 /* Sections */

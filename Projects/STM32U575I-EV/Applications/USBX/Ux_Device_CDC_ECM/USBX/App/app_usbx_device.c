@@ -33,8 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define USBX_APP_STACK_SIZE             1024
-#define USBX_MEMORY_SIZE                (38 * 1024)
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -43,134 +42,175 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+
+static ULONG cdc_ecm_interface_number;
+static ULONG cdc_ecm_configuration_number;
+static UCHAR cdc_ecm_local_nodeid[UX_DEVICE_CLASS_CDC_ECM_NODE_ID_LENGTH];
+static UCHAR cdc_ecm_remote_nodeid[UX_DEVICE_CLASS_CDC_ECM_NODE_ID_LENGTH];
+static UX_SLAVE_CLASS_CDC_ECM_PARAMETER cdc_ecm_parameter;
+static TX_THREAD ux_device_app_thread;
+
 /* USER CODE BEGIN PV */
-TX_BYTE_POOL                       ux_byte_pool;
-TX_THREAD                          ux_app_thread;
 TX_QUEUE                           ux_app_MsgQueue;
-UX_SLAVE_CLASS_CDC_ECM_PARAMETER   cdc_ecm_parameter;
 extern PCD_HandleTypeDef           hpcd_USB_OTG_FS;
-USB_MODE_STATE                     USB_Device_State_Msg;
+#if defined ( __ICCARM__ ) /* IAR Compiler */
+  #pragma data_alignment=4
+#endif /* defined ( __ICCARM__ ) */
+__ALIGN_BEGIN USB_MODE_STATE USB_Device_State_Msg __ALIGN_END;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
+static VOID app_ux_device_thread_entry(ULONG thread_input);
 /* USER CODE BEGIN PFP */
 
-void  usbx_app_thread_entry(ULONG arg);
-
 /* USER CODE END PFP */
+
 /**
   * @brief  Application USBX Device Initialization.
-  * @param memory_ptr: memory pointer
-  * @retval int
+  * @param  memory_ptr: memory pointer
+  * @retval status
   */
 UINT MX_USBX_Device_Init(VOID *memory_ptr)
 {
   UINT ret = UX_SUCCESS;
-  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
-
-  /* USER CODE BEGIN App_USBX_Device_MEM_POOL */
-  /* USER CODE END App_USBX_Device_MEM_POOL */
-
-  /* USER CODE BEGIN MX_USBX_Device_Init */
-
-#if (USE_STATIC_ALLOCATION == 1)
-
+  UCHAR *device_framework_high_speed;
+  UCHAR *device_framework_full_speed;
+  ULONG device_framework_hs_length;
   ULONG device_framework_fs_length;
   ULONG string_framework_length;
-  ULONG languge_id_framework_length;
-  UCHAR *device_framework_full_speed;
+  ULONG language_id_framework_length;
   UCHAR *string_framework;
   UCHAR *language_id_framework;
-  CHAR *ux_app_pointer;
+  UCHAR *pointer;
+  TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
 
-  /* Allocate the USBX_MEMORY_SIZE. */
-  if (tx_byte_allocate(byte_pool, (VOID **) &ux_app_pointer,
-                       USBX_MEMORY_SIZE, TX_NO_WAIT) != TX_SUCCESS)
+  /* USER CODE BEGIN MX_USBX_Device_Init0 */
+
+  /* USER CODE END MX_USBX_Device_Init0 */
+  /* Allocate the stack for USBX Memory */
+  if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
+                       USBX_DEVICE_MEMORY_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
   {
-    printf("USBX_MEMORY_SIZE allocation failed: 0x%02x\n", ret);
+    /* USER CODE BEGIN USBX_ALLOCATE_STACK_ERROR */
     return TX_POOL_ERROR;
+    /* USER CODE END USBX_ALLOCATE_STACK_ERROR */
   }
 
   /* Initialize USBX Memory */
-  ux_system_initialize(ux_app_pointer, USBX_MEMORY_SIZE, UX_NULL, 0);
+  if (ux_system_initialize(pointer, USBX_DEVICE_MEMORY_STACK_SIZE, UX_NULL, 0) != UX_SUCCESS)
+  {
+    /* USER CODE BEGIN USBX_SYSTEM_INITIALIZE_ERROR */
+    return UX_ERROR;
+    /* USER CODE END USBX_SYSTEM_INITIALIZE_ERROR */
+  }
 
-  /* Get_Device_Framework_Full_Speed and get the length */
+  /* Get Device Framework High Speed and get the length */
+  device_framework_high_speed = USBD_Get_Device_Framework_Speed(USBD_HIGH_SPEED,
+                                                                &device_framework_hs_length);
+
+  /* Get Device Framework Full Speed and get the length */
   device_framework_full_speed = USBD_Get_Device_Framework_Speed(USBD_FULL_SPEED,
                                                                 &device_framework_fs_length);
 
-  /* Get_String_Framework and get the length */
+  /* Get String Framework and get the length */
   string_framework = USBD_Get_String_Framework(&string_framework_length);
 
-  /* Get_Language_Id_Framework and get the length */
-  language_id_framework = USBD_Get_Language_Id_Framework(&languge_id_framework_length);
+  /* Get Language Id Framework and get the length */
+  language_id_framework = USBD_Get_Language_Id_Framework(&language_id_framework_length);
 
-  /* The code below is required for installing the device portion of USBX.
-     In this application */
-  if (ux_device_stack_initialize(NULL,
-                                 0U,
+  /* Install the device portion of USBX */
+  if (ux_device_stack_initialize(device_framework_high_speed,
+                                 device_framework_hs_length,
                                  device_framework_full_speed,
                                  device_framework_fs_length,
                                  string_framework,
                                  string_framework_length,
                                  language_id_framework,
-                                 languge_id_framework_length, UX_NULL) != UX_SUCCESS)
+                                 language_id_framework_length,
+                                 UX_NULL) != UX_SUCCESS)
   {
-    printf("Device stack init failed: 0x%02x\n", ret);
+    /* USER CODE BEGIN USBX_DEVICE_INITIALIZE_ERROR */
     return UX_ERROR;
+    /* USER CODE END USBX_DEVICE_INITIALIZE_ERROR */
   }
 
-  /* Set the parameters for callback when insertion/extraction of a CDC device. Set to NULL.*/
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_instance_activate = UX_NULL;
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_instance_deactivate = UX_NULL;
+  /* Initialize the cdc ecm class parameters for the device */
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_instance_activate   = USBD_CDC_ECM_Activate;
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_instance_deactivate = USBD_CDC_ECM_Deactivate;
 
-  /* Define a NODE ID. */
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_local_node_id[0] = 0x00;
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_local_node_id[1] = 0x02;
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_local_node_id[2] = 0x02;
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_local_node_id[3] = 0x03;
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_local_node_id[4] = 0x00;
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_local_node_id[5] = 0x00;
+  /* Get CDC ECM local MAC address */
+  USBD_CDC_ECM_GetMacAdd((uint8_t *)CDC_ECM_LOCAL_MAC_STR_DESC, cdc_ecm_local_nodeid);
 
-  /* Define a remote NODE ID. */
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_remote_node_id[0] = 0x00;
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_remote_node_id[1] = 0x02;
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_remote_node_id[2] = 0x02;
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_remote_node_id[3] = 0x03;
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_remote_node_id[4] = 0x00;
-  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_remote_node_id[5] = 0x00;
+  /* Define CDC ECM local node id */
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_local_node_id[0] = cdc_ecm_local_nodeid[0];
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_local_node_id[1] = cdc_ecm_local_nodeid[1];
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_local_node_id[2] = cdc_ecm_local_nodeid[2];
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_local_node_id[3] = cdc_ecm_local_nodeid[3];
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_local_node_id[4] = cdc_ecm_local_nodeid[4];
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_local_node_id[5] = cdc_ecm_local_nodeid[5];
 
-  /* Initialize the device cdc_ecm class. */
+  /* Get CDC ECM remote MAC address */
+  USBD_CDC_ECM_GetMacAdd((uint8_t *)CDC_ECM_REMOTE_MAC_STR_DESC, cdc_ecm_remote_nodeid);
+
+  /* Define CDC ECM remote node id */
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_remote_node_id[0] = cdc_ecm_remote_nodeid[0];
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_remote_node_id[1] = cdc_ecm_remote_nodeid[1];
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_remote_node_id[2] = cdc_ecm_remote_nodeid[2];
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_remote_node_id[3] = cdc_ecm_remote_nodeid[3];
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_remote_node_id[4] = cdc_ecm_remote_nodeid[4];
+  cdc_ecm_parameter.ux_slave_class_cdc_ecm_parameter_remote_node_id[5] = cdc_ecm_remote_nodeid[5];
+
+  /* USER CODE BEGIN CDC_ECM_PARAMETER */
+
+  /* USER CODE END CDC_ECM_PARAMETER */
+
+  /* Get cdc ecm configuration number */
+  cdc_ecm_configuration_number = USBD_Get_Configuration_Number(CLASS_TYPE_CDC_ECM, 0);
+
+  /* Find cdc ecm interface number */
+  cdc_ecm_interface_number = USBD_Get_Interface_Number(CLASS_TYPE_CDC_ECM, 0);
+
+  /* Initialize the device cdc ecm class */
   if (ux_device_stack_class_register(_ux_system_slave_class_cdc_ecm_name,
-                                       ux_device_class_cdc_ecm_entry, 1, 0,
-                                       &cdc_ecm_parameter) != UX_SUCCESS)
+                                     ux_device_class_cdc_ecm_entry,
+                                     cdc_ecm_configuration_number,
+                                     cdc_ecm_interface_number,
+                                     &cdc_ecm_parameter) != UX_SUCCESS)
   {
-    printf("Device cdc_ecm class Init failed: 0x%02x\n", ret);
+    /* USER CODE BEGIN USBX_DEVICE_CDC_ECM_REGISTER_ERROR */
     return UX_ERROR;
+    /* USER CODE END USBX_DEVICE_CDC_ECM_REGISTER_ERROR */
   }
 
-  /* Perform the initialization of the network driver. This will initialize the USBX network layer.*/
+  /* Perform the initialization of the network driver. This will initialize the
+     USBX network layer */
+
   ux_network_driver_init();
 
-  /* Allocate the stack for main_usbx_app_thread_entry. */
-  if (tx_byte_allocate(byte_pool, (VOID **) &ux_app_pointer,
-                       USBX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
+  /* Allocate the stack for device application main thread */
+  if (tx_byte_allocate(byte_pool, (VOID **) &pointer, UX_DEVICE_APP_THREAD_STACK_SIZE,
+                       TX_NO_WAIT) != TX_SUCCESS)
   {
-    printf("USBX_APP_STACK_SIZE allocation failed: 0x%02x\n", ret);
+    /* USER CODE BEGIN MAIN_THREAD_ALLOCATE_STACK_ERROR */
     return TX_POOL_ERROR;
+    /* USER CODE END MAIN_THREAD_ALLOCATE_STACK_ERROR */
   }
 
-  /* Create the usbx_app_thread_entry.  */
-  if (tx_thread_create(&ux_app_thread, "main_usbx_app_thread_entry",
-                       usbx_app_thread_entry, 0, ux_app_pointer,
-                       USBX_APP_STACK_SIZE, 10, 10, TX_NO_TIME_SLICE,
-                       TX_AUTO_START) != TX_SUCCESS)
+  /* Create the device application main thread */
+  if (tx_thread_create(&ux_device_app_thread, UX_DEVICE_APP_THREAD_NAME, app_ux_device_thread_entry,
+                       0, pointer, UX_DEVICE_APP_THREAD_STACK_SIZE, UX_DEVICE_APP_THREAD_PRIO,
+                       UX_DEVICE_APP_THREAD_PREEMPTION_THRESHOLD, UX_DEVICE_APP_THREAD_TIME_SLICE,
+                       UX_DEVICE_APP_THREAD_START_OPTION) != TX_SUCCESS)
   {
-    printf("ux_app_thread creation failed: 0x%02x\n", ret);
+    /* USER CODE BEGIN MAIN_THREAD_CREATE_ERROR */
     return TX_THREAD_ERROR;
+    /* USER CODE END MAIN_THREAD_CREATE_ERROR */
   }
+
+  /* USER CODE BEGIN MX_USBX_Device_Init1 */
 
   /* Allocate Memory for the Queue */
-  if (tx_byte_allocate(byte_pool, (VOID **) &ux_app_pointer, APP_QUEUE_SIZE*sizeof(ULONG),
+  if (tx_byte_allocate(byte_pool, (VOID **) &pointer, APP_QUEUE_SIZE*sizeof(ULONG),
                        TX_NO_WAIT) != TX_SUCCESS)
   {
     ret = TX_POOL_ERROR;
@@ -178,27 +218,27 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
 
   /* Create the MsgQueue */
   if (tx_queue_create(&ux_app_MsgQueue, "Message Queue app", TX_1_ULONG,
-                      ux_app_pointer, APP_QUEUE_SIZE*sizeof(ULONG)) != TX_SUCCESS)
+                      pointer, APP_QUEUE_SIZE*sizeof(ULONG)) != TX_SUCCESS)
   {
     ret = TX_QUEUE_ERROR;
   }
 
-#endif
-  /* USER CODE END MX_USBX_Device_Init */
+  /* USER CODE END MX_USBX_Device_Init1 */
 
   return ret;
 }
 
-/* USER CODE BEGIN 1 */
 /**
-  * @brief  Function implementing usbx_app_thread_entry.
-  * @param arg: Not used
-  * @retval None
+  * @brief  Function implementing app_ux_device_thread_entry.
+  * @param  thread_input: User thread input parameter.
+  * @retval none
   */
-void usbx_app_thread_entry(ULONG arg)
+static VOID app_ux_device_thread_entry(ULONG thread_input)
 {
+  /* USER CODE BEGIN app_ux_device_thread_entry */
+
   /* Initialization of USB device */
-  MX_USB_Device_Init();
+  USBX_APP_Device_Init();
 
   /* Wait for message queue to start/stop the device */
   while(1)
@@ -229,15 +269,18 @@ void usbx_app_thread_entry(ULONG arg)
       Error_Handler();
     }
   }
+  /* USER CODE END app_ux_device_thread_entry */
 }
 
+/* USER CODE BEGIN 1 */
+
 /**
-  * @brief MX_USB_Device_Init
-  * Initialization of USB device.
-  * Init USB device Library, add supported class and start the library
-  * @retval None
+  * @brief  USBX_APP_Device_Init
+  *         Initialization of USB device.
+  * @param  none
+  * @retval none
   */
-void MX_USB_Device_Init(void)
+VOID USBX_APP_Device_Init(VOID)
 {
   /* USER CODE BEGIN USB_Device_Init_PreTreatment_0 */
   /* USER CODE END USB_Device_Init_PreTreatment_0 */

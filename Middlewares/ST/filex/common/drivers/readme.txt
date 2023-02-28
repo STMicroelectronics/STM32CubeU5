@@ -7,6 +7,20 @@
   ******************************************************************************
   */
 
+### V2.1.4 / 11-November-2022 ###
+=================================
+Main changes
+-------------
+- Fix spelling errors
+
+### V2.1.3 / 01-April-2022 ###
+=================================
+Main changes
+-------------
+- Fix FX_UINIT requests in the SD/MMC drivers when the FX_STM32_XXX_INIT flags are set to 0
+  + fx_stm32_sd_driver.c
+  + fx_stm32_mmc_driver.c
+
 ### V2.1.2 / 28-January-2022 ###
 =================================
 Main changes

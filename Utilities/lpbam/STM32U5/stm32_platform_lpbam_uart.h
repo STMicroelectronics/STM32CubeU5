@@ -121,7 +121,9 @@ typedef struct
 #define LPBAM_LPUART_LPTIM1_OUT_TRG     (0x06U) /*!< LPBAM LPUART HW Trigger signal is LPTIM1 out       */
 #define LPBAM_LPUART_LPTIM3_OUT_TRG     (0x07U) /*!< LPBAM LPUART HW Trigger signal is LPTIM3 out       */
 #define LPBAM_LPUART_COMP1_OUT_TRG      (0x08U) /*!< LPBAM LPUART HW Trigger signal is COMP1 out        */
+#if defined(COMP2)
 #define LPBAM_LPUART_COMP2_OUT_TRG      (0x09U) /*!< LPBAM LPUART HW Trigger signal is COMP2 out        */
+#endif /* defined(COMP2) */
 #define LPBAM_LPUART_RTC_ALRA_TRG       (0x0AU) /*!< LPBAM LPUART HW Trigger signal is RTC alarmA       */
 #define LPBAM_LPUART_RTC_WUT_TRG        (0x0BU) /*!< LPBAM LPUART HW Trigger signal is RTC wakeup       */
 /**

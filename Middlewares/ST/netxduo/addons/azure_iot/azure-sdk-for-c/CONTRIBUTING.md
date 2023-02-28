@@ -37,7 +37,7 @@ There are many ways that you can contribute to the Azure SDK for Embedded C proj
 
 - If you would like to become an active contributor to this project please follow the instructions provided in [Microsoft Azure Projects Contribution Guidelines](https://opensource.microsoft.com/collaborate).
 
-- To make code changes, or contribute something new, please follow the [GitHub Forks / Pull requests model](https://help.github.com/articles/fork-a-repo/): Fork the repo, make the change and propose it back by submitting a pull request.
+- To make code changes, or contribute something new, please follow the [GitHub Forks / Pull requests model](https://docs.github.com/articles/fork-a-repo/): Fork the repo, make the change and propose it back by submitting a pull request.
 
 - Refer to the [wiki](https://github.com/Azure/azure-sdk-for-c/wiki) to learn about how Azure SDK for Embedded C generates lint checker, doxygen, and code coverage reports.
 
@@ -46,7 +46,7 @@ There are many ways that you can contribute to the Azure SDK for Embedded C proj
 - **DO** submit all code changes via pull requests (PRs) rather than through a direct commit. PRs will be reviewed and potentially merged by the repo maintainers after a peer review that includes at least one maintainer.
 - **DO NOT** submit "work in progress" PRs.  A PR should only be submitted when it is considered ready for review and subsequent merging by the contributor.
 - **DO** give PRs short-but-descriptive names (e.g. "Improve code coverage for Azure.Core by 10%", not "Fix #1234")
-- **DO** refer to any relevant issues and include [keywords](https://help.github.com/articles/closing-issues-via-commit-messages/) that automatically close issues when the PR is merged.
+- **DO** refer to any relevant issues and include [keywords](https://docs.github.com/articles/closing-issues-via-commit-messages/) that automatically close issues when the PR is merged.
 - **DO** tag any users that should know about and/or review the change.
 - **DO** ensure each commit successfully builds.  The entire PR must pass all tests in the Continuous Integration (CI) system before it'll be merged.
 - **DO** address PR feedback in an additional commit(s) rather than amending the existing commits, and only rebase/squash them when necessary.  This makes it easier for reviewers to track changes.
@@ -71,14 +71,13 @@ There are many ways that you can contribute to the Azure SDK for Embedded C proj
 - [CMake](https://cmake.org/download/) version 3.10 or later
 - C compiler: [MSVC](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019), [gcc](https://gcc.gnu.org/) or [clang](https://clang.llvm.org/) are recommended
 - [git](https://git-scm.com/downloads) to clone our Azure SDK repository with the desired tag
-- [cmocka](https://cmocka.org/) for building and running unit tests. By default, building unit tests is disabled, so, unless you want to add unit tests or run then, you don't need to install this. See how `vcpkg` can be used to install dependencies [here][vcpkg].
+- [cmocka](https://cmocka.org/) for building and running unit tests. By default, building unit tests is disabled, so, unless you want to add unit tests or run then, you don't need to install this.
 - [libcurl](https://curl.haxx.se/download.html) which is used as an http stack. You don't need to install libcurl if you are not building samples, or if you will provide another HTTP stack implementation. The minimum required version of libcurl is 7.1.
 
 > Note: Using libcurl requires a global init and clean up that needs to happen in application code. See more info in Running Samples section.
 
-See how `vcpkg` can be used to install dependencies [here][vcpkg].
-
 - [doxygen](https://www.doxygen.nl/download.html) if you need to generate and view documentation.
+- [clang-format](https://releases.llvm.org/download.html#9.0.0) to format the code properly. Note that you NEED `clang-format` from Clang version 9.0.0. Subsequent versions format code differently and we settled on this one for consistency. If you download the pre-built binaries version, it should be located at `<expanded clang dir>/bin/clang-format`.
 
 ### Running Tests
 
@@ -107,6 +106,16 @@ To enable building project and linking with this option, as well as adding tests
 ```cmake
 cmake -DUNIT_TESTING=ON -DUNIT_TESTING_MOCKS=ON ..
 ```
+
+### Fix Code Formatting
+
+Run the following command from the root of the sdk with `clang-format` version 9.0.0.
+
+```bash
+find . \( -iname '*.h' -o -iname '*.c' \) -exec clang-format -i {} \; 
+```
+
+Commit the resulting code formatting changes if there are any.
 
 ### Build Docs
 
@@ -161,5 +170,4 @@ make ${project_name}_cov_xml //i.e. az_core_cov_xml or az_iot_cov_xml
 ```
 
 <!-- LINKS -->
-[vcpkg]: https://github.com/Azure/azure-sdk-for-c/blob/main/README.md#development-environment
 [azure_sdk_for_c_cmake_options]: https://github.com/Azure/azure-sdk-for-c#cmake-options

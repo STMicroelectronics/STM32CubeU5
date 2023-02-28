@@ -59,9 +59,9 @@ extern "C" {
   * @{
   */
 #define LPBAM_COMP_INPUT_PLUS_IO1 (0x0000U) /*!< LPBAM comparator input plus connected to IO1 (pin PC5 for COMP1, pin
-                                                 PB4 for COMP2)                                                       */
+                                                 PB4 for COMP2 when available within device)                          */
 #define LPBAM_COMP_INPUT_PLUS_IO2 (0x0100U) /*!< LPBAM comparator input plus connected to IO2 (pin PB2 for COMP1, pin
-                                                 PB6 for COMP2)                                                       */
+                                                 PB6 for COMP2 when available within device)                          */
 #define LPBAM_COMP_INPUT_PLUS_IO3 (0x0200U) /*!< LPBAM comparator input plus connected to IO3 (pin PA2 for COMP1)     */
 /**
   * @}
@@ -79,9 +79,9 @@ extern "C" {
 #define LPBAM_COMP_INPUT_MINUS_DAC1_CH2   (0x50U) /*!< LPBAM comparator input minus connected to DAC1 channel 2
                                                        (DAC_OUT2)                                      */
 #define LPBAM_COMP_INPUT_MINUS_IO1        (0x60U) /*!< LPBAM comparator input minus connected to IO1 (pin PB1 for
-                                                       COMP1, pin PB7 for COMP2)                                  */
+                                                       COMP1, pin PB7 for COMP2 when available within device)     */
 #define LPBAM_COMP_INPUT_MINUS_IO2        (0x70U) /*!< LPBAM comparator input minus connected to IO2 (pin PC4 for
-                                                       COMP1, pin PB3 for COMP2)                                  */
+                                                       COMP1, pin PB3 for COMP2 when available within device)     */
 /**
   * @}
   */

@@ -78,7 +78,9 @@ const RCC_PeriphCLKInitTypeDef  PeriphClkInitStruct_RTC =
     .PLL2 = {0},
     .PLL3 = {0},
     .Usart1ClockSelection = 0,
+#if defined(USART2)
     .Usart2ClockSelection = 0,
+#endif /* defined(USART2) */
     .Usart3ClockSelection = 0,
     .Uart4ClockSelection = 0,
     .Uart5ClockSelection = 0,
@@ -94,7 +96,9 @@ const RCC_PeriphCLKInitTypeDef  PeriphClkInitStruct_RTC =
     .Mdf1ClockSelection = 0,
     .Adf1ClockSelection = 0,
     .Sai1ClockSelection = 0,
+#if defined (SAI2)
     .Sai2ClockSelection = 0,
+#endif /* defined (SAI2) */
     .RngClockSelection = 0,
     .SaesClockSelection = 0,
     .IclkClockSelection = 0,
@@ -168,7 +172,7 @@ void HAL_RTC_MspDeInit(RTC_HandleTypeDef *hrtc)
 {
     /*##-1- Reset peripherals ##################################################*/
     __HAL_RCC_RTC_DISABLE();
-    }
+}
 
 /**
   * @}

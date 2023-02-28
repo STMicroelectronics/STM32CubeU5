@@ -4,24 +4,37 @@ How to do Data-Cache maintenance on a shared memory buffer accessed by 2 masters
 
 This project is targeted to run on STM32U575xx devices on STM32U575I-EV board from STMicroelectronics.
 
-This example includes three MPU configurations of External SRAM, and only one configuration
+This example includes two MPU configurations of External SRAM, and only one configuration
 should be chosen in main.h:
 
 - MPU_WRITE_THROUGH.
 - MPU_WRITE_BACK_WRITE_ALLOCATE.
-- MPU_WRITE_BACK_NO_WRITE_ALLOCATE.
 
 In this examples, two DMA transfers are configured using **GPDMA1_Channel15**:
 
-*First Transfer:*
+**First Transfer:**
 
+ * MPU_WRITE_BACK_WRITE_ALLOCATE
    - From Flash to external SRAM
-   - Destination buffer is put in DCACHE, before starting the transfer
-   
-*Second Transfer:*
+   - Destination buffer is put in DCACHE, before starting the transfer (Cache coherency issue after DMA transfer)
+   - Green LED OFF
 
+ * MPU_WRITE_THROUGH
+   - From Flash to external SRAM
+   - Destination buffer is updated in the External SRAM, before starting the transfer (No Cache coherency issue after DMA transfer)
+   - Green LED ON
+
+**Second Transfer:**
+
+ * MPU_WRITE_BACK_WRITE_ALLOCATE
    - From external SRAM cacheable buffer to internal SRAM non-cacheable buffer
-   - Source buffer modified by CPU in DCACHE, before starting the transfer
+   - Source buffer modified by CPU in DCACHE, before starting the transfer (Cache coherency issue after DMA transfer)
+   - Green LED OFF
+
+ * MPU_WRITE_THROUGH
+   - From external SRAM cacheable buffer to internal SRAM non-cacheable buffer
+   - Source buffer is updated in the External SRAM without bringing that block to the cache, before starting the transfer (No Cache coherency issue after DMA transfer)
+   - Red LED ON
 
 Then, these 2 DMA transfers are started, then source and destination buffers are compared.
 Leds colors will indicate the buffer comparison results.
@@ -34,12 +47,12 @@ and leds colors should indicate the correct comparison status for the 2 transfer
 
 STM32U575I-EV board's LEDs can be used to monitor the transfer status:
 
- **For the first transfer:**
+ *For the first transfer:*
 
  - **LED_GREEN is ON** when the transfer is completed and buffers comparison is correct.
  - **LED_GREEN is OFF** when the transfer is completed and buffers comparison is wrong.
  
- **For the second transfer:** 
+ *For the second transfer:*
 
  - **LED_RED is ON** when the transfer is completed and buffers comparison is correct.
  - **LED_RED is OFF** when the transfer is completed and buffers comparison is wrong.
@@ -55,10 +68,6 @@ on the use case, it is also possible to configure the MPU as "Write through",
 to guarantee the write access coherence. In that case, the MPU must be configured
 as Cacheable/Not bufferable/Not Shareable. Even though the user must manage
 the cache coherence for read accesses.
-
-* When User can’t ensure the Buffer Length Alignment, there are two possible solutions:
-   * Use the **HAL_DCACHE_CleanInvalidByAddr()** instead of **HAL_InvalidateDCache_by_Addr()**.
-   * Use a Write-Through MPU configuration, so there is no need to make a Cache clean.
 
 * Be careful before using the Invalidate all data cache in Write-Back policy:
    * Risk to lose all the modification which are not yet evicted.
@@ -108,4 +117,3 @@ In order to make the program work, you must do the following :
  - Open your preferred toolchain
  - Rebuild all files and load your image into target memory
  - Run the example
-

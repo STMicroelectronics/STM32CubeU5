@@ -20,20 +20,20 @@
 #include "lps22hh.h"
 
 /** @addtogroup BSP BSP
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup Component Component
- * @{
- */
+  * @{
+  */
 
 /** @defgroup LPS22HH LPS22HH
- * @{
- */
+  * @{
+  */
 
 /** @defgroup LPS22HH_Exported_Variables LPS22HH Exported Variables
- * @{
- */
+  * @{
+  */
 
 LPS22HH_CommonDrv_t LPS22HH_COMMON_Driver =
 {
@@ -62,12 +62,12 @@ LPS22HH_TEMP_Drv_t LPS22HH_TEMP_Driver =
 };
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup LPS22HH_Private_Function_Prototypes LPS22HH Private Function Prototypes
- * @{
- */
+  * @{
+  */
 
 static int32_t ReadRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t Length);
 static int32_t WriteRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t Length);
@@ -77,18 +77,18 @@ static int32_t LPS22HH_SetOutputDataRate_When_Disabled(LPS22HH_Object_t *pObj, f
 static int32_t LPS22HH_Initialize(LPS22HH_Object_t *pObj);
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup LPS22HH_Exported_Functions LPS22HH Exported Functions
- * @{
- */
+  * @{
+  */
 
 /**
- * @brief  Register Component Bus IO operations
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Register Component Bus IO operations
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_RegisterBusIO(LPS22HH_Object_t *pObj, LPS22HH_IO_t *pIO)
 {
   int32_t ret = LPS22HH_OK;
@@ -109,6 +109,7 @@ int32_t LPS22HH_RegisterBusIO(LPS22HH_Object_t *pObj, LPS22HH_IO_t *pIO)
 
     pObj->Ctx.read_reg  = ReadRegWrap;
     pObj->Ctx.write_reg = WriteRegWrap;
+    pObj->Ctx.mdelay    = pIO->Delay;
     pObj->Ctx.handle   = pObj;
 
     if (pObj->IO.Init == NULL)
@@ -142,10 +143,10 @@ int32_t LPS22HH_RegisterBusIO(LPS22HH_Object_t *pObj, LPS22HH_IO_t *pIO)
 }
 
 /**
- * @brief  Initialize the LPS22HH sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Initialize the LPS22HH sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_Init(LPS22HH_Object_t *pObj)
 {
   if (pObj->is_initialized == 0U)
@@ -162,10 +163,10 @@ int32_t LPS22HH_Init(LPS22HH_Object_t *pObj)
 }
 
 /**
- * @brief  Deinitialize the LPS22HH sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Deinitialize the LPS22HH sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_DeInit(LPS22HH_Object_t *pObj)
 {
   if (pObj->is_initialized == 1U)
@@ -187,11 +188,11 @@ int32_t LPS22HH_DeInit(LPS22HH_Object_t *pObj)
 }
 
 /**
- * @brief  Get WHO_AM_I value
- * @param  pObj the device pObj
- * @param  Id the WHO_AM_I value
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get WHO_AM_I value
+  * @param  pObj the device pObj
+  * @param  Id the WHO_AM_I value
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_ReadID(LPS22HH_Object_t *pObj, uint8_t *Id)
 {
   if (lps22hh_device_id_get(&(pObj->Ctx), Id) != LPS22HH_OK)
@@ -203,11 +204,11 @@ int32_t LPS22HH_ReadID(LPS22HH_Object_t *pObj, uint8_t *Id)
 }
 
 /**
- * @brief  Get LPS22HH sensor capabilities
- * @param  pObj Component object pointer
- * @param  Capabilities pointer to LPS22HH sensor capabilities
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get LPS22HH sensor capabilities
+  * @param  pObj Component object pointer
+  * @param  Capabilities pointer to LPS22HH sensor capabilities
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_GetCapabilities(LPS22HH_Object_t *pObj, LPS22HH_Capabilities_t *Capabilities)
 {
   /* Prevent unused argument(s) compilation warning */
@@ -224,11 +225,11 @@ int32_t LPS22HH_GetCapabilities(LPS22HH_Object_t *pObj, LPS22HH_Capabilities_t *
 }
 
 /**
- * @brief  Get the LPS22HH initialization status
- * @param  pObj the device pObj
- * @param  Status 1 if initialized, 0 otherwise
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH initialization status
+  * @param  pObj the device pObj
+  * @param  Status 1 if initialized, 0 otherwise
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_Get_Init_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 {
   if (pObj == NULL)
@@ -242,10 +243,10 @@ int32_t LPS22HH_Get_Init_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Enable the LPS22HH pressure sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Enable the LPS22HH pressure sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_PRESS_Enable(LPS22HH_Object_t *pObj)
 {
   /* Check if the component is already enabled */
@@ -266,10 +267,10 @@ int32_t LPS22HH_PRESS_Enable(LPS22HH_Object_t *pObj)
 }
 
 /**
- * @brief  Disable the LPS22HH pressure sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Disable the LPS22HH pressure sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_PRESS_Disable(LPS22HH_Object_t *pObj)
 {
   /* Check if the component is already disabled */
@@ -301,22 +302,22 @@ int32_t LPS22HH_PRESS_Disable(LPS22HH_Object_t *pObj)
 }
 
 /**
- * @brief  Get the LPS22HH pressure sensor output data rate
- * @param  pObj the device pObj
- * @param  Odr pointer where the output data rate is written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH pressure sensor output data rate
+  * @param  pObj the device pObj
+  * @param  Odr pointer where the output data rate is written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_PRESS_GetOutputDataRate(LPS22HH_Object_t *pObj, float *Odr)
 {
   return LPS22HH_GetOutputDataRate(pObj, Odr);
 }
 
 /**
- * @brief  Set the LPS22HH pressure sensor output data rate
- * @param  pObj the device pObj
- * @param  Odr the output data rate value to be set
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the LPS22HH pressure sensor output data rate
+  * @param  pObj the device pObj
+  * @param  Odr the output data rate value to be set
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_PRESS_SetOutputDataRate(LPS22HH_Object_t *pObj, float Odr)
 {
   /* Check if the component is enabled */
@@ -331,11 +332,11 @@ int32_t LPS22HH_PRESS_SetOutputDataRate(LPS22HH_Object_t *pObj, float Odr)
 }
 
 /**
- * @brief  Get the LPS22HH pressure value
- * @param  pObj the device pObj
- * @param  Value pointer where the pressure value is written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH pressure value
+  * @param  pObj the device pObj
+  * @param  Value pointer where the pressure value is written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_PRESS_GetPressure(LPS22HH_Object_t *pObj, float *Value)
 {
   lps22hh_axis1bit32_t data_raw_pressure;
@@ -352,11 +353,11 @@ int32_t LPS22HH_PRESS_GetPressure(LPS22HH_Object_t *pObj, float *Value)
 }
 
 /**
- * @brief  Get the LPS22HH pressure data ready bit value
- * @param  pObj the device pObj
- * @param  Status the status of data ready bit
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH pressure data ready bit value
+  * @param  pObj the device pObj
+  * @param  Status the status of data ready bit
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_PRESS_Get_DRDY_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 {
   if (lps22hh_press_flag_data_ready_get(&(pObj->Ctx), Status) != LPS22HH_OK)
@@ -368,10 +369,10 @@ int32_t LPS22HH_PRESS_Get_DRDY_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Enable the LPS22HH temperature sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Enable the LPS22HH temperature sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_TEMP_Enable(LPS22HH_Object_t *pObj)
 {
   /* Check if the component is already enabled */
@@ -392,10 +393,10 @@ int32_t LPS22HH_TEMP_Enable(LPS22HH_Object_t *pObj)
 }
 
 /**
- * @brief  Disable the LPS22HH temperature sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Disable the LPS22HH temperature sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_TEMP_Disable(LPS22HH_Object_t *pObj)
 {
   /* Check if the component is already disabled */
@@ -427,22 +428,22 @@ int32_t LPS22HH_TEMP_Disable(LPS22HH_Object_t *pObj)
 }
 
 /**
- * @brief  Get the LPS22HH temperature sensor output data rate
- * @param  pObj the device pObj
- * @param  Odr pointer where the output data rate is written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH temperature sensor output data rate
+  * @param  pObj the device pObj
+  * @param  Odr pointer where the output data rate is written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_TEMP_GetOutputDataRate(LPS22HH_Object_t *pObj, float *Odr)
 {
   return LPS22HH_GetOutputDataRate(pObj, Odr);
 }
 
 /**
- * @brief  Set the LPS22HH temperature sensor output data rate
- * @param  pObj the device pObj
- * @param  Odr the output data rate value to be set
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the LPS22HH temperature sensor output data rate
+  * @param  pObj the device pObj
+  * @param  Odr the output data rate value to be set
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_TEMP_SetOutputDataRate(LPS22HH_Object_t *pObj, float Odr)
 {
   /* Check if the component is enabled */
@@ -457,11 +458,11 @@ int32_t LPS22HH_TEMP_SetOutputDataRate(LPS22HH_Object_t *pObj, float Odr)
 }
 
 /**
- * @brief  Get the LPS22HH temperature value
- * @param  pObj the device pObj
- * @param  Value pointer where the temperature value is written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH temperature value
+  * @param  pObj the device pObj
+  * @param  Value pointer where the temperature value is written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_TEMP_GetTemperature(LPS22HH_Object_t *pObj, float *Value)
 {
   lps22hh_axis1bit16_t data_raw_temperature;
@@ -478,11 +479,11 @@ int32_t LPS22HH_TEMP_GetTemperature(LPS22HH_Object_t *pObj, float *Value)
 }
 
 /**
- * @brief  Get the LPS22HH temperature data ready bit value
- * @param  pObj the device pObj
- * @param  Status the status of data ready bit
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH temperature data ready bit value
+  * @param  pObj the device pObj
+  * @param  Status the status of data ready bit
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_TEMP_Get_DRDY_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 {
   if (lps22hh_temp_flag_data_ready_get(&(pObj->Ctx), Status) != LPS22HH_OK)
@@ -494,12 +495,12 @@ int32_t LPS22HH_TEMP_Get_DRDY_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Get the LPS22HH register value
- * @param  pObj the device pObj
- * @param  Reg address to be written
- * @param  Data value to be written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH register value
+  * @param  pObj the device pObj
+  * @param  Reg address to be written
+  * @param  Data value to be written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_Read_Reg(LPS22HH_Object_t *pObj, uint8_t Reg, uint8_t *Data)
 {
   if (lps22hh_read_reg(&(pObj->Ctx), Reg, Data, 1) != LPS22HH_OK)
@@ -511,12 +512,12 @@ int32_t LPS22HH_Read_Reg(LPS22HH_Object_t *pObj, uint8_t Reg, uint8_t *Data)
 }
 
 /**
- * @brief  Set the LPS22HH register value
- * @param  pObj the device pObj
- * @param  Reg address to be written
- * @param  Data value to be written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the LPS22HH register value
+  * @param  pObj the device pObj
+  * @param  Reg address to be written
+  * @param  Data value to be written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_Write_Reg(LPS22HH_Object_t *pObj, uint8_t Reg, uint8_t Data)
 {
   if (lps22hh_write_reg(&(pObj->Ctx), Reg, &Data, 1) != LPS22HH_OK)
@@ -528,19 +529,19 @@ int32_t LPS22HH_Write_Reg(LPS22HH_Object_t *pObj, uint8_t Reg, uint8_t Data)
 }
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup LPS22HH_Private_Functions LPS22HH Private Functions
- * @{
- */
+  * @{
+  */
 
 /**
- * @brief  Get the LPS22HH FIFO get temp data
- * @param  pObj the device pObj
- * @param  Status the status of data ready bit
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH FIFO get temp data
+  * @param  pObj the device pObj
+  * @param  Status the status of data ready bit
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_Get_Temp(LPS22HH_Object_t *pObj, float *Data)
 {
   lps22hh_axis1bit16_t data_raw_temperature;
@@ -557,11 +558,11 @@ int32_t LPS22HH_Get_Temp(LPS22HH_Object_t *pObj, float *Data)
 }
 
 /**
- * @brief  Get output data rate
- * @param  pObj the device pObj
- * @param  Odr the output data rate value
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get output data rate
+  * @param  pObj the device pObj
+  * @param  Odr the output data rate value
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t LPS22HH_GetOutputDataRate(LPS22HH_Object_t *pObj, float *Odr)
 {
   int32_t ret = LPS22HH_OK;
@@ -615,22 +616,22 @@ static int32_t LPS22HH_GetOutputDataRate(LPS22HH_Object_t *pObj, float *Odr)
 }
 
 /**
- * @brief  Set output data rate
- * @param  pObj the device pObj
- * @param  Odr the output data rate value to be set
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set output data rate
+  * @param  pObj the device pObj
+  * @param  Odr the output data rate value to be set
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t LPS22HH_SetOutputDataRate_When_Enabled(LPS22HH_Object_t *pObj, float Odr)
 {
   lps22hh_odr_t new_odr;
 
   new_odr = (Odr <=   1.0f) ? LPS22HH_1_Hz
-          : (Odr <=  10.0f) ? LPS22HH_10_Hz
-          : (Odr <=  25.0f) ? LPS22HH_25_Hz
-          : (Odr <=  50.0f) ? LPS22HH_50_Hz
-          : (Odr <=  75.0f) ? LPS22HH_75_Hz
-          : (Odr <= 100.0f) ? LPS22HH_100_Hz
-          :                   LPS22HH_200_Hz;
+            : (Odr <=  10.0f) ? LPS22HH_10_Hz
+            : (Odr <=  25.0f) ? LPS22HH_25_Hz
+            : (Odr <=  50.0f) ? LPS22HH_50_Hz
+            : (Odr <=  75.0f) ? LPS22HH_75_Hz
+            : (Odr <= 100.0f) ? LPS22HH_100_Hz
+            :                   LPS22HH_200_Hz;
 
   if (lps22hh_data_rate_set(&(pObj->Ctx), new_odr) != LPS22HH_OK)
   {
@@ -646,29 +647,29 @@ static int32_t LPS22HH_SetOutputDataRate_When_Enabled(LPS22HH_Object_t *pObj, fl
 }
 
 /**
- * @brief  Set output data rate when disabled
- * @param  pObj the device pObj
- * @param  Odr the output data rate value to be set
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set output data rate when disabled
+  * @param  pObj the device pObj
+  * @param  Odr the output data rate value to be set
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t LPS22HH_SetOutputDataRate_When_Disabled(LPS22HH_Object_t *pObj, float Odr)
 {
   pObj->last_odr = (Odr <=   1.0f) ? LPS22HH_1_Hz
-                 : (Odr <=  10.0f) ? LPS22HH_10_Hz
-                 : (Odr <=  25.0f) ? LPS22HH_25_Hz
-                 : (Odr <=  50.0f) ? LPS22HH_50_Hz
-                 : (Odr <=  75.0f) ? LPS22HH_75_Hz
-                 : (Odr <= 100.0f) ? LPS22HH_100_Hz
-                 :                   LPS22HH_200_Hz;
+                   : (Odr <=  10.0f) ? LPS22HH_10_Hz
+                   : (Odr <=  25.0f) ? LPS22HH_25_Hz
+                   : (Odr <=  50.0f) ? LPS22HH_50_Hz
+                   : (Odr <=  75.0f) ? LPS22HH_75_Hz
+                   : (Odr <= 100.0f) ? LPS22HH_100_Hz
+                   :                   LPS22HH_200_Hz;
 
   return LPS22HH_OK;
 }
 
 /**
- * @brief  Initialize the LPS22HH sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Initialize the LPS22HH sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t LPS22HH_Initialize(LPS22HH_Object_t *pObj)
 {
   /* Disable MIPI I3C(SM) interface */
@@ -707,11 +708,11 @@ static int32_t LPS22HH_Initialize(LPS22HH_Object_t *pObj)
 }
 
 /**
- * @brief  Get the LPS22HH FIFO data level
- * @param  pObj the device pObj
- * @param  Status the status of data ready bit
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH FIFO data level
+  * @param  pObj the device pObj
+  * @param  Status the status of data ready bit
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_FIFO_Get_Data(LPS22HH_Object_t *pObj, float *Press, float *Temp)
 {
   lps22hh_axis1bit32_t data_raw_pressure;
@@ -720,7 +721,7 @@ int32_t LPS22HH_FIFO_Get_Data(LPS22HH_Object_t *pObj, float *Press, float *Temp)
   (void)memset(data_raw_pressure.u8bit, 0x00, sizeof(int32_t));
   if (lps22hh_fifo_pressure_raw_get(&(pObj->Ctx), (uint32_t *)&data_raw_pressure.i32bit) != LPS22HH_OK)
   {
-	return LPS22HH_ERROR;
+    return LPS22HH_ERROR;
   }
 
   *Press = lps22hh_from_lsb_to_hpa((uint32_t)data_raw_pressure.i32bit);
@@ -737,11 +738,11 @@ int32_t LPS22HH_FIFO_Get_Data(LPS22HH_Object_t *pObj, float *Press, float *Temp)
 }
 
 /**
- * @brief  Get the LPS22HH FIFO threshold
- * @param  pObj the device pObj
- * @param  Status the status of data ready bit
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH FIFO threshold
+  * @param  pObj the device pObj
+  * @param  Status the status of data ready bit
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_FIFO_Get_FTh_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 {
   if (lps22hh_fifo_wtm_flag_get(&(pObj->Ctx), Status) != LPS22HH_OK)
@@ -753,11 +754,11 @@ int32_t LPS22HH_FIFO_Get_FTh_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Get the LPS22HH FIFO full status
- * @param  pObj the device pObj
- * @param  Status the status of data ready bit
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH FIFO full status
+  * @param  pObj the device pObj
+  * @param  Status the status of data ready bit
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_FIFO_Get_Full_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 {
   if (lps22hh_fifo_full_flag_get(&(pObj->Ctx), Status) != LPS22HH_OK)
@@ -769,11 +770,11 @@ int32_t LPS22HH_FIFO_Get_Full_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Get the LPS22HH FIFO OVR status
- * @param  pObj the device pObj
- * @param  Status the status of data ready bit
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH FIFO OVR status
+  * @param  pObj the device pObj
+  * @param  Status the status of data ready bit
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_FIFO_Get_Ovr_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 {
   if (lps22hh_fifo_ovr_flag_get(&(pObj->Ctx), Status) != LPS22HH_OK)
@@ -785,11 +786,11 @@ int32_t LPS22HH_FIFO_Get_Ovr_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Get the LPS22HH FIFO data level
- * @param  pObj the device pObj
- * @param  Status the status of data ready bit
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH FIFO data level
+  * @param  pObj the device pObj
+  * @param  Status the status of data ready bit
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_FIFO_Get_Level(LPS22HH_Object_t *pObj, uint8_t *Status)
 {
   if (lps22hh_fifo_data_level_get(&(pObj->Ctx), Status) != LPS22HH_OK)
@@ -801,11 +802,11 @@ int32_t LPS22HH_FIFO_Get_Level(LPS22HH_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Reset the FIFO interrupt
- * @param  pObj the device pObj
- * @param  interrupt The FIFO interrupt to be reset; values: 0 = FTH; 1 = FULL; 2 = OVR
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Reset the FIFO interrupt
+  * @param  pObj the device pObj
+  * @param  interrupt The FIFO interrupt to be reset; values: 0 = FTH; 1 = FULL; 2 = OVR
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_FIFO_Reset_Interrupt(LPS22HH_Object_t *pObj, uint8_t interrupt)
 {
   switch (interrupt)
@@ -836,11 +837,11 @@ int32_t LPS22HH_FIFO_Reset_Interrupt(LPS22HH_Object_t *pObj, uint8_t interrupt)
 }
 
 /**
- * @brief  Set the FIFO interrupt
- * @param  pObj the device pObj
- * @param  interrupt The FIFO interrupt to be reset; values: 0 = FTH; 1 = FULL; 2 = OVR
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the FIFO interrupt
+  * @param  pObj the device pObj
+  * @param  interrupt The FIFO interrupt to be reset; values: 0 = FTH; 1 = FULL; 2 = OVR
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_FIFO_Set_Interrupt(LPS22HH_Object_t *pObj, uint8_t interrupt)
 {
   switch (interrupt)
@@ -871,11 +872,11 @@ int32_t LPS22HH_FIFO_Set_Interrupt(LPS22HH_Object_t *pObj, uint8_t interrupt)
 }
 
 /**
- * @brief  Set the FIFO mode
- * @param  pObj the device pObj
- * @param  Mode the FIFO mode to be set
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the FIFO mode
+  * @param  pObj the device pObj
+  * @param  Mode the FIFO mode to be set
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_FIFO_Set_Mode(LPS22HH_Object_t *pObj, uint8_t Mode)
 {
   /* Verify that the passed parameter contains one of the valid values */
@@ -901,11 +902,11 @@ int32_t LPS22HH_FIFO_Set_Mode(LPS22HH_Object_t *pObj, uint8_t Mode)
 }
 
 /**
- * @brief  Set the LPS22HH FIFO data level
- * @param  pObj the device pObj
- * @param  Status the status of data ready bit
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the LPS22HH FIFO data level
+  * @param  pObj the device pObj
+  * @param  Status the status of data ready bit
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_FIFO_Set_Watermark_Level(LPS22HH_Object_t *pObj, uint8_t Watermark)
 {
   if (lps22hh_fifo_watermark_set(&(pObj->Ctx), Watermark) != LPS22HH_OK)
@@ -917,11 +918,11 @@ int32_t LPS22HH_FIFO_Set_Watermark_Level(LPS22HH_Object_t *pObj, uint8_t Waterma
 }
 
 /**
- * @brief  Set the LPS22HH stop on watermark function
- * @param  pObj the device pObj
- * @param  Stop the state of stop on watermark function
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the LPS22HH stop on watermark function
+  * @param  pObj the device pObj
+  * @param  Stop the state of stop on watermark function
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_FIFO_Stop_On_Watermark(LPS22HH_Object_t *pObj, uint8_t Stop)
 {
   if (lps22hh_fifo_stop_on_wtm_set(&(pObj->Ctx), Stop) != LPS22HH_OK)
@@ -933,14 +934,14 @@ int32_t LPS22HH_FIFO_Stop_On_Watermark(LPS22HH_Object_t *pObj, uint8_t Stop)
 }
 
 /**
- * @brief  Set the LPS22HH One Shot Mode
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the LPS22HH One Shot Mode
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_Set_One_Shot(LPS22HH_Object_t *pObj)
 {
   /* Start One Shot Measurement */
-  if(lps22hh_data_rate_set(&(pObj->Ctx), LPS22HH_ONE_SHOOT) != LPS22HH_OK)
+  if (lps22hh_data_rate_set(&(pObj->Ctx), LPS22HH_ONE_SHOOT) != LPS22HH_OK)
   {
     return LPS22HH_ERROR;
   }
@@ -949,29 +950,29 @@ int32_t LPS22HH_Set_One_Shot(LPS22HH_Object_t *pObj)
 }
 
 /**
- * @brief  Get the LPS22HH One Shot Status
- * @param  pObj the device pObj
- * @param  Status pointer to the one shot status (1 means measurements available, 0 means measurements not available yet)
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the LPS22HH One Shot Status
+  * @param  pObj the device pObj
+  * @param  Status pointer to the one shot status (1 means measurements available, 0 means measurements not available yet)
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_Get_One_Shot_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 {
   uint8_t p_da;
   uint8_t t_da;
 
   /* Get DataReady for pressure */
-  if(lps22hh_press_flag_data_ready_get(&(pObj->Ctx), &p_da) != LPS22HH_OK)
+  if (lps22hh_press_flag_data_ready_get(&(pObj->Ctx), &p_da) != LPS22HH_OK)
   {
     return LPS22HH_ERROR;
   }
 
   /* Get DataReady for temperature */
-  if(lps22hh_temp_flag_data_ready_get(&(pObj->Ctx), &t_da) != LPS22HH_OK)
+  if (lps22hh_temp_flag_data_ready_get(&(pObj->Ctx), &t_da) != LPS22HH_OK)
   {
     return LPS22HH_ERROR;
   }
 
-  if(p_da && t_da)
+  if (p_da && t_da)
   {
     *Status = 1;
   }
@@ -984,21 +985,21 @@ int32_t LPS22HH_Get_One_Shot_Status(LPS22HH_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Enable LPS22HH DRDY interrupt mode
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Enable LPS22HH DRDY interrupt mode
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_Enable_DRDY_Interrupt(LPS22HH_Object_t *pObj)
 {
   lps22hh_ctrl_reg3_t ctrl1_reg3;
 
   /* Enable Interrupt DRDY on INT1 */
-  if(lps22hh_pin_int_route_get(&(pObj->Ctx), &ctrl1_reg3) != LPS22HH_OK)
+  if (lps22hh_pin_int_route_get(&(pObj->Ctx), &ctrl1_reg3) != LPS22HH_OK)
   {
     return LPS22HH_ERROR;
   }
   ctrl1_reg3.drdy = 1;
-  if(lps22hh_pin_int_route_set(&(pObj->Ctx), &ctrl1_reg3) != LPS22HH_OK)
+  if (lps22hh_pin_int_route_set(&(pObj->Ctx), &ctrl1_reg3) != LPS22HH_OK)
   {
     return LPS22HH_ERROR;
   }
@@ -1007,21 +1008,21 @@ int32_t LPS22HH_Enable_DRDY_Interrupt(LPS22HH_Object_t *pObj)
 }
 
 /**
- * @brief  Set the LPS22HH power mode
- * @param  pObj the device pObj
- * @param  powerMode mode to be set
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the LPS22HH power mode
+  * @param  pObj the device pObj
+  * @param  powerMode mode to be set
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_Set_Power_Mode(LPS22HH_Object_t *pObj, uint8_t powerMode)
 {
   lps22hh_ctrl_reg2_t ctrl_reg2;
 
-  if(lps22hh_read_reg(&(pObj->Ctx), LPS22HH_CTRL_REG2, (uint8_t*)&ctrl_reg2, 1) != LPS22HH_OK)
+  if (lps22hh_read_reg(&(pObj->Ctx), LPS22HH_CTRL_REG2, (uint8_t *)&ctrl_reg2, 1) != LPS22HH_OK)
   {
     return LPS22HH_ERROR;
   }
 
-  if(powerMode == 1)
+  if (powerMode == 1)
   {
     ctrl_reg2.low_noise_en = LPS22HH_LOW_NOISE_EN;
   }
@@ -1030,7 +1031,7 @@ int32_t LPS22HH_Set_Power_Mode(LPS22HH_Object_t *pObj, uint8_t powerMode)
     ctrl_reg2.low_noise_en = LPS22HH_LOW_NOISE_DIS;
   }
 
-  if(lps22hh_write_reg(&(pObj->Ctx), LPS22HH_CTRL_REG2, (uint8_t*)&ctrl_reg2, 1) != LPS22HH_OK)
+  if (lps22hh_write_reg(&(pObj->Ctx), LPS22HH_CTRL_REG2, (uint8_t *)&ctrl_reg2, 1) != LPS22HH_OK)
   {
     return LPS22HH_ERROR;
   }
@@ -1039,14 +1040,14 @@ int32_t LPS22HH_Set_Power_Mode(LPS22HH_Object_t *pObj, uint8_t powerMode)
 }
 
 /**
- * @brief  Set the LPS22HH filter mode
- * @param  pObj the device pObj
- * @param  filterMode to be set
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the LPS22HH filter mode
+  * @param  pObj the device pObj
+  * @param  filterMode to be set
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t LPS22HH_Set_Filter_Mode(LPS22HH_Object_t *pObj, uint8_t filterMode)
 {
-  if(lps22hh_lp_bandwidth_set(&(pObj->Ctx), (lps22hh_lpfp_cfg_t)filterMode) != LPS22HH_OK)
+  if (lps22hh_lp_bandwidth_set(&(pObj->Ctx), (lps22hh_lpfp_cfg_t)filterMode) != LPS22HH_OK)
   {
     return LPS22HH_ERROR;
   }
@@ -1054,13 +1055,13 @@ int32_t LPS22HH_Set_Filter_Mode(LPS22HH_Object_t *pObj, uint8_t filterMode)
 }
 
 /**
- * @brief  Wrap Read register component function to Bus IO function
- * @param  Handle the device handler
- * @param  Reg the register address
- * @param  pData the stored data pointer
- * @param  Length the length
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Wrap Read register component function to Bus IO function
+  * @param  Handle the device handler
+  * @param  Reg the register address
+  * @param  pData the stored data pointer
+  * @param  Length the length
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t ReadRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t Length)
 {
   LPS22HH_Object_t *pObj = (LPS22HH_Object_t *)Handle;
@@ -1069,13 +1070,13 @@ static int32_t ReadRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t L
 }
 
 /**
- * @brief  Wrap Write register component function to Bus IO function
- * @param  Handle the device handler
- * @param  Reg the register address
- * @param  pData the stored data pointer
- * @param  Length the length
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Wrap Write register component function to Bus IO function
+  * @param  Handle the device handler
+  * @param  Reg the register address
+  * @param  pData the stored data pointer
+  * @param  Length the length
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t WriteRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t Length)
 {
   LPS22HH_Object_t *pObj = (LPS22HH_Object_t *)Handle;
@@ -1084,17 +1085,17 @@ static int32_t WriteRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t 
 }
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */

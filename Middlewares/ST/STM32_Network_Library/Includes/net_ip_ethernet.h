@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    net_ip_ethernet.h
   * @author  MCD Application Team
-  * @brief   Header for the network interface on ethernet
+  * @brief   Header for the network interface on Ethernet
   ******************************************************************************
   * @attention
   *

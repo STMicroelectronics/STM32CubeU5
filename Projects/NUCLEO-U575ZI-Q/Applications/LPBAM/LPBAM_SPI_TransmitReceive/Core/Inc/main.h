@@ -62,6 +62,7 @@ typedef enum
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
+void MX_SPI1_Init(void);
 
 /* USER CODE BEGIN EFP */
 
@@ -76,7 +77,7 @@ void Error_Handler(void);
 #define TX_BUFFER2_SIZE 36U
 #define RX_BUFFER1_SIZE 56U
 #define RX_BUFFER2_SIZE 36U
-void   MX_SPI1_Init(void);
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

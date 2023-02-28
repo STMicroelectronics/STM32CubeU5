@@ -67,11 +67,11 @@ typedef struct
   */
 typedef struct
 {
-  LPBAM_Desc_t NodeDesc;     /*!< Defines the node descriptor fields */
+  LPBAM_Desc_t NodeDesc;         /*!< Defines the node descriptor fields */
 
-  DAC_TypeDef *pInstance;    /*!< Defines the DAC instance           */
+  DAC_TypeDef *pInstance;        /*!< Defines the DAC instance           */
 
-  LPBAM_DAC_Config_t Config; /*!< Defines the DAC user configuration */
+  LPBAM_DAC_Config_t Config[2U]; /*!< Defines the DAC user configuration */
 
 } LPBAM_DAC_ConfNode_t;
 

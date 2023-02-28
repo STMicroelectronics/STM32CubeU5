@@ -1,10 +1,8 @@
 [ProjectFiles]
-HeaderPath=..\..\..\..\..\..\Drivers\BSP\STM32U575I-EV
 [Others]
 Define=
 HALModule=EXTI;GTZC;SRAM
 [Groups]
 Doc=../README.md;
-Drivers/BSP/STM32U575I-EV=../../../../../../Drivers/BSP/STM32U575I-EV/stm32u575i_eval.c;
-Application/User/Secure=../Secure/Src/hal_sram_helper.c;
+Application/User/Secure=../Secure/Src/external_memory_helper.c;
 Drivers/STM32U5xx_HAL_Driver=../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_sram.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_fmc.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_exti.c;

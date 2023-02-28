@@ -166,6 +166,8 @@ static void SystemPower_Config(void)
   {
     Error_Handler();
   }
+/* USER CODE BEGIN PWR */
+/* USER CODE END PWR */
 }
 
 /**
@@ -257,12 +259,21 @@ static void MX_GTZC_S_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN GTZC_S_Init 2 */
-  /* Enable all illegal access interrupts in GTZC TZIC */
-  if(HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_ALL) != HAL_OK)
+  /* Clear all illegal access flags in GTZC TZIC */
+  if(HAL_GTZC_TZIC_ClearFlag(GTZC_PERIPH_ALL) != HAL_OK)
   {
     /* Initialization Error */
     while(1);
   }
+
+  if (HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_SRAM1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Enable GTZC secure interrupt */
+  HAL_NVIC_SetPriority(GTZC_IRQn, 0, 0); /* Highest priority level */
+  HAL_NVIC_EnableIRQ(GTZC_IRQn);
   /* USER CODE END GTZC_S_Init 2 */
 
 }
@@ -306,6 +317,8 @@ static void MX_ICACHE_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -317,10 +330,19 @@ static void MX_GPIO_Init(void)
   /*IO attributes management functions */
   HAL_GPIO_ConfigPinAttributes(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_NSEC);
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_GTZC_TZIC_Callback(uint32_t PeriphId)
+{
+  if (PeriphId == GTZC_PERIPH_SRAM1)
+  {
+      /* LED_RED On */
+      BSP_LED_On(LED_RED);
+  }
+}
 /* USER CODE END 4 */
 
 /**

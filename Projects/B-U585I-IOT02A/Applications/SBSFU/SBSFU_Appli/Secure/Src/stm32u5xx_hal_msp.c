@@ -46,5 +46,4 @@ void HAL_MspInit(void)
   */
   HAL_PWREx_DisableUCPDDeadBattery();
 
-
 }

@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -23,7 +23,8 @@
 #include <inttypes.h>
 #include <string.h>
 
-int32_t quit_msg = 0;
+
+int32_t ConsoleQuit = 0;
 
 #define MAX_ARGS         10
 #define MAX_INPUT_LINE   80
@@ -48,7 +49,8 @@ int32_t quit_msg = 0;
 #define HISTORY_SIZE       5
 #define MAX_MATCHED_CMD    20
 
-static const char *gprompt;
+/*static*/ const char *ConsolePrompt;
+static const cmd_t *gcmdlist;
 static char *history_cmd[HISTORY_SIZE];
 static uint32_t used_cmd_count = 0;
 static const cmd_t *cmd_match[MAX_MATCHED_CMD];
@@ -63,24 +65,22 @@ static unsigned char local_getc(void);
 static unsigned char my_getc(void);
 static void mygets(char *s, const cmd_t cmd_list[]);
 
-static void get_cmd(char *s, const cmd_t cmd_list[]);
+void get_cmd(char *s, const cmd_t cmd_list[]);
 static char *my_strdup(char *s);
 
 
 
 int32_t help_cmd(int32_t argc, char **argv)
 {
+  uint32_t i = 0;
   UNUSED(argc);
   UNUSED(argv);
-  uint32_t i = 0;
-
-  extern const cmd_t cmdlist[];
 
   do
   {
-    MSG_INFO("\"%10s\"            %s\n", cmdlist[i].name, cmdlist[i].comment);
+    MSG_INFO("\"%10s\"            %s\n", gcmdlist[i].name, gcmdlist[i].comment);
     i = i + 1;
-  } while (cmdlist[i].name != NULL);
+  } while (gcmdlist[i].name != NULL);
   return 0;
 }
 
@@ -88,7 +88,7 @@ int32_t quit_cmd(int32_t argc, char **argv)
 {
   UNUSED(argc);
   UNUSED(argv);
-  quit_msg = 1;
+  ConsoleQuit = 1;
   return 0;
 }
 
@@ -99,7 +99,7 @@ static char *my_strdup(char *s)
   if (s != NULL)
   {
     const size_t s_len = strlen(s) + 1;
-    p = malloc(s_len);
+    p = (char*)malloc(s_len);
     if (p != NULL)
     {
       memcpy(p, s, s_len);
@@ -107,6 +107,7 @@ static char *my_strdup(char *s)
   }
   return p ;
 }
+
 
 static const cmd_t **cmd_match_list(const cmd_t cmd_list[], char *name, int32_t *match_count)
 {
@@ -149,6 +150,7 @@ static const cmd_t **cmd_match_list(const cmd_t cmd_list[], char *name, int32_t 
   return NULL;
 }
 
+
 static const cmd_t *console_cmd_match(const cmd_t cmd_list[], char *cmdname)
 {
   const cmd_t **cmd;
@@ -180,10 +182,11 @@ static void history_cmd_list(void)
 {
   for (uint32_t i = 0; i < used_cmd_count; i++)
   {
-    MSG_INFO("%"PRIu32"\t%s\n", i, history_cmd[i]);
+    MSG_INFO("%" PRIu32 "\t%s\n", i, history_cmd[i]);
   }
-  MSG_INFO("%s", gprompt);
+  printf("%s", ConsolePrompt);
 }
+
 
 static void history_cmd_add(char *cmd)
 {
@@ -201,13 +204,15 @@ static void history_cmd_add(char *cmd)
         return;
       }
 
-      /* we got a match so we should reorder the array. */
-      char *localcmd = history_cmd[i];
-      for (; i > 0; i--)
+      /* We got a match so we should reorder the array. */
       {
-        history_cmd[i] = history_cmd[i - 1];
-      }
-      history_cmd[0] = localcmd;
+        char *localcmd = history_cmd[i];
+        for (; i > 0; i--)
+        {
+          history_cmd[i] = history_cmd[i - 1];
+        }
+        history_cmd[0] = localcmd;
+	    }
       return;
     }
 
@@ -231,21 +236,21 @@ static void history_cmd_add(char *cmd)
   history_cmd[0] = my_strdup(cmd);
 }
 
+
 static unsigned char local_getc(void)
 {
-  int c;
-  c = getc(stdin);
+  const int c = getc(stdin);
+  unsigned char ret = '\0';
 
   if (EOF != c)
   {
     /* Values 128 or higher cannot be stored as char. */
-    return (unsigned char)c;
+    ret = (unsigned char)c;
   }
-  else
-  {
-    return '\0';
-  }
+
+  return ret;
 }
+
 
 static unsigned char my_getc(void)
 {
@@ -339,7 +344,7 @@ static void mygets(char *s, const cmd_t cmd_list[])
       if (NULL != history_cmd[history_count])
       {
         MSG_INFO(TERM_LINE_ERASE);
-        MSG_INFO("%s", gprompt);
+        MSG_INFO("%s", ConsolePrompt);
         MSG_INFO("%s", history_cmd[history_count]);
         i = strlen(history_cmd[history_count]);
         strcpy(s, history_cmd[history_count]);
@@ -360,7 +365,7 @@ static void mygets(char *s, const cmd_t cmd_list[])
       if (NULL != history_cmd[history_count])
       {
         MSG_INFO(TERM_LINE_ERASE);
-        MSG_INFO("%s", gprompt);
+        MSG_INFO("%s", ConsolePrompt);
         MSG_INFO("%s", history_cmd[history_count]);
         i = strlen(history_cmd[history_count]);
         cursor_x = i;
@@ -390,14 +395,14 @@ static void mygets(char *s, const cmd_t cmd_list[])
         memmove(&s[cursor_x - 1], &s[cursor_x], 1 + i - cursor_x);
         s[i] = 0;
         MSG_INFO(TERM_LINE_ERASE);
-        MSG_INFO("%s", gprompt);
+        MSG_INFO("%s", ConsolePrompt);
         MSG_INFO("%s", s);
         cursor_x--;
         i--;
         /* replace cursor , moving it on the left */
         if (cursor_x < i)
         {
-          MSG_INFO("\x1b[%"PRIu32"D", i - cursor_x);
+          MSG_INFO("\x1b[%" PRIu32 "D", i - cursor_x);
         }
       }
     }
@@ -414,7 +419,7 @@ static void mygets(char *s, const cmd_t cmd_list[])
         cmd = match_list[0];
         strcpy(s, cmd->name);
         MSG_INFO(TERM_LINE_ERASE);
-        MSG_INFO("%s", gprompt);
+        MSG_INFO("%s", ConsolePrompt);
         MSG_INFO("%s", s);
         i = cursor_x = strlen(s);
       }
@@ -427,14 +432,14 @@ static void mygets(char *s, const cmd_t cmd_list[])
           MSG_INFO("%s\n", cmd->name);
         }
         MSG_INFO(TERM_LINE_ERASE);
-        MSG_INFO("%s", gprompt);
+        MSG_INFO("%s", ConsolePrompt);
         MSG_INFO("%s", s);
         i = cursor_x = strlen(s);
       }
     }
     else
     {
-      if (ch != '\n')
+      if ((ch != '\n') && (ch != '\r'))
       {
         if (insert_mode & (cursor_x != i))
         {
@@ -448,12 +453,12 @@ static void mygets(char *s, const cmd_t cmd_list[])
           s[cursor_x++] = ch;
           i++;
           MSG_INFO(TERM_LINE_ERASE);
-          MSG_INFO("%s", gprompt);
+          MSG_INFO("%s", ConsolePrompt);
           MSG_INFO("%s", s);
           /* replace cursor, moving it on the left */
           if (cursor_x < i)
           {
-            MSG_INFO("\x1b[%"PRIu32"D", i - cursor_x);
+            MSG_INFO("\x1b[%" PRIu32 "D", i - cursor_x);
           }
         }
         else
@@ -473,12 +478,13 @@ static void mygets(char *s, const cmd_t cmd_list[])
       i = MAX_INPUT_LINE - 1;
       break;
     }
-  } while (ch != '\n');
+  } while ((ch != '\n') && (ch != '\r'));
   s[i] = 0;
   MSG_INFO("\n");
 }
 
-static void get_cmd(char *s, const cmd_t cmd_list[])
+
+void get_cmd(char *s, const cmd_t cmd_list[])
 {
   while (1)
   {
@@ -506,6 +512,7 @@ static void get_cmd(char *s, const cmd_t cmd_list[])
   }
 }
 
+
 void console(const char *prompt, const cmd_t cmd_list[])
 {
   char s[MAX_INPUT_LINE];
@@ -513,15 +520,21 @@ void console(const char *prompt, const cmd_t cmd_list[])
   char *args[MAX_ARGS];
 
   setbuf(stdout, NULL);
-  gprompt = prompt;
+  setbuf(stdin, NULL);
+
+  ConsolePrompt = prompt;
+  gcmdlist = cmd_list;
   MSG_INFO(TERM_NO_LOCAL_ECHO);
+
+  MSG_INFO("\n##### Please enter one of the following command:\n\n");
+  help_cmd(0, NULL);
 
   do
   {
     const cmd_t *cmd;
     int32_t i = 0;
 
-    MSG_INFO("%s", gprompt);
+    MSG_INFO("%s", ConsolePrompt);
     get_cmd(s, cmd_list);
 
     if (s[0] != 0)
@@ -549,6 +562,6 @@ void console(const char *prompt, const cmd_t cmd_list[])
         MSG_INFO("console:%s: command not found\n", scopy);
       }
     }
-  } while (quit_msg == 0);
+  } while (ConsoleQuit == 0);
   history_free_list();
 }

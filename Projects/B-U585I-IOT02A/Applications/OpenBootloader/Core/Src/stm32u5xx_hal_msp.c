@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -20,9 +20,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32u5xx_hal.h"
-#include "stm32u5xx_ll_bus.h"
-#include "stm32u5xx_ll_gpio.h"
 #include "interfaces_conf.h"
 
 /**
@@ -57,33 +54,48 @@ void HAL_FDCAN_MspInit(FDCAN_HandleTypeDef *hfdcan)
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
   LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_FDCAN1);
 
-  /* Configure FDCAN TX as alternate function */
-  GPIO_InitStruct.Pin        = FDCANx_TX_PIN;
+  /* FDCANx pins configuration -------------------------------------------------*/
+  /*      +--------------+
+          |     FDCAN1   |
+  +-------+--------------+
+  |  Tx   |     PB8      |
+  +-------+--------------+
+  |  Rx   |     PB9      |
+  +-------+--------------+ */
+
+  /* Common configuration for FDCANx PINs:
+      Mode       : Alternate function.
+      Output type: Push-Pull (No pull).
+      Speed      : High speed.
+  */
   GPIO_InitStruct.Mode       = LL_GPIO_MODE_ALTERNATE;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Speed      = LL_GPIO_SPEED_FREQ_HIGH;
-  GPIO_InitStruct.Pull       = LL_GPIO_PULL_UP;
+  GPIO_InitStruct.Pull       = LL_GPIO_PULL_NO;
   GPIO_InitStruct.Alternate  = FDCANx_TX_AF;
-  LL_GPIO_Init(FDCANx_TX_GPIO_PORT, &GPIO_InitStruct);
 
-  /* Configure FDCAN RX as alternate function */
+  /* Configure FDCAN Tx PIN */
+  GPIO_InitStruct.Pin = FDCANx_TX_PIN;
+  (void)LL_GPIO_Init(FDCANx_TX_GPIO_PORT, &GPIO_InitStruct);
+
+  /* Configure FDCAN Rx */
   GPIO_InitStruct.Pin = FDCANx_RX_PIN;
-  LL_GPIO_Init(FDCANx_RX_GPIO_PORT, &GPIO_InitStruct);
+  (void)LL_GPIO_Init(FDCANx_RX_GPIO_PORT, &GPIO_InitStruct);
 }
 
 /**
-* @brief  DeInitializes the FDCAN MSP.
-* @param  hfdcan: pointer to an FDCAN_HandleTypeDef structure that contains
-*         the configuration information for the specified FDCAN.
-* @retval None
-*/
+  * @brief  DeInitializes the FDCAN MSP.
+  * @param  hfdcan: pointer to an FDCAN_HandleTypeDef structure that contains
+  *         the configuration information for the specified FDCAN.
+  * @retval None
+  */
 void HAL_FDCAN_MspDeInit(FDCAN_HandleTypeDef *hfdcan)
 {
-  /*##-1- Reset peripherals ##################################################*/
+  /* 1- Reset peripherals */
   FDCANx_FORCE_RESET();
   FDCANx_RELEASE_RESET();
 
-  /*##-2- Disable peripherals and GPIO Clocks ################################*/
+  /* 2- Disable peripherals and GPIO Clocks */
   /* Configure FDCANx Tx as alternate function */
   HAL_GPIO_DeInit(FDCANx_TX_GPIO_PORT, FDCANx_TX_PIN);
 
@@ -92,20 +104,19 @@ void HAL_FDCAN_MspDeInit(FDCAN_HandleTypeDef *hfdcan)
 }
 
 /**
-* @brief PCD MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hpcd: PCD handle pointer
-* @retval None
-*/
+  * @brief PCD MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hpcd: PCD handle pointer
+  * @retval None
+  */
 void HAL_PCD_MspInit(PCD_HandleTypeDef *hpcd)
 {
-  GPIO_InitTypeDef GPIO_InitStruct       = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+  GPIO_InitTypeDef GPIO_InitStruct       = {0U};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0U};
 
   if (hpcd->Instance == USB_OTG_FS)
   {
-    /** Initializes the peripherals clock
-    */
+    /* Initializes the peripherals clock */
     PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_CLK48;
     PeriphClkInit.IclkClockSelection   = RCC_CLK48CLKSOURCE_HSI48;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
@@ -140,18 +151,19 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef *hpcd)
     {
       HAL_PWREx_EnableVddUSB();
     }
+
     /* USB_OTG_FS interrupt Init */
-    HAL_NVIC_SetPriority(OTG_FS_IRQn, 6, 0);
+    HAL_NVIC_SetPriority(OTG_FS_IRQn, 6U, 0U);
     HAL_NVIC_EnableIRQ(OTG_FS_IRQn);
   }
 }
 
 /**
-* @brief PCD MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hpcd: PCD handle pointer
-* @retval None
-*/
+  * @brief PCD MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hpcd: PCD handle pointer
+  * @retval None
+  */
 void HAL_PCD_MspDeInit(PCD_HandleTypeDef *hpcd)
 {
   if (hpcd->Instance == USB_OTG_FS)

@@ -75,7 +75,7 @@
  * @brief Current driver version.
  */
 
-#define VL53L5CX_API_REVISION			"VL53L5CX_1.2.0"
+#define VL53L5CX_API_REVISION			"VL53L5CX_1.3.4"
 
 /**
  * @brief Default I2C address of VL53L5CX sensor. Can be changed using function
@@ -129,6 +129,9 @@
  */
 
 #define VL53L5CX_STATUS_OK			((uint8_t) 0U)
+#define VL53L5CX_STATUS_TIMEOUT_ERROR		((uint8_t) 1U)
+#define VL53L5CX_STATUS_CORRUPTED_FRAME		((uint8_t) 2U)
+#define VL53L5CX_STATUS_CRC_CSUM_FAILED		((uint8_t) 3U)
 #define VL53L5CX_MCU_ERROR			((uint8_t) 66U)
 #define VL53L5CX_STATUS_INVALID_PARAM		((uint8_t) 127U)
 #define VL53L5CX_STATUS_ERROR			((uint8_t) 255U)
@@ -207,6 +210,7 @@
 #define VL53L5CX_DCI_DSS_CONFIG			((uint16_t)0xAD38U)
 #define VL53L5CX_DCI_TARGET_ORDER		((uint16_t)0xAE64U)
 #define VL53L5CX_DCI_SHARPENER			((uint16_t)0xAED8U)
+#define VL53L5CX_DCI_INTERNAL_CP		((uint16_t)0xB39CU)
 #define VL53L5CX_DCI_MOTION_DETECTOR_CFG	((uint16_t)0xBFACU)
 #define VL53L5CX_DCI_SINGLE_RANGE		((uint16_t)0xCD5CU)
 #define VL53L5CX_DCI_OUTPUT_CONFIG		((uint16_t)0xCD60U)
@@ -279,13 +283,13 @@
 /**
  * @brief Macro VL53L5CX_MAX_RESULTS_SIZE indicates the maximum size used by
  * output through I2C. Value 40 corresponds to headers + meta-data + common-data
- * and 8 corresponds to the footer.
+ * and 20 corresponds to the footer.
  */
 
 #define VL53L5CX_MAX_RESULTS_SIZE ( 40U \
 	+ L5CX_AMB_SIZE + L5CX_SPAD_SIZE + L5CX_NTAR_SIZE + L5CX_SPS_SIZE \
 	+ L5CX_SIGR_SIZE + L5CX_DIST_SIZE + L5CX_RFLEST_SIZE + L5CX_STA_SIZE \
-	+ L5CX_MOT_SIZE + 8U)
+	+ L5CX_MOT_SIZE + 20U)
 
 /**
  * @brief Macro VL53L5CX_TEMPORARY_BUFFER_SIZE can be used to know the size of
@@ -672,6 +676,25 @@ uint8_t vl53l5cx_get_ranging_mode(
 uint8_t vl53l5cx_set_ranging_mode(
 		VL53L5CX_Configuration		*p_dev,
 		uint8_t				ranging_mode);
+
+/**
+ * @brief This function is used to disable the VCSEL charge pump
+ * This optimizes the power consumption of the device
+ * To be used only if AVDD = 3.3V
+ * @param (VL53L5CX_Configuration) *p_dev : VL53L5CX configuration structure.
+ */
+uint8_t vl53l5cx_enable_internal_cp(
+		VL53L5CX_Configuration          *p_dev);
+
+
+/**
+ * @brief This function is used to disable the VCSEL charge pump
+ * This optimizes the power consumption of the device
+ * To be used only if AVDD = 3.3V
+ * @param (VL53L5CX_Configuration) *p_dev : VL53L5CX configuration structure.
+ */
+uint8_t vl53l5cx_disable_internal_cp(
+ 	      VL53L5CX_Configuration          *p_dev);
 
 /**
  * @brief This function can be used to read 'extra data' from DCI. Using a known

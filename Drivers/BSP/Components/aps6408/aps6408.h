@@ -70,10 +70,10 @@ extern "C" {
 #define APS6408_MR0_ADDRESS            0x00000000U
 
 #define APS6408_MR0_DRIVE_STRENGTH     0x03U       /*!< Drive Strength                      */
-#define APS6408_MR0_DS_FULL            0x00U       /*!< Drive Strength : Full (25 ?)        */
-#define APS6408_MR0_DS_HALF            0x01U       /*!< Drive Strength : Half (50 ?)        */
-#define APS6408_MR0_DS_QUART           0x02U       /*!< Drive Strength : 1/4 (100 ?)        */
-#define APS6408_MR0_DS_EIGHT           0x03U       /*!< Drive Strength : 1/8 (200 ?)        */
+#define APS6408_MR0_DS_FULL            0x00U       /*!< Drive Strength : Full (25 Ohm)      */
+#define APS6408_MR0_DS_HALF            0x01U       /*!< Drive Strength : Half (50 Ohm)      */
+#define APS6408_MR0_DS_QUART           0x02U       /*!< Drive Strength : 1/4 (100 Ohm)      */
+#define APS6408_MR0_DS_EIGHT           0x03U       /*!< Drive Strength : 1/8 (200 Ohm)      */
 
 #define APS6408_MR0_READ_LATENCY_CODE  0x1CU       /*!< Read Latency Code                   */
 #define APS6408_MR0_RLC_3              0x00U       /*!< Read Latency Code : 3               */

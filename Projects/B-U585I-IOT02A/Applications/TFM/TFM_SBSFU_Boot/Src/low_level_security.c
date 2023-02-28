@@ -42,7 +42,10 @@
 /* DUAL BANK page size */
 #define PAGE_SIZE FLASH_AREA_IMAGE_SECTOR_SIZE
 
-#if defined(STM32U585xx) || defined(STM32U575xx)
+#define BANK_NUMBER 2
+#if defined(STM32U535xx) || defined(STM32U545xx)
+#define PAGE_MAX_NUMBER_IN_BANK 31
+#elif defined(STM32U585xx) || defined(STM32U575xx)
 #define PAGE_MAX_NUMBER_IN_BANK 127
 #elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
 #define PAGE_MAX_NUMBER_IN_BANK 255
@@ -235,7 +238,7 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_ns[] = {
 #else
                SRAM1_BASE_NS,
 #endif /*   TFM_ERROR_HANDLER_NON_SECURE */
-               SRAM4_BASE_NS + _SRAM4_SIZE_MAX - 1,
+               _SRAM4_BASE_NS + _SRAM4_SIZE_MAX - 1,
                MPU_ARMV8M_MAIR_ATTR_DATA_IDX,
                MPU_ARMV8M_XN_EXEC_NEVER,
                MPU_ARMV8M_AP_RW_PRIV_ONLY,
@@ -714,7 +717,6 @@ void LL_SECU_CheckStaticProtections(void)
     flash_option_bytes_bank1.WMSecConfig |= OB_WMSEC_AREA1 | OB_WMSEC_SECURE_AREA_CONFIG;
 #endif /* TFM_ENABLE_SET_OB */
   }
-
   /* Check bank2 secure flash protection */
   start = 0;
   end = (S_IMAGE_PRIMARY_PARTITION_OFFSET  + FLASH_S_PARTITION_SIZE - 1) / PAGE_SIZE;
@@ -807,7 +809,6 @@ void LL_SECU_CheckStaticProtections(void)
     flash_option_bytes_bank2.WRPStartOffset = start;
     flash_option_bytes_bank2.WRPEndOffset = end;
     flash_option_bytes_bank2.WRPArea |= OB_WRPAREA_BANK2_AREAA;
-
     BOOT_LOG_ERR("Unexpected value for write protection : set wrp2");
     flash_option_bytes_bank2.OptionType |= OPTIONBYTE_WRP;
 #endif /* TFM_ENABLE_SET_OB */
@@ -890,11 +891,7 @@ void LL_SECU_CheckStaticProtections(void)
       BOOT_LOG_ERR("Unexpected value for OB RDP to program");
       Error_Handler();
     }
-#ifdef MCUBOOT_EXT_LOADER
     if ((flash_option_bytes_bank2.WRPArea & ~OB_WRPAREA_BANK2_AREAA) != 0)
-#else
-    if ((flash_option_bytes_bank2.WRPArea & ~OB_WRPAREA_BANK2_AREAA) != 0)
-#endif
     {
       BOOT_LOG_ERR("Unexpected value for bank 2 OB WRP AREA to program");
       Error_Handler();
@@ -1008,8 +1005,11 @@ static void rdp_level(uint32_t rdplevel, uint32_t current_rdplevel)
   flash_option_bytes_bank.OptionType = OPTIONBYTE_RDP;
   flash_option_bytes_bank.RDPLevel = rdplevel;
   BOOT_LOG_INF("Programming RDP to %x", rdplevel);
+#if defined(STM32U535xx) || defined(STM32U545xx)
+  BOOT_LOG_INF("Unplug/Plug jumper JP4 (IDD)");
+#else
   BOOT_LOG_INF("Unplug/Plug jumper JP3 (IDD)");
-
+#endif
   /* Unlock the Flash to enable the flash control register access */
   HAL_FLASH_Unlock();
 
@@ -1040,7 +1040,9 @@ static void rdp_level(uint32_t rdplevel, uint32_t current_rdplevel)
 #if defined(MCUBOOT_EXT_LOADER) && defined(MCUBOOT_PRIMARY_ONLY)
 static void secure_internal_flash(uint32_t offset_start, uint32_t offset_end)
 {
-#if defined(STM32U585xx) || defined(STM32U575xx)
+#if defined(STM32U535xx) || defined(STM32U545xx)
+    volatile uint32_t *SecBB[2]= {&FLASH_S->SECBB1R1, &FLASH_S->SECBB2R1};
+#elif defined(STM32U585xx) || defined(STM32U575xx)
     volatile uint32_t *SecBB[8]= {&FLASH_S->SECBB1R1, &FLASH_S->SECBB1R2, &FLASH_S->SECBB1R3, &FLASH_S->SECBB1R4,
                                   &FLASH_S->SECBB2R1, &FLASH_S->SECBB2R2, &FLASH_S->SECBB2R3, &FLASH_S->SECBB2R4};
 #elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
@@ -1063,7 +1065,7 @@ static void secure_internal_flash(uint32_t offset_start, uint32_t offset_end)
     if (uFlowStage == FLOW_STAGE_CFG)
     {
       /* 1f is for 32 bits */
-      for (index = block_start & ~0x1f; index < ((PAGE_MAX_NUMBER_IN_BANK+1)*2) ; index++)
+      for (index = block_start & ~0x1f; index < ((PAGE_MAX_NUMBER_IN_BANK + 1) * BANK_NUMBER) ; index++)
       { /* clean register on index aligned */
         if (!(index & 0x1f)){
            regwrite=0x0;
@@ -1082,7 +1084,7 @@ static void secure_internal_flash(uint32_t offset_start, uint32_t offset_end)
     else
     {
       /*  1f is for 32 bits */
-      for (index = block_start & ~0x1f; index < ((PAGE_MAX_NUMBER_IN_BANK+1)*2) ; index++)
+      for (index = block_start & ~0x1f; index < ((PAGE_MAX_NUMBER_IN_BANK + 1) * BANK_NUMBER) ; index++)
       { /* clean register on index aligned */
         if (!(index & 0x1f)){
            regwrite=0x0;
@@ -1570,7 +1572,6 @@ static void mpu_loader_cfg(void)
     /* Lock Secure MPU config */
     __HAL_RCC_SYSCFG_CLK_ENABLE();
     SYSCFG->CSLCKR |= SYSCFG_CSLCKR_LOCKSMPU;
-
     /* Lock Non Secure MPU config */
     __HAL_RCC_SYSCFG_CLK_ENABLE();
     SYSCFG->CSLCKR |= SYSCFG_CNSLCKR_LOCKNSMPU;
@@ -1756,7 +1757,6 @@ RTC_HandleTypeDef RTCHandle;
 
 static void active_tamper(void)
 {
-    fih_int fih_rc = FIH_FAILURE;
 #if (TFM_TAMPER_ENABLE == ALL_TAMPER)
     RTC_ActiveTampersTypeDef sAllTamper;
     /*  use random generator to feed  */
@@ -1823,7 +1823,6 @@ static void active_tamper(void)
         {
             sAllTamper.TampInput[j].Enable = RTC_ATAMP_DISABLE;
         }
-
         sAllTamper.TampInput[7].Enable = RTC_ATAMP_ENABLE;
         sAllTamper.TampInput[7].Output = 7;
         sAllTamper.TampInput[7].NoErase =  RTC_TAMPER_ERASE_BACKUP_ENABLE;
@@ -1873,6 +1872,7 @@ static void active_tamper(void)
     /* verification stage */
     else
     {
+        fih_int fih_rc = FIH_FAILURE;
 #if (TFM_TAMPER_ENABLE == ALL_TAMPER)
         /* Check active tampers */
         if ((READ_BIT(TAMP->ATOR, TAMP_ATOR_INITS) == 0U) ||

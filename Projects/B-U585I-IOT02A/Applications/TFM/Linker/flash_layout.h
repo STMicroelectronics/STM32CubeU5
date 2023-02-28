@@ -33,7 +33,7 @@
 
 /* Flash layout configuration : begin */
 
-#define MCUBOOT_OVERWRITE_ONLY     /* Defined: the FW installation uses ovewrite method.
+#define MCUBOOT_OVERWRITE_ONLY     /* Defined: the FW installation uses overwrite method.
                                       UnDefined: The FW installation uses swap mode. */
 
 /*#define MCUBOOT_PRIMARY_ONLY*/   /* Defined: No secondary (download) slot(s),
@@ -78,14 +78,16 @@
 
 /* Flash layout info for BL2 bootloader */
 #define FLASH_AREA_IMAGE_SECTOR_SIZE    (0x2000)     /* 8 KB */
-#if defined(STM32U585xx) || defined(STM32U575xx)
+#if defined(STM32U535xx) || defined(STM32U545xx)
+#define FLASH_B_SIZE                    (0x40000)    /* 256 KBytes */
+#elif defined(STM32U585xx) || defined(STM32U575xx)
 #define FLASH_B_SIZE                    (0x100000)   /* 1 MBytes*/
 #elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
 #define FLASH_B_SIZE                    (0x200000)   /* 2 MBytes*/
 #else
 #error "No STM32U5 version Defined"
 #endif
-#define FLASH_TOTAL_SIZE                (FLASH_B_SIZE+FLASH_B_SIZE) /* 2/4 MBytes */
+#define FLASH_TOTAL_SIZE                (FLASH_B_SIZE+FLASH_B_SIZE) /* 0.5/2/4 MBytes */
 #define FLASH_BASE_ADDRESS              (0x0c000000) /* same as FLASH0_BASE_S */
 
 /* Flash area IDs */
@@ -197,15 +199,19 @@
 #endif /*  (FLASH_ITS_AREA_OFFSET % FLASH_AREA_IMAGE_SECTOR_SIZE) != 0 */
 
 /* BL2 partitions size */
-#define FLASH_S_PARTITION_SIZE          (0x2E000) /* 184 KB for S partition */
+#define FLASH_S_PARTITION_SIZE          (0x30000) /* 196 KB for S partition */
 #if !defined(MCUBOOT_PRIMARY_ONLY)
-#if defined(STM32U585xx) || defined(STM32U575xx)
+#if defined(STM32U535xx) || defined(STM32U545xx)
+#error "2 SLOTS CONFIGURATION IS NOT AVAILABLE USING STM32U535XX OR STM32U545XX"
+#elif defined(STM32U585xx) || defined(STM32U575xx)
 #define FLASH_NS_PARTITION_SIZE         (0xA0000) /* 640 KB for NS partition */
 #elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
 #define FLASH_NS_PARTITION_SIZE         (0x128000) /* 1184 KB for NS partition */
 #endif
 #else
-#if defined(STM32U585xx) || defined(STM32U575xx)
+#if defined(STM32U535xx) || defined(STM32U545xx)
+#define FLASH_NS_PARTITION_SIZE         (0x1C000) /* 112 KB for NS partition */
+#elif defined(STM32U585xx) || defined(STM32U575xx)
 #define FLASH_NS_PARTITION_SIZE         (0x140000) /* 1,25 MB for NS partition */
 #elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
 #define FLASH_NS_PARTITION_SIZE         (0x2F0000) /* 3,08 MB for NS partition */

@@ -9,7 +9,9 @@
 #include "log/tfm_log.h"
 #include "tfm_platform_api.h"
 #include "tfm_fwu.h"
+#include "flash_layout.h"
 
+#if !defined(MCUBOOT_PRIMARY_ONLY)
 psa_status_t tfm_internal_fwu_initialize(psa_image_id_t image_id)
 {
     uint8_t image_type = (uint8_t)FWU_IMAGE_ID_GET_TYPE(image_id);
@@ -116,3 +118,5 @@ psa_status_t tfm_internal_fwu_accept(void)
 {
     return fwu_bootloader_mark_image_accepted();
 }
+
+#endif

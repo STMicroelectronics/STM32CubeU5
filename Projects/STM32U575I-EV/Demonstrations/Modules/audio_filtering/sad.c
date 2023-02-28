@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    sad.c
   * @author  MCD Application Team
-  * @brief   Sound Acquisiton Detection (SAD) implementation
+  * @brief   Sound Acquisition Detection (SAD) implementation
   ******************************************************************************
   * @attention
   *

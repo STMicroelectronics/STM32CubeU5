@@ -782,11 +782,12 @@ boot_set_pending(int permanent)
 }
 
 /**
- * Marks the image in the primary slot as confirmed.  The system will continue
+ * Marks All images in the primary slot as confirmed.  The system will continue
  * booting into the image in the primary slot until told to boot from a
  * different slot.
  *
  * @return                  0 on success; nonzero on failure.
+ *                          if one image cannot be confirmed, failure is returned
  */
 int
 boot_set_confirmed(void)
@@ -794,46 +795,44 @@ boot_set_confirmed(void)
     const struct flash_area *fap;
     struct boot_swap_state state_primary_slot;
     int rc;
+    int image_index;
+    for (image_index = 0; image_index < MCUBOOT_IMAGE_NUMBER; image_index++)
+    {
+        rc = boot_read_swap_state_by_id(FLASH_AREA_IMAGE_PRIMARY(image_index),
+                &state_primary_slot);
+        if (rc != 0) {
+            return rc;
+        }
+        switch (state_primary_slot.magic) {
+        case BOOT_MAGIC_GOOD:
+            /* Confirm needed; proceed. */
+            rc = flash_area_open(FLASH_AREA_IMAGE_PRIMARY(image_index), &fap);
+            if (rc) {
+                rc = BOOT_EFLASH;
+                goto done;
+            }
 
-    rc = boot_read_swap_state_by_id(FLASH_AREA_IMAGE_PRIMARY(0),
-                                    &state_primary_slot);
-    if (rc != 0) {
-        return rc;
+            if (state_primary_slot.copy_done == BOOT_FLAG_UNSET) {
+                /* Swap never completed.  This is unexpected. */
+                rc = BOOT_EBADVECT;
+                goto done;
+            }
+
+            if (state_primary_slot.image_ok == BOOT_FLAG_UNSET) {
+                rc = boot_write_image_ok(fap);
+                if (rc)
+                    goto done;
+            }
+            flash_area_close(fap);
+            break;
+        case BOOT_MAGIC_UNSET:
+            /* nothing to do */
+            break;
+        case BOOT_MAGIC_BAD:
+            /* Unexpected state. */
+            return BOOT_EBADVECT;
+        }
     }
-
-    switch (state_primary_slot.magic) {
-    case BOOT_MAGIC_GOOD:
-        /* Confirm needed; proceed. */
-        break;
-
-    case BOOT_MAGIC_UNSET:
-        /* Already confirmed. */
-        return 0;
-
-    case BOOT_MAGIC_BAD:
-        /* Unexpected state. */
-        return BOOT_EBADVECT;
-    }
-
-    rc = flash_area_open(FLASH_AREA_IMAGE_PRIMARY(0), &fap);
-    if (rc) {
-        rc = BOOT_EFLASH;
-        goto done;
-    }
-
-    if (state_primary_slot.copy_done == BOOT_FLAG_UNSET) {
-        /* Swap never completed.  This is unexpected. */
-        rc = BOOT_EBADVECT;
-        goto done;
-    }
-
-    if (state_primary_slot.image_ok != BOOT_FLAG_UNSET) {
-        /* Already confirmed. */
-        goto done;
-    }
-
-    rc = boot_write_image_ok(fap);
-
 done:
     flash_area_close(fap);
     return rc;

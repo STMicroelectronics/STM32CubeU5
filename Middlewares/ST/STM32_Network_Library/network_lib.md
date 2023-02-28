@@ -1,5 +1,5 @@
 ---
-pagetitle: Release Notes for STM32 Network Library
+pagetitle: Release Notes for the STM32 Network Library
 lang: en
 header-includes: <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png" />
 ---
@@ -10,7 +10,7 @@ header-includes: <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png
 ::: {.card .fluid}
 ::: {.sectione .dark}
 <center>
-# <small>Release Notes for</small> <mark>STM32 Network Library</mark>
+# <small>Release Notes for the</small> <mark>STM32 Network Library</mark>
 Copyright &copy; 2019 STMicroelectronics\
 Microcontrollers Division - Application Team
 
@@ -23,10 +23,10 @@ Microcontrollers Division - Application Team
 
 The <mark>STM32 Network Library</mark> is a middleware providing network services on STM32 devices.
 It provides a socket API (BSD like style) with support of secure or non secure connection and an API
-to control the lifecycle of the network adapters.
+to control the life cycle of the network adapters.
 
-Three classes of network adapters are supported
-WIFI, Ethernet and Cellular. Different WIFI modules are supported from third party vendors.
+Two classes of network adapters are supported WIFI and Ethernet.
+Different WIFI modules are supported from third party vendors.
 
 # Documentation
 
@@ -37,19 +37,62 @@ WIFI, Ethernet and Cellular. Different WIFI modules are supported from third par
 # Update History
 
 ::: {.collapse}
-<input type="checkbox" id="collapse-section9" checked aria-hidden="false">
+<input type="checkbox" id="collapse-section10" checked aria-hidden="false">
+<label for="collapse-section10" aria-hidden="false">V2.3.0 / 2022-December-12</label>
+<div>
+
+## Main changes
+
+### Network library core
+  - Improve CubeMX compatibility, following common rules for peripherals initialization needed for WiFi module (SPI / UART)
+  - Rework some header files and remove local re-declarations of function or registers
+  - Remove templates (`net_conf_xxx.c`) that are replaced by the WiFi driver implementations
+  - Improve compatibility with `STM32_THREAD_SAFE_STRATEGY`
+  - Continue reworking network interface state machine to improve management of AP && STA independently from IP protocol
+
+###  WIFI Network interface
+  - Add support of Mxchip WiFi on board B-U585I-IOT02A (FW v2.3.4 and further)
+  - Add support for dynamic switching between AP to STA (Cypress module)
+
+### Bug fixes
+
+  - Fix AP mode for Mxchip WiFi
+
+## Development Toolchains and Compilers
+
+  - IAR Embedded Workbench for ARM (EWARM). Version 8.50.9
+  - Keil Microcontroller Development Kit (MDK-ARM) Version 5.32
+  - STM32CubeIDE Version 1.11.0
+
+## Supported Devices and Boards
+
+  - B-U585I-IOT02A board (MB1551 rev A and rev C).
+  - B-L475E-IOT01A board (MB1297 rev D).
+  - STM32H747I-DISCO (MB1248 rev D with Cypress WiFi uSD add-on board)
+
+## Known Limitations
+
+  - Unmaintained cellular support has been removed.
+
+</div>
+:::
+
+::: {.collapse}
+<input type="checkbox" id="collapse-section9" aria-hidden="true">
 <label for="collapse-section9" aria-hidden="true">V2.2.0 / 2021-March-30</label>
 <div>
 
 ## Main changes
 
 ### Network library core
+
   - Improve CubeMX compatibility, following common rules for peripherals initialization needed for Wifi module (SPI / UART)
   - Add DHCP server as a service
   - Add support of a direct command to network interface, to support AT command from application
   - Rework network interface state machine to improve management of AP && STA independently from IP protocol
 
 ###  WIFI Network interface
+
   - Add support of specific socket options needed to run Iperf (TCP_NODELAY)
   - Add support of Mxchip WiFi on board B-U585I-IOT02A (FW2.1.9 and further)
   - Add support for dynamic switching between AP to STA (Cypress module)
@@ -61,7 +104,7 @@ WIFI, Ethernet and Cellular. Different WIFI modules are supported from third par
   - Fix bind function for UDP socket
   - Fix Inventek WiFi support for UDP 'server' socket
   - Fix monitoring primitives
-  
+
 ## Development Toolchains and Compilers
 
   - IAR Embedded Workbench for ARM (EWARM). Version 8.50.5
@@ -75,7 +118,7 @@ WIFI, Ethernet and Cellular. Different WIFI modules are supported from third par
   - 32F769IDISCOVERY board (MB1225 rev B).
   - P-L496G-CELL02 board package including the 32L496G-Discovery board (MB1261 rev B) and the Cellular Add-on board based on BG96 4G Modem (MB1329 rev B)
   - STM32H743I-EVAL (with Ethernet interface)
-  
+
 ## Known Limitations
 
   - Cellular on P-L496G-CELL02: Server sockets are not supported
@@ -118,7 +161,7 @@ WIFI, Ethernet and Cellular. Different WIFI modules are supported from third par
   - 32F769IDISCOVERY board (MB1225 rev B).
   - P-L496G-CELL02 board package including the 32L496G-Discovery board (MB1261 rev B) and the Cellular Add-on board based on BG96 4G Modem (MB1329 rev B)
   - STM32H743I-EVAL (with Ethernet interface)
-  
+
 ## Known Limitations
 
   - Cellular on P-L496G-CELL02:
@@ -144,7 +187,7 @@ WIFI, Ethernet and Cellular. Different WIFI modules are supported from third par
 
 ### WIFI generic support
 
-  - Add WIFI Access point support, with needed new API (set_channel, set mode ) 
+  - Add WIFI Access point support, with needed new API (set_channel, set mode )
   - Update state machine management to support AP and STA connection
   - Add support of concurrent interface, for instance an AP running in parallel with a STA
   - Extend list of supported security mode
@@ -187,7 +230,7 @@ WIFI, Ethernet and Cellular. Different WIFI modules are supported from third par
   - 32F769IDISCOVERY board (MB1225 rev B).
   - P-L496G-CELL02 board package including the 32L496G-Discovery board (MB1261 rev B) and the Cellular Add-on board based on BG96 4G Modem (MB1329 rev B)
   - STM32H743I-EVAL (with Ethernet interface)
-  
+
 ## Known Limitations
 
   - Cellular on P-L496G-CELL02:
@@ -209,7 +252,7 @@ WIFI, Ethernet and Cellular. Different WIFI modules are supported from third par
   - lwip related initialisation is moved to net_conf.c
   - Compliant with ST-Quality standard
     - Pass MISRA check list
-    - Pass CodeSonar test	
+    - Pass CodeSonar test
     - Enforce ST coding style rules
 
 ### Bug fixes
@@ -286,7 +329,7 @@ WIFI, Ethernet and Cellular. Different WIFI modules are supported from third par
 ### Bug fixes
 
   - Ethernet template: properly clear the "Receive buffer unavailable status" in case of RX descriptor underflow.
-  - Fix missing semaphore on net_wait API 
+  - Fix missing semaphore on net_wait API
 
 ## Development Toolchains and Compilers
 

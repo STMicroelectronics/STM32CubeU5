@@ -86,7 +86,9 @@ typedef struct
 #define LPBAM_I2C_GRP2_LPTIM1_CH1_TRG    (0x06U) /*!< LPBAM I2C HW Trigger signal is LPTIM1_CH1_TRG */
 #define LPBAM_I2C_GRP2_LPTIM3_CH1_TRG    (0x07U) /*!< LPBAM I2C HW Trigger signal is LPTIM3_CH1_TRG */
 #define LPBAM_I2C_GRP2_COMP1_TRG         (0x08U) /*!< LPBAM I2C HW Trigger signal is COMP1_TRG      */
+#if defined(COMP2)
 #define LPBAM_I2C_GRP2_COMP2_TRG         (0x09U) /*!< LPBAM I2C HW Trigger signal is COMP2_TRG      */
+#endif /* defined(COMP2) */
 #define LPBAM_I2C_GRP2_RTC_ALRA_TRG      (0x0AU) /*!< LPBAM I2C HW Trigger signal is RTC_ALRA_TRG   */
 #define LPBAM_I2C_GRP2_RTC_WUT_TRG       (0x0BU) /*!< LPBAM I2C HW Trigger signal is RTC_WUT_TRG    */
 /**

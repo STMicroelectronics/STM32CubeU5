@@ -57,9 +57,9 @@ extern "C" {
 #define USE_STM32U5XX_NUCLEO
 #endif /* !defined (USE_STM32U5XX_NUCLEO) */
 
-#if !defined (USE_NUCLEO_144)
-#error "Board Pin number not defined!! Add USE_NUCLEO_144 define within stm32u5xx_nucleo_conf.h file"
-#endif /* !defined (USE_NUCLEO_144) */
+#if !defined (USE_NUCLEO_144) && !defined (USE_NUCLEO_64)
+#error "Board Pin number not defined!! Add USE_NUCLEO_144 or USE_NUCLEO_64 define within stm32u5xx_nucleo_conf.h file"
+#endif /* !defined (USE_NUCLEO_144) && !defined (USE_NUCLEO_64) */
 
 /** @defgroup STM32U5XX_NUCLEO_LOW_LEVEL_Exported_Types LOW LEVEL Exported Types
   * @{
@@ -67,12 +67,17 @@ extern "C" {
 
 typedef enum
 {
+#if defined (USE_NUCLEO_144)
   LED1 = 0,
   LED_GREEN = LED1,
   LED2 = 1,
   LED_BLUE = LED2,
   LED3 = 2,
   LED_RED = LED3,
+#else
+  LED2 = 0,
+  LED_GREEN = LED2,
+#endif /* defined (USE_NUCLEO_144) */
   LEDn
 } Led_TypeDef;
 
@@ -153,10 +158,10 @@ typedef struct
   */
 
 /**
-  * @brief STM32U5XX NUCLEO BSP Driver version number V1.1.0
+  * @brief STM32U5XX NUCLEO BSP Driver version number V1.2.0
   */
 #define STM32U5XX_NUCLEO_BSP_VERSION_MAIN   (0x01U) /*!< [31:24] main version */
-#define STM32U5XX_NUCLEO_BSP_VERSION_SUB1   (0x01U) /*!< [23:16] sub1 version */
+#define STM32U5XX_NUCLEO_BSP_VERSION_SUB1   (0x02U) /*!< [23:16] sub1 version */
 #define STM32U5XX_NUCLEO_BSP_VERSION_SUB2   (0x00U) /*!< [15:8]  sub2 version */
 #define STM32U5XX_NUCLEO_BSP_VERSION_RC     (0x00U) /*!< [7:0]  release candidate */
 #define STM32U5XX_NUCLEO_BSP_VERSION        ((STM32U5XX_NUCLEO_BSP_VERSION_MAIN << 24)\
@@ -164,12 +169,18 @@ typedef struct
                                              |(STM32U5XX_NUCLEO_BSP_VERSION_SUB2 << 8 )\
                                              |(STM32U5XX_NUCLEO_BSP_VERSION_RC))
 
+#if defined (USE_NUCLEO_144)
 #define STM32U5XX_NUCLEO_BSP_BOARD_NAME  "NUCLEO-U575ZI-Q";
-#define STM32U5XX_NUCLEO_BSP_BOARD_ID    "MB1549A";
+#define STM32U5XX_NUCLEO_BSP_BOARD_ID    "MB1549C";
+#else
+#define STM32U5XX_NUCLEO_BSP_BOARD_NAME  "NUCLEO-U545RE-Q";
+#define STM32U5XX_NUCLEO_BSP_BOARD_ID    "MB1841A";
+#endif /* defined (USE_NUCLEO_144) */
 
 /** @defgroup STM32U5XX_NUCLEO_LOW_LEVEL_LED LOW LEVEL LED
   * @{
   */
+#if defined (USE_NUCLEO_144)
 #define LED1_PIN                                GPIO_PIN_7
 #define LED1_GPIO_PORT                          GPIOC
 #define LED1_GPIO_CLK_ENABLE()                  __HAL_RCC_GPIOC_CLK_ENABLE()
@@ -184,7 +195,12 @@ typedef struct
 #define LED3_GPIO_PORT                          GPIOG
 #define LED3_GPIO_CLK_ENABLE()                  __HAL_RCC_GPIOG_CLK_ENABLE()
 #define LED3_GPIO_CLK_DISABLE()                 __HAL_RCC_GPIOG_CLK_DISABLE()
-
+#else
+#define LED2_PIN                                GPIO_PIN_5
+#define LED2_GPIO_PORT                          GPIOA
+#define LED2_GPIO_CLK_ENABLE()                  __HAL_RCC_GPIOA_CLK_ENABLE()
+#define LED2_GPIO_CLK_DISABLE()                 __HAL_RCC_GPIOA_CLK_DISABLE()
+#endif /* defined (USE_NUCLEO_144) */
 /**
   * @}
   */

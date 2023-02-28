@@ -1197,7 +1197,7 @@ int32_t MFXSTM32L152_TS_GetXY(MFXSTM32L152_Object_t *pObj, uint16_t *X, uint16_t
 /**
   * @brief  Get the touch screen X and Y positions values
   * @param  pObj Component object pointer
-  * @param  State Single Touch stucture pointer
+  * @param  State Single Touch structure pointer
   * @retval Component status
   */
 int32_t MFXSTM32L152_TS_GetState(MFXSTM32L152_Object_t *pObj, MFXSTM32L152_State_t *State)

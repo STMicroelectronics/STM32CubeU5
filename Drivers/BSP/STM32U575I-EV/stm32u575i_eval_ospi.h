@@ -72,6 +72,9 @@ typedef struct
   * @}
   */
 
+/** @defgroup STM32U575I_EVAL_NOR_Exported_Types OSPI_NOR Exported Types
+  * @{
+  */
 #define BSP_OSPI_NOR_Info_t                MX25LM51245G_Info_t
 #define BSP_OSPI_NOR_Interface_t           MX25LM51245G_Interface_t
 #define BSP_OSPI_NOR_Transfer_t            MX25LM51245G_Transfer_t
@@ -89,6 +92,9 @@ typedef struct
   BSP_OSPI_NOR_Interface_t   InterfaceMode;      /*!<  Current Flash Interface mode */
   BSP_OSPI_NOR_Transfer_t    TransferRate;       /*!<  Current Flash Transfer rate  */
 } BSP_OSPI_NOR_Init_t;
+/**
+  * @}
+  */
 
 /* Exported constants --------------------------------------------------------*/
 /** @defgroup STM32U575I_EVAL_OSPI_Exported_Constants OSPI Exported Constants

@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -44,12 +44,12 @@ extern "C" {
 /* Enum Class Type */
 typedef enum
 {
-  CLASS_TYPE_NONE    = 0,
-  CLASS_TYPE_HID     = 1,
-  CLASS_TYPE_CDC_ACM = 2,
-  CLASS_TYPE_MSC     = 3,
-  CLASS_TYPE_CDC_ECM = 4,
-  CLASS_TYPE_DFU     = 5,
+  CLASS_TYPE_NONE    = 0U,
+  CLASS_TYPE_HID     = 1U,
+  CLASS_TYPE_CDC_ACM = 2U,
+  CLASS_TYPE_MSC     = 3U,
+  CLASS_TYPE_CDC_ECM = 4U,
+  CLASS_TYPE_DFU     = 5U,
 } USBD_CompositeClassTypeDef;
 
 /* USB Endpoint handle structure */
@@ -205,9 +205,9 @@ uint8_t *USBD_Get_String_Framework(ULONG *Length);
 uint8_t *USBD_Get_Language_Id_Framework(ULONG *Length);
 
 /* Private defines -----------------------------------------------------------*/
-#define USBD_VID                                       0x483
-#define USBD_PID                                       0xdf11
-#define USBD_LANGID_STRING                             1033
+#define USBD_VID                                       0x483U
+#define USBD_PID                                       0xdf11U
+#define USBD_LANGID_STRING                             1033U
 #define USBD_MANUFACTURER_STRING                       "STMicroelectronics"
 #define USBD_PRODUCT_STRING                            "STM Device in DFU Mode"
 #define USBD_SERIAL_NUMBER                             "DFU001"
@@ -271,39 +271,40 @@ uint8_t *USBD_Get_Language_Id_Framework(ULONG *Length);
 
 /* Private macro -----------------------------------------------------------*/
 #define __USBD_FRAMEWORK_SET_EP(epadd, eptype, epsize, HSinterval, FSinterval) do { \
-    /* Append Endpoint descriptor to Configuration descriptor */ \
-    pEpDesc = ((USBD_EpDescTypedef*)((uint32_t)pConf + *Sze)); \
-    pEpDesc->bLength            = (uint8_t)sizeof(USBD_EpDescTypedef); \
-    pEpDesc->bDescriptorType    = USB_DESC_TYPE_ENDPOINT; \
-    pEpDesc->bEndpointAddress   = (epadd); \
-    pEpDesc->bmAttributes       = (eptype); \
-    pEpDesc->wMaxPacketSize     = (epsize); \
-    if(pdev->Speed == USBD_HIGH_SPEED) \
-    { \
-      pEpDesc->bInterval        = (HSinterval); \
-    } \
-    else \
-    { \
-      pEpDesc->bInterval        = (FSinterval); \
-    } \
-    *Sze += (uint32_t)sizeof(USBD_EpDescTypedef); \
-  } while(0)
+                                                                                    /* Append Endpoint descriptor to Configuration descriptor */ \
+                                                                                    pEpDesc = ((USBD_EpDescTypedef*)((uint32_t)pConf + *Sze)); \
+                                                                                    pEpDesc->bLength            = (uint8_t)sizeof(USBD_EpDescTypedef); \
+                                                                                    pEpDesc->bDescriptorType    = USB_DESC_TYPE_ENDPOINT; \
+                                                                                    pEpDesc->bEndpointAddress   = (epadd); \
+                                                                                    pEpDesc->bmAttributes       = (eptype); \
+                                                                                    pEpDesc->wMaxPacketSize     = (epsize); \
+                                                                                    if(pdev->Speed == USBD_HIGH_SPEED) \
+                                                                                    { \
+                                                                                      pEpDesc->bInterval        = (HSinterval); \
+                                                                                    } \
+                                                                                    else \
+                                                                                    { \
+                                                                                      pEpDesc->bInterval        = (FSinterval); \
+                                                                                    } \
+                                                                                    *Sze += (uint32_t)sizeof(USBD_EpDescTypedef); \
+                                                                                  } while(0)
 
 #define __USBD_FRAMEWORK_SET_IF(ifnum, alt, eps, class, subclass, protocol, istring) do {\
-    /* Interface Descriptor */ \
-    pIfDesc = ((USBD_IfDescTypedef*)((uint32_t)pConf + *Sze)); \
-    pIfDesc->bLength = (uint8_t)sizeof(USBD_IfDescTypedef); \
-    pIfDesc->bDescriptorType = USB_DESC_TYPE_INTERFACE; \
-    pIfDesc->bInterfaceNumber = (ifnum); \
-    pIfDesc->bAlternateSetting = (alt); \
-    pIfDesc->bNumEndpoints = (eps); \
-    pIfDesc->bInterfaceClass = (class); \
-    pIfDesc->bInterfaceSubClass = (subclass); \
-    pIfDesc->bInterfaceProtocol = (protocol); \
-    pIfDesc->iInterface = (istring); \
-    *Sze += (uint32_t)sizeof(USBD_IfDescTypedef); \
-  } while(0)
+                                                                                          /* Interface Descriptor */ \
+                                                                                          pIfDesc = ((USBD_IfDescTypedef*)((uint32_t)pConf + *Sze)); \
+                                                                                          pIfDesc->bLength = (uint8_t)sizeof(USBD_IfDescTypedef); \
+                                                                                          pIfDesc->bDescriptorType = USB_DESC_TYPE_INTERFACE; \
+                                                                                          pIfDesc->bInterfaceNumber = (ifnum); \
+                                                                                          pIfDesc->bAlternateSetting = (alt); \
+                                                                                          pIfDesc->bNumEndpoints = (eps); \
+                                                                                          pIfDesc->bInterfaceClass = (class); \
+                                                                                          pIfDesc->bInterfaceSubClass = (subclass); \
+                                                                                          pIfDesc->bInterfaceProtocol = (protocol); \
+                                                                                          pIfDesc->iInterface = (istring); \
+                                                                                          *Sze += (uint32_t)sizeof(USBD_IfDescTypedef); \
+                                                                                        } while(0)
 #ifdef __cplusplus
 }
 #endif
 #endif  /* __UX_DEVICE_DESCRIPTORS_H__ */
+

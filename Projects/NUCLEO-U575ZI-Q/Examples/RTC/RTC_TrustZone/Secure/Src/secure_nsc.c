@@ -89,3 +89,4 @@ CMSE_NS_ENTRY uint32_t SECURE_GetRtcSecureStatus(void)
   * @}
   */
 /* USER CODE END Non_Secure_CallLib */
+

@@ -118,8 +118,8 @@ static int32_t LCD_FMC_DeInit(void);
 static int32_t LCD_FMC_WriteReg16(uint16_t DevAddr, uint16_t Reg, uint8_t *pData, uint32_t Length);
 static int32_t LCD_FMC_ReadReg16(uint16_t DevAddr, uint16_t Reg, uint8_t *pData, uint32_t Length);
 static int32_t LCD_FMC_GetTick(void);
-static void    FMC_MspInit(SRAM_HandleTypeDef *hSram);
-static void    FMC_MspDeInit(SRAM_HandleTypeDef *hSram);
+static void    FMC_MspInit(const SRAM_HandleTypeDef *hSram);
+static void    FMC_MspDeInit(const SRAM_HandleTypeDef *hSram);
 /**
   * @}
   */
@@ -299,7 +299,7 @@ int32_t BSP_LCD_SetBrightness(uint32_t Instance, uint32_t Brightness)
   * @param  Brightness [00: Min (black), 100 Max].
   * @retval BSP status.
   */
-int32_t BSP_LCD_GetBrightness(uint32_t Instance, uint32_t *Brightness)
+int32_t BSP_LCD_GetBrightness(const uint32_t Instance, uint32_t *Brightness)
 {
   int32_t status;
 
@@ -322,7 +322,7 @@ int32_t BSP_LCD_GetBrightness(uint32_t Instance, uint32_t *Brightness)
   * @param  Xsize LCD X size.
   * @retval BSP status.
   */
-int32_t BSP_LCD_GetXSize(uint32_t Instance, uint32_t *Xsize)
+int32_t BSP_LCD_GetXSize(const uint32_t Instance, uint32_t *Xsize)
 {
   int32_t status = BSP_ERROR_NONE;
 
@@ -402,7 +402,7 @@ int32_t BSP_LCD_SetActiveLayer(uint32_t Instance, uint32_t LayerIndex)
   * @param  pBmp Pointer to bitmap.
   * @retval BSP status.
   */
-int32_t BSP_LCD_DrawBitmap(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint8_t *pBmp)
+int32_t BSP_LCD_DrawBitmap(const uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint8_t *pBmp)
 {
   int32_t status = BSP_ERROR_NONE;
 
@@ -432,7 +432,7 @@ int32_t BSP_LCD_DrawBitmap(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint
   * @param  Height Height of the rectangle.
   * @retval BSP status.
   */
-int32_t BSP_LCD_FillRGBRect(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint8_t *pData, uint32_t Width,
+int32_t BSP_LCD_FillRGBRect(const uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint8_t *pData, uint32_t Width,
                             uint32_t Height)
 {
   int32_t status = BSP_ERROR_NONE;
@@ -550,7 +550,7 @@ int32_t BSP_LCD_FillRect(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32
   * @param  Color Pointer to the pixel.
   * @retval BSP status.
   */
-int32_t BSP_LCD_ReadPixel(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t *Color)
+int32_t BSP_LCD_ReadPixel(const uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t *Color)
 {
   int32_t status = BSP_ERROR_NONE;
 
@@ -960,7 +960,7 @@ static int32_t LCD_FMC_DeInit(void)
   * @param  Length  Number of data.
   * @retval BSP status.
   */
-static int32_t LCD_FMC_WriteReg16(uint16_t DevAddr, uint16_t Reg, uint8_t *pData, uint32_t Length)
+static int32_t LCD_FMC_WriteReg16(const uint16_t DevAddr, uint16_t Reg, uint8_t *pData, uint32_t Length)
 {
   int32_t  ret = BSP_ERROR_NONE;
   uint32_t i = 0;
@@ -1038,7 +1038,7 @@ static int32_t LCD_FMC_GetTick(void)
   * @param  hSram : SRAM handler
   * @retval None
   */
-static void  FMC_MspInit(SRAM_HandleTypeDef *hSram)
+static void  FMC_MspInit(const SRAM_HandleTypeDef *hSram)
 {
   GPIO_InitTypeDef  gpio_init_structure;
 
@@ -1097,7 +1097,7 @@ static void  FMC_MspInit(SRAM_HandleTypeDef *hSram)
   * @param  hSram : SRAM handler
   * @retval None
   */
-static void FMC_MspDeInit(SRAM_HandleTypeDef *hSram)
+static void FMC_MspDeInit(const SRAM_HandleTypeDef *hSram)
 {
   GPIO_InitTypeDef gpio_init_structure;
 

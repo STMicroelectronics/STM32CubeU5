@@ -80,7 +80,7 @@ int32_t FLASH_If_Erase(uint32_t address)
 
     if (HAL_FLASHEx_Erase(&erase_conf, &flash_error) != HAL_OK)
     {
-      MSG_ERROR("FLASH_If_Erase(0x%p) -> %"PRIu32"\n", (void *)address, flash_error);
+      MSG_ERROR("FLASH_If_Erase(0x%p) -> %" PRIu32 "\n", (void *)address, flash_error);
       return 1;
     }
   }
@@ -110,7 +110,7 @@ uint32_t FLASH_If_Write(uint32_t flash_address, const uint8_t *data, uint32_t da
   const uint32_t i_max = (data_length + 16) / 16;
   const uint8_t *p_data = data;
 
-  MSG_DEBUG("FLASH_If_Write(%p, %p, 0x%"PRIx32")\n", (void *)flash_address, (void *)data, data_length);
+  MSG_DEBUG("FLASH_If_Write(%p, %p, 0x%" PRIx32 ")\n", (void *)flash_address, (void *)data, data_length);
   for (uint32_t i = 0; (i < i_max) && (flash_address <= (USER_FLASH_END_ADDRESS - 4)); i++)
   {
     /* 128 bits (16 bytes) correspond to 4 x 32-bit word. */

@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.50.4.26131</state>
+                    <state>8.50.9.33458</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -490,7 +490,7 @@
             <name>AARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>10</version>
+                <version>11</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -645,6 +645,10 @@
                 <option>
                     <name>AsmNoLiteralPool</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>PreInclude</name>
+                    <state></state>
                 </option>
             </data>
         </settings>
@@ -1173,9 +1177,6 @@
                 <group>
                     <name>Target</name>
                     <file>
-                        <name>$PROJ_DIR$\..\WebServer\Target\net_conf_mxchip_spi.c</name>
-                    </file>
-                    <file>
                         <name>$PROJ_DIR$\..\WebServer\Target\net_interface.c</name>
                     </file>
                 </group>
@@ -1211,7 +1212,7 @@
                     <group>
                         <name>core</name>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\core\checksumutils.c</name>
+                            <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\core\mx_address.c</name>
                         </file>
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\core\mx_rtos_abs.c</name>
@@ -1222,8 +1223,11 @@
                         <file>
                             <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\core\mx_wifi_ipc.c</name>
                         </file>
+                    </group>
+                    <group>
+                        <name>io_pattern</name>
                         <file>
-                            <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\core\mx_wifi_slip.c</name>
+                            <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx_wifi\io_pattern\mx_wifi_spi.c</name>
                         </file>
                     </group>
                     <file>
@@ -1340,12 +1344,6 @@
                 <name>netif</name>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Middlewares\ST\STM32_Network_Library\netif\wifi_if\mx_wifi\net_mx_wifi.c</name>
-                </file>
-            </group>
-            <group>
-                <name>services</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Middlewares\ST\STM32_Network_Library\services\net_mbedtls.c</name>
                 </file>
             </group>
         </group>

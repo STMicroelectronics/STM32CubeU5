@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -17,8 +17,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "platform.h"
 #include "main.h"
+#include "platform.h"
+
 #include "iwdg_interface.h"
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,7 +58,6 @@ void OPENBL_IWDG_Refresh(void)
   /* Refresh IWDG: reload counter */
   if (HAL_IWDG_Refresh(&IWDGHandle) != HAL_OK)
   {
-    /* Refresh Error */
     Error_Handler();
   }
 }

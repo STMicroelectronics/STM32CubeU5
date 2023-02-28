@@ -46,9 +46,10 @@
       document for function model definition).
 
     [..]
-      This driver provides 2 model of APIs :
-          (+) ADV_LPBAM_Q_Set{Item}Config() : apply configuration for input queue.
-          (+) ADV_LPBAM_Q_Set{Item}Mode()   : apply mode for input queue.
+      This driver provides 3 model of APIs :
+          (+) ADV_LPBAM_Q_Set{Item}Config() : apply configuration to input queue.
+          (+) ADV_LPBAM_Q_Set{Item}Mode()   : apply mode to input queue.
+          (+) ADV_LPBAM_Q_ConvertQ()        : apply format to input queue.
 
     *** Driver features ***
     =======================
@@ -57,14 +58,17 @@
 
     [..]
       This driver provides services covering the LPBAM management of the following COMMON features :
-          (+) Set a data configuration transfer for advanced APIs that supports data transfers.
+          (+) Set a data configuration transfer to advanced APIs that supports data transfers.
               Check LPBAM_Q_Data_Node_Selection to have the exhaustive list of APIs that supports this capability.
-          (+) Set a hardware trigger signal for a built linked-list queue execution and data transfers.
+          (+) Set a transfer event generation to advanced APIs that doesn't supports data transfers.
+              Check LPBAM_Q_LastNode_Selection to have the exhaustive list of APIs that supports this capability.
+          (+) Set a hardware trigger signal to a built linked-list queue execution and data transfers.
               Check LPBAM_Q_Config_Node_Selection and LPBAM_Q_Data_Node_Selection to have the exhaustive list of APIs
               that supports this capability.
-          (+) Set a circular mode for a built linked-list queue.
+          (+) Set a circular mode to a built linked-list queue.
               Check LPBAM_Q_Config_Node_Selection and LPBAM_Q_Data_Node_Selection to have the exhaustive list of APIs
               that supports this capability.
+          (+) Convert a built linked-list queue to static or dynamic format.
 
     *** Functional description ***
     ==============================
@@ -79,6 +83,12 @@
     [..]
       The common module allows to configure data transfer within an advanced API in order to customize default
       functional transfer configuration.
+
+    [..]
+      The common module allows to configure transfer event generation within an advanced API in order to customize
+      default transfer event generation configuration.
+
+    [..]
       The common module allows to set a hardware trigger within an advanced API in order to :
           (+) Condition the whole linked-list queue execution with a hardware trigger signal.
           (+) Condition the data transfer queue execution with a hardware trigger signal.
@@ -89,6 +99,13 @@
       The common module allows to circularize a linked-list queue in order to perform transfers in an infinite loop.
           (+) First circular item in the input queue can be one of parameters in LPBAM_Q_Config_Node_Selection and
               LPBAM_Q_Data_Node_Selection sections.
+
+    [..]
+      The common module allows to convert a linked-list queue in static or dynamic format.
+          (+) When converted to static format, all queue operation are allowed. Executing static queues is not optimal
+              in term of execution time and consumption point of view.
+          (+) When converted to dynamic format, all queue operation are forbidden. Executing dynamic queues is optimal
+              in term of execution time and consumption point of view.
 
     *** Driver APIs description ***
     ===============================
@@ -122,6 +139,11 @@
       module.
 
     [..]
+      Use ADV_LPBAM_Q_SetTransferEventGeneration() API to configure transfer event generation to an advanced API
+      linked-list queue. Advanced API transfer event generation node constant is defined in LPBAM_Q_LastNode_Selection
+      section.
+
+    [..]
       Use ADV_LPBAM_Q_SetTriggerConfig() API to configure a hardware trigger signal to an advanced API linked-list
       queue. The exhaustive list of advanced APIs that supports triggers are listed on LPBAM_Q_Config_Node_Selection
       and LPBAM_Q_Data_Node_Selection sections.
@@ -136,6 +158,12 @@
       API items that can be the first circular item are listed on LPBAM_Q_Config_Node_Selection and
       LPBAM_Q_Data_Node_Selection sections.
 
+    [..]
+      Use ADV_LPBAM_Q_ConvertQ() API to convert a built linked-list queue to dynamic format when the whole queue is
+      built in order to reduce time execution and consuption.
+      When the linked-list queue is dynamic, use ADV_LPBAM_Q_ConvertQ() API to convert a built linked-list queue to
+      static format in order to modify it (Add new LPBAM function / Set/Remove circular mode).
+
     *** Driver user sequence ***
     ============================
     [..]
@@ -147,11 +175,19 @@
       supported).
 
     [..]
+      Call ADV_LPBAM_Q_SetTransferEventGeneration() after any call to advanced API to setup transfer event generation
+      (when transfer event generation is supported).
+
+    [..]
       Call ADV_LPBAM_Q_SetTriggerConfig() after any call to advanced API to setup configuration or data transfer (when
       data transfer is supported).
 
     [..]
       Call ADV_LPBAM_Q_SetCircularMode() after calling all scenario APIs to circularize the input linked-list queue.
+
+    [..]
+      Call ADV_LPBAM_Q_ConvertQ() after calling all scenario APIs to convert the input linked-list queue to static or
+      dynamic format.
 
     *** Driver status description ***
     =================================
@@ -219,8 +255,8 @@ LPBAM_Status_t ADV_LPBAM_Q_SetDataConfig(LPBAM_COMMON_DataAdvConf_t const *const
   transfer_config.UpdateDestDataWidth     = pDataConfig->UpdateDestDataWidth;
   transfer_config.UpdateTransferEventMode = pDataConfig->UpdateTransferEventMode;
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-  transfer_config.UpdateSrcSecure     = pDataConfig->UpdateSrcSecure;
-  transfer_config.UpdateDestSecure    = pDataConfig->UpdateDestSecure;
+  transfer_config.UpdateSrcSecure         = pDataConfig->UpdateSrcSecure;
+  transfer_config.UpdateDestSecure        = pDataConfig->UpdateDestSecure;
 #endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
 
   /* Update transfer data configuration */
@@ -230,12 +266,54 @@ LPBAM_Status_t ADV_LPBAM_Q_SetDataConfig(LPBAM_COMMON_DataAdvConf_t const *const
   transfer_config.TransferConfig.Transfer.DestDataWidth     = pDataConfig->TransferConfig.Transfer.DestDataWidth;
   transfer_config.TransferConfig.Transfer.TransferEventMode = pDataConfig->TransferConfig.Transfer.TransferEventMode;
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-  transfer_config.TransferConfig.SrcSecure              = pDataConfig->TransferConfig.SrcSecure;
-  transfer_config.TransferConfig.DestSecure             = pDataConfig->TransferConfig.DestSecure;
+  transfer_config.TransferConfig.SrcSecure                  = pDataConfig->TransferConfig.SrcSecure;
+  transfer_config.TransferConfig.DestSecure                 = pDataConfig->TransferConfig.DestSecure;
 #endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
 
-  /* Set data configuration */
+  /* Set DMA transfer configuration */
   if (LPBAM_SetDMATransferConfig(&transfer_config, (DMA_NodeTypeDef *)node_addr) != LPBAM_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  return LPBAM_OK;
+}
+
+/**
+  * @brief  Set LPBAM transfer event generation according to TransferEvent and TransferEventNode parameters.
+  * @param  TransferEvent     : [IN]  Specifies the transfer event to be generated.
+  *                                   This parameter can be a value of @ref LPBAM_DMA_Transfer_Event_Mode.
+  * @param  TransferEventNode : [IN]  Specifies the transfer event mode node to be updated.
+  *                                   This parameter can be a value of @ref LPBAM_Q_LastNode_Selection.
+  * @param  pDescriptor       : [OUT] Pointer to all available LPBAM descriptors used in advanced layer.
+  * @retval LPBAM Status      : [OUT] Value from LPBAM_Status_t enumeration.
+  */
+LPBAM_Status_t ADV_LPBAM_Q_SetTransferEventGeneration(uint32_t TransferEvent,
+                                                      uint32_t TransferEventNode,
+                                                      void     const *const pDescriptor)
+{
+  LPBAM_COMMON_TransferConfig_t transfer_event_config;
+  uint32_t node_addr = ((uint32_t)pDescriptor);
+
+  /* Calculate data node address */
+  node_addr += (TransferEventNode * sizeof(DMA_NodeTypeDef));
+
+  /* Set transfer fields to be updated */
+  transfer_event_config.UpdateSrcInc            = DISABLE;
+  transfer_event_config.UpdateDestInc           = DISABLE;
+  transfer_event_config.UpdateSrcDataWidth      = DISABLE;
+  transfer_event_config.UpdateDestDataWidth     = DISABLE;
+  transfer_event_config.UpdateTransferEventMode = ENABLE;
+#if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
+  transfer_event_config.UpdateSrcSecure         = DISABLE;
+  transfer_event_config.UpdateDestSecure        = DISABLE;
+#endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
+
+  /* Update transfer data configuration */
+  transfer_event_config.TransferConfig.Transfer.TransferEventMode = TransferEvent;
+
+  /* Set DMA transfer configuration */
+  if (LPBAM_SetDMATransferConfig(&transfer_event_config, (DMA_NodeTypeDef *)node_addr) != LPBAM_OK)
   {
     return LPBAM_ERROR;
   }
@@ -283,8 +361,7 @@ LPBAM_Status_t ADV_LPBAM_Q_SetTriggerConfig(LPBAM_COMMON_TrigAdvConf_t const *co
   * @brief  Set LPBAM circular mode to linked-list queue according to selected descriptor and node level.
   * @param  pDescriptor  : [IN]  Pointer to all available LPBAM descriptors used in advanced layer.
   * @param  NodeLevel    : [IN]  Specifies whether the first circular node shall be applied on the configuration or the
-  *                              data node of queue
-  *                              built by advanced lpbam APIs.
+  *                              data node of queue built by advanced lpbam APIs.
   *                              This parameter can be a value of @ref LPBAM_Q_Config_Node_Selection or
   *                              @ref LPBAM_Q_Data_Node_Selection.
   * @param  pQueue       : [OUT] Pointer to a DMA_QListTypeDef structure that contains DMA linked-list queue
@@ -321,6 +398,37 @@ LPBAM_Status_t ADV_LPBAM_Q_SetCircularMode(void             const *const pDescri
   return LPBAM_OK;
 }
 
+/**
+  * @brief  Convert linked-list queue according to selected type.
+  * @param  Type         : [IN]  Specifies whether the queue type is static or dynamic.
+  *                              This parameter can be a value of @ref LPBAM_DMA_Queue_Type.
+  * @param  pQueue       : [OUT] Pointer to a DMA_QListTypeDef structure that contains DMA linked-list queue
+  *                              information.
+  * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
+  */
+LPBAM_Status_t ADV_LPBAM_Q_ConvertQ(uint32_t         Type,
+                                    DMA_QListTypeDef *const pQueue)
+{
+  /* Check queue type */
+  if (Type == LPBAM_DMA_STATIC_Q)
+  {
+    /* Convert the DMA queue to static */
+    if (HAL_DMAEx_List_ConvertQToStatic(pQueue) != HAL_OK)
+    {
+      return LPBAM_ERROR;
+    }
+  }
+  else
+  {
+    /* Convert the DMA queue to dynamic */
+    if (HAL_DMAEx_List_ConvertQToDynamic(pQueue) != HAL_OK)
+    {
+      return LPBAM_ERROR;
+    }
+  }
+
+  return LPBAM_OK;
+}
 /**
   * @}
   */

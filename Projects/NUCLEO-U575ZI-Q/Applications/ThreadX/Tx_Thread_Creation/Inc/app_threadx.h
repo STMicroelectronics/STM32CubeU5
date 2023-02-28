@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   ThreadX applicative header file
   ******************************************************************************
-  * @attention
+    * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.
@@ -36,13 +36,46 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+#define THREAD_ONE_PRIO                          10
+#define THREAD_ONE_PREEMPTION_THRESHOLD          THREAD_ONE_PRIO
+#define THREAD_TWO_PRIO                          10
+#define THREAD_TWO_PREEMPTION_THRESHOLD          9
+   
+#define NEW_THREAD_TWO_PRIO                      8
+#define NEW_THREAD_TWO_PREEMPTION_THRESHOLD      8
 
+#define THREAD_ONE_EVT                           0x01
+#define THREAD_TWO_EVT                           0x02
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
 /* USER CODE END EC */
+
+/* Private defines -----------------------------------------------------------*/
+#define TX_APP_STACK_SIZE                                          512
+#define TX_APP_THREAD_PRIO                                         5
+
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
+/* Main thread defines -------------------------------------------------------*/
+#ifndef TX_APP_THREAD_PREEMPTION_THRESHOLD
+#define TX_APP_THREAD_PREEMPTION_THRESHOLD      TX_APP_THREAD_PRIO
+#endif
+
+#ifndef TX_APP_THREAD_TIME_SLICE
+#define TX_APP_THREAD_TIME_SLICE                TX_NO_TIME_SLICE
+#endif
+
+#ifndef TX_APP_THREAD_AUTO_START
+#define TX_APP_THREAD_AUTO_START                TX_AUTO_START
+#endif
+/* USER CODE BEGIN MTD */
+
+/* USER CODE END MTD */
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
@@ -52,28 +85,11 @@
 /* Exported functions prototypes ---------------------------------------------*/
 UINT App_ThreadX_Init(VOID *memory_ptr);
 void MX_ThreadX_Init(void);
+void MainThread_Entry(ULONG thread_input);
 
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
-
-/* Private defines -----------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-#define APP_STACK_SIZE                           512
-
-#define THREAD_ONE_PRIO                          10
-#define THREAD_ONE_PREEMPTION_THRESHOLD          THREAD_ONE_PRIO
-#define THREAD_TWO_PRIO                          10
-#define THREAD_TWO_PREEMPTION_THRESHOLD          9
-#define MAIN_THREAD_PRIO                         5
-#define MAIN_THREAD_PREEMPTION_THRESHOLD         MAIN_THREAD_PRIO
-
-#define NEW_THREAD_TWO_PRIO                      8
-#define NEW_THREAD_TWO_PREEMPTION_THRESHOLD      8
-
-#define THREAD_ONE_EVT                           0x01
-#define THREAD_TWO_EVT                           0x02
-/* USER CODE END PD */
 
 /* USER CODE BEGIN 1 */
 

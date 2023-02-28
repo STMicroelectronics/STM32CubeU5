@@ -74,7 +74,7 @@ static int32_t VEML6030_ReadRegWrap(void *handle, uint16_t Reg, uint8_t *Data, u
 static int32_t VEML6030_WriteRegWrap(void *handle, uint16_t Reg, uint8_t *Data, uint16_t Length);
 static int32_t VEML6030_Pwr_On(VEML6030_Object_t *pObj);
 static int32_t VEML6030_Shutdown(VEML6030_Object_t *pObj);
-static int32_t VEML6030_Delay(VEML6030_Object_t *pObj, uint32_t Delay);
+static void VEML6030_Delay(VEML6030_Object_t *pObj, uint32_t Delay);
 
 /**
   * @}
@@ -134,7 +134,7 @@ int32_t VEML6030_Init(VEML6030_Object_t *pObj)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if (pObj->IsInitialized == 0U)
+  if (pObj->IsInitialized == 0U)
   {
     if (VEML6030_Pwr_On(pObj) < 0)
     {
@@ -144,7 +144,7 @@ int32_t VEML6030_Init(VEML6030_Object_t *pObj)
     {
       pObj->IsInitialized = 1;
       pObj->IsContinuous = 1;
-      pObj->IsStarted= 1;
+      pObj->IsStarted = 1;
     }
   }
   return ret;
@@ -162,7 +162,7 @@ int32_t VEML6030_DeInit(VEML6030_Object_t *pObj)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if (pObj->IsInitialized == 1U)
+  if (pObj->IsInitialized == 1U)
   {
     if (VEML6030_Shutdown(pObj) < 0)
     {
@@ -189,7 +189,7 @@ int32_t VEML6030_ReadID(VEML6030_Object_t *pObj, uint32_t *pId)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if (pObj->IO.IsReady(VEML6030_I2C_READ_ADD,20)!=0U)
+  else if (pObj->IO.IsReady(VEML6030_I2C_READ_ADD, 20) != 0U)
   {
     ret = VEML6030_ERROR;
   }
@@ -236,13 +236,13 @@ int32_t VEML6030_GetCapabilities(VEML6030_Object_t *pObj, VEML6030_Capabilities_
   */
 int32_t VEML6030_SetExposureTime(VEML6030_Object_t *pObj, uint32_t ExposureTime)
 {
- int32_t ret;
+  int32_t ret;
   uint16_t config = 0;
   if (pObj == NULL)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
   {
     ret = VEML6030_ERROR;
   }
@@ -251,7 +251,7 @@ int32_t VEML6030_SetExposureTime(VEML6030_Object_t *pObj, uint32_t ExposureTime)
     config &= ~VEML6030_CONF_IT_MASK;
     config |= (uint16_t)ExposureTime;
     ret = VEML6030_OK;
-    if(veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2)!= 0)
+    if (veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
     {
       ret = VEML6030_ERROR;
     }
@@ -267,18 +267,18 @@ int32_t VEML6030_SetExposureTime(VEML6030_Object_t *pObj, uint32_t ExposureTime)
 int32_t VEML6030_GetExposureTime(VEML6030_Object_t *pObj, uint32_t *pExposureTime)
 {
   int32_t ret;
-  uint16_t tmp = 0;
+  uint32_t tmp = 0;
   if (pObj == NULL)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &tmp, 2)!=0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, (uint16_t *)tmp, 2) != 0)
   {
     ret = VEML6030_ERROR ;
   }
   else
   {
-    *pExposureTime=(tmp & VEML6030_CONF_IT_MASK );
+    *pExposureTime = (tmp & VEML6030_CONF_IT_MASK);
     ret = VEML6030_OK;
   }
   return ret;
@@ -295,23 +295,23 @@ int32_t VEML6030_SetGain(VEML6030_Object_t *pObj, uint8_t Channel, uint32_t Gain
 {
   int32_t ret;
   uint16_t config = 0;
-  if (pObj == NULL || Channel >= VEML6030_MAX_CHANNELS)
+  if ((pObj == NULL) || (Channel >= VEML6030_MAX_CHANNELS))
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2)!=0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
   {
     ret = VEML6030_ERROR;
   }
   else
   {
-    config&=(uint16_t) ~VEML6030_CONF_GAIN_1_4;
-    config |= Gain;
+    config &= (uint16_t) ~VEML6030_CONF_GAIN_1_4;
+    config |= (uint16_t)Gain;
     ret = VEML6030_OK;
-      if(veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2)!=0)
-      {
-        ret = VEML6030_ERROR ;
-      }
+    if (veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
+    {
+      ret = VEML6030_ERROR ;
+    }
   }
   return ret;
 }
@@ -326,12 +326,12 @@ int32_t VEML6030_SetGain(VEML6030_Object_t *pObj, uint8_t Channel, uint32_t Gain
 int32_t VEML6030_GetGain(VEML6030_Object_t *pObj, uint8_t Channel, uint32_t *Gain)
 {
   int32_t ret;
-  uint16_t tmp = 0;
-  if (pObj == NULL || Channel >= VEML6030_MAX_CHANNELS)
+  uint32_t tmp = 0;
+  if ((pObj == NULL) || (Channel >= VEML6030_MAX_CHANNELS))
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &tmp, 2)!=0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, (uint16_t *)tmp, 2) != 0)
   {
     ret = VEML6030_ERROR ;
   }
@@ -343,31 +343,31 @@ int32_t VEML6030_GetGain(VEML6030_Object_t *pObj, uint8_t Channel, uint32_t *Gai
   return ret;
 }
 
- /**
+/**
   * @brief Set the inter-measurement time.
   * @param pObj                    veml6030 context object.
   * @param InterMeasurementTime    Inter-measurement to be applied expressed in microseconds.
   * @note This should be configured only when using the device in continuous mode.
   * @warning This function must not be called when a capture is ongoing.
   * @retval VEML6030 status
-  */
-int32_t VEML6030_SetInterMeasurementTime(VEML6030_Object_t * pObj, uint32_t InterMeasurementTime)
+ */
+int32_t VEML6030_SetInterMeasurementTime(VEML6030_Object_t *pObj, uint32_t InterMeasurementTime)
 {
   int32_t ret;
-  uint16_t psm = 0 ;
-  uint16_t als_it = 0 ;
+  uint16_t psm;
+  uint16_t als_it;
   uint16_t config;
-  if (pObj == NULL )
+  if (pObj == NULL)
   {
     ret = VEML6030_INVALID_PARAM;
   }
   else
   {
-    psm = (InterMeasurementTime &0x0CU)>>1;
-    als_it = (InterMeasurementTime &0x03U);
+    psm = (uint16_t)(InterMeasurementTime & 0x0CU) >> 1;
+    als_it = (uint16_t)(InterMeasurementTime & 0x03U);
 
     /* set the integration Time */
-    if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
+    if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
     {
       ret = VEML6030_ERROR;
     }
@@ -375,8 +375,7 @@ int32_t VEML6030_SetInterMeasurementTime(VEML6030_Object_t * pObj, uint32_t Inte
     {
       config &= ~VEML6030_CONF_IT_MASK;
       config |= (uint16_t)als_it;
-      ret = VEML6030_OK;
-      if(veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2)!= 0)
+      if (veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
       {
         ret = VEML6030_ERROR;
       }
@@ -385,12 +384,11 @@ int32_t VEML6030_SetInterMeasurementTime(VEML6030_Object_t * pObj, uint32_t Inte
         ret = VEML6030_OK;
       }
     }
-    if(ret == VEML6030_OK)
+    if (ret == VEML6030_OK)
     {
       /* Set the Power Saving Mode */
-      config  = (psm | VEML6030_POWER_SAVING_ENABLE) & 0x000F;;
-      ret = VEML6030_OK;
-      if(veml6030_write_reg(&pObj->Ctx, VEML6030_REG_POWER_SAVING, &config, 2)!=0)
+      config  = (psm | VEML6030_POWER_SAVING_ENABLE) & 0x000FU;
+      if (veml6030_write_reg(&pObj->Ctx, VEML6030_REG_POWER_SAVING, &config, 2) != 0)
       {
         ret = VEML6030_ERROR ;
       }
@@ -411,36 +409,36 @@ int32_t VEML6030_SetInterMeasurementTime(VEML6030_Object_t * pObj, uint32_t Inte
 int32_t VEML6030_GetInterMeasurementTime(VEML6030_Object_t *pObj, uint32_t *pInterMeasurementTime)
 {
   int32_t ret;
-  uint16_t tmp = 0;
-  uint16_t als_it = 0;
-  uint16_t psm = 0;
+  uint32_t tmp = 0;
+  uint32_t als_it = 0;
+  uint32_t psm = 0;
   if (pObj == NULL)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &tmp, 2)!=0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, (uint16_t *)tmp, 2) != 0)
   {
     ret = VEML6030_ERROR ;
   }
   else
   {
-    als_it = (tmp & VEML6030_CONF_IT_MASK );
+    als_it = (tmp & VEML6030_CONF_IT_MASK);
     ret = VEML6030_OK ;
   }
   if (ret == VEML6030_OK)
   {
-    if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_POWER_SAVING, &tmp, 2)!=0)
+    if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_POWER_SAVING, (uint16_t *)tmp, 2) != 0)
     {
       ret = VEML6030_ERROR ;
     }
     else
     {
-      psm = ((tmp & 0x06U)<<1);
+      psm = ((tmp & 0x06U) << 1);
       ret = VEML6030_OK ;
     }
   }
 
-  *pInterMeasurementTime = (psm|als_it);
+  *pInterMeasurementTime = (psm | als_it);
   return ret;
 }
 /**
@@ -449,10 +447,10 @@ int32_t VEML6030_GetInterMeasurementTime(VEML6030_Object_t *pObj, uint32_t *pInt
   * @param Mode    Measurement mode (continuous)
   * @retval VEML6030 status
   */
-int32_t VEML6030_Start(VEML6030_Object_t *pObj,uint32_t Mode)
+int32_t VEML6030_Start(VEML6030_Object_t *pObj, uint32_t Mode)
 {
   int32_t ret;
-  if (pObj == NULL || Mode != VEML6030_MODE_CONTINUOUS )
+  if ((pObj == NULL) || (Mode != VEML6030_MODE_CONTINUOUS))
   {
     ret = VEML6030_INVALID_PARAM;
   }
@@ -460,9 +458,9 @@ int32_t VEML6030_Start(VEML6030_Object_t *pObj,uint32_t Mode)
   {
 
     ret = VEML6030_Pwr_On(pObj);
-    if(ret == VEML6030_OK)
+    if (ret == VEML6030_OK)
     {
-      pObj->IsStarted= 1;
+      pObj->IsStarted = 1;
     }
 
   }
@@ -483,9 +481,9 @@ int32_t VEML6030_Stop(VEML6030_Object_t *pObj)
   else
   {
     ret = VEML6030_Shutdown(pObj);
-    if(ret == VEML6030_OK)
+    if (ret == VEML6030_OK)
     {
-      pObj->IsStarted= 0;
+      pObj->IsStarted = 0;
     }
   }
   return ret;
@@ -533,11 +531,13 @@ int32_t VEML6030_GetValues(VEML6030_Object_t *pObj, uint32_t *Values)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS, (uint16_t *)&Values[0], 2)!=0)
+  /* Derogation MISRAC2012-Rule-11.3 */
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS, (uint16_t *)&Values[0], 2) != 0)
   {
     ret = VEML6030_ERROR ;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_WHITE,(uint16_t *)&Values[1], 2)!=0)
+  /* Derogation MISRAC2012-Rule-11.3 */
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_WHITE, (uint16_t *)&Values[1], 2) != 0)
   {
     ret = VEML6030_ERROR ;
   }
@@ -575,21 +575,21 @@ int32_t VEML6030_SetControlMode(VEML6030_Object_t *pObj, uint32_t ControlMode, u
 int32_t VEML6030_SetPersistence(VEML6030_Object_t *pObj, uint32_t Persistence)
 {
   int32_t ret;
-  uint16_t config=0;
+  uint16_t config = 0;
   if (pObj == NULL)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2)!=0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
   {
     ret = VEML6030_ERROR;
   }
   else
   {
-    config&=~VEML6030_PERS_MASK;
-    config |= Persistence;
+    config &= ~VEML6030_PERS_MASK;
+    config |= (uint16_t)Persistence;
     ret = VEML6030_OK;
-    if(veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2)!=0)
+    if (veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
     {
       ret = VEML6030_ERROR ;
     }
@@ -606,18 +606,18 @@ int32_t VEML6030_SetPersistence(VEML6030_Object_t *pObj, uint32_t Persistence)
 int32_t VEML6030_GetPersistence(VEML6030_Object_t *pObj, uint32_t *PPersistence)
 {
   int32_t ret;
-  uint16_t tmp = 0;
+  uint32_t tmp = 0;
   if (pObj == NULL)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &tmp, 2)!=0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, (uint16_t *)tmp, 2) != 0)
   {
     ret = VEML6030_ERROR ;
   }
   else
   {
-    *PPersistence = (tmp & VEML6030_PERS_MASK );
+    *PPersistence = (tmp & VEML6030_PERS_MASK);
     ret = VEML6030_OK;
   }
   return ret;
@@ -631,16 +631,16 @@ int32_t VEML6030_GetPersistence(VEML6030_Object_t *pObj, uint32_t *PPersistence)
 int32_t VEML6030_SetPowerSavingMode(VEML6030_Object_t *pObj, uint32_t PowerMode)
 {
   int32_t ret;
-  uint16_t config = 0;
+  uint16_t config;
   if (pObj == NULL)
   {
     ret = VEML6030_INVALID_PARAM;
   }
   else
   {
-    config  = (PowerMode | VEML6030_POWER_SAVING_ENABLE) & 0x000F;;
+    config  = (uint16_t)((PowerMode | VEML6030_POWER_SAVING_ENABLE) & 0x000FU);
     ret = VEML6030_OK;
-    if(veml6030_write_reg(&pObj->Ctx, VEML6030_REG_POWER_SAVING, &config, 2)!=0)
+    if (veml6030_write_reg(&pObj->Ctx, VEML6030_REG_POWER_SAVING, &config, 2) != 0)
     {
       ret = VEML6030_ERROR ;
     }
@@ -653,25 +653,25 @@ int32_t VEML6030_SetPowerSavingMode(VEML6030_Object_t *pObj, uint32_t PowerMode)
   * @param pPowerMode    Pointer to the current PowerMode value.
   * @retval VEML6030 status
   */
- int32_t VEML6030_GetPowerSavingMode(VEML6030_Object_t *pObj, uint32_t *pPowerMode)
- {
-   int32_t ret;
-   uint16_t tmp = 0;
+int32_t VEML6030_GetPowerSavingMode(VEML6030_Object_t *pObj, uint32_t *pPowerMode)
+{
+  int32_t ret;
+  uint32_t tmp = 0;
   if (pObj == NULL)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_POWER_SAVING, &tmp, 2)!=0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_POWER_SAVING, (uint16_t *)tmp, 2) != 0)
   {
     ret = VEML6030_ERROR ;
   }
   else
   {
-    *pPowerMode = (tmp & 0x000E);
+    *pPowerMode = (tmp & 0x000EU);
     ret = VEML6030_OK;
   }
   return ret;
- }
+}
 /**
   * @brief Set the High Threshold.
   * @param pObj         veml6030 context object.
@@ -679,7 +679,7 @@ int32_t VEML6030_SetPowerSavingMode(VEML6030_Object_t *pObj, uint32_t PowerMode)
   * @warning This function must not be called when a capture is ongoing.
   * @retval VEML6030 status
   */
-int32_t VEML6030_SetHighThreshold(VEML6030_Object_t *pObj , uint16_t Threshold)
+int32_t VEML6030_SetHighThreshold(VEML6030_Object_t *pObj, uint16_t Threshold)
 {
   int32_t ret = VEML6030_OK;
 
@@ -687,12 +687,13 @@ int32_t VEML6030_SetHighThreshold(VEML6030_Object_t *pObj , uint16_t Threshold)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_WH, &Threshold, 2) != 0)
+  else if (veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_WH, &Threshold, 2) != 0)
   {
     ret = VEML6030_ERROR;
   }
   else
-  { /* avoid Misra Wranning*/
+  {
+    /* avoid Misra Wranning*/
   }
   return ret;
 }
@@ -703,7 +704,7 @@ int32_t VEML6030_SetHighThreshold(VEML6030_Object_t *pObj , uint16_t Threshold)
   * @warning This function must not be called when a capture is ongoing.
   * @retval VEML6030 status
   */
-int32_t VEML6030_GetHighThreshold(VEML6030_Object_t *pObj , uint32_t *Threshold)
+int32_t VEML6030_GetHighThreshold(VEML6030_Object_t *pObj, uint32_t *Threshold)
 {
   int32_t ret;
   uint16_t data = 0;
@@ -711,7 +712,7 @@ int32_t VEML6030_GetHighThreshold(VEML6030_Object_t *pObj , uint32_t *Threshold)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_WH, &data, 2)!=0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_WH, &data, 2) != 0)
   {
     ret = VEML6030_ERROR ;
   }
@@ -729,7 +730,7 @@ int32_t VEML6030_GetHighThreshold(VEML6030_Object_t *pObj , uint32_t *Threshold)
   * @warning This function must not be called when a capture is ongoing.
   * @retval VEML6030 status
   */
-int32_t VEML6030_SetLowThreshold(VEML6030_Object_t *pObj , uint16_t Threshold)
+int32_t VEML6030_SetLowThreshold(VEML6030_Object_t *pObj, uint16_t Threshold)
 {
   int32_t ret = VEML6030_OK;
 
@@ -737,7 +738,7 @@ int32_t VEML6030_SetLowThreshold(VEML6030_Object_t *pObj , uint16_t Threshold)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_WL,&Threshold, 2) != 0)
+  else if (veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_WL, &Threshold, 2) != 0)
   {
     ret = VEML6030_ERROR;
   }
@@ -755,7 +756,7 @@ int32_t VEML6030_SetLowThreshold(VEML6030_Object_t *pObj , uint16_t Threshold)
   * @warning This function must not be called when a capture is ongoing.
   * @retval VEML6030 status
   */
-int32_t VEML6030_GetLowThreshold(VEML6030_Object_t *pObj , uint32_t *Threshold)
+int32_t VEML6030_GetLowThreshold(VEML6030_Object_t *pObj, uint32_t *Threshold)
 {
   int32_t ret;
   uint16_t data = 0;
@@ -763,7 +764,7 @@ int32_t VEML6030_GetLowThreshold(VEML6030_Object_t *pObj , uint32_t *Threshold)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_WL, &data, 2)!=0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_WL, &data, 2) != 0)
   {
     ret = VEML6030_ERROR ;
   }
@@ -776,7 +777,7 @@ int32_t VEML6030_GetLowThreshold(VEML6030_Object_t *pObj , uint32_t *Threshold)
 }
 
 /**
-  * @brief Disable the VEML6030  Interupt.
+  * @brief Disable the VEML6030  Interrupt.
   * @param pObj    veml6030 context object.
   * @warning This function must not be called when a capture is ongoing.
   * @retval VEML6030 status
@@ -789,7 +790,7 @@ int32_t VEML6030_Enable_IT(VEML6030_Object_t *pObj)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2)!=0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
   {
     ret = VEML6030_ERROR;
   }
@@ -801,7 +802,7 @@ int32_t VEML6030_Enable_IT(VEML6030_Object_t *pObj)
     {
       ret = VEML6030_ERROR;
     }
-    else if(veml6030_write_reg(&pObj->Ctx,VEML6030_REG_ALS_CONF,&config, 2)!=0)
+    else if (veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
     {
       ret = VEML6030_ERROR ;
     }
@@ -816,7 +817,7 @@ int32_t VEML6030_Enable_IT(VEML6030_Object_t *pObj)
   return ret;
 }
 /**
-  * @brief Disable the VEML6030  Interupt.
+  * @brief Disable the VEML6030  Interrupt.
   * @param pObj    veml6030 context object.
   * @warning This function must not be called when a capture is ongoing.
   * @retval VEML6030 status
@@ -829,7 +830,7 @@ int32_t VEML6030_Disable_IT(VEML6030_Object_t *pObj)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2)!=0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
   {
     ret = VEML6030_ERROR;
   }
@@ -842,7 +843,7 @@ int32_t VEML6030_Disable_IT(VEML6030_Object_t *pObj)
     {
       ret = VEML6030_ERROR;
     }
-    else if(veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2)!=0)
+    else if (veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
     {
       ret = VEML6030_ERROR ;
     }
@@ -862,7 +863,7 @@ int32_t VEML6030_Disable_IT(VEML6030_Object_t *pObj)
   * @param status    Pointer to the interrupt status.
   * @retval VEML6030 status
   */
-int32_t VEML6030_GetIntStatus(VEML6030_Object_t *pObj,uint32_t *status)
+int32_t VEML6030_GetIntStatus(VEML6030_Object_t *pObj, uint32_t *status)
 {
   int32_t ret = 0;
   uint16_t data = 0;
@@ -870,17 +871,17 @@ int32_t VEML6030_GetIntStatus(VEML6030_Object_t *pObj,uint32_t *status)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if(veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_INT, &data, 2)!=0)
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_INT, &data, 2) != 0)
   {
     ret = VEML6030_ERROR ;
   }
   else
   {
-    if((data &0x8000) == 0x8000)
+    if ((data & 0x8000U) == 0x8000U)
     {
       *status = VEML6030_INT_TH_HIGH;
     }
-    else if((data &0x4000) == 0x4000)
+    else if ((data & 0x4000U) == 0x4000U)
     {
       *status = VEML6030_INT_TH_LOW;
     }
@@ -902,7 +903,7 @@ int32_t VEML6030_GetIntStatus(VEML6030_Object_t *pObj,uint32_t *status)
   */
 static int32_t VEML6030_ReadRegWrap(void *handle, uint16_t Reg, uint8_t *pData, uint16_t Length)
 {
-  VEML6030_Object_t *pObj = (VEML6030_Object_t *)handle;
+  VEML6030_Object_t *pObj = (VEML6030_Object_t *)handle; /* Derogation MISRAC2012-Rule-11.5 */
 
   return pObj->IO.ReadReg(pObj->IO.ReadAddress, Reg, pData, Length);
 }
@@ -915,11 +916,11 @@ static int32_t VEML6030_ReadRegWrap(void *handle, uint16_t Reg, uint8_t *pData, 
   * @param  Length  buffer size to be written
   * @retval error status
   */
-static int32_t VEML6030_WriteRegWrap(void *handle, uint16_t Reg, uint8_t *pData, uint16_t Length)
+static int32_t VEML6030_WriteRegWrap(void *handle, uint16_t Reg, uint8_t *Data, uint16_t Length)
 {
-  VEML6030_Object_t *pObj = (VEML6030_Object_t *)handle;
+  VEML6030_Object_t *pObj = (VEML6030_Object_t *)handle; /* Derogation MISRAC2012-Rule-11.5 */
 
-  return pObj->IO.WriteReg(pObj->IO.WriteAddress, Reg, pData, Length);
+  return pObj->IO.WriteReg(pObj->IO.WriteAddress, Reg, Data, Length);
 }
 
 /**
@@ -930,12 +931,12 @@ static int32_t VEML6030_WriteRegWrap(void *handle, uint16_t Reg, uint8_t *pData,
 static int32_t VEML6030_Shutdown(VEML6030_Object_t *pObj)
 {
   int32_t ret;
-  uint16_t config=0;
+  uint16_t config = 0;
   if (pObj == NULL)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if ( veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0 )
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
   {
     ret = VEML6030_ERROR;
   }
@@ -943,7 +944,7 @@ static int32_t VEML6030_Shutdown(VEML6030_Object_t *pObj)
   {
     config |= VEML6030_CONF_SHUTDOWN;
     ret = VEML6030_OK ;
-    if( veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
+    if (veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
     {
       ret = VEML6030_ERROR;
     }
@@ -959,12 +960,12 @@ static int32_t VEML6030_Shutdown(VEML6030_Object_t *pObj)
 static int32_t VEML6030_Pwr_On(VEML6030_Object_t *pObj)
 {
   int32_t ret;
-  uint16_t config=0;
+  uint16_t config = 0;
   if (pObj == NULL)
   {
     ret = VEML6030_INVALID_PARAM;
   }
-  else if ( veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0 )
+  else if (veml6030_read_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
   {
     ret = VEML6030_ERROR;
   }
@@ -972,11 +973,12 @@ static int32_t VEML6030_Pwr_On(VEML6030_Object_t *pObj)
   {
     config &= ~VEML6030_CONF_SHUTDOWN;
     ret = VEML6030_OK ;
-    if(veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
+    if (veml6030_write_reg(&pObj->Ctx, VEML6030_REG_ALS_CONF, &config, 2) != 0)
     {
       ret = VEML6030_ERROR;
     }
-    VEML6030_Delay(pObj,4);
+
+    VEML6030_Delay(pObj, 4);
   }
   return ret;
 }
@@ -987,15 +989,13 @@ static int32_t VEML6030_Pwr_On(VEML6030_Object_t *pObj)
   * @param Delay: specifies the delay time length, in milliseconds
   * @retval Component status
   */
- static int32_t VEML6030_Delay(VEML6030_Object_t *pObj, uint32_t Delay)
+static void VEML6030_Delay(VEML6030_Object_t *pObj, uint32_t Delay)
 {
   uint32_t tickstart;
-
   tickstart = pObj->IO.GetTick();
-  while((pObj->IO.GetTick() - tickstart) < Delay)
+  while ((pObj->IO.GetTick() - tickstart) < Delay)
   {
   }
-  return VEML6030_OK;
 }
 
 /**

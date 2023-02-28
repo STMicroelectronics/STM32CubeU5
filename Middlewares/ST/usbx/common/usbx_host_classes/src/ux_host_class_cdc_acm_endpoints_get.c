@@ -35,7 +35,7 @@
 /*  FUNCTION                                               RELEASE        */ 
 /*                                                                        */ 
 /*    _ux_host_class_cdc_acm_endpoints_get                PORTABLE C      */ 
-/*                                                           6.1.9        */
+/*                                                           6.1.11       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -73,6 +73,12 @@
 /*                                            use pre-calculated value    */
 /*                                            instead of wMaxPacketSize,  */
 /*                                            resulting in version 6.1.9  */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            initialized timeout value,  */
+/*                                            resulting in version 6.1.10 */
+/*  04-25-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            internal clean up,          */
+/*                                            resulting in version 6.1.11 */
 /*                                                                        */
 /**************************************************************************/
 UINT  _ux_host_class_cdc_acm_endpoints_get(UX_HOST_CLASS_CDC_ACM *cdc_acm)
@@ -94,7 +100,7 @@ UX_TRANSFER     *transfer_request;
         {                        
     
             /* Get interface endpoint.  */
-            status =  _ux_host_stack_interface_endpoint_get(cdc_acm -> ux_host_class_cdc_acm_interface, endpoint_index, &endpoint);
+            _ux_host_stack_interface_endpoint_get(cdc_acm -> ux_host_class_cdc_acm_interface, endpoint_index, &endpoint);
     
             /* Check if endpoint is bulk and OUT.  */
             if (((endpoint -> ux_endpoint_descriptor.bEndpointAddress & UX_ENDPOINT_DIRECTION) == UX_ENDPOINT_OUT) &&
@@ -103,6 +109,9 @@ UX_TRANSFER     *transfer_request;
 
                 /* This transfer_request always have the OUT direction.  */
                 endpoint -> ux_endpoint_transfer_request.ux_transfer_request_type =  UX_REQUEST_OUT;
+
+                /* Set default timeout for transfer.  */
+                endpoint -> ux_endpoint_transfer_request.ux_transfer_request_timeout_value = UX_HOST_CLASS_CDC_ACM_CLASS_TRANSFER_TIMEOUT;
 
                 /* We have found the bulk endpoint, save it.  */
                 cdc_acm -> ux_host_class_cdc_acm_bulk_out_endpoint =  endpoint;
@@ -119,6 +128,9 @@ UX_TRANSFER     *transfer_request;
 
                 /* This transfer_request always have the IN direction.  */
                 endpoint -> ux_endpoint_transfer_request.ux_transfer_request_type =  UX_REQUEST_IN;
+
+                /* Set default timeout for transfer.  */
+                endpoint -> ux_endpoint_transfer_request.ux_transfer_request_timeout_value = UX_HOST_CLASS_CDC_ACM_CLASS_TRANSFER_TIMEOUT;
 
                 /* We have found the bulk endpoint, save it.  */
                 cdc_acm -> ux_host_class_cdc_acm_bulk_in_endpoint =  endpoint;
@@ -151,7 +163,7 @@ UX_TRANSFER     *transfer_request;
         {                        
     
             /* Get the endpoint handle.  */
-            status =  _ux_host_stack_interface_endpoint_get(cdc_acm -> ux_host_class_cdc_acm_interface, endpoint_index, &endpoint);
+            _ux_host_stack_interface_endpoint_get(cdc_acm -> ux_host_class_cdc_acm_interface, endpoint_index, &endpoint);
 
             /* Check if endpoint is Interrupt and IN.  */
             if (((endpoint -> ux_endpoint_descriptor.bEndpointAddress & UX_ENDPOINT_DIRECTION) == UX_ENDPOINT_IN) &&

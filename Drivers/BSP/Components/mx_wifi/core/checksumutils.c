@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -16,15 +16,13 @@
   ******************************************************************************
   */
 
-
 /* Includes ------------------------------------------------------------------*/
-/*cstat -MISRAC2012-* */
-#include "stdio.h"
-/*cstat +MISRAC2012-* */
 
 #include "checksumutils.h"
 
 #ifdef CHECKSUM_DEBUG
+#include <stdio.h>
+
 #define DEBUG_LOG   printf
 #else
 #define DEBUG_LOG
@@ -54,7 +52,7 @@ static uint8_t UpdateCRC8(uint8_t crcIn, uint8_t byte)
   {
     if ((crc & (uint8_t)0x01) > 0u)
     {
-      crc = (crc >> 1) ^ (uint8_t)0x8C;
+      crc = (uint8_t)(crc >> 1) ^ (uint8_t)0x8C;
     }
     else
     {
@@ -74,7 +72,8 @@ void CRC8_Init(CRC8_Context *inContext)
 void CRC8_Update(CRC8_Context *inContext, const uint8_t *inSrc, size_t inLen)
 {
   const uint8_t *src = (const uint8_t *) inSrc;
-  const uint8_t *srcEnd = &(src[inLen]);
+  const uint8_t *const srcEnd = &src[inLen];
+
   while (src < srcEnd)
   {
     inContext->crc = UpdateCRC8(inContext->crc, *src);
@@ -247,7 +246,8 @@ void CRC16_Init(CRC16_Context *inContext)
 void CRC16_Update(CRC16_Context *inContext, const uint8_t *inSrc, size_t inLen)
 {
   const uint8_t *src = (const uint8_t *) inSrc;
-  const uint8_t *srcEnd = &(src[inLen]);
+  const uint8_t *const srcEnd = &src[inLen];
+
   while (src < srcEnd)
   {
     inContext->crc = UpdateCRC16(inContext->crc, *src);

@@ -32,13 +32,16 @@
   */
 void app_entry(void)
 {
+  /* No buffer for printf usage, just print characters one by one.*/
+  setbuf(stdout, NULL);
+
   /* Initialize web server system */
   if (system_init() != WEBSERVER_OK)
   {
     webserver_process_error();
   }
 
-  /* Initialize wifi connection */
+  /* Initialize WiFi connection */
   if (webserver_wifi_init() != WEBSERVER_OK)
   {
     webserver_process_error();
@@ -47,7 +50,7 @@ void app_entry(void)
   /* Print web server header in hyperterminal */
   webserver_console_print_header();
 
-  /* Connect to available wifi */
+  /* Connect to available WiFi */
   if (webserver_wifi_connect() != WEBSERVER_OK)
   {
     webserver_process_error();

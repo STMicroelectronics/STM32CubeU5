@@ -22,11 +22,38 @@
 
 /* Private variables -------------------------------------------------------------------------------------------------*/
 /* LPBAM variables declaration */
-static LPBAM_DAC_ConvDataDesc_t Conversion_Data_Desc;
-static LPBAM_OPAMP_StartFullDesc_t Start_1_Desc;
-static LPBAM_OPAMP_StartFullDesc_t Start_2_Desc;
-static LPBAM_OPAMP_StartFullDesc_t Start_3_Desc;
-static LPBAM_OPAMP_StartFullDesc_t Start_4_Desc;
+/* USER CODE BEGIN SigAmpli_MultiGain_Descs 0 */
+
+/* USER CODE END SigAmpli_MultiGain_Descs 0 */
+
+/* USER CODE BEGIN DAC_Conversion_Q_Conversion_Data_Desc */
+
+/* USER CODE END DAC_Conversion_Q_Conversion_Data_Desc */
+static LPBAM_DAC_ConvDataDesc_t DAC_Conversion_Q_Conversion_Data_Desc;
+
+/* USER CODE BEGIN OPAMP_Config_Q_Start_1_Desc */
+
+/* USER CODE END OPAMP_Config_Q_Start_1_Desc */
+static LPBAM_OPAMP_StartFullDesc_t OPAMP_Config_Q_Start_1_Desc;
+
+/* USER CODE BEGIN OPAMP_Config_Q_Start_2_Desc */
+
+/* USER CODE END OPAMP_Config_Q_Start_2_Desc */
+static LPBAM_OPAMP_StartFullDesc_t OPAMP_Config_Q_Start_2_Desc;
+
+/* USER CODE BEGIN OPAMP_Config_Q_Start_3_Desc */
+
+/* USER CODE END OPAMP_Config_Q_Start_3_Desc */
+static LPBAM_OPAMP_StartFullDesc_t OPAMP_Config_Q_Start_3_Desc;
+
+/* USER CODE BEGIN OPAMP_Config_Q_Start_4_Desc */
+
+/* USER CODE END OPAMP_Config_Q_Start_4_Desc */
+static LPBAM_OPAMP_StartFullDesc_t OPAMP_Config_Q_Start_4_Desc;
+
+/* USER CODE BEGIN SigAmpli_MultiGain_Descs 1 */
+
+/* USER CODE END SigAmpli_MultiGain_Descs 1 */
 
 /* Exported variables ------------------------------------------------------------------------------------------------*/
 /* LPBAM queues declaration */
@@ -90,7 +117,7 @@ static void MX_DAC_Conversion_Q_Build(void)
   pSetData_DAC.Alignment = LPBAM_DAC_ALIGN_12B_R;
   pSetData_DAC.Size = 940;
   pSetData_DAC.pData = (uint32_t*)&TriangularSignal_Buffer[0];
-  if (ADV_LPBAM_DAC_Conversion_SetDataQ(DAC1, LPBAM_DAC_CHANNEL_1, &pDMAListInfo_DAC, &pSetData_DAC, &Conversion_Data_Desc, &DAC_Conversion_Q) != LPBAM_OK)
+  if (ADV_LPBAM_DAC_Conversion_SetDataQ(DAC1, LPBAM_DAC_CHANNEL_1, &pDMAListInfo_DAC, &pSetData_DAC, &DAC_Conversion_Q_Conversion_Data_Desc, &DAC_Conversion_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -104,7 +131,7 @@ static void MX_DAC_Conversion_Q_Build(void)
   pDataConfig_DAC.UpdateSrcDataWidth = DISABLE;
   pDataConfig_DAC.UpdateDestDataWidth = DISABLE;
   pDataConfig_DAC.UpdateTransferEventMode = ENABLE;
-  if (ADV_LPBAM_Q_SetDataConfig(&pDataConfig_DAC, LPBAM_DAC_CONVERSION_DATAQ_DATA_NODE, &Conversion_Data_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetDataConfig(&pDataConfig_DAC, LPBAM_DAC_CONVERSION_DATAQ_DATA_NODE, &DAC_Conversion_Q_Conversion_Data_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -112,7 +139,7 @@ static void MX_DAC_Conversion_Q_Build(void)
   /**
     * Set circular mode
     */
-  if (ADV_LPBAM_Q_SetCircularMode(&Conversion_Data_Desc, LPBAM_DAC_CONVERSION_DATAQ_DATA_NODE, &DAC_Conversion_Q) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetCircularMode(&DAC_Conversion_Q_Conversion_Data_Desc, LPBAM_DAC_CONVERSION_DATAQ_DATA_NODE, &DAC_Conversion_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -139,14 +166,14 @@ static void MX_OPAMP_Config_Q_Build(void)
   pStartFull_OPAMP.NonInvertingInput = LPBAM_OPAMP_NONINVERTINGINPUT_DAC_CH;
   pStartFull_OPAMP.InvertingInput = LPBAM_OPAMP_INVERTINGINPUT_CONNECT_NO;
   pStartFull_OPAMP.PgaGain = LPBAM_OPAMP_PGA_GAIN_2;
-  if (ADV_LPBAM_OPAMP_Start_SetFullQ(OPAMP1, &pDMAListInfo_OPAMP, &pStartFull_OPAMP, &Start_1_Desc, &OPAMP_Config_Q) != LPBAM_OK)
+  if (ADV_LPBAM_OPAMP_Start_SetFullQ(OPAMP1, &pDMAListInfo_OPAMP, &pStartFull_OPAMP, &OPAMP_Config_Q_Start_1_Desc, &OPAMP_Config_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_OPAMP.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_BLOCK_TRANSFER;
   pTrigConfig_OPAMP.TriggerConfig.TriggerPolarity = LPBAM_DMA_TRIG_POLARITY_RISING;
   pTrigConfig_OPAMP.TriggerConfig.TriggerSelection = LPBAM_LPDMA1_TRIGGER_LPDMA1_CH0_TCF;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_OPAMP, LPBAM_OPAMP_START_FULLQ_CONFIG_NODE, &Start_1_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_OPAMP, LPBAM_OPAMP_START_FULLQ_CONFIG_NODE, &OPAMP_Config_Q_Start_1_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -155,11 +182,11 @@ static void MX_OPAMP_Config_Q_Build(void)
     * OPAMP_Config queue Start_2 build
     */
   pStartFull_OPAMP.PgaGain = LPBAM_OPAMP_PGA_GAIN_4;
-  if (ADV_LPBAM_OPAMP_Start_SetFullQ(OPAMP1, &pDMAListInfo_OPAMP, &pStartFull_OPAMP, &Start_2_Desc, &OPAMP_Config_Q) != LPBAM_OK)
+  if (ADV_LPBAM_OPAMP_Start_SetFullQ(OPAMP1, &pDMAListInfo_OPAMP, &pStartFull_OPAMP, &OPAMP_Config_Q_Start_2_Desc, &OPAMP_Config_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_OPAMP, LPBAM_OPAMP_START_FULLQ_CONFIG_NODE, &Start_2_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_OPAMP, LPBAM_OPAMP_START_FULLQ_CONFIG_NODE, &OPAMP_Config_Q_Start_2_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -168,11 +195,11 @@ static void MX_OPAMP_Config_Q_Build(void)
     * OPAMP_Config queue Start_3 build
     */
   pStartFull_OPAMP.PgaGain = LPBAM_OPAMP_PGA_GAIN_8;
-  if (ADV_LPBAM_OPAMP_Start_SetFullQ(OPAMP1, &pDMAListInfo_OPAMP, &pStartFull_OPAMP, &Start_3_Desc, &OPAMP_Config_Q) != LPBAM_OK)
+  if (ADV_LPBAM_OPAMP_Start_SetFullQ(OPAMP1, &pDMAListInfo_OPAMP, &pStartFull_OPAMP, &OPAMP_Config_Q_Start_3_Desc, &OPAMP_Config_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_OPAMP, LPBAM_OPAMP_START_FULLQ_CONFIG_NODE, &Start_3_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_OPAMP, LPBAM_OPAMP_START_FULLQ_CONFIG_NODE, &OPAMP_Config_Q_Start_3_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -181,11 +208,11 @@ static void MX_OPAMP_Config_Q_Build(void)
     * OPAMP_Config queue Start_4 build
     */
   pStartFull_OPAMP.PgaGain = LPBAM_OPAMP_PGA_GAIN_16;
-  if (ADV_LPBAM_OPAMP_Start_SetFullQ(OPAMP1, &pDMAListInfo_OPAMP, &pStartFull_OPAMP, &Start_4_Desc, &OPAMP_Config_Q) != LPBAM_OK)
+  if (ADV_LPBAM_OPAMP_Start_SetFullQ(OPAMP1, &pDMAListInfo_OPAMP, &pStartFull_OPAMP, &OPAMP_Config_Q_Start_4_Desc, &OPAMP_Config_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_OPAMP, LPBAM_OPAMP_START_FULLQ_CONFIG_NODE, &Start_4_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_OPAMP, LPBAM_OPAMP_START_FULLQ_CONFIG_NODE, &OPAMP_Config_Q_Start_4_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -193,7 +220,7 @@ static void MX_OPAMP_Config_Q_Build(void)
   /**
     * Set circular mode
     */
-  if (ADV_LPBAM_Q_SetCircularMode(&Start_1_Desc, LPBAM_OPAMP_START_FULLQ_CONFIG_NODE, &OPAMP_Config_Q) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetCircularMode(&OPAMP_Config_Q_Start_1_Desc, LPBAM_OPAMP_START_FULLQ_CONFIG_NODE, &OPAMP_Config_Q) != LPBAM_OK)
   {
     Error_Handler();
   }

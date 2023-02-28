@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -29,15 +29,15 @@
 #if (USE_MEMORY_POOL_ALLOCATION == 1)
 static UCHAR  ux_device_byte_pool_buffer[UX_DEVICE_APP_MEM_POOL_SIZE];
 static TX_BYTE_POOL ux_device_app_byte_pool;
-#endif
+#endif /* USE_MEMORY_POOL_ALLOCATION */
 
 /* Private function prototypes -----------------------------------------------*/
 
 /**
-* @brief  Define the initial system.
-* @param  first_unused_memory : Pointer to the first unused memory
-* @retval None
-*/
+  * @brief  Define the initial system.
+  * @param  first_unused_memory : Pointer to the first unused memory
+  * @retval None
+  */
 VOID tx_application_define(VOID *first_unused_memory)
 {
 #if (USE_MEMORY_POOL_ALLOCATION == 1)
@@ -92,5 +92,5 @@ VOID tx_application_define(VOID *first_unused_memory)
   /* USER CODE BEGIN DYNAMIC_MEM_ALLOC */
   (void)first_unused_memory;
   /* USER CODE END DYNAMIC_MEM_ALLOC */
-#endif
+#endif /* USE_MEMORY_POOL_ALLOCATION */
 }

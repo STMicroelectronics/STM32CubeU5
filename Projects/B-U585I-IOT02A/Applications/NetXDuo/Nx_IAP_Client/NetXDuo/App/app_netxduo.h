@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   NetXDuo applicative header file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
@@ -22,18 +22,18 @@
 #define __APP_NETXDUO_H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "nx_api.h"
 
+/* Private includes ----------------------------------------------------------*/
+
 /* USER CODE BEGIN Includes */
 #include <inttypes.h>
 #include "main.h"
 #include "nx_ip.h"
-#include "nxd_dhcp_client.h"
-#include "nxd_dns.h"
 #include "mx_wifi.h"
 #include "nx_driver_emw3080.h"
 #include "msg.h"
@@ -41,7 +41,6 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -52,47 +51,42 @@
 #define HTTP_CLIENT_PACKET_SIZE              (NX_HTTP_CLIENT_MIN_PACKET_SIZE * 2)
 #define HTTP_CLIENT_POOL_SIZE                ((HTTP_CLIENT_PACKET_SIZE + sizeof(NX_PACKET)) * 4)
 
-#define DEFAULT_MEMORY_SIZE                  1024
 #define ARP_MEMORY_SIZE                      DEFAULT_MEMORY_SIZE
 
-#define MAIN_THREAD_STACK_SIZE               3 * DEFAULT_MEMORY_SIZE
-#define MAIN_THREAD_PRIORITY                 11
+#define MAIN_THREAD_STACK_SIZE               (3 * DEFAULT_MEMORY_SIZE)
+#define MAIN_THREAD_PRIORITY                 (NETX_IP_THREAD_PRIORITY + 3)
 
 #define MAIN2_THREAD_STACK_SIZE              2 * DEFAULT_MEMORY_SIZE
-#define MAIN2_THREAD_PRIORITY                11
+#define MAIN2_THREAD_PRIORITY                (NETX_IP_THREAD_PRIORITY + 3)
 
-#define NETX_IP_THREAD_STACK_SIZE            5 * DEFAULT_MEMORY_SIZE
-#define NETX_IP_THREAD_PRIORITY              10
 
-#define IAP_THREAD_STACK_SIZE                6 * DEFAULT_MEMORY_SIZE
-#define IAP_THREAD_PRIORITY                  16
+#define IAP_THREAD_STACK_SIZE                (6 * DEFAULT_MEMORY_SIZE)
+#define IAP_THREAD_PRIORITY                  (NETX_IP_THREAD_PRIORITY + 3)
 
-#define DNS_SERVER_ADDRESS                   IP_ADDRESS(192, 168, 1, 1)
+#define DEFAULT_TIMEOUT                      (10 * NX_IP_PERIODIC_RATE)
 
-#define DEFAULT_TIMEOUT                      10 * NX_IP_PERIODIC_RATE
-
-#define NULL_ADDRESS                         (void*)0
+#define NULL_ADDRESS                         ((void*)0)
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define PRINT_IP_ADDRESS(addr) \
-  do { \
-    MSG_INFO("%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"\n", \
-            ((uint32_t)(addr) >> 24) & 0xff, \
-            ((uint32_t)(addr) >> 16) & 0xff, \
-            ((uint32_t)(addr) >> 8) & 0xff, \
-            ((uint32_t)(addr) & 0xff)); \
+#define PRINT_IP_ADDRESS(addr)                                    \
+  do {                                                            \
+    MSG_INFO("%" PRIu32 ".%" PRIu32 ".%" PRIu32 ".%" PRIu32 "\n", \
+            ((uint32_t)(addr) >> 24) & 0xff,                      \
+            ((uint32_t)(addr) >> 16) & 0xff,                      \
+            ((uint32_t)(addr) >> 8) & 0xff,                       \
+            ((uint32_t)(addr) & 0xff));                           \
   } while(0)
 
-#define PRINT_SERVER_ADDRESS(addr, port) \
-  do { \
-    MSG_INFO("%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32":%"PRIu32"\n", \
-            ((uint32_t)(addr) >> 24) & 0xff, \
-            ((uint32_t)(addr) >> 16) & 0xff, \
-            ((uint32_t)(addr) >> 8) & 0xff, \
-            ((uint32_t)(addr) & 0xff), \
-            (uint32_t)(port)); \
+#define PRINT_SERVER_ADDRESS(addr, port)                                      \
+  do {                                                                        \
+    MSG_INFO("%" PRIu32 ".%" PRIu32 ".%" PRIu32 ".%" PRIu32 ":%" PRIu32 "\n", \
+            ((uint32_t)(addr) >> 24) & 0xff,                                  \
+            ((uint32_t)(addr) >> 16) & 0xff,                                  \
+            ((uint32_t)(addr) >> 8) & 0xff,                                   \
+            ((uint32_t)(addr) & 0xff),                                        \
+            (uint32_t)(port));                                                \
   } while(0)
 /* USER CODE END EM */
 
@@ -105,11 +99,9 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr);
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 /* USER CODE END PD */
 
 /* USER CODE BEGIN 1 */
-
 /* USER CODE END 1 */
 
 #ifdef __cplusplus

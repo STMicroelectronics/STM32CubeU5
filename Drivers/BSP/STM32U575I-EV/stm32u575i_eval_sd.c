@@ -117,8 +117,8 @@ static GPIO_TypeDef *SD_GPIO_PORT[SD_INSTANCES_NBR] = {SD_DETECT_GPIO_PORT};
 /** @defgroup STM32U575I_EVAL_SD_Private_Functions_Prototypes SD Private Functions Prototypes
   * @{
   */
-static void SD_MspInit(SD_HandleTypeDef *hsd);
-static void SD_MspDeInit(SD_HandleTypeDef *hsd);
+static void SD_MspInit(const SD_HandleTypeDef *hsd);
+static void SD_MspDeInit(const SD_HandleTypeDef *hsd);
 #if (USE_HAL_SD_REGISTER_CALLBACKS > 0)
 static void SD_AbortCallback(SD_HandleTypeDef *hsd);
 static void SD_TxCpltCallback(SD_HandleTypeDef *hsd);
@@ -838,7 +838,7 @@ static void SD_EXTI_Callback(void)
   * @param  hsd  SD handle
   * @retval None
   */
-static void SD_MspInit(SD_HandleTypeDef *hsd)
+static void SD_MspInit(const SD_HandleTypeDef *hsd)
 {
   HAL_StatusTypeDef ret = HAL_OK;
   GPIO_InitTypeDef gpioinitstruct = {0};
@@ -900,7 +900,7 @@ static void SD_MspInit(SD_HandleTypeDef *hsd)
   * @param  hsd  SD handle
   * @retval None
   */
-static void SD_MspDeInit(SD_HandleTypeDef *hsd)
+static void SD_MspDeInit(const SD_HandleTypeDef *hsd)
 {
   GPIO_InitTypeDef gpio_init_structure;
 

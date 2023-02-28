@@ -4,10 +4,9 @@ HeaderPath=../../../../../../Drivers/BSP/Components/mx_wifi;../../../../../../Mi
 Define=ENABLE_IOT_INFO;ENABLE_IOT_ERROR;ENABLE_IOT_WARNING;
 HALModule=
 [Groups]
-Application/User/Core=
 Application/User/NetXDuo/App=../NetXDuo/App/app_mdns.c;
 Doc=../README.md;
 Drivers/BSP/Components/mx_wifi=../../../../../../Drivers/BSP/Components/mx_wifi/mx_wifi.c;
 Drivers/BSP/Components/mx_wifi/io_pattern=../../../../../../Drivers/BSP/Components/mx_wifi/io_pattern/mx_wifi_spi.c;
-Drivers/BSP/Components/mx_wifi/core=../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_wifi_hci.c;../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_wifi_ipc.c;
+Drivers/BSP/Components/mx_wifi/core=../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_wifi_hci.c;../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_wifi_ipc.c;../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_address.c;
 Middlewares/Interfaces/Network/wifi =../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip/nx_driver_emw3080.c;../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip/mx_wifi_azure_rtos.c;

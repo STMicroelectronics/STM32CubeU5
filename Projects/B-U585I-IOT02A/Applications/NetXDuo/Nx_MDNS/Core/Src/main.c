@@ -17,20 +17,27 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
 #include "app_threadx.h"
+#include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <inttypes.h>
+#if defined(__ICCARM__)
+#include <LowLevelIOInterface.h>
+#endif /* (__ICCARM__) */
+
+#include "nx_driver_emw3080.h"
+
+#include "io_pattern/mx_wifi_io.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -57,8 +64,8 @@ UART_HandleTypeDef huart1;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void SystemPower_Config(void);
-static void MX_ICACHE_Init(void);
 static void MX_GPIO_Init(void);
+static void MX_ICACHE_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_RNG_Init(void);
@@ -68,7 +75,6 @@ static void MX_RNG_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
 /* USER CODE END 0 */
 
 /**
@@ -78,7 +84,6 @@ static void MX_RNG_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -87,7 +92,6 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -97,40 +101,68 @@ int main(void)
   SystemPower_Config();
 
   /* USER CODE BEGIN SysInit */
-
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_ICACHE_Init();
   MX_GPIO_Init();
+  MX_ICACHE_Init();
   MX_USART1_UART_Init();
   MX_SPI2_Init();
   MX_RNG_Init();
   /* USER CODE BEGIN 2 */
-
   {
-#if (defined(__GNUC__) && !defined(__clang__))
-   const char * the_compiler = "__GNUC__";
-#elif defined ( __ICCARM__ )
-   const char * the_compiler = "__ICCARM__";
-#elif defined (__ARMCC_VERSION)
-   const char * the_compiler = "__ARMCC_VERSION";
-#endif /* __GNUC__ */
-    printf("main(): %s %s  (%s)\n", __DATE__, __TIME__, the_compiler);
-  }
-
-  {
-    uint32_t random_number = hardware_rand();
-    if (HAL_RNG_GenerateRandomNumber(&hrng, &random_number) == HAL_OK)
     {
-      printf("Seeding srand() with %"PRIu32"\n", random_number);
-      /* Initialize the seed of the stdlib rand() software implementation. */
-      srand(random_number);
-      printf("rand() seeded by %"PRId32" returned %"PRId32"\n", (int32_t)random_number, (int32_t)rand());
+      char welcome[] = "Welcome\n";
+      uint16_t welcome_size = (uint16_t)strlen(welcome);
+      HAL_UART_Transmit(&huart1, (uint8_t*)welcome, welcome_size, 0xFFFF);
     }
   }
 
+  /* Force no buffer for the printf() usage. */
+  setbuf(stdout, NULL);
 
+  {
+    char the_compiler[100] = {0};
+
+#if defined(__GNUC__)
+    strcat(the_compiler, " __GNUC__");
+#endif /* __GNUC__ */
+#if defined(__clang__)
+    strcat(the_compiler, " __clang__");
+#endif /* __clang__ */
+#if defined(__ICCARM__)
+    strcat(the_compiler, " __ICCARM__");
+#endif /* __ICCARM__ */
+#if defined(__ARMCC_VERSION)
+    strcat(the_compiler, " __ARMCC_VERSION ");
+    sprintf(&the_compiler[strlen(the_compiler)], "(%d)", __ARMCC_VERSION);
+#endif /* __ARMCC_VERSION */
+#if defined(__MICROLIB)
+    strcat(the_compiler, " __MICROLIB");
+#endif /* __MICROLIB */
+
+    {
+      const uint32_t start_counting = HAL_GetTick();
+      static __IO uint32_t count = 0;
+      for (__IO uint32_t i = 0; i < 1600000; i++)
+      {
+        count++;
+      }
+      {
+        const uint32_t end_counting = HAL_GetTick();
+        printf("\n[%" PRIu32 "] main(): %s %s  (%s)   : %" PRIu32 " ms for %" PRIu32 " loops\n\n",
+               end_counting, __DATE__, __TIME__, the_compiler, end_counting - start_counting, count);
+      }
+    }
+  }
+
+  {
+    int random_number = hardware_rand();
+
+    /* Initialize the seed of the stdlib rand() software implementation. */
+    srand((unsigned)random_number);
+    printf("rand() seeded by %" PRId32 " returned %" PRId32 "\n\n", (int32_t)random_number, (int32_t)rand());
+  }
   /* USER CODE END 2 */
 
   MX_ThreadX_Init();
@@ -163,7 +195,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI48|RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
@@ -185,7 +217,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
@@ -222,6 +254,8 @@ static void SystemPower_Config(void)
   {
     Error_Handler();
   }
+/* USER CODE BEGIN PWR */
+/* USER CODE END PWR */
 }
 
 /**
@@ -396,6 +430,8 @@ static void MX_USART1_UART_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOG_CLK_ENABLE();
@@ -437,16 +473,18 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(MXCHIP_RESET_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI14_IRQn, 5, 0);
+  HAL_NVIC_SetPriority(EXTI14_IRQn, 2, 0);
   HAL_NVIC_EnableIRQ(EXTI14_IRQn);
 
-  HAL_NVIC_SetPriority(EXTI15_IRQn, 5, 0);
+  HAL_NVIC_SetPriority(EXTI15_IRQn, 2, 0);
   HAL_NVIC_EnableIRQ(EXTI15_IRQn);
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
-#if (defined(__GNUC__) && !defined(__clang__))
+#if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
 /**
   * With GCC,
   * small printf (option LD Linker->Libraries->Small printf set to 'Yes')
@@ -454,12 +492,21 @@ static void MX_GPIO_Init(void)
   */
 #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
 
-#elif defined ( __ICCARM__ )
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#elif defined(__ICCARM__)
+int iar_fputc(int ch);
+#define PUTCHAR_PROTOTYPE int iar_fputc(int ch)
 
-#elif defined (__ARMCC_VERSION)
+#elif defined(__ARMCC_VERSION)
+#ifdef __MICROLIB
 #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#else
+int stdout_putchar(int ch);
+#define PUTCHAR_PROTOTYPE int stdout_putchar(int ch)
+int stderr_putchar(int ch) { return stdout_putchar(ch); }
+void ttywrch(int ch) { stdout_putchar(ch); }
+#endif /* __MICROLIB */
 #endif /* __GNUC__ */
+
 
 /**
   * @brief  Retargets the C library printf function to the USART.
@@ -473,6 +520,22 @@ PUTCHAR_PROTOTYPE
 
   return ch;
 }
+
+
+#if defined(__ICCARM__)
+size_t __write(int file, unsigned char const *ptr, size_t len)
+{
+  size_t idx;
+  unsigned char const *pdata = ptr;
+
+  for (idx = 0; idx < len; idx++)
+  {
+    iar_fputc((int)*pdata);
+    pdata++;
+  }
+  return len;
+}
+#endif /* __ICCARM__ */
 
 
 /**
@@ -497,6 +560,7 @@ void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
       break;
   }
 }
+
 
 /* Alternative to HAL_RNG_GenerateRandomNumber(). */
 /* MX_RNG_Init() MUST be called before usage of this function. */
@@ -538,9 +602,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
+  /* User may add here some code to deal with this error */
   printf("\n\nError_Handler()>\n");
-  while (1) { }
+
+  __disable_irq();
+  while (1)
+  {
+  }
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -555,7 +623,12 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  printf("Wrong parameters value: file %s on line %"PRIu32"\n", file, line);
+  printf("Wrong parameters value: file %s on line %" PRIu32 "\n", file, line);
+
+  /* Infinite loop */
+  while (1)
+  {
+  }
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

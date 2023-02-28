@@ -6,7 +6,7 @@
  *
  * @brief Definition for the Azure Device Provisioning client.
  * @remark The Device Provisioning MQTT protocol is described at
- * https://docs.microsoft.com/en-us/azure/iot-dps/iot-dps-mqtt-support
+ * https://docs.microsoft.com/azure/iot-dps/iot-dps-mqtt-support
  *
  * @note You MUST NOT use any symbols (macros, functions, structures, enums, etc.)
  * prefixed with an underscore ('_') directly in your application code. These symbols
@@ -75,7 +75,8 @@ AZ_NODISCARD az_iot_provisioning_client_options az_iot_provisioning_client_optio
  * @param[in] global_device_hostname The device provisioning services global host name.
  * @param[in] id_scope The ID Scope.
  * @param[in] registration_id The Registration ID. This must match the client certificate name (CN
- * part of the certificate subject).
+ * part of the certificate subject). Must conform to the limitations listed in the link below:
+ * https://docs.microsoft.com/azure/iot-dps/concepts-service#registration-id
  * @param[in] options __[nullable]__ A reference to an #az_iot_provisioning_client_options
  * structure. Can be `NULL` for default options.
  * @pre \p client must not be `NULL`.
@@ -83,6 +84,7 @@ AZ_NODISCARD az_iot_provisioning_client_options az_iot_provisioning_client_optio
  * @pre \p id_scope must be a valid span of size greater than 0.
  * @pre \p registration_id must be a valid span of size greater than 0.
  * @return An #az_result value indicating the result of the operation.
+ * @retval #AZ_OK The client was initialized successfully.
  */
 AZ_NODISCARD az_result az_iot_provisioning_client_init(
     az_iot_provisioning_client* client,
@@ -105,6 +107,8 @@ AZ_NODISCARD az_result az_iot_provisioning_client_init(
  * @pre \p mqtt_user_name must not be `NULL`.
  * @pre \p mqtt_user_name_size must be greater than 0.
  * @return An #az_result value indicating the result of the operation.
+ * @retval #AZ_OK The user name was created successfully.
+ * @retval #AZ_ERROR_NOT_ENOUGH_SPACE The buffer is too small.
  */
 AZ_NODISCARD az_result az_iot_provisioning_client_get_user_name(
     az_iot_provisioning_client const* client,
@@ -126,6 +130,8 @@ AZ_NODISCARD az_result az_iot_provisioning_client_get_user_name(
  * @pre \p mqtt_client_id must not be `NULL`.
  * @pre \p mqtt_client_id_size must be greater than 0.
  * @return An #az_result value indicating the result of the operation.
+ * @retval #AZ_OK The client id was created successfully.
+ * @retval #AZ_ERROR_NOT_ENOUGH_SPACE The buffer is too small.
  */
 AZ_NODISCARD az_result az_iot_provisioning_client_get_client_id(
     az_iot_provisioning_client const* client,
@@ -152,7 +158,7 @@ AZ_NODISCARD az_result az_iot_provisioning_client_get_client_id(
  * HMAC-SHA256 using the Shared Access Key as password then Base64 encode the result.
  *
  * @remark More information available at
- * https://docs.microsoft.com/en-us/azure/iot-dps/concepts-symmetric-key-attestation#detailed-attestation-process
+ * https://docs.microsoft.com/azure/iot-dps/concepts-symmetric-key-attestation#detailed-attestation-process
  *
  * @param[in] client The #az_iot_provisioning_client to use for this call.
  * @param[in] token_expiration_epoch_time The time, in seconds, from 1/1/1970.
@@ -163,6 +169,8 @@ AZ_NODISCARD az_result az_iot_provisioning_client_get_client_id(
  * @pre \p signature must be a valid span of size greater than 0.
  * @pre \p out_signature must not be `NULL`.
  * @return An #az_result value indicating the result of the operation.
+ * @retval #AZ_OK The signature was created successfully.
+ * @retval #AZ_ERROR_NOT_ENOUGH_SPACE The buffer is too small.
  */
 AZ_NODISCARD az_result az_iot_provisioning_client_sas_get_signature(
     az_iot_provisioning_client const* client,
@@ -193,7 +201,9 @@ AZ_NODISCARD az_result az_iot_provisioning_client_sas_get_signature(
  * @pre \p token_expiration_epoch_time must be greater than 0.
  * @pre \p mqtt_password must not be `NULL`.
  * @pre \p mqtt_password_size must be greater than 0.
- * @return An #az_result value indicating the result of the operation..
+ * @return An #az_result value indicating the result of the operation.
+ * @retval #AZ_OK The password was created successfully.
+ * @retval #AZ_ERROR_NOT_ENOUGH_SPACE The buffer is too small.
  */
 AZ_NODISCARD az_result az_iot_provisioning_client_sas_get_password(
     az_iot_provisioning_client const* client,
@@ -346,6 +356,7 @@ typedef struct
  * @pre \p received_payload must be a valid span of size greater than or equal to 0.
  * @pre \p out_response must not be `NULL`.
  * @return An #az_result value indicating the result of the operation.
+ * @retval #AZ_OK The topic and payload were parsed successfully.
  * @retval #AZ_ERROR_IOT_TOPIC_NO_MATCH If the topic is not matching the expected format.
  */
 AZ_NODISCARD az_result az_iot_provisioning_client_parse_received_topic_and_payload(
@@ -376,7 +387,7 @@ AZ_INLINE bool az_iot_provisioning_client_operation_complete(
  * @brief Gets the MQTT topic that must be used to submit a Register request.
  * @remark The payload of the MQTT publish message may contain a JSON document formatted according
  * to the [Provisioning Service's Device Registration document]
- * (https://docs.microsoft.com/en-us/rest/api/iot-dps/runtimeregistration/registerdevice#deviceregistration)
+ * (https://docs.microsoft.com/rest/api/iot-dps/device/runtime-registration/register-device#deviceregistration)
  * specification.
  *
  * @param[in] client The #az_iot_provisioning_client to use for this call.
@@ -390,6 +401,8 @@ AZ_INLINE bool az_iot_provisioning_client_operation_complete(
  * @pre \p mqtt_topic must not be `NULL`.
  * @pre \p mqtt_topic_size must be greater than 0.
  * @return An #az_result value indicating the result of the operation.
+ * @retval #AZ_OK The topic was created successfully.
+ * @retval #AZ_ERROR_NOT_ENOUGH_SPACE The buffer is too small.
  */
 AZ_NODISCARD az_result az_iot_provisioning_client_register_get_publish_topic(
     az_iot_provisioning_client const* client,
@@ -415,6 +428,8 @@ AZ_NODISCARD az_result az_iot_provisioning_client_register_get_publish_topic(
  * @pre \p mqtt_topic must not be `NULL`.
  * @pre \p mqtt_topic_size must be greater than 0.
  * @return An #az_result value indicating the result of the operation.
+ * @retval #AZ_OK The topic was created successfully.
+ * @retval #AZ_ERROR_NOT_ENOUGH_SPACE The buffer is too small.
  */
 AZ_NODISCARD az_result az_iot_provisioning_client_query_status_get_publish_topic(
     az_iot_provisioning_client const* client,

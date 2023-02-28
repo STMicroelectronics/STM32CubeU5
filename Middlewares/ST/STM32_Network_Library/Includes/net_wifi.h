@@ -95,7 +95,7 @@ extern "C" {
 #define NET_WIFI_SM_UNKNOWN           0xFFFFFFFFU
 /**< UNKNOWN security                                      */
 #define NET_WIFI_SM_AUTO              0xFFFFFFF0U
-/**< Auto Mode                                         */
+/**< Auto Mode                                             */
 
 
 /* Wi-Fi events */
@@ -141,15 +141,7 @@ typedef struct net_wifi_scan_bss_s
   int8_t           rssi;
 } net_wifi_scan_bss_t;
 
-#if 0
-typedef struct net_wifi_scan_results_s
-{
-  uint16_t              number;
-  net_wifi_scan_bss_t  *bss;
-} net_wifi_scan_results_t;
-#else
 typedef net_wifi_scan_bss_t net_wifi_scan_results_t;
-#endif /* old definition */
 
 /* Param */
 typedef enum
@@ -190,16 +182,16 @@ typedef enum
 const char_t *net_wifi_security_to_string(uint32_t sec);
 uint32_t net_wifi_string_to_security(char *sec);
 
-int32_t net_wifi_scan(net_if_handle_t *pnetif_in, net_wifi_scan_mode_t mode, char *ssid);
-int32_t net_wifi_get_scan_results(net_if_handle_t *pnetif_in, net_wifi_scan_results_t *results, uint8_t number);
+int32_t net_wifi_scan(net_if_handle_t *pnetif, net_wifi_scan_mode_t mode, char *ssid);
+int32_t net_wifi_get_scan_results(net_if_handle_t *pnetif, net_wifi_scan_results_t *results, uint8_t number);
 int32_t net_wifi_set_credentials(net_if_handle_t *pnetif, const net_wifi_credentials_t *credentials);
-int32_t net_wifi_set_access_mode(net_if_handle_t *pnetif,  net_wifi_mode_t mode);
+int32_t net_wifi_set_access_mode(net_if_handle_t *pnetif, net_wifi_mode_t mode);
 int32_t net_wifi_set_access_channel(net_if_handle_t *pnetif, uint8_t channel);
 int32_t net_wifi_set_ap_max_connections(net_if_handle_t *pnetif, uint8_t count);
-int32_t net_wifi_set_powersave(net_if_handle_t *pnetif_in, const net_wifi_powersave_t *powersave);
+int32_t net_wifi_set_powersave(net_if_handle_t *pnetif, const net_wifi_powersave_t *powersave);
 int32_t net_wifi_set_param(net_if_handle_t *pnetif, const net_wifi_param_t param, void *data);
 int32_t net_wifi_set_ie_data(net_if_handle_t *pnetif, net_wifi_ap_ie_t *ie);
-int32_t net_wifi_switch_mode(net_if_handle_t *pnetif_in, net_wifi_mode_t target_mode);
+int32_t net_wifi_switch_mode(net_if_handle_t *pNetif, net_wifi_mode_t TargetMode);
 
 #ifdef __cplusplus
 }

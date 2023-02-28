@@ -17,7 +17,7 @@
   */
 
 /* Includes ----------------------------------------------------------------- */
-#include "stm32_lpbam.h"
+#include "stm32_ll_lpbam.h"
 
 #ifdef LPBAM_LPTIM_MODULE_ENABLED
 
@@ -34,15 +34,6 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-/** @defgroup LPBAM_LPTIM_Basic_Private_Function_Prototypes LPBAM LPTIM Basic Private Function Prototypes
-  * @{
-  */
-extern LPBAM_Status_t LPBAM_LPTIM_FillStructInfo(LPBAM_LPTIM_ConfNode_t const *const pConfNode,
-                                                 LPBAM_InfoDesc_t       *const pDescInfo);
-/**
-  * @}
-  */
-
 /* Exported functions --------------------------------------------------------*/
 /** @defgroup LPBAM_LPTIM_Basic_Exported_Functions LPBAM LPTIM Basic Exported Functions
   * @{
@@ -185,6 +176,17 @@ LPBAM_Status_t LPBAM_LPTIM_FillNodeConfig(LPBAM_LPTIM_ConfNode_t const *const  p
       /* Update DMA data width */
       pDMANodeConfig->Init.SrcDataWidth  = DMA_SRC_DATAWIDTH_BYTE;
       pDMANodeConfig->Init.DestDataWidth = DMA_DEST_DATAWIDTH_BYTE;
+
+      break;
+    }
+
+    case LPBAM_LPTIM_GET_COUNTER_ID:
+    {
+      /* Update DMA transfer fields for LPTIM peripheral */
+      pDMANodeConfig->Init.DestInc       = DMA_DINC_INCREMENTED;
+      /* Update DMA data width */
+      pDMANodeConfig->Init.SrcDataWidth  = DMA_SRC_DATAWIDTH_HALFWORD;
+      pDMANodeConfig->Init.DestDataWidth = DMA_DEST_DATAWIDTH_HALFWORD;
 
       break;
     }

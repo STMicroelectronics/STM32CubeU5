@@ -77,6 +77,50 @@ void HAL_MspInit(void)
 }
 
 /**
+* @brief DCACHE MSP Initialization
+* This function configures the hardware resources used in this example
+* @param hdcache: DCACHE handle pointer
+* @retval None
+*/
+void HAL_DCACHE_MspInit(DCACHE_HandleTypeDef* hdcache)
+{
+  if(hdcache->Instance==DCACHE1)
+  {
+  /* USER CODE BEGIN DCACHE1_MspInit 0 */
+
+  /* USER CODE END DCACHE1_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_DCACHE1_CLK_ENABLE();
+  /* USER CODE BEGIN DCACHE1_MspInit 1 */
+
+  /* USER CODE END DCACHE1_MspInit 1 */
+  }
+
+}
+
+/**
+* @brief DCACHE MSP De-Initialization
+* This function freeze the hardware resources used in this example
+* @param hdcache: DCACHE handle pointer
+* @retval None
+*/
+void HAL_DCACHE_MspDeInit(DCACHE_HandleTypeDef* hdcache)
+{
+  if(hdcache->Instance==DCACHE1)
+  {
+  /* USER CODE BEGIN DCACHE1_MspDeInit 0 */
+
+  /* USER CODE END DCACHE1_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_DCACHE1_CLK_DISABLE();
+  /* USER CODE BEGIN DCACHE1_MspDeInit 1 */
+
+  /* USER CODE END DCACHE1_MspDeInit 1 */
+  }
+
+}
+
+/**
 * @brief OSPI MSP Initialization
 * This function configures the hardware resources used in this example
 * @param hospi: OSPI handle pointer
@@ -102,6 +146,7 @@ void HAL_OSPI_MspInit(OSPI_HandleTypeDef* hospi)
     }
 
     /* Peripheral clock enable */
+    __HAL_RCC_OSPIM_CLK_ENABLE();
     __HAL_RCC_OSPI2_CLK_ENABLE();
 
     __HAL_RCC_GPIOI_CLK_ENABLE();
@@ -194,6 +239,7 @@ void HAL_OSPI_MspDeInit(OSPI_HandleTypeDef* hospi)
 
   /* USER CODE END OCTOSPI2_MspDeInit 0 */
     /* Peripheral clock disable */
+    __HAL_RCC_OSPIM_CLK_DISABLE();
     __HAL_RCC_OSPI2_CLK_DISABLE();
 
     /**OCTOSPI2 GPIO Configuration

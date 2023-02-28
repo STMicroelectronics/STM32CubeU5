@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : GTZC/GTZC_MPCWM_IllegalAccess_TrustZone/Secure/Src/main.c
-  * @author         : MCD Application Team
-  * @brief          : Main program body
+  * @file    : Secure/Src/main.c
+  * @author  : MCD Application Team
+  * @brief   : Main file
   ******************************************************************************
   * @attention
   *
@@ -22,9 +22,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "main.h"
 #include "secure_nsc.h"
-#include "hal_sram_helper.h"  /* External FMC/SRAM setup helper service */
-#include <stdio.h>            /* Output trace */
+#include "external_memory_helper.h"
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -39,6 +40,7 @@
 /* Caution: address must correspond to non-secure internal Flash where is     */
 /*          mapped in the non-secure vector table                             */
 #define VTOR_TABLE_NS_START_ADDR  0x08100000UL
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -51,7 +53,6 @@
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -80,10 +81,10 @@ int main(void)
   /* SAU/IDAU, FPU and interrupts secure/non-secure allocation setup done */
 /* in SystemInit() based on partition_stm32u575xx.h file's definitions. */
   /* USER CODE BEGIN 1 */
-  uint32_t i, temp_value, read_value;
-
-  /* Enable SecureFault handler (HardFault is default) */
+  uint32_t i, read_value;
+ /* Enable SecureFault handler (HardFault is default) */
   SCB->SHCSR |= SCB_SHCSR_SECUREFAULTENA_Msk;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -113,35 +114,38 @@ int main(void)
   MX_ICACHE_Init();
   /* USER CODE BEGIN 2 */
 
-  /* initialize the external SRAM implemented on EVAL board, used as FMC NOR device */
-  if( extSRAM_Config() != 0)
+  /* Initialize the external SRAM memory implemented on Evaluation Board and
+     used as FMC device
+  */
+  if( extMemory_Config() != 0)
   {
     /* Initialization Error */
     while(1);
   }
-
   /* Secure SysTick should rather be suspended before calling non-secure  */
   /* in order to avoid wake-up from sleep mode entered by non-secure      */
   /* The Secure SysTick shall be resumed on non-secure callable functions */
   HAL_SuspendTick();
 
- /* Here the first half of the 16Mb FMC NOR is set as non-secure in SAU
-  * and the second half is secure (ie. update of SAU region 4 visible in
-  * original configuration in partition_stm32u575xx.h file)
+  /* Here, only 2MB of the FMC SRAM memory is used.
+  * The first half of the 2MB FMC is set as non-secure in SAU
+  * and the second half is secure (i.e. update of SAU region 4 visible in
+  * original configuration in partition_stm32u5xx.h file)
   * But we need here to program MPCWM2 non-secure area on the first half of memory.
-  * Indeed SAU and MPCWM have to fit their configurations to allow accesses
+  * Indeed SAU and MPCWM2 have to fit their configurations to allow accesses
   * correctly. That's why a dedicated service has been implemented to set this up.
   */
-  SECURE_SAU_MPCWM2_SetInitConfig();
+  SECURE_SAU_MPCWM_SetInitConfig();
 
   /* read/write test in second half of memory (secure area), should be OK */
   for (i = 8 * GTZC_TZSC_MPCWM_GRANULARITY_1;
-       i < (16 * GTZC_TZSC_MPCWM_GRANULARITY_1); i+=4)
+       i < (16 * GTZC_TZSC_MPCWM_GRANULARITY_1); i+=GTZC_TZSC_MPCWM_GRANULARITY_1)
   {
-    read_value = *(uint32_t *)(FMC_BANK1 + i);
-    temp_value = ~read_value;
-    *(uint32_t *)(FMC_BANK1 + i) = temp_value;
-    if( *(uint32_t *)(FMC_BANK1 + i) != temp_value)
+    *(uint32_t *)(FMC_BASE + i) = 0xABCDEFABUL;
+
+    read_value = *(uint32_t *)(FMC_BASE + i);
+
+    if( read_value != 0xABCDEFABUL)
     {
       /* Initialization error */
       while(1);
@@ -203,7 +207,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.MSIState = RCC_MSI_ON;
@@ -224,7 +228,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
@@ -260,6 +264,8 @@ static void SystemPower_Config(void)
   {
     Error_Handler();
   }
+/* USER CODE BEGIN PWR */
+/* USER CODE END PWR */
 }
 
 /**
@@ -359,10 +365,16 @@ static void MX_GTZC_S_Init(void)
   {
     Error_Handler();
   }
+
   if (HAL_GTZC_TZIC_EnableIT(GTZC_PERIPH_FSMC_MEM) != HAL_OK)
   {
     Error_Handler();
   }
+
+  /* Enable GTZC secure interrupt */
+  HAL_NVIC_SetPriority(GTZC_IRQn, 0, 0); /* Highest priority level */
+  HAL_NVIC_EnableIRQ(GTZC_IRQn);
+
   /* USER CODE END GTZC_S_Init 2 */
 
 }
@@ -454,6 +466,9 @@ static void MX_USART1_UART_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -461,21 +476,31 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LED6_GPIO_Port, LED6_Pin, GPIO_PIN_RESET);
+
   /*IO attributes management functions */
   HAL_GPIO_ConfigPinAttributes(BUTTON_USER_GPIO_Port, BUTTON_USER_Pin, GPIO_PIN_NSEC);
 
   /*IO attributes management functions */
-  HAL_GPIO_ConfigPinAttributes(LED5_PIN_GPIO_Port, LED5_PIN_Pin, GPIO_PIN_NSEC);
+  HAL_GPIO_ConfigPinAttributes(LED5_GPIO_Port, LED5_Pin, GPIO_PIN_NSEC);
 
-  /*IO attributes management functions */
-  HAL_GPIO_ConfigPinAttributes(LED6_GPIO_Port, LED6_Pin, GPIO_PIN_NSEC);
+  /*Configure GPIO pin : LED6_Pin */
+  GPIO_InitStruct.Pin = LED6_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(LED6_GPIO_Port, &GPIO_InitStruct);
 
-  /*IO attributes management functions */
-  HAL_GPIO_ConfigPinAttributes(BUTTON_TAMPER_GPIO_Port, BUTTON_TAMPER_Pin, GPIO_PIN_NSEC);
-
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
+
+/**
+* @brief  Retargets the C library printf function to the USART.
+*/
 #if defined(__ARMCC_VERSION) || defined(__ICCARM__)
 int fputc(int ch, __attribute__((unused))FILE *f)
 #elif __GNUC__
@@ -496,7 +521,7 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
-  while (1)
+  while(1)
   {
   }
   /* USER CODE END Error_Handler_Debug */

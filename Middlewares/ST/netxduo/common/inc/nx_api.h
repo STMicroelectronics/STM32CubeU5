@@ -26,7 +26,7 @@
 /*  APPLICATION INTERFACE DEFINITION                       RELEASE        */
 /*                                                                        */
 /*    nx_api.h                                            PORTABLE C      */
-/*                                                           6.1.10       */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -83,6 +83,20 @@
 /*  01-31-2022     Yuxin Zhou               Modified comment(s), and      */
 /*                                            updated product constants,  */
 /*                                            resulting in version 6.1.10 */
+/*  04-25-2022     Yuxin Zhou               Modified comment(s), and      */
+/*                                            updated product constants,  */
+/*                                            added internal ip address   */
+/*                                            change notification,        */
+/*                                            resulting in version 6.1.11 */
+/*  07-29-2022     Yuxin Zhou               Modified comment(s), and      */
+/*                                            updated product constants,  */
+/*                                            fixed compiler errors when  */
+/*                                            TX_SAFETY_CRITICAL is       */
+/*                                            enabled,                    */
+/*                                            resulting in version 6.1.12 */
+/*  10-31-2022     Wenhui Xie               Modified comment(s), and      */
+/*                                            supported HTTP Proxy,       */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 
@@ -107,10 +121,13 @@ extern   "C" {
 
 
 /* Bypass ThreadX API error checking for internal NetX calls.  */
+#include "tx_port.h"
 
 #ifdef NX_SOURCE_CODE
+#ifndef TX_SAFETY_CRITICAL
 #ifndef TX_DISABLE_ERROR_CHECKING
 #define TX_DISABLE_ERROR_CHECKING
+#endif
 #endif
 #endif
 
@@ -495,8 +512,8 @@ VOID _nx_trace_event_update(TX_TRACE_BUFFER_ENTRY *event, ULONG timestamp, ULONG
 /* Define basic constants for the NetX TCP/IP Stack.  */
 #define AZURE_RTOS_NETXDUO
 #define NETXDUO_MAJOR_VERSION                    6
-#define NETXDUO_MINOR_VERSION                    1
-#define NETXDUO_PATCH_VERSION                    10
+#define NETXDUO_MINOR_VERSION                    2
+#define NETXDUO_PATCH_VERSION                    0
 
 /* Define the following symbols for backward compatibility */
 #define EL_PRODUCT_NETXDUO
@@ -1195,6 +1212,22 @@ typedef struct NX_IPV6_DEFAULT_ROUTER_ENTRY_STRUCT
 #ifndef NX_MAX_LISTEN_REQUESTS
 #define NX_MAX_LISTEN_REQUESTS                     10
 #endif
+
+/* Define the max length of username and password for HTTP Proxy authentication.  */
+
+/* Define the max length of username.  */
+#ifndef NX_HTTP_PROXY_MAX_USERNAME
+#define NX_HTTP_PROXY_MAX_USERNAME                 20
+#endif
+
+/* Define the max length of password.  */
+#ifndef NX_HTTP_PROXY_MAX_PASSWORD
+#define NX_HTTP_PROXY_MAX_PASSWORD                 20
+#endif
+
+/* NX_HTTP_PROXY_MAX_AUTHENTICATION is the max length of base64 of "name:password", 
+   1 bytes for an extra conversion if needed, 2 bytes for pad if needed, 1 byte for null terminator and four byte alignment. */
+#define NX_HTTP_PROXY_MAX_AUTHENTICATION           (((((NX_HTTP_PROXY_MAX_USERNAME + NX_HTTP_PROXY_MAX_PASSWORD  + 1 ) * 4 / 3) + 1 + 2 + 1) / 4 + 1) * 4)
 
 
 /* Define the IP status checking/return bits.  */
@@ -1929,9 +1962,22 @@ typedef struct NX_TCP_SOCKET_STRUCT
     /* Define whether or not TCP socket is in fast recovery procedure. */
     UCHAR       nx_tcp_socket_fast_recovery;
 
+#ifdef NX_ENABLE_HTTP_PROXY
+
+    /* Define the state of HTTP Proxy connection.  */
+    UCHAR       nx_tcp_socket_http_proxy_state;
+
+    /* Define the packet to store HTTP response header.  */
+    NX_PACKET   *nx_tcp_socket_http_proxy_header_packet;
+
+    /* Define the IP and port for original server.  */
+    NXD_ADDRESS nx_tcp_socket_original_server_ip;
+    UINT        nx_tcp_socket_original_server_port;
+#else
     /* Reserved to four bytes alignment. */
     /*lint -esym(768,NX_TCP_SOCKET_STRUCT::nx_tcp_socket_reserved) suppress member not referenced. It is reserved for future use. */
     UCHAR       nx_tcp_socket_reserved;
+#endif /* NX_ENABLE_HTTP_PROXY  */
 
     /* Define the entry that this TCP socket belongs to.  */
     struct NX_IP_STRUCT
@@ -2643,11 +2689,17 @@ typedef struct NX_IP_STRUCT
     /* Define the IP address change notification callback routine pointer.  */
     VOID        (*nx_ip_address_change_notify)(struct NX_IP_STRUCT *, VOID *);
     VOID        *nx_ip_address_change_notify_additional_info;
+
+    /* Define the internal IP address change notification callback routine pointer, used in mDNS.  */
+    VOID        (*nx_ip_address_change_notify_internal)(struct NX_IP_STRUCT *, VOID *);
 #endif /* !NX_DISABLE_IPV4  */
 
 #ifdef FEATURE_NX_IPV6
 #ifdef NX_ENABLE_IPV6_ADDRESS_CHANGE_NOTIFY
     VOID        (*nx_ipv6_address_change_notify)(struct NX_IP_STRUCT *ip_ptr, UINT status, UINT interface_index, UINT addres_index, ULONG *ip_address);
+
+    /* Define the internal IPv6 address change notification callback routine pointer, used in mDNS.  */
+    VOID        (*nx_ipv6_address_change_notify_internal)(struct NX_IP_STRUCT *ip_ptr, UINT status, UINT interface_index, UINT addres_index, ULONG *ip_address);
 #endif /* NX_ENABLE_IPV6_ADDRESS_CHANGE_NOTIFY */
 #endif /* FEATURE_NX_IPV6 */
 
@@ -2794,6 +2846,21 @@ typedef struct NX_IP_STRUCT
        by issuing the nx_tcp_server_socket_listen service.  */
     NX_TCP_LISTEN
                 *nx_ip_tcp_active_listen_requests;
+
+#ifdef NX_ENABLE_HTTP_PROXY
+    /* Define the IP address of HTTP proxy server.  */
+    NXD_ADDRESS nx_ip_http_proxy_ip_address;
+
+    /* Define the port of HTTP proxy server.  */
+    USHORT      nx_ip_http_proxy_port;
+
+    /* Define the flag indicating the HTTP proxy is enabled.  */
+    USHORT      nx_ip_http_proxy_enable;
+
+    /* Define the buffer for HTTP proxy authentication.  */
+    UCHAR       nx_ip_http_proxy_authentication[NX_HTTP_PROXY_MAX_AUTHENTICATION];
+    UINT        nx_ip_http_proxy_authentication_length;
+#endif /* NX_ENABLE_HTTP_PROXY */
 
     /* Define a flag indicating the IP fast timer has been created */
     UINT        nx_ip_fast_periodic_timer_created;
@@ -3246,6 +3313,7 @@ typedef struct NX_IP_DRIVER_STRUCT
 
 /* APIs for others. */
 #define nx_system_initialize                            _nx_system_initialize
+#define nx_http_proxy_client_enable                     _nx_http_proxy_client_enable
 
 #else
 
@@ -3433,6 +3501,7 @@ typedef struct NX_IP_DRIVER_STRUCT
 
 /* APIs for others. */
 #define nx_system_initialize                            _nx_system_initialize
+#define nx_http_proxy_client_enable                     _nxe_http_proxy_client_enable
 #endif
 
 
@@ -3770,6 +3839,8 @@ UINT nxd_udp_packet_info_extract(NX_PACKET *packet_ptr, NXD_ADDRESS *ip_address,
 
 /* APIs for others. */
 VOID nx_system_initialize(VOID);
+UINT nx_http_proxy_client_enable(NX_IP *ip_ptr, NXD_ADDRESS *proxy_server_ip, UINT proxy_server_port,
+                                 UCHAR *username, UINT username_length, UCHAR *password, UINT password_length);
 
 /* Define several function prototypes for exclusive use by NetX I/O drivers.  These routines
    are used by NetX drivers to report received packets to NetX.  */

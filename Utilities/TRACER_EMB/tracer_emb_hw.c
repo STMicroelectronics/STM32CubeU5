@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2018(-2021) STMicroelectronics.
+  * Copyright (c) 2018(-2022) STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -248,7 +248,7 @@ void HW_TRACER_EMB_Init(void)
     /*  - OverSampling        : LL_LPUART_OVERSAMPLING_16       */
 #if defined(USART_PRESC_PRESCALER)
     lpuart_initstruct.PrescalerValue      = LL_LPUART_PRESCALER_DIV1;
-#endif
+#endif /* USART_PRESC_PRESCALER */
     lpuart_initstruct.BaudRate            = TRACER_EMB_BAUDRATE;
     lpuart_initstruct.DataWidth           = LL_LPUART_DATAWIDTH_8B;
     lpuart_initstruct.StopBits            = LL_LPUART_STOPBITS_1;
@@ -256,7 +256,7 @@ void HW_TRACER_EMB_Init(void)
     lpuart_initstruct.TransferDirection   = LL_LPUART_DIRECTION_TX;
 #if defined(USART_CR3_RTSE)
     lpuart_initstruct.HardwareFlowControl = LL_LPUART_HWCONTROL_NONE;
-#endif
+#endif /* USART_CR3_RTSE */
 
     /* Initialize USART instance according to parameters defined in initialization structure */
     LL_LPUART_Init(TRACER_EMB_USART_INSTANCE, &lpuart_initstruct);

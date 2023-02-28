@@ -5,7 +5,7 @@ This application provides an example of Azure RTOS FileX stack usage on STM32U57
 
 The application starts by calling the ThreadX's initialization routine which creates multithreaded environment for starting the concurrent FileX's two main threads that handle file operations. At this stage, all FileX resources are created, the SDIO driver is initialized and the application creates 3 threads with the same priorities:
 
-  - fx_thread_main (Prio : 10; PreemptionPrio : 10) used to initialize the SD card driver and opening it as a FileX Media.
+  - fx_app_thread (Prio : 10; PreemptionPrio : 10) used to initialize the SD card driver and opening it as a FileX Media.
   - fx_thread_one  (Prio : 10; PreemptionPrio : 10) used to create, write and read operations for file fx_file_one.
   - fx_thread_two  (Prio : 10; PreemptionPrio : 10) used to create, write and read operations for file fx_file_two.
 
@@ -22,11 +22,11 @@ system, the main thread starts the two file operations threads, fx_thread_one an
 
 This demonstrates the concurrent access handling capabilities of FileX, without the need for an external access-aribitration locks.
 
-Successful operation is marked by a toggeling green LED light.
+Successful operation is marked by a toggling green LED light.
 
 #### <b>Error behaviors</b>
 
-On failure, the red LED starts toggeling while the green LED is switched OFF.
+On failure, the red LED starts toggling while the green LED is switched OFF.
 
 #### <b>Assumptions if any</b>
 
@@ -44,7 +44,7 @@ No SD card insertion/removal mechanisms are implemented.
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.s" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
    It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL).
@@ -59,7 +59,7 @@ No SD card insertion/removal mechanisms are implemented.
     + For MDK-ARM:
 	```
     either define the RW_IRAM1 region in the ".sct" file
-    or modify the line below in "tx_low_level_initilize.s to match the memory region being used
+    or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
 	```
     + For STM32CubeIDE add the following section into the .ld file:
@@ -79,7 +79,7 @@ No SD card insertion/removal mechanisms are implemented.
        Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
        Read more in STM32CubeIDE User Guide, chapter: "Linker script".
 
-    + The "tx_initialize_low_level.s" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
+    + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
 
 
 #### <b>FileX/LevelX usage hints</b>

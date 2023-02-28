@@ -2,11 +2,11 @@
   ******************************************************************************
   * @file    ping.c
   * @author  MCD Application Team
-  * @brief   Ping cmd.
+  * @brief   Ping command.
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -22,19 +22,15 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include "main.h"
+#include "app_netxduo.h"
 #include "nxd_bsd.h"
 #include "nx_icmp.h"
 
-#ifndef IPPROTO_ICMP
-#define IPPROTO_ICMP      NX_PROTOCOL_ICMP
-#endif /* IPPROTO_ICMP */
 
-
-int32_t ping_cmd(int32_t argc, char **argv);
-
-#define TIME_SOURCE_HTTP_HOST   "www.st.com"
+#define PING_HOST               "www.st.com"
 
 #define PING_ITERATION  (uint32_t)10
+
 #define PING_DELAY_S    (uint32_t)1
 
 /** ping identifier - must fit on a 16 bit word. */
@@ -53,43 +49,42 @@ int32_t ping_cmd(int32_t argc, char **argv);
 
 /* Private variables ---------------------------------------------------------*/
 
-extern TX_BYTE_POOL *AppBytePool;
 
-static uint16_t standard_chksum(const void *dataptr, int32_t len);
-static void ping_prepare_echo(NX_ICMPV4_ECHO *iecho, uint16_t len, uint16_t ping_seq_num);
-static int32_t icmp_ping(struct sockaddr *addr, uint32_t count, uint32_t timeout, int32_t response[]);
-
-static int32_t ping_gethostbyname(struct sockaddr *addr, const char *name);
+static uint16_t standard_chksum(const void *pData, int32_t Len);
+static void ping_prepare_echo(NX_ICMPV4_ECHO *pEcho, uint16_t Len, uint16_t PingSeqNum);
+static int32_t icmp_ping(struct sockaddr *pS_Addr, uint32_t S_Addr_len, uint32_t Count, uint32_t Timeout,
+                         int32_t Response[]);
+static int32_t ping_gethostbyname(struct sockaddr *pS_Addr, const char *Name);
 
 
 
 /* Functions Definition ------------------------------------------------------*/
 
-static uint16_t standard_chksum(const void *dataptr, int32_t len)
+static uint16_t standard_chksum(const void *pData, int32_t Len)
 {
-  const uint8_t *pb = (const uint8_t *)dataptr;
+  const uint8_t *pb = (const uint8_t *)pData;
   const uint16_t *ps;
   uint16_t t = 0;
   uint32_t sum = 0;
   uint32_t odd = ((uintptr_t)pb & 1);
 
   /* Get aligned to uint16_t */
-  if (odd && (len > 0))
+  if (odd && (Len > 0))
   {
     ((uint8_t *)&t)[1] = *pb++;
-    len--;
+    Len--;
   }
 
   /* Add the bulk of the data */
   ps = (const uint16_t *)(const VOID *)pb;
-  while (len > 1)
+  while (Len > 1)
   {
     sum += *ps++;
-    len -= 2;
+    Len -= 2;
   }
 
   /* Consume left-over byte, if any */
-  if (len > 0)
+  if (Len > 0)
   {
     ((uint8_t *)&t)[0] = *(const uint8_t *)ps;
   }
@@ -111,45 +106,45 @@ static uint16_t standard_chksum(const void *dataptr, int32_t len)
   return ~(uint16_t)sum;
 }
 
-static void ping_prepare_echo(NX_ICMPV4_ECHO *iecho, uint16_t len, uint16_t ping_seq_num)
-{
-  const size_t data_len = len - sizeof(NX_ICMPV4_ECHO);
 
-  iecho->nx_icmpv4_echo_header.nx_icmpv4_header_type = NX_ICMP_ECHO_REQUEST_TYPE;
-  iecho->nx_icmpv4_echo_header.nx_icmpv4_header_code = NX_ICMP_ZERO_CODE;
-  iecho->nx_icmpv4_echo_header.nx_icmpv4_header_checksum = 0;
-  iecho->nx_icmpv4_echo_identifier = PING_ID;
-  iecho->nx_icmpv4_echo_sequence_num  = (uint16_t) htons(ping_seq_num);
+static void ping_prepare_echo(NX_ICMPV4_ECHO *pEcho, uint16_t Len, uint16_t PingSeqNum)
+{
+  const size_t data_len = Len - sizeof(NX_ICMPV4_ECHO);
+
+  pEcho->nx_icmpv4_echo_header.nx_icmpv4_header_type = NX_ICMP_ECHO_REQUEST_TYPE;
+  pEcho->nx_icmpv4_echo_header.nx_icmpv4_header_code = NX_ICMP_ZERO_CODE;
+  pEcho->nx_icmpv4_echo_header.nx_icmpv4_header_checksum = 0;
+  pEcho->nx_icmpv4_echo_identifier = PING_ID;
+  pEcho->nx_icmpv4_echo_sequence_num  = (uint16_t) htons(PingSeqNum);
 
   /* fill the additional data buffer with some data */
   for (size_t i = 0; i < data_len; i++)
   {
-    ((CHAR *)iecho)[sizeof(NX_ICMPV4_ECHO) + i] = (CHAR) i;
+    ((CHAR *)pEcho)[sizeof(NX_ICMPV4_ECHO) + i] = (CHAR) i;
   }
-  /* Ping data are sent in RAM mode , so LWIP is not computing the checksum by SW */
-#ifndef CHECKSUM_BY_HARDWARE
-  ((NX_ICMPV4_ECHO *)iecho)->nx_icmpv4_echo_header.nx_icmpv4_header_checksum = standard_chksum(iecho, len);
-#endif /* CHECKSUM_BY_HARDWARE */
+  /* Ping data are sent in RAW mode, so compute also the checksum. */
+  ((NX_ICMPV4_ECHO *)pEcho)->nx_icmpv4_echo_header.nx_icmpv4_header_checksum = standard_chksum(pEcho, Len);
 }
 
 
-static int32_t icmp_ping(struct sockaddr *addr, uint32_t count, uint32_t timeout, int32_t response[])
+static int32_t icmp_ping(struct sockaddr *pS_Addr, uint32_t S_Addr_len, uint32_t Count, uint32_t Timeout,
+                         int32_t Response[])
 {
   int32_t ret = 0;
   uint16_t ping_seq_num = 1;
-  NX_ICMPV4_ECHO *iecho;
-  NX_ICMPV4_ECHO *pecho = NULL;
+  NX_ICMPV4_ECHO *p_echo_buffer = NULL;
   const size_t ping_size = sizeof(NX_ICMPV4_ECHO) + PING_DATA_SIZE;
   struct timeval timeout_opt = {0};
-  timeout_opt.tv_sec = timeout;
 
-  for (uint32_t i = 0; i < count; i++)
+  timeout_opt.tv_sec = Timeout;
+
+  for (uint32_t i = 0; i < Count; i++)
   {
-    response[i] = -1;
+    Response[i] = -1;
   }
 
   const INT sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
-  MSG_DEBUG("-> %"PRId32"\n", (int32_t)sock);
+  MSG_DEBUG("-> %" PRId32 "\n", (int32_t)sock);
 
   if (NX_SOC_ERROR == sock)
   {
@@ -163,13 +158,13 @@ static int32_t icmp_ping(struct sockaddr *addr, uint32_t count, uint32_t timeout
   }
   else
   {
-    if (tx_byte_allocate(AppBytePool, (VOID **) &pecho, ping_size, TX_NO_WAIT) != TX_SUCCESS)
+    if (tx_byte_allocate(AppBytePool, (VOID **) &p_echo_buffer, ping_size, TX_NO_WAIT) != TX_SUCCESS)
     {
       MSG_ERROR("Allocation failed\n");
       ret = -1;
     }
 
-    if (pecho == NULL)
+    if (p_echo_buffer == NULL)
     {
       MSG_ERROR("Allocation failed\n");
       ret = -1;
@@ -178,20 +173,16 @@ static int32_t icmp_ping(struct sockaddr *addr, uint32_t count, uint32_t timeout
 
   if (ret == 0)
   {
-    addr->sa_family = AF_INET;
-    ((struct sockaddr_in *)addr)->sin_port = htons(0);
-
-    for (uint32_t i = 0; i < count; i++)
+    for (uint32_t i = 0; i < Count; i++)
     {
-      /* add useless test for MISRA on pecho */
-      if (pecho != NULL)
+      if (p_echo_buffer != NULL)
       {
-        ping_prepare_echo(pecho, ping_size, ping_seq_num);
+        ping_prepare_echo(p_echo_buffer, ping_size, ping_seq_num);
       }
 
       const uint32_t ping_start_time = HAL_GetTick();
 
-      if (sendto(sock, (CHAR *)pecho, (INT) ping_size, 0, addr, (INT) sizeof(*addr)) < 0)
+      if (sendto(sock, (CHAR *)p_echo_buffer, (INT) ping_size, 0, pS_Addr, (INT) S_Addr_len) < 0)
       {
         MSG_ERROR("send failed\n");
         break;
@@ -199,26 +190,26 @@ static int32_t icmp_ping(struct sockaddr *addr, uint32_t count, uint32_t timeout
 
       do
       {
-        struct sockaddr from = {0};
-        INT fromlen = sizeof(from);
+        struct sockaddr_in s_addr_in_from = {0};
+        INT s_addr_in_from_len = sizeof(s_addr_in_from);
         CHAR buf[64] = "";
-        const INT len = recvfrom(sock, buf, (INT) ping_size, 0, &from, &fromlen);
+        const INT len = recvfrom(sock, buf, (INT) ping_size, 0, (struct sockaddr *)&s_addr_in_from, &s_addr_in_from_len);
         const uint32_t now = HAL_GetTick();
+
+        MSG_DEBUG("Received from %s\n", inet_ntoa(s_addr_in_from.sin_addr));
 
         if (len >= (INT)(sizeof(NX_IPV4_HEADER) + sizeof(NX_ICMPV4_ECHO)))
         {
-          NX_IPV4_HEADER *iphdr = (NX_IPV4_HEADER *)buf;
-          iecho = (NX_ICMPV4_ECHO *)(buf + ((((ntohl(iphdr->nx_ip_header_word_0)) >> 24) & 0x0f) * 4U));
-          const USHORT seqnum = htons(ping_seq_num);
+          const NX_IPV4_HEADER * const ip_header = (NX_IPV4_HEADER *)buf;
+          const NX_ICMPV4_ECHO * const p_echo = (NX_ICMPV4_ECHO *)(buf + ((((ntohl(ip_header->nx_ip_header_word_0)) >> 24) & 0x0f) * 4U));
+          const USHORT seq_num = htons(ping_seq_num);
 
-          if ((iecho->nx_icmpv4_echo_identifier == PING_ID) && (iecho->nx_icmpv4_echo_sequence_num == seqnum))
+          if ((p_echo->nx_icmpv4_echo_identifier == PING_ID) && (p_echo->nx_icmpv4_echo_sequence_num == seq_num))
           {
-            if (iecho->nx_icmpv4_echo_header.nx_icmpv4_header_type == (uint8_t) NX_ICMP_ECHO_REPLY_TYPE)
+            if (p_echo->nx_icmpv4_echo_header.nx_icmpv4_header_type == (uint8_t) NX_ICMP_ECHO_REPLY_TYPE)
             {
-              uint32_t delta;
+              Response[i] = (int32_t) (now - ping_start_time);
               ret = 0;
-              delta = now - ping_start_time;
-              response[i] = (int32_t) delta;
               break;
             }
             else
@@ -229,12 +220,12 @@ static int32_t icmp_ping(struct sockaddr *addr, uint32_t count, uint32_t timeout
         }
         else
         {
-          MSG_INFO("No data start %"PRId32" : %"PRIu32" .. %"PRIu32"\n", (int32_t)len, ping_start_time, now);
+          MSG_INFO("No data start %" PRId32 " : %" PRIu32 " .. %" PRIu32 "\n", (int32_t)len, ping_start_time, now);
         }
-      } while (HAL_GetTick() < (ping_start_time + timeout));
+      } while (HAL_GetTick() < (ping_start_time + Timeout));
       ping_seq_num++;
     }
-    tx_byte_release(pecho);
+    tx_byte_release(p_echo_buffer);
   }
 
   soc_close(sock);
@@ -242,73 +233,72 @@ static int32_t icmp_ping(struct sockaddr *addr, uint32_t count, uint32_t timeout
   return ret;
 }
 
-static int32_t ping_gethostbyname(struct sockaddr *addr, const char *name)
+
+static int32_t ping_gethostbyname(struct sockaddr *pS_Addr, const char *Name)
 {
   int32_t ret = -1;
-  struct addrinfo *hostinfo = {0};
   struct addrinfo hints = {0};
+  struct addrinfo *host_info = NULL;
 
-  hints.ai_family = AF_INET;
+  hints.ai_family = pS_Addr->sa_family;
   hints.ai_socktype = SOCK_DGRAM;
   hints.ai_flags = AI_PASSIVE;
 
-  if (0 == getaddrinfo((const CHAR *)name, NULL, &hints, &hostinfo))
+  if (0 == getaddrinfo((const CHAR *)Name, NULL, &hints, &host_info))
   {
-    if (hostinfo->ai_family == AF_INET)
+    if (host_info->ai_family == pS_Addr->sa_family)
     {
-      struct sockaddr_in *saddr = (struct sockaddr_in *) addr;
+      struct sockaddr_in *const s_addr_in = (struct sockaddr_in *) pS_Addr;
 
-      (void) memset((void *)saddr, 0, sizeof(struct sockaddr_in));
-      saddr->sin_family = AF_INET;
-      (void) memcpy(&saddr->sin_addr, &((struct sockaddr_in *)(hostinfo->ai_addr))->sin_addr, 4);
+      s_addr_in->sin_addr.s_addr = ((struct sockaddr_in *)host_info->ai_addr)->sin_addr.s_addr;
 
       ret = 0;
     }
-    freeaddrinfo(hostinfo);
+    freeaddrinfo(host_info);
   }
   return ret;
 }
 
 
-int32_t ping_cmd(int32_t argc, char **argv)
+int32_t ping_cmd(int32_t argc, char *argv[])
 {
-  char *servername;
+  const char *server_name = PING_HOST;
   int32_t ping_res[PING_ITERATION];
-  struct sockaddr addr = {0};
+  struct sockaddr_in s_addr_in = {0};
 
-  if (argc == 1)
+  s_addr_in.sin_family = AF_INET;
+  s_addr_in.sin_port = htons(0);
+
+  for (uint32_t i = 0; i < (sizeof(ping_res) / sizeof(ping_res[0])); i++)
   {
-    servername = TIME_SOURCE_HTTP_HOST;
-    MSG_INFO("ping <hostname>\n");
-  }
-  else
-  {
-    servername = argv[1];
+    ping_res[i] = -1;
   }
 
-  if (ping_gethostbyname(&addr, servername) < 0)
+  if (argc == 2)
   {
-    MSG_INFO("Could not find hostname %s\n", servername);
+    server_name = argv[1];
+  }
+
+  MSG_INFO("ping <%s>\n", server_name);
+
+  if (ping_gethostbyname((struct sockaddr *)&s_addr_in, server_name) < 0)
+  {
+    MSG_INFO("Could not find hostname \"%s\"\n", server_name);
     return -1;
   }
   else
   {
-    struct in_addr ip_addr;
-    MSG_INFO("Pinging hostname %s\n", servername);
-
-    struct sockaddr_in *addr_ip4 = (struct sockaddr_in *) &addr;
-    ip_addr.s_addr = addr_ip4->sin_addr.s_addr;
-
-    MSG_INFO("Pinging %s\n", inet_ntoa(ip_addr));
+    MSG_INFO("Pinging hostname \"%s\" with %s:%" PRIu32 "\n",
+             server_name, inet_ntoa(s_addr_in.sin_addr), (uint32_t)s_addr_in.sin_port);
   }
 
-  if (icmp_ping((struct sockaddr *)&addr, PING_ITERATION, PING_DELAY_S, ping_res) >= 0)
+  if (icmp_ping((struct sockaddr *)&s_addr_in, sizeof(s_addr_in), PING_ITERATION, PING_DELAY_S, ping_res) >= 0)
   {
     for (uint32_t i = 0; i < PING_ITERATION; i++)
     {
       if (ping_res[i] >= 0)
       {
-        MSG_INFO("Ping iteration #%"PRId32" roundtrip %"PRId32"\n", i, ping_res[i]);
+        MSG_INFO("Ping iteration #%" PRIu32 " round trip %" PRId32 "\n", i, ping_res[i]);
       }
     }
   }
@@ -316,5 +306,6 @@ int32_t ping_cmd(int32_t argc, char **argv)
   {
     MSG_INFO("Ping failure\n");
   }
+
   return 0;
 }

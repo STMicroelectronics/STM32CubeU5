@@ -35,7 +35,7 @@
 /*  FUNCTION                                               RELEASE        */ 
 /*                                                                        */ 
 /*    _ux_host_class_hub_transfer_request_completed       PORTABLE C      */ 
-/*                                                           6.1          */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -51,9 +51,12 @@
 /*    thread. We post a signal to the topology thread to wake up and      */ 
 /*    treat these changes on the HUB status.                              */
 /*                                                                        */
-/*    The interrupt pipe is not reactivated here. We will do this when    */
-/*    the topology thread has investigated the reason of the transfer     */ 
-/*    completion.                                                         */ 
+/*    In RTOS mode, the interrupt pipe is not reactivated here. We will   */
+/*    do this when the topology thread has investigated the reason of the */
+/*    transfer completion.                                                */
+/*                                                                        */
+/*    In standalone mode, the interrupt pipe is reactivated here. The     */
+/*    bitmap in buffer is examined in hub tasks function.                 */
 /*                                                                        */ 
 /*  INPUT                                                                 */ 
 /*                                                                        */ 
@@ -65,7 +68,7 @@
 /*                                                                        */ 
 /*  CALLS                                                                 */ 
 /*                                                                        */ 
-/*    _ux_utility_semaphore_put             Put the signaling semaphore   */ 
+/*    _ux_host_semaphore_put                Put the signaling semaphore   */ 
 /*                                                                        */ 
 /*  CALLED BY                                                             */ 
 /*                                                                        */ 
@@ -78,6 +81,12 @@
 /*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
 /*  09-30-2020     Chaoqiong Xiao           Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            refined macros names,       */
+/*                                            resulting in version 6.1.10 */
+/*  07-29-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            added standalone support,   */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 VOID  _ux_host_class_hub_transfer_request_completed(UX_TRANSFER *transfer_request)
@@ -106,7 +115,7 @@ UX_HOST_CLASS_HUB        *hub;
 
         {            
 
-            /* Reactivate the HID interrupt pipe.  */
+            /* Reactivate the HUB interrupt pipe.  */
             _ux_host_stack_transfer_request(transfer_request);
         
             /* We do not proceed.  */
@@ -114,14 +123,20 @@ UX_HOST_CLASS_HUB        *hub;
         }            
     }
 
+#if defined(UX_HOST_STANDALONE)
+
+    /* Reactivate the HUB interrupt pipe.  */
+    _ux_host_stack_transfer_request(transfer_request);
+#else
+
     /* We need to memorize which HUB instance has received a change signal.  */
     hub -> ux_host_class_hub_change_semaphore++;
     
     /* Now we can set the semaphore, the enum thread will wake up and will
        call the HUB instance which has a status change.  */
-    _ux_utility_semaphore_put(&_ux_system_host -> ux_system_host_enum_semaphore);
+    _ux_host_semaphore_put(&_ux_system_host -> ux_system_host_enum_semaphore);
+#endif
 
     /* Return to caller.  */
     return;
 }
-

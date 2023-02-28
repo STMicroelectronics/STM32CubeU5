@@ -1619,6 +1619,11 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_arp_static_entry_delete_internal.c</locationURI>
 		</link>
 		<link>
+			<name>Middlewares/NetXDuo/NX Core/nx_http_proxy_client.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_http_proxy_client.c</locationURI>
+		</link>
+		<link>
 			<name>Middlewares/NetXDuo/NX Core/nx_icmp_cleanup.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_icmp_cleanup.c</locationURI>
@@ -2387,11 +2392,6 @@
 			<name>Middlewares/NetXDuo/NX Core/nx_packet_transmit_release.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_packet_transmit_release.c</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/NetXDuo/NX Core/nx_ram_network_driver.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_ram_network_driver.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/NetXDuo/NX Core/nx_rarp_disable.c</name>
@@ -5119,6 +5119,11 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_interrupt_handler.c</locationURI>
 		</link>
 		<link>
+			<name>Middlewares/USBX/UX Device Controllers/ux_dcd_stm32_transfer_abort.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_transfer_abort.c</locationURI>
+		</link>
+		<link>
 			<name>Middlewares/USBX/UX Device Controllers/ux_dcd_stm32_transfer_request.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_transfer_request.c</locationURI>
@@ -5307,6 +5312,11 @@
 			<name>Application/User/USBX/App/app_usbx_device.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/USBX/App/app_usbx_device.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/USBX/App/ux_device_cdc_ecm.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/USBX/App/ux_device_cdc_ecm.c</locationURI>
 		</link>
 		<link>
 			<name>Application/User/USBX/App/ux_device_descriptors.c</name>

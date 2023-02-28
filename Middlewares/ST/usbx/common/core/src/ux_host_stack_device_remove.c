@@ -34,7 +34,7 @@
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _ux_host_stack_device_remove                        PORTABLE C      */
-/*                                                           6.1.4        */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -77,6 +77,13 @@
 /*                                            added notification for      */
 /*                                            device disconnection,       */
 /*                                            resulting in version 6.1.4  */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            added standalone support,   */
+/*                                            resulting in version 6.1.10 */
+/*  07-29-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            fixed parameter/variable    */
+/*                                            names conflict C++ keyword, */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 UINT  _ux_host_stack_device_remove(UX_HCD *hcd, UX_DEVICE *parent, UINT port_index)
@@ -87,18 +94,12 @@ ULONG                       container_index;
 #endif
 UX_DEVICE                   *device;
 UX_CONFIGURATION            *configuration;
-UX_INTERFACE                *interface;
+UX_INTERFACE                *interface_ptr;
 UX_HOST_CLASS_COMMAND       command;
 
     /* We need to find the device descriptor for the removed device. We can find it
        with the parent device and the port it was attached to. Start with the first device.  */
     device =  _ux_system_host -> ux_system_host_device_array;
-
-    /* If trace is enabled, insert this event into the trace buffer.  */
-    UX_TRACE_IN_LINE_INSERT(UX_TRACE_HOST_STACK_DEVICE_REMOVE, hcd, parent, port_index, device, UX_TRACE_HOST_STACK_EVENTS, 0, 0)
-
-    /* If trace is enabled, unregister this object.  */
-    UX_TRACE_OBJECT_UNREGISTER(device);
 
 #if UX_MAX_DEVICES > 1
     /* Start at the beginning of the list.  */
@@ -145,6 +146,12 @@ UX_HOST_CLASS_COMMAND       command;
         return(UX_DEVICE_HANDLE_UNKNOWN);
     }
 
+    /* If trace is enabled, insert this event into the trace buffer.  */
+    UX_TRACE_IN_LINE_INSERT(UX_TRACE_HOST_STACK_DEVICE_REMOVE, hcd, parent, port_index, device, UX_TRACE_HOST_STACK_EVENTS, 0, 0)
+
+    /* If trace is enabled, unregister this object.  */
+    UX_TRACE_OBJECT_UNREGISTER(device);
+
     /* We have found the device to be removed. */
     device -> ux_device_state = UX_DEVICE_REMOVED;
 
@@ -173,25 +180,25 @@ UX_HOST_CLASS_COMMAND       command;
         {
 
             /* We have the correct configuration, search the interface(s).  */
-            interface =  configuration -> ux_configuration_first_interface;
+            interface_ptr =  configuration -> ux_configuration_first_interface;
 
             /* Loop to perform the search.  */
-            while (interface != UX_NULL)
+            while (interface_ptr != UX_NULL)
             {
 
                 /* Check if an instance of the interface is present.  */
-                if (interface -> ux_interface_class_instance != UX_NULL)
+                if (interface_ptr -> ux_interface_class_instance != UX_NULL)
                 {
 
                     /* We need to stop the class instance for the device.  */
-                    command.ux_host_class_command_instance =  interface -> ux_interface_class_instance;
+                    command.ux_host_class_command_instance =  interface_ptr -> ux_interface_class_instance;
 
                     /* Call the class.  */
-                    interface -> ux_interface_class -> ux_host_class_entry_function(&command);
+                    interface_ptr -> ux_interface_class -> ux_host_class_entry_function(&command);
                 }
 
                 /* Move to next interface.  */
-                interface =  interface -> ux_interface_next_interface;
+                interface_ptr =  interface_ptr -> ux_interface_next_interface;
             }
         }
     }

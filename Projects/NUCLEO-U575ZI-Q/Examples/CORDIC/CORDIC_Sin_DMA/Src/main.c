@@ -96,8 +96,8 @@ static int32_t aCalculatedSin[ARRAY_SIZE];
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void SystemPower_Config(void);
-static void MX_ICACHE_Init(void);
 static void MX_GPDMA1_Init(void);
+static void MX_ICACHE_Init(void);
 static void MX_CORDIC_Init(void);
 /* USER CODE BEGIN PFP */
 uint32_t Check_Residual_Error(int32_t VarA, int32_t VarB, uint32_t MaxError);
@@ -145,8 +145,8 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_ICACHE_Init();
   MX_GPDMA1_Init();
+  MX_ICACHE_Init();
   MX_CORDIC_Init();
   /* USER CODE BEGIN 2 */
   /*## Configure the CORDIC peripheral ####################################*/
@@ -173,7 +173,7 @@ int main(void)
   }
 
   /*  Before starting a new process, you need to check the current state of the peripheral;
-      if it’s busy you need to wait for the end of current transfer before starting a new one.
+      if it's busy you need to wait for the end of current transfer before starting a new one.
       For simplicity reasons, this example is just waiting till the end of the
       process, but application may perform other tasks while transfer operation
       is ongoing. */
@@ -221,7 +221,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.MSIState = RCC_MSI_ON;
@@ -242,7 +242,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
@@ -278,6 +278,8 @@ static void SystemPower_Config(void)
   {
     Error_Handler();
   }
+/* USER CODE BEGIN PWR */
+/* USER CODE END PWR */
 }
 
 /**

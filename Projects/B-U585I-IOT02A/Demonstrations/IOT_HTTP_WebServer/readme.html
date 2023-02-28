@@ -119,14 +119,23 @@
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
 <li><p>This demonstration runs on STM32U585xx devices without security enabled (TZEN=0).</p></li>
+<li><p>This demonstration has been tested with STMicroelectronics B-U585I-IOT02A (MB1551C) board and can be easily tailored to any other supported device and development board.</p></li>
 <li>This demonstration requires a WiFi access point to connect to
 <ul>
 <li>With a transparent Internet connectivity: No proxy, no firewall blocking the outgoing traffic.</li>
 <li>Running a DHCP server delivering the IP and DNS configuration to the board.</li>
 </ul></li>
-<li><p>This demonstration has been tested with STMicroelectronics B-U585I-IOT02A RevC (MB1551) board and can be easily tailored to any other supported device, development board and MXCHIP firmware.</p></li>
 <li><p>This demonstration has been tested with google chrome browser version 90.0.4430.93 (64-bit).</p></li>
-<li><p>The EMW3080B MXCHIP Wi-Fi module firmware used version is V2.1.11 and the way to update your board with it are available at <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">x-wifi-emw3080b</a>.</p></li>
+<li>To use the EMW3080B MXCHIP Wi-Fi module functionality, 2 software components are required:
+<ol type="1">
+<li>The module driver running on the STM32 device</li>
+<li>The module firmware running on the EMW3080B Wi-Fi module</li>
+</ol></li>
+<li><p>This demonstration uses an updated version of the EMW3080B MXCHIP Wi-Fi module driver V2.3.4.</p></li>
+<li><p>The B-U585I-IOT02A Discovery board Revision C is delivered with the EMW3080B MXCHIP Wi-Fi module firmware V2.1.11; to upgrade your board with the required version V2.3.4, please visit <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">X-WIFI-EMW3080B</a>, using the <code>EMW3080update_B-U585I-IOT02A-RevC_V2.3.4_SPI.bin</code> file under the V2.3.4/SPI folder.</p></li>
+<li>Please note that module firmware version V2.1.11 is not backwards compatible with the driver V2.3.4 (the V2.1.11 module firmware is compatible with the driver versions from V2.1.11 to V2.1.13).</li>
+<li><p>The module driver is available under <a href="../../../../Drivers/BSP/Components/mx_wifi/">/Drivers/BSP/Components/mx_wifi</a>, and its version is indicated in the <a href="../../../../Drivers/BSP/Components/mx_wifi/Release_Notes.html">Release_Notes.html</a> file.</p></li>
+<li><p>Be aware that some STM32U5 SW packages (for examples X-CUBE-AZURE and X-CUBE-AWS) may continue to use older version of the EMW3080B MXCHIP module firmware; thanks to refer to the release notes of each SW package to know the recommended module firmware’s version which can be retrieved from this page <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">X-WIFI-EMW3080B</a>.</p></li>
 </ul>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>
 <ul>

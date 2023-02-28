@@ -20,6 +20,10 @@
 #ifndef OPENBL_I2C_CMD_H
 #define OPENBL_I2C_CMD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /* Includes ------------------------------------------------------------------*/
 #include "openbl_core.h"
 
@@ -51,5 +55,9 @@ void OPENBL_I2C_NonStretchReadoutProtect(void);
 void OPENBL_I2C_NonStretchReadoutUnprotect(void);
 void OPENBL_I2C_SpecialCommand(void);
 void OPENBL_I2C_ExtendedSpecialCommand(void);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* OPENBL_I2C_CMD_H */

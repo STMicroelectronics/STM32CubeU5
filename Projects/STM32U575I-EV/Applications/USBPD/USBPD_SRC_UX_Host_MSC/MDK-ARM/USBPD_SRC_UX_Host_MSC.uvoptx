@@ -10,7 +10,7 @@
     <aExt>*.s*; *.src; *.a*</aExt>
     <oExt>*.obj; *.o</oExt>
     <lExt>*.lib</lExt>
-    <tExt>*.txt; *.h; *.inc</tExt>
+    <tExt>*.txt; *.h; *.inc; *.md</tExt>
     <pExt>*.plm</pExt>
     <CppX>*.cpp</CppX>
     <nMigrate>0</nMigrate>
@@ -95,7 +95,7 @@
         <tRmem>1</tRmem>
         <tRfunc>1</tRfunc>
         <tRbox>1</tRbox>
-        <tRtrace>0</tRtrace>
+        <tRtrace>1</tRtrace>
         <sRSysVw>1</sRSysVw>
         <tRSysVw>1</tRSysVw>
         <sRunDeb>0</sRunDeb>
@@ -135,12 +135,12 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>UL2V8M</Key>
-          <Name>UL2V8M(-S0 -C0 -P0 -FD20000000 -FC1000 -FN2 -FF0STM32U5xx_2M_0800 -FS08000000 -FL0200000 -FF1STM32U5xx_2M_0C00 -FS1C000000 -FL1200000 -FP0($$Device:STM32U575AIIx$CMSIS\Flash\STM32U5xx_2M_0800.FLM) -FP1($$Device:STM32U575AIIx$CMSIS\Flash\STM32U5xx_2M_0C00.FLM))</Name>
+          <Name>UL2V8M(-S0 -C0 -P0 -FD20000000 -FC8000 -FN2 -FF0STM32U5xx_2M_0800 -FS08000000 -FL0200000 -FF1STM32U5xx_2M_0C00 -FS1C000000 -FL1200000 -FP0($$Device:STM32U575AIIx$CMSIS\Flash\STM32U5xx_2M_0800.FLM) -FP1($$Device:STM32U575AIIx$CMSIS\Flash\STM32U5xx_2M_0C00.FLM))</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
           <Key>ST-LINKIII-KEIL_SWO</Key>
-          <Name>-U-O142 -O2254 -SF4000 -C0 -A0 -I0 -HNlocalhost -HP7184 -P1 -N00("ARM CoreSight SW-DP") -D00(0BE12477) -L00(0) -TO131090 -TC10000000 -TT10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO7 -FD20000000 -FC1000 -FN1 -FF0STM32U5xx_2M_0800.FLM -FS08000000 -FL0200000 -FP0($$Device:STM32U575AIIx$CMSIS\Flash\STM32U5xx_2M_0800.FLM)</Name>
+          <Name>-U-O142 -O2254 -SF10000 -C0 -A0 -I0 -HNlocalhost -HP7184 -P1 -N00("ARM CoreSight SW-DP (ARM Core") -D00(0BE12477) -L00(0) -TO131090 -TC10000000 -TT10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO7 -FD20000000 -FC1000 -FN1 -FF0STM32U5xx_2M_0800.FLM -FS08000000 -FL0200000 -FP0($$Device:STM32U575AIIx$CMSIS\Flash\STM32U5xx_2M_0800.FLM)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint/>
@@ -186,6 +186,13 @@
       <pszMrulep></pszMrulep>
       <pSingCmdsp></pSingCmdsp>
       <pMultCmdsp></pMultCmdsp>
+      <DebugDescription>
+        <Enable>1</Enable>
+        <EnableFlashSeq>0</EnableFlashSeq>
+        <EnableLog>0</EnableLog>
+        <Protocol>2</Protocol>
+        <DbgClock>10000000</DbgClock>
+      </DebugDescription>
     </TargetOption>
   </Target>
 
@@ -5775,7 +5782,7 @@
 
   <Group>
     <GroupName>Middlewares/USBPD</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -7687,6 +7694,30 @@
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
+    <File>
+      <GroupNumber>18</GroupNumber>
+      <FileNumber>614</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>../../../../../../Middlewares/ST/usbx/common/usbx_host_classes/src/ux_host_class_storage_lock.c</PathWithFileName>
+      <FilenameWithoutPath>ux_host_class_storage_lock.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>18</GroupNumber>
+      <FileNumber>615</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>../../../../../../Middlewares/ST/usbx/common/usbx_host_classes/src/ux_host_class_storage_media_check.c</PathWithFileName>
+      <FilenameWithoutPath>ux_host_class_storage_media_check.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
   </Group>
 
   <Group>
@@ -7697,7 +7728,7 @@
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>614</FileNumber>
+      <FileNumber>616</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7709,7 +7740,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>615</FileNumber>
+      <FileNumber>617</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7721,7 +7752,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>616</FileNumber>
+      <FileNumber>618</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7733,7 +7764,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>617</FileNumber>
+      <FileNumber>619</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7745,7 +7776,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>618</FileNumber>
+      <FileNumber>620</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7757,7 +7788,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>619</FileNumber>
+      <FileNumber>621</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7769,7 +7800,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>620</FileNumber>
+      <FileNumber>622</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7781,7 +7812,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>621</FileNumber>
+      <FileNumber>623</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7793,7 +7824,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>622</FileNumber>
+      <FileNumber>624</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7805,7 +7836,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>623</FileNumber>
+      <FileNumber>625</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7817,7 +7848,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>624</FileNumber>
+      <FileNumber>626</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7829,7 +7860,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>625</FileNumber>
+      <FileNumber>627</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7841,7 +7872,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>626</FileNumber>
+      <FileNumber>628</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7853,7 +7884,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>627</FileNumber>
+      <FileNumber>629</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7865,7 +7896,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>628</FileNumber>
+      <FileNumber>630</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7877,7 +7908,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>629</FileNumber>
+      <FileNumber>631</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7889,7 +7920,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>630</FileNumber>
+      <FileNumber>632</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7901,7 +7932,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>631</FileNumber>
+      <FileNumber>633</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7913,7 +7944,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>632</FileNumber>
+      <FileNumber>634</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7925,7 +7956,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>633</FileNumber>
+      <FileNumber>635</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7937,7 +7968,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>634</FileNumber>
+      <FileNumber>636</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7949,7 +7980,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>635</FileNumber>
+      <FileNumber>637</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7961,7 +7992,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>636</FileNumber>
+      <FileNumber>638</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7973,7 +8004,31 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>637</FileNumber>
+      <FileNumber>639</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>../../../../../../Middlewares/ST/usbx/common/usbx_stm32_host_controllers/ux_hcd_stm32_request_trans_finish.c</PathWithFileName>
+      <FilenameWithoutPath>ux_hcd_stm32_request_trans_finish.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>19</GroupNumber>
+      <FileNumber>640</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>../../../../../../Middlewares/ST/usbx/common/usbx_stm32_host_controllers/ux_hcd_stm32_request_trans_prepare.c</PathWithFileName>
+      <FilenameWithoutPath>ux_hcd_stm32_request_trans_prepare.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>19</GroupNumber>
+      <FileNumber>641</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7985,7 +8040,7 @@
     </File>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>638</FileNumber>
+      <FileNumber>642</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -7999,13 +8054,13 @@
 
   <Group>
     <GroupName>Utilities</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>20</GroupNumber>
-      <FileNumber>639</FileNumber>
+      <FileNumber>643</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -8017,7 +8072,7 @@
     </File>
     <File>
       <GroupNumber>20</GroupNumber>
-      <FileNumber>640</FileNumber>
+      <FileNumber>644</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -8029,7 +8084,7 @@
     </File>
     <File>
       <GroupNumber>20</GroupNumber>
-      <FileNumber>641</FileNumber>
+      <FileNumber>645</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -8041,7 +8096,7 @@
     </File>
     <File>
       <GroupNumber>20</GroupNumber>
-      <FileNumber>642</FileNumber>
+      <FileNumber>646</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -8053,7 +8108,7 @@
     </File>
     <File>
       <GroupNumber>20</GroupNumber>
-      <FileNumber>643</FileNumber>
+      <FileNumber>647</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>

@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -27,16 +27,12 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "ux_api.h"
-
+#include "main.h"
+#include "ux_host_mouse.h"
+#include "ux_host_keyboard.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "ux_system.h"
-#include "ux_utility.h"
 #include "ux_hcd_stm32.h"
-#include "ux_host_class_hid.h"
-#include "ux_host_class_hid_mouse.h"
-#include "ux_host_class_hid_keyboard.h"
-#include "app_azure_rtos_config.h"
 #if defined(_TRACE)
 #include "usbpd_trace.h"
 #endif /* _TRACE */
@@ -48,6 +44,11 @@ extern "C" {
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
+#define USBX_HOST_MEMORY_STACK_SIZE     1024*24
+
+#define UX_HOST_APP_THREAD_STACK_SIZE   1024
+#define UX_HOST_APP_THREAD_PRIO         10
+
 /* USER CODE BEGIN EC */
 
 /* USER CODE END EC */
@@ -88,13 +89,8 @@ extern "C" {
 UINT MX_USBX_Host_Init(VOID *memory_ptr);
 
 /* USER CODE BEGIN EFP */
-UINT  App_USBX_Host_Init(void);
-void  usbx_app_thread_entry(ULONG arg);
-void  ucpd_app_thread_entry(ULONG arg);
-void  hid_mouse_thread_entry(ULONG arg);
-void  hid_keyboard_thread_entry(ULONG arg);
-UINT  ux_host_event_callback(ULONG event, UX_HOST_CLASS *Current_class, VOID *Current_instance);
-VOID  ux_host_error_callback(UINT system_level, UINT system_context, UINT error_code);
+VOID USBX_APP_Host_Init(VOID);
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -102,33 +98,21 @@ VOID  ux_host_error_callback(UINT system_level, UINT system_context, UINT error_
 
 /* USER CODE END PD */
 
-/* USER CODE BEGIN 1 */
+#ifndef UX_HOST_APP_THREAD_NAME
+#define UX_HOST_APP_THREAD_NAME  "USBX App Host Main Thread"
+#endif
 
-typedef enum
-{
-  USB_VBUS_FALSE = 0,
-  USB_VBUS_TRUE,
-} USB_VBUS_State;
+#ifndef UX_HOST_APP_THREAD_PREEMPTION_THRESHOLD
+#define UX_HOST_APP_THREAD_PREEMPTION_THRESHOLD  UX_HOST_APP_THREAD_PRIO
+#endif
 
-typedef enum
-{
-  Mouse_Device = 1,
-  Keyboard_Device,
-  Unknown_Device,
-} HID_Device_Type;
+#ifndef UX_HOST_APP_THREAD_TIME_SLICE
+#define UX_HOST_APP_THREAD_TIME_SLICE  TX_NO_TIME_SLICE
+#endif
 
-typedef enum
-{
-  Device_disconnected = 1,
-  Device_connected,
-  No_Device,
-} Device_state;
-
-typedef struct
-{
-  HID_Device_Type Device_Type;
-  Device_state    Dev_state;
-} ux_app_devInfotypeDef;
+#ifndef UX_HOST_APP_THREAD_START_OPTION
+#define UX_HOST_APP_THREAD_START_OPTION  TX_AUTO_START
+#endif
 
 /* USER CODE BEGIN 1 */
 typedef enum

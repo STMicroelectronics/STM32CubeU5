@@ -63,7 +63,6 @@
 /*#define HAL_OPAMP_MODULE_ENABLED */
 #define HAL_OSPI_MODULE_ENABLED
 /*#define HAL_OTFDEC_MODULE_ENABLED */
-/*#define HAL_PCD_MODULE_ENABLED */
 /*#define HAL_PKA_MODULE_ENABLED */
 /*#define HAL_QSPI_MODULE_ENABLED */
 /*#define HAL_RNG_MODULE_ENABLED */
@@ -85,10 +84,11 @@
 /*#define HAL_DCMI_MODULE_ENABLED */
 /*#define HAL_PSSI_MODULE_ENABLED */
 #define HAL_ICACHE_MODULE_ENABLED
-#define HAL_DCACHE_MODULE_ENABLED
+/*#define HAL_DCACHE_MODULE_ENABLED */
 /*#define HAL_PCD_MODULE_ENABLED */
 /*#define HAL_HCD_MODULE_ENABLED */
 /*#define HAL_XSPI_MODULE_ENABLED */
+
 #define HAL_GPIO_MODULE_ENABLED
 #define HAL_EXTI_MODULE_ENABLED
 #define HAL_DMA_MODULE_ENABLED
@@ -243,7 +243,7 @@
 #define  USE_HAL_UART_REGISTER_CALLBACKS       0U /* UART register callback disabled      */
 #define  USE_HAL_USART_REGISTER_CALLBACKS      0U /* USART register callback disabled     */
 #define  USE_HAL_WWDG_REGISTER_CALLBACKS       0U /* WWDG register callback disabled      */
-
+#define  USE_HAL_OSPI_REGISTER_CALLBACKS       0U /* OSPI register callback disabled      */
 /* ################## SPI peripheral configuration ########################## */
 
 /* CRC FEATURE: Use to activate CRC feature inside HAL SPI Driver

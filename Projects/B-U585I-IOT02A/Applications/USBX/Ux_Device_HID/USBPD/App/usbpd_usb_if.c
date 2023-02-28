@@ -24,8 +24,6 @@
 #include "usbpd_trace.h"
 
 /* USER CODE BEGIN Includes */
-//#include "usb_device.h"
-//#include "usbd_core.h"
 #include "app_usbx_device.h"
 /* USER CODE END Includes */
 
@@ -111,9 +109,11 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN USB Private variables */
-//extern USBD_HandleTypeDef hUsbDeviceFS;
-extern TX_QUEUE     ux_app_MsgQueue;
-extern USB_MODE_STATE USB_Device_State_Msg;
+extern TX_QUEUE ux_app_MsgQueue;
+#if defined ( __ICCARM__ ) /* IAR Compiler */
+  #pragma data_alignment=4
+#endif /* defined ( __ICCARM__ ) */
+__ALIGN_BEGIN USB_MODE_STATE USB_Device_EVENT __ALIGN_END;
 /* USER CODE END USB Private variables */
 
 /* Exported functions ---------------------------------------------------------*/
@@ -139,10 +139,10 @@ void USBPD_USBIF_DeviceStart(uint32_t PortNum)
   USBPD_TRACE_Add(USBPD_TRACE_DEBUG, PortNum, 0, (uint8_t *) "USBIF Device start", 18);
 
   /* Set Device state */
-  USB_Device_State_Msg = START_USB_DEVICE;
+  USB_Device_EVENT = START_USB_DEVICE;
 
   /* Send message to start device */
-  if (tx_queue_send(&ux_app_MsgQueue, &USB_Device_State_Msg, TX_WAIT_FOREVER) != TX_SUCCESS)
+  if (tx_queue_send(&ux_app_MsgQueue, &USB_Device_EVENT, TX_WAIT_FOREVER) != TX_SUCCESS)
   {
     Error_Handler();
   }
@@ -154,10 +154,10 @@ void USBPD_USBIF_DeviceStop(uint32_t PortNum)
 /* USER CODE BEGIN USBPD_USBIF_DeviceStop */
   USBPD_TRACE_Add(USBPD_TRACE_DEBUG, PortNum, 0, (uint8_t *) "USBIF Device stop", 17);
   /* Set Device state */
-  USB_Device_State_Msg = STOP_USB_DEVICE;
+  USB_Device_EVENT = STOP_USB_DEVICE;
 
   /* Send message to stop device */
-  if (tx_queue_send(&ux_app_MsgQueue, &USB_Device_State_Msg, TX_WAIT_FOREVER) != TX_SUCCESS)
+  if (tx_queue_send(&ux_app_MsgQueue, &USB_Device_EVENT, TX_WAIT_FOREVER) != TX_SUCCESS)
   {
     Error_Handler();
   }

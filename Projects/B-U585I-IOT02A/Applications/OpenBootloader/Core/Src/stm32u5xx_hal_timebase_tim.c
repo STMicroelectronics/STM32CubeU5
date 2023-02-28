@@ -5,7 +5,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -40,12 +40,12 @@ TIM_HandleTypeDef        htim6;
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
   RCC_ClkInitTypeDef clkconfig;
-  uint32_t uwTimclock       = 0;
-  uint32_t uwPrescalerValue = 0;
+  uint32_t uwTimclock       = 0U;
+  uint32_t uwPrescalerValue = 0U;
   uint32_t pFLatency;
 
   /*Configure the TIM6 IRQ priority */
-  HAL_NVIC_SetPriority(TIM6_IRQn, TickPriority, 0);
+  HAL_NVIC_SetPriority(TIM6_IRQn, TickPriority, 0U);
 
   /* Enable the TIM6 global Interrupt */
   HAL_NVIC_EnableIRQ(TIM6_IRQn);

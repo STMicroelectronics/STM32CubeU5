@@ -596,8 +596,12 @@ int32_t tfm_memory_check(const void *buffer, size_t len, bool ns_caller,
                          enum tfm_memory_access_e access,
                          uint32_t privileged)
 {
-    enum tfm_hal_status_t err;
     uint32_t attr = 0;
+#ifdef TFM_FIH_PROFILE_ON
+    fih_int fih_rc = FIH_FAILURE;
+#else
+    enum tfm_hal_status_t err;
+#endif
 
     /* If len is zero, this indicates an empty buffer and base is ignored */
     if (len == 0) {
@@ -627,13 +631,18 @@ int32_t tfm_memory_check(const void *buffer, size_t len, bool ns_caller,
     if (ns_caller) {
         attr |= TFM_HAL_ACCESS_NS;
     }
-
+#ifdef TFM_FIH_PROFILE_ON
+    FIH_CALL(tfm_hal_memory_has_access, fih_rc,
+             (uintptr_t)buffer, len, attr);
+    if (fih_eq(fih_rc, fih_int_encode(TFM_HAL_SUCCESS))) {
+        return SPM_SUCCESS;
+    }
+#else
     err = tfm_hal_memory_has_access((uintptr_t)buffer, len, attr);
-
     if (err == TFM_HAL_SUCCESS) {
         return SPM_SUCCESS;
     }
-
+#endif
     return SPM_ERROR_MEMORY_CHECK;
 }
 

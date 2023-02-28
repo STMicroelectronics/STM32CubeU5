@@ -59,7 +59,7 @@
 //   <i> Value for SAU->CTRL register bit ALLNS
 //   <i> When all Memory is Non-Secure (ALLNS is 1), IDAU can override memory map configuration.
 */
-#define SAU_INIT_CTRL_ALLNS   0
+#define SAU_INIT_CTRL_ALLNS   1
 
 /*
 // </e>
@@ -90,6 +90,7 @@
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
 #define SAU_INIT_END0       0x0C0FFFFF      /* end address of SAU region 0 */
+
 /*
 //     <o>Region is
 //         <0=>Non-Secure
@@ -115,6 +116,7 @@
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
 #define SAU_INIT_END1       0x081FFFFF      /* end address of SAU region 1 */
+
 /*
 //     <o>Region is
 //         <0=>Non-Secure
@@ -389,7 +391,7 @@
 //   <o.9>  RCC_IRQn              <0=> Secure state
 //   <o.10> RCC_S_IRQn            <0=> Secure state
 //   <o.11> EXTI0_IRQn            <0=> Secure state
-//   <o.12> EXTI1_IRQn            <1=> Non-Secure state
+//   <o.12> EXTI1_IRQn            <0=> Secure state
 //   <o.13> EXTI2_IRQn            <0=> Secure state
 //   <o.14> EXTI3_IRQn            <0=> Secure state
 //   <o.15> EXTI4_IRQn            <0=> Secure state
@@ -410,7 +412,7 @@
 //   <o.30> GPDMA1_Channel1_IRQn  <0=> Secure state
 //   <o.31> GPDMA1_Channel2_IRQn  <0=> Secure state
 */
-#define NVIC_INIT_ITNS0_VAL      0x01001000
+#define NVIC_INIT_ITNS0_VAL      0x01000000
 /*
 //   </e>
 */

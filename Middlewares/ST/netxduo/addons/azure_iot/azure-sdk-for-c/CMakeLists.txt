@@ -12,6 +12,11 @@ option(UNIT_TESTING_MOCKS "wrap PAL functions with mock implementation for tests
 option(TRANSPORT_PAHO "Build IoT Samples with Paho MQTT support" OFF)
 option(PRECONDITIONS "Build SDK with preconditions enabled" ON)
 option(LOGGING "Build SDK with logging support" ON)
+option(ADDRESS_SANITIZER "Build with address sanitizer" OFF)
+
+# vcpkg integration
+include(AzureVcpkg)
+az_vcpkg_integrate()
 
 # disable preconditions when it's set to OFF
 if (NOT PRECONDITIONS)
@@ -32,22 +37,10 @@ if(TRANSPORT_CURL)
   add_compile_definitions(TRANSPORT_CURL)
 endif()
 
-if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-  set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-      CACHE STRING "")
-elseif(DEFINED ENV{VCPKG_INSTALLATION_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-  set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
-      CACHE STRING "")
-endif()
-
-if(DEFINED ENV{VCPKG_DEFAULT_TRIPLET} AND NOT DEFINED VCPKG_TARGET_TRIPLET)
-  set(VCPKG_TARGET_TRIPLET "$ENV{VCPKG_DEFAULT_TRIPLET}" CACHE STRING "")
-endif()
-
 project(az LANGUAGES C)
 enable_testing ()
 
-include(eng/cmake/global_compile_options.txt)
+include(eng/cmake/global_compile_options.cmake)
 include(create_map_file)
 
 # Include function for creating code coverage targets
@@ -95,8 +88,8 @@ if (UNIT_TESTING)
   # make generate step fail if cmocka dependency is not found
   find_package(cmocka CONFIG REQUIRED)
 
-  # When using VCPKG, cmocka lib name is set different than when it is globally installed
-  if(DEFINED ENV{VCPKG_ROOT} OR DEFINED ENV{VCPKG_INSTALLATION_ROOT})
+  # Old versions of cmocka (including the latest stable) don't define an imported target
+  if(NOT TARGET cmocka::cmocka)
     set(CMOCKA_LIB ${CMOCKA_LIBRARIES})
   else()
     set(CMOCKA_LIB cmocka::cmocka)
@@ -112,6 +105,7 @@ if (UNIT_TESTING)
   add_subdirectory(sdk/tests/core)
 
   # IoT
+  add_subdirectory(sdk/tests/iot/adu)
   add_subdirectory(sdk/tests/iot/common)
   add_subdirectory(sdk/tests/iot/hub)
   add_subdirectory(sdk/tests/iot/provisioning)

@@ -30,13 +30,13 @@ extern "C" {
 #include <math.h>
 
 /* VEML6030 registers */
-#define VEML6030_REG_ALS_CONF            0x00
-#define VEML6030_REG_ALS_WH              0x01
-#define VEML6030_REG_ALS_WL              0x02
-#define VEML6030_REG_POWER_SAVING        0x03
-#define VEML6030_REG_ALS                 0x04
-#define VEML6030_REG_WHITE               0x05
-#define VEML6030_REG_ALS_INT             0x06
+#define VEML6030_REG_ALS_CONF            0x00U
+#define VEML6030_REG_ALS_WH              0x01U
+#define VEML6030_REG_ALS_WL              0x02U
+#define VEML6030_REG_POWER_SAVING        0x03U
+#define VEML6030_REG_ALS                 0x04U
+#define VEML6030_REG_WHITE               0x05U
+#define VEML6030_REG_ALS_INT             0x06U
 
 /* ALS gain constants */
 #define VEML6030_CONF_GAIN_1     (0x00UL << 11)
@@ -53,7 +53,7 @@ extern "C" {
 #define VEML6030_CONF_IT400      (0x02UL << 6)
 #define VEML6030_CONF_IT800      (0x03UL << 6)
 /* ALS integration times - all bits */
-#define VEML6030_CONF_IT_MASK   (0x0f << 6)
+#define VEML6030_CONF_IT_MASK   (0x0fU << 6)
 
 /* Register 0x0: ALS_CONF */
 /* ALS persistent protect number */
@@ -63,9 +63,9 @@ extern "C" {
 #define VEML6030_CONF_PERS_8     (0x03UL << 4)
 #define VEML6030_PERS_MASK     (uint16_t)(0x0030)
 /* ALS interrupt enable*/
-#define VEML6030_CONF_IT_ENABLE  (0x01 << 1)
+#define VEML6030_CONF_IT_ENABLE  (0x01U << 1)
 /* ALS shutdown setting */
-#define VEML6030_CONF_SHUTDOWN   0x01
+#define VEML6030_CONF_SHUTDOWN   0x01U
 
 /* Register 0x3: POWER SAVING */
 /* Power saving modes */
@@ -94,8 +94,8 @@ typedef struct
   * Bit Group Name: None
   * Permission    : W
   *******************************************************************************/
-int32_t veml6030_write_reg(veml6030_ctx_t *ctx, uint16_t reg, uint16_t *pdata, uint16_t length);
-int32_t veml6030_read_reg(veml6030_ctx_t *ctx, uint16_t reg, uint16_t *pdata, uint16_t length);
+int32_t veml6030_write_reg(const veml6030_ctx_t *ctx, uint16_t reg, const uint16_t *pdata, uint16_t length);
+int32_t veml6030_read_reg(const veml6030_ctx_t *ctx, uint16_t reg, uint16_t *pdata, uint16_t length);
 
 
 

@@ -21,8 +21,12 @@
 #define MSG_H
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <inttypes.h>
+
 
 #define MSG_LOCK()
 #define MSG_UNLOCK()
@@ -50,13 +54,14 @@
   * Macro to expose function, line number as well as desired log message.
   */
 #ifdef MSG_DEBUG_ON
-#define MSG_DEBUG(...)                                \
-  {                                                   \
-    MSG_LOCK();                                       \
-    printf("DEBUG:   %s L#%d ", __func__, __LINE__);  \
-    printf(__VA_ARGS__);                              \
-    MSG_UNLOCK();                                     \
-  }
+#define MSG_DEBUG(...)                                                   \
+do                                                                       \
+{                                                                        \
+    MSG_LOCK();                                                          \
+    printf("DEBUG:   %s L#%4" PRIu32 " ", __func__, (uint32_t)__LINE__); \
+    printf(__VA_ARGS__);                                                 \
+    MSG_UNLOCK();                                                        \
+} while(0) /*;*/
 #else
 #define MSG_DEBUG(...)
 #endif /* MSG_DEBUG_ON */
@@ -69,11 +74,12 @@
   */
 #ifdef MSG_INFO_ON
 #define MSG_INFO(...)    \
-  {                      \
+do                       \
+{                        \
     MSG_LOCK();          \
     printf(__VA_ARGS__); \
     MSG_UNLOCK();        \
-  }
+} while(0) /*;*/
 #else
 #define MSG_INFO(...)
 #endif /* MSG_INFO_ON */
@@ -85,12 +91,13 @@
   */
 #ifdef MSG_WARNING_ON
 #define MSG_WARNING(...)                            \
-  {                                                 \
+do                                                  \
+{                                                   \
     MSG_LOCK();                                     \
     printf("WARN:  %s L#%d ", __func__, __LINE__);  \
     printf(__VA_ARGS__);                            \
     MSG_UNLOCK();                                   \
-  }
+} while(0) /*;*/
 #else
 #define MSG_WARNING(...)
 #endif /* MSG_WARNING_ON */
@@ -102,12 +109,13 @@
   */
 #ifdef MSG_ERROR_ON
 #define MSG_ERROR(...)                             \
-  {                                                \
+do                                                 \
+{                                                  \
     MSG_LOCK();                                    \
     printf("ERROR: %s L#%d ", __func__, __LINE__); \
     printf(__VA_ARGS__);                           \
     MSG_UNLOCK();                                  \
-  }
+} while(0) /*;*/
 #else
 #define MSG_ERROR(...)
 #endif /* MSG_WARNING_ON */

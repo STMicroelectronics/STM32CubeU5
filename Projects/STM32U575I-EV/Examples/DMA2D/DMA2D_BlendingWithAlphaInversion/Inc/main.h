@@ -57,6 +57,7 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+
 /* USER CODE BEGIN Private defines */
 #define LCD_FRAME_BUFFER      0x20030000
 #define FMC_ADDRESS           FMC_BANK1_4

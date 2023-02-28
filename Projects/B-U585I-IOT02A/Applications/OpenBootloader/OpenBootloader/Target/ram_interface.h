@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -22,19 +22,19 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+/* Exported functions --------------------------------------------------------*/
 void OPENBL_RAM_JumpToAddress(uint32_t Address);
 uint8_t OPENBL_RAM_Read(uint32_t Address);
-void OPENBL_RAM_Write(uint32_t Address, uint8_t *Data, uint32_t DataLength);
+void OPENBL_RAM_Write(uint32_t Address, uint8_t *pData, uint32_t DataLength);
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* RAM_INTERFACE_H */

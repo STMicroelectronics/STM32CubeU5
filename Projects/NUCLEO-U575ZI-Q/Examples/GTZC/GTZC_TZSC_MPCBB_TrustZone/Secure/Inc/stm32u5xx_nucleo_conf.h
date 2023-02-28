@@ -15,13 +15,13 @@
   *
   ******************************************************************************
   */
-  
+
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32U5XX_NUCLEO_CONF_H
 #define STM32U5XX_NUCLEO_CONF_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -30,18 +30,18 @@
 /** @addtogroup BSP
   * @{
   */
-  
+
 /** @addtogroup STM32U5XX_NUCLEO
   * @{
   */
 
 /** @defgroup STM32U5XX_NUCLEO_CONFIG Config
   * @{
-  */ 
-  
+  */
+
 /** @defgroup STM32U5XX_NUCLEO_CONFIG_Exported_Constants Exported Constants
   * @{
-  */ 
+  */
 /* Nucleo pin and part number defines */
 #define USE_NUCLEO_144
 #define USE_NUCLEO_U575ZI_Q
@@ -60,17 +60,17 @@
 /**
   * @}
   */
-  
+
 /**
   * @}
   */
-  
+
 /**
   * @}
   */
-   
+
 #ifdef __cplusplus
 }
 #endif
-  
+
 #endif /* STM32U5XX_NUCLEO_CONF_H */

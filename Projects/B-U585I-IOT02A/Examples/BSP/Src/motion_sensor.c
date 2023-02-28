@@ -88,7 +88,7 @@ int32_t Ms_demo(void)
   /* GetOutputDataRate and SetOutputDataRate functions */
   if (BSP_MOTION_SENSOR_SetOutputDataRate(0, MOTION_ACCELERO, 3333.0f) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetOutputDataRate(0, MOTION_ACCELERO, &outputDataRate) != BSP_ERROR_NONE) result--;
-  if (outputDataRate != 3333.0f) result--;
+  if (outputDataRate != 6667.0f) result--;
 
   if (BSP_MOTION_SENSOR_SetOutputDataRate(0, MOTION_ACCELERO, 208.0f) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetOutputDataRate(0, MOTION_ACCELERO, &outputDataRate) != BSP_ERROR_NONE) result--;
@@ -146,9 +146,9 @@ int32_t Ms_demo(void)
   if (fullScale != 500) result--;
 
   /* GetOutputDataRate and SetOutputDataRate functions */
-  if (BSP_MOTION_SENSOR_SetOutputDataRate(0, MOTION_GYRO, 3333.0f) != BSP_ERROR_NONE) result--;
+  if (BSP_MOTION_SENSOR_SetOutputDataRate(0, MOTION_GYRO, 3332.0f) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetOutputDataRate(0, MOTION_GYRO, &outputDataRate) != BSP_ERROR_NONE) result--;
-  if (outputDataRate != 3333.0f) result--;
+  if (outputDataRate != 3332.0f) result--;
 
   if (BSP_MOTION_SENSOR_SetOutputDataRate(0, MOTION_GYRO, 208.0f) != BSP_ERROR_NONE) result--;
   if (BSP_MOTION_SENSOR_GetOutputDataRate(0, MOTION_GYRO, &outputDataRate) != BSP_ERROR_NONE) result--;

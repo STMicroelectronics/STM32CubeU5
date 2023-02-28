@@ -208,6 +208,10 @@ boot_save_boot_status(uint8_t sw_module,
      * part of the boot record TLV). For this reason this field has been
      * filled with zeros during the image signing process.
      */
+    if (record_len < sizeof(image_hash)) {
+        return -1;
+    }
+
     offset = record_len - sizeof(image_hash);
     /* The size of 'buf' has already been checked when
      * the BOOT_RECORD TLV was read, it won't overflow.

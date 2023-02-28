@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -22,19 +22,19 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 /* Includes ------------------------------------------------------------------*/
 #include "openbl_mem.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
-#define SPECIAL_CMD_MAX_NUMBER            0x01U  /* Special command command max length array */
-#define EXTENDED_SPECIAL_CMD_MAX_NUMBER   0x01U  /* Extended special command max length array */
+#define SPECIAL_CMD_MAX_NUMBER            0x01U    /* Special command command max length array */
+#define EXTENDED_SPECIAL_CMD_MAX_NUMBER   0x01U    /* Extended special command max length array */
 #define SPECIAL_CMD_DEFAULT               0x0102U  /* Default special command */
 
 /* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+/* Exported functions --------------------------------------------------------*/
 void OpenBootloader_Init(void);
 void OpenBootloader_DeInit(void);
 void OpenBootloader_ProtocolDetection(void);
@@ -52,6 +52,6 @@ extern uint16_t ExtendedSpecialCmdList[EXTENDED_SPECIAL_CMD_MAX_NUMBER];
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* APP_OPENBOOTLOADER_H */

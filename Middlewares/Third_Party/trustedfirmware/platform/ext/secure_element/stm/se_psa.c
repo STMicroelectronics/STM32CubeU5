@@ -529,7 +529,7 @@ static psa_status_t psa_se_st_export_public_fct(psa_drv_se_context_t *drv_contex
                                                 size_t data_size,
                                                 size_t *p_data_length)
 {
-  uint32_t key_size = 0;
+  size_t key_size = 0;
   SE_Slot_t slot;
   SE_Key_Type_t type;
   int32_t ret;

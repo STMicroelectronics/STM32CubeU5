@@ -23,7 +23,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
+#include "main.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,15 +33,12 @@
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
+/* Main thread stack size */
+#define FX_APP_THREAD_STACK_SIZE         (1024*2)
+/* Main thread priority */
+#define FX_APP_THREAD_PRIO               10
 /* USER CODE BEGIN PD */
-#define DEFAULT_STACK_SIZE               (2 * 1024)
-/* Thread_0 priority */
-#define DEFAULT_THREAD_PRIO              10
-/* Thread_0 preemption priority */
-#define DEFAULT_PREEMPTION_THRESHOLD     DEFAULT_THREAD_PRIO
 
-/* fx media buffer of size equals a one sector */
-#define DEFAULT_MEDIA_BUF_LENGTH         512
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -49,73 +47,91 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-/* USER CODE BEGIN PV */
+/* Main thread global data structures.  */
+TX_THREAD       fx_app_thread;
+
 /* Buffer for FileX FX_MEDIA sector cache. */
-ULONG media_memory[DEFAULT_MEDIA_BUF_LENGTH/sizeof(ULONG)];
+ALIGN_32BYTES (uint32_t fx_nor_ospi_media_memory[FX_NOR_OSPI_SECTOR_SIZE / sizeof(uint32_t)]);
 /* Define FileX global data structures.  */
-FX_MEDIA        nor_flash_disk;
+FX_MEDIA        nor_ospi_flash_disk;
+
+/* USER CODE BEGIN PV */
+/* Define FileX global data structures.  */
 FX_FILE         fx_file;
-/* Define ThreadX global data structures.  */
-TX_THREAD       fx_thread;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
+
+/* Main thread entry function.  */
+void fx_app_thread_entry(ULONG thread_input);
+
 /* USER CODE BEGIN PFP */
-void fx_thread_entry(ULONG thread_input);
-void Error_Handler(void);
+static VOID fx_media_close_notify_set_callback(FX_MEDIA*);
 /* USER CODE END PFP */
 
 /**
   * @brief  Application FileX Initialization.
   * @param memory_ptr: memory pointer
   * @retval int
-  */
+*/
 UINT MX_FileX_Init(VOID *memory_ptr)
 {
   UINT ret = FX_SUCCESS;
   TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
+  VOID *pointer;
 
-  /* USER CODE BEGIN App_FileX_MEM_POOL */
-  (void)byte_pool;
-  /* USER CODE END App_FileX_MEM_POOL */
+/* USER CODE BEGIN MX_FileX_MEM_POOL */
 
-  /* USER CODE BEGIN MX_FileX_Init */
+/* USER CODE END MX_FileX_MEM_POOL */
 
-  CHAR *pointer;
+/* USER CODE BEGIN 0 */
 
-  ret = tx_byte_allocate(byte_pool, (VOID **) &pointer, DEFAULT_STACK_SIZE, TX_NO_WAIT);
+/* USER CODE END 0 */
 
-  /* Check DEFAULT_STACK_SIZE allocation*/
+/*Allocate memory for the main thread's stack*/
+  ret = tx_byte_allocate(byte_pool, &pointer, FX_APP_THREAD_STACK_SIZE, TX_NO_WAIT);
+
+/* Check FX_APP_THREAD_STACK_SIZE allocation*/
   if (ret != FX_SUCCESS)
   {
-    /* Failed at allocating memory */
-    Error_Handler();
+    return TX_POOL_ERROR;
   }
 
-  /* Create the main thread.  */
-  ret = tx_thread_create(&fx_thread, "thread 0", fx_thread_entry, 0, pointer, DEFAULT_STACK_SIZE,
-                          DEFAULT_THREAD_PRIO, DEFAULT_PREEMPTION_THRESHOLD, TX_NO_TIME_SLICE, TX_AUTO_START);
+/* Create the main thread.  */
+  ret = tx_thread_create(&fx_app_thread, FX_APP_THREAD_NAME, fx_app_thread_entry, 0, pointer, FX_APP_THREAD_STACK_SIZE,
+                         FX_APP_THREAD_PRIO, FX_APP_PREEMPTION_THRESHOLD, FX_APP_THREAD_TIME_SLICE, FX_APP_THREAD_AUTO_START);
 
-  /* Check main thread creation */
+/* Check main thread creation */
   if (ret != FX_SUCCESS)
   {
-    /* Failed at allocating memory */
-    Error_Handler();
+    return TX_THREAD_ERROR;
   }
 
-  /* Initialize FileX.  */
+/* USER CODE BEGIN MX_FileX_Init */
+
+/* USER CODE END MX_FileX_Init */
+
+/* Initialize FileX.  */
   fx_system_initialize();
 
-  /* USER CODE END MX_FileX_Init */
+/* USER CODE BEGIN MX_FileX_Init 1*/
+
+/* USER CODE END MX_FileX_Init 1*/
 
   return ret;
 }
 
-/* USER CODE BEGIN 1 */
-void fx_thread_entry(ULONG thread_input)
-{
+/**
+ * @brief  Main thread entry.
+ * @param thread_input: ULONG user argument used by the thread entry
+ * @retval none
+*/
+ void fx_app_thread_entry(ULONG thread_input)
+ {
 
-  UINT status;
+  UINT nor_ospi_status = FX_SUCCESS;
+
+/* USER CODE BEGIN fx_app_thread_entry 0*/
   ULONG bytes_read;
   ULONG available_space_pre;
   ULONG available_space_post;
@@ -126,58 +142,72 @@ void fx_thread_entry(ULONG thread_input)
 
   /* Print the absolute size of the NOR chip*/
   printf("Total NOR Flash Chip size is: %lu bytes.\n",(ULONG)LX_STM32_OSPI_FLASH_SIZE);
+/* USER CODE END fx_app_thread_entry 0*/
 
-  /* Format the NOR flash as FAT */
-  status =  fx_media_format(&nor_flash_disk,
-                            fx_stm32_levelx_nor_driver,   // Driver entry
-                            (VOID*)LX_NOR_OSPI_DRIVER_ID,    // Device info pointer
-                            (UCHAR *) media_memory,       // Media buffer pointer
-                            DEFAULT_MEDIA_BUF_LENGTH,     // Media buffer size
-                            "NOR_FLASH_DISK",             // Volume Name
-                            1,                            // Number of FATs
-                            32,                           // Directory Entries
-                            0,                            // Hidden sectors
-                            LX_STM32_OSPI_FLASH_SIZE / 512,    // Total sectors
-                            512,                          // Sector size
-                            8,                            // Sectors per cluster
-                            1,                            // Heads
-                            1);                           // Sectors per track
+/* Format the OCTO-SPI NOR flash as FAT */
+  nor_ospi_status =  fx_media_format(&nor_ospi_flash_disk,                               // nor_ospi_flash_disk pointer
+                                     fx_stm32_levelx_nor_driver,                         // Driver entry
+                                     (VOID *)LX_NOR_OSPI_DRIVER_ID,                      // Device info pointer
+                                     (UCHAR *) fx_nor_ospi_media_memory,                 // Media buffer pointer
+                                     sizeof(fx_nor_ospi_media_memory),                   // Media buffer size
+                                     FX_NOR_OSPI_VOLUME_NAME,                            // Volume Name
+                                     FX_NOR_OSPI_NUMBER_OF_FATS,                         // Number of FATs
+                                     32,                                                 // Directory Entries
+                                     FX_NOR_OSPI_HIDDEN_SECTORS,                         // Hidden sectors
+                                     LX_STM32_OSPI_FLASH_SIZE / FX_NOR_OSPI_SECTOR_SIZE, // Total sectors
+                                     FX_NOR_OSPI_SECTOR_SIZE,                            // Sector size
+                                     8,                                                  // Sectors per cluster
+                                     1,                                                  // Heads
+                                     1);                                                 // Sectors per track
 
-  /* Check if the format status */
-  if (status != FX_SUCCESS)
+/* Check the format nor_ospi_status */
+  if (nor_ospi_status != FX_SUCCESS)
+  {
+    /* USER CODE BEGIN OCTO-SPI NOR format error */
+      Error_Handler();
+    /* USER CODE END OCTO-SPI NOR format error */
+  }
+
+  /* Open the OCTO-SPI NOR driver */
+ nor_ospi_status =  fx_media_open(&nor_ospi_flash_disk, FX_NOR_OSPI_VOLUME_NAME, fx_stm32_levelx_nor_driver, (VOID *)LX_NOR_OSPI_DRIVER_ID, (VOID *) fx_nor_ospi_media_memory, sizeof(fx_nor_ospi_media_memory));
+
+/* Check the media open nor_ospi_status */
+  if (nor_ospi_status != FX_SUCCESS)
+  {
+    /* USER CODE BEGIN OCTO-SPI NOR open error */
+      Error_Handler();
+    /* USER CODE END OCTO-SPI NOR open error */
+  }
+
+/* USER CODE BEGIN fx_app_thread_entry 1*/
+  nor_ospi_status = fx_media_close_notify_set(&nor_ospi_flash_disk,fx_media_close_notify_set_callback);
+
+  /* Check the media close notification callback set.  */
+  if (nor_ospi_status != FX_SUCCESS)
   {
     Error_Handler();
   }
 
-  /* Open the OCTO-SPI NOR Flash disk driver.  */
-  status =  fx_media_open(&nor_flash_disk, "FX_LX_NOR_DISK", fx_stm32_levelx_nor_driver,(VOID*)LX_NOR_OSPI_DRIVER_ID , (VOID *) media_memory, DEFAULT_MEDIA_BUF_LENGTH);
-
-  /* Check the media open status.  */
-  if (status != FX_SUCCESS)
-  {
-    Error_Handler();
-  }
-
-  /* Get the available usable space */
-  status =  fx_media_space_available(&nor_flash_disk, &available_space_pre);
-
-  /* Check the get available state request status.  */
-  if (status != FX_SUCCESS)
-  {
-    Error_Handler();
-  }
+ /* Get the available usable space */
+  nor_ospi_status =  fx_media_space_available(&nor_ospi_flash_disk, &available_space_pre);
 
   printf("User available NOR Flash disk space size before file is written: %lu bytes.\n", available_space_pre);
 
-  /* Create a file called STM32.TXT in the root directory.  */
-  status =  fx_file_create(&nor_flash_disk, "STM32.TXT");
-
-  /* Check the create status.  */
-  if (status != FX_SUCCESS)
+  /* Check the get available state request nor_ospi_status.  */
+  if (nor_ospi_status != FX_SUCCESS)
   {
-    /* Check for an already created status. This is expected on the
+    Error_Handler();
+  }
+
+  /* Create a file called STM32.TXT in the root directory.  */
+  nor_ospi_status =  fx_file_create(&nor_ospi_flash_disk, "STM32.TXT");
+
+  /* Check the create nor_ospi_status.  */
+  if (nor_ospi_status != FX_SUCCESS)
+  {
+    /* Check for an already created nor_ospi_status. This is expected on the
     second pass of this loop!  */
-    if (status != FX_ALREADY_CREATED)
+    if (nor_ospi_status != FX_ALREADY_CREATED)
     {
       /* Create error, call error handler.  */
       Error_Handler();
@@ -185,113 +215,113 @@ void fx_thread_entry(ULONG thread_input)
   }
 
   /* Open the test file.  */
-  status =  fx_file_open(&nor_flash_disk, &fx_file, "STM32.TXT", FX_OPEN_FOR_WRITE);
+  nor_ospi_status =  fx_file_open(&nor_ospi_flash_disk, &fx_file, "STM32.TXT", FX_OPEN_FOR_WRITE);
 
-  /* Check the file open status.  */
-  if (status != FX_SUCCESS)
+  /* Check the file open nor_ospi_status.  */
+  if (nor_ospi_status != FX_SUCCESS)
   {
     /* Error opening file, call error handler.  */
     Error_Handler();
   }
 
   /* Seek to the beginning of the test file.  */
-  status =  fx_file_seek(&fx_file, 0);
+  nor_ospi_status =  fx_file_seek(&fx_file, 0);
 
-  /* Check the file seek status.  */
-  if (status != FX_SUCCESS)
+  /* Check the file seek nor_ospi_status.  */
+  if (nor_ospi_status != FX_SUCCESS)
   {
     /* Error performing file seek, call error handler.  */
     Error_Handler();
   }
 
   /* Write a string to the test file.  */
-  status =  fx_file_write(&fx_file, data, sizeof(data));
+  nor_ospi_status =  fx_file_write(&fx_file, data, sizeof(data));
 
-  /* Check the file write status.  */
-  if (status != FX_SUCCESS)
+  /* Check the file write nor_ospi_status.  */
+  if (nor_ospi_status != FX_SUCCESS)
   {
     /* Error writing to a file, call error handler.  */
     Error_Handler();
   }
 
   /* Close the test file.  */
-  status =  fx_file_close(&fx_file);
+  nor_ospi_status =  fx_file_close(&fx_file);
 
-  /* Check the file close status.  */
-  if (status != FX_SUCCESS)
+  /* Check the file close nor_ospi_status.  */
+  if (nor_ospi_status != FX_SUCCESS)
   {
     /* Error closing the file, call error handler.  */
     Error_Handler();
   }
 
-  status = fx_media_flush(&nor_flash_disk);
+  nor_ospi_status = fx_media_flush(&nor_ospi_flash_disk);
 
-  /* Check the media flush  status.  */
-  if (status != FX_SUCCESS)
+  /* Check the media flush  nor_ospi_status.  */
+  if (nor_ospi_status != FX_SUCCESS)
   {
     /* Error closing the file, call error handler.  */
     Error_Handler();
   }
 
    /* Open the test file.  */
-  status =  fx_file_open(&nor_flash_disk, &fx_file, "STM32.TXT", FX_OPEN_FOR_READ);
+  nor_ospi_status =  fx_file_open(&nor_ospi_flash_disk, &fx_file, "STM32.TXT", FX_OPEN_FOR_READ);
 
-  /* Check the file open status.  */
-  if (status != FX_SUCCESS)
+  /* Check the file open nor_ospi_status.  */
+  if (nor_ospi_status != FX_SUCCESS)
   {
     /* Error opening file, call error handler.  */
     Error_Handler();
   }
 
   /* Seek to the beginning of the test file.  */
-  status =  fx_file_seek(&fx_file, 0);
+  nor_ospi_status =  fx_file_seek(&fx_file, 0);
 
-  /* Check the file seek status.  */
-  if (status != FX_SUCCESS)
+  /* Check the file seek nor_ospi_status.  */
+  if (nor_ospi_status != FX_SUCCESS)
   {
     /* Error performing file seek, call error handler.  */
     Error_Handler();
   }
 
   /* Read the first 28 bytes of the test file.  */
-  status =  fx_file_read(&fx_file, read_buffer, sizeof(data), &bytes_read);
+  nor_ospi_status =  fx_file_read(&fx_file, read_buffer, sizeof(data), &bytes_read);
 
-  /* Check the file read status.  */
-  if ((status != FX_SUCCESS) || (bytes_read != sizeof(data)))
+  /* Check the file read nor_ospi_status.  */
+  if ((nor_ospi_status != FX_SUCCESS) || (bytes_read != sizeof(data)))
   {
     /* Error reading file, call error handler.  */
     Error_Handler();
    }
 
   /* Close the test file.  */
-  status =  fx_file_close(&fx_file);
+  nor_ospi_status =  fx_file_close(&fx_file);
 
-  /* Check the file close status.  */
-  if (status != FX_SUCCESS)
+  /* Check the file close nor_ospi_status.  */
+  if (nor_ospi_status != FX_SUCCESS)
   {
     /* Error closing the file, call error handler.  */
     Error_Handler();
   }
 
   /* Get the available usable space, after the file has been created */
-  status =  fx_media_space_available(&nor_flash_disk, &available_space_post);
+  nor_ospi_status =  fx_media_space_available(&nor_ospi_flash_disk, &available_space_post);
 
-  /* Check the get available state request status.  */
-  if (status != FX_SUCCESS)
+  printf("User available NOR Flash disk space size after file is written: %lu bytes.\n", available_space_post);
+  printf("The test file occupied a total of %lu cluster(s) (%u per cluster).\n",
+         (available_space_pre - available_space_post) / (nor_ospi_flash_disk.fx_media_bytes_per_sector * nor_ospi_flash_disk.fx_media_sectors_per_cluster),
+         nor_ospi_flash_disk.fx_media_bytes_per_sector * nor_ospi_flash_disk.fx_media_sectors_per_cluster);
+
+  /* Check the get available state request nor_ospi_status.  */
+  if (nor_ospi_status != FX_SUCCESS)
   {
     Error_Handler();
   }
 
-  printf("User available NOR Flash disk space size after file is written: %lu bytes.\n", available_space_post);
-  printf("The test file occupied a total of %lu cluster(s) (%u per cluster).\n",
-         (available_space_pre - available_space_post) / (nor_flash_disk.fx_media_bytes_per_sector * nor_flash_disk.fx_media_sectors_per_cluster),
-         nor_flash_disk.fx_media_bytes_per_sector * nor_flash_disk.fx_media_sectors_per_cluster);
-
   /* Close the media.  */
-  status =  fx_media_close(&nor_flash_disk);
+  nor_ospi_status =  fx_media_close(&nor_ospi_flash_disk);
 
-  /* Check the media close status.  */
-  if (status != FX_SUCCESS)
+  /* Check the media close nor_ospi_status.  */
+  if (nor_ospi_status != FX_SUCCESS)
   {
     /* Error closing the media, call error handler.  */
     Error_Handler();
@@ -302,6 +332,19 @@ void fx_thread_entry(ULONG thread_input)
       HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
       tx_thread_sleep(TX_TIMER_TICKS_PER_SECOND / 2);
   }
+/* USER CODE END fx_app_thread_entry 1*/
+  }
 
+/* USER CODE BEGIN 1 */
+/**
+* @brief  media close notification callback
+* @param  fx_media : FX_MEDIA instance registered for this callback
+* @retval None
+*/
+static VOID fx_media_close_notify_set_callback(FX_MEDIA* fx_media)
+{
+  /* USER CODE BEGIN MEDIA_CLOSE_NOTIF_CALLBACK */
+  lx_stm32_ospi_lowlevel_deinit(LX_STM32_OSPI_INSTANCE);
+  /* USER CODE END MEDIA_CLOSE_NOTIF_CALLBACK */
 }
 /* USER CODE END 1 */

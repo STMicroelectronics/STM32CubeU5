@@ -54,10 +54,10 @@ int16_t RecBuff[REC_BUFF_SIZE * 2U];
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void SystemPower_Config(void);
-static void MX_ICACHE_Init(void);
 static void MX_GPIO_Init(void);
-static void MX_ADF1_Init(void);
 static void MX_LPDMA1_Init(void);
+static void MX_ADF1_Init(void);
+static void MX_ICACHE_Init(void);
 /* USER CODE BEGIN PFP */
 static void MDF_DMAConfig(void);
 static void EnterLowPowerMode(void);
@@ -103,19 +103,16 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_ICACHE_Init();
   MX_GPIO_Init();
-  MX_ADF1_Init();
   MX_LPDMA1_Init();
+  MX_ADF1_Init();
+  MX_ICACHE_Init();
   /* USER CODE BEGIN 2 */
   BSP_LED_Init(LED_GREEN);
   BSP_LED_Init(LED_RED);
   MX_MDFQueue_Config();
 
-  /* Set queue circular mode for sai queue */
-  HAL_DMAEx_List_SetCircularMode(&MDFQueue);
-
-    /* Link SAI queue to DMA channel */
+  /* Link SAI queue to DMA channel */
   HAL_DMAEx_List_LinkQ(&handle_LPDMA1_Channel0, &MDFQueue);
 
   /* Associate the DMA handle */
@@ -160,7 +157,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI|RCC_OSCILLATORTYPE_MSIK;
   RCC_OscInitStruct.MSIState = RCC_MSI_ON;
@@ -183,7 +180,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
@@ -219,6 +216,8 @@ static void SystemPower_Config(void)
   {
     Error_Handler();
   }
+/* USER CODE BEGIN PWR */
+/* USER CODE END PWR */
 }
 
 /**
@@ -370,10 +369,14 @@ static void MX_LPDMA1_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOE_CLK_ENABLE();
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

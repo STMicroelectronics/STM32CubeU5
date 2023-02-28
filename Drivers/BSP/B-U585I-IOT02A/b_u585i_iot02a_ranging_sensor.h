@@ -154,7 +154,7 @@ int32_t BSP_RANGING_SENSOR_ReadID(uint32_t Instance, uint32_t *pId);
 int32_t BSP_RANGING_SENSOR_GetCapabilities(uint32_t Instance, RANGING_SENSOR_Capabilities_t *pCapabilities);
 int32_t BSP_RANGING_SENSOR_ConfigProfile(uint32_t Instance, RANGING_SENSOR_ProfileConfig_t *pConfig);
 int32_t BSP_RANGING_SENSOR_ConfigROI(uint32_t Instance, RANGING_SENSOR_ROIConfig_t *pConfig);
-int32_t BSP_RANGING_SENSOR_ConfigIT(uint32_t Instance, RANGING_SENSOR_ITConfig_t *pConfig);
+int32_t BSP_RANGING_SENSOR_ConfigIT(const uint32_t Instance, RANGING_SENSOR_ITConfig_t *pConfig);
 int32_t BSP_RANGING_SENSOR_GetDistance(uint32_t Instance, RANGING_SENSOR_Result_t *pResult);
 int32_t BSP_RANGING_SENSOR_Start(uint32_t Instance, uint32_t Mode);
 int32_t BSP_RANGING_SENSOR_Stop(uint32_t Instance);

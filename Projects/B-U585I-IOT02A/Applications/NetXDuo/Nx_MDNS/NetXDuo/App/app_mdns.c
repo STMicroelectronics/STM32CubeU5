@@ -20,10 +20,9 @@
 #include "msg.h"
 #include "app_netxduo.h"
 
-extern NX_MDNS MdnsInstance;
-NX_MDNS_SERVICE service_instance;
+static NX_MDNS_SERVICE ServiceInstance;
 
-ULONG error_counter = 0;
+static ULONG ErrorCounter = 0;
 
 VOID probing_notify(struct NX_MDNS_STRUCT *mdns_ptr, UCHAR *name, UINT state)
 {
@@ -155,7 +154,7 @@ VOID service_change_notify(NX_MDNS *mdns_ptr, NX_MDNS_SERVICE *service_ptr, UINT
   }
 }
 
-void register_local_service(UCHAR *instance, UCHAR *type, UCHAR *subtype, UCHAR *txt, UINT ttl,
+VOID register_local_service(UCHAR *instance, UCHAR *type, UCHAR *subtype, UCHAR *txt, UINT ttl,
                             USHORT priority, USHORT weight, USHORT port, UCHAR is_unique)
 {
   UINT status = NX_MDNS_SUCCESS;
@@ -171,7 +170,7 @@ void register_local_service(UCHAR *instance, UCHAR *type, UCHAR *subtype, UCHAR 
            (status == NX_MDNS_SUCCESS) ? "Pass" : (status == NX_MDNS_PARAM_ERROR) ? "Pass" : "Fail");
 }
 
-void delete_local_service(UCHAR *instance, UCHAR *type, UCHAR *subtype)
+VOID delete_local_service(UCHAR *instance, UCHAR *type, UCHAR *subtype)
 {
   UINT status = NX_MDNS_SUCCESS;
 
@@ -184,7 +183,7 @@ void delete_local_service(UCHAR *instance, UCHAR *type, UCHAR *subtype)
            (status == NX_MDNS_SUCCESS) ? "Pass" : (status == NX_PTR_ERROR) ? "Pass" : "Fail");
 }
 
-void delete_all_services(UCHAR *instance, UCHAR *type, UCHAR *subtype)
+VOID delete_all_services(UCHAR *instance, UCHAR *type, UCHAR *subtype)
 {
   UINT status = NX_MDNS_SUCCESS;
   UINT service_index = 0;
@@ -192,18 +191,18 @@ void delete_all_services(UCHAR *instance, UCHAR *type, UCHAR *subtype)
 
   while (1)
   {
-    status = nx_mdns_service_lookup(&MdnsInstance, instance, type, subtype,  service_index, &service_instance);
+    status = nx_mdns_service_lookup(&MdnsInstance, instance, type, subtype,  service_index, &ServiceInstance);
 
     if (status == NX_MDNS_SUCCESS)
     {
-      if (service_instance.service_name)
+      if (ServiceInstance.service_name)
       {
-        MSG_DEBUG("instance: %s\n", service_instance.service_name);
+        MSG_DEBUG("instance: %s\n", ServiceInstance.service_name);
       }
 
-      if (service_instance.service_type)
+      if (ServiceInstance.service_type)
       {
-        MSG_DEBUG("type    :%s\n", service_instance.service_type);
+        MSG_DEBUG("type    :%s\n", ServiceInstance.service_type);
       }
 
       if (subtype)
@@ -212,7 +211,7 @@ void delete_all_services(UCHAR *instance, UCHAR *type, UCHAR *subtype)
       }
 
       status = nx_mdns_service_delete(&MdnsInstance,
-                                      service_instance.service_name, service_instance.service_type, subtype);
+                                      ServiceInstance.service_name, ServiceInstance.service_type, subtype);
 
       if (status)
       {
@@ -239,7 +238,7 @@ void delete_all_services(UCHAR *instance, UCHAR *type, UCHAR *subtype)
   status = nx_mdns_service_query_stop(&MdnsInstance, instance, type, subtype);
 }
 
-void perform_oneshot_query(UCHAR *instance, UCHAR *type, UCHAR *subtype, UINT timeout)
+VOID perform_oneshot_query(UCHAR *instance, UCHAR *type, UCHAR *subtype, UINT timeout)
 {
   UINT status = NX_MDNS_SUCCESS;
 
@@ -262,25 +261,25 @@ void perform_oneshot_query(UCHAR *instance, UCHAR *type, UCHAR *subtype, UINT ti
 
   MSG_DEBUG("timeout %d ticks\n", timeout);
 
-  status = nx_mdns_service_one_shot_query(&MdnsInstance, instance, type, subtype, &service_instance, timeout);
+  status = nx_mdns_service_one_shot_query(&MdnsInstance, instance, type, subtype, &ServiceInstance, timeout);
 
   if (status == NX_MDNS_SUCCESS)
   {
     MSG_INFO("Service Get:\n");
-    MSG_INFO("Name: %s\n", service_instance.service_name);
-    MSG_INFO("Type: %s\n", service_instance.service_type);
-    MSG_INFO("Domain: %s\n", service_instance.service_domain);
-    MSG_INFO("TXT Info: %s\n", service_instance.service_text);
-    MSG_INFO("Priority: %d\n", service_instance.service_priority);
-    MSG_INFO("Weight: %d\n", service_instance.service_weight);
-    MSG_INFO("Port: %d\n", service_instance.service_port);
-    MSG_INFO("Target Host: %s\n", service_instance.service_host);
+    MSG_INFO("Name: %s\n", ServiceInstance.service_name);
+    MSG_INFO("Type: %s\n", ServiceInstance.service_type);
+    MSG_INFO("Domain: %s\n", ServiceInstance.service_domain);
+    MSG_INFO("TXT Info: %s\n", ServiceInstance.service_text);
+    MSG_INFO("Priority: %d\n", ServiceInstance.service_priority);
+    MSG_INFO("Weight: %d\n", ServiceInstance.service_weight);
+    MSG_INFO("Port: %d\n", ServiceInstance.service_port);
+    MSG_INFO("Target Host: %s\n", ServiceInstance.service_host);
     MSG_INFO("IPv4 Address: %lu.%lu.%lu.%lu\n",
-             service_instance.service_ipv4 >> 24,
-             service_instance.service_ipv4 >> 16 & 0xFF,
-             service_instance.service_ipv4 >> 8 & 0xFF,
-             service_instance.service_ipv4 & 0xFF);
-    MSG_INFO("Interface: %d\n\n\n", service_instance.interface_index);
+             ServiceInstance.service_ipv4 >> 24,
+             ServiceInstance.service_ipv4 >> 16 & 0xFF,
+             ServiceInstance.service_ipv4 >> 8 & 0xFF,
+             ServiceInstance.service_ipv4 & 0xFF);
+    MSG_INFO("Interface: %d\n\n\n", ServiceInstance.interface_index);
   }
   else
   {
@@ -288,7 +287,7 @@ void perform_oneshot_query(UCHAR *instance, UCHAR *type, UCHAR *subtype, UINT ti
   }
 }
 
-void start_continous_query(UCHAR *instance, UCHAR *type, UCHAR *subtype)
+VOID start_continous_query(UCHAR *instance, UCHAR *type, UCHAR *subtype)
 {
   UINT status;
 
@@ -315,7 +314,7 @@ void start_continous_query(UCHAR *instance, UCHAR *type, UCHAR *subtype)
   if (status)
   {
     MSG_INFO("\nfailed\n");
-    error_counter++;
+    ErrorCounter++;
   }
   else
   {

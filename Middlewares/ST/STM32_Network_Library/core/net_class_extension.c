@@ -22,6 +22,9 @@
 
 #define MATCH(a,b) ((a) & (b) == (b))
 
+/*static*/ const char *NO_NETWORK_INTERFACE_DEFINED = "No network interface defined\n";
+
+
 net_interface_class_t net_wifi_get_class(net_if_handle_t *pnetif)
 {
   return pnetif->pdrv->if_class;
@@ -29,16 +32,16 @@ net_interface_class_t net_wifi_get_class(net_if_handle_t *pnetif)
 
 
 /**
-  * @brief  Convert wifi security enum value to string
+  * @brief  Convert WiFi security enumerated value to string
   * @param  sec is an unsigned integer
-  * @retval a constant string , for instance "Open" or "WPA2-AES"
+  * @retval a constant string, for instance "Open" or "WPA2-AES"
   */
 const char_t *net_wifi_security_to_string(uint32_t sec)
 {
   const char_t *s;
   if (sec == NET_WIFI_SM_OPEN)
   {
-    s =  "Open";
+    s = "Open";
   }
   else if (sec == NET_WIFI_SM_WEP_SHARED)
   {
@@ -122,7 +125,7 @@ const char_t *net_wifi_security_to_string(uint32_t sec)
 }
 
 /**
-  * @brief  Convert a string to a security enum value
+  * @brief  Convert a string to a security enumerated value
   * @param  sec is a pointer to a string
   */
 uint32_t net_wifi_string_to_security(char *sec)
@@ -168,7 +171,6 @@ uint32_t net_wifi_string_to_security(char *sec)
   {
     ret = NET_WIFI_SM_WPA3_WPA2_PSK;
   }
-
   if (strcmp(sec, "WPA-TKIP-Ent") == 0)
   {
     ret = NET_WIFI_SM_WPA_TKIP_ENT;
@@ -210,33 +212,31 @@ uint32_t net_wifi_string_to_security(char *sec)
 }
 
 /**
-  * @brief  start a wifi scan operation
-  * @param  pnetif_in is  a pointer to an allocated network interface structure
-  * @param  mode is  an enum to specify type of scan mode to be performed
-  * @param  ssid is a pointer to a string, when not null, scan searches only this ssid
-  * @retval return the number of found access point , max value is "number".
+  * @brief  Start a WiFi scan operation
+  * @param  pnetif_in is a pointer to an allocated network interface structure
+  * @param  mode is an enumerated value to specify type of scan mode to be performed
+  * @param  ssid is a pointer to a string, when not null, scan searches only this SSID
+  * @retval return the number of found access point, max value is "number".
   * This function is a synchronous function.
   */
-
-int32_t net_wifi_scan(net_if_handle_t *pnetif_in, net_wifi_scan_mode_t mode, char *ssid)
+int32_t net_wifi_scan(net_if_handle_t *pnetif, net_wifi_scan_mode_t mode, char *ssid)
 {
   int32_t ret = NET_OK;
-  net_if_handle_t *pnetif;
+  net_if_handle_t *const p_netif = netif_check(pnetif);
 
-  pnetif = netif_check(pnetif_in);
-  if (pnetif == NULL)
+  if (p_netif == NULL)
   {
-    NET_DBG_ERROR("No network interface defined");
+    NET_DBG_ERROR("%s", NO_NETWORK_INTERFACE_DEFINED);
     ret = NET_ERROR_PARAMETER;
   }
-  else if (pnetif->pdrv->if_class != NET_INTERFACE_CLASS_WIFI)
+  else if (p_netif->pdrv->if_class != NET_INTERFACE_CLASS_WIFI)
   {
     NET_DBG_ERROR("Incorrect class interface when calling net_wifi_scan function\n");
     ret = NET_ERROR_PARAMETER;
   }
   else
   {
-    if (pnetif->pdrv->extension.wifi->scan(pnetif, mode, ssid) != NET_OK)
+    if (p_netif->pdrv->extension.wifi->scan(p_netif, mode, ssid) != NET_OK)
     {
       NET_DBG_ERROR("Error when executing net_wifi_scan function\n");
       ret = NET_ERROR_GENERIC;
@@ -248,38 +248,37 @@ int32_t net_wifi_scan(net_if_handle_t *pnetif_in, net_wifi_scan_mode_t mode, cha
 
 /**
   * @brief  Get the result of scan operation, once event has been received
-  * @param  pnetif_is a pointer to an allocated network interface structure
+  * @param  pnetif is a pointer to an allocated network interface structure
   * @param  results is a pointer to an allocated array of net_wifi_scan_results_t
-  * @param  number is unsigned integer , size of the array 'results'
-  * @retval return the number of found access point , max value is "number".
+  * @param  number is unsigned integer, size of the array 'results'
+  * @retval return the number of found access point, max value is "number".
   */
-int32_t net_wifi_get_scan_results(net_if_handle_t *pnetif_in, net_wifi_scan_results_t *results, uint8_t number)
+int32_t net_wifi_get_scan_results(net_if_handle_t *pnetif, net_wifi_scan_results_t *results, uint8_t number)
 {
   int32_t ret;
-  net_if_handle_t *pnetif;
+  net_if_handle_t *const p_netif = netif_check(pnetif);
 
-  pnetif = netif_check(pnetif_in);
-  if (pnetif == NULL)
+  if (p_netif == NULL)
   {
-    NET_DBG_ERROR("No network interface defined");
+    NET_DBG_ERROR("%s", NO_NETWORK_INTERFACE_DEFINED);
     ret = NET_ERROR_PARAMETER;
   }
-  else if (pnetif->pdrv->if_class != NET_INTERFACE_CLASS_WIFI)
+  else if (p_netif->pdrv->if_class != NET_INTERFACE_CLASS_WIFI)
   {
     NET_DBG_ERROR("Incorrect class interface when calling net_wifi_scan function\n");
     ret = NET_ERROR_PARAMETER;
   }
   else
   {
-    ret = pnetif->pdrv->extension.wifi->get_scan_results(pnetif, results, number);
+    ret = p_netif->pdrv->extension.wifi->get_scan_results(p_netif, results, number);
   }
   return ret;
 }
 
 /**
-  * @brief  set the credential of a wifi interface, can be AP or STA credentials
+  * @brief  Set the credential of a WiFi interface, can be AP or STA credentials
   * @param  pnetif_is a pointer to an allocated network interface structure
-  * @param  credentials a pointer to a const allocated structure which contain credentials values (ssid , passwd)
+  * @param  credentials a pointer to a const allocated structure which contain credentials values (SSID, password)
   * @retval 0 in case of success, an error code otherwise
   */
 int32_t net_wifi_set_credentials(net_if_handle_t *pnetif, const net_wifi_credentials_t *credentials)
@@ -290,10 +289,10 @@ int32_t net_wifi_set_credentials(net_if_handle_t *pnetif, const net_wifi_credent
 
 /**
   * @brief  set the information element for beacon
-  * @param  pnetif_is a pointer to an allocated network interface structure
+  * @param  pnetif is a pointer to an allocated network interface structure
+  * @param  ie is a pointer to an information element structure
   * @retval 0 in case of success, an error code otherwise
   */
-
 int32_t net_wifi_set_ie_data(net_if_handle_t *pnetif, net_wifi_ap_ie_t *ie)
 {
   pnetif->pdrv->extension.wifi->information_element = ie;
@@ -301,7 +300,7 @@ int32_t net_wifi_set_ie_data(net_if_handle_t *pnetif, net_wifi_ap_ie_t *ie)
 }
 
 /**
-  * @brief  set the access mode for a wifi interface: AP or STA mode
+  * @brief  Set the access mode for a WIFI interface: AP or STA mode
   * @param  pnetif_is a pointer to an allocated network interface structure
   * @retval 0 in case of success, an error code otherwise
   */
@@ -312,7 +311,7 @@ int32_t net_wifi_set_access_mode(net_if_handle_t *pnetif, net_wifi_mode_t mode)
 }
 
 /**
-  * @brief  set the wifi channel to used for an AP
+  * @brief  Set the WiFi channel to be used for an AP
   * @param  pnetif_is a pointer to an allocated network interface structure
   * @param  channel is an unsigned 8 bit integer
   * @retval 0 in case of success, an error code otherwise
@@ -322,10 +321,11 @@ int32_t net_wifi_set_access_channel(net_if_handle_t *pnetif,  uint8_t channel)
   pnetif->pdrv->extension.wifi->access_channel = channel;
   return NET_OK;
 }
+
 /**
-  * @brief  set the wifi max count of connections for an AP
-  * @param  pnetif_is a pointer to an allocated network interface structure
-  * @param  channel is an unsigned 8 bit integer
+  * @brief  Set the WiFi max count of connections for an AP
+  * @param  pnetif is a pointer to an allocated network interface structure
+  * @param  count is an unsigned 8 bit integer
   * @retval 0 in case of success, an error code otherwise
   */
 int32_t net_wifi_set_ap_max_connections(net_if_handle_t *pnetif,  uint8_t count)
@@ -335,44 +335,43 @@ int32_t net_wifi_set_ap_max_connections(net_if_handle_t *pnetif,  uint8_t count)
 }
 
 /**
-  * @brief  set wifi power save mode
+  * @brief  Set WiFi power save mode
   * @param  pnetif_is a pointer to an allocated network interface structure
-  * @param  powersave is a pointer to an allocated structure to define the powersave mode
+  * @param  powersave is a pointer to an allocated structure to define the power save mode
   * @retval 0 in case of success, an error code otherwise
   */
-int32_t net_wifi_set_powersave(net_if_handle_t *pnetif_in, const net_wifi_powersave_t *powersave)
+int32_t net_wifi_set_powersave(net_if_handle_t *pnetif, const net_wifi_powersave_t *powersave)
 {
   int32_t ret = NET_OK;
-  net_if_handle_t *pnetif;
-  pnetif = netif_check(pnetif_in);
-  if (pnetif == NULL)
+  net_if_handle_t *const p_netif = netif_check(pnetif);
+
+  if (p_netif == NULL)
   {
-    NET_DBG_ERROR("No network interface defined");
-    ret =  NET_ERROR_PARAMETER;
+    NET_DBG_ERROR("%s", NO_NETWORK_INTERFACE_DEFINED);
+    ret = NET_ERROR_PARAMETER;
   }
   else
   {
-    if (pnetif->pdrv->if_class != NET_INTERFACE_CLASS_WIFI)
+    if (p_netif->pdrv->if_class != NET_INTERFACE_CLASS_WIFI)
     {
       NET_DBG_ERROR("Incorrect class interface when calling net_wifi_set_powersave function\n");
       ret = NET_ERROR_PARAMETER;
     }
     else
     {
-      pnetif->pdrv->extension.wifi->powersave = powersave;
+      p_netif->pdrv->extension.wifi->powersave = powersave;
     }
   }
   return ret;
 }
 
 /**
-  * @brief  set wifi extension parameter
+  * @brief  Set WiFi extension parameter
   * @param  pnetif_is a pointer to an allocated network interface structure
-  * @param  param is an enum value to specify which parameter to set
+  * @param  param is an enumerated value to specify which parameter to set
   * @param  data is a pointer to an allocated opaque structure to specify the parameter value
   * @retval 0 in case of success, an error code otherwise
   */
-
 int32_t net_wifi_set_param(net_if_handle_t *pnetif, const net_wifi_param_t param, void *data)
 {
   int32_t ret;
@@ -390,30 +389,29 @@ int32_t net_wifi_set_param(net_if_handle_t *pnetif, const net_wifi_param_t param
 }
 
 /**
-  * @brief  switch wifi mode without removing interface to AP or STA
-  * @param  pnetif_in is a pointer to an allocated network interface structure
-  * @param  target_mode is an enum to specify type of target wifi mode
+  * @brief  Switch WiFi mode without removing interface to AP or STA
+  * @param  pNetif is a pointer to an allocated network interface structure
+  * @param  TargetMode is an enumerated value to specify type of target WiFi mode
   * @retval 0 in case of success, an error code otherwise
   */
-int32_t net_wifi_switch_mode(net_if_handle_t *pnetif_in, net_wifi_mode_t target_mode)
+int32_t net_wifi_switch_mode(net_if_handle_t *pNetif, net_wifi_mode_t TargetMode)
 {
   int32_t ret = NET_OK;
-  net_if_handle_t *pnetif;
+  net_if_handle_t *const p_netif = netif_check(pNetif);
 
-  pnetif = netif_check(pnetif_in);
-  if (pnetif == NULL)
+  if (p_netif == NULL)
   {
-    NET_DBG_ERROR("No network interface defined");
+    NET_DBG_ERROR("%s", NO_NETWORK_INTERFACE_DEFINED);
     ret = NET_ERROR_PARAMETER;
   }
-  else if (pnetif->pdrv->if_class != NET_INTERFACE_CLASS_WIFI)
+  else if (p_netif->pdrv->if_class != NET_INTERFACE_CLASS_WIFI)
   {
     NET_DBG_ERROR("Incorrect class interface when calling net_wifi_switch_mode function\n");
     ret = NET_ERROR_PARAMETER;
   }
   else
   {
-    if (pnetif->pdrv->extension.wifi->switch_mode(pnetif, target_mode) != NET_OK)
+    if (p_netif->pdrv->extension.wifi->switch_mode(p_netif, TargetMode) != NET_OK)
     {
       NET_DBG_ERROR("Error when executing net_wifi_switch_mode function\n");
       ret = NET_ERROR_GENERIC;
@@ -422,71 +420,3 @@ int32_t net_wifi_switch_mode(net_if_handle_t *pnetif_in, net_wifi_mode_t target_
 
   return ret;
 }
-
-
-/**
-  * @brief  set the credential of a cellular interface
-  * @param  pnetif_is a pointer to an allocated network interface structure
-  * @param  credentials a pointer to a const allocated structure which contains credentials values (ssid , passwd)
-  * @retval 0 in case of success, an error code otherwise
-  */
-
-int32_t net_cellular_set_credentials(net_if_handle_t *pnetif_in, const net_cellular_credentials_t *credentials)
-{
-  int32_t ret;
-  net_if_handle_t *pnetif;
-
-  pnetif = netif_check(pnetif_in);
-  if (pnetif == NULL)
-  {
-    NET_DBG_ERROR("No network interface defined");
-    ret = NET_ERROR_PARAMETER;
-  }
-  else
-  {
-    if (pnetif->pdrv->if_class != NET_INTERFACE_CLASS_CELLULAR)
-    {
-      NET_DBG_ERROR("Incorrect class interface when calling net_cellular_get_radio_results function\n");
-      ret = NET_ERROR_PARAMETER;
-    }
-    else
-    {
-      pnetif->pdrv->extension.cellular->credentials = credentials;
-      ret = NET_OK;
-    }
-  }
-  return ret;
-}
-
-/**
-  * @brief  get cellular radio information
-  * @param  pnetif_is a pointer to an allocated network interface structure
-  * @param  results is a pointer to an allocated net_cellular_radio_results_t structure
-  * @retval 0 in case of success, an error code otherwise
-  */
-int32_t net_cellular_get_radio_results(net_if_handle_t *pnetif_in, net_cellular_radio_results_t *results)
-{
-  int32_t ret;
-
-  net_if_handle_t *pnetif;
-  pnetif = netif_check(pnetif_in);
-  if (pnetif == NULL)
-  {
-    NET_DBG_ERROR("No network interface defined");
-    ret = NET_ERROR_PARAMETER;
-  }
-  else
-  {
-    if (pnetif->pdrv->if_class != NET_INTERFACE_CLASS_CELLULAR)
-    {
-      NET_DBG_ERROR("Incorrect class interface when calling net_cellular_get_radio_results function\n");
-      ret = NET_ERROR_PARAMETER;
-    }
-    else
-    {
-      ret = pnetif->pdrv->extension.cellular->get_radio_results(results);
-    }
-  }
-  return ret;
-}
-

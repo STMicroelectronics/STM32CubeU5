@@ -236,11 +236,11 @@ typedef struct
   * Bit Group Name: None
   * Permission    : W
   *******************************************************************************/
-int32_t sx8651_write_reg(sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pbuf, uint16_t length);
-int32_t sx8651_read_reg(sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pbuf, uint16_t length);
-int32_t sx8651_read_data(sx8651_ctx_t *ctx, uint8_t *pdata, uint16_t length);
-int32_t sx8651_write_cmd(sx8651_ctx_t *ctx, uint8_t *pdata, uint16_t length);
-int32_t sx8651_read_chan(sx8651_ctx_t *ctx, uint8_t chan, uint8_t *pdata, uint16_t length);
+int32_t sx8651_write_reg(const sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pbuf, uint16_t length);
+int32_t sx8651_read_reg(const sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pbuf, uint16_t length);
+int32_t sx8651_read_data(const sx8651_ctx_t *ctx, uint8_t *pdata, uint16_t length);
+int32_t sx8651_write_cmd(const sx8651_ctx_t *ctx, uint8_t *pdata, uint16_t length);
+int32_t sx8651_read_chan(const sx8651_ctx_t *ctx, uint8_t chan, uint8_t *pdata, uint16_t length);
 
 /**************** Base Function  *******************/
 
@@ -253,8 +253,8 @@ int32_t sx8651_read_chan(sx8651_ctx_t *ctx, uint8_t chan, uint8_t *pdata, uint16
   *******************************************************************************/
 #define   SX8651_CTRL_RATE_BIT_MASK        0xF0U
 #define   SX8651_CTRL_RATE_BIT_POSITION    4U
-int32_t  sx8651_ctrl_rate_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_rate_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_rate_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_rate_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CTRL_0
@@ -265,8 +265,8 @@ int32_t  sx8651_ctrl_rate_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_POWDLY_BIT_MASK        0x0FU
 #define   SX8651_CTRL_POWDLY_BIT_POSITION    0U
-int32_t  sx8651_ctrl_powdly_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_powdly_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_powdly_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_powdly_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CTRL_1
@@ -277,8 +277,8 @@ int32_t  sx8651_ctrl_powdly_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_AUXAQC_BIT_MASK        0xC0U
 #define   SX8651_CTRL_AUXAQC_BIT_POSITION    6U
-int32_t  sx8651_ctrl_auxaqc_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_auxaqc_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_auxaqc_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_auxaqc_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CTRL_1
@@ -289,8 +289,8 @@ int32_t  sx8651_ctrl_auxaqc_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_CONDIRQ_BIT_MASK        0x20U
 #define   SX8651_CTRL_CONDIRQ_BIT_POSITION    5U
-int32_t  sx8651_ctrl_condirq_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_condirq_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_condirq_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_condirq_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CTRL_1
@@ -301,8 +301,8 @@ int32_t  sx8651_ctrl_condirq_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_RPDNT_BIT_MASK        0x0CU
 #define   SX8651_CTRL_RPDNT_BIT_POSITION    2U
-int32_t  sx8651_ctrl_rpdnt_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_rpdnt_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_rpdnt_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_rpdnt_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CTRL_1
@@ -313,8 +313,8 @@ int32_t  sx8651_ctrl_rpdnt_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_FILT_BIT_MASK        0x03U
 #define   SX8651_CTRL_FILT_BIT_POSITION    0U
-int32_t  sx8651_ctrl_filt_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_filt_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_filt_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_filt_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CTRL_2
@@ -325,8 +325,8 @@ int32_t  sx8651_ctrl_filt_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_SETDLY_BIT_MASK        0x0FU
 #define   SX8651_CTRL_SETDLY_BIT_POSITION    0U
-int32_t  sx8651_ctrl_setdly_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_setdly_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_setdly_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_setdly_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CTRL_3
@@ -336,8 +336,8 @@ int32_t  sx8651_ctrl_setdly_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_RMSEL_Y_BIT_MASK        0x38U
 #define   SX8651_CTRL_RMSEL_Y_BIT_POSITION    3U
-int32_t  sx8651_ctrl_rmsel_y_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_rmsel_y_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_rmsel_y_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_rmsel_y_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CTRL_3
@@ -347,8 +347,8 @@ int32_t  sx8651_ctrl_rmsel_y_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_RMSEL_X_BIT_MASK        0x07U
 #define   SX8651_CTRL_RMSEL_X_BIT_POSITION    0U
-int32_t  sx8651_ctrl_rmsel_x_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_rmsel_x_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_rmsel_x_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_rmsel_x_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CHANMSK
@@ -359,8 +359,8 @@ int32_t  sx8651_ctrl_rmsel_x_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_XCONV_BIT_MASK        0x80U
 #define   SX8651_CTRL_XCONV_BIT_POSITION    7U
-int32_t  sx8651_ctrl_xconv_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_xconv_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_xconv_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_xconv_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CHANMSK
@@ -371,8 +371,8 @@ int32_t  sx8651_ctrl_xconv_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_YCONV_BIT_MASK        0x40U
 #define   SX8651_CTRL_YCONV_BIT_POSITION    6U
-int32_t  sx8651_ctrl_yconv_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_yconv_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_yconv_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_yconv_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CHANMSK
@@ -383,8 +383,8 @@ int32_t  sx8651_ctrl_yconv_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_Z1CONV_BIT_MASK        0x20U
 #define   SX8651_CTRL_Z1CONV_BIT_POSITION    5U
-int32_t  sx8651_ctrl_z1conv_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_z1conv_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_z1conv_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_z1conv_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CHANMSK
@@ -395,8 +395,8 @@ int32_t  sx8651_ctrl_z1conv_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_Z2CONV_BIT_MASK        0x10U
 #define   SX8651_CTRL_Z2CONV_BIT_POSITION    4U
-int32_t  sx8651_ctrl_z2conv_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_z2conv_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_z2conv_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_z2conv_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CHANMSK
@@ -407,8 +407,8 @@ int32_t  sx8651_ctrl_z2conv_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_AUXCONV_BIT_MASK        0x08U
 #define   SX8651_CTRL_AUXCONV_BIT_POSITION    3U
-int32_t  sx8651_ctrl_auxconv_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_auxconv_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_auxconv_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_auxconv_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CHANMSK
@@ -419,8 +419,8 @@ int32_t  sx8651_ctrl_auxconv_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_RXCONV_BIT_MASK        0x04U
 #define   SX8651_CTRL_RXCONV_BIT_POSITION    2U
-int32_t  sx8651_ctrl_rxconv_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_rxconv_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_rxconv_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_rxconv_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : CHANMSK
@@ -431,8 +431,8 @@ int32_t  sx8651_ctrl_rxconv_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_RYCONV_BIT_MASK        0x02U
 #define   SX8651_CTRL_RYCONV_BIT_POSITION    1U
-int32_t  sx8651_ctrl_ryconv_w(sx8651_ctx_t *ctx, uint8_t value);
-int32_t  sx8651_ctrl_ryconv_r(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_ryconv_w(const sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_ryconv_r(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : STAT
@@ -443,7 +443,7 @@ int32_t  sx8651_ctrl_ryconv_r(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_CONVIRQ_BIT_MASK        0x80U
 #define   SX8651_CTRL_CONVIRQ_BIT_POSITION    7U
-int32_t  sx8651_ctrl_convirq(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_convirq(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : STAT
@@ -454,7 +454,7 @@ int32_t  sx8651_ctrl_convirq(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_PENIRQ_BIT_MASK        0x40U
 #define   SX8651_CTRL_PENIRQ_BIT_POSITION    6U
-int32_t  sx8651_ctrl_penirq(sx8651_ctx_t *ctx, uint8_t *value);
+int32_t  sx8651_ctrl_penirq(const sx8651_ctx_t *ctx, uint8_t *value);
 
 /*******************************************************************************
   * Register      : SOFTRESET
@@ -465,7 +465,7 @@ int32_t  sx8651_ctrl_penirq(sx8651_ctx_t *ctx, uint8_t *value);
   *******************************************************************************/
 #define   SX8651_CTRL_SOFTRESET_BIT_MASK        0xFFU
 #define   SX8651_CTRL_SOFTRESET_BIT_POSITION    0U
-int32_t  sx8651_ctrl_softreset(sx8651_ctx_t *ctx, uint8_t value);
+int32_t  sx8651_ctrl_softreset(const sx8651_ctx_t *ctx, uint8_t value);
 
 /**
   * @}

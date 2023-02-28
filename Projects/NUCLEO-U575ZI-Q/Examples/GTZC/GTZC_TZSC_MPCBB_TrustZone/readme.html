@@ -20,7 +20,7 @@
 <div class="row">
 <div class="col-sm-12 col-lg-8">
 <h2 id="gtzc_tzsc_mpcbb_trustzone-example-description"><b>GTZC_TZSC_MPCBB_TrustZone Example Description</b></h2>
-<p>How to use HAL GTZC MPCBB to build any example with SecureFault detection when TrustZone security is activated <strong>(Option bit TZEN=1)</strong>.</p>
+<p>How to use HAL GTZC MPCBB to build any example with illegal Access detection when TrustZone security is activated <strong>(Option bit TZEN=1)</strong>.</p>
 <p>The purpose of this example is to declare the SRAM3 (starting from 0x20040000) as non-secure with HAL GTZC MPCBB services and to demonstrate that a security violation is detected when non-secure application accesses secure SRAM1 memory.</p>
 <p>The non-secure application toggles <strong>LED1</strong> every second until the security violation is detected.</p>
 <p>The security violation detection at MPCBB level is triggered by two means:</p>
@@ -28,7 +28,7 @@
 <li>automatically after 5 seconds</li>
 <li>before through the USER push-button key press.</li>
 </ul>
-<p>Any key press on USER push-button initiates an access in secure SRAM1 (SRAM1 base address). The secure fault is detected from the secure application SecureFault_Handler which calls a non-secure registered callback function to inform the non-secure application. The non-secure application switches on the error LED RED.</p>
+<p>Any key press on USER push-button initiates an access in secure SRAM1 (SRAM1 base address). The illegal Access is detected from the secure application which turned on LED RED. After returning to Non-Secure application, the LED RED is turned Off after a delay of 1s.</p>
 <p>This project is composed of two sub-projects:</p>
 <ul>
 <li>one for the secure application part (xxxxx_S)</li>
@@ -36,7 +36,7 @@
 </ul>
 <p>Please remember that on system with security enabled:</p>
 <ul>
-<li>the system always boots in secure and the secure application is responsible for launching the non-secure application.</li>
+<li>the system always boots in secure, and the secure application is responsible for launching the non-secure application.</li>
 <li>the SystemInit() function in secure application sets up the SAU/IDAU, FPU and secure/non-secure interrupts allocations defined in partition_stm32u575xx.h file.</li>
 </ul>
 <p>This project shows how to switch from secure application to non-secure application thanks to the system isolation performed to split the internal Flash and internal SRAM memories into two halves:</p>
@@ -48,7 +48,7 @@
 <ul>
 <li><strong>LED_GREEN is toggled</strong> for 5s in non-secure (waiting for USER push-button key press),</li>
 <li><strong>LED_GREEN is ON</strong> when the illegal access on internal SRAM is detected,</li>
-<li><strong>LED_RED is ON</strong> when any error occurs.</li>
+<li><strong>LED_RED is ON</strong> when any error or an illegal access occurs.</li>
 </ul>
 <p>User Option Bytes configuration:</p>
 <p>Please note the internal Flash is fully secure by default in TZEN=1 and User Option Bytes SECWM1_PSTRT/SECWM1_PEND and SECWM2_PSTRT/SECWM2_PEND should be set according to the application configuration. Here the proper User Option Bytes setup in line with the project linker/scatter file is as follows:</p>

@@ -62,6 +62,7 @@
           (+) Stops the LPTIM peripheral counter.
           (+) Update the pulse, the period and the repetition values for PWM waveform.
           (+) Get capture values for LPTIM input signal.
+          (+) Get counter values for LPTIM.
           (+) Update the period and the repetition values and starts the LPTIM counter to generate an update event.
 
     *** Functional description ***
@@ -81,6 +82,9 @@
           (+) PWM mode : Update the period, the pulse and the repetition in order to change the PWM Waveform.
           (+) IC mode  : Read and store in a buffer an external Input Capture signal values.
           (+) UE mode  : Configure the Update Event period and repetition values.
+
+      Independent from the chosen LPTIM mode the following operation can be performed:
+          (+) Get Counetr : Read and store in a buffer the LPTIM counter values.
 
     *** Driver APIs description ***
     ===============================
@@ -218,6 +222,28 @@
       This API is used to implement a delay between 2 successive LPBAM APIs execution.
       This API is used independently of LPTIM channel settings.
 
+    [..]
+      Use ADV_LPBAM_LPTIM_GetCounter_SetFullQ() API to build a linked-list queue that reads the LPTIM counter and store
+      data in a buffer according to parameters in the LPBAM_LPTIM_GetCounterFullAdvConf_t structure.
+      The configuration parameters are :
+          (+) pData  : Specifies the address of data buffer.
+          (+) Size   : Specifies the size of data to be read.
+
+      The data transfer default configuration is as follow:
+          (+) SrcInc            : DMA_SINC_FIXED.
+          (+) DestInc           : DMA_DINC_INCREMENTED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_HALFWORD.
+          (+) DestDataWidth     : DMA_DEST_DATAWIDTH_HALFWORD.
+          (+) TransferEventMode : DMA_TCEM_LAST_LL_ITEM_TRANSFER.
+          (+) SrcSecure         : DMA_CHANNEL_SRC_SEC. (For TrustZone devices)
+          (+) DestSecure        : DMA_CHANNEL_DEST_SEC. (For TrustZone devices)
+      The data transfer configuration can be customized using ADV_LPBAM_Q_SetDataConfig() after calling
+      ADV_LPBAM_LPTIM_GetCounter_SetFullQ(). The ADV_LPBAM_Q_SetDataConfig() is in the module stm32_adv_lpbam_common.c
+      file.
+      Because of the HW implementation, the following parameters should be kept at default value:
+          (+) SrcInc            : DMA_SINC_FIXED.
+          (+) SrcDataWidth      : DMA_SRC_DATAWIDTH_HALFWORD.
+
     *** Driver user sequence ***
     ============================
     [..]
@@ -285,6 +311,13 @@
               (++) DMA_IT_ULE : update link error.
               (++) DMA_IT_USE : user setting error.
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
+
+    [..]
+      Get Counter user sequence is :
+          (+) Read LPTIM counter can be performed for :
+              (++) PWM mode.
+              (++) IC mode.
+              (++) UE mode.
 
     *** Recommendation ***
     ======================
@@ -500,7 +533,6 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM_TypeDef                *const 
     /*
      *               ######## LPTIM repetition node ########
      */
-
 
     /* Set repetition value */
     pDescriptor->pReg[reg_idx]            = pPWMFull->RepetitionValue;
@@ -744,6 +776,66 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_UE_SetFullQ(LPTIM_TypeDef              *const pIn
 }
 
 /**
+  * @brief  Build DMA linked-list queue to read the LPTIM counter according to parameters in
+  *         LPBAM_LPTIM_GetCounterFullAdvConf_t.
+  * @param  pInstance       : [IN]  Pointer to a LPTIM_TypeDef structure that selects LPTIM instance.
+  * @param  pDMAListInfo    : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and
+  *                                 linked-list queue type information.
+  * @param  pGetCounterFull : [IN]  Pointer to a LPBAM_LPTIM_GetCounterFullAdvConf_t structure that contains get counter
+  *                                 full information.
+  * @param  pDescriptor     : [IN]  Pointer to a LPBAM_LPTIM_GetCounterFullDesc_t structure  that contains start full
+  *                                 descriptor information.
+  * @param  pQueue          : [OUT] Pointer to a DMA_QListTypeDef structure that contains DMA linked-list queue
+  *                                 information.
+  * @retval LPBAM Status    : [OUT] Value from LPBAM_Status_t enumeration.
+  */
+LPBAM_Status_t ADV_LPBAM_LPTIM_GetCounter_SetFullQ(LPTIM_TypeDef                       *const pInstance,
+                                                   LPBAM_DMAListInfo_t                 const *const pDMAListInfo,
+                                                   LPBAM_LPTIM_GetCounterFullAdvConf_t const *const pGetCounterFull,
+                                                   LPBAM_LPTIM_GetCounterFullDesc_t    *const pDescriptor,
+                                                   DMA_QListTypeDef                    *const pQueue)
+{
+  LPBAM_LPTIM_ConfNode_t config_node;
+  DMA_NodeConfTypeDef    dma_node_conf;
+
+  /*
+   *               ######## LPTIM read counter value node ########
+   */
+
+  /* Get Counter buffer address */
+  uint32_t buffer_address = (uint32_t)&pGetCounterFull->pData[0U];
+
+  /* Set LPTIM instance */
+  config_node.pInstance                  = pInstance;
+
+  /* Set node descriptor */
+  config_node.NodeDesc.NodeInfo.NodeID   = (uint32_t)LPBAM_LPTIM_GET_COUNTER_ID;
+  config_node.NodeDesc.NodeInfo.NodeType = pDMAListInfo->QueueType;
+  config_node.NodeDesc.pBuff             = (uint32_t *)buffer_address;
+  config_node.Config.CaptureCount        = pGetCounterFull->Size;
+
+  /* Fill node configuration */
+  if (LPBAM_LPTIM_FillNodeConfig(&config_node, &dma_node_conf) != LPBAM_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Build clear flags nodes */
+  if (HAL_DMAEx_List_BuildNode(&dma_node_conf, &pDescriptor->pNodes[0U]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Insert Node to LPTIM queue */
+  if (HAL_DMAEx_List_InsertNode_Tail(pQueue, &pDescriptor->pNodes[0U]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  return LPBAM_OK;
+}
+
+/**
   * @brief  Build DMA linked-list queue to start the LPTIM channel according to parameters in
   *         LPBAM_LPTIM_StartFullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a LPTIM_TypeDef structure that selects LPTIM instance.
@@ -958,6 +1050,7 @@ LPBAM_Status_t ADV_LPBAM_LPTIM_EnableDMARequests(LPTIM_TypeDef *const pInstance,
     pInstance->DIER |= LPBAM_LPTIM_CC1DE;
   }
 
+  /* Check channel index */
   if ((Channel & LPBAM_LPTIM_CHANNEL_2) == LPBAM_LPTIM_CHANNEL_2)
   {
     /* Enable Channel */

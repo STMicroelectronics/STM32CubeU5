@@ -67,6 +67,7 @@ static VOID App_TCP_Thread_Entry(ULONG thread_input);
 
 static VOID ip_address_change_notify_callback(NX_IP *ip_instance, VOID *ptr);
 /* USER CODE END PFP */
+
 /**
   * @brief  Application NetXDuo Initialization.
   * @param memory_ptr: memory pointer
@@ -80,10 +81,16 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
    /* USER CODE BEGIN App_NetXDuo_MEM_POOL */
 
   /* USER CODE END App_NetXDuo_MEM_POOL */
+  /* USER CODE BEGIN 0 */
+
+  /* USER CODE END 0 */
 
   /* USER CODE BEGIN MX_NetXDuo_Init */
 #if (USE_STATIC_ALLOCATION == 1)  
   printf("Nx_TCP_Echo_Client application started..\n");
+  
+  /* Initialize the NetX system. */
+  nx_system_initialize();
   
   /* Allocate the memory for packet_pool.  */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer,  NX_PACKET_POOL_SIZE, TX_NO_WAIT) != TX_SUCCESS)
@@ -345,7 +352,7 @@ static VOID App_TCP_Thread_Entry(ULONG thread_input)
       nx_packet_release(server_packet);
       
       /* toggle the green led on success */
-      BSP_LED_Toggle(LED_GREEN);
+      HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
     }
     else
     {

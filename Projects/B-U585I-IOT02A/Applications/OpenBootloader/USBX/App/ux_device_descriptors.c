@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -58,7 +58,7 @@ static uint8_t *pDevFrameWorkDesc_HS = DevFrameWorkDesc_HS;
 #pragma data_alignment=4
 #endif /* defined ( __ICCARM__ ) */
 __ALIGN_BEGIN UCHAR USBD_string_framework[USBD_STRING_FRAMEWORK_MAX_LENGTH]
-__ALIGN_END = {0};
+__ALIGN_END = {0U};
 
 /* Multiple languages are supported on the device, to add
    a language besides English, the Unicode language code must
@@ -68,7 +68,7 @@ __ALIGN_END = {0};
 #if defined ( __ICCARM__ ) /* IAR Compiler */
 #pragma data_alignment=4
 #endif /* defined ( __ICCARM__ ) */
-UCHAR USBD_language_id_framework[LANGUAGE_ID_MAX_LENGTH] = {0};
+UCHAR USBD_language_id_framework[LANGUAGE_ID_MAX_LENGTH] = {0U};
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -117,8 +117,7 @@ uint8_t *USBD_Get_Device_Framework_Speed(uint8_t Speed, ULONG *Length)
 
   if (USBD_FULL_SPEED == Speed)
   {
-    USBD_Device_Framework_Builder(&USBD_Device_FS, pDevFrameWorkDesc_FS,
-                                  UserClassInstance, Speed);
+    USBD_Device_Framework_Builder(&USBD_Device_FS, pDevFrameWorkDesc_FS, UserClassInstance, Speed);
 
     /* Get the length of USBD_device_framework_full_speed */
     *Length = (ULONG)(USBD_Device_FS.CurrDevDescSz + USBD_Device_FS.CurrConfDescSz);
@@ -127,8 +126,7 @@ uint8_t *USBD_Get_Device_Framework_Speed(uint8_t Speed, ULONG *Length)
   }
   else
   {
-    USBD_Device_Framework_Builder(&USBD_Device_HS, pDevFrameWorkDesc_HS,
-                                  UserClassInstance, Speed);
+    USBD_Device_Framework_Builder(&USBD_Device_HS, pDevFrameWorkDesc_HS, UserClassInstance, Speed);
 
     /* Get the length of USBD_device_framework_high_speed */
     *Length = (ULONG)(USBD_Device_HS.CurrDevDescSz + USBD_Device_HS.CurrConfDescSz);
@@ -151,8 +149,8 @@ uint8_t *USBD_Get_String_Framework(ULONG *Length)
   uint8_t count = 0U;
 
   /* Set the Manufacturer language Id and index in USBD_string_framework */
-  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFF;
-  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8;
+  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFFU;
+  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8U;
   USBD_string_framework[count++] = USBD_IDX_MFC_STR;
 
   /* Set the Manufacturer string in string_framework */
@@ -160,8 +158,8 @@ uint8_t *USBD_Get_String_Framework(ULONG *Length)
 
   /* Set the Product language Id and index in USBD_string_framework */
   count += len + 1;
-  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFF;
-  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8;
+  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFFU;
+  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8U;
   USBD_string_framework[count++] = USBD_IDX_PRODUCT_STR;
 
   /* Set the Product string in USBD_string_framework */
@@ -169,8 +167,8 @@ uint8_t *USBD_Get_String_Framework(ULONG *Length)
 
   /* Set Serial language Id and index in string_framework */
   count += len + 1;
-  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFF;
-  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8;
+  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFFU;
+  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8U;
   USBD_string_framework[count++] = USBD_IDX_SERIAL_STR;
 
   /* Set the Serial number in USBD_string_framework */
@@ -179,26 +177,26 @@ uint8_t *USBD_Get_String_Framework(ULONG *Length)
 #if USBD_DFU_CLASS_ACTIVATED
   /* Set FLASH descriptor index in USBD_string_framework */
   count += len + 1;
-  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFF;
-  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8;
+  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFFU;
+  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8U;
   USBD_string_framework[count++] = USBD_DFU_STRING_FLASH_DESC_INDEX;
 
   /* Set FLASH descriptor string in USBD_string_framework */
   USBD_Desc_GetString((uint8_t *)USBD_DFU_STRING_FLASH_DESC, USBD_string_framework + count, &len);
 
   /* Set Option Bytes descriptor index in USBD_string_framework */
-  count += len + 1;
-  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFF;
-  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8;
+  count += len + 1U;
+  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFFU;
+  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8U;
   USBD_string_framework[count++] = USBD_DFU_STRING_OB_DESC_INDEX;
 
   /* Set Option Bytes descriptor string in USBD_string_framework */
   USBD_Desc_GetString((uint8_t *)USBD_DFU_STRING_OB_DESC, USBD_string_framework + count, &len);
 
   /* Set OTP descriptor index in USBD_string_framework */
-  count += len + 1;
-  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFF;
-  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8;
+  count += len + 1U;
+  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFFU;
+  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8U;
   USBD_string_framework[count++] = USBD_DFU_STRING_OTP_DESC_INDEX;
 
   /* Set OTP descriptor string in USBD_string_framework */
@@ -206,8 +204,8 @@ uint8_t *USBD_Get_String_Framework(ULONG *Length)
 
   /* Set device ID descriptor index in USBD_string_framework */
   count += len + 1;
-  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFF;
-  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8;
+  USBD_string_framework[count++] = USBD_LANGID_STRING & 0xFFU;
+  USBD_string_framework[count++] = USBD_LANGID_STRING >> 8U;
   USBD_string_framework[count++] = USBD_DFU_STRING_DEVICE_ID_DESC_INDEX;
 
   /* Set device ID descriptor string in USBD_string_framework */
@@ -231,8 +229,8 @@ uint8_t *USBD_Get_Language_Id_Framework(ULONG *Length)
   uint8_t count = 0U;
 
   /* Set the language Id in USBD_language_id_framework */
-  USBD_language_id_framework[count++] = USBD_LANGID_STRING & 0xFF;
-  USBD_language_id_framework[count++] = USBD_LANGID_STRING >> 8;
+  USBD_language_id_framework[count++] = USBD_LANGID_STRING & 0xFFU;
+  USBD_language_id_framework[count++] = USBD_LANGID_STRING >> 8U;
 
   /* Get the length of USBD_language_id_framework */
   *Length = strlen((const char *)USBD_language_id_framework);
@@ -320,13 +318,13 @@ static uint8_t *USBD_Device_Framework_Builder(USBD_DevClassHandleTypeDef *pdev,
   pDevDesc->bLength = (uint8_t)sizeof(USBD_DeviceDescTypedef);
   pDevDesc->bDescriptorType = UX_DEVICE_DESCRIPTOR_ITEM;
   pDevDesc->bcdUSB = USB_BCDUSB;
-  pDevDesc->bDeviceClass = 0x00;
-  pDevDesc->bDeviceSubClass = 0x00;
-  pDevDesc->bDeviceProtocol = 0x00;
+  pDevDesc->bDeviceClass = 0x00U;
+  pDevDesc->bDeviceSubClass = 0x00U;
+  pDevDesc->bDeviceProtocol = 0x00U;
   pDevDesc->bMaxPacketSize = USBD_MAX_EP0_SIZE;
   pDevDesc->idVendor = USBD_VID;
   pDevDesc->idProduct = USBD_PID;
-  pDevDesc->bcdDevice = 0x0200;
+  pDevDesc->bcdDevice = 0x0200U;
   pDevDesc->iManufacturer = USBD_IDX_MFC_STR;
   pDevDesc->iProduct = USBD_IDX_PRODUCT_STR;
   pDevDesc->iSerialNumber = USBD_IDX_SERIAL_STR;
@@ -339,13 +337,13 @@ static uint8_t *USBD_Device_Framework_Builder(USBD_DevClassHandleTypeDef *pdev,
     pDevQualDesc = (USBD_DevQualiDescTypedef *)(pDevFrameWorkDesc + pdev->CurrDevDescSz);
     pDevQualDesc->bLength = (uint8_t)sizeof(USBD_DevQualiDescTypedef);
     pDevQualDesc->bDescriptorType = UX_DEVICE_QUALIFIER_DESCRIPTOR_ITEM;
-    pDevQualDesc->bcdDevice = 0x0200;
-    pDevQualDesc->Class = 0x00;
-    pDevQualDesc->SubClass = 0x00;
-    pDevQualDesc->Protocol = 0x00;
-    pDevQualDesc->bMaxPacketSize = 0x40;
-    pDevQualDesc->bNumConfigurations = 0x01;
-    pDevQualDesc->bReserved = 0x00;
+    pDevQualDesc->bcdDevice = 0x0200U;
+    pDevQualDesc->Class = 0x00U;
+    pDevQualDesc->SubClass = 0x00U;
+    pDevQualDesc->Protocol = 0x00U;
+    pDevQualDesc->bMaxPacketSize = 0x40U;
+    pDevQualDesc->bNumConfigurations = 0x01U;
+    pDevQualDesc->bReserved = 0x00U;
     pdev->CurrDevDescSz += (uint32_t)sizeof(USBD_DevQualiDescTypedef);
   }
 
@@ -358,7 +356,7 @@ static uint8_t *USBD_Device_Framework_Builder(USBD_DevClassHandleTypeDef *pdev,
       /* Call the composite class builder */
       (void)USBD_FrameWork_AddClass(pdev,
                                     (USBD_CompositeClassTypeDef)UserClassInstance[Idx_Instance],
-                                    0, Speed, (pDevFrameWorkDesc + pdev->CurrDevDescSz));
+                                    0U, Speed, (pDevFrameWorkDesc + pdev->CurrDevDescSz));
 
       /* Increment the ClassId for the next occurrence */
       pdev->classId ++;
@@ -373,20 +371,20 @@ static uint8_t *USBD_Device_Framework_Builder(USBD_DevClassHandleTypeDef *pdev,
     }
   }
   /* Check if there is a composite class and update device class */
-  if (NumberClass > 1)
+  if (NumberClass > 1U)
   {
-    pDevDesc->bDeviceClass = 0xEF;
-    pDevDesc->bDeviceSubClass = 0x02;
-    pDevDesc->bDeviceProtocol = 0x01;
+    pDevDesc->bDeviceClass = 0xEFU;
+    pDevDesc->bDeviceSubClass = 0x02U;
+    pDevDesc->bDeviceProtocol = 0x01U;
   }
   else
   {
     /* Check if the CDC ACM class is set and update device class */
     if (UserClassInstance[0] == CLASS_TYPE_CDC_ACM)
     {
-      pDevDesc->bDeviceClass = 0x02;
-      pDevDesc->bDeviceSubClass = 0x02;
-      pDevDesc->bDeviceProtocol = 0x00;
+      pDevDesc->bDeviceClass = 0x02U;
+      pDevDesc->bDeviceSubClass = 0x02U;
+      pDevDesc->bDeviceProtocol = 0x00U;
     }
   }
 
@@ -456,11 +454,11 @@ uint8_t  USBD_FrameWork_AddToConfDesc(USBD_DevClassHandleTypeDef *pdev, uint8_t 
 
       /* Find the first available interface slot and Assign number of interfaces */
       interface = USBD_FrameWork_FindFreeIFNbr(pdev);
-      pdev->tclasslist[pdev->classId].NumIf  = 1;
+      pdev->tclasslist[pdev->classId].NumIf  = 1U;
       pdev->tclasslist[pdev->classId].Ifs[0] = interface;
 
       /* Assign endpoint numbers */
-      pdev->tclasslist[pdev->classId].NumEps = 0; /* only EP0 is used */
+      pdev->tclasslist[pdev->classId].NumEps = 0U; /* only EP0 is used */
 
       /* Configure and Append the Descriptor */
       USBD_FrameWork_DFUDesc(pdev, (uint32_t)pCmpstConfDesc, &pdev->CurrConfDescSz);
@@ -511,15 +509,15 @@ static void  USBD_FrameWork_AddConfDesc(uint32_t Conf, uint32_t *pSze)
   /* Intermediate variable to comply with MISRA-C Rule 11.3 */
   USBD_ConfigDescTypedef *ptr = (USBD_ConfigDescTypedef *)Conf;
 
-  ptr->bLength                = (uint8_t)sizeof(USBD_ConfigDescTypedef);
-  ptr->bDescriptorType        = USB_DESC_TYPE_CONFIGURATION;
-  ptr->wDescriptorLength      = 0U;
-  ptr->bNumInterfaces         = 0U;
-  ptr->bConfigurationValue    = 1U;
-  ptr->iConfiguration         = USBD_CONFIG_STR_DESC_IDX;
-  ptr->bmAttributes           = USBD_CONFIG_BMATTRIBUTES;
-  ptr->bMaxPower              = USBD_CONFIG_MAXPOWER;
-  *pSze                       += sizeof(USBD_ConfigDescTypedef);
+  ptr->bLength             = (uint8_t)sizeof(USBD_ConfigDescTypedef);
+  ptr->bDescriptorType     = USB_DESC_TYPE_CONFIGURATION;
+  ptr->wDescriptorLength   = 0U;
+  ptr->bNumInterfaces      = 0U;
+  ptr->bConfigurationValue = 1U;
+  ptr->iConfiguration      = USBD_CONFIG_STR_DESC_IDX;
+  ptr->bmAttributes        = USBD_CONFIG_BMATTRIBUTES;
+  ptr->bMaxPower           = USBD_CONFIG_MAXPOWER;
+  *pSze                    += sizeof(USBD_ConfigDescTypedef);
 }
 
 /**
@@ -563,8 +561,8 @@ static void  USBD_FrameWork_AssignEp(USBD_DevClassHandleTypeDef *pdev,
 static void USBD_FrameWork_DFUDesc(USBD_DevClassHandleTypeDef *pdev, uint32_t pConf,
                                    uint32_t *Sze)
 {
-  static USBD_IfDescTypedef        *pIfDesc;
-  static USBD_DFUFuncDescTypedef   *pDFUFuncDesc;
+  static USBD_IfDescTypedef      *pIfDesc;
+  static USBD_DFUFuncDescTypedef *pDFUFuncDesc;
 
   /* Append DFU Interface descriptor to Configuration descriptor */
   __USBD_FRAMEWORK_SET_IF(pdev->tclasslist[pdev->classId].Ifs[0], 0U,
@@ -572,17 +570,17 @@ static void USBD_FrameWork_DFUDesc(USBD_DevClassHandleTypeDef *pdev, uint32_t pC
 
   /* Append DFU Functional descriptor to Configuration descriptor */
   pDFUFuncDesc = ((USBD_DFUFuncDescTypedef *)(pConf + *Sze));
-  pDFUFuncDesc->bLength              = (uint8_t)sizeof(USBD_DFUFuncDescTypedef);
-  pDFUFuncDesc->bDescriptorType      = DFU_DESCRIPTOR_TYPE;
-  pDFUFuncDesc->bmAttributes         = USBD_DFU_BM_ATTRIBUTES;
-  pDFUFuncDesc->wDetachTimeout       = USBD_DFU_DetachTimeout;
-  pDFUFuncDesc->wTransferSze         = USBD_DFU_XFER_SIZE;
-  pDFUFuncDesc->bcdDFUVersion        = 0x011AU;
-  *Sze                              += (uint32_t)sizeof(USBD_DFUFuncDescTypedef);
+  pDFUFuncDesc->bLength         = (uint8_t)sizeof(USBD_DFUFuncDescTypedef);
+  pDFUFuncDesc->bDescriptorType = DFU_DESCRIPTOR_TYPE;
+  pDFUFuncDesc->bmAttributes    = USBD_DFU_BM_ATTRIBUTES;
+  pDFUFuncDesc->wDetachTimeout  = USBD_DFU_DetachTimeout;
+  pDFUFuncDesc->wTransferSze    = USBD_DFU_XFER_SIZE;
+  pDFUFuncDesc->bcdDFUVersion   = 0x011AU;
+  *Sze                         += (uint32_t)sizeof(USBD_DFUFuncDescTypedef);
 
   /* Update Config Descriptor and IAD descriptor */
-  ((USBD_ConfigDescTypedef *)pConf)->bNumInterfaces             += 1U;
-  ((USBD_ConfigDescTypedef *)pConf)->wDescriptorLength           = *Sze;
+  ((USBD_ConfigDescTypedef *)pConf)->bNumInterfaces    += 1U;
+  ((USBD_ConfigDescTypedef *)pConf)->wDescriptorLength = *Sze;
 
   UNUSED(USBD_FrameWork_AssignEp);
 }

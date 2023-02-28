@@ -1,14 +1,13 @@
 [ProjectFiles]
 HeaderPath=../../../../../../Drivers/BSP/Components/mx_wifi;../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip;../NetXDuo/Target;../../../../../../Middlewares/ST/netxduo/addons/BSD;
 [Others]
-Define=ENABLE_IOT_INFO;ENABLE_IOT_ERROR;ENABLE_IOT_WARNING;NX_BSD_ENABLE_DNS;__INSIDE_CYGWIN_NET__;NX_ENABLE_IP_RAW_PACKET_ALL_STACK;_SYS_SELECT_H;
+Define=ENABLE_IOT_INFO;ENABLE_IOT_ERROR;ENABLE_IOT_WARNING;NX_BSD_ENABLE_DNS;_SYS_SELECT_H
 HALModule=
 [Groups]
-Application/User/Core=
 Application/User/NetXDuo/App=../NetXDuo/App/console.c;../NetXDuo/App/http_download.c;../NetXDuo/App/ping.c;../NetXDuo/App/scan.c;../NetXDuo/App/test_echo_server.c;
 Doc=../README.md;
 Drivers/BSP/Components/mx_wifi=../../../../../../Drivers/BSP/Components/mx_wifi/mx_wifi.c;
 Drivers/BSP/Components/mx_wifi/io_pattern=../../../../../../Drivers/BSP/Components/mx_wifi/io_pattern/mx_wifi_spi.c;
-Drivers/BSP/Components/mx_wifi/core=../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_wifi_hci.c;../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_wifi_ipc.c;
+Drivers/BSP/Components/mx_wifi/core=../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_wifi_hci.c;../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_wifi_ipc.c;../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_address.c;
 Middlewares/Interfaces/Network/wifi=../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip/nx_driver_emw3080.c;../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip/mx_wifi_azure_rtos.c;
 Middlewares/NetXDuo/Addons_BSD=../../../../../../Middlewares/ST/netxduo/addons/BSD/nxd_bsd.c;

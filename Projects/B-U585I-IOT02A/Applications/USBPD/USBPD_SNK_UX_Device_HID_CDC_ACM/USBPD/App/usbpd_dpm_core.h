@@ -61,7 +61,6 @@ extern USBPD_ParamsTypeDef DPM_Params[USBPD_PORT_COUNT];
 USBPD_StatusTypeDef USBPD_DPM_InitCore(void);
 uint32_t USBPD_DPM_InitOS(void *MemoryPtr);
 void                USBPD_DPM_TimerCounter(void);
- /* USBPDCORE_LIB_NO_PD */
 __WEAK void         USBPD_DPM_ErrorHandler(void);
 /* USER CODE BEGIN functions */
 

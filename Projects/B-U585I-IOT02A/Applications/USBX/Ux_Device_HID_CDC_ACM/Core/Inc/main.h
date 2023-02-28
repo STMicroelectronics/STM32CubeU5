@@ -63,16 +63,21 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
+void MX_USB_OTG_FS_PCD_Init(void);
+void MX_USART1_UART_Init(void);
+void MX_ADC1_Init(void);
+void MX_I2C1_Init(void);
 
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-void   MX_USB_OTG_FS_PCD_Init(void);
-void   MX_USART1_UART_Init(void);
-void   MX_ADC1_Init(void);
-void   MX_I2C1_Init(void);
+#define LED_RED_Pin GPIO_PIN_6
+#define LED_RED_GPIO_Port GPIOH
+#define LED_GREEN_Pin GPIO_PIN_7
+#define LED_GREEN_GPIO_Port GPIOH
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

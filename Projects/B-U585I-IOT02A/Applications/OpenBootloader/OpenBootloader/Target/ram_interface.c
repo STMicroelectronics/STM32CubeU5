@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -18,9 +18,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "platform.h"
+#include "common_interface.h"
+
 #include "openbl_mem.h"
 #include "app_openbootloader.h"
-#include "common_interface.h"
 #include "openbl_core.h"
 #include "ram_interface.h"
 
@@ -32,7 +33,7 @@
 /* Exported variables --------------------------------------------------------*/
 OPENBL_MemoryTypeDef RAM_Descriptor =
 {
-  RAM_START_ADDRESS + OPENBL_RAM_SIZE, /* OPENBL_RAM_SIZE is added to the RAM start address to protect OpenBootloader RAM area */
+  RAM_START_ADDRESS + OPENBL_RAM_SIZE, /* OPENBL_RAM_SIZE is added to protect the Open Bootloader RAM area */
   RAM_END_ADDRESS,
   RAM_SIZE,
   RAM_AREA,
@@ -69,14 +70,17 @@ void OPENBL_RAM_Write(uint32_t Address, uint8_t *pData, uint32_t DataLength)
   uint32_t index;
   uint32_t aligned_length = DataLength;
 
-  if (aligned_length & 0x3)
+  if ((aligned_length & 0x3U) != 0U)
   {
-    aligned_length = (aligned_length & 0xFCU) + 4U;
+    aligned_length = (aligned_length & 0xFFFFFFCU) + 4U;
   }
 
   for (index = 0U; index < aligned_length; index += 4U)
   {
-    *(__IO uint32_t *)(Address + index) = *(__IO uint32_t *)(pData + index);
+    *(__IO uint32_t *)(Address + index) = ((uint32_t)pData[index + 3U] << 24U)
+                                          | ((uint32_t)pData[index + 2U] << 16U)
+                                          | ((uint32_t)pData[index + 1U] << 8U)
+                                          | (uint32_t)pData[index];
   }
 }
 

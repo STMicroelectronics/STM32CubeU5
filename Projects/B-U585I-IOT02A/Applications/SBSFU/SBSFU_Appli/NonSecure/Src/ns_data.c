@@ -117,11 +117,11 @@ static void NS_DATA_Display(void)
   uint8_t *data1;
   data1 = (uint8_t*)(FLASH_BASE_NS + NS_DATA_IMAGE_PRIMARY_PARTITION_OFFSET + NS_DATA_IMAGE_DATA1_OFFSET);
 
-  printf("  -- NS Data: %08x%08x..%08x%08x\r\n\n",
-               *((uint32_t *)(&data1[0])),
-               *((uint32_t *)(&data1[4])),
-               *((uint32_t *)(&data1[NS_DATA_IMAGE_DATA1_SIZE - 8])),
-               *((uint32_t *)(&data1[NS_DATA_IMAGE_DATA1_SIZE - 4]))
+  printf("  -- NS Data: %08lx%08lx..%08lx%08lx\r\n\n",
+               *((unsigned long *)(&data1[0])),
+               *((unsigned long *)(&data1[4])),
+               *((unsigned long *)(&data1[NS_DATA_IMAGE_DATA1_SIZE - 8])),
+               *((unsigned long *)(&data1[NS_DATA_IMAGE_DATA1_SIZE - 4]))
               );
 }
 

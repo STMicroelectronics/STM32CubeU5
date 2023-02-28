@@ -131,8 +131,8 @@ extern "C" {
   */
 #if !defined  (LSI_VALUE)
 #define LSI_VALUE               32000UL    /*!< LSI Typical Value in Hz*/
-#endif /* LSI_VALUE */                     /*!< Value of the Internal Low Speed oscillator in Hz. The real value may 
-                                                vary depending on the variations in voltage and temperature.*/
+#endif /* LSI_VALUE */                     /*!< Value of the Internal Low Speed oscillator in Hz. The real value may
+vary depending on the variations in voltage and temperature.*/
 /**
   * @brief External Low Speed oscillator (LSE) value.
   *        This value is used by the UART, RTC HAL module to compute the system frequency
@@ -205,6 +205,7 @@ extern "C" {
 #define  USE_HAL_NAND_REGISTER_CALLBACKS       0U /* NAND register callback disabled      */
 #define  USE_HAL_NOR_REGISTER_CALLBACKS        0U /* NOR register callback disabled       */
 #define  USE_HAL_OPAMP_REGISTER_CALLBACKS      0U /* MDIO register callback disabled      */
+#define  USE_HAL_OSPI_REGISTER_CALLBACKS       0U /* OCTOSPI register callback disabled   */
 #define  USE_HAL_OTFDEC_REGISTER_CALLBACKS     0U /* OTFDEC register callback disabled    */
 #define  USE_HAL_PCD_REGISTER_CALLBACKS        0U /* PCD register callback disabled       */
 #define  USE_HAL_PKA_REGISTER_CALLBACKS        0U /* PKA register callback disabled       */

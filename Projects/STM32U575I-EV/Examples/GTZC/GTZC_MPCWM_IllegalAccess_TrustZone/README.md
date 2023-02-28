@@ -10,17 +10,16 @@ no security violation is detected when non-secure application accesses the 1st h
 - In this example, the SAU region 4 used for external memory access policy is voluntary modified in user code versus the initial setup from partition_stm32u575xx.h done in
 secure SystemInit() in order to update the external SRAM (FMC) non-secure and secure areas.
 
-- Any key press on **USER push-button** initiates a SecureFault interrupt because of an illegal read access from the non-secure world in secure external SRAM area as the
+- A first key press on **USER push-button** initiates a SecureFault interrupt because of an illegal read access from the non-secure world in secure external SRAM area as the
 transaction does not respect the SAU access rule.
 
-This toggles the **LED RED** once and a message is displayed on a terminal via a secure Non-Secure Callable functions in secure (UART1 secured).
-**LED GREEN** toggling resumes.
+This toggles the **RED LED** and maintain the **GREEN LED**. Also, a message is displayed on a terminal via a secure Non-Secure Callable functions in secure (USART1 secured).
 
-- Any key press on **TAMPER push-button** initiates a GZTC interrupt because of an illegal read access from the non-secure world in external SRAM area although
+- A second key press on **USER push-button** initiates a GZTC interrupt because of an illegal read access from the non-secure world in external SRAM area although
 the transaction is allowed by the SAU but not by the GTZC MPCWM.
 
-This toggles the **LED RED** once and a message is displayed on a terminal via a secure
-Non-Secure Callable functions in secure (UART1 secured). **LED GREEN** toggling resumes.
+This toggles the **RED LED** once and a message is displayed on a terminal via a secure
+Non-Secure Callable functions in secure (USART1 secured). **GREEN LED** toggling resumes.
 
 This project is composed of two sub-projects:
 
@@ -37,7 +36,7 @@ into two halves:
 
 User Option Bytes configuration:
 
-Please note the internal Flash is fully secure by default in TZEN=1 and User Option BytesSECWM1_PSTRT/SECWM1_PEND and SECWM2_PSTRT/SECWM2_PEND should be set according to the application
+Please note the internal Flash is fully secure by default in TZEN=1 and User Option Bytes SECWM1_PSTRT/SECWM1_PEND and SECWM2_PSTRT/SECWM2_PEND should be set according to the application
 configuration. Here the proper User Option Bytes setup in line with the project linker/scatter
 file is as follows:
 
@@ -63,13 +62,13 @@ This example configures the maximum system clock frequency at 160Mhz.
  
       - **Boot from user Flash memory**: 
          a.	Make sure that secure and non-secure applications are well loaded and executed (jump done on non-secure application).
-         b.	If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution.
+         b.	If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hot plug connection is possible during non-secure application execution.
          c.	Use a power supply different from ST-LINK in order to be able to connect to the target.
          d.	Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply.
 
      - **Boot from RSS**:
          a.	Make sure to apply a high level on BOOT0 pin (make sure that nSWBOOT0 Option Byte is checked).
-         b.	If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution.
+         b.	If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hot plug connection is possible during non-secure application execution.
          c.	Use a power supply different from ST-LINK in order to be able to connect to the target.
          d.	Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply.
 		 
@@ -82,15 +81,15 @@ Security, TrustZone, GTZC, MPCWM, watermark memory protection, external SRAM, il
 
 ### <b>Directory contents</b>
 
-  - Secure/Src/hal_sram_helper.c                 Helper file ton initialize and configure SRAM
+  - Secure/Src/external_memory_helper.c                 Helper file ton initialize and configure SRAM
   - Secure/Src/main.c                            Secure Main program
   - Secure/Src/secure_nsc.c                      Secure Non-secure callable functions
   - Secure/Src/stm32u5xx_hal_msp.c               Secure HAL MSP module
   - Secure/Src/stm32u5xx_it.c                    Secure Interrupt handlers
   - Secure/Src/system_stm32u5xx_s.c              Secure STM32U5xx system clock configuration file
-  - Secure/Inc/hal_sram_helper.h                 Helper file ton initialize and configure SRAM
+  - Secure/Inc/external_memory_helper.h          Helper file ton initialize and configure SRAM
   - Secure/Inc/main.h                            Secure Main program header file
-  - Secure/Inc/partition_stm32u575xx.h           STM32U5 Device System Configuration file
+  - Secure/Inc/partition_stm32u575xx.h           STM32U5xx Device System Configuration file
   - Secure/Inc/stm32u5xx_hal_conf.h              Secure HAL Configuration file
   - Secure/Inc/stm32u5xx_it.h                    Secure Interrupt handlers header file
   - Secure_nsclib/secure_nsc.h                   Secure Non-Secure Callable (NSC) module header file
@@ -105,9 +104,9 @@ Security, TrustZone, GTZC, MPCWM, watermark memory protection, external SRAM, il
 
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on STM32U575xx devices with security enabled (TZEN=1).
+  - This example runs on STM32U575XX devices with security enabled (TZEN=1).
 
-  - This example has been tested with STMicroelectronics STM32U575I-EV (MB1550)
+  - This example has been tested with STMicroelectronics STM32U575I-EV (MB1550A)
     board and can be easily tailored to any other supported device
     and development board.
 
@@ -119,8 +118,8 @@ Security, TrustZone, GTZC, MPCWM, watermark memory protection, external SRAM, il
 		
 - **Output Traces**
 This example activates on secure side the USART1 for trace over STLink UART link (Virtual COM Port).
-So you may open an Hyperterminal on your PC
-Hyperterminal configuration:
+So you may open an Hyper-terminal on your PC
+Hyper-terminal configuration:
 
     - 115200 baud rate
     - 8 bit data
@@ -175,4 +174,5 @@ In order to make the program work, you must do the following :
  - The default Debug configuration runtime option sets "Halt on exception" which 
    makes the code execution halt on SecureFault_Handler() on voluntary security violation.
    Press "Resume (F8)" to continue execution.
+
 

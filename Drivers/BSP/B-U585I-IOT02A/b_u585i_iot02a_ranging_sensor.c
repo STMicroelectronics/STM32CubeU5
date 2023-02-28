@@ -117,7 +117,7 @@ int32_t BSP_RANGING_SENSOR_DeInit(uint32_t Instance)
   * @param pId    Pointer to the device ID.
   * @retval BSP status
   */
-int32_t BSP_RANGING_SENSOR_ReadID(uint32_t Instance, uint32_t *pId)
+int32_t BSP_RANGING_SENSOR_ReadID(const uint32_t Instance, uint32_t *pId)
 {
   int32_t ret;
 
@@ -143,7 +143,7 @@ int32_t BSP_RANGING_SENSOR_ReadID(uint32_t Instance, uint32_t *pId)
   * @param pCapabilities    Pointer to the ranging sensor capabilities.
   * @retval BSP status
   */
-int32_t BSP_RANGING_SENSOR_GetCapabilities(uint32_t Instance, RANGING_SENSOR_Capabilities_t *pCapabilities)
+int32_t BSP_RANGING_SENSOR_GetCapabilities(const uint32_t Instance, RANGING_SENSOR_Capabilities_t *pCapabilities)
 {
   int32_t ret;
 
@@ -169,7 +169,7 @@ int32_t BSP_RANGING_SENSOR_GetCapabilities(uint32_t Instance, RANGING_SENSOR_Cap
   * @param pConfig    Pointer to the new configuration profile to be applied.
   * @retval BSP status
   */
-int32_t BSP_RANGING_SENSOR_ConfigProfile(uint32_t Instance, RANGING_SENSOR_ProfileConfig_t *pConfig)
+int32_t BSP_RANGING_SENSOR_ConfigProfile(const uint32_t Instance, RANGING_SENSOR_ProfileConfig_t *pConfig)
 {
   int32_t ret;
 
@@ -195,7 +195,7 @@ int32_t BSP_RANGING_SENSOR_ConfigProfile(uint32_t Instance, RANGING_SENSOR_Profi
   * @param pConfig    Pointer to the ROI configuration struct.
   * @retval BSP status
   */
-int32_t BSP_RANGING_SENSOR_ConfigROI(uint32_t Instance, RANGING_SENSOR_ROIConfig_t *pConfig)
+int32_t BSP_RANGING_SENSOR_ConfigROI(const uint32_t Instance, RANGING_SENSOR_ROIConfig_t *pConfig)
 {
   int32_t ret;
 
@@ -226,9 +226,7 @@ int32_t BSP_RANGING_SENSOR_ConfigROI(uint32_t Instance, RANGING_SENSOR_ROIConfig
   * @note The threshold modes can be used only if supported by the device (check the capabilities).
   * @retval BSP status
   */
-int32_t BSP_RANGING_SENSOR_ConfigIT(
-  uint32_t Instance,
-  RANGING_SENSOR_ITConfig_t *pConfig)
+int32_t BSP_RANGING_SENSOR_ConfigIT(uint32_t Instance, RANGING_SENSOR_ITConfig_t *pConfig)
 {
   int32_t ret;
 
@@ -256,7 +254,7 @@ int32_t BSP_RANGING_SENSOR_ConfigIT(
   * @param pResult    Pointer to the result struct.
   * @retval BSP status
   */
-int32_t BSP_RANGING_SENSOR_GetDistance(uint32_t Instance, RANGING_SENSOR_Result_t *pResult)
+int32_t BSP_RANGING_SENSOR_GetDistance(const uint32_t Instance, RANGING_SENSOR_Result_t *pResult)
 {
   int32_t ret;
 
@@ -359,7 +357,7 @@ int32_t BSP_RANGING_SENSOR_SetAddress(uint32_t Instance, uint32_t Address)
   * @param pAddress    Pointer to the current I2C address.
   * @retval BSP status
   */
-int32_t BSP_RANGING_SENSOR_GetAddress(uint32_t Instance, uint32_t *pAddress)
+int32_t BSP_RANGING_SENSOR_GetAddress(const uint32_t Instance, uint32_t *pAddress)
 {
   int32_t ret;
 
@@ -416,7 +414,7 @@ int32_t BSP_RANGING_SENSOR_SetPowerMode(uint32_t Instance, uint32_t PowerMode)
   * @param pPowerMode    Pointer to the current power mode.
   * @retval BSP status
   */
-int32_t BSP_RANGING_SENSOR_GetPowerMode(uint32_t Instance, uint32_t *pPowerMode)
+int32_t BSP_RANGING_SENSOR_GetPowerMode(const uint32_t Instance, uint32_t *pPowerMode)
 {
   int32_t ret;
 
@@ -551,7 +549,7 @@ static int32_t vl53l5cx_i2c_recover(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(VL53L5A1_LP_PORT, &GPIO_InitStruct);
   HAL_GPIO_WritePin(VL53L5A1_LP_PORT, VL53L5A1_LP_PIN, GPIO_PIN_SET);
-  
+
   GPIO_InitStruct.Pin = BUS_I2C2_SCL_PIN;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
   GPIO_InitStruct.Pull = GPIO_PULLUP;

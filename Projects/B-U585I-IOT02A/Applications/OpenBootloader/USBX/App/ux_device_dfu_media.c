@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -120,27 +120,27 @@ UINT DFU_Read(VOID *dfu, ULONG block_number, UCHAR *data_pointer,
               ULONG length, ULONG *media_status)
 {
   UINT   Status      = UX_SUCCESS;
-  ULONG  Address_src = 0;
+  ULONG  Address_src = 0U;
 
-  if (block_number == 0)
+  if (block_number == 0U)
   {
     /* Store the values of all supported commands */
-    *data_pointer       = DFU_CMD_GETCOMMANDS;
-    *(data_pointer + 1) = DFU_CMD_SETADDRESSPOINTER;
-    *(data_pointer + 2) = DFU_CMD_ERASE ;
-    *(data_pointer + 3) = 0;
+    *data_pointer        = DFU_CMD_GETCOMMANDS;
+    *(data_pointer + 1U) = DFU_CMD_SETADDRESSPOINTER;
+    *(data_pointer + 2U) = DFU_CMD_ERASE ;
+    *(data_pointer + 3U) = 0U;
   }
-  else if (block_number > 0)
+  else if (block_number > 0U)
   {
     /* Return the physical address from which the host requests to read data */
-    Address_src = ((block_number - 2) * UX_SLAVE_REQUEST_CONTROL_MAX_LENGTH) + Address_ptr;
+    Address_src = ((block_number - 2U) * UX_SLAVE_REQUEST_CONTROL_MAX_LENGTH) + Address_ptr;
 
     /* Read Memory */
     if (DFU_ReadMemory(Address_src, data_pointer, length) != UX_SUCCESS)
     {
       /* Set DFU media Status Error */
       dfu_status = UX_SLAVE_CLASS_DFU_MEDIA_STATUS_ERROR;
-      dfu_status += UX_SLAVE_CLASS_DFU_STATUS_ERROR_WRITE << 4;
+      dfu_status += UX_SLAVE_CLASS_DFU_STATUS_ERROR_WRITE << 4U;
 
       /* syncs the USB DFU device state */
       ux_device_class_dfu_state_sync(dfu);
@@ -149,7 +149,7 @@ UINT DFU_Read(VOID *dfu, ULONG block_number, UCHAR *data_pointer,
     {
       /* Set DFU Status OK */
       dfu_status = UX_SLAVE_CLASS_DFU_MEDIA_STATUS_OK;
-      dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4;
+      dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4U;
 
       /* syncs the USB DFU device state */
       ux_device_class_dfu_state_sync(dfu);
@@ -187,15 +187,15 @@ UINT DFU_Write(VOID *dfu, ULONG block_number, UCHAR *data_pointer,
 
   ux_utility_memory_copy(ux_dfu_download.data_ptr, data_pointer, length);
 
-  if ((block_number == 0) && (*data_pointer == DFU_CMD_ERASE))
+  if ((block_number == 0U) && (*data_pointer == DFU_CMD_ERASE))
   {
     /* Set the time necessary for an erase operation */
     dfu_polltimeout = DFU_MEDIA_ERASE_TIME;
 
     /* Set DFU media status Busy, dfu polltimeout in erase phase */
     dfu_status =  UX_SLAVE_CLASS_DFU_MEDIA_STATUS_BUSY;
-    dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4;
-    dfu_status += (uint8_t)(dfu_polltimeout) << 8;
+    dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4U;
+    dfu_status += (uint8_t)(dfu_polltimeout) << 8U;
   }
   else
   {
@@ -204,8 +204,8 @@ UINT DFU_Write(VOID *dfu, ULONG block_number, UCHAR *data_pointer,
 
     /* Set DFU media status Busy, dfu polltimeout in program phase */
     dfu_status =  UX_SLAVE_CLASS_DFU_MEDIA_STATUS_BUSY;
-    dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4;
-    dfu_status += (uint8_t)(dfu_polltimeout) << 8;
+    dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4U;
+    dfu_status += (uint8_t)(dfu_polltimeout) << 8U;
   }
 
   /* Put a message queue to usbx_dfu_download_thread_entry */
@@ -242,10 +242,10 @@ UINT DFU_Leave(VOID *dfu, UX_SLAVE_TRANSFER *transfer)
     if (setup[UX_SETUP_REQUEST] == UX_SLAVE_CLASS_DFU_COMMAND_DOWNLOAD)
     {
 
-      if ((setup[UX_SETUP_LENGTH] == 0) && (setup[UX_SETUP_LENGTH + 1] == 0))
+      if ((setup[UX_SETUP_LENGTH] == 0U) && (setup[UX_SETUP_LENGTH + 1U] == 0U))
       {
         /* Set USB jump token */
-        JumpUsb = 1;
+        JumpUsb = 1U;
 
         status = UX_SUCCESS;
       }
@@ -276,7 +276,7 @@ void usbx_dfu_download_thread_entry(ULONG arg)
     /* Check the completion code and the actual flags returned. */
     if (status == UX_SUCCESS)
     {
-      if (ux_dfu_download.wblock_num == 0)
+      if (ux_dfu_download.wblock_num == 0U)
       {
         Command = *(ux_dfu_download.data_ptr);
 
@@ -287,14 +287,14 @@ void usbx_dfu_download_thread_entry(ULONG arg)
 
             /* Get address pointer value used for computing the start address
               for Read and Write memory operations */
-            Address_ptr  =  *(ux_dfu_download.data_ptr + 1) ;
-            Address_ptr += *(ux_dfu_download.data_ptr + 2) << 8 ;
-            Address_ptr += *(ux_dfu_download.data_ptr + 3) << 16 ;
-            Address_ptr += *(ux_dfu_download.data_ptr + 4) << 24 ;
+            Address_ptr  = *(ux_dfu_download.data_ptr + 1U);
+            Address_ptr += *(ux_dfu_download.data_ptr + 2U) << 8U;
+            Address_ptr += *(ux_dfu_download.data_ptr + 3U) << 16U;
+            Address_ptr += *(ux_dfu_download.data_ptr + 4U) << 24U;
 
             /* Set DFU Status OK */
             dfu_status  =  UX_SLAVE_CLASS_DFU_MEDIA_STATUS_OK;
-            dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4;
+            dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4U;
 
             /* Update USB DFU state machine */
             ux_device_class_dfu_state_sync(dfu);
@@ -305,16 +305,16 @@ void usbx_dfu_download_thread_entry(ULONG arg)
 
             /* Get address pointer value to erase one page of the internal
                media memory. */
-            Address_ptr  =  *(ux_dfu_download.data_ptr + 1);
-            Address_ptr += *(ux_dfu_download.data_ptr + 2) << 8;
-            Address_ptr += *(ux_dfu_download.data_ptr + 3) << 16;
-            Address_ptr += *(ux_dfu_download.data_ptr + 4) << 24;
+            Address_ptr  = *(ux_dfu_download.data_ptr + 1U);
+            Address_ptr += *(ux_dfu_download.data_ptr + 2U) << 8U;
+            Address_ptr += *(ux_dfu_download.data_ptr + 3U) << 16U;
+            Address_ptr += *(ux_dfu_download.data_ptr + 4U) << 24U;
 
             /* Erase memory */
             if (DFU_Erase(Address_ptr) != UX_SUCCESS)
             {
               dfu_status  =  UX_SLAVE_CLASS_DFU_MEDIA_STATUS_ERROR;
-              dfu_status += UX_SLAVE_CLASS_DFU_STATUS_ERROR_ERASE << 4;
+              dfu_status += UX_SLAVE_CLASS_DFU_STATUS_ERROR_ERASE << 4U;
             }
             else
             {
@@ -330,14 +330,14 @@ void usbx_dfu_download_thread_entry(ULONG arg)
 
           case DFU_CMD_WRITE_PROTECT:
             /* Get the write protect length */
-            Length = *(ux_dfu_download.data_ptr + 1);
+            Length = *(ux_dfu_download.data_ptr + 1U);
 
             /* Write protect command */
-            DFU_WriteProtect((ux_dfu_download.data_ptr + 2), Length);
+            DFU_WriteProtect((ux_dfu_download.data_ptr + 2U), Length);
 
             /* Set DFU Status OK */
             dfu_status = UX_SLAVE_CLASS_DFU_MEDIA_STATUS_OK;
-            dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4;
+            dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4U;
 
             /* syncs the USB DFU device state */
             ux_device_class_dfu_state_sync(dfu);
@@ -349,7 +349,7 @@ void usbx_dfu_download_thread_entry(ULONG arg)
 
             /* Set DFU Status OK */
             dfu_status = UX_SLAVE_CLASS_DFU_MEDIA_STATUS_OK;
-            dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4;
+            dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4U;
 
             /* syncs the USB DFU device state */
             ux_device_class_dfu_state_sync(dfu);
@@ -361,7 +361,7 @@ void usbx_dfu_download_thread_entry(ULONG arg)
 
             /* Set DFU Status OK */
             dfu_status = UX_SLAVE_CLASS_DFU_MEDIA_STATUS_OK;
-            dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4;
+            dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4U;
 
             /* syncs the USB DFU device state */
             ux_device_class_dfu_state_sync(dfu);
@@ -373,7 +373,7 @@ void usbx_dfu_download_thread_entry(ULONG arg)
 
             /* Set DFU Status OK */
             dfu_status = UX_SLAVE_CLASS_DFU_MEDIA_STATUS_OK;
-            dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4;
+            dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4U;
 
             /* syncs the USB DFU device state */
             ux_device_class_dfu_state_sync(dfu);
@@ -395,13 +395,13 @@ void usbx_dfu_download_thread_entry(ULONG arg)
         {
           /* Set DFU media Status Error */
           dfu_status = UX_SLAVE_CLASS_DFU_MEDIA_STATUS_ERROR;
-          dfu_status += UX_SLAVE_CLASS_DFU_STATUS_ERROR_WRITE << 4;
+          dfu_status += UX_SLAVE_CLASS_DFU_STATUS_ERROR_WRITE << 4U;
         }
         else
         {
           /* Set DFU Status OK */
           dfu_status = UX_SLAVE_CLASS_DFU_MEDIA_STATUS_OK;
-          dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4;
+          dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4U;
         }
 
         /* Update USB DFU state machine */
@@ -410,7 +410,7 @@ void usbx_dfu_download_thread_entry(ULONG arg)
     }
     else
     {
-      tx_thread_sleep(1);
+      tx_thread_sleep(1U);
     }
   }
 }
@@ -432,7 +432,7 @@ UINT DFU_Device_ConnectionCallback(ULONG Device_State)
   else if (Device_State == UX_DEVICE_ATTACHED)
   {
     /* Notify the OpenBL the detection of a USB interface */
-    UsbSofDetected = 1;
+    UsbSofDetected = 1U;
   }
 
   return UX_SUCCESS;
@@ -474,13 +474,13 @@ void DFU_Jump(void)
   HAL_PCD_Stop(&hpcd_USB_OTG_FS);
 
   /* Jump to address */
-  if (Address_ptr != 0)
+  if (Address_ptr != 0U)
   {
     OPENBL_USB_Jump(Address_ptr);
   }
   else
   {
-    OPENBL_USB_Jump(USBD_DFU_APP_DEFAULT_ADD);
+    OPENBL_USB_Jump(USBD_DFU_APP_DEFAULT_ADDRESS);
   }
 }
 

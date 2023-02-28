@@ -157,7 +157,7 @@ static DMA_QListTypeDef  DCMIQueue;
   */
 static int32_t GetSize(uint32_t Resolution, uint32_t PixelFormat);
 static void DCMI_MspInit(DCMI_HandleTypeDef *hdcmi);
-static void DCMI_MspDeInit(DCMI_HandleTypeDef *hdcmi);
+static void DCMI_MspDeInit(const DCMI_HandleTypeDef *hdcmi);
 #if (USE_HAL_DCMI_REGISTER_CALLBACKS > 0)
 static void DCMI_LineEventCallback(DCMI_HandleTypeDef *hdcmi);
 static void DCMI_FrameEventCallback(DCMI_HandleTypeDef *hdcmi);
@@ -541,7 +541,7 @@ int32_t BSP_CAMERA_Resume(uint32_t Instance)
   *         from the camera sensor OV5640
   * @retval Component status
   */
-int32_t BSP_CAMERA_GetCapabilities(uint32_t Instance, CAMERA_Capabilities_t *Capabilities)
+int32_t BSP_CAMERA_GetCapabilities(const uint32_t Instance, CAMERA_Capabilities_t *Capabilities)
 {
   int32_t ret;
 
@@ -1618,7 +1618,7 @@ static void DCMI_MspInit(DCMI_HandleTypeDef *hdcmi)
   * @param  hdcmi  DCMI handle
   * @retval None
   */
-static void DCMI_MspDeInit(DCMI_HandleTypeDef *hdcmi)
+static void DCMI_MspDeInit(const DCMI_HandleTypeDef *hdcmi)
 {
   GPIO_InitTypeDef gpio_init_structure;
 

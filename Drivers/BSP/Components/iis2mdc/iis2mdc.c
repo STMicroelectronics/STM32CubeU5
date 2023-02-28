@@ -20,20 +20,20 @@
 #include "iis2mdc.h"
 
 /** @addtogroup BSP BSP
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup Component Component
- * @{
- */
+  * @{
+  */
 
 /** @defgroup IIS2MDC IIS2MDC
- * @{
- */
+  * @{
+  */
 
 /** @defgroup IIS2MDC_Exported_Variables IIS2MDC Exported Variables
- * @{
- */
+  * @{
+  */
 
 IIS2MDC_CommonDrv_t IIS2MDC_COMMON_Driver =
 {
@@ -57,29 +57,29 @@ IIS2MDC_MAG_Drv_t IIS2MDC_MAG_Driver =
 };
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup IIS2MDC_Private_Function_Prototypes IIS2MDC Private Function Prototypes
- * @{
- */
+  * @{
+  */
 
 static int32_t ReadMagRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t Length);
 static int32_t WriteMagRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t Length);
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup IIS2MDC_Exported_Functions IIS2MDC Exported Functions
- * @{
- */
+  * @{
+  */
 
 /**
- * @brief  Register Component Bus IO operations
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Register Component Bus IO operations
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_RegisterBusIO(IIS2MDC_Object_t *pObj, IIS2MDC_IO_t *pIO)
 {
   int32_t ret = IIS2MDC_OK;
@@ -100,6 +100,7 @@ int32_t IIS2MDC_RegisterBusIO(IIS2MDC_Object_t *pObj, IIS2MDC_IO_t *pIO)
 
     pObj->Ctx.read_reg  = ReadMagRegWrap;
     pObj->Ctx.write_reg = WriteMagRegWrap;
+    pObj->Ctx.mdelay    = pIO->Delay;
     pObj->Ctx.handle    = pObj;
 
     if (pObj->IO.Init == NULL)
@@ -131,10 +132,10 @@ int32_t IIS2MDC_RegisterBusIO(IIS2MDC_Object_t *pObj, IIS2MDC_IO_t *pIO)
 }
 
 /**
- * @brief  Initialize the IIS2MDC sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Initialize the IIS2MDC sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_Init(IIS2MDC_Object_t *pObj)
 {
   /* Enable BDU */
@@ -167,10 +168,10 @@ int32_t IIS2MDC_Init(IIS2MDC_Object_t *pObj)
 }
 
 /**
- * @brief  Deinitialize the IIS2MDC magnetometer sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Deinitialize the IIS2MDC magnetometer sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_DeInit(IIS2MDC_Object_t *pObj)
 {
   /* Disable the component */
@@ -185,11 +186,11 @@ int32_t IIS2MDC_DeInit(IIS2MDC_Object_t *pObj)
 }
 
 /**
- * @brief  Read component ID
- * @param  pObj the device pObj
- * @param  Id the WHO_AM_I value
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Read component ID
+  * @param  pObj the device pObj
+  * @param  Id the WHO_AM_I value
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_ReadID(IIS2MDC_Object_t *pObj, uint8_t *Id)
 {
   if (iis2mdc_device_id_get(&(pObj->Ctx), Id) != IIS2MDC_OK)
@@ -201,11 +202,11 @@ int32_t IIS2MDC_ReadID(IIS2MDC_Object_t *pObj, uint8_t *Id)
 }
 
 /**
- * @brief  Get IIS2MDC magnetometer sensor capabilities
- * @param  pObj Component object pointer
- * @param  Capabilities pointer to IIS2MDC magnetometer sensor capabilities
- * @retval Component status
- */
+  * @brief  Get IIS2MDC magnetometer sensor capabilities
+  * @param  pObj Component object pointer
+  * @param  Capabilities pointer to IIS2MDC magnetometer sensor capabilities
+  * @retval Component status
+  */
 int32_t IIS2MDC_GetCapabilities(IIS2MDC_Object_t *pObj, IIS2MDC_Capabilities_t *Capabilities)
 {
   /* Prevent unused argument(s) compilation warning */
@@ -225,10 +226,10 @@ int32_t IIS2MDC_GetCapabilities(IIS2MDC_Object_t *pObj, IIS2MDC_Capabilities_t *
 }
 
 /**
- * @brief Enable the IIS2MDC magnetometer sensor
- * @param pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief Enable the IIS2MDC magnetometer sensor
+  * @param pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_MAG_Enable(IIS2MDC_Object_t *pObj)
 {
   /* Check if the component is already enabled */
@@ -249,10 +250,10 @@ int32_t IIS2MDC_MAG_Enable(IIS2MDC_Object_t *pObj)
 }
 
 /**
- * @brief Disable the IIS2MDC magnetometer sensor
- * @param pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief Disable the IIS2MDC magnetometer sensor
+  * @param pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_MAG_Disable(IIS2MDC_Object_t *pObj)
 {
   /* Check if the component is already disabled */
@@ -273,11 +274,11 @@ int32_t IIS2MDC_MAG_Disable(IIS2MDC_Object_t *pObj)
 }
 
 /**
- * @brief  Get the IIS2MDC magnetometer sensor sensitivity
- * @param  pObj the device pObj
- * @param  Sensitivity pointer
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the IIS2MDC magnetometer sensor sensitivity
+  * @param  pObj the device pObj
+  * @param  Sensitivity pointer
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_MAG_GetSensitivity(IIS2MDC_Object_t *pObj, float *Sensitivity)
 {
   UNUSED(pObj);
@@ -287,11 +288,11 @@ int32_t IIS2MDC_MAG_GetSensitivity(IIS2MDC_Object_t *pObj, float *Sensitivity)
 }
 
 /**
- * @brief  Get the IIS2MDC magnetometer sensor output data rate
- * @param  pObj the device pObj
- * @param  Odr pointer where the output data rate is written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the IIS2MDC magnetometer sensor output data rate
+  * @param  pObj the device pObj
+  * @param  Odr pointer where the output data rate is written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_MAG_GetOutputDataRate(IIS2MDC_Object_t *pObj, float *Odr)
 {
   int32_t ret = IIS2MDC_OK;
@@ -330,11 +331,11 @@ int32_t IIS2MDC_MAG_GetOutputDataRate(IIS2MDC_Object_t *pObj, float *Odr)
 }
 
 /**
- * @brief  Set the IIS2MDC magnetometer sensor output data rate
- * @param  pObj the device pObj
- * @param  Odr the output data rate value to be set
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the IIS2MDC magnetometer sensor output data rate
+  * @param  pObj the device pObj
+  * @param  Odr the output data rate value to be set
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_MAG_SetOutputDataRate(IIS2MDC_Object_t *pObj, float Odr)
 {
   iis2mdc_odr_t new_odr;
@@ -354,11 +355,11 @@ int32_t IIS2MDC_MAG_SetOutputDataRate(IIS2MDC_Object_t *pObj, float Odr)
 
 
 /**
- * @brief  Get the IIS2MDC magnetometer sensor full scale
- * @param  pObj the device pObj
- * @param  FullScale pointer where the full scale is written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the IIS2MDC magnetometer sensor full scale
+  * @param  pObj the device pObj
+  * @param  FullScale pointer where the full scale is written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_MAG_GetFullScale(IIS2MDC_Object_t *pObj, int32_t *FullScale)
 {
   UNUSED(pObj);
@@ -368,11 +369,11 @@ int32_t IIS2MDC_MAG_GetFullScale(IIS2MDC_Object_t *pObj, int32_t *FullScale)
 }
 
 /**
- * @brief  Set the IIS2MDC magnetometer sensor full scale
- * @param  pObj the device pObj
- * @param  FullScale the functional full scale to be set
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the IIS2MDC magnetometer sensor full scale
+  * @param  pObj the device pObj
+  * @param  FullScale the functional full scale to be set
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_MAG_SetFullScale(IIS2MDC_Object_t *pObj, int32_t FullScale)
 {
   UNUSED(pObj);
@@ -381,11 +382,11 @@ int32_t IIS2MDC_MAG_SetFullScale(IIS2MDC_Object_t *pObj, int32_t FullScale)
 }
 
 /**
- * @brief  Get the IIS2MDC magnetometer sensor raw axes
- * @param  pObj the device pObj
- * @param  Value pointer where the raw values of the axes are written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the IIS2MDC magnetometer sensor raw axes
+  * @param  pObj the device pObj
+  * @param  Value pointer where the raw values of the axes are written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_MAG_GetAxesRaw(IIS2MDC_Object_t *pObj, IIS2MDC_AxesRaw_t *Value)
 {
   iis2mdc_axis3bit16_t data_raw;
@@ -405,11 +406,11 @@ int32_t IIS2MDC_MAG_GetAxesRaw(IIS2MDC_Object_t *pObj, IIS2MDC_AxesRaw_t *Value)
 }
 
 /**
- * @brief  Get the IIS2MDC magnetometer sensor axes
- * @param  pObj the device pObj
- * @param  MagneticField pointer where the values of the axes are written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the IIS2MDC magnetometer sensor axes
+  * @param  pObj the device pObj
+  * @param  MagneticField pointer where the values of the axes are written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_MAG_GetAxes(IIS2MDC_Object_t *pObj, IIS2MDC_Axes_t *MagneticField)
 {
   iis2mdc_axis3bit16_t data_raw;
@@ -433,12 +434,12 @@ int32_t IIS2MDC_MAG_GetAxes(IIS2MDC_Object_t *pObj, IIS2MDC_Axes_t *MagneticFiel
 }
 
 /**
- * @brief  Get the IIS2MDC register value for magnetic sensor
- * @param  pObj the device pObj
- * @param  Reg address to be read
- * @param  Data pointer where the value is written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the IIS2MDC register value for magnetic sensor
+  * @param  pObj the device pObj
+  * @param  Reg address to be read
+  * @param  Data pointer where the value is written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_Read_Reg(IIS2MDC_Object_t *pObj, uint8_t Reg, uint8_t *Data)
 {
   if (iis2mdc_read_reg(&(pObj->Ctx), Reg, Data, 1) != IIS2MDC_OK)
@@ -450,12 +451,12 @@ int32_t IIS2MDC_Read_Reg(IIS2MDC_Object_t *pObj, uint8_t Reg, uint8_t *Data)
 }
 
 /**
- * @brief  Set the IIS2MDC register value for magnetic sensor
- * @param  pObj the device pObj
- * @param  Reg address to be written
- * @param  Data value to be written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the IIS2MDC register value for magnetic sensor
+  * @param  pObj the device pObj
+  * @param  Reg address to be written
+  * @param  Data value to be written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_Write_Reg(IIS2MDC_Object_t *pObj, uint8_t Reg, uint8_t Data)
 {
   if (iis2mdc_write_reg(&(pObj->Ctx), Reg, &Data, 1) != IIS2MDC_OK)
@@ -467,11 +468,11 @@ int32_t IIS2MDC_Write_Reg(IIS2MDC_Object_t *pObj, uint8_t Reg, uint8_t Data)
 }
 
 /**
- * @brief  Get the IIS2MDC MAG data ready bit value
- * @param  pObj the device pObj
- * @param  Status the status of data ready bit
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the IIS2MDC MAG data ready bit value
+  * @param  pObj the device pObj
+  * @param  Status the status of data ready bit
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_MAG_Get_DRDY_Status(IIS2MDC_Object_t *pObj, uint8_t *Status)
 {
   if (iis2mdc_mag_data_ready_get(&(pObj->Ctx), Status) != IIS2MDC_OK)
@@ -483,11 +484,11 @@ int32_t IIS2MDC_MAG_Get_DRDY_Status(IIS2MDC_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Get the IIS2MDC MAG initialization status
- * @param  pObj the device pObj
- * @param  Status 1 if initialized, 0 otherwise
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the IIS2MDC MAG initialization status
+  * @param  pObj the device pObj
+  * @param  Status 1 if initialized, 0 otherwise
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t IIS2MDC_MAG_Get_Init_Status(IIS2MDC_Object_t *pObj, uint8_t *Status)
 {
   if (pObj == NULL)
@@ -501,21 +502,21 @@ int32_t IIS2MDC_MAG_Get_Init_Status(IIS2MDC_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup IIS2MDC_Private_Functions IIS2MDC Private Functions
- * @{
- */
+  * @{
+  */
 
 /**
- * @brief  Wrap Read register component function to Bus IO function
- * @param  Handle the device handler
- * @param  Reg the register address
- * @param  pData the stored data pointer
- * @param  Length the length
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Wrap Read register component function to Bus IO function
+  * @param  Handle the device handler
+  * @param  Reg the register address
+  * @param  pData the stored data pointer
+  * @param  Length the length
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t ReadMagRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t Length)
 {
   IIS2MDC_Object_t *pObj = (IIS2MDC_Object_t *)Handle;
@@ -533,13 +534,13 @@ static int32_t ReadMagRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_
 }
 
 /**
- * @brief  Wrap Write register component function to Bus IO function
- * @param  Handle the device handler
- * @param  Reg the register address
- * @param  pData the stored data pointer
- * @param  Length the length
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Wrap Write register component function to Bus IO function
+  * @param  Handle the device handler
+  * @param  Reg the register address
+  * @param  pData the stored data pointer
+  * @param  Length the length
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t WriteMagRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t Length)
 {
   IIS2MDC_Object_t *pObj = (IIS2MDC_Object_t *)Handle;

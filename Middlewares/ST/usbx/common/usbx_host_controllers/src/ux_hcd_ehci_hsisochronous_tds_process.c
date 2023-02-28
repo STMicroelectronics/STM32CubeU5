@@ -35,7 +35,7 @@
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _ux_hcd_ehci_hsisochronous_tds_process              PORTABLE C      */
-/*                                                           6.1.2        */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -58,7 +58,7 @@
 /*    (ux_transfer_request_completion_function)                           */
 /*                                          Transfer Completion function  */
 /*    _ux_hcd_ehci_register_read            Read EHCI register            */
-/*    _ux_utility_semaphore_put             Put semaphore                 */
+/*    _ux_host_semaphore_put                Put semaphore                 */
 /*    _ux_utility_physical_address          Get physical address          */
 /*                                                                        */
 /*  CALLED BY                                                             */
@@ -75,6 +75,12 @@
 /*  11-09-2020     Chaoqiong Xiao           Modified comment(s),          */
 /*                                            fixed compile warnings,     */
 /*                                            resulting in version 6.1.2  */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            refined macros names,       */
+/*                                            resulting in version 6.1.10 */
+/*  07-29-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            improved uframe handling,   */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 UX_EHCI_HSISO_TD* _ux_hcd_ehci_hsisochronous_tds_process(
@@ -217,8 +223,18 @@ UINT                            i;
             fr_td -> ux_ehci_hsiso_td_frload = (UCHAR)(fr_td -> ux_ehci_hsiso_td_frload & ~(1u << frindex));
             ed -> ux_ehci_hsiso_ed_frload = (USHORT)(ed -> ux_ehci_hsiso_ed_frload & ~(1u << frindex));
 
+            /* HC processed.  */
+            ed -> ux_ehci_hsiso_ed_fr_hc ++;
+
+            /* Unlink it from iTD.  */
+            fr_td -> ux_ehci_hsiso_td_fr_transfer[frindex & 1u] = UX_NULL;
+
             /* Handle the request.  */
             transfer = ed -> ux_ehci_hsiso_ed_transfer_head;
+
+            /* If there is no transfer linked to, just ignore it.  */
+            if (transfer == UX_NULL)
+                break;
 
             /* Convert error code to completion code.  */
             if (control & UX_EHCI_HSISO_STATUS_DATA_BUFFER_ERR)
@@ -238,12 +254,6 @@ UINT                            i;
             /* Save to actual length.  */
             transfer -> ux_transfer_request_actual_length = trans_bytes;
 
-            /* HC processed.  */
-            ed -> ux_ehci_hsiso_ed_fr_hc ++;
-
-            /* Unlink it from iTD.  */
-            fr_td -> ux_ehci_hsiso_td_fr_transfer[frindex & 1u] = UX_NULL;
-
             /* Unlink it from request list head.  */
             ed -> ux_ehci_hsiso_ed_transfer_head =
                     transfer -> ux_transfer_request_next_transfer_request;
@@ -257,7 +267,7 @@ UINT                            i;
                 transfer -> ux_transfer_request_completion_function(transfer);
 
             /* Put semaphore.  */
-            _ux_utility_semaphore_put(&transfer -> ux_transfer_request_semaphore);
+            _ux_host_semaphore_put(&transfer -> ux_transfer_request_semaphore);
 
         } /* for (;i < n_fr;)  */
     }
@@ -442,6 +452,14 @@ UINT                            i;
         } /* for(i = 0; i < n_fr; )  */
 
     } /* if (ed -> ux_ehci_hsiso_ed_transfer_first_new) */
+
+    /* If there is no transfer, need start again any way.  */
+    if (ed -> ux_ehci_hsiso_ed_frload == 0)
+    {
+        ed -> ux_ehci_hsiso_ed_frstart = 0xFF;
+        ed -> ux_ehci_hsiso_ed_fr_sw = 0;
+        ed -> ux_ehci_hsiso_ed_fr_hc = 0;
+    }
 
    /* Return next iTD in scan list.  */
    return(next_scan_td);

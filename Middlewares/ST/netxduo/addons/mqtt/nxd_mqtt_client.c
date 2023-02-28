@@ -52,7 +52,9 @@ static UINT _nxd_mqtt_client_create_internal(NXD_MQTT_CLIENT *client_ptr, CHAR *
                                              CHAR *client_id, UINT client_id_length,
                                              NX_IP *ip_ptr, NX_PACKET_POOL *pool_ptr,
                                              VOID *stack_ptr, ULONG stack_size, UINT mqtt_thread_priority);
-static UINT _nxd_mqtt_packet_allocate(NXD_MQTT_CLIENT *client_ptr, NX_PACKET **packet_ptr);
+static UINT _nxd_mqtt_packet_allocate(NXD_MQTT_CLIENT *client_ptr, NX_PACKET **packet_ptr, ULONG wait_option);
+static UINT _nxd_mqtt_packet_send(NXD_MQTT_CLIENT *client_ptr, NX_PACKET *packet_ptr, UINT wait_option);
+static UINT _nxd_mqtt_packet_receive(NXD_MQTT_CLIENT *client_ptr, NX_PACKET **packet_ptr, UINT wait_option);
 static UINT _nxd_mqtt_copy_transmit_packet(NXD_MQTT_CLIENT *client_ptr, NX_PACKET *packet_ptr, NX_PACKET **new_packet_ptr,
                                            USHORT packet_id, UCHAR set_duplicate_flag, UINT wait_option);
 static VOID _nxd_mqtt_release_transmit_packet(NXD_MQTT_CLIENT *client_ptr, NX_PACKET *packet_ptr, NX_PACKET *previous_packet_ptr);
@@ -246,7 +248,7 @@ ULONG  bytes_copied;
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_client_sub_unsub                          PORTABLE C      */
-/*                                                           6.1.2        */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -282,8 +284,7 @@ ULONG  bytes_copied;
 /*    _nxd_mqtt_client_set_fixed_header                                   */
 /*    _nxd_mqtt_client_append_message                                     */
 /*    tx_mutex_put                                                        */
-/*    nx_tcp_socket_send                                                  */
-/*    nx_secure_tls_session_send                                          */
+/*    _nxd_mqtt_packet_send                                               */
 /*    nx_packet_release                                                   */
 /*    _nxd_mqtt_copy_transmit_packet                                      */
 /*                                                                        */
@@ -302,6 +303,12 @@ ULONG  bytes_copied;
 /*  11-09-2020     Yuxin Zhou               Modified comment(s), and      */
 /*                                            added packet id parameter,  */
 /*                                            resulting in version 6.1.2  */
+/*  07-29-2022     Spencer McDonough        Modified comment(s),          */
+/*                                            improved internal logic,    */
+/*                                            resulting in version 6.1.12 */
+/*  10-31-2022     Bo Chen                  Modified comment(s), improved */
+/*                                            the logic of sending packet,*/
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 UINT _nxd_mqtt_client_sub_unsub(NXD_MQTT_CLIENT *client_ptr, UINT op,
@@ -332,7 +339,7 @@ UCHAR               temp_data[2];
         return(NXD_MQTT_NOT_CONNECTED);
     }
 
-    status = _nxd_mqtt_packet_allocate(client_ptr, &packet_ptr);
+    status = _nxd_mqtt_packet_allocate(client_ptr, &packet_ptr, NX_WAIT_FOREVER);
     if (status)
     {
         tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
@@ -461,19 +468,7 @@ UCHAR               temp_data[2];
     tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
 
     /* Ready to send the connect message to the server. */
-#ifdef NX_SECURE_ENABLE
-    if (client_ptr -> nxd_mqtt_client_use_tls)
-    {
-        status = nx_secure_tls_session_send(&(client_ptr -> nxd_mqtt_tls_session), packet_ptr, NX_WAIT_FOREVER);
-    }
-    else
-    {
-        status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, NX_WAIT_FOREVER);
-    }
-#else
-    status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, NX_WAIT_FOREVER);
-#endif /* NX_SECURE_ENABLE */
-
+    status = _nxd_mqtt_packet_send(client_ptr, packet_ptr, NX_WAIT_FOREVER);
 
     if (status)
     {
@@ -492,7 +487,7 @@ UCHAR               temp_data[2];
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_packet_allocate                           PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -539,43 +534,200 @@ UCHAR               temp_data[2];
 /*  05-19-2020     Yuxin Zhou               Initial Version 6.0           */
 /*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  07-29-2022     Spencer McDonough        Modified comment(s), and      */
+/*                                            improved internal logic,    */
+/*                                            resulting in version 6.1.12 */
+/*  10-31-2022     Bo Chen                  Modified comment(s), supported*/
+/*                                            mqtt over websocket,        */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
-static UINT _nxd_mqtt_packet_allocate(NXD_MQTT_CLIENT *client_ptr, NX_PACKET **packet_ptr)
+static UINT _nxd_mqtt_packet_allocate(NXD_MQTT_CLIENT *client_ptr, NX_PACKET **packet_ptr, ULONG wait_option)
 {
 UINT status = NXD_MQTT_SUCCESS;
 
+#ifdef NXD_MQTT_OVER_WEBSOCKET
+    if (client_ptr -> nxd_mqtt_client_use_websocket)
+    {
+
+        /* Use WebSocket packet allocate since it is able to count for WebSocket-related header space */
+        status = nx_websocket_client_packet_allocate(&(client_ptr -> nxd_mqtt_client_websocket), packet_ptr, wait_option);
+    }
+    else
+#endif /* NXD_MQTT_OVER_WEBSOCKET */
 #ifdef NX_SECURE_ENABLE
     if (client_ptr -> nxd_mqtt_client_use_tls)
     {
         /* Use TLS packet allocate.  The TLS packet allocate is able to count for 
            TLS-related header space including crypto initial vector area. */
         status = nx_secure_tls_packet_allocate(&client_ptr -> nxd_mqtt_tls_session, client_ptr -> nxd_mqtt_client_packet_pool_ptr,
-                                               packet_ptr, TX_WAIT_FOREVER);
+                                               packet_ptr, wait_option);
     }
     /* Allocate a packet  */
     else
     {
-#endif
+#endif /* NX_SECURE_ENABLE */
         if (client_ptr -> nxd_mqtt_client_socket.nx_tcp_socket_connect_ip.nxd_ip_version == NX_IP_VERSION_V4)
         {
             status = nx_packet_allocate(client_ptr -> nxd_mqtt_client_packet_pool_ptr, packet_ptr, NX_IPv4_TCP_PACKET,
-                                        TX_WAIT_FOREVER);
+                                        wait_option);
         }
         else
         {
             status = nx_packet_allocate(client_ptr -> nxd_mqtt_client_packet_pool_ptr, packet_ptr, NX_IPv6_TCP_PACKET,
-                                        TX_WAIT_FOREVER);
+                                        wait_option);
         }
 #ifdef NX_SECURE_ENABLE
     }
-#endif
+#endif /* NX_SECURE_ENABLE */
 
     if (status != NX_SUCCESS)
     {
         return(NXD_MQTT_PACKET_POOL_FAILURE);
     }
+
     return(NXD_MQTT_SUCCESS);
+}
+
+/**************************************************************************/
+/*                                                                        */
+/*  FUNCTION                                               RELEASE        */
+/*                                                                        */
+/*    _nxd_mqtt_packet_send                               PORTABLE C      */
+/*                                                           6.2.0        */
+/*  AUTHOR                                                                */
+/*                                                                        */
+/*    Yuxin Zhou, Microsoft Corporation                                   */
+/*                                                                        */
+/*  DESCRIPTION                                                           */
+/*                                                                        */
+/*    This function sends out a packet.                                   */
+/*                                                                        */
+/*                                                                        */
+/*  INPUT                                                                 */
+/*                                                                        */
+/*    client_ptr                            Pointer to MQTT Client        */
+/*    packet_ptr                            Pointer to packet             */
+/*    wait_option                           Timeout value                 */
+/*                                                                        */
+/*  OUTPUT                                                                */
+/*                                                                        */
+/*    status                                Completion status             */
+/*                                                                        */
+/*  CALLS                                                                 */
+/*                                                                        */
+/*    nx_websocket_client_send                                            */
+/*    nx_secure_tls_session_send                                          */
+/*    nx_tcp_socket_send                                                  */
+/*                                                                        */
+/*  CALLED BY                                                             */
+/*                                                                        */
+/*                                                                        */
+/*  RELEASE HISTORY                                                       */
+/*                                                                        */
+/*    DATE              NAME                      DESCRIPTION             */
+/*                                                                        */
+/*  10-31-2022     Bo Chen                  Initial Version 6.2.0         */
+/*                                                                        */
+/**************************************************************************/
+static UINT _nxd_mqtt_packet_send(NXD_MQTT_CLIENT *client_ptr, NX_PACKET *packet_ptr, UINT wait_option)
+{
+UINT status = NXD_MQTT_SUCCESS;
+
+#ifdef NXD_MQTT_OVER_WEBSOCKET
+    if (client_ptr -> nxd_mqtt_client_use_websocket)
+    {
+        status = nx_websocket_client_send(&(client_ptr -> nxd_mqtt_client_websocket), packet_ptr, NX_WEBSOCKET_OPCODE_BINARY_FRAME, NX_TRUE, wait_option);
+    }
+    else
+#endif /* NXD_MQTT_OVER_WEBSOCKET */
+
+#ifdef NX_SECURE_ENABLE
+    if (client_ptr -> nxd_mqtt_client_use_tls)
+    {
+        status = nx_secure_tls_session_send(&(client_ptr -> nxd_mqtt_tls_session), packet_ptr, wait_option);
+    }
+    else
+#endif /* NX_SECURE_ENABLE */
+    {
+        status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, wait_option);
+    }
+
+    return(status);
+}
+
+/**************************************************************************/
+/*                                                                        */
+/*  FUNCTION                                               RELEASE        */
+/*                                                                        */
+/*    _nxd_mqtt_packet_receive                            PORTABLE C      */
+/*                                                           6.2.0        */
+/*  AUTHOR                                                                */
+/*                                                                        */
+/*    Yuxin Zhou, Microsoft Corporation                                   */
+/*                                                                        */
+/*  DESCRIPTION                                                           */
+/*                                                                        */
+/*    This function receives a packet.                                    */
+/*                                                                        */
+/*                                                                        */
+/*  INPUT                                                                 */
+/*                                                                        */
+/*    client_ptr                            Pointer to MQTT Client        */
+/*    packet_ptr                            Pointer to packet             */
+/*    wait_option                           Timeout value                 */
+/*                                                                        */
+/*  OUTPUT                                                                */
+/*                                                                        */
+/*    status                                Completion status             */
+/*                                                                        */
+/*  CALLS                                                                 */
+/*                                                                        */
+/*    nx_websocket_client_receive                                         */
+/*    nx_secure_tls_session_receive                                       */
+/*    nx_tcp_socket_receive                                               */
+/*                                                                        */
+/*  CALLED BY                                                             */
+/*                                                                        */
+/*                                                                        */
+/*  RELEASE HISTORY                                                       */
+/*                                                                        */
+/*    DATE              NAME                      DESCRIPTION             */
+/*                                                                        */
+/*  10-31-2022     Bo Chen                  Initial Version 6.2.0         */
+/*                                                                        */
+/**************************************************************************/
+static UINT _nxd_mqtt_packet_receive(NXD_MQTT_CLIENT *client_ptr, NX_PACKET **packet_ptr, UINT wait_option)
+{
+UINT status = NXD_MQTT_SUCCESS;
+#ifdef NXD_MQTT_OVER_WEBSOCKET
+UINT op_code = 0;
+#endif /* NXD_MQTT_OVER_WEBSOCKET*/
+
+#ifdef NXD_MQTT_OVER_WEBSOCKET
+    if (client_ptr -> nxd_mqtt_client_use_websocket)
+    {
+        status = nx_websocket_client_receive(&(client_ptr -> nxd_mqtt_client_websocket), packet_ptr, &op_code, wait_option);
+        if ((status == NX_SUCCESS) && (op_code != NX_WEBSOCKET_OPCODE_BINARY_FRAME))
+        {
+            return(NX_INVALID_PACKET);
+        }
+    }
+    else
+#endif /* NXD_MQTT_OVER_WEBSOCKET */
+
+#ifdef NX_SECURE_ENABLE
+    if (client_ptr -> nxd_mqtt_client_use_tls)
+    {
+        status = nx_secure_tls_session_receive(&(client_ptr -> nxd_mqtt_tls_session), packet_ptr, wait_option);
+    }
+    else
+#endif /* NX_SECURE_ENABLE */
+    {
+        status = nx_tcp_socket_receive(&(client_ptr -> nxd_mqtt_client_socket), packet_ptr, wait_option);
+    }
+
+    return(status);
 }
 
 /**************************************************************************/
@@ -1194,7 +1346,7 @@ ULONG  bytes_copied;
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_process_publish                           PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -1219,7 +1371,7 @@ ULONG  bytes_copied;
 /*    [receive_notify]                      User supplied receive         */
 /*                                            callback function           */
 /*    _nxd_mqtt_packet_allocate                                           */
-/*    nx_tcp_socket_send                                                  */
+/*    _nxd_mqtt_packet_send                                               */
 /*    nx_packet_release                                                   */
 /*    nx_secure_tls_session_send                                          */
 /*    _nxd_mqtt_process_publish_packet                                    */
@@ -1237,6 +1389,9 @@ ULONG  bytes_copied;
 /*  05-19-2020     Yuxin Zhou               Initial Version 6.0           */
 /*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  10-31-2022     Bo Chen                  Modified comment(s), improved */
+/*                                            the logic of sending packet,*/
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 static UINT _nxd_mqtt_process_publish(NXD_MQTT_CLIENT *client_ptr, NX_PACKET *packet_ptr)
@@ -1372,7 +1527,7 @@ ULONG                         bytes_copied;
 
     /* Send out proper ACKs for QoS 1 and 2 messages. */
     /* Allocate a new packet so we can send out a response. */
-    status = _nxd_mqtt_packet_allocate(client_ptr, &packet_ptr);
+    status = _nxd_mqtt_packet_allocate(client_ptr, &packet_ptr, NX_WAIT_FOREVER);
     if (status)
     {
         /* Packet allocation fails. */
@@ -1422,19 +1577,9 @@ ULONG                         bytes_copied;
     }
 
     tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
-#ifdef NX_SECURE_ENABLE
-    if (client_ptr -> nxd_mqtt_client_use_tls)
-    {
-        status = nx_secure_tls_session_send(&(client_ptr -> nxd_mqtt_tls_session), packet_ptr, NX_WAIT_FOREVER);
-    }
-    else
-    {
-        status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, NX_WAIT_FOREVER);
-    }
-#else
-    status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, NX_WAIT_FOREVER);
 
-#endif /* NX_SECURE_ENABLE */
+    /* Send packet to server.  */
+    status = _nxd_mqtt_packet_send(client_ptr, packet_ptr, NX_WAIT_FOREVER);
 
     tx_mutex_get(client_ptr -> nxd_mqtt_client_mutex_ptr, TX_WAIT_FOREVER);
     if (status)
@@ -1458,7 +1603,7 @@ ULONG                         bytes_copied;
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_process_publish_response                  PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -1482,8 +1627,7 @@ ULONG                         bytes_copied;
 /*    [nxd_mqtt_client_receive_notify]      User supplied publish         */
 /*                                            callback function           */
 /*    _nxd_mqtt_release_transmit_packet                                   */
-/*    nx_tcp_socket_send                                                  */
-/*    nx_secure_tls_session_send                                          */
+/*    _nxd_mqtt_packet_send                                               */
 /*                                                                        */
 /*                                                                        */
 /*  CALLED BY                                                             */
@@ -1498,6 +1642,9 @@ ULONG                         bytes_copied;
 /*  09-30-2020     Yuxin Zhou               Modified comment(s), and      */
 /*                                            added ack receive notify,   */
 /*                                            resulting in version 6.1    */
+/*  10-31-2022     Bo Chen                  Modified comment(s), improved */
+/*                                            the logic of sending packet,*/
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 static UINT _nxd_mqtt_process_publish_response(NXD_MQTT_CLIENT *client_ptr, NX_PACKET *packet_ptr)
@@ -1573,7 +1720,7 @@ USHORT                        transmit_packet_id;
                     /* Send PUBCOMP */
 
                     /* Allocate a packet to send the response. */
-                    ret = _nxd_mqtt_packet_allocate(client_ptr, &response_packet);
+                    ret = _nxd_mqtt_packet_allocate(client_ptr, &response_packet, NX_WAIT_FOREVER);
                     if (ret)
                     {
                         return(1);
@@ -1600,19 +1747,8 @@ USHORT                        transmit_packet_id;
 
                     tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
 
-#ifdef NX_SECURE_ENABLE
-                    if (client_ptr -> nxd_mqtt_client_use_tls)
-                    {
-                        ret = nx_secure_tls_session_send(&(client_ptr -> nxd_mqtt_tls_session), response_packet, NX_WAIT_FOREVER);
-                    }
-                    else
-                    {
-                        ret = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, response_packet, NX_WAIT_FOREVER);
-                    }
-#else
-                    ret = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, response_packet, NX_WAIT_FOREVER);
-
-#endif /* NX_SECURE_ENABLE */
+                    /* Send packet to server.  */
+                    ret = _nxd_mqtt_packet_send(client_ptr, response_packet, NX_WAIT_FOREVER);
 
                     tx_mutex_get(client_ptr -> nxd_mqtt_client_mutex_ptr, TX_WAIT_FOREVER);
 
@@ -2008,7 +2144,7 @@ UCHAR       fixed_header;
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_packet_receive_process                    PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -2049,6 +2185,9 @@ UCHAR       fixed_header;
 /*  05-19-2020     Yuxin Zhou               Initial Version 6.0           */
 /*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  10-31-2022     Bo Chen                  Modified comment(s), supported*/
+/*                                            mqtt over websocket,        */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 static VOID _nxd_mqtt_packet_receive_process(NXD_MQTT_CLIENT *client_ptr)
@@ -2070,22 +2209,11 @@ ULONG      packet_length;
         tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
 
         /* Make a receive call. */
-#ifdef NX_SECURE_ENABLE
-        if (client_ptr -> nxd_mqtt_client_use_tls)
-        {
-            status = nx_secure_tls_session_receive(&(client_ptr -> nxd_mqtt_tls_session), &packet_ptr, NX_NO_WAIT);
-        }
-        else
-        {
-            status = nx_tcp_socket_receive(&client_ptr -> nxd_mqtt_client_socket, &packet_ptr, NX_NO_WAIT);
-        }
-#else
-        status = nx_tcp_socket_receive(&client_ptr -> nxd_mqtt_client_socket, &packet_ptr, NX_NO_WAIT);
-#endif /* NX_SECURE_ENABLE */
+        status = _nxd_mqtt_packet_receive(client_ptr, &packet_ptr, NX_NO_WAIT);
 
         if (status != NX_SUCCESS)
         {
-            if (status != NX_NO_PACKET)
+            if ((status != NX_NO_PACKET) && (status != NX_CONTINUE))
             {
 
                 /* Network issue. Close the MQTT session. */
@@ -2286,7 +2414,7 @@ ULONG      packet_length;
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_tcp_establish_process                     PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -2320,6 +2448,9 @@ ULONG      packet_length;
 /*  05-19-2020     Yuxin Zhou               Initial Version 6.0           */
 /*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  10-31-2022     Bo Chen                  Modified comment(s), supported*/
+/*                                            mqtt over websocket,        */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 static VOID _nxd_mqtt_tcp_establish_process(NXD_MQTT_CLIENT *client_ptr)
@@ -2357,6 +2488,36 @@ UINT       status;
     }
 #endif /* NX_SECURE_ENABLE */
 
+#ifdef NXD_MQTT_OVER_WEBSOCKET
+
+    /* If using websocket, start websocket connection.  */
+    if (client_ptr -> nxd_mqtt_client_use_websocket)
+    {
+        status = nx_websocket_client_connect(&(client_ptr -> nxd_mqtt_client_websocket), &(client_ptr -> nxd_mqtt_client_socket),
+                                             client_ptr -> nxd_mqtt_client_websocket_host, client_ptr -> nxd_mqtt_client_websocket_host_length,
+                                             client_ptr -> nxd_mqtt_client_websocket_uri_path, client_ptr -> nxd_mqtt_client_websocket_uri_path_length,
+                                             (UCHAR *)NXD_MQTT_OVER_WEBSOCKET_PROTOCOL, sizeof(NXD_MQTT_OVER_WEBSOCKET_PROTOCOL) - 1,
+                                             NX_NO_WAIT);
+
+        if (status != NX_IN_PROGRESS)
+        {
+
+            /* End connection. */
+            _nxd_mqtt_client_connection_end(client_ptr, NX_NO_WAIT);
+
+            /* Check callback function.  */
+            if (client_ptr -> nxd_mqtt_connect_notify)
+            {
+                client_ptr -> nxd_mqtt_connect_notify(client_ptr, status, client_ptr -> nxd_mqtt_connect_context);
+            }
+
+            return;
+        }
+
+        return;
+    }
+#endif /* NXD_MQTT_OVER_WEBSOCKET */
+
     /* Start to send MQTT connect packet.  */
     status = _nxd_mqtt_client_connect_packet_send(client_ptr, NX_NO_WAIT);
 
@@ -2382,7 +2543,7 @@ UINT       status;
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_tls_establish_process                     PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -2416,6 +2577,9 @@ UINT       status;
 /*  05-19-2020     Yuxin Zhou               Initial Version 6.0           */
 /*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  10-31-2022     Bo Chen                  Modified comment(s), supported*/
+/*                                            mqtt over websocket,        */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 static VOID _nxd_mqtt_tls_establish_process(NXD_MQTT_CLIENT *client_ptr)
@@ -2429,29 +2593,40 @@ UINT       status;
     {
 
         /* TLS session established.   */
-        client_ptr -> nxd_mqtt_tls_in_progress= NX_FALSE;
+        client_ptr -> nxd_mqtt_tls_in_progress = NX_FALSE;
 
-        /* Start to send MQTT connect packet.  */
-        status = _nxd_mqtt_client_connect_packet_send(client_ptr, NX_NO_WAIT);
+#ifdef NXD_MQTT_OVER_WEBSOCKET
 
-        /* Check status.  */
-        if (status)
+        /* If using websocket, start websocket connection.  */
+        if (client_ptr -> nxd_mqtt_client_use_websocket)
         {
+            status = nx_websocket_client_secure_connect(&(client_ptr -> nxd_mqtt_client_websocket), &(client_ptr -> nxd_mqtt_tls_session),
+                                                        client_ptr -> nxd_mqtt_client_websocket_host, client_ptr -> nxd_mqtt_client_websocket_host_length,
+                                                        client_ptr -> nxd_mqtt_client_websocket_uri_path, client_ptr -> nxd_mqtt_client_websocket_uri_path_length,
+                                                        (UCHAR *)NXD_MQTT_OVER_WEBSOCKET_PROTOCOL, sizeof(NXD_MQTT_OVER_WEBSOCKET_PROTOCOL) - 1,
+                                                        NX_NO_WAIT);
 
-            /* End connection. */
-            _nxd_mqtt_client_connection_end(client_ptr, NX_NO_WAIT);
-
-            /* Check callback function.  */
-            if (client_ptr -> nxd_mqtt_connect_notify)
+            if (status == NX_IN_PROGRESS)
             {
-                client_ptr -> nxd_mqtt_connect_notify(client_ptr, status, client_ptr -> nxd_mqtt_connect_context);
+                return;
             }
         }
-    }
-    else if (status != NX_CONTINUE)
-    {
+        else
+#endif /* NXD_MQTT_OVER_WEBSOCKET */
+        {
 
-        /* Error.  */
+            /* Start to send MQTT connect packet.  */
+            status = _nxd_mqtt_client_connect_packet_send(client_ptr, NX_NO_WAIT);
+        }
+    }
+    else if (status == NX_CONTINUE)
+    {
+        return;
+    }
+
+    /* Check status.  */
+    if (status)
+    {
 
         /* End connection. */
         _nxd_mqtt_client_connection_end(client_ptr, NX_NO_WAIT);
@@ -2545,7 +2720,7 @@ UCHAR len[2];
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_client_connection_end                     PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -2583,6 +2758,9 @@ UCHAR len[2];
 /*  05-19-2020     Yuxin Zhou               Initial Version 6.0           */
 /*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  10-31-2022     Bo Chen                  Modified comment(s), supported*/
+/*                                            mqtt over websocket,        */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 VOID _nxd_mqtt_client_connection_end(NXD_MQTT_CLIENT *client_ptr, ULONG wait_option)
@@ -2596,6 +2774,13 @@ VOID _nxd_mqtt_client_connection_end(NXD_MQTT_CLIENT *client_ptr, ULONG wait_opt
 
     /* Release the mutex. */
     tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
+
+#ifdef NXD_MQTT_OVER_WEBSOCKET
+    if (client_ptr -> nxd_mqtt_client_use_websocket)
+    {
+        nx_websocket_client_disconnect(&(client_ptr -> nxd_mqtt_client_websocket), wait_option);
+    }
+#endif /* NXD_MQTT_OVER_WEBSOCKET */
 
 #ifdef NX_SECURE_ENABLE
     if (client_ptr -> nxd_mqtt_client_use_tls)
@@ -3113,7 +3298,7 @@ UINT    status;
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_client_create_internal                    PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -3160,6 +3345,9 @@ UINT    status;
 /*  09-30-2020     Yuxin Zhou               Modified comment(s), and      */
 /*                                            corrected mqtt client state,*/
 /*                                            resulting in version 6.1    */
+/*  07-29-2022     Spencer McDonough        Modified comment(s), and      */
+/*                                            improved internal logic,    */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 static UINT _nxd_mqtt_client_create_internal(NXD_MQTT_CLIENT *client_ptr, CHAR *client_name,
@@ -3167,7 +3355,9 @@ static UINT _nxd_mqtt_client_create_internal(NXD_MQTT_CLIENT *client_ptr, CHAR *
                                              NX_IP *ip_ptr, NX_PACKET_POOL *pool_ptr,
                                              VOID *stack_ptr, ULONG stack_size, UINT mqtt_thread_priority)
 {
+#ifndef NXD_MQTT_CLOUD_ENABLE
 UINT                status;
+#endif /* NXD_MQTT_CLOUD_ENABLE */
 
 #ifdef NXD_MQTT_CLOUD_ENABLE
     NX_PARAMETER_NOT_USED(stack_ptr);
@@ -3229,26 +3419,10 @@ UINT                status;
     client_ptr -> nxd_mqtt_client_name = client_name;
 
     /* Create the socket. */
-    status = nx_tcp_socket_create(client_ptr -> nxd_mqtt_client_ip_ptr, &(client_ptr -> nxd_mqtt_client_socket), client_ptr -> nxd_mqtt_client_name,
-                                  NX_IP_NORMAL, NX_DONT_FRAGMENT, 0x80, NXD_MQTT_CLIENT_SOCKET_WINDOW_SIZE,
-                                  NX_NULL, _mqtt_client_disconnect_callback);
+    nx_tcp_socket_create(client_ptr -> nxd_mqtt_client_ip_ptr, &(client_ptr -> nxd_mqtt_client_socket), client_ptr -> nxd_mqtt_client_name,
+                         NX_IP_NORMAL, NX_DONT_FRAGMENT, 0x80, NXD_MQTT_CLIENT_SOCKET_WINDOW_SIZE,
+                         NX_NULL, _mqtt_client_disconnect_callback);
 
-    /* Determine if an error occurred. */
-    if (status != NX_SUCCESS)
-    {
-#ifndef NXD_MQTT_CLOUD_ENABLE
-        /* Delete the mutex. */
-        tx_mutex_delete(&client_ptr -> nxd_mqtt_protection);
-
-        /* Delete the event flags. */
-        tx_event_flags_delete(&(client_ptr -> nxd_mqtt_events));
-
-        /* Delete the thread. */
-        tx_thread_delete(&(client_ptr -> nxd_mqtt_thread));
-#endif /* NXD_MQTT_CLOUD_ENABLE */
-
-        return(NXD_MQTT_INTERNAL_ERROR);
-    }
 
     /* Record the client_ptr in the socket structure. */
     client_ptr -> nxd_mqtt_client_socket.nx_tcp_socket_reserved_ptr = (VOID *)client_ptr;
@@ -3581,7 +3755,7 @@ UINT _nxde_mqtt_client_login_set(NXD_MQTT_CLIENT *client_ptr,
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_client_retransmit_message                 PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -3605,8 +3779,7 @@ UINT _nxde_mqtt_client_login_set(NXD_MQTT_CLIENT *client_ptr,
 /*                                                                        */
 /*    tx_mutex_get                                                        */
 /*    tx_mutex_put                                                        */
-/*    nx_secure_tls_session_send                                          */
-/*    nx_tcp_socket_send                                                  */
+/*    _nxd_mqtt_packet_send                                               */
 /*    nx_packet_release                                                   */
 /*    tx_time_get                                                         */
 /*    nx_packet_copy                                                      */
@@ -3622,6 +3795,9 @@ UINT _nxde_mqtt_client_login_set(NXD_MQTT_CLIENT *client_ptr,
 /*  05-19-2020     Yuxin Zhou               Initial Version 6.0           */
 /*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  10-31-2022     Bo Chen                  Modified comment(s), improved */
+/*                                            the logic of sending packet,*/
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 static UINT _nxd_mqtt_client_retransmit_message(NXD_MQTT_CLIENT *client_ptr, ULONG wait_option)
@@ -3653,20 +3829,8 @@ UCHAR               fixed_header;
             /* Release the mutex. */
             tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
 
-            /* Send the packet. */
-#ifdef NX_SECURE_ENABLE
-            if (client_ptr -> nxd_mqtt_client_use_tls)
-            {
-                status = nx_secure_tls_session_send(&(client_ptr -> nxd_mqtt_tls_session), packet_ptr, wait_option);
-            }
-            else
-            {
-                status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, wait_option);
-            }
-#else
-            status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, wait_option);
-
-#endif /* NX_SECURE_ENABLE */
+            /* Send packet to server.  */
+            status = _nxd_mqtt_packet_send(client_ptr, packet_ptr, wait_option);
 
             if (status)
             {
@@ -3701,7 +3865,7 @@ UCHAR               fixed_header;
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_client_connect                            PORTABLE C      */
-/*                                                           6.1.8        */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -3768,6 +3932,12 @@ UCHAR               fixed_header;
 /*                                            corrected the logic for     */
 /*                                            non-blocking mode,          */
 /*                                            resulting in version 6.1.8  */
+/*  07-29-2022     Spencer McDonough        Modified comment(s), and      */
+/*                                            improved internal logic,    */
+/*                                            resulting in version 6.1.12 */
+/*  10-31-2022     Bo Chen                  Modified comment(s), supported*/
+/*                                            mqtt over websocket,        */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 UINT _nxd_mqtt_client_connect(NXD_MQTT_CLIENT *client_ptr, NXD_ADDRESS *server_ip, UINT server_port,
@@ -3818,6 +3988,7 @@ UINT                 old_priority;
             nx_secure_tls_session_delete(&(client_ptr -> nxd_mqtt_tls_session));
         }
 #endif /* NX_SECURE_ENABLE */
+        tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
         return(NXD_MQTT_INVALID_STATE);
     }
 
@@ -3840,20 +4011,8 @@ UINT                 old_priority;
         client_ptr -> nxd_mqtt_ping_timeout = NXD_MQTT_PING_TIMEOUT_DELAY;
 
         /* Create timer */
-        status = tx_timer_create(&(client_ptr -> nxd_mqtt_timer), "MQTT Timer", _nxd_mqtt_periodic_timer_entry, (ULONG)client_ptr,
-                                 client_ptr -> nxd_mqtt_timer_value, client_ptr -> nxd_mqtt_timer_value, TX_AUTO_ACTIVATE);
-        if (status)
-        {
-#ifdef NX_SECURE_ENABLE
-            if (client_ptr -> nxd_mqtt_client_use_tls)
-            {
-                nx_secure_tls_session_delete(&(client_ptr -> nxd_mqtt_tls_session));
-            }
-#endif /* NX_SECURE_ENABLE */
-
-            tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
-            return(NXD_MQTT_INTERNAL_ERROR);
-        }
+        tx_timer_create(&(client_ptr -> nxd_mqtt_timer), "MQTT Timer", _nxd_mqtt_periodic_timer_entry, (ULONG)client_ptr,
+                        client_ptr -> nxd_mqtt_timer_value, client_ptr -> nxd_mqtt_timer_value, TX_AUTO_ACTIVATE);
     }
     else
     {
@@ -3867,49 +4026,41 @@ UINT                 old_priority;
     /* Set TCP connection establish notify for non-blocking mode.  */
     if (wait_option == 0)
     {
-        status = nx_tcp_socket_establish_notify(&client_ptr -> nxd_mqtt_client_socket, _nxd_mqtt_tcp_establish_notify);
-
-        /* Check status.  */
-        if (status != NX_SUCCESS)
-        {
-#ifdef NX_SECURE_ENABLE
-            if (client_ptr -> nxd_mqtt_client_use_tls)
-            {
-                nx_secure_tls_session_delete(&(client_ptr -> nxd_mqtt_tls_session));
-            }
-#endif /* NX_SECURE_ENABLE */
-            tx_timer_delete(&(client_ptr -> nxd_mqtt_timer));
-            tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
-            return(status);
-        }
+        nx_tcp_socket_establish_notify(&client_ptr -> nxd_mqtt_client_socket, _nxd_mqtt_tcp_establish_notify);
 
         /* Set the receive callback. */
         nx_tcp_socket_receive_notify(&client_ptr -> nxd_mqtt_client_socket, _nxd_mqtt_receive_callback);
+
+#ifdef NXD_MQTT_OVER_WEBSOCKET
+        if (client_ptr -> nxd_mqtt_client_use_websocket)
+        {
+
+            /* Set the websocket connection callback.  */
+            nx_websocket_client_connection_status_callback_set(&client_ptr -> nxd_mqtt_client_websocket, client_ptr, _nxd_mqtt_client_websocket_connection_status_callback);
+        }
+#endif /* NXD_MQTT_OVER_WEBSOCKET */
     }
     else
     {
 
         /* Clean receive callback.  */
         client_ptr -> nxd_mqtt_client_socket.nx_tcp_receive_callback = NX_NULL;
+
+#ifdef NXD_MQTT_OVER_WEBSOCKET
+        if (client_ptr -> nxd_mqtt_client_use_websocket)
+        {
+
+            /* Clean the websocket connection callback.  */
+            nx_websocket_client_connection_status_callback_set(&client_ptr -> nxd_mqtt_client_websocket, NX_NULL, NX_NULL);
+        }
+#endif /* NXD_MQTT_OVER_WEBSOCKET */
     }
 
     /* Release mutex */
     tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
 
     /* First attempt to bind the client socket. */
-    status = nx_tcp_client_socket_bind(&(client_ptr -> nxd_mqtt_client_socket), NX_ANY_PORT, wait_option);
-
-    if (status != NX_SUCCESS)
-    {
-#ifdef NX_SECURE_ENABLE
-        if (client_ptr -> nxd_mqtt_client_use_tls)
-        {
-            nx_secure_tls_session_delete(&(client_ptr -> nxd_mqtt_tls_session));
-        }
-#endif /* NX_SECURE_ENABLE */
-        tx_timer_delete(&(client_ptr -> nxd_mqtt_timer));
-        return(NXD_MQTT_INTERNAL_ERROR);
-    }
+    nx_tcp_client_socket_bind(&(client_ptr -> nxd_mqtt_client_socket), NX_ANY_PORT, wait_option);
 
     /* Obtain the mutex. */
     tx_mutex_get(client_ptr -> nxd_mqtt_client_mutex_ptr, NX_WAIT_FOREVER);
@@ -3946,7 +4097,7 @@ UINT                 old_priority;
     }
 
     /* Just return for non-blocking mode.  */
-    if ((status == NX_IN_PROGRESS) || (wait_option == 0))
+    if (wait_option == 0)
     {
         return(NX_IN_PROGRESS);
     }
@@ -3982,6 +4133,43 @@ UINT                 old_priority;
     }
 #endif /* NX_SECURE_ENABLE */
 
+#ifdef NXD_MQTT_OVER_WEBSOCKET
+    if (client_ptr -> nxd_mqtt_client_use_websocket)
+    {
+#ifdef NX_SECURE_ENABLE
+        if (client_ptr -> nxd_mqtt_client_use_tls)
+        {
+            status = nx_websocket_client_secure_connect(&(client_ptr -> nxd_mqtt_client_websocket), &(client_ptr -> nxd_mqtt_tls_session),
+                                                        client_ptr -> nxd_mqtt_client_websocket_host, client_ptr -> nxd_mqtt_client_websocket_host_length,
+                                                        client_ptr -> nxd_mqtt_client_websocket_uri_path, client_ptr -> nxd_mqtt_client_websocket_uri_path_length,
+                                                        (UCHAR *)NXD_MQTT_OVER_WEBSOCKET_PROTOCOL, sizeof(NXD_MQTT_OVER_WEBSOCKET_PROTOCOL) - 1,
+                                                        wait_option);
+        }
+        else
+#endif /* NX_SECURE_ENABLE */
+        {
+            status = nx_websocket_client_connect(&(client_ptr -> nxd_mqtt_client_websocket), &(client_ptr -> nxd_mqtt_client_socket),
+                                                 client_ptr -> nxd_mqtt_client_websocket_host, client_ptr -> nxd_mqtt_client_websocket_host_length,
+                                                 client_ptr -> nxd_mqtt_client_websocket_uri_path, client_ptr -> nxd_mqtt_client_websocket_uri_path_length,
+                                                 (UCHAR *)NXD_MQTT_OVER_WEBSOCKET_PROTOCOL, sizeof(NXD_MQTT_OVER_WEBSOCKET_PROTOCOL) - 1,
+                                                 wait_option);
+        }
+
+        if (status != NX_SUCCESS)
+        {
+
+            /* Revert thread priority. */
+            tx_thread_priority_change(tx_thread_identify(), old_priority, &old_priority);
+
+            /* End connection. */
+            _nxd_mqtt_client_connection_end(client_ptr, NX_NO_WAIT);
+
+            return(NXD_MQTT_CONNECT_FAILURE);
+        }
+    }
+
+#endif /* NXD_MQTT_OVER_WEBSOCKET */
+
     /* Start to send connect packet.  */
     status = _nxd_mqtt_client_connect_packet_send(client_ptr, wait_option);
 
@@ -3993,22 +4181,11 @@ UINT                 old_priority;
 
         /* End connection. */
         _nxd_mqtt_client_connection_end(client_ptr, NX_NO_WAIT);
-
         return(NXD_MQTT_CONNECT_FAILURE);
     }
 
-#ifdef NX_SECURE_ENABLE
-    if (client_ptr -> nxd_mqtt_client_use_tls)
-    {
-        status = nx_secure_tls_session_receive(&(client_ptr -> nxd_mqtt_tls_session), &packet_ptr, wait_option);
-    }
-    else
-    {
-        status = nx_tcp_socket_receive(&client_ptr -> nxd_mqtt_client_socket, &packet_ptr, wait_option);
-    }
-#else
-    status = nx_tcp_socket_receive(&client_ptr -> nxd_mqtt_client_socket, &packet_ptr, wait_option);
-#endif /* NX_SECURE_ENABLE */
+    /* Call a receive. */
+    status = _nxd_mqtt_packet_receive(client_ptr, &packet_ptr, wait_option);
 
     /* Revert thread priority. */
     tx_thread_priority_change(tx_thread_identify(), old_priority, &old_priority);
@@ -4044,7 +4221,7 @@ UINT                 old_priority;
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_client_connect_packet_send                PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -4069,13 +4246,12 @@ UINT                 old_priority;
 /*  CALLS                                                                 */
 /*                                                                        */
 /*    nx_packet_release                                                   */
-/*    nx_tcp_socket_send                                                  */
-/*    nx_secure_tls_session_send                                          */
 /*    _nxd_mqtt_packet_allocate                                           */
 /*    _nxd_mqtt_release_transmit_packet                                   */
 /*    _nxd_mqtt_client_connection_end                                     */
 /*    _nxd_mqtt_client_set_fixed_header                                   */
 /*    _nxd_mqtt_client_append_message                                     */
+/*    _nxd_mqtt_packet_send                                               */
 /*                                                                        */
 /*  CALLED BY                                                             */
 /*                                                                        */
@@ -4090,6 +4266,12 @@ UINT                 old_priority;
 /*  05-19-2020     Yuxin Zhou               Initial Version 6.0           */
 /*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  07-29-2022     Spencer McDonough        Modified comment(s),          */
+/*                                            improved internal logic,    */
+/*                                            resulting in version 6.1.12 */
+/*  10-31-2022     Bo Chen                  Modified comment(s), improved */
+/*                                            the logic of sending packet,*/
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 UINT _nxd_mqtt_client_connect_packet_send(NXD_MQTT_CLIENT *client_ptr, ULONG wait_option)
@@ -4167,10 +4349,10 @@ UINT                 keepalive = (client_ptr -> nxd_mqtt_keepalive/NX_IP_PERIODI
         return(NXD_MQTT_INTERNAL_ERROR);
     }
 
-    status = _nxd_mqtt_packet_allocate(client_ptr, &packet_ptr);
+    status = _nxd_mqtt_packet_allocate(client_ptr, &packet_ptr, wait_option);
+
     if (status)
     {
-
         return(status);
     }
 
@@ -4182,21 +4364,18 @@ UINT                 keepalive = (client_ptr -> nxd_mqtt_keepalive/NX_IP_PERIODI
 
     if (ret)
     {
-
         /* Release the packet. */
         nx_packet_release(packet_ptr);
-
         return(NXD_MQTT_PACKET_POOL_FAILURE);
     }
-
+    
+    /* Fill in protocol name. */
     ret = _nxd_mqtt_client_append_message(client_ptr, packet_ptr, "MQTT", 4, wait_option);
 
     if (ret)
     {
-
         /* Release the packet. */
         nx_packet_release(packet_ptr);
-
         return(NXD_MQTT_PACKET_POOL_FAILURE);
     }
 
@@ -4263,19 +4442,7 @@ UINT                 keepalive = (client_ptr -> nxd_mqtt_keepalive/NX_IP_PERIODI
     }
 
     /* Ready to send the connect message to the server. */
-#ifdef NX_SECURE_ENABLE
-    if (client_ptr -> nxd_mqtt_client_use_tls)
-    {
-        status = nx_secure_tls_session_send(&(client_ptr -> nxd_mqtt_tls_session), packet_ptr, wait_option);
-    }
-    else
-    {
-        status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, wait_option);
-    }
-#else
-    status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, wait_option);
-
-#endif /* NX_SECURE_ENABLE */
+    status = _nxd_mqtt_packet_send(client_ptr, packet_ptr, wait_option);
 
     if (status)
     {
@@ -4383,7 +4550,7 @@ UINT ret;
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_client_delete                             PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -4420,6 +4587,9 @@ UINT ret;
 /*  05-19-2020     Yuxin Zhou               Initial Version 6.0           */
 /*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  10-31-2022     Bo Chen                  Modified comment(s), supported*/
+/*                                            mqtt over websocket,        */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 UINT _nxd_mqtt_client_delete(NXD_MQTT_CLIENT *client_ptr)
@@ -4452,6 +4622,14 @@ UINT _nxd_mqtt_client_delete(NXD_MQTT_CLIENT *client_ptr)
         nx_cloud_delete(&(client_ptr -> nxd_mqtt_client_cloud));
 #endif /* NXD_MQTT_CLOUD_ENABLE */
 
+#ifdef NXD_MQTT_OVER_WEBSOCKET
+    if (client_ptr -> nxd_mqtt_client_use_websocket)
+    {
+        nx_websocket_client_delete(&client_ptr -> nxd_mqtt_client_websocket);
+        client_ptr -> nxd_mqtt_client_use_websocket = NX_FALSE;
+    }
+#endif /* NXD_MQTT_OVER_WEBSOCKET */
+
     return(NXD_MQTT_SUCCESS);
 }
 
@@ -4460,7 +4638,7 @@ UINT _nxd_mqtt_client_delete(NXD_MQTT_CLIENT *client_ptr)
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_client_publish_packet_send                PORTABLE C      */
-/*                                                           6.1.8        */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -4486,10 +4664,9 @@ UINT _nxd_mqtt_client_delete(NXD_MQTT_CLIENT *client_ptr)
 /*                                                                        */
 /*    tx_mutex_get                                                        */
 /*    tx_mutex_put                                                        */
-/*    nx_tcp_socket_send                                                  */
-/*    nx_secure_tls_session_send                                          */
 /*    nx_packet_release                                                   */
 /*    _nxd_mqtt_copy_transmit_packet                                      */
+/*    _nxd_mqtt_packet_send                                               */
 /*                                                                        */
 /*  CALLED BY                                                             */
 /*                                                                        */
@@ -4506,6 +4683,9 @@ UINT _nxd_mqtt_client_delete(NXD_MQTT_CLIENT *client_ptr)
 /*                                            supported maximum transmit  */
 /*                                            queue depth,                */
 /*                                            resulting in version 6.1.8  */
+/*  10-31-2022     Bo Chen                  Modified comment(s), improved */
+/*                                            the logic of sending packet,*/
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 UINT _nxd_mqtt_client_publish_packet_send(NXD_MQTT_CLIENT *client_ptr, NX_PACKET *packet_ptr,
@@ -4571,19 +4751,7 @@ UINT       ret = NXD_MQTT_SUCCESS;
     tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
 
     /* Ready to send the connect message to the server. */
-#ifdef NX_SECURE_ENABLE
-    if (client_ptr -> nxd_mqtt_client_use_tls)
-    {
-        status = nx_secure_tls_session_send(&(client_ptr -> nxd_mqtt_tls_session), packet_ptr, wait_option);
-    }
-    else
-    {
-        status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, wait_option);
-    }
-#else
-    status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, wait_option);
-
-#endif /* NX_SECURE_ENABLE */
+    status = _nxd_mqtt_packet_send(client_ptr, packet_ptr, wait_option);
 
     if (status)
     {
@@ -4598,7 +4766,7 @@ UINT       ret = NXD_MQTT_SUCCESS;
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_client_publish                            PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -4647,6 +4815,9 @@ UINT       ret = NXD_MQTT_SUCCESS;
 /*  05-19-2020     Yuxin Zhou               Initial Version 6.0           */
 /*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  07-29-2022     Spencer McDonough        Modified comment(s),          */
+/*                                            improved internal logic,    */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 UINT _nxd_mqtt_client_publish(NXD_MQTT_CLIENT *client_ptr, CHAR *topic_name, UINT topic_name_length,
@@ -4672,7 +4843,7 @@ UINT       ret = NXD_MQTT_SUCCESS;
         return(NXD_MQTT_NOT_CONNECTED);
     }
 
-    status = _nxd_mqtt_packet_allocate(client_ptr, &packet_ptr);
+    status = _nxd_mqtt_packet_allocate(client_ptr, &packet_ptr, wait_option);
 
     if (status != NXD_MQTT_SUCCESS)
     {
@@ -4925,7 +5096,7 @@ UINT _nxd_mqtt_client_unsubscribe(NXD_MQTT_CLIENT *client_ptr, CHAR *topic_name,
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nxd_mqtt_send_simple_message                       PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -4951,8 +5122,7 @@ UINT _nxd_mqtt_client_unsubscribe(NXD_MQTT_CLIENT *client_ptr, CHAR *topic_name,
 /*    tx_mutex_get                                                        */
 /*    _nxd_mqtt_packet_allocate                                           */
 /*    tx_mutex_put                                                        */
-/*    nx_tcp_socket_send                                                  */
-/*    nx_secure_tls_session_send                                          */
+/*    _nxd_mqtt_packet_send                                               */
 /*    nx_packet_release                                                   */
 /*                                                                        */
 /*  CALLED BY                                                             */
@@ -4967,6 +5137,12 @@ UINT _nxd_mqtt_client_unsubscribe(NXD_MQTT_CLIENT *client_ptr, CHAR *topic_name,
 /*  05-19-2020     Yuxin Zhou               Initial Version 6.0           */
 /*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  07-29-2022     Spencer McDonough        Modified comment(s),          */
+/*                                            improved internal logic,    */
+/*                                            resulting in version 6.1.12 */
+/*  10-31-2022     Bo Chen                  Modified comment(s), improved */
+/*                                            the logic of sending packet,*/
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 static UINT _nxd_mqtt_send_simple_message(NXD_MQTT_CLIENT *client_ptr, UCHAR header_value)
@@ -4977,7 +5153,7 @@ UINT       status;
 UINT       status_mutex;
 UCHAR     *byte;
 
-    status = _nxd_mqtt_packet_allocate(client_ptr, &packet_ptr);
+    status = _nxd_mqtt_packet_allocate(client_ptr, &packet_ptr, NX_WAIT_FOREVER);
     if (status)
     {
         return(NXD_MQTT_INTERNAL_ERROR);
@@ -5002,20 +5178,9 @@ UCHAR     *byte;
 
     /* Release MQTT protection before making NetX/TLS calls. */
     tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
-#ifdef NX_SECURE_ENABLE
-    if (client_ptr -> nxd_mqtt_client_use_tls)
-    {
-        status = nx_secure_tls_session_send(&(client_ptr -> nxd_mqtt_tls_session), packet_ptr, NX_WAIT_FOREVER);
-    }
-    else
-    {
-        status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, NX_WAIT_FOREVER);
-    }
-#else
 
-    status = nx_tcp_socket_send(&client_ptr -> nxd_mqtt_client_socket, packet_ptr, NX_WAIT_FOREVER);
-
-#endif /* NX_SECURE_ENABLE */
+    /* Send packet to server.  */
+    status = _nxd_mqtt_packet_send(client_ptr, packet_ptr, NX_WAIT_FOREVER);
 
     status_mutex = tx_mutex_get(client_ptr -> nxd_mqtt_client_mutex_ptr, NX_WAIT_FOREVER);
     if (status)
@@ -6202,3 +6367,207 @@ UINT    status;
     return(NXD_MQTT_SUCCESS);
 }
 #endif /* NXD_MQTT_CLOUD_ENABLE */
+
+#ifdef NXD_MQTT_OVER_WEBSOCKET
+/**************************************************************************/
+/*                                                                        */
+/*  FUNCTION                                               RELEASE        */
+/*                                                                        */
+/*    _nxd_mqtt_client_websocket_connection_status_callback               */
+/*                                                        PORTABLE C      */
+/*                                                           6.2.0        */
+/*  AUTHOR                                                                */
+/*                                                                        */
+/*    Yuxin Zhou, Microsoft Corporation                                   */
+/*                                                                        */
+/*  DESCRIPTION                                                           */
+/*                                                                        */
+/*    This function is the websocket connection status callback.          */
+/*                                                                        */
+/*  INPUT                                                                 */
+/*                                                                        */
+/*    websocket_client_ptr                  Pointer to websocket client   */
+/*    context                               Pointer to MQTT client        */
+/*    status                                Websocket connection status   */
+/*                                                                        */
+/*  OUTPUT                                                                */
+/*                                                                        */
+/*    None                                                                */
+/*                                                                        */
+/*  CALLS                                                                 */
+/*                                                                        */
+/*    _nxd_mqtt_client_connect_packet_send                                */
+/*    _nxd_mqtt_client_connection_end                                     */
+/*                                                                        */
+/*  CALLED BY                                                             */
+/*                                                                        */
+/*    _nxd_mqtt_client_event_process                                      */
+/*                                                                        */
+/*  RELEASE HISTORY                                                       */
+/*                                                                        */
+/*    DATE              NAME                      DESCRIPTION             */
+/*                                                                        */
+/*  10-31-2022     Yuxin Zhou               Initial Version 6.2.0         */
+/*                                                                        */
+/**************************************************************************/
+VOID _nxd_mqtt_client_websocket_connection_status_callback(NX_WEBSOCKET_CLIENT *websocket_client_ptr, VOID *context, UINT status)
+{
+NXD_MQTT_CLIENT *client_ptr = (NXD_MQTT_CLIENT *)context;
+
+
+    NX_PARAMETER_NOT_USED(websocket_client_ptr);
+
+    if (status == NX_SUCCESS)
+    {
+
+        /* Start to send MQTT connect packet.  */
+        status = _nxd_mqtt_client_connect_packet_send(client_ptr, NX_NO_WAIT);
+    }
+
+    /* If an error occurs.  */
+    if (status)
+    {
+
+        /* End connection. */
+        _nxd_mqtt_client_connection_end(client_ptr, NX_NO_WAIT);
+
+        /* Check callback function.  */
+        if (client_ptr -> nxd_mqtt_connect_notify)
+        {
+            client_ptr -> nxd_mqtt_connect_notify(client_ptr, status, client_ptr -> nxd_mqtt_connect_context);
+        }
+    }
+}
+
+/**************************************************************************/
+/*                                                                        */
+/*  FUNCTION                                               RELEASE        */
+/*                                                                        */
+/*    _nxd_mqtt_client_websocket_set                      PORTABLE C      */
+/*                                                           6.2.0        */
+/*  AUTHOR                                                                */
+/*                                                                        */
+/*    Yuxin Zhou, Microsoft Corporation                                   */
+/*                                                                        */
+/*  DESCRIPTION                                                           */
+/*                                                                        */
+/*    This function sets the websocket.                                   */
+/*                                                                        */
+/*  INPUT                                                                 */
+/*                                                                        */
+/*    client_ptr                            Pointer to MQTT Client        */
+/*    host                                  Host used by the client       */
+/*    host_length                           Length of host, in bytes      */
+/*    uri_path                              URI path used by the client   */
+/*    uri_path_length                       Length of uri path, in bytes  */
+/*                                                                        */
+/*  OUTPUT                                                                */
+/*                                                                        */
+/*    status                                Completion status             */
+/*                                                                        */
+/*  CALLS                                                                 */
+/*                                                                        */
+/*    None                                                                */
+/*                                                                        */
+/*  CALLED BY                                                             */
+/*                                                                        */
+/*    Application Code                                                    */
+/*                                                                        */
+/*  RELEASE HISTORY                                                       */
+/*                                                                        */
+/*    DATE              NAME                      DESCRIPTION             */
+/*                                                                        */
+/*  10-31-2022     Yuxin Zhou               Initial Version 6.2.0         */
+/*                                                                        */
+/**************************************************************************/
+UINT _nxd_mqtt_client_websocket_set(NXD_MQTT_CLIENT *client_ptr, UCHAR *host, UINT host_length, UCHAR *uri_path, UINT uri_path_length)
+{
+UINT status;
+
+    /* Obtain the mutex. */
+    status = tx_mutex_get(client_ptr -> nxd_mqtt_client_mutex_ptr, NX_WAIT_FOREVER);
+
+    if (status != TX_SUCCESS)
+    {
+        return(NXD_MQTT_MUTEX_FAILURE);
+    }
+
+    /* Set the host info.  */
+    client_ptr -> nxd_mqtt_client_websocket_host = host;
+    client_ptr -> nxd_mqtt_client_websocket_host_length = host_length;
+    client_ptr -> nxd_mqtt_client_websocket_uri_path = uri_path;
+    client_ptr -> nxd_mqtt_client_websocket_uri_path_length = uri_path_length;
+
+    /* Create WebSocket.  */
+    status = nx_websocket_client_create(&client_ptr -> nxd_mqtt_client_websocket, (UCHAR *)"",
+                                        client_ptr -> nxd_mqtt_client_ip_ptr,
+                                        client_ptr -> nxd_mqtt_client_packet_pool_ptr);
+
+    /* Check status.  */
+    if (status)
+    {
+        tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
+        return(status);
+    }
+
+    client_ptr -> nxd_mqtt_client_use_websocket = NX_TRUE;
+
+    tx_mutex_put(client_ptr -> nxd_mqtt_client_mutex_ptr);
+    return(NXD_MQTT_SUCCESS);
+}
+
+
+/**************************************************************************/
+/*                                                                        */
+/*  FUNCTION                                               RELEASE        */
+/*                                                                        */
+/*    _nxde_mqtt_client_websocket_set                     PORTABLE C      */
+/*                                                           6.2.0        */
+/*  AUTHOR                                                                */
+/*                                                                        */
+/*    Yuxin Zhou, Microsoft Corporation                                   */
+/*                                                                        */
+/*  DESCRIPTION                                                           */
+/*                                                                        */
+/*    This function checks for errors in setting MQTT client websocket.   */
+/*                                                                        */
+/*  INPUT                                                                 */
+/*                                                                        */
+/*    client_ptr                            Pointer to MQTT Client        */
+/*    host                                  Host used by the client       */
+/*    host_length                           Length of host, in bytes      */
+/*    uri_path                              URI path used by the client   */
+/*    uri_path_length                       Length of uri path, in bytes  */
+/*                                                                        */
+/*  OUTPUT                                                                */
+/*                                                                        */
+/*    status                                Completion status             */
+/*                                                                        */
+/*  CALLS                                                                 */
+/*                                                                        */
+/*    _nxd_mqtt_client_websocket_set                                      */
+/*                                                                        */
+/*  CALLED BY                                                             */
+/*                                                                        */
+/*    Application Code                                                    */
+/*                                                                        */
+/*  RELEASE HISTORY                                                       */
+/*                                                                        */
+/*    DATE              NAME                      DESCRIPTION             */
+/*                                                                        */
+/*  10-31-2022     Yuxin Zhou               Initial Version 6.2.0         */
+/*                                                                        */
+/**************************************************************************/
+UINT _nxde_mqtt_client_websocket_set(NXD_MQTT_CLIENT *client_ptr, UCHAR *host, UINT host_length, UCHAR *uri_path, UINT uri_path_length)
+{
+
+    /* Validate the parameters.  */
+    if ((client_ptr == NX_NULL) || (host == NX_NULL) || (host_length == 0) ||
+        (uri_path == NX_NULL) || (uri_path_length == 0))
+    {
+        return(NX_PTR_ERROR);
+    }
+
+    return(_nxd_mqtt_client_websocket_set(client_ptr, host, host_length, uri_path, uri_path_length));
+}
+#endif /* NXD_MQTT_OVER_WEBSOCKET */

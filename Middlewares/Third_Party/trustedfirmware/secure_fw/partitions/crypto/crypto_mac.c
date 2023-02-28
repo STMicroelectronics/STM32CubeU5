@@ -64,17 +64,20 @@ psa_status_t tfm_crypto_mac_sign_setup(psa_invec in_vec[],
 
     status = tfm_crypto_encode_id_and_owner(key_id, &encoded_key);
     if (status != PSA_SUCCESS) {
-        return status;
+        goto exit;
     }
 
     status = psa_mac_sign_setup(operation, encoded_key, alg);
     if (status != PSA_SUCCESS) {
-        /* Release the operation context, ignore if the operation fails. */
-        (void)tfm_crypto_operation_release(handle_out);
-        return status;
+        goto exit;
     }
 
-    return PSA_SUCCESS;
+    return status;
+
+exit:
+    /* Release the operation context, ignore if the operation fails. */
+    (void)tfm_crypto_operation_release(handle_out);
+    return status;
 #endif /* TFM_CRYPTO_MAC_MODULE_DISABLED */
 }
 
@@ -122,17 +125,20 @@ psa_status_t tfm_crypto_mac_verify_setup(psa_invec in_vec[],
 
     status = tfm_crypto_encode_id_and_owner(key_id, &encoded_key);
     if (status != PSA_SUCCESS) {
-        return status;
+        goto exit;
     }
 
     status = psa_mac_verify_setup(operation, encoded_key, alg);
     if (status != PSA_SUCCESS) {
-        /* Release the operation context, ignore if the operation fails. */
-        (void)tfm_crypto_operation_release(handle_out);
-        return status;
+        goto exit;
     }
 
-    return PSA_SUCCESS;
+    return status;
+
+exit:
+    /* Release the operation context, ignore if the operation fails. */
+    (void)tfm_crypto_operation_release(handle_out);
+    return status;
 #endif /* TFM_CRYPTO_MAC_MODULE_DISABLED */
 }
 
@@ -170,14 +176,7 @@ psa_status_t tfm_crypto_mac_update(psa_invec in_vec[],
         return status;
     }
 
-    status = psa_mac_update(operation, input, input_length);
-    if (status != PSA_SUCCESS) {
-        /* Release the operation context, ignore if the operation fails. */
-        (void)tfm_crypto_operation_release(handle_out);
-        return status;
-    }
-
-    return PSA_SUCCESS;
+    return psa_mac_update(operation, input, input_length);
 #endif /* TFM_CRYPTO_MAC_MODULE_DISABLED */
 }
 
@@ -219,13 +218,10 @@ psa_status_t tfm_crypto_mac_sign_finish(psa_invec in_vec[],
     }
 
     status = psa_mac_sign_finish(operation, mac, mac_size, &out_vec[1].len);
-    if (status != PSA_SUCCESS) {
+    if (status == PSA_SUCCESS) {
         /* Release the operation context, ignore if the operation fails. */
         (void)tfm_crypto_operation_release(handle_out);
-        return status;
     }
-
-    status = tfm_crypto_operation_release(handle_out);
 
     return status;
 #endif /* TFM_CRYPTO_MAC_MODULE_DISABLED */
@@ -266,13 +262,10 @@ psa_status_t tfm_crypto_mac_verify_finish(psa_invec in_vec[],
     }
 
     status = psa_mac_verify_finish(operation, mac, mac_length);
-    if (status != PSA_SUCCESS) {
+    if (status == PSA_SUCCESS) {
         /* Release the operation context, ignore if the operation fails. */
         (void)tfm_crypto_operation_release(handle_out);
-        return status;
     }
-
-    status = tfm_crypto_operation_release(handle_out);
 
     return status;
 #endif /* TFM_CRYPTO_MAC_MODULE_DISABLED */
@@ -319,9 +312,7 @@ psa_status_t tfm_crypto_mac_abort(psa_invec in_vec[],
         return status;
     }
 
-    status = tfm_crypto_operation_release(handle_out);
-
-    return status;
+    return tfm_crypto_operation_release(handle_out);
 #endif /* TFM_CRYPTO_MAC_MODULE_DISABLED */
 }
 

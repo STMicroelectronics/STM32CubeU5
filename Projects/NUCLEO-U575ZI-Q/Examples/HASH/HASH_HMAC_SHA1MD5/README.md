@@ -39,6 +39,7 @@ System, Security, HASH, HMAC, SHA1, MD5, DMA, digest
   - HASH/HASH_HMAC_SHA1MD5/Inc/stm32u5xx_hal_conf.h        HAL Configuration file
   - HASH/HASH_HMAC_SHA1MD5/Inc/stm32u5xx_it.h              Header for stm32u5xx_it.c
   - HASH/HASH_HMAC_SHA1MD5/Inc/main.h                      Header for main.c module
+  - HASH/HASH_HMAC_SHA1MD5/Inc/stm32u5xx_nucleo_conf.h BSP Configuration file
   - HASH/HASH_HMAC_SHA1MD5/Src/stm32u5xx_it.c              Interrupt handlers
   - HASH/HASH_HMAC_SHA1MD5/Src/main.c                      Main program
   - HASH/HASH_HMAC_SHA1MD5/Src/stm32u5xx_hal_msp.c         MSP initialization and de-initialization

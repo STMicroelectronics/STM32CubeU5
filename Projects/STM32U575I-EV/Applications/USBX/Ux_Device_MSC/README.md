@@ -4,19 +4,19 @@ This application provides an example of Azure RTOS USBX stack usage on STM32U575
 The application is designed to emulate an USB MSC device, the code provides all required device descriptors framework and the associated Class descriptor report to build
 a compliant USB MSC device.
 
-At the beginning ThreadX calls the entry function tx_application_define(), at this stage, all USBx resources are initialized, the mass storage Class driver is registered 
+At the beginning ThreadX calls the entry function tx_application_define(), at this stage, all USBx resources are initialized, the mass storage Class driver is registered
 and the application creates one thread:
 
-  - usbx_app_thread_entry (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver and start the device.
+  - app_ux_device_thread_entry (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver and start the device.
 In addition two callback functions are needed for the USBX mass storage class device:
 
   - app_usb_device_thread_media_read used to read data through DMA from the mass storage device.
   - app_usb_device_thread_media_write used to write data through DMA into the mass storage device.
-  
-The thread usbx_app_thread_entry is responsible to start or stop the USB device.
+
+The thread app_ux_device_thread_entry is responsible to start or stop the USB device.
 At Run mode the thread will be waiting on message queue form USB_PD interface, when the USB device is plugged to host PC
-a callback in USB_PD interface will send a message to usbx_app_thread_entry to start the USB device.
-By the same way when the USB device is unplug a callback in USB_PD interface will send a message to usbx_app_thread_entry to stop the USB device.
+a callback in USB_PD interface will send a message to app_ux_device_thread_entry to start the USB device.
+By the same way when the USB device is unplug a callback in USB_PD interface will send a message to app_ux_device_thread_entry to stop the USB device.
 
 #### <b>Expected success behavior</b>
 
@@ -46,7 +46,7 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.s" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
    It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL or BSP).
@@ -61,7 +61,7 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
     + For MDK-ARM:
 	```
     either define the RW_IRAM1 region in the ".sct" file
-    or modify the line below in "tx_low_level_initilize.s to match the memory region being used
+    or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
 	```
     + For STM32CubeIDE add the following section into the .ld file:
@@ -81,7 +81,7 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
        Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
        Read more in STM32CubeIDE User Guide, chapter: "Linker script".
 
-    + The "tx_initialize_low_level.s" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
+    + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
 
 ### <b>Keywords</b>
 
@@ -96,13 +96,17 @@ RTOS, ThreadX, USBXDevice, USBPD, Device, USB_OTG, Full Speed, MSC, Mass Storage
     - Plug the USB HID device into the STM32U575I-EV board through 'Type C  to A-Female' cable to the connector:
     - CN1 : to use USB OTG IP in full speed (FS)
 <b>Note</b>
-It is mandatory to check that the Jumpers below are fitted:
+In case the board is powered only with Cable Type-C:
+  It is mandatory to check that the Jumpers below are fitted:
     JP6  (UCPD_SNK03).
     JP7  (USBPD_SNK01).
     JP14 (UCPD_FTL).
+    JP25 (5V_UCPD).
 
-Also check that the jumpers below are disconnected:
-    JP25 and JP6.
+In case the board is powered by another source (5V_STLK, 5V-CHG, 5V-DC or 5V_EXT):
+  It is mandatory to check that the jumper below is disconnected:
+    JP6  (UCPD_SNK03).
+
 ### <b>How to use it ?</b>
 
 In order to make the program work, you must do the following :

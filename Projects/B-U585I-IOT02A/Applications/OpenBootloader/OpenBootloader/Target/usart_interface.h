@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -22,7 +22,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
@@ -31,7 +31,7 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+/* Exported functions --------------------------------------------------------*/
 void OPENBL_USART_Configuration(void);
 void OPENBL_USART_DeInit(void);
 uint8_t OPENBL_USART_ProtocolDetection(void);
@@ -39,10 +39,10 @@ uint8_t OPENBL_USART_ProtocolDetection(void);
 uint8_t OPENBL_USART_GetCommandOpcode(void);
 uint8_t OPENBL_USART_ReadByte(void);
 void OPENBL_USART_SendByte(uint8_t Byte);
-void OPENBL_USART_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *SpecialCmd);
+void OPENBL_USART_SpecialCommandProcess(OPENBL_SpecialCmdTypeDef *pSpecialCmd);
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* USART_INTERFACE_H */

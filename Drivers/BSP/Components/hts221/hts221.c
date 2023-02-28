@@ -20,20 +20,20 @@
 #include "hts221.h"
 
 /** @addtogroup BSP BSP
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup Component Component
- * @{
- */
+  * @{
+  */
 
 /** @defgroup HTS221 HTS221
- * @{
- */
+  * @{
+  */
 
 /** @defgroup HTS221_Exported_Variables HTS221 Exported Variables
- * @{
- */
+  * @{
+  */
 
 HTS221_CommonDrv_t HTS221_COMMON_Driver =
 {
@@ -62,12 +62,12 @@ HTS221_TEMP_Drv_t HTS221_TEMP_Driver =
 };
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup HTS221_Private_Function_Prototypes HTS221 Private Function Prototypes
- * @{
- */
+  * @{
+  */
 
 static int32_t ReadRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t Length);
 static int32_t WriteRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t Length);
@@ -77,18 +77,18 @@ static int32_t HTS221_Initialize(HTS221_Object_t *pObj);
 static float Linear_Interpolation(lin_t *Lin, float Coeff);
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup HTS221_Exported_Functions HTS221 Exported Functions
- * @{
- */
+  * @{
+  */
 
 /**
- * @brief  Register Component Bus IO operations
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Register Component Bus IO operations
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_RegisterBusIO(HTS221_Object_t *pObj, HTS221_IO_t *pIO)
 {
   int32_t ret;
@@ -109,6 +109,7 @@ int32_t HTS221_RegisterBusIO(HTS221_Object_t *pObj, HTS221_IO_t *pIO)
 
     pObj->Ctx.read_reg  = ReadRegWrap;
     pObj->Ctx.write_reg = WriteRegWrap;
+    pObj->Ctx.mdelay    = pIO->Delay;
     pObj->Ctx.handle   = pObj;
 
     if (pObj->IO.Init != NULL)
@@ -125,10 +126,10 @@ int32_t HTS221_RegisterBusIO(HTS221_Object_t *pObj, HTS221_IO_t *pIO)
 }
 
 /**
- * @brief  Initialize the HTS221 sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Initialize the HTS221 sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_Init(HTS221_Object_t *pObj)
 {
   if (pObj->is_initialized == 0U)
@@ -145,10 +146,10 @@ int32_t HTS221_Init(HTS221_Object_t *pObj)
 }
 
 /**
- * @brief  Deinitialize the HTS221 sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Deinitialize the HTS221 sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_DeInit(HTS221_Object_t *pObj)
 {
   if (pObj->is_initialized == 1U)
@@ -170,11 +171,11 @@ int32_t HTS221_DeInit(HTS221_Object_t *pObj)
 }
 
 /**
- * @brief  Get WHO_AM_I value
- * @param  pObj the device pObj
- * @param  Id the WHO_AM_I value
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get WHO_AM_I value
+  * @param  pObj the device pObj
+  * @param  Id the WHO_AM_I value
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_ReadID(HTS221_Object_t *pObj, uint8_t *Id)
 {
   if (hts221_device_id_get(&(pObj->Ctx), Id) != HTS221_OK)
@@ -186,11 +187,11 @@ int32_t HTS221_ReadID(HTS221_Object_t *pObj, uint8_t *Id)
 }
 
 /**
- * @brief  Get HTS221 sensor capabilities
- * @param  pObj Component object pointer
- * @param  Capabilities pointer to HTS221 sensor capabilities
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get HTS221 sensor capabilities
+  * @param  pObj Component object pointer
+  * @param  Capabilities pointer to HTS221 sensor capabilities
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_GetCapabilities(HTS221_Object_t *pObj, HTS221_Capabilities_t *Capabilities)
 {
   /* Prevent unused argument(s) compilation warning */
@@ -207,11 +208,11 @@ int32_t HTS221_GetCapabilities(HTS221_Object_t *pObj, HTS221_Capabilities_t *Cap
 }
 
 /**
- * @brief  Get the HTS221 initialization status
- * @param  pObj the device pObj
- * @param  Status 1 if initialized, 0 otherwise
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the HTS221 initialization status
+  * @param  pObj the device pObj
+  * @param  Status 1 if initialized, 0 otherwise
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_Get_Init_Status(HTS221_Object_t *pObj, uint8_t *Status)
 {
   if (pObj == NULL)
@@ -225,10 +226,10 @@ int32_t HTS221_Get_Init_Status(HTS221_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Enable the HTS221 humidity sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Enable the HTS221 humidity sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_HUM_Enable(HTS221_Object_t *pObj)
 {
   /* Check if the component is already enabled */
@@ -254,10 +255,10 @@ int32_t HTS221_HUM_Enable(HTS221_Object_t *pObj)
 }
 
 /**
- * @brief  Disable the HTS221 humidity sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Disable the HTS221 humidity sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_HUM_Disable(HTS221_Object_t *pObj)
 {
   /* Check if the component is already disabled */
@@ -283,33 +284,33 @@ int32_t HTS221_HUM_Disable(HTS221_Object_t *pObj)
 }
 
 /**
- * @brief  Get the HTS221 humidity sensor output data rate
- * @param  pObj the device pObj
- * @param  Odr pointer where the output data rate is written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the HTS221 humidity sensor output data rate
+  * @param  pObj the device pObj
+  * @param  Odr pointer where the output data rate is written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_HUM_GetOutputDataRate(HTS221_Object_t *pObj, float *Odr)
 {
   return HTS221_GetOutputDataRate(pObj, Odr);
 }
 
 /**
- * @brief  Set the HTS221 humidity sensor output data rate
- * @param  pObj the device pObj
- * @param  Odr the output data rate value to be set
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the HTS221 humidity sensor output data rate
+  * @param  pObj the device pObj
+  * @param  Odr the output data rate value to be set
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_HUM_SetOutputDataRate(HTS221_Object_t *pObj, float Odr)
 {
   return HTS221_SetOutputDataRate(pObj, Odr);
 }
 
 /**
- * @brief  Get the HTS221 humidity value
- * @param  pObj the device pObj
- * @param  Value pointer where the humidity value is written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the HTS221 humidity value
+  * @param  pObj the device pObj
+  * @param  Value pointer where the humidity value is written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_HUM_GetHumidity(HTS221_Object_t *pObj, float *Value)
 {
   hts221_axis1bit16_t data_raw_humidity;
@@ -357,11 +358,11 @@ int32_t HTS221_HUM_GetHumidity(HTS221_Object_t *pObj, float *Value)
 }
 
 /**
- * @brief  Get the HTS221 humidity data ready bit value
- * @param  pObj the device pObj
- * @param  Status the status of data ready bit
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the HTS221 humidity data ready bit value
+  * @param  pObj the device pObj
+  * @param  Status the status of data ready bit
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_HUM_Get_DRDY_Status(HTS221_Object_t *pObj, uint8_t *Status)
 {
   if (hts221_hum_data_ready_get(&(pObj->Ctx), Status) != HTS221_OK)
@@ -373,10 +374,10 @@ int32_t HTS221_HUM_Get_DRDY_Status(HTS221_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Enable the HTS221 temperature sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Enable the HTS221 temperature sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_TEMP_Enable(HTS221_Object_t *pObj)
 {
   /* Check if the component is already enabled */
@@ -402,10 +403,10 @@ int32_t HTS221_TEMP_Enable(HTS221_Object_t *pObj)
 }
 
 /**
- * @brief  Disable the HTS221 temperature sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Disable the HTS221 temperature sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_TEMP_Disable(HTS221_Object_t *pObj)
 {
   /* Check if the component is already disabled */
@@ -431,33 +432,33 @@ int32_t HTS221_TEMP_Disable(HTS221_Object_t *pObj)
 }
 
 /**
- * @brief  Get the HTS221 temperature sensor output data rate
- * @param  pObj the device pObj
- * @param  Odr pointer where the output data rate is written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the HTS221 temperature sensor output data rate
+  * @param  pObj the device pObj
+  * @param  Odr pointer where the output data rate is written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_TEMP_GetOutputDataRate(HTS221_Object_t *pObj, float *Odr)
 {
   return HTS221_GetOutputDataRate(pObj, Odr);
 }
 
 /**
- * @brief  Set the HTS221 temperature sensor output data rate
- * @param  pObj the device pObj
- * @param  Odr the output data rate value to be set
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the HTS221 temperature sensor output data rate
+  * @param  pObj the device pObj
+  * @param  Odr the output data rate value to be set
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_TEMP_SetOutputDataRate(HTS221_Object_t *pObj, float Odr)
 {
   return HTS221_SetOutputDataRate(pObj, Odr);
 }
 
 /**
- * @brief  Get the HTS221 temperature value
- * @param  pObj the device pObj
- * @param  Value pointer where the temperature value is written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the HTS221 temperature value
+  * @param  pObj the device pObj
+  * @param  Value pointer where the temperature value is written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_TEMP_GetTemperature(HTS221_Object_t *pObj, float *Value)
 {
   hts221_axis1bit16_t data_raw_temperature;
@@ -495,11 +496,11 @@ int32_t HTS221_TEMP_GetTemperature(HTS221_Object_t *pObj, float *Value)
 }
 
 /**
- * @brief  Get the HTS221 temperature data ready bit value
- * @param  pObj the device pObj
- * @param  Status the status of data ready bit
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the HTS221 temperature data ready bit value
+  * @param  pObj the device pObj
+  * @param  Status the status of data ready bit
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_TEMP_Get_DRDY_Status(HTS221_Object_t *pObj, uint8_t *Status)
 {
   if (hts221_temp_data_ready_get(&(pObj->Ctx), Status) != HTS221_OK)
@@ -511,21 +512,21 @@ int32_t HTS221_TEMP_Get_DRDY_Status(HTS221_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Set the HTS221 One Shot Mode
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the HTS221 One Shot Mode
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_Set_One_Shot(HTS221_Object_t *pObj)
 {
 
   /* Set ODR */
-  if(hts221_data_rate_set(&(pObj->Ctx), HTS221_ONE_SHOT)!= HTS221_OK)
+  if (hts221_data_rate_set(&(pObj->Ctx), HTS221_ONE_SHOT) != HTS221_OK)
   {
     return HTS221_ERROR;
   }
 
   /* Start One Shot Measurement */
-  if(hts221_one_shoot_trigger_set(&(pObj->Ctx), 1) != HTS221_OK)
+  if (hts221_one_shoot_trigger_set(&(pObj->Ctx), 1) != HTS221_OK)
   {
     return HTS221_ERROR;
   }
@@ -534,29 +535,29 @@ int32_t HTS221_Set_One_Shot(HTS221_Object_t *pObj)
 }
 
 /**
- * @brief  Get the HTS221 One Shot Status
- * @param  pObj the device pObj
- * @param  Status pointer to the one shot status (1 means measurements available, 0 means measurements not available yet)
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the HTS221 One Shot Status
+  * @param  pObj the device pObj
+  * @param  Status pointer to the one shot status (1 means measurements available, 0 means measurements not available yet)
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_Get_One_Shot_Status(HTS221_Object_t *pObj, uint8_t *Status)
 {
   uint8_t h_da;
   uint8_t t_da;
 
   /* Get DataReady for humidity */
-  if(hts221_hum_data_ready_get(&(pObj->Ctx), &h_da) != HTS221_OK)
+  if (hts221_hum_data_ready_get(&(pObj->Ctx), &h_da) != HTS221_OK)
   {
     return HTS221_ERROR;
   }
 
   /* Get DataReady for temperature */
-  if(hts221_temp_data_ready_get(&(pObj->Ctx), &t_da) != HTS221_OK)
+  if (hts221_temp_data_ready_get(&(pObj->Ctx), &t_da) != HTS221_OK)
   {
     return HTS221_ERROR;
   }
 
-  if(h_da && t_da)
+  if (h_da && t_da)
   {
     *Status = 1;
   }
@@ -569,12 +570,12 @@ int32_t HTS221_Get_One_Shot_Status(HTS221_Object_t *pObj, uint8_t *Status)
 }
 
 /**
- * @brief  Get the HTS221 register value
- * @param  pObj the device pObj
- * @param  Reg address to be read
- * @param  Data pointer where the value is written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get the HTS221 register value
+  * @param  pObj the device pObj
+  * @param  Reg address to be read
+  * @param  Data pointer where the value is written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_Read_Reg(HTS221_Object_t *pObj, uint8_t Reg, uint8_t *Data)
 {
   if (hts221_read_reg(&(pObj->Ctx), Reg, Data, 1) != HTS221_OK)
@@ -586,12 +587,12 @@ int32_t HTS221_Read_Reg(HTS221_Object_t *pObj, uint8_t Reg, uint8_t *Data)
 }
 
 /**
- * @brief  Set the HTS221 register value
- * @param  pObj the device pObj
- * @param  Reg address to be written
- * @param  Data value to be written
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set the HTS221 register value
+  * @param  pObj the device pObj
+  * @param  Reg address to be written
+  * @param  Data value to be written
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_Write_Reg(HTS221_Object_t *pObj, uint8_t Reg, uint8_t Data)
 {
   if (hts221_write_reg(&(pObj->Ctx), Reg, &Data, 1) != HTS221_OK)
@@ -603,19 +604,19 @@ int32_t HTS221_Write_Reg(HTS221_Object_t *pObj, uint8_t Reg, uint8_t Data)
 }
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup HTS221_Private_Functions HTS221 Private Functions
- * @{
- */
+  * @{
+  */
 
 /**
- * @brief  Get output data rate
- * @param  pObj the device pObj
- * @param  Odr the output data rate value
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Get output data rate
+  * @param  pObj the device pObj
+  * @param  Odr the output data rate value
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t HTS221_GetOutputDataRate(HTS221_Object_t *pObj, float *Odr)
 {
   int32_t ret = HTS221_OK;
@@ -653,11 +654,11 @@ static int32_t HTS221_GetOutputDataRate(HTS221_Object_t *pObj, float *Odr)
 }
 
 /**
- * @brief  Set output data rate
- * @param  pObj the device pObj
- * @param  Odr the output data rate value to be set
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Set output data rate
+  * @param  pObj the device pObj
+  * @param  Odr the output data rate value to be set
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t HTS221_SetOutputDataRate(HTS221_Object_t *pObj, float Odr)
 {
   hts221_odr_t new_odr;
@@ -675,10 +676,10 @@ static int32_t HTS221_SetOutputDataRate(HTS221_Object_t *pObj, float Odr)
 }
 
 /**
- * @brief  Initialize the HTS221 sensor
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Initialize the HTS221 sensor
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t HTS221_Initialize(HTS221_Object_t *pObj)
 {
   /* Power off the component. */
@@ -703,10 +704,10 @@ static int32_t HTS221_Initialize(HTS221_Object_t *pObj)
 }
 
 /**
- * @brief  Enable HTS221 DRDY interrupt mode
- * @param  pObj the device pObj
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Enable HTS221 DRDY interrupt mode
+  * @param  pObj the device pObj
+  * @retval 0 in case of success, an error code otherwise
+  */
 int32_t HTS221_Enable_DRDY_Interrupt(HTS221_Object_t *pObj)
 {
   if (hts221_drdy_on_int_set(&(pObj->Ctx), PROPERTY_ENABLE) != HTS221_OK)
@@ -718,24 +719,24 @@ int32_t HTS221_Enable_DRDY_Interrupt(HTS221_Object_t *pObj)
 }
 
 /**
- * @brief  Function used to apply coefficient
- * @param  Lin the line
- * @param  Coeff the coefficient
- * @retval Calculation result
- */
+  * @brief  Function used to apply coefficient
+  * @param  Lin the line
+  * @param  Coeff the coefficient
+  * @retval Calculation result
+  */
 static float Linear_Interpolation(lin_t *Lin, float Coeff)
 {
   return (((Lin->y1 - Lin->y0) * Coeff) + ((Lin->x1 * Lin->y0) - (Lin->x0 * Lin->y1))) / (Lin->x1 - Lin->x0);
 }
 
 /**
- * @brief  Wrap Read register component function to Bus IO function
- * @param  Handle the device handler
- * @param  Reg the register address
- * @param  pData the stored data pointer
- * @param  Length the length
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Wrap Read register component function to Bus IO function
+  * @param  Handle the device handler
+  * @param  Reg the register address
+  * @param  pData the stored data pointer
+  * @param  Length the length
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t ReadRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t Length)
 {
   HTS221_Object_t *pObj = (HTS221_Object_t *)Handle;
@@ -753,13 +754,13 @@ static int32_t ReadRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t L
 }
 
 /**
- * @brief  Wrap Write register component function to Bus IO function
- * @param  Handle the device handler
- * @param  Reg the register address
- * @param  pData the stored data pointer
- * @param  Length the length
- * @retval 0 in case of success, an error code otherwise
- */
+  * @brief  Wrap Write register component function to Bus IO function
+  * @param  Handle the device handler
+  * @param  Reg the register address
+  * @param  pData the stored data pointer
+  * @param  Length the length
+  * @retval 0 in case of success, an error code otherwise
+  */
 static int32_t WriteRegWrap(void *Handle, uint8_t Reg, uint8_t *pData, uint16_t Length)
 {
   HTS221_Object_t *pObj = (HTS221_Object_t *)Handle;

@@ -438,28 +438,26 @@ It provides the user with two levels of abstraction:
 <div>
 # Product specificities
 
-## 1. STM32U5  
--   **DMA accessibility**  
-    -   STM32U5 devices contain two DMA instances:  
-        - GPDMA, a general purpose DMA that can access any available address.  
-        - LPDMA, a low-power DMA that can access only SRD resources.  
+## 1. DMA accessibility  
+-   According to STM32 peripheral integration and power domain definition:  
+    -   DMA can access only to a reduced memory range. This DMA integration strategy must be took into consideration when building an LPBAM application.  
 
--   **Memory usage**  
-    -   Generally, low-power STM32 lines embed memories of limited size that shall be managed with optimum memory usage.  
-    -   The LPBAM utility includes two types of variables:  
-        - Variables used by the program executed by CPU. They can be placed at any available SRAM address.  
-        - Variables used by the DMA in order to execute linked-list queue. They must be placed at SRAM addresses accessible by the DMA instance. These variables are LPBAM descriptors and data buffers.  
-            => To optimize memory usage, it is recommended to place only the variables used during linked-list queue execution in SRAM4 when the LPBAM scenario is built to be executed by the LPDMA. 
+## 2. Memory usage  
+-   Generally, low-power STM32 lines embed memories of limited size that shall be managed with optimum memory usage.  
+-   The LPBAM utility includes two types of variables:  
+    - Variables used by the program executed by CPU. They can be placed at any available SRAM address.  
+    - Variables used by the DMA in order to execute linked-list queue. They must be placed at SRAM addresses accessible by the DMA instance. These variables are LPBAM descriptors and data buffers.  
+        => To optimize memory usage, it is recommended to place only the variables used during linked-list queue execution in the SRAM accessible by the DMA instance used within the LPBAM application.  
 
--   **TrustZone<sup>®</sup> compliance**  
-    -   The LPBAM firmware solution is compliant with TrustZone software architecture.  
-    -   As the DMA is a TrustZone-aware peripheral, configuring the source and the destination access attributes are possible.  
-    -   In the basic layer, configuring DMA access attributes can be done at each node level.  
-    -   In the advanced layer, configuring DMA accesses attributes is possible only for the data nodes where the user can perform data transfer as follows:  
-        - from secure to secure addresses.
-        - from secure to non-secure addresses.
-        - from non-secure to secure addresses.
-        - from non-secure to non-secure addresses.
+## 3. TrustZone<sup>®</sup> compliance  
+-   The LPBAM software solution is compliant with TrustZone software architecture.  
+-   As the DMA is a TrustZone-aware peripheral, configuring the source and the destination access attributes are possible.  
+-   In the basic layer, configuring DMA access attributes can be done at each node level.  
+-   In the advanced layer, configuring DMA accesses attributes is possible only for the data nodes where the user can perform data transfer as follows:  
+    - from secure to secure addresses.  
+    - from secure to non-secure addresses.  
+    - from non-secure to secure addresses.  
+    - from non-secure to non-secure addresses.  
 </div>
 :::
 
@@ -511,10 +509,7 @@ It provides the user with two levels of abstraction:
 # Acronyms
 
 | **Acronyms**     | **Definition**                                           |
-| ---------------- | -------------------------------------------------------- | 
-| **SRD**          | **S**mart **R**un **D**omain                             |
-| **GPDMA**        | **G**eneral **P**urpose **D**irect **M**emory **A**ccess |
-| **LPDMA**        | **L**ow **P**ower **D**irect **M**emory **A**ccess       |
+| ---------------- | -------------------------------------------------------- |
 | **CPU**          | **C**entral **P**rocessing **U**nit                      |
 | **EXTI**         | **EXT**ended **I**nterrupts and event controller         |
 | **NVIC**         | **N**ested **V**ectored **I**nterrupt **C**ontroller     |

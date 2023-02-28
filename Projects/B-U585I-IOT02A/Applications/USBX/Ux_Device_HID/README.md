@@ -10,13 +10,13 @@ and associated Class descriptor report to build a compliant USB HID mouse device
 At the beginning ThreadX call the entry function tx_application_define(), at this stage, all USBx resources
 are initialized, the HID Class driver is registered and the application creates 2 threads with the same priorities :
 
-  - usbx_app_thread_entry (Prio : 20; PreemptionPrio : 20) used to initialize USB OTG HAL PCD driver and start the device.
+  - app_ux_device_thread_entry (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver and start the device.
   - usbx_hid_thread_entry (Prio : 20; PreemptionPrio : 20) used to send HID reports to move automatically the PC host machine cursor.
 
-The thread usbx_app_thread_entry is responsible to start or stop the USB device.
+The thread app_ux_device_thread_entry is responsible to start or stop the USB device.
 At Run mode the thread will be waiting on message queue form USB_PD interface, when the USB device is plugged to host PC
-a callback in USB_PD interface will send a message to usbx_app_thread_entry to start the USB device.
-By the same way when the USB device is unplug a callback in USB_PD interface will send a message to usbx_app_thread_entry to stop the USB device.
+a callback in USB_PD interface will send a message to app_ux_device_thread_entry to start the USB device.
+By the same way when the USB device is unplug a callback in USB_PD interface will send a message to app_ux_device_thread_entry to stop the USB device.
 To customize the HID application by sending the mouse position step by step every 10ms.
 For each 10ms, the application calls the GetPointerData() API to update the mouse position (x, y) and send
 the report buffer through the ux_device_class_hid_event_set() API.
@@ -46,7 +46,7 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.s" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
    It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL or BSP).
@@ -61,7 +61,7 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
     + For MDK-ARM:
     ```
     either define the RW_IRAM1 region in the ".sct" file
-    or modify the line below in "tx_low_level_initilize.s to match the memory region being used
+    or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
     ```
     + For STM32CubeIDE add the following section into the .ld file:
@@ -81,7 +81,7 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
        Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
        Read more in STM32CubeIDE User Guide, chapter: "Linker script".
 
-    + The "tx_initialize_low_level.s" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
+    + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
 
 #### <b>USBX usage hints</b>
 

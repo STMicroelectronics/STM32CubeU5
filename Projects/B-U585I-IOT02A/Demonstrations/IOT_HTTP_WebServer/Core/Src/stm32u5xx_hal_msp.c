@@ -23,9 +23,6 @@
 /* Private define ----------------------------------------------------------------------------------------------------*/
 /* Private macro -----------------------------------------------------------------------------------------------------*/
 /* Private variables -------------------------------------------------------------------------------------------------*/
-extern DMA_HandleTypeDef handle_GPDMA1_Channel4;
-extern DMA_HandleTypeDef handle_GPDMA1_Channel5;
-
 /* Private function prototypes ---------------------------------------------------------------------------------------*/
 /* External functions ------------------------------------------------------------------------------------------------*/
 
@@ -79,61 +76,9 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
     HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-    /* Set Rx DMA channel configuration */
-    handle_GPDMA1_Channel4.Instance                   = GPDMA1_Channel4;
-    handle_GPDMA1_Channel4.Init.Request               = GPDMA1_REQUEST_SPI2_RX;
-    handle_GPDMA1_Channel4.Init.BlkHWRequest          = DMA_BREQ_SINGLE_BURST;
-    handle_GPDMA1_Channel4.Init.Direction             = DMA_PERIPH_TO_MEMORY;
-    handle_GPDMA1_Channel4.Init.SrcInc                = DMA_SINC_FIXED;
-    handle_GPDMA1_Channel4.Init.DestInc               = DMA_DINC_INCREMENTED;
-    handle_GPDMA1_Channel4.Init.SrcDataWidth          = DMA_SRC_DATAWIDTH_BYTE;
-    handle_GPDMA1_Channel4.Init.DestDataWidth         = DMA_DEST_DATAWIDTH_BYTE;
-    handle_GPDMA1_Channel4.Init.Priority              = DMA_LOW_PRIORITY_HIGH_WEIGHT;
-    handle_GPDMA1_Channel4.Init.SrcBurstLength        = 1U;
-    handle_GPDMA1_Channel4.Init.DestBurstLength       = 1U;
-    handle_GPDMA1_Channel4.Init.TransferAllocatedPort = DMA_SRC_ALLOCATED_PORT0|DMA_DEST_ALLOCATED_PORT1;
-    handle_GPDMA1_Channel4.Init.TransferEventMode     = DMA_TCEM_BLOCK_TRANSFER;
-    handle_GPDMA1_Channel4.Init.Mode                  = DMA_NORMAL;
-    /* Initialize Rx DMA channel */
-    if (HAL_DMA_Init(&handle_GPDMA1_Channel4) != HAL_OK)
-    {
-      webserver_process_error();
-    }
-    /* Link Rx DMA channel handle */
-    __HAL_LINKDMA(hspi, hdmarx, handle_GPDMA1_Channel4);
-
-    /* Set Tx DMA channel configuration */
-    handle_GPDMA1_Channel5.Instance                   = GPDMA1_Channel5;
-    handle_GPDMA1_Channel5.Init.Request               = GPDMA1_REQUEST_SPI2_TX;
-    handle_GPDMA1_Channel5.Init.BlkHWRequest          = DMA_BREQ_SINGLE_BURST;
-    handle_GPDMA1_Channel5.Init.Direction             = DMA_MEMORY_TO_PERIPH;
-    handle_GPDMA1_Channel5.Init.SrcInc                = DMA_SINC_INCREMENTED;
-    handle_GPDMA1_Channel5.Init.DestInc               = DMA_DINC_FIXED;
-    handle_GPDMA1_Channel5.Init.SrcDataWidth          = DMA_SRC_DATAWIDTH_BYTE;
-    handle_GPDMA1_Channel5.Init.DestDataWidth         = DMA_DEST_DATAWIDTH_BYTE;
-    handle_GPDMA1_Channel5.Init.Priority              = DMA_LOW_PRIORITY_HIGH_WEIGHT;
-    handle_GPDMA1_Channel5.Init.SrcBurstLength        = 1U;
-    handle_GPDMA1_Channel5.Init.DestBurstLength       = 1U;
-    handle_GPDMA1_Channel5.Init.TransferAllocatedPort = DMA_SRC_ALLOCATED_PORT0|DMA_DEST_ALLOCATED_PORT1;
-    handle_GPDMA1_Channel5.Init.TransferEventMode     = DMA_TCEM_BLOCK_TRANSFER;
-    handle_GPDMA1_Channel5.Init.Mode                  = DMA_NORMAL;
-    /* Initialize Tx DMA channel */
-    if (HAL_DMA_Init(&handle_GPDMA1_Channel5) != HAL_OK)
-    {
-      webserver_process_error();
-    }
-    /* Link Tx DMA channel handle */
-    __HAL_LINKDMA(hspi, hdmatx, handle_GPDMA1_Channel5);
-
     /* SPI2 interrupt Init */
     HAL_NVIC_SetPriority(SPI2_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(SPI2_IRQn);
-    /* GPDMA1 channel4 interrupt Init */
-    HAL_NVIC_SetPriority(GPDMA1_Channel4_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(GPDMA1_Channel4_IRQn);
-    /* GPDMA1 channel5 interrupt Init */
-    HAL_NVIC_SetPriority(GPDMA1_Channel5_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(GPDMA1_Channel5_IRQn);
   }
 }
 

@@ -49,8 +49,9 @@
     [..]
       This driver provides 3 model of APIs :
           (+) ADV_LPBAM_{Module}_{Mode}_SetConfigQ() : provides one peripheral configuration queue.
-          (+) ADV_LPBAM_{Module}_{Mode}_SetDataQ() : provides one peripheral data transfer queue.
-          (+) ADV_LPBAM_{Module}_{Mode}_SetFullQ() : provides one peripheral configuration and one data transfer queue.
+          (+) ADV_LPBAM_{Module}_{Mode}_SetDataQ()   : provides one peripheral data transfer queue.
+          (+) ADV_LPBAM_{Module}_{Mode}_SetFullQ()   : provides one peripheral configuration and one data transfer
+                                                       queue.
 
     *** Driver features ***
     =======================
@@ -62,6 +63,7 @@
           (+) Configures the DAC peripheral conversion.
           (+) Starts the DAC peripheral conversion.
           (+) Configures and starts the DAC peripheral conversion.
+          (+) Stop the DAC peripheral conversion.
 
     *** Functional description ***
     ==============================
@@ -74,6 +76,7 @@
       The DAC peripheral is configured and started.
       The DAC conversion hardware trigger signal is configurable.
       The DAC input data is stored in a buffer then sent by a DMA channel to be converted in an analog output signal.
+      The DAC peripheral is stopped.
 
     *** Driver APIs description ***
     ===============================
@@ -137,6 +140,9 @@
           (+) DestDataWidth     : DMA_DEST_DATAWIDTH_WORD.
 
     [..]
+      Use ADV_LPBAM_DAC_Stop_SetFullQ() API to build a linked-list queue that stop the DAC peripheral.
+
+    [..]
       These API must be called when the DAC is initialized.
            (+) Recommended DAC channel initialization sequence
                (++) Call HAL_DAC_Init() to initialize the DAC. (Mandatory)
@@ -170,9 +176,9 @@
       to LPBAM_Utility_GettingStarted.html for linked-list feature description).
 
     [..]
-      This driver user sequence is :
+      This driver user sequence when need to use one of two channels separately is:
           (+) Initialize the DAC (Using HAL/LL). (Mandatory)
-          (+) Call ADV_LPBAM_DAC_EnableDMARequests() to enable DAC DMA requests. (Mandatory)
+          (+) Call ADV_LPBAM_DAC_EnableDMARequests() to enable DAC channel DMA requests. (Mandatory)
           (+) There are two possibilities to call advanced API:
               (++) Single API making configuration and data setup :
                    (+++) Call, when needed, ADV_LPBAM_DAC_Conversion_SetFullQ(). (Mandatory)
@@ -182,6 +188,7 @@
           (+) Call, optionally, ADV_LPBAM_Q_SetTriggerConfig() in stm32_adv_lpbam_common.c to add hardware trigger
               condition for executing of ADV_LPBAM_DAC_Conversion_SetConfigQ(), ADV_LPBAM_DAC_Conversion_SetDataQ() or
               ADV_LPBAM_DAC_Conversion_SetFullQ() output queue.
+          (+) Call, when needed, ADV_LPBAM_DAC_Stop_SetFullQ().
           (+) Call, optionally, ADV_LPBAM_Q_SetCircularMode() in stm32_adv_lpbam_common.c to circularize your
               linked-list queue for infinite scenarios cases.
           (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode. (Mandatory)
@@ -193,6 +200,56 @@
               (++) DMA_IT_ULE : update link error.
               (++) DMA_IT_USE : user setting error.
           (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list execution. (Mandatory)
+          (+) Call, when needed, ADV_LPBAM_DAC_Stop_SetFullQ() to stop the DAC conversion.
+          (+) Call, when needed, ADV_LPBAM_DAC_Stop_SetFullQ() to stop the DAC conversion.
+
+    [..]
+      This driver user sequence when need to use both channels simultanuously is:
+          (+) Initialize the DAC (Using HAL/LL). (Mandatory)
+          (+) Call ADV_LPBAM_DAC_EnableDMARequests() to enable DAC channels DMA requests. (Mandatory)
+          (+) Call ADV_LPBAM_DAC_Conversion_SetDataQ() for DAC channel 2. (Mandatory)
+          (+) There are two possibilities to call advanced API:
+              (++) Single API making configuration for both channels and data channel 1 setup :
+                   (+++) Call, when needed, ADV_LPBAM_DAC_Conversion_SetFullQ() with both channels as parameter.
+                         (Mandatory)
+              (++) Two APIs making configuration for both channels and data channel 1 setup separately :
+                   (+++) Call, when needed, ADV_LPBAM_DAC_Conversion_SetConfigQ() with both channels as parameter and/or
+                         ADV_LPBAM_DAC_Conversion_SetDataQ() with channel 1 as parameter. (Mandatory)
+          (+) Call, optionally, ADV_LPBAM_Q_SetTriggerConfig() in stm32_adv_lpbam_common.c to add hardware trigger
+              condition for executing of ADV_LPBAM_DAC_Conversion_SetConfigQ(), ADV_LPBAM_DAC_Conversion_SetDataQ() or
+              ADV_LPBAM_DAC_Conversion_SetFullQ() output DAC channel 2 queue.
+          (+) Call, optionally, ADV_LPBAM_Q_SetCircularMode() in stm32_adv_lpbam_common.c to circularize your
+              linked-list queue for infinite scenarios cases DAC channel 2 queue.
+          (+) Call, optionally, ADV_LPBAM_Q_SetTriggerConfig() in stm32_adv_lpbam_common.c to add hardware trigger
+              condition for executing of ADV_LPBAM_DAC_Conversion_SetConfigQ(), ADV_LPBAM_DAC_Conversion_SetDataQ() or
+              ADV_LPBAM_DAC_Conversion_SetFullQ() output DAC channel 1 queue.
+          (+) Call, optionally, ADV_LPBAM_Q_SetCircularMode() in stm32_adv_lpbam_common.c to circularize your
+              linked-list queue for infinite scenarios cases DAC chanel1 queue.
+          (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode for DAC channel 2 queue.
+              (Mandatory)
+          (+) Call HAL_DMAEx_List_LinkQ() to link the output DAC channel 2 queue to the initialized DMA channel.
+              (Mandatory)
+          (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
+              DMA error interrupts can be :
+              (++) DMA_IT_DTE : data transfer error.
+              (++) DMA_IT_ULE : update link error.
+              (++) DMA_IT_USE : user setting error.
+          (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list DAC channel 2 queue execution.
+              (Mandatory)
+          (+) Call HAL_DMAEx_List_Init() to initialize a DMA channel in linked-list mode for DAC channel 1 queue.
+              (Mandatory)
+          (+) Call HAL_DMAEx_List_LinkQ() to link the output DAC channel 1 queue to the initialized DMA channel.
+              (Mandatory)
+          (+) Call __HAL_DMA_ENABLE_IT() to enable error interrupts.
+              Any DMA error occurred in low power mode, it blocks the LPBAM sub-system mechanisms.
+              DMA error interrupts can be :
+              (++) DMA_IT_DTE : data transfer error.
+              (++) DMA_IT_ULE : update link error.
+              (++) DMA_IT_USE : user setting error.
+          (+) Call HAL_DMAEx_List_Start() to start the DMA channel linked-list DAC channel 1 queue execution.
+              (Mandatory)
+          (+) Call, when needed, ADV_LPBAM_DAC_Stop_SetFullQ() to stop the DAC conversion.
 
     *** Recommendations ***
     =======================
@@ -215,6 +272,11 @@
     [..]
       It's allowed to call ADV_LPBAM_DAC_Conversion_SetDataQ() by two different linked-list queues executed
       simultaneously for 2 different channel.
+
+    [..]
+      It's allowed to call ADV_LPBAM_DAC_Conversion_SetDataQ() and ADV_LPBAM_DAC_Conversion_SetConfigQ()
+      or ADV_LPBAM_DAC_Conversion_SetDataQ() and ADV_LPBAM_DAC_Conversion_SetFullQ()
+      by two different linked-list queues executed simultaneously for 2 different channel.
 
     [..]
       It's forbidden to execute simultaneously the same linked-list queue with different DMA channels.
@@ -264,7 +326,7 @@
   *         LPBAM_DAC_ConfigAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a DAC_TypeDef structure that selects DAC instance.
   * @param  Channel      : [IN]  Specifies the DAC channel.
-  *                              This parameter can be a value of @ref LPBAM_DAC_Channel.
+  *                              This parameter can be one or combilation of @ref LPBAM_DAC_Channel values.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
   *                              queue type information.
   * @param  pConfig      : [IN]  Pointer to a LPBAM_DAC_ConfigAdvConf_t structure that contains conversion configuration
@@ -284,6 +346,7 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetConfigQ(DAC_TypeDef                *c
 {
   LPBAM_DAC_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
+  uint8_t              channel_num = 1U;
 
   /*
    *               ######## Disable and configure DAC ########
@@ -297,10 +360,24 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetConfigQ(DAC_TypeDef                *c
   config_node.NodeDesc.NodeInfo.NodeType = pDMAListInfo->QueueType;
   config_node.NodeDesc.pSrcVarReg        = &pDescriptor->pReg[0U];
 
-  /* Set DAC configuration */
-  config_node.Config.State               = DISABLE;
-  config_node.Config.Channel             = Channel;
-  config_node.Config.DAC_Trigger         = pConfig->DAC_Trigger;
+  /* Check channel number */
+  if (Channel > 2U)
+  {
+    channel_num = 2U;
+    config_node.Config[0U].Channel = LPBAM_DAC_CHANNEL_1;
+    config_node.Config[1U].Channel = LPBAM_DAC_CHANNEL_2;
+  }
+  else
+  {
+    config_node.Config[0U].Channel = Channel;
+    config_node.Config[1U].Channel = 0U;
+  }
+
+  /* Set DAC channels configuration */
+  for (uint8_t ch_idx = 0U; ch_idx < channel_num; ch_idx++)
+  {
+    config_node.Config[ch_idx].State = DISABLE;
+  }
 
   /* Fill node configuration */
   if (LPBAM_DAC_FillNodeConfig(&config_node, &dma_node_conf) != LPBAM_OK)
@@ -328,8 +405,12 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetConfigQ(DAC_TypeDef                *c
   /* Set node descriptor */
   config_node.NodeDesc.pSrcVarReg  = &pDescriptor->pReg[1U];
 
-  /* Set DAC configuration */
-  config_node.Config.State         = ENABLE;
+  /* Set DAC channels configuration */
+  for (uint8_t ch_idx = 0U; ch_idx < channel_num; ch_idx++)
+  {
+    config_node.Config[ch_idx].State       = ENABLE;
+    config_node.Config[ch_idx].DAC_Trigger = pConfig[ch_idx].DAC_Trigger;
+  }
 
   /* Fill descriptor for lpbam configuration transaction */
   if (LPBAM_DAC_FillNodeConfig(&config_node, &dma_node_conf) != LPBAM_OK)
@@ -390,10 +471,10 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetDataQ(DAC_TypeDef              *const
   config_node.NodeDesc.NodeInfo.NodeType = pDMAListInfo->QueueType;
 
   /* Set DAC data configuration */
-  config_node.Config.Channel             = Channel;
-  config_node.Config.Alignment           = (uint8_t)pData->Alignment;
-  config_node.NodeDesc.pBuff             = (uint32_t *)pData->pData;
-  config_node.Config.Size                = pData->Size;
+  config_node.Config->Channel             = Channel;
+  config_node.Config->Alignment           = (uint8_t)pData->Alignment;
+  config_node.NodeDesc.pBuff              = (uint32_t *)pData->pData;
+  config_node.Config->Size                = pData->Size;
 
   /* Fill descriptor for lpbam configuration transaction */
   if (LPBAM_DAC_FillNodeConfig(&config_node, &dma_node_conf) != LPBAM_OK)
@@ -421,7 +502,7 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetDataQ(DAC_TypeDef              *const
   *         in LPBAM_DAC_FullAdvConf_t.
   * @param  pInstance    : [IN]  Pointer to a DAC_TypeDef structure that selects DAC instance.
   * @param  Channel      : [IN]  Specifies the DAC channel.
-  *                              This parameter can be a value of @ref LPBAM_DAC_Channel.
+  *                              This parameter can be one or combilation of @ref LPBAM_DAC_Channel values.
   * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
   *                              queue type information.
   * @param  pFull        : [IN]  Pointer to a LPBAM_DAC_FullAdvConf_t structure that contains conversion full nodes
@@ -441,6 +522,7 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetFullQ(DAC_TypeDef              *const
 {
   LPBAM_DAC_ConfNode_t config_node;
   DMA_NodeConfTypeDef  dma_node_conf;
+  uint8_t              channel_num = 1U;
 
   /*
    *               ######## Disable and configure DAC ########
@@ -454,10 +536,24 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetFullQ(DAC_TypeDef              *const
   config_node.NodeDesc.NodeInfo.NodeType = pDMAListInfo->QueueType;
   config_node.NodeDesc.pSrcVarReg        = &pDescriptor->pReg[0U];
 
-  /* Set DAC configuration */
-  config_node.Config.State               = DISABLE;
-  config_node.Config.Channel             = Channel;
-  config_node.Config.DAC_Trigger         = pFull->DAC_Trigger;
+  /* Check channel number */
+  if (Channel > 2U)
+  {
+    channel_num = 2U;
+    config_node.Config[0U].Channel = LPBAM_DAC_CHANNEL_1;
+    config_node.Config[1U].Channel = LPBAM_DAC_CHANNEL_2;
+  }
+  else
+  {
+    config_node.Config[0U].Channel = Channel;
+    config_node.Config[1U].Channel = 0U;
+  }
+
+  /* Set DAC channels configuration */
+  for (uint8_t ch_idx = 0U; ch_idx < channel_num; ch_idx++)
+  {
+    config_node.Config[ch_idx].State = DISABLE;
+  }
 
   /* Fill node configuration */
   if (LPBAM_DAC_FillNodeConfig(&config_node, &dma_node_conf) != LPBAM_OK)
@@ -477,7 +573,6 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetFullQ(DAC_TypeDef              *const
     return LPBAM_ERROR;
   }
 
-
   /*
    *               ######## Enable DAC ########
    */
@@ -485,8 +580,12 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetFullQ(DAC_TypeDef              *const
   /* Set node descriptor */
   config_node.NodeDesc.pSrcVarReg  = &pDescriptor->pReg[1U];
 
-  /* Set DAC configuration */
-  config_node.Config.State         = ENABLE;
+  /* Set DAC channels configuration */
+  for (uint8_t ch_idx = 0U; ch_idx < channel_num; ch_idx++)
+  {
+    config_node.Config[ch_idx].State       = ENABLE;
+    config_node.Config[ch_idx].DAC_Trigger = pFull[ch_idx].DAC_Trigger;
+  }
 
   /* Fill descriptor for lpbam configuration transaction */
   if (LPBAM_DAC_FillNodeConfig(&config_node, &dma_node_conf) != LPBAM_OK)
@@ -506,7 +605,6 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetFullQ(DAC_TypeDef              *const
     return LPBAM_ERROR;
   }
 
-
   /*
    *               ######## DAC data node ########
    */
@@ -515,9 +613,9 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetFullQ(DAC_TypeDef              *const
   config_node.NodeDesc.NodeInfo.NodeID = (uint32_t)LPBAM_DAC_DATA_ID;
 
   /* Set DAC data configuration */
-  config_node.Config.Alignment         = (uint8_t)pFull->Alignment;
+  config_node.Config->Alignment         = (uint8_t)pFull->Alignment;
   config_node.NodeDesc.pBuff           = (uint32_t *)pFull->pData;
-  config_node.Config.Size              = pFull->Size;
+  config_node.Config->Size              = pFull->Size;
 
   /* Fill descriptor for lpbam configuration transaction */
   if (LPBAM_DAC_FillNodeConfig(&config_node, &dma_node_conf) != LPBAM_OK)
@@ -541,17 +639,75 @@ LPBAM_Status_t ADV_LPBAM_DAC_Conversion_SetFullQ(DAC_TypeDef              *const
 }
 
 /**
+  * @brief  Build DMA linked-list queue to stop the DAC peripheral.
+  * @param  pInstance    : [IN]  Pointer to a DAC_TypeDef structure that selects DAC instance.
+  * @param  pDMAListInfo : [IN]  Pointer to a LPBAM_DMAListInfo_t structure that contains DMA instance and linked-list
+  *                              queue type information.
+  * @param  pDescriptor  : [IN]  Pointer to a LPBAM_DAC_StopConvDesc_t structure that contains stop conversion data
+  *                              descriptor information.
+  * @param  pQueue       : [OUT] Pointer to a DMA_QListTypeDef structure that contains DMA linked-list queue
+  *                              information.
+  * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
+  */
+LPBAM_Status_t ADV_LPBAM_DAC_Stop_SetFullQ(DAC_TypeDef              *const pInstance,
+                                           LPBAM_DMAListInfo_t      const *const pDMAListInfo,
+                                           LPBAM_DAC_StopConvDesc_t *const pDescriptor,
+                                           DMA_QListTypeDef         *const pQueue)
+{
+  LPBAM_DAC_ConfNode_t config_node;
+  DMA_NodeConfTypeDef  dma_node_conf;
+
+  /*
+   *               ######## DAC Stop node ########
+   */
+
+  /* Set DAC instance */
+  config_node.pInstance                  = pInstance;
+
+  /* Set node descriptor */
+  config_node.NodeDesc.NodeInfo.NodeID   = (uint32_t)LPBAM_DAC_CONFIG_ID;
+  config_node.NodeDesc.NodeInfo.NodeType = pDMAListInfo->QueueType;
+  config_node.NodeDesc.pSrcVarReg        = &pDescriptor->pReg[0U];
+
+  /* Set DAC channels configuration */
+  config_node.Config[0U].Channel = LPBAM_DAC_CHANNEL_1;
+  config_node.Config[0U].State   = DISABLE;
+  config_node.Config[1U].Channel = LPBAM_DAC_CHANNEL_2;
+  config_node.Config[1U].State   = DISABLE;
+
+  /* Fill node configuration */
+  if (LPBAM_DAC_FillNodeConfig(&config_node, &dma_node_conf) != LPBAM_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Build stop node */
+  if (HAL_DMAEx_List_BuildNode(&dma_node_conf, &pDescriptor->pNodes[0U]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  /* Connect stop node to DAC Queue */
+  if (HAL_DMAEx_List_InsertNode_Tail(pQueue, &pDescriptor->pNodes[0U]) != HAL_OK)
+  {
+    return LPBAM_ERROR;
+  }
+
+  return LPBAM_OK;
+}
+
+/**
   * @brief  Enable the DAC DMA requests.
   * @param  pInstance    : [IN]  Pointer to a DAC_TypeDef structure that selects DAC instance.
   * @param  Channel      : [IN]  Specifies the DAC channel.
-  *                              This parameter can be a value of @ref LPBAM_DAC_Channel.
+  *                              This parameter can be one or combilation of @ref LPBAM_DAC_Channel values.
   * @retval LPBAM Status : [OUT] Value from LPBAM_Status_t enumeration.
   */
 LPBAM_Status_t ADV_LPBAM_DAC_EnableDMARequests(DAC_TypeDef *const pInstance,
                                                uint32_t    Channel)
 {
   /* Check channel index */
-  if (Channel == LPBAM_DAC_CHANNEL_1)
+  if ((Channel & LPBAM_DAC_CHANNEL_1) == LPBAM_DAC_CHANNEL_1)
   {
     /* Enable DMA requests for DAC channel 1 */
     pInstance->CR |= LPBAM_DAC_CHANNEL1_DMAEN;
@@ -559,7 +715,9 @@ LPBAM_Status_t ADV_LPBAM_DAC_EnableDMARequests(DAC_TypeDef *const pInstance,
     /* Enable DAC channel 1 */
     pInstance->CR |= DAC_CR_EN1;
   }
-  else
+
+  /* Check channel index */
+  if ((Channel & LPBAM_DAC_CHANNEL_2) == LPBAM_DAC_CHANNEL_2)
   {
     /* Enable DMA requests for DAC channel 2 */
     pInstance->CR |= LPBAM_DAC_CHANNEL2_DMAEN;

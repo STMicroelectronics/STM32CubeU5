@@ -42,6 +42,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+
 /* USER CODE BEGIN PV */
 /* Define FileX global data structures.  */
 FX_MEDIA        sdio_disk;
@@ -52,10 +53,10 @@ uint32_t media_memory[512 / sizeof(uint32_t)];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
+
 /* USER CODE BEGIN PFP */
 void Error_Handler(void);
 /* USER CODE END PFP */
-
 /**
   * @brief  Application FileX Initialization.
   * @param memory_ptr: memory pointer
@@ -81,6 +82,13 @@ UINT MX_FileX_Init(void)
   }
 
   /* USER CODE END MX_FileX_Init */
+
+/* Initialize FileX.  */
+  fx_system_initialize();
+
+  /* USER CODE BEGIN MX_FileX_Init 1*/
+
+  /* USER CODE END MX_FileX_Init 1*/
 
   return ret;
 }

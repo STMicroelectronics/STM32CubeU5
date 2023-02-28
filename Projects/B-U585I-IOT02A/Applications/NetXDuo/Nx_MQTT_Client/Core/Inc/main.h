@@ -32,7 +32,6 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stm32u5xx_hal_def.h"
-#include "b_u585i_iot02a.h"  
 #include "mx_wifi_conf.h"
 /* USER CODE END Includes */
 
@@ -63,6 +62,10 @@ void Success_Handler(void);
 #define MXCHIP_FLOW_Pin GPIO_PIN_15
 #define MXCHIP_FLOW_GPIO_Port GPIOG
 #define MXCHIP_FLOW_EXTI_IRQn EXTI15_IRQn
+#define LED_RED_Pin GPIO_PIN_6
+#define LED_RED_GPIO_Port GPIOH
+#define LED_GREEN_Pin GPIO_PIN_7
+#define LED_GREEN_GPIO_Port GPIOH
 #define MXCHIP_NOTIFY_Pin GPIO_PIN_14
 #define MXCHIP_NOTIFY_GPIO_Port GPIOD
 #define MXCHIP_NOTIFY_EXTI_IRQn EXTI14_IRQn
@@ -70,6 +73,7 @@ void Success_Handler(void);
 #define MXCHIP_NSS_GPIO_Port GPIOB
 #define MXCHIP_RESET_Pin GPIO_PIN_15
 #define MXCHIP_RESET_GPIO_Port GPIOF
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

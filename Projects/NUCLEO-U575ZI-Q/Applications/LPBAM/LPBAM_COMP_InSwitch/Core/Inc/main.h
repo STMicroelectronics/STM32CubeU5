@@ -63,6 +63,7 @@ void Error_Handler(void);
 #define OUTPUT_BUFFER_SIZE 4U
 #define LPTIM_PWM_REPETITION 0U
 #define INPUTMINUS_ABOVE_INPUTPLUS 0U
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

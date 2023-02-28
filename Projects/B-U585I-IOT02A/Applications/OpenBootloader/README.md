@@ -91,7 +91,6 @@ OpenBootloader, USART, FDCAN, I2C, SPI, USB
      - Core/Src/stm32u5xx_it.c                            Interrupt handlers file
      - Core/Src/system_stm32u5xx.c                        STM32U5xx system clock configuration file
      - Core/Src/tx_initialize_low_level.s                 ThreadX low-level processor initialization file
-     - Core/Inc/b_u585i_iot02a_conf.h                     STM32U585-DK board configuration file
      - Core/Inc/main.h                                    Main program header file
      - Core/Inc/stm32u5xx_hal_conf.h                      HAL Library Configuration file
      - Core/Inc/stm32u5xx_it.h                            Interrupt handlers header file
@@ -144,19 +143,19 @@ OpenBootloader, USART, FDCAN, I2C, SPI, USB
 
   - This example runs on STM32U585xx devices without security enabled (TZEN=0).
 
-  - This example has been tested with STMicroelectronics B-U585I-IOT02A (MB1551)
+  - This example has been tested with STMicroelectronics B-U585I-IOT02A Rev C (MB1551)
     board and can be easily tailored to any other supported device
     and development board.
 
-  - B-U585I-IOT02A set-up to use FDCAN1:
+  - B-U585I-IOT02A Rev C set-up to use FDCAN1:
     - Connect the PB8 (CN3: 7), PB9 (CN3: 10) respectively to RX, TX pins of an external FDCAN transceiver 
     - Connect CAN-H and CAN-L of the external FDCAN transceiver to your FDCAN Host adapter
 
-  - B-U585I-IOT02A set-up to use USART:
+  - B-U585I-IOT02A Rev C set-up to use USART:
     - To use the USART3 for communication you have to connect:
-      - Tx pin of your host adapter to PD9 (CN2: 3) pin of the B-U585I-IOT02A board
-      - Rx pin of your host adapter to PD8 (CN2: 2) pin of the B-U585I-IOT02A board
-    - If STLINK-V3SET is used as host adapter, please use Tx,Rx pins from STLINK-V3SET CN9 connector
+      - Tx pin of your host adapter to PA9 pin of the B-U585I-IOT02A Rev C board
+      - Rx pin of your host adapter to PA10 pin of the B-U585I-IOT02A Rev C board
+	- If STLINK-V3SET is used as host adapter, please use Tx,Rx pins from STLINK-V3SET CN8 connector
 
   - B-U585I-IOT02A set-up to use I2C:
     - Set I2C address to 0x5A
@@ -171,6 +170,39 @@ OpenBootloader, USART, FDCAN, I2C, SPI, USB
         - MOSI pin of your host adapter to PE15 (CN13: 4) pin
 
   - B-U585I-IOT02A set-up to use USB:
+    - USB FS CN1
+
+### <b>How to use it ?</b>
+
+In order to make the program work, you must do the following:
+
+  - Open your preferred toolchain
+  - Rebuild all files and load your image into target memory
+  - Run the application
+  - Run STM32CubeProgrammer and connect to OpenBootloader using USART3</br>
+    Or
+  - Connect your FDCAN host adapter and connect to OpenBootloader using FDCAN1</br>
+    Or
+  - Connect your I2C host adapter and connect to OpenBootloader using I2C2</br>
+    Or
+  - Connect your SPI host adapter and connect to OpenBootloader using SPI1</br>
+    Or
+  - Connect your USB host adapter and connect to OpenBootloader using USB FS</br>
+
+
+  - B-U585I-IOT02A Rev C set-up to use I2C:
+    - Set I2C address to 0x5A
+    - To use the I2C2 for communication you have to connect:
+      - SCL (CN2: 7) pin of your host adapter to PH4 pin of the B-U585I-IOT02A Rev C board
+      - SDA (CN2: 10) pin of your host adapter to PH5 pin of the B-U585I-IOT02A Rev C board
+
+  - B-U585I-IOT02A Rev C set-up to use SPI
+      - To use the SPI1 for communication you have to connect:
+        - SCK pin of your host adapter to PE13 (CN13: 6) pin
+        - MISO pin of your host adapter to PE14 (CN13: 5) pin
+        - MOSI pin of your host adapter to PE15 (CN13: 4) pin
+
+  - B-U585I-IOT02A Rev C set-up to use USB:
     - USB FS CN1
 
 ### <b>How to use it ?</b>

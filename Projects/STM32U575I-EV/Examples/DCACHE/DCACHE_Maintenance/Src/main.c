@@ -84,9 +84,9 @@ static uint32_t aDST_Buffer1[BUFFER_SIZE];
 
 #if defined ( __ICCARM__ )
 /* Allocate Source Buffer 2 in cacheable memory */
-#pragma location = 0x62000000
+#pragma location = 0x60100000
 #elif defined(__ARMCC_VERSION) ||defined(__GNUC__)
-__attribute__((section(".aDST_Buffer2section")))
+__attribute__((section(".aSRC_Buffer2section")))
 #endif
 static uint32_t aSRC_Buffer2[BUFFER_SIZE];
 
@@ -100,10 +100,10 @@ static __IO uint32_t transferCompleteDetected = 0;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void SystemPower_Config(void);
-static void MX_ICACHE_Init(void);
 static void MX_GPIO_Init(void);
-static void MX_DCACHE1_Init(void);
 static void MX_GPDMA1_Init(void);
+static void MX_DCACHE1_Init(void);
+static void MX_ICACHE_Init(void);
 static void MX_FMC_Init(void);
 /* USER CODE BEGIN PFP */
 static void HAL_TransferError(DMA_HandleTypeDef *DMAHandle);
@@ -136,8 +136,6 @@ int main(void)
    MPU_Config_WT();
 #elif defined(MPU_WRITE_BACK_WRITE_ALLOCATE_ATTRIBUTE)
   MPU_Config_WB_WA();
-#elif defined(MPU_WRITE_BACK_NO_WRITE_ALLOCATE_ATTRIBUTE)
-  MPU_Config_WB_nWA();
 #endif
   /* USER CODE END Init */
 
@@ -152,10 +150,10 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_ICACHE_Init();
   MX_GPIO_Init();
-  MX_DCACHE1_Init();
   MX_GPDMA1_Init();
+  MX_DCACHE1_Init();
+  MX_ICACHE_Init();
   MX_FMC_Init();
   /* USER CODE BEGIN 2 */
   BSP_LED_Init(LED_GREEN);
@@ -167,13 +165,24 @@ int main(void)
   BSP_LED_Off(LED_GREEN);
   BSP_LED_Off(LED_RED);
 
+  /* Initialize buffers */
+  memset(aDST_Buffer1, 0x00, BUFFER_SIZE * 4);
+  memset(aSRC_Buffer2, 0x00, BUFFER_SIZE * 4);
+
+  /*
+   Clean and invalidate operation
+   This guarantees that the initialized buffers are loaded into the External SRAM
+  */
+  HAL_DCACHE_CleanInvalidByAddr(&hdcache1, aDST_Buffer1, BUFFER_SIZE * 4);
+  HAL_DCACHE_CleanInvalidByAddr(&hdcache1, aSRC_Buffer2, BUFFER_SIZE * 4);
+
   /*## -1- DMA Transfer 1: aSRC_Const_Buffer1 (FLASH) --> aDST_Buffer1  (External SRAM) #######*/
   /*###########################################################################################*/
 
-  /* Read the Destination Buffer to ensure that it will be put in D-Cache */
+  /* CPU Read access of the Destination Buffer with DCACHE enabled */
   for (i=0; i<BUFFER_SIZE; i++)
   {
-    tempValue += aDST_Buffer1 [i];
+    tempValue += aDST_Buffer1[i];
   }
 
   /* Start the DMA transfer, and compare source and destination buffers */
@@ -191,7 +200,7 @@ int main(void)
   /*## -2- DMA Transfer 2: aSRC_Buffer2 (External SRAM) --> aDST_NonCacheable_Buffer2 (Internal SRAM) */
   /*#################################################################################################*/
 
-  /* Fill the Source Buffer: it will be automatically put in D-Cache */
+  /* CPU Write access of the Source Buffer with DCACHE enabled */
   for (i=0; i<BUFFER_SIZE; i++)
   {
     aSRC_Buffer2[i] = i;
@@ -231,25 +240,24 @@ int main(void)
 
   /*
   CPU Data Cache maintenance:
-  It is recommended to clean and invalidate the destination buffer in CPU Data cache after
-  the DMA transfer. As the destination buffer may be used by the CPU, this guarantees
-  up-to-date data when CPU access to the destination buffer located in the External SRAM
-  (which is cacheable).
+  It is recommended to invalidate the destination buffer in Data cache after a DMA transfer.
+  This guarantees up-to-date data when CPU access to the destination buffer located in the
+  External SRAM (which is cacheable).
   */
 
-  /* Clean and Invalidate aDST_Buffer1 in D-Cache: (BUFFER_SIZE * 4) bytes */
-  HAL_DCACHE_CleanInvalidByAddr(&hdcache1, aDST_Buffer1, BUFFER_SIZE * 4);
+  /* Invalidate aDST_Buffer1 in DCACHE: (BUFFER_SIZE * 4) bytes */
+  HAL_DCACHE_InvalidateByAddr(&hdcache1, aDST_Buffer1, BUFFER_SIZE * 4);
 
   /* Compare Source and Destination buffers */
   if(memcmp(aSRC_Const_Buffer1, aDST_Buffer1, BUFFER_SIZE * 4) != 0)
   {
     /* Wrong Comparison: Turn off LED_GREEN */
-      BSP_LED_Off(LED_GREEN);
+    BSP_LED_Off(LED_GREEN);
   }
   else
   {
     /* Right Comparison: Turn on LED_GREEN */
-      BSP_LED_On(LED_GREEN);
+    BSP_LED_On(LED_GREEN);
   }
 
   /*## -5- Do Cache maintenance for Transfer 2  #########################################*/
@@ -259,23 +267,23 @@ int main(void)
   CPU Data Cache maintenance:
   It is recommended to clean the source buffer in CPU Data cache before starting
   the DMA transfer. As the source buffer may be used by the CPU and modified
-  locally in D-Cache. The cache clean guarantees Up-to-date data when DMA accesses
+  locally in DCACHE. The cache clean guarantees up-to-date data when DMA accesses
   to the source buffer located in the External SRAM (which is cacheable).
   */
 
-  /* Clean aSRC_Buffer2 in D-Cache: (BUFFER_SIZE * 4) bytes */
+  /* Clean aSRC_Buffer2 in DCACHE: (BUFFER_SIZE * 4) bytes */
   HAL_DCACHE_CleanByAddr(&hdcache1, aSRC_Buffer2, BUFFER_SIZE * 4);
 
   /* Re-Start the DMA transfer, and compare source and destination buffers */
   if (DMA_StartAndCompare(aSRC_Buffer2, aDST_NonCacheable_Buffer2, BUFFER_SIZE) != 0)
   {
     /* Wrong Comparison: Turn off LED_RED */
-      BSP_LED_Off(LED_RED);
+    BSP_LED_Off(LED_RED);
   }
   else
   {
     /* Right comparison: Turn on LED_RED */
-      BSP_LED_On(LED_RED);
+    BSP_LED_On(LED_RED);
   }
   /* USER CODE END 2 */
 
@@ -306,7 +314,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.MSIState = RCC_MSI_ON;
@@ -327,7 +335,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
@@ -364,6 +372,8 @@ static void SystemPower_Config(void)
   {
     Error_Handler();
   }
+/* USER CODE BEGIN PWR */
+/* USER CODE END PWR */
 }
 
 /**
@@ -540,6 +550,8 @@ static void MX_FMC_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOE_CLK_ENABLE();
@@ -547,6 +559,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -568,7 +582,7 @@ void MPU_Config_WT(void)
 
   /* Define cacheable memory via MPU */
   attr.Number             = MPU_ATTRIBUTES_NUMBER0;
-  attr.Attributes         = NOT_CACHEABLE | OUTER(WRITE_THROUGH | TRANSIENT);
+  attr.Attributes         = MPU_NOT_CACHEABLE | OUTER(MPU_WRITE_THROUGH | MPU_TRANSIENT | MPU_R_ALLOCATE);
   HAL_MPU_ConfigMemoryAttributes(&attr);
 
   /* BaseAddress-LimitAddress configuration */
@@ -604,43 +618,7 @@ void MPU_Config_WB_WA(void)
 
   /* Define cacheable memory via MPU */
   attr.Number             = MPU_ATTRIBUTES_NUMBER0;
-  attr.Attributes         = NOT_CACHEABLE | OUTER(WRITE_BACK | TRANSIENT | W_ALLOCATE);
-  HAL_MPU_ConfigMemoryAttributes(&attr);
-
-  /* BaseAddress-LimitAddress configuration */
-  region.Enable           = MPU_REGION_ENABLE;
-  region.Number           = MPU_REGION_NUMBER0;
-  region.AttributesIndex  = MPU_ATTRIBUTES_NUMBER0;
-  region.BaseAddress      = FMC_BANK1_1;
-  region.LimitAddress     = FMC_BANK1_1 + REGION_SIZE - 1;
-  region.AccessPermission = MPU_REGION_ALL_RW;
-  region.DisableExec      = MPU_INSTRUCTION_ACCESS_ENABLE;
-  region.IsShareable      = MPU_ACCESS_NOT_SHAREABLE;
-  HAL_MPU_ConfigRegion(&region);
-
-  /* Enable the MPU */
-  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
-}
-
-/**
-  * @brief  Configure the MPU attributes as Write Back - No Write Allocate for External SRAM.
-  * @note   The external SRAM Base Address is 0x60000000.
-  *         The Configured Region Size is 512 KB, as it corresponds to the size of Bank1
-  *         of the external SRAM.
-  * @param  None
-  * @retval None
-  */
-void MPU_Config_WB_nWA(void)
-{
-  MPU_Attributes_InitTypeDef   attr;
-  MPU_Region_InitTypeDef       region;
-
-  /* Disable MPU before perloading and config update */
-  HAL_MPU_Disable();
-
-  /* Define cacheable memory via MPU */
-  attr.Number             = MPU_ATTRIBUTES_NUMBER0;
-  attr.Attributes         = NOT_CACHEABLE | OUTER(WRITE_BACK | TRANSIENT | NO_ALLOCATE);
+  attr.Attributes         = MPU_NOT_CACHEABLE | OUTER(MPU_WRITE_BACK | MPU_TRANSIENT | MPU_W_ALLOCATE | MPU_R_ALLOCATE);
   HAL_MPU_ConfigMemoryAttributes(&attr);
 
   /* BaseAddress-LimitAddress configuration */

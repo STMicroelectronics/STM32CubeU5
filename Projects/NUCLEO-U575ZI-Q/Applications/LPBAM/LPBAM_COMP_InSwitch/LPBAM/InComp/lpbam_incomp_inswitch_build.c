@@ -22,14 +22,53 @@
 
 /* Private variables -------------------------------------------------------------------------------------------------*/
 /* LPBAM variables declaration */
-static LPBAM_COMP_StartFullDesc_t Start_1_Desc;
-static LPBAM_COMP_OutLevelFullDesc_t OutputLevel_1_Desc;
-static LPBAM_COMP_StartFullDesc_t Start_2_Desc;
-static LPBAM_COMP_OutLevelFullDesc_t OutputLevel_2_Desc;
-static LPBAM_COMP_StartFullDesc_t Start_3_Desc;
-static LPBAM_COMP_OutLevelFullDesc_t OutputLevel_3_Desc;
-static LPBAM_COMP_StartFullDesc_t Start_4_Desc;
-static LPBAM_COMP_OutLevelFullDesc_t OutputLevel_4_Desc;
+/* USER CODE BEGIN InComp_InSwitch_Descs 0 */
+
+/* USER CODE END InComp_InSwitch_Descs 0 */
+
+/* USER CODE BEGIN InputSwitch_Q_Start_1_Desc */
+
+/* USER CODE END InputSwitch_Q_Start_1_Desc */
+static LPBAM_COMP_StartFullDesc_t InputSwitch_Q_Start_1_Desc;
+
+/* USER CODE BEGIN InputSwitch_Q_OutputLevel_1_Desc */
+
+/* USER CODE END InputSwitch_Q_OutputLevel_1_Desc */
+static LPBAM_COMP_OutLevelFullDesc_t InputSwitch_Q_OutputLevel_1_Desc;
+
+/* USER CODE BEGIN InputSwitch_Q_Start_2_Desc */
+
+/* USER CODE END InputSwitch_Q_Start_2_Desc */
+static LPBAM_COMP_StartFullDesc_t InputSwitch_Q_Start_2_Desc;
+
+/* USER CODE BEGIN InputSwitch_Q_OutputLevel_2_Desc */
+
+/* USER CODE END InputSwitch_Q_OutputLevel_2_Desc */
+static LPBAM_COMP_OutLevelFullDesc_t InputSwitch_Q_OutputLevel_2_Desc;
+
+/* USER CODE BEGIN InputSwitch_Q_Start_3_Desc */
+
+/* USER CODE END InputSwitch_Q_Start_3_Desc */
+static LPBAM_COMP_StartFullDesc_t InputSwitch_Q_Start_3_Desc;
+
+/* USER CODE BEGIN InputSwitch_Q_OutputLevel_3_Desc */
+
+/* USER CODE END InputSwitch_Q_OutputLevel_3_Desc */
+static LPBAM_COMP_OutLevelFullDesc_t InputSwitch_Q_OutputLevel_3_Desc;
+
+/* USER CODE BEGIN InputSwitch_Q_Start_4_Desc */
+
+/* USER CODE END InputSwitch_Q_Start_4_Desc */
+static LPBAM_COMP_StartFullDesc_t InputSwitch_Q_Start_4_Desc;
+
+/* USER CODE BEGIN InputSwitch_Q_OutputLevel_4_Desc */
+
+/* USER CODE END InputSwitch_Q_OutputLevel_4_Desc */
+static LPBAM_COMP_OutLevelFullDesc_t InputSwitch_Q_OutputLevel_4_Desc;
+
+/* USER CODE BEGIN InComp_InSwitch_Descs 1 */
+
+/* USER CODE END InComp_InSwitch_Descs 1 */
 
 /* Exported variables ------------------------------------------------------------------------------------------------*/
 /* LPBAM queues declaration */
@@ -91,14 +130,14 @@ static void MX_InputSwitch_Q_Build(void)
   pStartFull_COMP.OutputPol = LPBAM_COMP_OUTPUTPOL_NONINVERTED;
   pStartFull_COMP.InputPlus = LPBAM_COMP_INPUT_PLUS_IO2;
   pStartFull_COMP.InputMinus = LPBAM_COMP_INPUT_MINUS_VREFINT;
-  if (ADV_LPBAM_COMP_Start_SetFullQ(COMP1, &pDMAListInfo_COMP, &pStartFull_COMP, &Start_1_Desc, &InputSwitch_Q) != LPBAM_OK)
+  if (ADV_LPBAM_COMP_Start_SetFullQ(COMP1, &pDMAListInfo_COMP, &pStartFull_COMP, &InputSwitch_Q_Start_1_Desc, &InputSwitch_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_COMP.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_BLOCK_TRANSFER;
   pTrigConfig_COMP.TriggerConfig.TriggerPolarity = LPBAM_DMA_TRIG_POLARITY_RISING;
   pTrigConfig_COMP.TriggerConfig.TriggerSelection = LPBAM_LPDMA1_TRIGGER_LPTIM1_CH1;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_START_FULLQ_CONFIG_NODE, &Start_1_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_START_FULLQ_CONFIG_NODE, &InputSwitch_Q_Start_1_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -108,12 +147,12 @@ static void MX_InputSwitch_Q_Build(void)
     */
   pOutLevelFull_COMP.Size = 1;
   pOutLevelFull_COMP.pData = (uint32_t*)&CompOutput_Buffer[0];
-  if (ADV_LPBAM_COMP_OutputLevel_SetFullQ(COMP1, &pDMAListInfo_COMP, &pOutLevelFull_COMP, &OutputLevel_1_Desc, &InputSwitch_Q) != LPBAM_OK)
+  if (ADV_LPBAM_COMP_OutputLevel_SetFullQ(COMP1, &pDMAListInfo_COMP, &pOutLevelFull_COMP, &InputSwitch_Q_OutputLevel_1_Desc, &InputSwitch_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_COMP.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_SINGLE_BURST_TRANSFER;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_OUTPUTLEVEL_FULLQ_DATA_NODE, &OutputLevel_1_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_OUTPUTLEVEL_FULLQ_DATA_NODE, &InputSwitch_Q_OutputLevel_1_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -122,12 +161,12 @@ static void MX_InputSwitch_Q_Build(void)
     * InputSwitch queue Start_2 build
     */
   pStartFull_COMP.InputPlus = LPBAM_COMP_INPUT_PLUS_IO3;
-  if (ADV_LPBAM_COMP_Start_SetFullQ(COMP1, &pDMAListInfo_COMP, &pStartFull_COMP, &Start_2_Desc, &InputSwitch_Q) != LPBAM_OK)
+  if (ADV_LPBAM_COMP_Start_SetFullQ(COMP1, &pDMAListInfo_COMP, &pStartFull_COMP, &InputSwitch_Q_Start_2_Desc, &InputSwitch_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_COMP.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_BLOCK_TRANSFER;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_START_FULLQ_CONFIG_NODE, &Start_2_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_START_FULLQ_CONFIG_NODE, &InputSwitch_Q_Start_2_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -136,12 +175,12 @@ static void MX_InputSwitch_Q_Build(void)
     * InputSwitch queue OutputLevel_2 build
     */
   pOutLevelFull_COMP.pData = (uint32_t*)&CompOutput_Buffer[1];
-  if (ADV_LPBAM_COMP_OutputLevel_SetFullQ(COMP1, &pDMAListInfo_COMP, &pOutLevelFull_COMP, &OutputLevel_2_Desc, &InputSwitch_Q) != LPBAM_OK)
+  if (ADV_LPBAM_COMP_OutputLevel_SetFullQ(COMP1, &pDMAListInfo_COMP, &pOutLevelFull_COMP, &InputSwitch_Q_OutputLevel_2_Desc, &InputSwitch_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_COMP.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_SINGLE_BURST_TRANSFER;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_OUTPUTLEVEL_FULLQ_DATA_NODE, &OutputLevel_2_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_OUTPUTLEVEL_FULLQ_DATA_NODE, &InputSwitch_Q_OutputLevel_2_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -150,12 +189,12 @@ static void MX_InputSwitch_Q_Build(void)
     * InputSwitch queue Start_3 build
     */
   pStartFull_COMP.InputPlus = LPBAM_COMP_INPUT_PLUS_IO2;
-  if (ADV_LPBAM_COMP_Start_SetFullQ(COMP1, &pDMAListInfo_COMP, &pStartFull_COMP, &Start_3_Desc, &InputSwitch_Q) != LPBAM_OK)
+  if (ADV_LPBAM_COMP_Start_SetFullQ(COMP1, &pDMAListInfo_COMP, &pStartFull_COMP, &InputSwitch_Q_Start_3_Desc, &InputSwitch_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_COMP.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_BLOCK_TRANSFER;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_START_FULLQ_CONFIG_NODE, &Start_3_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_START_FULLQ_CONFIG_NODE, &InputSwitch_Q_Start_3_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -164,12 +203,12 @@ static void MX_InputSwitch_Q_Build(void)
     * InputSwitch queue OutputLevel_3 build
     */
   pOutLevelFull_COMP.pData = (uint32_t*)&CompOutput_Buffer[2];
-  if (ADV_LPBAM_COMP_OutputLevel_SetFullQ(COMP1, &pDMAListInfo_COMP, &pOutLevelFull_COMP, &OutputLevel_3_Desc, &InputSwitch_Q) != LPBAM_OK)
+  if (ADV_LPBAM_COMP_OutputLevel_SetFullQ(COMP1, &pDMAListInfo_COMP, &pOutLevelFull_COMP, &InputSwitch_Q_OutputLevel_3_Desc, &InputSwitch_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_COMP.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_SINGLE_BURST_TRANSFER;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_OUTPUTLEVEL_FULLQ_DATA_NODE, &OutputLevel_3_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_OUTPUTLEVEL_FULLQ_DATA_NODE, &InputSwitch_Q_OutputLevel_3_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -178,12 +217,12 @@ static void MX_InputSwitch_Q_Build(void)
     * InputSwitch queue Start_4 build
     */
   pStartFull_COMP.InputPlus = LPBAM_COMP_INPUT_PLUS_IO3;
-  if (ADV_LPBAM_COMP_Start_SetFullQ(COMP1, &pDMAListInfo_COMP, &pStartFull_COMP, &Start_4_Desc, &InputSwitch_Q) != LPBAM_OK)
+  if (ADV_LPBAM_COMP_Start_SetFullQ(COMP1, &pDMAListInfo_COMP, &pStartFull_COMP, &InputSwitch_Q_Start_4_Desc, &InputSwitch_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_COMP.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_BLOCK_TRANSFER;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_START_FULLQ_CONFIG_NODE, &Start_4_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_START_FULLQ_CONFIG_NODE, &InputSwitch_Q_Start_4_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -192,12 +231,12 @@ static void MX_InputSwitch_Q_Build(void)
     * InputSwitch queue OutputLevel_4 build
     */
   pOutLevelFull_COMP.pData = (uint32_t*)&CompOutput_Buffer[3];
-  if (ADV_LPBAM_COMP_OutputLevel_SetFullQ(COMP1, &pDMAListInfo_COMP, &pOutLevelFull_COMP, &OutputLevel_4_Desc, &InputSwitch_Q) != LPBAM_OK)
+  if (ADV_LPBAM_COMP_OutputLevel_SetFullQ(COMP1, &pDMAListInfo_COMP, &pOutLevelFull_COMP, &InputSwitch_Q_OutputLevel_4_Desc, &InputSwitch_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_COMP.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_SINGLE_BURST_TRANSFER;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_OUTPUTLEVEL_FULLQ_DATA_NODE, &OutputLevel_4_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_COMP, LPBAM_COMP_OUTPUTLEVEL_FULLQ_DATA_NODE, &InputSwitch_Q_OutputLevel_4_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }

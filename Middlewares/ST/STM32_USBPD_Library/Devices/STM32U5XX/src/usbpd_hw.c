@@ -92,7 +92,7 @@ void USBPD_HW_SetFRSSignalling(uint8_t PortNum, uint8_t cc)
   }
   else
   {
-    /* FRS_TX2 PB0 (CC2) */
+    /* FRS_TX2 PC11 (CC2) */
     UCPDFRS_INSTANCE0_FRSCC2;
   }
 }

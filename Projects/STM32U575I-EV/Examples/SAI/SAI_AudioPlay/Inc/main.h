@@ -62,6 +62,7 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+
 /* USER CODE BEGIN Private defines */
 #define PLAY_BUFF_SIZE       (4*1024)
 #define AUDIO_FILE_ADDRESS   0x08080000

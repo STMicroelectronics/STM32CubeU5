@@ -211,7 +211,11 @@ GUI_StatusTypeDef BSP_GUI_EraseDataInFlash(void)
 #if defined(FLASH_CR_SER)
   /* Fill EraseInit structure*/
   erase_init.TypeErase     = FLASH_TYPEERASE_SECTORS;
+#if defined(FLASH_VOLTAGE_RANGE_3)
   erase_init.VoltageRange  = FLASH_VOLTAGE_RANGE_3;
+#else
+  erase_init.Banks         = FLASH_BANK_SEL;
+#endif /* FLASH_VOLTAGE_RANGE_3 */
   erase_init.Sector        = FLASH_SECTOR_ID;
   erase_init.NbSectors     = 1;
 #else
@@ -270,7 +274,11 @@ GUI_StatusTypeDef BSP_GUI_SaveDataInFlash(void)
 #if defined(FLASH_CR_SER)
   /* Fill EraseInit structure*/
   erase_init.TypeErase     = FLASH_TYPEERASE_SECTORS;
+#if defined(FLASH_VOLTAGE_RANGE_3)
   erase_init.VoltageRange  = FLASH_VOLTAGE_RANGE_3;
+#else
+  erase_init.Banks         = FLASH_BANK_SEL;
+#endif /* FLASH_VOLTAGE_RANGE_3 */
   erase_init.Sector        = FLASH_SECTOR_ID;
   erase_init.NbSectors     = 1;
 #else

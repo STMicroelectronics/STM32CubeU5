@@ -1,7 +1,7 @@
   @verbatim
   ******************************************************************************
   *
-  *         Portions COPYRIGHT 2016-2020 STMicroelectronics, All Rights Reserved
+  *         Portions COPYRIGHT 2016-2023 STMicroelectronics, All Rights Reserved
   *         Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
   *
   * @file    st_readme.txt 
@@ -15,6 +15,18 @@
   *
   ******************************************************************************
   @endverbatim
+
+### 2-February-2023 ###
+========================
+    + remove compilation warnings for GCC compiler
+
+### 30-January-2023 ###
+========================
+    + fix public advisory about integer underflow in parsed TLV data
+    + remove compilation warnings (for IDEs portability) : add required functions prototype, add an empty line in end of files
+    + use RNG in fih_delay()
+    + fix erase of invalid image in secondary slot
+    + add setob command to manage spectic option byte processing
 
 ### 26-January-2022 ###
 ========================

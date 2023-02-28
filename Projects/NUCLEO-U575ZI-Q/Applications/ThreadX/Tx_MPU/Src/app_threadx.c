@@ -280,7 +280,7 @@ VOID ModuleManager_Entry(ULONG thread_input)
 
   /* Toggle green LED to indicated success of operations */
   while(1) {
-    BSP_LED_Toggle(LED_GREEN);
+    HAL_GPIO_TogglePin(LED_GREEN_Port, LED_GREEN);
     tx_thread_sleep(50);
   }
 }

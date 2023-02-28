@@ -9,7 +9,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2018(-2021) STMicroelectronics.
+  * Copyright (c) 2018(-2022) STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -27,14 +27,14 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-/*#include "stm32xxxx_ll_bus.h" */ /* Uncomment and rename the stm32xxxx_ll_XXX.h header
+/* #include "stm32xxxx_ll_bus.h" */ /* Uncomment and rename the stm32xxxx_ll_XXX.h header
                                       files according your device family */
-/*#include "stm32xxxx_ll_dma.h"    */
-/*#include "stm32xxxx_ll_gpio.h"   */
-/*#include "stm32xxxx_ll_rcc.h"    */
-/*#include "stm32xxxx_ll_usart.h"  */
+/* #include "stm32xxxx_ll_dma.h"    */
+/* #include "stm32xxxx_ll_gpio.h"   */
+/* #include "stm32xxxx_ll_rcc.h"    */
+/* #include "stm32xxxx_ll_usart.h"  */
 #if defined(LPUART1)
-/*#include "stm32xxxx_ll_lpuart.h" */
+/* #include "stm32xxxx_ll_lpuart.h" */
 #endif /* LPUART1 */
 /* Private typedef -----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/

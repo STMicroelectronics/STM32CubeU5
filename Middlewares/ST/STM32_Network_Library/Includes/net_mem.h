@@ -23,7 +23,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "net_conf.h"
 #include "net_types.h"
-/* disable Misra rule to enable doxigen comment , A sectio of code appear to have been commented out */
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,20 +65,20 @@ extern "C" {
 #define NET_ALLOC_BREAK 0xFFFFFFFFU
 #endif /* NET_ALLOC_BREAK */
 
-/* from 32 to 2exp(5+NET_MALLOC_MAX_HISTOGRAM)= 65536 */
+/* From 32 to 2 exp(5 + NET_MALLOC_MAX_HISTOGRAM)= 65536 */
 #ifndef NET_MALLOC_MAX_HISTOGRAM
 #define NET_MALLOC_MAX_HISTOGRAM 11
 #endif /* NET_ALLOC_BREAK */
 
 
-#define NET_CALLOC(a,b)  net_calloc_debug(a,b,__FILE__,__LINE__)
-#define NET_REALLOC(a,b) net_realloc_debug(a,b,__FILE__,__LINE__)
-#define NET_MALLOC(a)    net_malloc_debug(a,__FILE__,__LINE__)
-#define NET_FREE(a)      net_free_debug(a)
+#define NET_CALLOC(NUM, SIZE)  net_calloc_debug(NUM, SIZE, __FILE__, __LINE__)
+#define NET_REALLOC(P, SIZE)   net_realloc_debug(P, SIZE, __FILE__, __LINE__)
+#define NET_MALLOC(SIZE)       net_malloc_debug(SIZE, __FILE__, __LINE__)
+#define NET_FREE(P)            net_free_debug(P)
 
 
-void *net_calloc_debug(size_t mm, size_t nn, const char *sn, uint32_t line);
-void *net_malloc_debug(size_t mm, const char *sn, uint32_t line);
+void *net_calloc_debug(size_t num, size_t size, const char *filename, uint32_t line);
+void *net_malloc_debug(size_t size, const char *filename, uint32_t line);
 void *net_realloc_debug(void *p, size_t size, const char_t *filename, uint32_t line);
 void  net_free_debug(void *p);
 
@@ -88,19 +88,19 @@ void net_alloc_report(void);
 #else /* !NET_ALLOC_DEBUG */
 
 #ifdef NET_USE_RTOS
-#define NET_CALLOC  net_calloc
-#define NET_REALLOC net_realloc
-#define NET_MALLOC  pvPortMalloc
-#define NET_FREE    vPortFree
+#define NET_CALLOC(NUM, SIZE)  net_calloc(NUM, SIZE)
+#define NET_REALLOC(P, SIZE)   net_realloc(P, SIZE)
+#define NET_MALLOC(SIZE)       pvPortMalloc(SIZE)
+#define NET_FREE(P)            vPortFree(P)
 
-void *net_calloc(size_t n, size_t m);
-void *net_realloc(void *p, size_t m);
+void *net_calloc(size_t num, size_t size);
+void *net_realloc(void *p, size_t size);
 
 #else
-#define NET_CALLOC  calloc
-#define NET_REALLOC realloc
-#define NET_MALLOC  malloc
-#define NET_FREE    free
+#define NET_CALLOC(NUM, SIZE)  calloc((NUM), (SIZE))
+#define NET_REALLOC(P, SIZE)   realloc((P), (SIZE))
+#define NET_MALLOC(SIZE)       malloc((SIZE))
+#define NET_FREE(P)            free((P))
 #endif /* NET_USE_RTOS */
 
 #endif /* NET_ALLOC_DEBUG */

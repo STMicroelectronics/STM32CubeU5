@@ -63,6 +63,7 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+
 /* USER CODE BEGIN Private defines */
 #define REC_BUFF_SIZE        (1024U)
 #define AUDIO_I2C_ADDRESS    0x94U

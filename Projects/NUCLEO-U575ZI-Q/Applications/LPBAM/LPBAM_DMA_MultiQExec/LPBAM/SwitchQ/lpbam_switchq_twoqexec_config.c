@@ -358,10 +358,6 @@ static void MX_LPDMA1_Init(void)
   }
   __HAL_DMA_ENABLE_IT(&handle_LPDMA1_Channel3, DMA_IT_DTE|DMA_IT_ULE
                               |DMA_IT_USE);
-  if (HAL_DMA_ConfigChannelAttributes(&handle_LPDMA1_Channel3, DMA_CHANNEL_NPRIV) != HAL_OK)
-  {
-    Error_Handler();
-  }
   /* USER CODE BEGIN LPDMA1_Init 2 */
 
   /* Register lpdma1 channel3 error callback */
@@ -681,6 +677,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LPGPIO1, &GPIO_InitStruct);
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /**
@@ -706,10 +704,6 @@ static void MX_Master_SwitchQueues_Q_Link(DMA_HandleTypeDef *hdma)
   }
   __HAL_DMA_ENABLE_IT(hdma, DMA_IT_DTE|DMA_IT_ULE
                               |DMA_IT_USE|DMA_IT_TO);
-  if (HAL_DMA_ConfigChannelAttributes(hdma, DMA_CHANNEL_PRIV) != HAL_OK)
-  {
-    Error_Handler();
-  }
 
   /* Register DMA channel error callbacks */
   if (HAL_DMA_RegisterCallback(hdma, HAL_DMA_XFER_ERROR_CB_ID, MX_Master_SwitchQueues_Q_DMA_Error_Callback) != HAL_OK)

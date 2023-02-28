@@ -3,16 +3,15 @@
 
 This application is a USBPD type C Provider and USB Host using Azure RTOS USBX stack. It shows how to develop a USBPD type C Provider in the case of an USB host application based on Mass Storage "MSC" which is able to enumerate and communicates with a removable usb flash disk.
 
-	USB MSC : The application is designed to behave as an USB MSC Host able to operate with an USB flash disk using the Bulk Only Transfer (BOT) and Small Computer System Interface (SCSI) transparent commands combined with a file system Azure RTOS FileX.
+        USB MSC : The application is designed to behave as an USB MSC Host able to operate with an USB flash disk using the Bulk Only Transfer (BOT) and Small Computer System Interface (SCSI) transparent commands combined with a file system Azure RTOS FileX.
 
-		The main entry function tx_application_define() is then called by ThreadX during kernel start, at this stage, all USBx resources are initialized, the MSC Class driver is registered.
-		The application creates three threads :
+                The main entry function tx_application_define() is then called by ThreadX during kernel start, at this stage, all USBx resources are initialized, the MSC Class driver is registered.
+                The application creates two threads :
 
-			- ucpd_app_thread_entry    (Priority : 20; Preemption threshold : 20) used to start the Host after USB Device attachment.
-			- usbx_app_thread_entry    (Priority : 25; Preemption threshold : 25) used to initialize USB OTG HAL HCD driver.
-			- msc_process_thread_entry (Priority : 30; Preemption threshold : 30) used to proceed to file operations once the device is properly enumerated.
-			
-	USBPD Provider: This application initialize the type C port 1 in source mode with only one PDO at 5V.
+                        - usbx_app_thread_entry    (Priority : 10; Preemption threshold : 10) used to initialize USB OTG HAL HCD driver.
+                        - msc_process_thread_entry (Priority : 30; Preemption threshold : 30) used to proceed to file operations once the device is properly enumerated.
+
+        USBPD Provider: This application initialize the type C port 1 in source mode with only one PDO at 5V.
 
 ####  <b>Expected success behavior</b>
 Connect UCPD cube Monitor on the VCP associated to our board (only available if USB cable is connected)
@@ -58,16 +57,16 @@ None.
    This require changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
-	 place in RAM_region    { last section FREE_MEM };
-	 ```
+     place in RAM_region    { last section FREE_MEM };
+     ```
     + For MDK-ARM:
-	```
+    ```
     either define the RW_IRAM1 region in the ".sct" file
-    or modify the line below in "tx_low_level_initilize.s to match the memory region being used
+    or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
-	```
+    ```
     + For STM32CubeIDE add the following section into the .ld file:
-	``` 
+    ```
     ._threadx_heap :
       {
          . = ALIGN(8);
@@ -75,17 +74,15 @@ None.
          . = . + 64K;
          . = ALIGN(8);
        } >RAM_D1 AT> RAM_D1
-	``` 
-	
+    ```
+
        The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
        In the example above the ThreadX heap size is set to 64KBytes.
-       The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.	 
-       Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).	 
+       The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
+       Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
        Read more in STM32CubeIDE User Guide, chapter: "Linker script".
-	  
-    + The "tx_initialize_low_level.s" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
 
-#### <b>USBX usage hints</b>
+    + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
 
 ### <b>Keywords</b>
 
@@ -110,7 +107,7 @@ It is mandatory to check that the Jumpers below are fitted:
   -  JP6 (UCPD_SNK03) : Not fitted
   -  JP8 (UCPD_SRC)   : Fitted. This application initialize the type C port in source mode with only one PDO at 5V.
   -  JP14 and JP15    : To ensure the correct functionality of TCPP03 (Protection IC).
-	
+
 ### <b>How to use it ?</b>
 
 In order to make the program work, you must do the following :

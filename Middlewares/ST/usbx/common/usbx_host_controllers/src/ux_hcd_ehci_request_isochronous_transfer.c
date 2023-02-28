@@ -35,7 +35,7 @@
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _ux_hcd_ehci_request_isochronous_transfer           PORTABLE C      */
-/*                                                           6.1          */
+/*                                                           6.1.12       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -65,9 +65,9 @@
 /*                                                                        */
 /*  CALLS                                                                 */
 /*                                                                        */
-/*    _ux_utility_mutex_on                  Get mutex                     */
-/*    _ux_utility_mutex_off                 Put mutex                     */
-/*    _ux_utility_semaphore_put             Put semaphore                 */
+/*    _ux_host_mutex_on                     Get mutex                     */
+/*    _ux_host_mutex_off                    Put mutex                     */
+/*    _ux_host_semaphore_put                Put semaphore                 */
 /*                                                                        */
 /*  CALLED BY                                                             */
 /*                                                                        */
@@ -80,6 +80,15 @@
 /*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
 /*  09-30-2020     Chaoqiong Xiao           Modified comment(s),          */
 /*                                            resulting in version 6.1    */
+/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            refined macros names,       */
+/*                                            resulting in version 6.1.10 */
+/*  04-25-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            fixed standalone compile,   */
+/*                                            resulting in version 6.1.11 */
+/*  07-29-2022     Chaoqiong Xiao           Modified comment(s),          */
+/*                                            improved iso start up,      */
+/*                                            resulting in version 6.1.12 */
 /*                                                                        */
 /**************************************************************************/
 UINT  _ux_hcd_ehci_request_isochronous_transfer(UX_HCD_EHCI *hcd_ehci, UX_TRANSFER *transfer_request)
@@ -113,7 +122,7 @@ UCHAR                           start = UX_FALSE;
     lp.ed_ptr =  endpoint -> ux_endpoint_ed;
 
     /* Lock the periodic list to update.  */
-    _ux_utility_mutex_on(&hcd_ehci -> ux_hcd_ehci_periodic_mutex);
+    _ux_host_mutex_on(&hcd_ehci -> ux_hcd_ehci_periodic_mutex);
 
     /* Append the request to iTD/siTD request list tail.  */
 #if defined(UX_HCD_EHCI_SPLIT_TRANSFER_ENABLE)
@@ -135,6 +144,8 @@ UCHAR                           start = UX_FALSE;
         if (ied -> ux_ehci_hsiso_ed_frstart == 0xFF)
         {
             ied -> ux_ehci_hsiso_ed_frstart = 0xFE;
+            ied -> ux_ehci_hsiso_ed_fr_sw = 0;
+            ied -> ux_ehci_hsiso_ed_fr_hc = 0;
             start = UX_TRUE;
         }
     }
@@ -164,13 +175,13 @@ UCHAR                           start = UX_FALSE;
         (*tail) = ((*tail) -> ux_transfer_request_next_transfer_request);
 
     /* Release the periodic table.  */
-    _ux_utility_mutex_off(&hcd_ehci -> ux_hcd_ehci_periodic_mutex);
+    _ux_host_mutex_off(&hcd_ehci -> ux_hcd_ehci_periodic_mutex);
 
     /* Simulate iTD/siTD done to start - HCD signal.  */
     if (start)
     {
         hcd_ehci -> ux_hcd_ehci_hcd_owner -> ux_hcd_thread_signal ++;
-        _ux_utility_semaphore_put(&_ux_system_host -> ux_system_host_hcd_semaphore);
+        _ux_host_semaphore_put(&_ux_system_host -> ux_system_host_hcd_semaphore);
     }
 
     /* Return completion status.  */

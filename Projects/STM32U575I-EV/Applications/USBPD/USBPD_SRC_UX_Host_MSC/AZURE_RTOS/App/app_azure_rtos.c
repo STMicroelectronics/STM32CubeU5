@@ -61,7 +61,7 @@ static TX_BYTE_POOL tx_app_byte_pool;
 #pragma data_alignment=4
 #endif
 __ALIGN_BEGIN static UCHAR  fx_byte_pool_buffer[FX_APP_MEM_POOL_SIZE] __ALIGN_END;
-static TX_BYTE_POOL fx_app_byte_pool;
+static TX_BYTE_POOL FILEX_MEM_POOL_VAR_NAME;
 
 /* USER CODE BEGIN UX_HOST_Pool_Buffer */
 /* USER CODE END UX_HOST_Pool_Buffer */
@@ -134,7 +134,7 @@ VOID tx_application_define(VOID *first_unused_memory)
     /* USER CODE END  App_ThreadX_Init_Success */
 
   }
-  if (tx_byte_pool_create(&fx_app_byte_pool, "Fx App memory pool", fx_byte_pool_buffer, FX_APP_MEM_POOL_SIZE) != TX_SUCCESS)
+  if (tx_byte_pool_create(&FILEX_MEM_POOL_VAR_NAME, "Fx App memory pool", fx_byte_pool_buffer, FX_APP_MEM_POOL_SIZE) != TX_SUCCESS)
   {
     /* USER CODE BEGIN FX_Byte_Pool_Error */
 
@@ -146,7 +146,7 @@ VOID tx_application_define(VOID *first_unused_memory)
 
     /* USER CODE END FX_Byte_Pool_Success */
 
-    memory_ptr = (VOID *)&fx_app_byte_pool;
+    memory_ptr = (VOID *)&FILEX_MEM_POOL_VAR_NAME;
     status = MX_FileX_Init(memory_ptr);
     if (status != FX_SUCCESS)
     {
@@ -163,9 +163,9 @@ VOID tx_application_define(VOID *first_unused_memory)
 
   if (tx_byte_pool_create(&ux_host_app_byte_pool, "Ux App memory pool", ux_host_byte_pool_buffer, UX_HOST_APP_MEM_POOL_SIZE) != TX_SUCCESS)
   {
-    /* USER CODE BEGIN TX_Byte_Pool_Error */
+    /* USER CODE BEGIN UX_Byte_Pool_Error */
 
-    /* USER CODE END TX_Byte_Pool_Error */
+    /* USER CODE END UX_Byte_Pool_Error */
   }
   else
   {
@@ -249,7 +249,7 @@ VOID tx_application_define(VOID *first_unused_memory)
      place in RAM_region    { last section FREE_MEM };
  * For MDK-ARM
      - either define the RW_IRAM1 region in the ".sct" file
-     - or modify the line below in "tx_low_level_initilize.s to match the memory region being used
+     - or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
 
  * For STM32CubeIDE add the following section into the .ld file:
@@ -266,7 +266,7 @@ VOID tx_application_define(VOID *first_unused_memory)
     * Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
     * Read more in STM32CubeIDE User Guide, chapter: "Linker script".
 
- * The "tx_initialize_low_level.s" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
+ * The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
  */
 
   /* USER CODE BEGIN DYNAMIC_MEM_ALLOC */

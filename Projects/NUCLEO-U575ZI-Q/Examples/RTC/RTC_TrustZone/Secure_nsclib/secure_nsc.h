@@ -43,3 +43,4 @@ void SECURE_RegisterCallback(SECURE_CallbackIDTypeDef CallbackId, void *func);
 uint32_t SECURE_GetRtcSecureStatus(void);
 #endif /* SECURE_NSC_H */
 /* USER CODE END Non_Secure_CallLib_h */
+

@@ -5,13 +5,13 @@
 ## Overview
 
 **Open bootloader** is an IAP that is provided in the STM32Cube Firmware package and GitHub. This is an example that can be used by any customer that wants to build its own bootloader. Its main task is to download the application program to the internal user memory (Flash/SRAM/OTP) without the need for a debugger, by using one of the available communication interface (USART/I2C/SPI/USB-DFU & FDCAN).
-**Open bootloader** supplies services to the Host (STM32 CubeProgrammer…) in order to download firmware to the device via an interface link (USART/I2C/SPI/USB-DFU & FDCAN) and to install this firmware in the needed user memory.
+**Open bootloader** supplies services to the Host (STM32 CubeProgrammer…) in order to download firmware to the device via an interface link (USART/I2C/SPI/USB-DFU/FDCAN & I3C) and to install this firmware in the needed user memory.
 **Open bootloader** relies on STM32CubeFirmware HAL/LL drivers for hardware system initialization like the different clocks and the interfaces configuration.
 **Open bootloader** is executed by Cortex-M processor on the non-secure domain and uses following resources:
    * Non secure user flash memory/SRAM1
    * Interrupts
    * RCC and power
-   * IP Peripherals (USART/I2C/SPI/USB-DFU & FDCAN)
+   * IP Peripherals (USART/I2C/SPI/USB-DFU/FDCAN and I3C)
    * GPIOs
    * Systick
    * IWDG

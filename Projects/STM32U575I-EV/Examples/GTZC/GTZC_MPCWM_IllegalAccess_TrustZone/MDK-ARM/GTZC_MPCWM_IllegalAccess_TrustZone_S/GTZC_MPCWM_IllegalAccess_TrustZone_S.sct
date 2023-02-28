@@ -16,6 +16,6 @@ LR_IROM1 0x0C000000 0x000FE000  {    ; load region size_region
 
 LR_IROM2 0x0C0FE000 0x00002000  {
   ER_IROM2 0x0C0FE000 0x00002000  {  ; load address = execution address
-      *(Veneer$$CMSE)                   ; check with partition.h
+   *(Veneer$$CMSE)                   ; check with partition.h
   }
 }

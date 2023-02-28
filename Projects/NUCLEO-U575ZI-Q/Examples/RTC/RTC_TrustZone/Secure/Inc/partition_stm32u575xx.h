@@ -671,3 +671,4 @@ __STATIC_INLINE void TZ_SAU_Setup (void)
 /* USER CODE END 2 */
 
 #endif  /* PARTITION_STM32U575XX_H */
+

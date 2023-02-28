@@ -479,7 +479,7 @@ int32_t BSP_TS_GetState(uint32_t Instance, TS_State_t *TS_State)
   * @param  TS_State Pointer to multiple touch structure.
   * @retval BSP status.
   */
-int32_t BSP_TS_Get_MultiTouchState(uint32_t Instance, TS_MultiTouch_State_t *TS_State)
+int32_t BSP_TS_Get_MultiTouchState(const uint32_t Instance, TS_MultiTouch_State_t *TS_State)
 {
   int32_t status;
 
@@ -504,7 +504,7 @@ int32_t BSP_TS_Get_MultiTouchState(uint32_t Instance, TS_MultiTouch_State_t *TS_
   * @param  GestureConfig Pointer to gesture configuration structure.
   * @retval BSP status.
   */
-int32_t BSP_TS_GestureConfig(uint32_t Instance, TS_Gesture_Config_t *GestureConfig)
+int32_t BSP_TS_GestureConfig(const uint32_t Instance, TS_Gesture_Config_t *GestureConfig)
 {
   int32_t status;
 
@@ -527,7 +527,7 @@ int32_t BSP_TS_GestureConfig(uint32_t Instance, TS_Gesture_Config_t *GestureConf
   * @param  GestureId Pointer to gesture.
   * @retval BSP status.
   */
-int32_t BSP_TS_GetGestureId(uint32_t Instance, uint32_t *GestureId)
+int32_t BSP_TS_GetGestureId(const uint32_t Instance, uint32_t *GestureId)
 {
   int32_t status;
 

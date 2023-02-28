@@ -76,6 +76,8 @@ HAL_StatusTypeDef MX_MDFQueue_Config(void)
   /* Insert MDFNode to Queue */
   ret |= HAL_DMAEx_List_InsertNode_Tail(&MDFQueue, &MDFNode);
 
+  ret |= HAL_DMAEx_List_SetCircularMode(&MDFQueue);
+
    return ret;
 }
 

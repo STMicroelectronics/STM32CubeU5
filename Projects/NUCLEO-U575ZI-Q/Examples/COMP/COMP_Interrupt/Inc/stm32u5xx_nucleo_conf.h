@@ -1,10 +1,8 @@
 /**
   ******************************************************************************
-  * @file    stm32u5xx_nucleo_conf_template.h
+  * @file    stm32u5xx_nucleo_conf.h
   * @author  MCD Application Team
-  * @brief   STM32U5xx_Nuleo board configuration file.
-  *          This file should be copied to the application folder and renamed
-  *          to stm32u5xx_nucleo_conf.h
+  * @brief   STM32U5XX nucleo board configuration file.
   ******************************************************************************
   * @attention
   *
@@ -17,13 +15,13 @@
   *
   ******************************************************************************
   */
-  
+
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32U5XX_NUCLEO_CONF_H
 #define STM32U5XX_NUCLEO_CONF_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -32,18 +30,18 @@
 /** @addtogroup BSP
   * @{
   */
-  
+
 /** @addtogroup STM32U5XX_NUCLEO
   * @{
   */
 
 /** @defgroup STM32U5XX_NUCLEO_CONFIG Config
   * @{
-  */ 
-  
+  */
+
 /** @defgroup STM32U5XX_NUCLEO_CONFIG_Exported_Constants Exported Constants
   * @{
-  */ 
+  */
 /* Nucleo pin and part number defines */
 #define USE_NUCLEO_144
 #define USE_NUCLEO_U575ZI_Q
@@ -62,17 +60,17 @@
 /**
   * @}
   */
-  
+
 /**
   * @}
   */
-  
+
 /**
   * @}
   */
-   
+
 #ifdef __cplusplus
 }
 #endif
-  
+
 #endif /* STM32U5XX_NUCLEO_CONF_H */

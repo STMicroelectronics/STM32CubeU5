@@ -584,7 +584,7 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
             if (fih_not_eq(fih_rc, FIH_SUCCESS)) {
                 goto out;
             }
-            BOOT_LOG_INF("verify counter  %d %x %x", image_index,img_security_cnt, security_cnt.val );
+            BOOT_LOG_INF("verify counter  %d %x %x", image_index, (unsigned int)img_security_cnt, security_cnt.val );
             /* Compare the new image's security counter value against the
              * stored security counter value.
              */
@@ -667,13 +667,13 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
                 rc = flash_area_read(fap, off, &data8, sizeof(data8));
                 if (rc)
                 {
-                    BOOT_LOG_INF("read failed %x ", off);
+                    BOOT_LOG_INF("read failed %x ", (unsigned int)off);
                     rc = -1;
                     goto out;
                 }
                 if (data8 != 0xff)
                 {
-                    BOOT_LOG_INF("data wrong at %x", off);
+                    BOOT_LOG_INF("data wrong at %x", (unsigned int)off);
                     rc = -1;
                     goto out;
                 }
@@ -694,13 +694,13 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
             rc = flash_area_read(fap, off, &data64, sizeof(data64));
             if (rc)
             {
-                BOOT_LOG_INF("read failed %x ", off);
+                BOOT_LOG_INF("read failed %x ", (unsigned int)off);
                 rc = -1;
                 goto out;
             }
             if (data64 != 0xffffffffffffffff)
             {
-                BOOT_LOG_INF("data wrong at %x", off);
+                BOOT_LOG_INF("data wrong at %x", (unsigned int)off);
                 rc = -1;
                 goto out;
             }

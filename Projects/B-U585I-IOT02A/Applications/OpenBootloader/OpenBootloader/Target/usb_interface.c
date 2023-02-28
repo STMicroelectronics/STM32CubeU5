@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -17,10 +17,14 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "main.h"
+
+#include "openbl_core.h"
+
 #include "usb_interface.h"
+
 #include "app_usbx_device.h"
 #include "app_azure_rtos.h"
-#include "openbl_core.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -38,50 +42,53 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* Exported functions --------------------------------------------------------*/
 
 /**
- * @brief  This function is used to configure USB pins and then initialize the used USB instance.
- * @retval None.
- */
+  * @brief  This function is used to configure USBx PINS and then initialize the used USBx instance.
+  * @retval None.
+  */
 void OPENBL_USB_Configuration(void)
 {
-  /* Enable the USB GPIO clock */
+  /* Enable the USBx GPIO clock */
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   hpcd_USB_OTG_FS.Instance                     = USB_OTG_FS;
-  hpcd_USB_OTG_FS.Init.dev_endpoints           = 6;
+  hpcd_USB_OTG_FS.Init.dev_endpoints           = 6U;
   hpcd_USB_OTG_FS.Init.phy_itface              = PCD_PHY_EMBEDDED;
-  hpcd_USB_OTG_FS.Init.Sof_enable              = DISABLE;
-  hpcd_USB_OTG_FS.Init.low_power_enable        = DISABLE;
-  hpcd_USB_OTG_FS.Init.lpm_enable              = DISABLE;
-  hpcd_USB_OTG_FS.Init.battery_charging_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.use_dedicated_ep1       = DISABLE;
-  hpcd_USB_OTG_FS.Init.vbus_sensing_enable     = DISABLE;
+  hpcd_USB_OTG_FS.Init.Sof_enable              = (uint32_t)DISABLE;
+  hpcd_USB_OTG_FS.Init.low_power_enable        = (uint32_t)DISABLE;
+  hpcd_USB_OTG_FS.Init.lpm_enable              = (uint32_t)DISABLE;
+  hpcd_USB_OTG_FS.Init.battery_charging_enable = (uint32_t)DISABLE;
+  hpcd_USB_OTG_FS.Init.use_dedicated_ep1       = (uint32_t)DISABLE;
+  hpcd_USB_OTG_FS.Init.vbus_sensing_enable     = (uint32_t)DISABLE;
 
   if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK)
   {
-    while (1);
+    Error_Handler();
   }
 
-  /* Start device USB */
-  HAL_PCD_Start(&hpcd_USB_OTG_FS);
+  /* Start device USBx */
+  if (HAL_PCD_Start(&hpcd_USB_OTG_FS) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 /**
- * @brief  This function is used to De-initialize the USB pins and instance.
- * @retval None.
- */
+  * @brief  This function is used to De-initialize the USBx pins and instance.
+  * @retval None.
+  */
 void OPENBL_USB_DeInit(void)
 {
-  /* Only de-initialize the USB if it is not the current detected interface */
+  /* Only de-initialize the USBx if it is not the current detected interface */
   if (UsbDetected == 0U)
   {
-    HAL_PCD_DeInit(&hpcd_USB_OTG_FS);
+    (void)HAL_PCD_DeInit(&hpcd_USB_OTG_FS);
   }
 }
 
 /**
- * @brief  This function is used to detect if there is any activity on USB protocol.
- * @retval Returns 1 if interface is detected else 0.
- */
+  * @brief  This function is used to detect if there is any activity on USB protocol.
+  * @retval Returns 1 if interface is detected else 0.
+  */
 uint8_t OPENBL_USB_ProtocolDetection(void)
 {
   if (UsbSofDetected == 1U)
@@ -92,7 +99,7 @@ uint8_t OPENBL_USB_ProtocolDetection(void)
     OPENBL_InterfacesDeInit();
 
     /* The value of the variable "detect" will always be 0 and this is due to the fact that if this function returns 1,
-       the USB interface will be disabled.
+       the USBx interface will be disabled.
        For more details check the comment in the function "OpenBootloader_DetectInterfaceThread"
        in file "openbootloader_threadx.c" */
   }

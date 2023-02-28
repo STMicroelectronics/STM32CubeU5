@@ -96,7 +96,6 @@ USART_Handle.p_Cmd = OPENBL_USART_GetCommandsList();  /* Initialize the USART ha
  - Core/Src/stm32u5xx_it.c                            Interrupt handlers file
  - Core/Src/system_stm32u5xx.c                        STM32U5xx system clock configuration file
  - Core/Src/tx_initialize_low_level.s                 ThreadX low-level processor initialization file
- - Core/Inc/b_u585i_iot02a_conf.h                     STM32U585-DK board configuration file
  - Core/Inc/main.h                                    Main program header file
  - Core/Inc/stm32u5xx_hal_conf.h                      HAL Library Configuration file
  - Core/Inc/stm32u5xx_it.h                            Interrupt handlers header file
@@ -147,31 +146,31 @@ USART_Handle.p_Cmd = OPENBL_USART_GetCommandsList();  /* Initialize the USART ha
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
 <li><p>This example runs on STM32U585xx devices without security enabled (TZEN=0).</p></li>
-<li><p>This example has been tested with STMicroelectronics B-U585I-IOT02A (MB1551) board and can be easily tailored to any other supported device and development board.</p></li>
-<li><p>B-U585I-IOT02A set-up to use FDCAN1:</p>
+<li><p>This example has been tested with STMicroelectronics B-U585I-IOT02A Rev C (MB1551) board and can be easily tailored to any other supported device and development board.</p></li>
+<li><p>B-U585I-IOT02A Rev C set-up to use FDCAN1:</p>
 <ul>
 <li>Connect the PB8 (CN3: 7), PB9 (CN3: 10) respectively to RX, TX pins of an external FDCAN transceiver</li>
 <li>Connect CAN-H and CAN-L of the external FDCAN transceiver to your FDCAN Host adapter</li>
 </ul></li>
-<li><p>B-U585I-IOT02A set-up to use USART:</p>
+<li><p>B-U585I-IOT02A Rev C set-up to use USART:</p>
 <ul>
 <li>To use the USART3 for communication you have to connect:
 <ul>
-<li>Tx pin of your host adapter to PD9 (CN2: 3) pin of the B-U585I-IOT02A board</li>
-<li>Rx pin of your host adapter to PD8 (CN2: 2) pin of the B-U585I-IOT02A board</li>
+<li>Tx pin of your host adapter to PA9 pin of the B-U585I-IOT02A Rev C board</li>
+<li>Rx pin of your host adapter to PA10 pin of the B-U585I-IOT02A Rev C board</li>
+<li>If STLINK-V3SET is used as host adapter, please use Tx, Rx pins from STLINK-V3SET CN8 connector</li>
 </ul></li>
-<li>If STLINK-V3SET is used as host adapter, please use Tx,Rx pins from STLINK-V3SET CN9 connector</li>
 </ul></li>
-<li><p>B-U585I-IOT02A set-up to use I2C:</p>
+<li><p>B-U585I-IOT02A Rev C set-up to use I2C:</p>
 <ul>
 <li>Set I2C address to 0x5A</li>
 <li>To use the I2C2 for communication you have to connect:
 <ul>
-<li>SCL (CN2: 7) pin of your host adapter to PH4 pin of the B-U585I-IOT02A board</li>
-<li>SDA (CN2: 10) pin of your host adapter to PH5 pin of the B-U585I-IOT02A board</li>
+<li>SCL (CN2: 7) pin of your host adapter to PH4 pin of the B-U585I-IOT02A Rev C board</li>
+<li>SDA (CN2: 10) pin of your host adapter to PH5 pin of the B-U585I-IOT02A Rev C board</li>
 </ul></li>
 </ul></li>
-<li><p>B-U585I-IOT02A set-up to use SPI</p>
+<li><p>B-U585I-IOT02A Rev C set-up to use SPI</p>
 <ul>
 <li>To use the SPI1 for communication you have to connect:
 <ul>
@@ -180,7 +179,7 @@ USART_Handle.p_Cmd = OPENBL_USART_GetCommandsList();  /* Initialize the USART ha
 <li>MOSI pin of your host adapter to PE15 (CN13: 4) pin</li>
 </ul></li>
 </ul></li>
-<li><p>B-U585I-IOT02A set-up to use USB:</p>
+<li><p>B-U585I-IOT02A Rev C set-up to use USB:</p>
 <ul>
 <li>USB FS CN1</li>
 </ul></li>

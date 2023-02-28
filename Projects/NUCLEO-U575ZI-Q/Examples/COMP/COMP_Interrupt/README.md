@@ -17,7 +17,7 @@ In this example, the comparator input plus is connected on pin PB.02.
 
 when system wakes-up from Stop mode, there is a delay of 5 seconds then LED1 toggles 4 times quickly.
 
-If LED1 is toggling continuously without any voltage update, it indicates that the system 
+If LED1 is toggling continuously without any voltage update, it indicates that the system
 generated an error.
 
 #### <b>Notes</b>
@@ -30,6 +30,11 @@ generated an error.
 
  2. The application needs to ensure that the SysTick time base is always set to 1 millisecond
     to have correct HAL operation.
+
+ 3. This example can not be used in debug mode (debugger attached) due to the fact
+    that Cortex-M33 SysTick would remain active and induce exit from low power mode.
+    Example must be used in application mode: once the image is loaded, power off the board by unplugging
+    the power cable then power on the board again.
 
 ### <b>Keywords</b>
 
@@ -46,7 +51,7 @@ Analog, COMP, Comparator, Voltage, VrefInt, Wake Up, Low power, Stop2
   - COMP/COMP_Interrupt/Inc/stm32u5xx_hal_conf.h    HAL Configuration file
   - COMP/COMP_Interrupt/Inc/stm32u5xx_it.h          Interrupt handlers header file
 
-### <b>Hardware and Software environment</b>  
+### <b>Hardware and Software environment</b>
 
   - This template runs on STM32U575xx devices without security enabled (TZEN=0).
   - In this example, the clock is set to 160 MHz.
@@ -64,7 +69,9 @@ Analog, COMP, Comparator, Voltage, VrefInt, Wake Up, Low power, Stop2
 
 In order to make the program work, you must do the following :
 
- - Open your preferred toolchain 
+ - Open your preferred toolchain
  - Rebuild all files and load your image into target memory
+ - Once the image is loaded, power off the board by unplugging
+   the power cable then power on the board again
  - Run the example
 

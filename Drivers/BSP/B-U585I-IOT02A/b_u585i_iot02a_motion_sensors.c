@@ -162,7 +162,7 @@ int32_t BSP_MOTION_SENSOR_DeInit(uint32_t Instance)
   * @param  Capabilities Pointer to motion sensor capabilities.
   * @retval BSP status.
   */
-int32_t BSP_MOTION_SENSOR_GetCapabilities(uint32_t Instance, MOTION_SENSOR_Capabilities_t *Capabilities)
+int32_t BSP_MOTION_SENSOR_GetCapabilities(const uint32_t Instance, MOTION_SENSOR_Capabilities_t *Capabilities)
 {
   int32_t status = BSP_ERROR_NONE;
 
@@ -193,7 +193,7 @@ int32_t BSP_MOTION_SENSOR_GetCapabilities(uint32_t Instance, MOTION_SENSOR_Capab
   * @param  Id Pointer to motion sensor ID.
   * @retval BSP status.
   */
-int32_t BSP_MOTION_SENSOR_ReadID(uint32_t Instance, uint8_t *Id)
+int32_t BSP_MOTION_SENSOR_ReadID(const uint32_t Instance, uint8_t *Id)
 {
   int32_t status = BSP_ERROR_NONE;
 
@@ -313,7 +313,7 @@ int32_t BSP_MOTION_SENSOR_Disable(uint32_t Instance, uint32_t Function)
   * @param  Axes Pointer to motion sensor axes.
   * @retval BSP status.
   */
-int32_t BSP_MOTION_SENSOR_GetAxes(uint32_t Instance, uint32_t Function, BSP_MOTION_SENSOR_Axes_t *Axes)
+int32_t BSP_MOTION_SENSOR_GetAxes(const uint32_t Instance, uint32_t Function, BSP_MOTION_SENSOR_Axes_t *Axes)
 {
   int32_t status = BSP_ERROR_NONE;
   uint8_t index;
@@ -356,7 +356,7 @@ int32_t BSP_MOTION_SENSOR_GetAxes(uint32_t Instance, uint32_t Function, BSP_MOTI
   * @param  Axes Pointer to motion sensor raw axes.
   * @retval BSP status.
   */
-int32_t BSP_MOTION_SENSOR_GetAxesRaw(uint32_t Instance, uint32_t Function, BSP_MOTION_SENSOR_AxesRaw_t *Axes)
+int32_t BSP_MOTION_SENSOR_GetAxesRaw(const uint32_t Instance, uint32_t Function, BSP_MOTION_SENSOR_AxesRaw_t *Axes)
 {
   int32_t status = BSP_ERROR_NONE;
   uint8_t index;
@@ -399,7 +399,7 @@ int32_t BSP_MOTION_SENSOR_GetAxesRaw(uint32_t Instance, uint32_t Function, BSP_M
   * @param  Sensitivity Pointer to sensitivity.
   * @retval BSP status.
   */
-int32_t BSP_MOTION_SENSOR_GetSensitivity(uint32_t Instance, uint32_t Function, float_t *Sensitivity)
+int32_t BSP_MOTION_SENSOR_GetSensitivity(const uint32_t Instance, uint32_t Function, float_t *Sensitivity)
 {
   int32_t status = BSP_ERROR_NONE;
   uint8_t index;
@@ -442,7 +442,7 @@ int32_t BSP_MOTION_SENSOR_GetSensitivity(uint32_t Instance, uint32_t Function, f
   * @param  Odr Pointer to output data rate.
   * @retval BSP status.
   */
-int32_t BSP_MOTION_SENSOR_GetOutputDataRate(uint32_t Instance, uint32_t Function, float_t *Odr)
+int32_t BSP_MOTION_SENSOR_GetOutputDataRate(const uint32_t Instance, uint32_t Function, float_t *Odr)
 {
   int32_t status = BSP_ERROR_NONE;
   uint8_t index;
@@ -528,7 +528,7 @@ int32_t BSP_MOTION_SENSOR_SetOutputDataRate(uint32_t Instance, uint32_t Function
   * @param  Fullscale Pointer to full scale value.
   * @retval BSP status.
   */
-int32_t BSP_MOTION_SENSOR_GetFullScale(uint32_t Instance, uint32_t Function, int32_t *Fullscale)
+int32_t BSP_MOTION_SENSOR_GetFullScale(const uint32_t Instance, uint32_t Function, int32_t *Fullscale)
 {
   int32_t status = BSP_ERROR_NONE;
   uint8_t index;

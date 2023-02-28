@@ -17,53 +17,61 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "net_conf.h"
 #include "net_connect.h"
 #include "net_internals.h"
 #include "net_errors.h"
 #include "net_mem.h"
 #include "net_perf.h"
 
+/* Mxchip WiFi API header file and configuration. */
 #include "mx_wifi.h"
+#include "mx_wifi_conf.h"
 #include "core/mx_wifi_hci.h"
+#include "io_pattern/mx_wifi_io.h"
+
 #include <inttypes.h>
 
-#if (MX_WIFI_NETWORK_BYPASS_MODE == 1)
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
 #include "net_ip_lwip.h"
+
+#if LWIP_IPV6
+#include "lwip/ethip6.h"
+#endif /* LWIP_IPV6 */
+
 #include "lwip/etharp.h"
 #include "lwip/tcpip.h"
-#endif /* MX_WIFI_NETWORK_BYPASS_MODE */
+#endif /* (MX_WIFI_NETWORK_BYPASS_MODE == 1) */
 
-/* mxchip wifi api header file and configuration*/
-#include "mx_wifi.h"
 
-/* max wifi frame length */
+
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
+/* Max WiFI frame length. */
 #define MX_WIFI_PAYLOAD_MTU   (MX_WIFI_MTU_SIZE + MX_WIFI_BYPASS_HEADER_SIZE)
+#endif /* (MX_WIFI_NETWORK_BYPASS_MODE == 1) */
 
-/* debug log function */
+/* Debug log function */
 #ifndef MX_WIFI_BYPASS_DEBUG
 #define MX_WIFI_BYPASS_DEBUG  (0)
 #endif /* MX_WIFI_BYPASS_DEBUG */
 
 
 #ifdef MX_WIFI_API_DEBUG
-#define DEBUG_LOG(M, ...)  printf((M), ##__VA_ARGS__)
+#define DEBUG_LOG(M, ...)  printf((M), ##__VA_ARGS__) /*;*/
 #else
-#define DEBUG_LOG(M, ...)
+#define DEBUG_LOG(M, ...)  /*;*/
 #endif /* MX_WIFI_API_DEBUG */
 
 
 /* IPv4 address transfer */
-#define NET_ARTON(A)     ((uint32_t)(((uint32_t)A[3] << 24U) |\
-                                     ((uint32_t)A[2] << 16U) |\
-                                     ((uint32_t)A[1] <<  8U) |\
-                                     ((uint32_t)A[0] <<  0U)))
+#define NET_ARTON(A)     ((uint32_t)(((uint32_t)(A)[3] << 24U) |\
+                                     ((uint32_t)(A)[2] << 16U) |\
+                                     ((uint32_t)(A)[1] <<  8U) |\
+                                     ((uint32_t)(A)[0] <<  0U)))
 
 /* Declaration of generic class functions               */
 
-/* function declaration */
-void HAL_Delay(uint32_t Delay);
-
-/* mxchip wifi adaptor functions for ST connect library */
+/* mxchip WiFi adapter functions for the STM32 Network library. */
 int32_t mx_wifi_driver(net_if_handle_t *pnetif);
 
 static int32_t mx_wifi_if_init(net_if_handle_t *pnetif);
@@ -71,18 +79,21 @@ static int32_t mx_wifi_if_deinit(net_if_handle_t *pnetif);
 
 static int32_t mx_wifi_if_start(net_if_handle_t *pnetif);
 static int32_t mx_wifi_if_stop(net_if_handle_t *pnetif);
-static int32_t mx_wifi_if_yield(net_if_handle_t *pnetif, uint32_t timeout);
+static int32_t mx_wifi_if_yield(net_if_handle_t *pnetif, uint32_t timeout_ms);
 static void mx_wifi_status_changed(uint8_t cate, uint8_t status, void *arg);
 
 static int32_t mx_wifi_if_connect(net_if_handle_t *pnetif);
 static int32_t mx_wifi_if_disconnect(net_if_handle_t *pnetif);
 
-/* bypass mode functions */
-#if (MX_WIFI_NETWORK_BYPASS_MODE == 1)
+
+/* Bypass mode functions. */
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
+static struct netif *get_netif(uint8_t low_level_netif_idx);
+static void PushToDriver(uint32_t timeout);
 static err_t low_level_output(struct netif *netif, struct pbuf *p);
 static err_t low_level_init(struct netif *netif);
-static FIFO_DECLARE(fifo);
-void   _MX_WIFI_TranmitThread(void const *context);
+static FIFO_DECLARE(Fifo);
+static void NET_MX_WIFI_TranmitThread(THREAD_CONTEXT_TYPE context);
 
 #else
 static int32_t mx_wifi_socket(int32_t domain, int32_t type, int32_t protocol);
@@ -90,12 +101,12 @@ static int32_t mx_wifi_bind(int32_t sock, const net_sockaddr_t *addr, uint32_t a
 static int32_t mx_wifi_listen(int32_t sock, int32_t backlog);
 static int32_t mx_wifi_accept(int32_t sock, net_sockaddr_t *addr, uint32_t *addrlen);
 static int32_t mx_wifi_connect(int32_t sock, const net_sockaddr_t *addr, uint32_t addrlen);
-static int32_t mx_wifi_send(int32_t sock, uint8_t *buf, int32_t len, int32_t flags);
+static int32_t mx_wifi_send(int32_t sock, const uint8_t *buf, int32_t len, int32_t flags);
 static int32_t mx_wifi_recv(int32_t sock, uint8_t *buf, int32_t len, int32_t flags);
-static int32_t mx_wifi_sendto(int32_t sock, uint8_t *buf, int32_t len, int32_t flags, net_sockaddr_t *to,
-                              uint32_t tolen);
+static int32_t mx_wifi_sendto(int32_t sock, const uint8_t *buf, int32_t len, int32_t flags, net_sockaddr_t *to,
+                              uint32_t to_len);
 static int32_t mx_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t len, int32_t flags, net_sockaddr_t *from,
-                                uint32_t *fromlen);
+                                uint32_t *from_len);
 static int32_t mx_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, const void *optvalue, uint32_t optlen);
 static int32_t mx_wifi_getsockopt(int32_t sock, int32_t level, int32_t optname, void *optvalue, uint32_t *optlen);
 static int32_t mx_wifi_getsockname(int32_t sock, net_sockaddr_t *name, uint32_t *namelen);
@@ -108,17 +119,14 @@ static int32_t mx_wifi_ping(net_if_handle_t *pnetif, net_sockaddr_t *addr, int32
                             int32_t response[]);
 #endif /* MX_WIFI_NETWORK_BYPASS_MODE */
 
-/* Declaration and definition of class-specific functions */
+/* Declaration and definition of class-specific functions. */
 static int32_t mx_wifi_scan(net_if_handle_t *pnetif, net_wifi_scan_mode_t mode, char *ssid);
 static int32_t mx_wifi_get_scan_result(net_if_handle_t *pnetif, net_wifi_scan_results_t *scan_bss_array,
-                                       uint8_t scan_bss_array_size);
+                                       uint8_t scan_bss_count);
 static int32_t mx_wifi_if_start_station(net_if_handle_t *pnetif);
 static int32_t mx_wifi_if_start_softap(net_if_handle_t *pnetif);
 static int32_t hw_start(net_if_handle_t *pnetif);
 
-extern int32_t mxwifi_probe(void **ll_drv_context);
-extern MX_WIFIObject_t *wifi_obj_get(void);
-extern uint32_t HAL_GetTick(void);
 
 
 /* Internal structure to manage the WiFi socket. */
@@ -134,50 +142,92 @@ typedef struct mxwifi_tls_data_s
 } mxwifi_tls_data_t;
 
 /* bypass mode functions */
-#if (MX_WIFI_NETWORK_BYPASS_MODE == 1)
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
+static net_if_handle_t *Station_pNetif = NULL;
+static net_if_handle_t *SoftAP_pNetif = NULL;
+
+static struct netif *get_netif(uint8_t low_level_netif_idx)
+{
+  struct netif *netif;
+
+  if (low_level_netif_idx == (uint8_t)SOFTAP_IDX)
+  {
+    netif = SoftAP_pNetif->netif;
+  }
+  else if (low_level_netif_idx == (uint8_t)STATION_IDX)
+  {
+    netif = Station_pNetif->netif;
+  }
+  else
+  {
+    netif = NULL;
+  }
+
+  return netif;
+}
+
+
 /**
-  * @brief                   low level init function for wifi driver
+  * @brief                   Low level initialization function for the WiFi driver
   * @param  netif            low level net interface
   * @return err_t            return ERR_OK if success, otherwise error code
   */
 static err_t low_level_init(struct netif *netif)
 {
   err_t ret = -1;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
-  static THREAD_DECLARE(MX_WIFI_TransmitThreadId);
+#ifndef MX_WIFI_BARE_OS_H
+  static THREAD_DECLARE(NET_MX_WIFI_TransmitThreadId);
+#endif /* MX_WIFI_BARE_OS_H */
 
-  FIFO_INIT(fifo, MX_WIFI_MAX_TX_BUFFER_COUNT);
+  net_if_handle_t *const pnetif = (net_if_handle_t *)(netif->state);
 
-  if (THREAD_OK == THREAD_INIT(MX_WIFI_TransmitThreadId, _MX_WIFI_TranmitThread, NULL,
+  FIFO_INIT(Fifo, MX_WIFI_MAX_TX_BUFFER_COUNT);
+
+  if (THREAD_OK == THREAD_INIT(NET_MX_WIFI_TransmitThreadId, NET_MX_WIFI_TranmitThread, NULL,
                                MX_WIFI_TRANSMIT_THREAD_STACK_SIZE,
                                MX_WIFI_TRANSMIT_THREAD_PRIORITY))
   {
-    /* set interface name for mxchip wifi */
-    netif->name[0] = 'm';
-    netif->name[1] = 'x';
+    /* Set the interface name for the mxchip WiFi. */
 
-    /* We directly use etharp_output() here to save a function call.
+    /**
+      * We directly use etharp_output() here to save a function call.
       * You can instead declare your own function an call etharp_output()
       * from it if you have to do some checks before sending (e.g. if link
       * is available...)
       */
     netif->output = etharp_output;
+
 #if LWIP_IPV6
-    /* netif->output_ip6 = ethip6_output; */
+    netif->output_ip6 = ethip6_output;
+    netif->ip6_autoconfig_enabled = 1;
 #endif /* LWIP_IPV6 */
+
     netif->linkoutput = low_level_output;
 
-    /* Set MAC hardware address length ( 6)*/
+    /* Set MAC hardware address length (6). */
     netif->hwaddr_len = (u8_t) ETHARP_HWADDR_LEN;
 
     /* Setup the physical address of this IP instance. */
-    (void)memcpy(netif->hwaddr, pMxWifiObj->SysInfo.MAC, 6);
+    if (pnetif->pdrv->extension.wifi->mode == NET_WIFI_MODE_AP)
+    {
+      netif->name[0] = 'M';
+      netif->name[1] = 'A';
+      (void)memcpy(netif->hwaddr, wifi_obj_get()->SysInfo.apMAC, 6);
+    }
+    else
+    {
+      netif->name[0] = 'M';
+      netif->name[1] = 'S';
+      (void)memcpy(netif->hwaddr, wifi_obj_get()->SysInfo.MAC, 6);
+    }
+
 #if MX_WIFI_BYPASS_DEBUG
-    NET_PRINT(" MAC address %x.%x.%x.%x.%x.%x\n", netif->hwaddr[0], netif->hwaddr[1], netif->hwaddr[2],
+    NET_PRINT(" MAC address %x.%x.%x.%x.%x.%x\n",
+              netif->hwaddr[0], netif->hwaddr[1], netif->hwaddr[2],
               netif->hwaddr[3], netif->hwaddr[4], netif->hwaddr[5]);
 #endif /* MX_WIFI_BYPASS_DEBUG */
 
-    /* Set Maximum Transfer Unit */
+    /* Set the Maximum Transfer Unit. */
     netif->mtu = (u16_t) MX_WIFI_PAYLOAD_MTU;
 
     /* Set device capabilities. Don't set NETIF_FLAG_ETHARP if this device is not an Ethernet one */
@@ -189,7 +239,7 @@ static err_t low_level_init(struct netif *netif)
     netif_set_igmp_mac_filter(netif, lwip_igmp_mac_filter);
 #endif /* LWIP_IGMP */
 
-    /* Register a handler for any address changes  and when interface goes up or down*/
+    /* Register a handler for any address changes and when the interface goes up or down. */
     netif_set_status_callback(netif, net_ip_status_cb);
     netif_set_link_callback(netif, net_ip_status_cb);
 
@@ -198,7 +248,9 @@ static err_t low_level_init(struct netif *netif)
   return ret;
 }
 
-/* This function should do the actual transmission of the packet. The packet is
+
+/**
+  * This function should do the actual transmission of the packet. The packet is
   * contained in the pbuf that is passed to the function. This pbuf
   * might be chained.
   *
@@ -212,23 +264,32 @@ static err_t low_level_init(struct netif *netif)
   *       to become available since the stack doesn't retry to send a packet
   *       dropped because of memory failure (except for the TCP timers).
   */
-
-void PushToDriver(uint32_t timeout);
 static err_t low_level_output(struct netif *netif, struct pbuf *p)
 {
   err_t err = (err_t) ERR_ARG;
   struct pbuf *pbuf_send;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
 
-  (void)netif;
+  net_if_handle_t *const pnetif = (net_if_handle_t *)(netif->state);
 
-  if ((pMxWifiObj != NULL) && (NULL != p))
+  if (NULL != p)
   {
-    /* Take a reference to this packet */
+    /* Take a reference to this packet. */
     pbuf_ref(p);
-    /* (void) printf("Transmit buffer %p next=%p  tot_len=%d len=%d\n", p, p->next, p->tot_len, p->len); */
 
-    /* No chained buffers*/
+#if MX_WIFI_BYPASS_DEBUG
+    NET_PRINT("Transmit buffer %p next=%p  tot_len=%" PRIu32 " len=%" PRIu32 "\n",
+              p, p->next, (uint32_t)p->tot_len, (uint32_t)p->len);
+#endif /* MX_WIFI_BYPASS_DEBUG */
+
+    if (pnetif->pdrv->extension.wifi->mode == NET_WIFI_MODE_AP)
+    {
+      p->if_idx = (uint8_t)SOFTAP_IDX;
+    }
+    else
+    {
+      p->if_idx = (uint8_t)STATION_IDX;
+    }
+    /* No chained buffers. */
     if ((p->next != NULL) || ((p->tot_len != p->len)))
     {
       /* chained buffer to output */
@@ -244,7 +305,7 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
         void *handle = pbuf_send;
         NET_PERF_TASK_TAG(3);
 
-        if (FIFO_OK == FIFO_PUSH(fifo, handle, WAIT_FOREVER, PushToDriver))
+        if (FIFO_OK == FIFO_PUSH(Fifo, handle, WAIT_FOREVER, PushToDriver))
         {
           err = (err_t)ERR_OK;
         }
@@ -254,7 +315,7 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
     {
       void *handle = p;
       NET_PERF_TASK_TAG(3);
-      if (FIFO_OK == FIFO_PUSH(fifo, handle, WAIT_FOREVER, PushToDriver))
+      if (FIFO_OK == FIFO_PUSH(Fifo, handle, WAIT_FOREVER, PushToDriver))
       {
         err = (err_t)ERR_OK;
       }
@@ -262,11 +323,8 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
   }
   else
   {
-    /* cannot transmit wifi not ready */
-
-    /* Stop lint warning about packet not being freed - it is not being referenced */ /*@-mustfree@*/
+    /* Cannot transmit wifi not ready */
     err = (err_t) ERR_INPROGRESS; /* Note that signaling ERR_CLSD or ERR_CONN causes loss of connectivity on a roam */
-    /*@+mustfree@*/
   }
 
   return err;
@@ -275,36 +333,42 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 
 #if MX_WIFI_TX_BUFFER_NO_COPY
 #if PBUF_LINK_ENCAPSULATION_HLEN < MX_WIFI_MIN_TX_HEADER_SIZE
-#error "When MX_WIFI_TX_BUFFER_NO_COPY is set, lwipopts.h must reserved buffer headroom thanks to PBUF_LINK_ENCAPSULATION_HLEN"
+#error "When MX_WIFI_TX_BUFFER_NO_COPY is set, \
+lwipopts.h must reserved buffer headroom thanks to PBUF_LINK_ENCAPSULATION_HLEN"
 #endif /* PBUF_LINK_ENCAPSULATION_HLEN < MX_WIFI_MIN_TX_HEADER_SIZE  */
 
 #endif  /* MX_WIFI_TX_BUFFER_NO_COPY */
 
-void PushToDriver(uint32_t timeout)
+
+/**
+  * @brief         Push WiFi packet to the WiFi driver to send
+  * @param timeout timeout in milliseconds
+  */
+static void PushToDriver(uint32_t timeout)
 {
-  void *handle;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
-
-  net_if_handle_t *pnetif = (net_if_handle_t *)(pMxWifiObj->Runtime.netlink_user_args);
-  if (NULL != pnetif)
+  void *const handle = FIFO_POP(Fifo, timeout, NULL);
+  if (handle != NULL)
   {
-    handle = FIFO_POP(fifo, timeout, NULL);
-    if (handle != NULL)
-    {
-      struct pbuf *p = (struct pbuf *) handle;
-      LINK_STATS_INC(link.xmit);
-      NET_PERF_TASK_TAG(4);
+    struct pbuf *p = (struct pbuf *) handle;
 
-      (void)MX_WIFI_Network_bypass_netlink_output(pMxWifiObj,
-                                                  p->payload, (int32_t)(p->len),
-                                                  (int32_t)(pnetif->pdrv->extension.wifi->mode));
-      (void)pbuf_free(p);
-    }
+    LINK_STATS_INC(link.xmit);
+    NET_PERF_TASK_TAG(4);
+
+    (void)MX_WIFI_Network_bypass_netlink_output(wifi_obj_get(),
+                                                p->payload, (int32_t)p->len,
+                                                (int32_t)p->if_idx);
+    (void)pbuf_free(p);
   }
 }
 
-void _MX_WIFI_TranmitThread(void const *context)
+
+/**
+  * @brief         Thread to push WiFi packet to the WiFi driver
+  * @param context Thread context argument
+  */
+static void NET_MX_WIFI_TranmitThread(THREAD_CONTEXT_TYPE context)
 {
+  (void)context;
   while (true)
   {
     PushToDriver(WAIT_FOREVER);
@@ -313,36 +377,35 @@ void _MX_WIFI_TranmitThread(void const *context)
 
 
 /**
-  * @brief                   low level data callback for the wifi driver
-  * @param  pbuf             low level data pbuf pointer
-  * @param  size             low level data pbuf size
-  * @param  data             low level data buffer
-  * @param  len              low level data length
+  * @brief                   Low level data callback for the WiFi driver
+  * @param  buffer           low level data buffer
   * @param  user_args        user arguments
   */
-
 static void net_mx_wifi_netlink_input_callback(mx_buf_t *buffer, void *user_args)
 {
-  struct eth_hdr *ethernet_header;
-  struct netif   *netif = ((net_if_handle_t *)user_args)->netif;
-  uint16_t        ethertype;
+  uint8_t low_level_netif_idx = (uint8_t) * ((uint32_t *) user_args);
 
   if ((buffer != NULL) && (buffer->len > 0U) && (buffer->len <= (uint32_t) MX_WIFI_PAYLOAD_MTU))
   {
-    /* points to packet payload, which starts with an Ethernet header */
-    ethernet_header = (struct eth_hdr *) buffer->payload;
+    struct netif *netif = get_netif(low_level_netif_idx);
 
-    ethertype = lwip_htons(ethernet_header->type);
+    /* Points to packet payload, which starts with an Ethernet header. */
+    struct eth_hdr *ethernet_header = (struct eth_hdr *) buffer->payload;
+
+    const uint16_t ethertype = lwip_htons(ethernet_header->type);
+
     switch (ethertype)
     {
+      case ETHTYPE_IPV6:
       case ETHTYPE_IP:
-      /* case ETHTYPE_IPV6: */
       case ETHTYPE_ARP:
+
 #if PPPOE_SUPPORT
       /* PPPoE packet? */
       case ETHTYPE_PPPOEDISC:
       case ETHTYPE_PPPOE:
 #endif /* PPPOE_SUPPORT */
+
 #if MX_WIFI_BYPASS_DEBUG
         NET_PRINT("process input packet 0x%02x, len=%d\n", ethertype, buffer->tot_len);
 #endif /* MX_WIFI_BYPASS_DEBUG */
@@ -374,25 +437,27 @@ static void net_mx_wifi_netlink_input_callback(mx_buf_t *buffer, void *user_args
     }
   }
 }
-#endif /* MX_WIFI_NETWORK_BYPASS_MODE */
+#endif /* (MX_WIFI_NETWORK_BYPASS_MODE == 1) */
+
 
 /**
-  * @brief                   wifi driver init
+  * @brief                   WiFi driver initialization
   * @param  pnetif           net interface pointer
   * @return int32_t          0 is success, otherwise failed
   */
 int32_t mx_wifi_driver(net_if_handle_t *pnetif)
 {
-  /* init lwip library here if not already done by another network interface */
-#if (MX_WIFI_NETWORK_BYPASS_MODE == 1)
+  /* Initialize the LwIP library here if not already done by another network interface. */
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
   net_ip_init();
-#endif /* MX_WIFI_NETWORK_BYPASS_MODE */
+#endif /* (MX_WIFI_NETWORK_BYPASS_MODE == 1) */
 
   return mx_wifi_if_init(pnetif);
 }
 
+
 /**
-  * @brief                   mxchip wifi driver interface init
+  * @brief                   Mxchip WiFi driver interface initialization
   * @param  pnetif           net interface pointer
   * @return int32_t          0 is success, otherwise failed
   */
@@ -401,8 +466,9 @@ static int32_t mx_wifi_if_init(net_if_handle_t *pnetif)
   int32_t ret;
   void *ptmp;
 
-  /* create netif and set mxchip wifi functions */
+  /* Create netif and set Mxchip WiFi functions. */
   ptmp = NET_MALLOC(sizeof(net_if_drv_t));
+
   if (ptmp != NULL)
   {
     net_if_drv_t *const p = (net_if_drv_t *)ptmp;
@@ -438,27 +504,27 @@ static int32_t mx_wifi_if_init(net_if_handle_t *pnetif)
     p->pshutdown = mx_wifi_shutdown;
     p->pgethostbyname = mx_wifi_gethostbyname;
     p->pping = mx_wifi_ping;
+
 #else
     p->pping = icmp_ping;
-
 #endif /* MX_WIFI_NETWORK_BYPASS_MODE */
 
 
-    /* wifi function */
+    /* WiFi function. */
     ptmp = NET_MALLOC(sizeof(net_if_wifi_class_extension_t));
     if (NULL == ptmp)
     {
-      NET_DBG_ERROR("can't allocate memory for mx_wifi_driver class\n");
+      NET_DBG_ERROR("Can't allocate memory for mx_wifi_driver class\n");
       NET_FREE(p);
       ret = NET_ERROR_NO_MEMORY;
     }
     else
     {
       p->extension.wifi = (net_if_wifi_class_extension_t *)ptmp;
-      /* dhcp mode */
+      /* DHCP mode. */
       pnetif->dhcp_mode = true;
       pnetif->pdrv = p;
-      /* scan function */
+      /* Scan function. */
       p->extension.wifi->scan = mx_wifi_scan;
       p->extension.wifi->get_scan_results = mx_wifi_get_scan_result;
       p->extension.wifi->mode = NET_WIFI_MODE_STA;
@@ -468,40 +534,43 @@ static int32_t mx_wifi_if_init(net_if_handle_t *pnetif)
   }
   else
   {
-    NET_DBG_ERROR("can't allocate memory for mx_wifi_driver class\n");
+    NET_DBG_ERROR("Can't allocate memory for mx_wifi_driver class\n");
     ret = NET_ERROR_NO_MEMORY;
   }
 
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi driver interface deinit
+  * @brief                   Mxchip WiFi driver interface de-initialization
   * @param  pnetif           net interface pointer
   * @return int32_t          0 is success, otherwise failed
   */
 static int32_t mx_wifi_if_deinit(net_if_handle_t *pnetif)
 {
   int32_t ret = NET_OK;
-  MX_WIFIObject_t  *pMxWifiObj = wifi_obj_get();
 
-#if (MX_WIFI_NETWORK_BYPASS_MODE == 1)
-  (void)MX_WIFI_Network_bypass_mode_set(pMxWifiObj, 0, NULL, NULL);
-#endif /* MX_WIFI_NETWORK_BYPASS_MODE */
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
+  (void)MX_WIFI_Network_bypass_mode_set(wifi_obj_get(), 0, NULL, NULL);
+#endif /* (MX_WIFI_NETWORK_BYPASS_MODE == 1) */
 
-  if (MX_WIFI_STATUS_OK != MX_WIFI_DeInit(pMxWifiObj))
+  if (MX_WIFI_STATUS_OK != MX_WIFI_DeInit(wifi_obj_get()))
   {
     ret = NET_ERROR_GENERIC;
   }
+
   NET_FREE(pnetif->pdrv->extension.wifi);
   pnetif->pdrv->extension.wifi = NULL;
   NET_FREE(pnetif->pdrv);
   pnetif->pdrv = NULL;
+
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi driver start
+  * @brief                   Mxchip WiFi driver start
   * @param  pnetif           net interface pointer
   * @return int32_t          0 is success, otherwise failed
   */
@@ -510,155 +579,170 @@ static int32_t mx_wifi_if_start(net_if_handle_t *pnetif)
   int32_t ret;
   if (pnetif->pdrv->extension.wifi->mode == NET_WIFI_MODE_STA)
   {
-    ret =  mx_wifi_if_start_station(pnetif);
+    ret = mx_wifi_if_start_station(pnetif);
+
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
+    if (NET_OK == ret)
+    {
+      Station_pNetif = pnetif;
+    }
+#endif /* (MX_WIFI_NETWORK_BYPASS_MODE == 1) */
   }
   else
   {
-    ret =  mx_wifi_if_start_softap(pnetif);
+    ret = mx_wifi_if_start_softap(pnetif);
+
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
+    if (NET_OK == ret)
+    {
+      SoftAP_pNetif = pnetif;
+    }
+#endif /* (MX_WIFI_NETWORK_BYPASS_MODE == 1) */
   }
+
   return ret;
 }
 
 
+/**
+  * @brief                   Mxchip WiFi hardware initialization
+  * @param  pnetif           net interface pointer
+  * @return int32_t          0 is success, otherwise failed
+  */
 static int32_t hw_start(net_if_handle_t *pnetif)
 {
-  int32_t ret;
+  int32_t ret = NET_ERROR_DEVICE_ERROR;
 
-  MX_WIFIObject_t *pMxWifiObj;
-
-  if (mxwifi_probe(&pnetif->pdrv->context) == NET_OK)
+  if (mxwifi_probe(&pnetif->pdrv->context) == 0)
   {
-    DEBUG_LOG("MX_WIFI IO [OK]\r\n");
-    pMxWifiObj = wifi_obj_get();
+    DEBUG_LOG("%s\n", "MX_WIFI IO [OK]");
 
-    if (pMxWifiObj->Runtime.interfaces == 0U)
+    if (wifi_obj_get()->Runtime.interfaces == 0U)
     {
-      /* wifi module hardware reboot */
-      DEBUG_LOG("MX_WIFI REBOOT(HW) ...\r\n");
-      ret = MX_WIFI_HardResetModule(pMxWifiObj);
+      /* WiFi module hardware reboot. */
+      DEBUG_LOG("%s\n", "MX_WIFI REBOOT(HW) ...");
+      ret = MX_WIFI_HardResetModule(wifi_obj_get());
     }
     else
     {
       ret = MX_WIFI_STATUS_OK;
     }
+
     if (MX_WIFI_STATUS_OK != ret)
     {
       ret = NET_ERROR_DEVICE_ERROR;
     }
     else
     {
-      /* wait for mxchip wifi reboot */
+      /* Wait for Mxchip WiFi reboot. */
 
-      /* Init the WiFi module */
-      if (MX_WIFI_STATUS_OK != MX_WIFI_Init(pMxWifiObj))
+      /* Initialize the WiFi module. */
+      if (MX_WIFI_STATUS_OK != MX_WIFI_Init(wifi_obj_get()))
       {
         ret = NET_ERROR_INTERFACE_FAILURE;
       }
       else
       {
-        DEBUG_LOG("MX_WIFI_Init [OK]\r\n");
-        /* Retrieve the WiFi module information */
-        (void)strncpy(pnetif->DeviceName, (char_t *)pMxWifiObj->SysInfo.Product_Name,
-                      MIN(strlen((char_t *)pMxWifiObj->SysInfo.Product_Name) + 1, (uint32_t) NET_DEVICE_NAME_LEN));
-        (void)strncpy(pnetif->DeviceID, (char_t *)pMxWifiObj->SysInfo.Product_ID,
-                      MIN(strlen((char_t *)pMxWifiObj->SysInfo.Product_ID) + 1, (uint32_t) NET_DEVICE_ID_LEN));
-        (void)strncpy(pnetif->DeviceVer, (char_t *)pMxWifiObj->SysInfo.FW_Rev,
-                      MIN(strlen((char_t *)pMxWifiObj->SysInfo.FW_Rev) + 1, (uint32_t) NET_DEVICE_VER_LEN));
+        DEBUG_LOG("%s\n", "MX_WIFI_Init [OK]");
+        /* Retrieve the WiFi module information. */
+        (void)strncpy(pnetif->DeviceName, (const char *)wifi_obj_get()->SysInfo.Product_Name, sizeof(pnetif->DeviceName));
+        (void)strncpy(pnetif->DeviceID, (const char *)wifi_obj_get()->SysInfo.Product_ID, sizeof(pnetif->DeviceID));
+        (void)strncpy(pnetif->DeviceVer, (const char *)wifi_obj_get()->SysInfo.FW_Rev, sizeof(pnetif->DeviceVer));
 
-        (void)MX_WIFI_GetMACAddress(pMxWifiObj, pnetif->macaddr.mac);
+        (void)MX_WIFI_GetMACAddress(wifi_obj_get(), pnetif->macaddr.mac);
 
-        /* set bypass mode */
-#if (MX_WIFI_NETWORK_BYPASS_MODE == 1)
+        /* Set bypass mode. */
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
         if (MX_WIFI_STATUS_OK != MX_WIFI_Network_bypass_mode_set(wifi_obj_get(), 1,
                                                                  net_mx_wifi_netlink_input_callback, pnetif))
         {
-          NET_DBG_ERROR("*** set mx_wifi module bypass mode failed !\n");
+          NET_DBG_ERROR("*** set mx_wifi module bypass mode failed!\n");
           ret = NET_ERROR_MODULE_INITIALIZATION;
         }
         else
-#endif /* MX_WIFI_NETWORK_BYPASS_MODE */
+#endif /* (MX_WIFI_NETWORK_BYPASS_MODE == 1) */
         {
           ret = NET_OK;
         }
       }
     }
   }
-  else
-  {
-    ret = NET_ERROR_DEVICE_ERROR;
-  }
+
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi driver interface stop
+  * @brief                   Mxchip WiFi driver interface stop
   * @param  pnetif           net interface pointer
   * @return int32_t          0 if success, otherwise failed
   */
 static int32_t mx_wifi_if_stop(net_if_handle_t *pnetif)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
   if (pnetif->pdrv->extension.wifi->mode == NET_WIFI_MODE_STA)
   {
     if (((int32_t)NET_WIFI_SM_WPS_OPEN == pnetif->pdrv->extension.wifi->credentials->security_mode) || \
         ((int32_t)NET_WIFI_SM_WPS_SECURE == pnetif->pdrv->extension.wifi->credentials->security_mode))
     {
-      (void)MX_WIFI_WPS_Stop(pMxWifiObj);
+      (void)MX_WIFI_WPS_Stop(wifi_obj_get());
     }
-    (void)MX_WIFI_Disconnect(pMxWifiObj);
+    (void)MX_WIFI_Disconnect(wifi_obj_get());
+
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
+    Station_pNetif = NULL;
+#endif /* (MX_WIFI_NETWORK_BYPASS_MODE == 1) */
   }
   else
   {
-    (void)MX_WIFI_StopAP(pMxWifiObj);
+    (void)MX_WIFI_StopAP(wifi_obj_get());
+
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
+    SoftAP_pNetif = NULL;
+#endif /* (MX_WIFI_NETWORK_BYPASS_MODE == 1) */
   }
 
   (void) net_state_manage_event(pnetif, NET_EVENT_INTERFACE_INITIALIZED);
-  ret = NET_OK;
 
-  return ret;
+  return NET_OK;
 }
 
+
 /**
-  * @brief                   mxchip wifi interface data yield
+  * @brief                   Mxchip WiFi interface data yield
   * @param  pnetif           net interface
-  * @param  timeout          timeout in ms
+  * @param  timeout_ms       timeout in milliseconds
   * @return int32_t          0 if success, otherwise failed
   */
-static int32_t mx_wifi_if_yield(net_if_handle_t *pnetif, uint32_t timeout)
+static int32_t mx_wifi_if_yield(net_if_handle_t *pnetif, uint32_t timeout_ms)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
+  const int32_t ret = MX_WIFI_IO_YIELD(wifi_obj_get(), timeout_ms);
 
   (void)pnetif;
-  ret = MX_WIFI_IO_YIELD(pMxWifiObj, timeout);
 
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi status change callback
+  * @brief                   Mxchip WiFi status change callback
   * @param  cate             status cate
   * @param  status           status
   * @param  arg              user arguments
   */
 static void mx_wifi_status_changed(uint8_t cate, uint8_t status, void *arg)
 {
-  net_if_handle_t *pnetif;
-  net_state_t net_state;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
+  net_if_handle_t *const pnetif = (net_if_handle_t *)arg;
+  net_state_t net_state = NET_STATE_DEINITIALIZED;
 
-  (void)memcpy((void *) &pnetif, (void *) &arg, sizeof(pnetif));
-
-
-  (void) net_if_getState(pnetif, &net_state);
+  net_if_getState(pnetif, &net_state);
 
   if ((uint8_t)MC_STATION == cate)
   {
     switch (status)
     {
       case MWIFI_EVENT_STA_DOWN:
-        DEBUG_LOG("MWIFI_EVENT_STA_DOWN\n");
+      {
+        DEBUG_LOG("%s\n", "MWIFI_EVENT_STA_DOWN");
 
         if (NET_STATE_STOPPING == net_state)
         {
@@ -671,11 +755,14 @@ static void mx_wifi_status_changed(uint8_t cate, uint8_t status, void *arg)
         else
         {
         }
-        break;
+      }
+      break;
 
       case MWIFI_EVENT_STA_UP:
-        DEBUG_LOG("MWIFI_EVENT_STA_UP\n");
-#if (MX_WIFI_NETWORK_BYPASS_MODE == 1)
+      {
+        DEBUG_LOG("%s\n", "MWIFI_EVENT_STA_UP");
+
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
         if (NET_STATE_STARTING == net_state)
         {
           (void)net_state_manage_event(pnetif, NET_EVENT_INTERFACE_READY);
@@ -683,44 +770,52 @@ static void mx_wifi_status_changed(uint8_t cate, uint8_t status, void *arg)
 #else
         (void)net_state_manage_event(pnetif, NET_EVENT_INTERFACE_READY);
 #endif /* MX_WIFI_NETWORK_BYPASS_MODE */
-        break;
+      }
+      break;
 
       case MWIFI_EVENT_STA_GOT_IP:
-        DEBUG_LOG("MWIFI_EVENT_STA_GOT_IP\n");
+      {
+        DEBUG_LOG("%s\n", "MWIFI_EVENT_STA_GOT_IP");
 
 #ifdef NET_USE_LWIP_DEFINITIONS
         pnetif->ipaddr.type = (u8_t)IPADDR_TYPE_V4;
-        pnetif->ipaddr.u_addr.ip4.addr = NET_ARTON(pMxWifiObj->NetSettings.IP_Addr);
+        pnetif->ipaddr.u_addr.ip4.addr = NET_ARTON(wifi_obj_get()->NetSettings.IP_Addr);
         pnetif->netmask.type = (u8_t)IPADDR_TYPE_V4;
-        pnetif->netmask.u_addr.ip4.addr = NET_ARTON(pMxWifiObj->NetSettings.IP_Mask);
+        pnetif->netmask.u_addr.ip4.addr = NET_ARTON(wifi_obj_get()->NetSettings.IP_Mask);
         pnetif->gateway.type = (u8_t)IPADDR_TYPE_V4;
-        pnetif->gateway.u_addr.ip4.addr = NET_ARTON(pMxWifiObj->NetSettings.Gateway_Addr);
-#if NET_USE_IPV6
+        pnetif->gateway.u_addr.ip4.addr = NET_ARTON(wifi_obj_get()->NetSettings.Gateway_Addr);
+
+#if defined(NET_USE_IPV6) && (NET_USE_IPV6 == 1)
         pnetif->ipaddr6.type = (u8_t)IPADDR_TYPE_V6;
-        (void) memcpy(pnetif->ipaddr6.u_addr.ip6.addr, pMxWifiObj->NetSettings.IP6_Addr[0], 16);
+        (void) memcpy(pnetif->ipaddr6.u_addr.ip6.addr, wifi_obj_get()->NetSettings.IP6_Addr[0], 16);
         pnetif->netmask6.type = (u8_t)IPADDR_TYPE_V6;
-        (void) memcpy(pnetif->netmask6.u_addr.ip6.addr, pMxWifiObj->NetSettings.IP6_Mask, 16);
+        (void) memcpy(pnetif->netmask6.u_addr.ip6.addr, wifi_obj_get()->NetSettings.IP6_Mask, 16);
         pnetif->gateway6.type = (u8_t)IPADDR_TYPE_V6;
-        (void) memcpy(pnetif->gateway6.u_addr.ip6.addr, pMxWifiObj->NetSettings.Gateway6_Addr, 16);
+        (void) memcpy(pnetif->gateway6.u_addr.ip6.addr, wifi_obj_get()->NetSettings.Gateway6_Addr, 16);
 #endif /* NET_USE_IPV6 */
+
 #else /* IPv4 only */
-        pnetif->ipaddr.addr = NET_ARTON(pMxWifiObj->NetSettings.IP_Addr);
-        pnetif->netmask.addr = NET_ARTON(pMxWifiObj->NetSettings.IP_Mask);
-        pnetif->gateway.addr = NET_ARTON(pMxWifiObj->NetSettings.Gateway_Addr);
+        pnetif->ipaddr.addr = NET_ARTON(wifi_obj_get()->NetSettings.IP_Addr);
+        pnetif->netmask.addr = NET_ARTON(wifi_obj_get()->NetSettings.IP_Mask);
+        pnetif->gateway.addr = NET_ARTON(wifi_obj_get()->NetSettings.Gateway_Addr);
 #endif /* NET_USE_LWIP_DEFINITIONS */
+
 #if (MX_WIFI_NETWORK_BYPASS_MODE == 0)
-        /* in current driver implementation , its not possible to control the state of the driver
-        between the Ready state (Wifi AP/STA running) and the connected state (IPADDR available).
-        This correspond to a single state in Wifi Driver (no command to control the IP stack).
-        Current Workaround is to consider that network library Ready state as the one from
-        the driver. So wait for IPaddr event from driver to send the Ready event
-            to grant the transition to the Ready state. Connect and Disconnect state are implemented
-        as transparent state, no action on Wifi driver */
+        /**
+          * In current driver implementation, its not possible to control the state of the driver
+          * between the Ready state (WiFi AP/STA running) and the connected state (IPADDR available).
+          * This corresponds to a single state in WiFi Driver (no command to control the IP stack).
+          * Current Workaround is to consider that network library Ready state as the one from
+          * the driver. So wait for IPaddr event from driver to send the Ready event
+          * to grant the transition to the Ready state. Connect and Disconnect state are implemented
+          * as transparent state, no action on WiFi driver.
+          */
         (void)net_state_manage_event(pnetif, NET_EVENT_IPADDR);
 #else
         (void) net_state_manage_event(pnetif, NET_EVENT_IPADDR);
 #endif  /* MX_WIFI_NETWORK_BYPASS_MODE */
-        break;
+      }
+      break;
 
       default:
         break;
@@ -731,7 +826,8 @@ static void mx_wifi_status_changed(uint8_t cate, uint8_t status, void *arg)
     switch (status)
     {
       case MWIFI_EVENT_AP_DOWN:
-        DEBUG_LOG("MWIFI_EVENT_AP_DOWN\n");
+      {
+        DEBUG_LOG("%s\n", "MWIFI_EVENT_AP_DOWN");
         if (NET_STATE_CONNECTED == net_state)
         {
           (void)net_state_manage_event(pnetif, NET_EVENT_LINK_DOWN);
@@ -740,21 +836,18 @@ static void mx_wifi_status_changed(uint8_t cate, uint8_t status, void *arg)
         {
           (void)net_state_manage_event(pnetif, NET_EVENT_INTERFACE_READY);
         }
-        break;
+      }
+      break;
 
       case MWIFI_EVENT_AP_UP:
-        DEBUG_LOG("MWIFI_EVENT_AP_UP\n");
-#ifdef NET_USE_LWIP_DEFINITIONS
+      {
+        DEBUG_LOG("%s\n", "MWIFI_EVENT_AP_UP");
         pnetif->ipaddr = pnetif->static_ipaddr;
         pnetif->gateway = pnetif->static_gateway;
         pnetif->netmask = pnetif->static_netmask;
-#else
-        pnetif->ipaddr.addr = pnetif->static_ipaddr.addr;
-        pnetif->gateway.addr = pnetif->static_gateway.addr;
-        pnetif->netmask.addr = pnetif->static_netmask.addr;
-#endif /* NET_USE_LWIP_DEFINITIONS */
         (void) net_state_manage_event(pnetif, NET_EVENT_INTERFACE_READY);
-        break;
+      }
+      break;
 
       default:
         break;
@@ -766,105 +859,120 @@ static void mx_wifi_status_changed(uint8_t cate, uint8_t status, void *arg)
   }
 }
 
+
 /**
-  * @brief                   mxchip wifi connect to AP
+  * @brief                   Mxchip WiFi connect to AP
   * @param  pnetif           net interface
   * @return int32_t          0 if success, otherwise failed
   */
 static int32_t mx_wifi_if_start_station(net_if_handle_t *pnetif)
 {
   int32_t ret;
-  MX_WIFI_SecurityType_t secure_type;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
-  const net_wifi_credentials_t *credentials =  pnetif->pdrv->extension.wifi->credentials;
+  const net_wifi_credentials_t *const credentials = pnetif->pdrv->extension.wifi->credentials;
 
   if (false == pnetif->dhcp_mode)
   {
-    pMxWifiObj->NetSettings.DHCP_IsEnabled = 0;
-    /* ipv6 */
-#if NET_USE_IPV6
-    (void)memcpy(pMxWifiObj->NetSettings.IP6_Addr[0], &(pnetif->static_ipaddr.u_addr.ip6), 16);
-    (void)memcpy(pMxWifiObj->NetSettings.IP6_Mask, &(pnetif->static_netmask.u_addr.ip6), 16);
-    (void)memcpy(pMxWifiObj->NetSettings.Gateway6_Addr, &(pnetif->static_gateway.u_addr.ip6), 16);
+    wifi_obj_get()->NetSettings.DHCP_IsEnabled = 0;
+
+    /* IPv6 */
+#if defined(NET_USE_IPV6) && (NET_USE_IPV6 == 1)
+    (void)memcpy(wifi_obj_get()->NetSettings.IP6_Addr[0], &pnetif->static_ipaddr.u_addr.ip6, 16);
+    (void)memcpy(wifi_obj_get()->NetSettings.IP6_Mask, &pnetif->static_netmask.u_addr.ip6, 16);
+    (void)memcpy(wifi_obj_get()->NetSettings.Gateway6_Addr, &pnetif->static_gateway.u_addr.ip6, 16);
+
 #else
-    /* ipv4 */
-    (void)memcpy(pMxWifiObj->NetSettings.IP_Addr, &(pnetif->static_ipaddr), 4);
-    (void)memcpy(pMxWifiObj->NetSettings.IP_Mask, &(pnetif->static_netmask), 4);
-    (void)memcpy(pMxWifiObj->NetSettings.Gateway_Addr, &(pnetif->static_gateway), 4);
+    /* IPv4 */
+    (void)memcpy(wifi_obj_get()->NetSettings.IP_Addr, &pnetif->static_ipaddr, 4);
+    (void)memcpy(wifi_obj_get()->NetSettings.IP_Mask, &pnetif->static_netmask, 4);
+    (void)memcpy(wifi_obj_get()->NetSettings.Gateway_Addr, &pnetif->static_gateway, 4);
 #endif /* NET_USE_IPV6 */
   }
   else
   {
-    pMxWifiObj->NetSettings.DHCP_IsEnabled = 1;
+    wifi_obj_get()->NetSettings.DHCP_IsEnabled = 1;
   }
 
-  (void)MX_WIFI_RegisterStatusCallback(pMxWifiObj, mx_wifi_status_changed, pnetif);
+  (void)MX_WIFI_RegisterStatusCallback_if(wifi_obj_get(), mx_wifi_status_changed, pnetif, MC_STATION);
 
   if (((int32_t)NET_WIFI_SM_WPS_OPEN == credentials->security_mode) || \
       ((int32_t)NET_WIFI_SM_WPS_SECURE == credentials->security_mode))
   {
-    ret = MX_WIFI_WPS_Connect(pMxWifiObj);
+    ret = MX_WIFI_WPS_Connect(wifi_obj_get());
   }
   else
   {
-    /* NOTE: secure type is auto for mxchip wifi */
-    secure_type = MX_WIFI_SEC_AUTO;
-    ret = MX_WIFI_Connect(pMxWifiObj, credentials->ssid, credentials->psk, secure_type);
+    /* NOTE: secure type is auto for Mxchip WiFi */
+    const MX_WIFI_SecurityType_t secure_type = MX_WIFI_SEC_AUTO;
+    ret = MX_WIFI_Connect(wifi_obj_get(), credentials->ssid, credentials->psk, secure_type);
   }
+
   return ret;
 }
 
-/* ip address helper */
-#define BYTE(A,n) ((A)>>(8u*(n))) & 0xffu
-#define BYTE3(A)  BYTE((A),3u)
-#define BYTE2(A)  BYTE((A),2u)
-#define BYTE1(A)  BYTE((A),1u)
-#define BYTE0(A)  BYTE((A),0u)
-#define ADDR(a) BYTE0(a),BYTE1(a),BYTE2(a),BYTE3(a)
+
+/* IP address helpers. */
+#define BYTE(A, N) ((A) >> (8u*(N))) & 0xFFu
+#define BYTE3(A)   BYTE((A), 3u)
+#define BYTE2(A)   BYTE((A), 2u)
+#define BYTE1(A)   BYTE((A), 1u)
+#define BYTE0(A)   BYTE((A), 0u)
+#define ADDR(A)    BYTE0((A)), BYTE1((A)), BYTE2((A)), BYTE3((A))
+
 
 /**
-  * @brief                   mxchip wifi start AP mode
+  * @brief                   Mxchip WiFi start AP mode
   * @param  pnetif           net interface
   * @return int32_t          0 if success, otherwise failed
   */
 static int32_t mx_wifi_if_start_softap(net_if_handle_t *pnetif)
 {
-#if NET_USE_IPV6
-  /* this is independent of what is supported by IP stack IPv6 or Ipv4 */
+#if defined(NET_USE_IPV6) && (NET_USE_IPV6 == 1)
+  (void)pnetif;
+  /* This is independent of what is supported by IP stack IPv6 or Ipv4 */
   return NET_ERROR_UNSUPPORTED;
+
 #else
   int32_t ret = NET_ERROR_GENERIC;
 
-  MX_WIFI_APSettings_t ap_cfg;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
-  const net_wifi_credentials_t *credentials =  pnetif->pdrv->extension.wifi->credentials;
-
-  (void) memset(&ap_cfg, 0, sizeof(ap_cfg));
+  MX_WIFI_APSettings_t ap_cfg = {0};
+  const net_wifi_credentials_t *const credentials = pnetif->pdrv->extension.wifi->credentials;
 
   if (credentials != NULL)
   {
-    (void) strcpy(ap_cfg.SSID, credentials->ssid);
-    (void) strcpy(ap_cfg.pswd, credentials->psk);
+    (void)strncpy(ap_cfg.SSID, credentials->ssid, sizeof(ap_cfg.SSID));
+    (void)strncpy(ap_cfg.pswd, credentials->psk, sizeof(ap_cfg.pswd));
   }
 
   ap_cfg.channel = pnetif->pdrv->extension.wifi->access_channel;
 
 #ifdef NET_USE_LWIP_DEFINITIONS
-  (void) sprintf(ap_cfg.ip.localip, "%ld.%ld.%ld.%ld", ADDR(pnetif->static_ipaddr.u_addr.ip4.addr));
-  (void) sprintf(ap_cfg.ip.gateway, "%ld.%ld.%ld.%ld", ADDR(pnetif->static_gateway.u_addr.ip4.addr));
-  (void) sprintf(ap_cfg.ip.netmask, "%ld.%ld.%ld.%ld", ADDR(pnetif->static_netmask.u_addr.ip4.addr));
-  (void) sprintf(ap_cfg.ip.dnserver, "%ld.%ld.%ld.%ld", ADDR(pnetif->static_dnserver.u_addr.ip4.addr));
+  (void)snprintf(ap_cfg.ip.localip, sizeof(ap_cfg.ip.localip), "%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"",
+                 ADDR(pnetif->static_ipaddr.u_addr.ip4.addr));
+  (void)snprintf(ap_cfg.ip.gateway, sizeof(ap_cfg.ip.gateway), "%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"",
+                 ADDR(pnetif->static_gateway.u_addr.ip4.addr));
+  (void)snprintf(ap_cfg.ip.netmask, sizeof(ap_cfg.ip.netmask), "%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"",
+                 ADDR(pnetif->static_netmask.u_addr.ip4.addr));
+  (void)snprintf(ap_cfg.ip.dnserver, sizeof(ap_cfg.ip.dnserver), "%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"",
+                 ADDR(pnetif->static_dnserver.u_addr.ip4.addr));
+
 #else
-  (void) sprintf(ap_cfg.ip.localip, "%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"", ADDR(pnetif->static_ipaddr.addr));
-  (void) sprintf(ap_cfg.ip.gateway, "%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"", ADDR(pnetif->static_gateway.addr));
-  (void) sprintf(ap_cfg.ip.netmask, "%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"", ADDR(pnetif->static_netmask.addr));
-  (void) sprintf(ap_cfg.ip.dnserver, "%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"", ADDR(pnetif->static_dnserver.addr));
+  (void)snprintf(ap_cfg.ip.localip, sizeof(ap_cfg.ip.localip), "%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"",
+                 ADDR(pnetif->static_ipaddr.addr));
+  (void)snprintf(ap_cfg.ip.gateway, sizeof(ap_cfg.ip.gateway), "%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"",
+                 ADDR(pnetif->static_gateway.addr));
+  (void)snprintf(ap_cfg.ip.netmask, sizeof(ap_cfg.ip.netmask), "%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"",
+                 ADDR(pnetif->static_netmask.addr));
+  (void)snprintf(ap_cfg.ip.dnserver, sizeof(ap_cfg.ip.dnserver), "%"PRIu32".%"PRIu32".%"PRIu32".%"PRIu32"",
+                 ADDR(pnetif->static_dnserver.addr));
 #endif /* NET_USE_LWIP_DEFINITIONS */
 
-  (void)MX_WIFI_RegisterStatusCallback(pMxWifiObj, mx_wifi_status_changed, pnetif);
+  (void)MX_WIFI_RegisterStatusCallback_if(wifi_obj_get(), mx_wifi_status_changed, pnetif, MC_SOFTAP);
 
-  if (MX_WIFI_STATUS_OK == MX_WIFI_StartAP(pMxWifiObj, &ap_cfg))
+  if (MX_WIFI_STATUS_OK == MX_WIFI_StartAP(wifi_obj_get(), &ap_cfg))
   {
+    /* Soft AP MAC must get after Soft AP up, call this one to update SysInfo.apMAC. */
+    (void)MX_WIFI_GetsoftapMACAddress(wifi_obj_get(), pnetif->macaddr.mac);
+
     ret = NET_OK;
   }
 
@@ -872,8 +980,9 @@ static int32_t mx_wifi_if_start_softap(net_if_handle_t *pnetif)
 #endif /* NET_USE_IPV6 */
 }
 
+
 /**
-  * @brief                   mxchip wifi disconnect from AP
+  * @brief                   Mxchip WiFi disconnect from AP
   * @param  pnetif           net interface
   * @return int32_t          0 if success, otherwise failed
   */
@@ -881,27 +990,28 @@ static int32_t mx_wifi_if_disconnect(net_if_handle_t *pnetif)
 {
   int32_t ret;
 
-#if (MX_WIFI_NETWORK_BYPASS_MODE == 1)
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
   ret = net_ip_disconnect(pnetif);
   if (ret == NET_OK)
   {
-    ret =  net_ip_remove_if(pnetif, NULL);
+    ret = net_ip_remove_if(pnetif, NULL);
     if (ret == NET_OK)
     {
-      (void)MX_WIFI_Network_bypass_mode_set(pMxWifiObj, 0, NULL, NULL);
       (void)net_state_manage_event(pnetif, NET_EVENT_INTERFACE_READY);
     }
   }
+
 #else
   ret = NET_OK;
   (void) net_state_manage_event(pnetif, NET_EVENT_INTERFACE_READY);
-#endif /* MX_WIFI_NETWORK_BYPASS_MODE */
+#endif /* (MX_WIFI_NETWORK_BYPASS_MODE == 1) */
+
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi start IP services
+  * @brief                   Mxchip WiFi start IP services
   * @param  pnetif           net interface
   * @return int32_t          0 if success, otherwise failed
   */
@@ -909,8 +1019,7 @@ static int32_t mx_wifi_if_connect(net_if_handle_t *pnetif)
 {
   int32_t ret;
 
-#if (MX_WIFI_NETWORK_BYPASS_MODE == 1)
-
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
   /* netif add for bypass mode */
 
   ret = net_ip_add_if(pnetif, low_level_init, NET_ETHERNET_FLAG_DEFAULT_IF);
@@ -918,7 +1027,7 @@ static int32_t mx_wifi_if_connect(net_if_handle_t *pnetif)
   {
     netif_set_link_up(pnetif->netif);
 
-    ret =  net_ip_connect(pnetif);
+    ret = net_ip_connect(pnetif);
     if (ret != NET_OK)
     {
       NET_DBG_ERROR("*** net_ip_connect failed!\n");
@@ -927,79 +1036,101 @@ static int32_t mx_wifi_if_connect(net_if_handle_t *pnetif)
   }
   else
   {
-    NET_DBG_ERROR("can't add interface (netif)\n");
+    NET_DBG_ERROR("Can't add interface (netif)\n");
   }
+
 #else
-  mwifi_if_t wifi_if;
+  mwifi_if_t wifi_mode;
+  bool ip_got_flag = false;
+
   ret = NET_OK;
+
   if (pnetif->pdrv->extension.wifi->mode == NET_WIFI_MODE_AP)
   {
-    wifi_if = MC_SOFTAP;
+    wifi_mode = MC_SOFTAP;
   }
   else
   {
-    wifi_if = MC_STATION;
+    wifi_mode = MC_STATION;
   }
-#if NET_USE_IPV6
-  uint8_t ip[16];
-  if (MX_WIFI_STATUS_OK == MX_WIFI_GetIP6Address(wifi_obj_get(), &(ip[0]), 0, wifi_if))
-  {
-    pnetif->ipaddr6.type = (u8_t)IPADDR_TYPE_V6;
-    (void) memcpy(pnetif->ipaddr6.u_addr.ip6.addr, wifi_obj_get()->NetSettings.IP6_Addr[0], 16);
-    pnetif->netmask6.type = (u8_t)IPADDR_TYPE_V6;
-    (void) memcpy(pnetif->netmask6.u_addr.ip6.addr, wifi_obj_get()->NetSettings.IP6_Mask, 16);
-    pnetif->gateway6.type = (u8_t)IPADDR_TYPE_V6;
-    (void) memcpy(pnetif->gateway6.u_addr.ip6.addr, wifi_obj_get()->NetSettings.Gateway6_Addr, 16);
 
-    (void) net_state_manage_event(pnetif, NET_EVENT_IPADDR);
-  }
-  else
+#if (defined(NET_USE_IPV6) && (NET_USE_IPV6 == 1))
   {
-    NET_DBG_ERROR("can't get ipv6 address!\n");
-    ret = NET_ERROR_NO_ADDRESS;
-  }
-#else
-  uint8_t ip[4];
-  int32_t retry = 3;
-  while (retry > 0)
-  {
-    retry--;
-    if (MX_WIFI_STATUS_OK == MX_WIFI_GetIPAddress(wifi_obj_get(), &(ip[0]), wifi_if))
+    uint8_t ip[16] = {0};
+    if (MX_WIFI_STATUS_OK == MX_WIFI_GetIP6Address(wifi_obj_get(), &ip[0], 0, wifi_mode))
     {
-      pnetif->ipaddr.addr = NET_ARTON(wifi_obj_get()->NetSettings.IP_Addr);
-      pnetif->netmask.addr = NET_ARTON(wifi_obj_get()->NetSettings.IP_Mask);
-      pnetif->gateway.addr = NET_ARTON(wifi_obj_get()->NetSettings.Gateway_Addr);
-      (void) net_state_manage_event(pnetif, NET_EVENT_IPADDR);
-      ret = NET_OK;
-      break;
+      pnetif->ipaddr6.type = (u8_t)IPADDR_TYPE_V6;
+      (void) memcpy(pnetif->ipaddr6.u_addr.ip6.addr, wifi_obj_get()->NetSettings.IP6_Addr[0], 16);
+      pnetif->netmask6.type = (u8_t)IPADDR_TYPE_V6;
+      (void) memcpy(pnetif->netmask6.u_addr.ip6.addr, wifi_obj_get()->NetSettings.IP6_Mask, 16);
+      pnetif->gateway6.type = (u8_t)IPADDR_TYPE_V6;
+      (void) memcpy(pnetif->gateway6.u_addr.ip6.addr, wifi_obj_get()->NetSettings.Gateway6_Addr, 16);
+
+      ip_got_flag = true;
     }
     else
     {
+      NET_DBG_ERROR("Can't get IPv6 address!\n");
       ret = NET_ERROR_NO_ADDRESS;
-#ifdef NET_USE_RTOS
-      osDelay(1000);
+    }
+  }
+
 #else
-      HAL_Delay(1000);
-#endif /* NET_USE_RTOS */
+  {
+    uint8_t ip[4] = {0};
+    int32_t retry = 3;
+    while (retry > 0)
+    {
+      retry--;
+      if (MX_WIFI_STATUS_OK == MX_WIFI_GetIPAddress(wifi_obj_get(), &ip[0], wifi_mode))
+      {
+
+#ifdef NET_USE_LWIP_DEFINITIONS
+        pnetif->ipaddr.type = (u8_t)IPADDR_TYPE_V4;
+        pnetif->ipaddr.u_addr.ip4.addr = NET_ARTON(wifi_obj_get()->NetSettings.IP_Addr);
+        pnetif->netmask.u_addr.ip4.addr = NET_ARTON(wifi_obj_get()->NetSettings.IP_Mask);
+        pnetif->gateway.u_addr.ip4.addr = NET_ARTON(wifi_obj_get()->NetSettings.Gateway_Addr);
+#else
+        pnetif->ipaddr.addr = NET_ARTON(wifi_obj_get()->NetSettings.IP_Addr);
+        pnetif->netmask.addr = NET_ARTON(wifi_obj_get()->NetSettings.IP_Mask);
+        pnetif->gateway.addr = NET_ARTON(wifi_obj_get()->NetSettings.Gateway_Addr);
+#endif /* NET_USE_LWIP_DEFINITIONS */
+
+        ip_got_flag = true;
+        ret = NET_OK;
+        break;
+      }
+      else
+      {
+        ret = NET_ERROR_NO_ADDRESS;
+        DELAY_MS(1000);
+      }
     }
   }
 #endif  /* NET_USE_IPV6 */
-#endif /* MX_WIFI_NETWORK_BYPASS_MODE */
+
+
+  if (ip_got_flag)
+  {
+    (void)net_state_manage_event(pnetif, NET_EVENT_IPADDR);
+  }
+
+#endif /* (MX_WIFI_NETWORK_BYPASS_MODE == 1) */
 
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi scan function
+  * @brief                   Mxchip WiFi scan function
   * @param  pnetif           net interface
   * @param  mode             scan mode
-  * @param  ssid             ssid to scan in active mode
+  * @param  ssid             SSID to scan in active mode
   * @return int32_t          0 if success, otherwise failed
   */
 static int32_t mx_wifi_scan(net_if_handle_t *pnetif, net_wifi_scan_mode_t mode, char *ssid)
 {
   int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
   uint32_t len = 0u;
 
   (void) pnetif;
@@ -1008,27 +1139,24 @@ static int32_t mx_wifi_scan(net_if_handle_t *pnetif, net_wifi_scan_mode_t mode, 
   {
     len = strlen(ssid);
   }
-  ret = MX_WIFI_Scan(pMxWifiObj, (uint8_t)mode, ssid, (int32_t) len);
+  ret = MX_WIFI_Scan(wifi_obj_get(), (uint8_t)mode, ssid, (int32_t) len);
   return ret;
 }
 
+
 /**
-  * @brief                       mxchip wifi get scan result
+  * @brief                       Mxchip WiFi get scan result
   * @param  pnetif               net interface
-  * @param  scan_bss_array       bss array buffer
-  * @param  scan_bss_array_size  bss array size
-  * @return int32_t              number of the bss got
+  * @param  scan_bss_array       BSS array buffer
+  * @param  scan_bss_count       BSS count
+  * @return int32_t              The number of BSS obtained
   */
 static int32_t mx_wifi_get_scan_result(net_if_handle_t *pnetif, net_wifi_scan_results_t *scan_bss_array,
-                                       uint8_t scan_bss_array_size)
+                                       uint8_t scan_bss_count)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
-  net_wifi_scan_results_t *scan_bss = scan_bss_array;
-
-  (void)pnetif;
-  /* mxchip wifi security mode */
-  static  uint32_t mxsec[] =
+  int32_t ret = NET_ERROR_PARAMETER;
+  /* Mxchip WiFi security mode */
+  static const uint32_t mxsec[] =
   {
     NET_WIFI_SM_OPEN,
     NET_WIFI_SM_WEP_PSK,        /**< Wired Equivalent Privacy. WEP security. */
@@ -1039,54 +1167,53 @@ static int32_t mx_wifi_get_scan_result(net_if_handle_t *pnetif, net_wifi_scan_re
     NET_WIFI_SM_WPA2_MIXED_PSK  /**< WPA2 /w AES or TKIP */
   };
 
-  if ((NULL == scan_bss_array) || (0u == scan_bss_array_size))
-  {
-    ret = NET_ERROR_PARAMETER;
-  }
-  else
-  {
-    /* create buff for mc_wifi results */
-    void *ptmp = NET_MALLOC(sizeof(mwifi_ap_info_t) * scan_bss_array_size);
+  (void)pnetif;
 
-    if (NULL == ptmp)
+  if ((NULL != scan_bss_array) && (0u != scan_bss_count))
+  {
+    /* Create buffer for results. */
+    mwifi_ap_info_t *ap_infos_tmp = (mwifi_ap_info_t *)NET_CALLOC(scan_bss_count, sizeof(*ap_infos_tmp));
+
+    if (NULL == ap_infos_tmp)
     {
       ret = NET_ERROR_NO_MEMORY;
     }
     else
     {
-      mwifi_ap_info_t *ap_info;
-      mwifi_ap_info_t *const ap_list_head = (mwifi_ap_info_t *)ptmp;
-      ap_info = ap_list_head;
-      (void) memset(ap_list_head, 0, sizeof(mwifi_ap_info_t) * scan_bss_array_size);
-
-      /* get real mc_wifi scan results data */
-      const uint8_t number = (uint8_t) MX_WIFI_Get_scan_result(pMxWifiObj, (uint8_t *) ap_info, scan_bss_array_size);
+      /* Get real mx_wifi scan results data. */
+      const int8_t number = MX_WIFI_Get_scan_result(wifi_obj_get(), (uint8_t *) ap_infos_tmp, scan_bss_count);
 
       /* transfer to ST bss info */
-      for (uint32_t i = 0U; i < number; i++)
       {
-        (void) memset(scan_bss, 0, sizeof(net_wifi_scan_bss_t));
-        (void) memcpy(scan_bss->ssid.value, ap_info->ssid, NET_WIFI_MAX_SSID_SIZE);
-        scan_bss->ssid.length = (uint8_t) strlen(ap_info->ssid);
-        scan_bss->security = mxsec[ap_info->security];
-        (void) memcpy(&scan_bss->bssid, ap_info->bssid, NET_WIFI_MAC_ADDRESS_SIZE);
-        scan_bss->rssi = (int8_t)ap_info->rssi;
-        scan_bss->channel = (uint8_t) ap_info->channel;
-        (void) memcpy(scan_bss->country, ".CN", 4);  /* NOT SUPPORT for MX_WIFI */
+        mwifi_ap_info_t *ap_info = ap_infos_tmp;
+        net_wifi_scan_bss_t *scan_bss = scan_bss_array;
 
-        scan_bss++;
-        ap_info++;
+        for (int8_t i = 0U; i < number; i++)
+        {
+          (void) memset(scan_bss, 0, sizeof(*scan_bss));
+          (void) memcpy(scan_bss->ssid.value, ap_info->ssid, NET_WIFI_MAX_SSID_SIZE);
+          scan_bss->ssid.length = (uint8_t) strlen(ap_info->ssid);
+          scan_bss->security = mxsec[ap_info->security];
+          (void) memcpy(&scan_bss->bssid, ap_info->bssid, NET_WIFI_MAC_ADDRESS_SIZE);
+          scan_bss->rssi = (int8_t)ap_info->rssi;
+          scan_bss->channel = (uint8_t) ap_info->channel;
+          (void) memcpy(scan_bss->country, ".CN", 4);  /* NOT SUPPORT for MX_WIFI */
+
+          scan_bss++;
+          ap_info++;
+        }
       }
       ret = (int32_t) number;
-      NET_FREE((void *) ap_list_head);
+      NET_FREE(ap_infos_tmp);
     }
   }
   return ret;
 }
 
-#if (MX_WIFI_NETWORK_BYPASS_MODE == 0)
+
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 0))
 /**
-  * @brief                   mxchip wifi socket create
+  * @brief                   Mxchip WiFi socket create
   * @param  domain           socket domain
   * @param  type             socket type
   * @param  protocol         socket protocol
@@ -1094,16 +1221,14 @@ static int32_t mx_wifi_get_scan_result(net_if_handle_t *pnetif, net_wifi_scan_re
   */
 static int32_t mx_wifi_socket(int32_t domain, int32_t type, int32_t protocol)
 {
-  int32_t ret;
-  MX_WIFIObject_t  *pMxWifiObj = wifi_obj_get();
-
-  ret = MX_WIFI_Socket_create(pMxWifiObj, domain, type, protocol);
+  const int32_t ret = MX_WIFI_Socket_create(wifi_obj_get(), domain, type, protocol);
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi set socket option
-  * @param  sock             socket fd
+  * @brief                   Mxchip WiFi set socket option
+  * @param  sock             socket value
   * @param  level            socket level
   * @param  optname          socket option name
   * @param  optvalue         socket option value to set
@@ -1112,16 +1237,25 @@ static int32_t mx_wifi_socket(int32_t domain, int32_t type, int32_t protocol)
   */
 static int32_t mx_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, const void *optvalue, uint32_t optlen)
 {
-  int32_t ret;
-  MX_WIFIObject_t  *pMxWifiObj = wifi_obj_get();
+  int32_t ret = MX_WIFI_STATUS_OK;
 
-  ret = MX_WIFI_Socket_setsockopt(pMxWifiObj, sock, level, optname, optvalue, (int32_t)optlen);
+  /* Handle setsockopt forwarded by ST NetworkLibrary API. */
+  /**
+    * Note: bind device option is not used for the mxchip WiFi module,
+    *       the module select the net interface by the socket address internally.
+    */
+  if (NET_SO_BINDTODEVICE != optname)
+  {
+    ret = MX_WIFI_Socket_setsockopt(wifi_obj_get(), sock, level, optname, optvalue, (int32_t)optlen);
+  }
+
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi get socket option
-  * @param  sock             socket fd
+  * @brief                   Mxchip wiFi get socket option
+  * @param  sock             socket value
   * @param  level            socket level
   * @param  optname          socket option name
   * @param  optvalue         socket option value
@@ -1130,16 +1264,15 @@ static int32_t mx_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, 
   */
 static int32_t mx_wifi_getsockopt(int32_t sock, int32_t level, int32_t optname, void *optvalue, uint32_t *optlen)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
+  const int32_t ret = MX_WIFI_Socket_getsockopt(wifi_obj_get(), sock, level, optname, optvalue, optlen);
 
-  ret = MX_WIFI_Socket_getsockopt(pMxWifiObj, sock, level, optname, optvalue, optlen);
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi bind socket
-  * @param  sock             socket fd
+  * @brief                   Mxchip WiFi bind socket
+  * @param  sock             socket value
   * @param  addr             address to bind
   * @param  addrlen          address length
   * @return int32_t          0 if success, if failed, return error code(<0)
@@ -1147,134 +1280,112 @@ static int32_t mx_wifi_getsockopt(int32_t sock, int32_t level, int32_t optname, 
 static int32_t mx_wifi_bind(int32_t sock, const net_sockaddr_t *addr, uint32_t addrlen)
 {
   int32_t ret = MX_WIFI_STATUS_ERROR;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
 
-  if ((NULL != addr) && (addrlen == sizeof(struct sockaddr)))
+  if (NULL != addr)
   {
-#if NET_USE_IPV6
-    ret = MX_WIFI_Socket_bind(pMxWifiObj, sock, (const struct sockaddr *)addr, (int32_t)addrlen);
-#else
-    struct sockaddr mx_addr;
-    (void)memcpy(&mx_addr, addr, sizeof(mx_addr));
-    ret = MX_WIFI_Socket_bind(pMxWifiObj, sock, &mx_addr, (int32_t)addrlen);
-#endif /* NET_USE_IPV6 */
+    if ((addrlen == sizeof(struct mx_sockaddr_in6)) || (addrlen == sizeof(struct mx_sockaddr_in /*mx_sockaddr*/)))
+    {
+      ret = MX_WIFI_Socket_bind(wifi_obj_get(), sock, (const struct mx_sockaddr *)addr, (int32_t)addrlen);
+    }
   }
 
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi socket listen
-  * @param  sock             socket fd
+  * @brief                   Mxchip WiFi socket listen
+  * @param  sock             socket value
   * @param  backlog          max socket to accept
   * @return int32_t          0 if success, if failed return error code(<0)
   */
 static int32_t mx_wifi_listen(int32_t sock, int32_t backlog)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
+  const int32_t ret = MX_WIFI_Socket_listen(wifi_obj_get(), sock, backlog);
 
-  ret = MX_WIFI_Socket_listen(pMxWifiObj, sock, backlog);
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi socket accept
-  * @param  sock             server socket fd
+  * @brief                   Mxchip WiFi socket accept
+  * @param  sock             server socket value
   * @param  addr             address buffer to accept new socket
   * @param  addrlen          address buffer length
   * @return int32_t          accepted socket fd, if failed return error code(<0)
   */
 static int32_t mx_wifi_accept(int32_t sock, net_sockaddr_t *addr, uint32_t *addrlen)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
-
-#if NET_USE_IPV6
-  ret = MX_WIFI_Socket_accept(pMxWifiObj, sock, (struct sockaddr *)addr, addrlen);
-#else
-  struct sockaddr mx_addr;
-  (void)memcpy(&mx_addr, addr, sizeof(mx_addr));
-  ret = MX_WIFI_Socket_accept(pMxWifiObj, sock, &mx_addr, addrlen);
-#endif /* NET_USE_IPV6 */
+  const int32_t ret = MX_WIFI_Socket_accept(wifi_obj_get(), sock, (struct mx_sockaddr *)addr, addrlen);
 
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi socket connect
-  * @param  sock             socket fd
+  * @brief                   mxchip WiFi socket connect
+  * @param  sock             socket value
   * @param  addr             address to connect
   * @param  addrlen          address length
-  * @return int32_t          0 if success, if failed return error code(<0)
+  * @return int32_t          0 if success, if failed return error code (<0)
   */
 static int32_t mx_wifi_connect(int32_t sock, const net_sockaddr_t *addr, uint32_t addrlen)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
-
-#if NET_USE_IPV6
-  ret = MX_WIFI_Socket_connect(pMxWifiObj, sock, (const struct sockaddr *)addr, (int32_t)addrlen);
-#else
-  struct sockaddr mx_addr;
-  (void)memcpy(&mx_addr, addr, sizeof(mx_addr));
-  ret = MX_WIFI_Socket_connect(pMxWifiObj, sock, &mx_addr, (int32_t)addrlen);
-#endif /* NET_USE_IPV6 */
+  const int32_t ret = MX_WIFI_Socket_connect(wifi_obj_get(), sock, (const struct mx_sockaddr *)addr, (int32_t)addrlen);
 
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi socket shutdown
-  * @param  sock             socket fd
-  * @param  mode             shutdown mode(0,1,2)
-  * @return int32_t          0 if success, if failed return error code(<0)
+  * @brief                   mxchip WiFi socket shutdown
+  * @param  sock             socket value
+  * @param  mode             shutdown mode (0: stop receiving, 1: stop sending, 2: stop send and receive)
+  * @return int32_t          0 if success, if failed return error code (<0)
   */
 static int32_t mx_wifi_shutdown(int32_t sock, int32_t mode)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
+  const int32_t ret = MX_WIFI_Socket_shutdown(wifi_obj_get(), sock, mode);
 
-  ret = MX_WIFI_Socket_shutdown(pMxWifiObj, sock, mode);
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi socket close
-  * @param  sock             socket fd
+  * @brief                   mxchip WiFi socket close
+  * @param  sock             socket value
   * @param  isaclone         not supported, just compliant for ST connect lib
-  * @return int32_t          0 if success, if failed return error code(<0)
+  * @return int32_t          0 if success, if failed return error code (<0)
   */
 static int32_t mx_wifi_close(int32_t sock, bool isaclone)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
+  const int32_t ret = MX_WIFI_Socket_close(wifi_obj_get(), sock);
 
   (void)isaclone;
-  ret = MX_WIFI_Socket_close(pMxWifiObj, sock);
+
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi socket send
-  * @param  sock             socket fd
+  * @brief                   mxchip WiFi socket send
+  * @param  sock             socket value
   * @param  buf              data buffer to send
   * @param  len              data length
   * @param  flags            socket flag
   * @return int32_t          bytes sent, if failed return error code(<0)
   */
-static int32_t mx_wifi_send(int32_t sock, uint8_t *buf, int32_t len, int32_t flags)
+static int32_t mx_wifi_send(int32_t sock, const uint8_t *buf, int32_t len, int32_t flags)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
+  const int32_t ret = MX_WIFI_Socket_send(wifi_obj_get(), sock, buf, len, flags);
 
-  ret = MX_WIFI_Socket_send(pMxWifiObj, sock, buf, len, flags);
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi socket recv
-  * @param  sock             socket fd
+  * @brief                   mxchip WiFi socket recv
+  * @param  sock             socket value
   * @param  buf              buffer to recv data
   * @param  len              buffer size
   * @param  flags            socket flag
@@ -1282,10 +1393,8 @@ static int32_t mx_wifi_send(int32_t sock, uint8_t *buf, int32_t len, int32_t fla
   */
 static int32_t mx_wifi_recv(int32_t sock, uint8_t *buf, int32_t len, int32_t flags)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
+  int32_t ret = MX_WIFI_Socket_recv(wifi_obj_get(), sock, buf, len, flags);
 
-  ret = MX_WIFI_Socket_recv(pMxWifiObj, sock, buf, len, flags);
   if (MX_WIFI_STATUS_OK != ret)
   {
     if (MX_WIFI_STATUS_TIMEOUT == ret)
@@ -1293,69 +1402,67 @@ static int32_t mx_wifi_recv(int32_t sock, uint8_t *buf, int32_t len, int32_t fla
       ret = NET_TIMEOUT;
     }
   }
+
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi socket sendto
-  * @param  sock             socket fd
+  * @brief                   mxchip WiFi socket sendto
+  * @param  sock             socket value
   * @param  buf              data buffer to send
   * @param  len              data length
   * @param  flags            socket flag
   * @param  to               address to send to
-  * @param  tolen            size of address to send to
+  * @param  to_len           size of address to send to
   * @return int32_t          bytes sent. If failed return error code(<0)
   */
-static int32_t mx_wifi_sendto(int32_t sock, uint8_t *buf, int32_t len, int32_t flags, net_sockaddr_t *to,
-                              uint32_t tolen)
+static int32_t mx_wifi_sendto(int32_t sock, const uint8_t *buf, int32_t len, int32_t flags,
+                              net_sockaddr_t *to, uint32_t to_len)
 {
   int32_t ret = MX_WIFI_STATUS_ERROR;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
 
-  if ((NULL != to) && (tolen == sizeof(struct sockaddr)))
+  if (NULL != to)
   {
-#if NET_USE_IPV6
-    ret = MX_WIFI_Socket_sendto(pMxWifiObj, sock, buf, len, flags, (struct sockaddr *)to, (int32_t)tolen);
-#else
-    struct sockaddr mx_addr;
-    (void)memcpy(&mx_addr, to, sizeof(mx_addr));
-    ret = MX_WIFI_Socket_sendto(pMxWifiObj, sock, buf, len, flags, &mx_addr, (int32_t)tolen);
-#endif /* NET_USE_IPV6 */
+    if ((to_len == sizeof(struct mx_sockaddr_in6)) || (to_len == sizeof(struct mx_sockaddr_in /*mx_sockaddr*/)))
+    {
+      ret = MX_WIFI_Socket_sendto(wifi_obj_get(), sock, buf, len, flags, (struct mx_sockaddr *)to, (int32_t)to_len);
+    }
   }
+
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi socket recvfrom
-  * @param  sock             socket fd
-  * @param  buf              buffer to recv data
+  * @brief                   Mxchip WiFi socket recvfrom
+  * @param  sock             socket value
+  * @param  buf              buffer to receive data
   * @param  len              buffer size
   * @param  flags            socket flag
   * @param  from             address of the data source
-  * @param  fromlen          size of address
+  * @param  from_len         size of address
   * @return int32_t          bytes received, if failed, return error code(<0)
   */
-static int32_t mx_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t len, int32_t flags, net_sockaddr_t *from,
-                                uint32_t *fromlen)
+static int32_t mx_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t len, int32_t flags,
+                                net_sockaddr_t *from, uint32_t *from_len)
 {
   int32_t ret = MX_WIFI_STATUS_ERROR;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
 
-  if ((NULL != from) && (*fromlen == sizeof(struct sockaddr)))
+  if ((NULL != from) && (NULL != from_len))
   {
-#if NET_USE_IPV6
-    ret = MX_WIFI_Socket_recvfrom(pMxWifiObj, sock, buf, len, flags, (struct sockaddr *)from, fromlen);
-#else
-    struct sockaddr mx_addr;
-    (void)memcpy(&mx_addr, from, sizeof(mx_addr));
-    ret = MX_WIFI_Socket_recvfrom(pMxWifiObj, sock, buf, len, flags, &mx_addr, fromlen);
-#endif /* NET_USE_IPV6 */
+    if ((*from_len == sizeof(struct mx_sockaddr_in6)) || (*from_len == sizeof(struct mx_sockaddr_in /*mx_sockaddr*/)))
+    {
+      ret = MX_WIFI_Socket_recvfrom(wifi_obj_get(), sock, buf, len, flags, (struct mx_sockaddr *)from, from_len);
+    }
   }
+
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi gethostbyname
+  * @brief                   mxchip WiFi gethostbyname
   * @param  pnetif           net interface
   * @param  addr             address of the host
   * @param  name             host name
@@ -1364,108 +1471,113 @@ static int32_t mx_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t len, int32_t
 static int32_t mx_wifi_gethostbyname(net_if_handle_t *pnetif, net_sockaddr_t *addr, char_t *name)
 {
   int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
+  (void)pnetif;
 
-#if NET_USE_IPV6
-  struct addrinfo hints;
-  struct mc_addrinfo res;
-  if (AF_INET6 == addr->sa_family)
+#if (defined(NET_USE_IPV6) && (NET_USE_IPV6 == 1))
+  if (NET_AF_INET6 == addr->sa_family)
   {
-    (void)memset(&hints, 0, sizeof(struct addrinfo));
-    (void)memset(&res, 0, sizeof(struct mc_addrinfo));
+    struct mx_addrinfo hints = {0};
+    struct mx_addrinfo res = {0};
+
     hints.ai_flags = 0;
-    hints.ai_family = AF_INET6;
-    hints.ai_socktype = IPPROTO_TCP;
-    hints.ai_protocol = SOCK_STREAM;
-    ret = MX_WIFI_Socket_getaddrinfo(pMxWifiObj, name, NULL, &hints, &res);
+    hints.ai_family = MX_AF_INET6;
+    hints.ai_socktype = MX_IPPROTO_TCP;
+    hints.ai_protocol = MX_SOCK_STREAM;
+
+    /* Keep port possibly set as it is. */
+    res.ai_addr.s2_data1[0] = addr->sa_data[0];
+    res.ai_addr.s2_data1[1] = addr->sa_data[1];
+
+    ret = MX_WIFI_Socket_getaddrinfo(wifi_obj_get(), name, NULL, &hints, &res);
     if (MX_WIFI_STATUS_OK == ret)
     {
-      (void)memcpy(addr, &(res.ai_addr), res.ai_addrlen);
+      (void)memcpy(addr, &res.ai_addr, res.ai_addrlen);
     }
   }
   else
 #endif /* NET_USE_IPV6 */
   {
     /* IPv4 */
-    struct sockaddr mx_addr;
-    (void)pnetif;
-    ret = MX_WIFI_Socket_gethostbyname(pMxWifiObj, &mx_addr, (char_t *)name);
-    if (MX_WIFI_STATUS_OK == ret)
-    {
-      (void)memcpy(addr, &mx_addr, sizeof(mx_addr));
-    }
+    ret = MX_WIFI_Socket_gethostbyname(wifi_obj_get(), (struct mx_sockaddr *)addr, (mx_char_t *)name);
   }
+
   return ret;
 }
 
 
-
-
-
 /**
-  * @brief                   mxchip wifi ping function
+  * @brief                   mxchip WiFi ping function
   * @param  pnetif           net interface
   * @param  addr             address to ping
   * @param  count            request count
-  * @param  delay            request delay in ms
+  * @param  delay            request delay in milliseconds
   * @param  response         response array, size is count
   * @return int32_t          0 if success, otherwise failed
   */
 static int32_t mx_wifi_ping(net_if_handle_t *pnetif, net_sockaddr_t *addr, int32_t count, int32_t delay,
                             int32_t response[])
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
-  net_ip_addr_t ip_addr;
+  int32_t ret = -1;
+  net_ip_addr_t ip_addr = {0};
 
   (void)pnetif;
-#ifdef NET_USE_LWIP_DEFINITIONS
-  (void)memcpy(&ip_addr, addr, sizeof(net_ip_addr_t));
-#else /* IPv4 only */
-  net_sockaddr_in_t addr_in;
-  (void)memcpy(&addr_in, addr, sizeof(addr_in));
-  ip_addr.addr = addr_in.sin_addr.s_addr;
-#endif /* NET_USE_LWIP_DEFINITIONS */
 
-  ret = MX_WIFI_Socket_ping(pMxWifiObj, (char_t *)NET_NTOA(&ip_addr), count, delay, response);
+#if (defined(NET_USE_IPV6) && (NET_USE_IPV6 == 1))
+  if (addr->sa_family == NET_AF_INET6)
+  {
+    net_sockaddr_in6_t * const p_s_addr_in6 = (net_sockaddr_in6_t *)addr;
+    inet6_addr_to_ip6addr(&ip_addr.u_addr.ip6, &p_s_addr_in6->sin6_addr);
+    ip_addr.type = (u8_t)IPADDR_TYPE_V6;
+  }
+  else
+#endif /* NET_USE_IPV6 */
+  {
+    const net_sockaddr_in_t * const p_s_addr_in = (net_sockaddr_in_t *)addr;
+
+#ifdef NET_USE_LWIP_DEFINITIONS
+    ip_addr.u_addr.ip4.addr = p_s_addr_in->sin_addr.s_addr;
+#else
+    ip_addr.addr = p_s_addr_in->sin_addr.s_addr;
+#endif /* NET_USE_LWIP_DEFINITIONS */
+  }
+
+  if (addr->sa_family == NET_AF_INET6)
+  {
+    ret = MX_WIFI_Socket_ping6(wifi_obj_get(), (char_t *)NET_NTOA(&ip_addr), count, delay, response);
+  }
+  else
+  {
+    ret = MX_WIFI_Socket_ping(wifi_obj_get(), (char_t *)NET_NTOA(&ip_addr), count, delay, response);
+  }
+
   return ret;
 }
 
 /**
-  * @brief                   mxchip wifi getsockname
-  * @param  sock             socket fd
+  * @brief                   Mxchip WiFi getsockname
+  * @param  sock             socket value
   * @param  name             socket name
   * @param  namelen          socket name length
   * @return int32_t          0 if success, otherwise failed
   */
 static int32_t mx_wifi_getsockname(int32_t sock, net_sockaddr_t *name, uint32_t *namelen)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
-
-  /* net_sockaddr_t is alias of struct sockaddr definition from LwIp or exact redefinition. */
-  struct sockaddr *mx_addr = (struct sockaddr *)(/*(void *)*/name);
-  ret = MX_WIFI_Socket_getsockname(pMxWifiObj, sock, mx_addr, namelen);
+  const int32_t ret = MX_WIFI_Socket_getsockname(wifi_obj_get(), sock, (struct mx_sockaddr *) name, namelen);
 
   return ret;
 }
 
+
 /**
-  * @brief                   mxchip wifi getpeername
-  * @param  sock             socket fd
+  * @brief                   Mxchip WiFi get peer name
+  * @param  sock             socket value
   * @param  name             socket name
   * @param  namelen          socket name length
   * @return int32_t          0 if success, otherwise failed
   */
 static int32_t mx_wifi_getpeername(int32_t sock, net_sockaddr_t *name, uint32_t *namelen)
 {
-  int32_t ret;
-  MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
-
-  /* net_sockaddr_t is alias of struct sockaddr definition from LwIp or exact redefinition. */
-  struct sockaddr *mx_addr = (struct sockaddr *)(/*(void *)*/name);
-
-  ret = MX_WIFI_Socket_getpeername(pMxWifiObj, sock, mx_addr, namelen);
+  const int32_t ret = MX_WIFI_Socket_getpeername(wifi_obj_get(), sock, (struct mx_sockaddr *) name, namelen);
 
   return ret;
 }

@@ -18,6 +18,11 @@ With this in mind, there are many tenets or principles that we follow in order t
 
 - We support microcontrollers with no operating system, microcontrollers with a real-time operating system (like [Azure RTOS](https://azure.microsoft.com/services/rtos/)), Linux, and Windows. Customers can implement custom platform layers to use our SDK on custom devices.  We provide some platform layers, and encourage the community to submit platform layers to increase the out-of-the-box supported platforms.
 
+For higher level abstractions built on top of this repo, please see the following:
+
+- [Azure IoT middleware for Azure RTOS](https://github.com/azure-rtos/netxduo/tree/master/addons/azure_iot) builds on top of the embedded SDK and tightly couples with the Azure RTOS family of networking and OS products. This gives you very performant and small applications for real-time, constrained devices.
+- [Azure IoT middleware for FreeRTOS](https://github.com/Azure/azure-iot-middleware-freertos) builds on top of the embedded SDK and takes care of the MQTT stack while integrating with FreeRTOS. This maintains the focus on constrained devices and gives users a distilled Azure IoT feature set while allowing for flexibility with their networking stack.
+
 ## Table of Contents
 
 - [Azure SDK for Embedded C](#azure-sdk-for-embedded-c)
@@ -31,15 +36,16 @@ With this in mind, there are many tenets or principles that we follow in order t
   - [Getting Started Using the SDK](#getting-started-using-the-sdk)
     - [CMake](#cmake)
     - [CMake Options](#cmake-options)
+    - [Consume SDK for C as Dependency with CMake](#consume-sdk-for-c-as-dependency-with-cmake)
     - [Visual Studio Code](#visual-studio-code)
     - [Source Files (IDE, command line, etc)](#source-files-ide-command-line-etc)
-    - [Consume SDK for C as Dependency with CMake](#consume-sdk-for-c-as-dependency-with-cmake)
   - [Running Samples](#running-samples)
+    - [Storage Sample](#storage-sample)
     - [Libcurl Global Init and Global Clean Up](#libcurl-global-init-and-global-clean-up)
+    - [IoT samples](#iot-samples)
     - [Development Environment](#development-environment)
-    - [Windows](#windows)
-    - [Linux](#linux)
-    - [Mac](#mac)
+      - [Third Party Dependencies](#third-party-dependencies)
+      - [Build](#build)
     - [Using your own HTTP stack implementation](#using-your-own-http-stack-implementation)
     - [Link your application with your own HTTP stack](#link-your-application-with-your-own-http-stack)
   - [SDK Architecture](#sdk-architecture)
@@ -48,6 +54,7 @@ With this in mind, there are many tenets or principles that we follow in order t
     - [Community](#community)
     - [Reporting Security Issues and Security Bugs](#reporting-security-issues-and-security-bugs)
     - [License](#license)
+    - [Trademarks](#trademarks)
 
 ## Documentation
 
@@ -189,6 +196,11 @@ The following CMake options are available for adding/removing project features.
 <td>This option can be set to any of the next values:<br>- No_value: default value is used and no_platform library is used.<br>- "POSIX": Provides implementation for Linux and Mac systems.<br>- "WIN32": Provides platform implementation for Windows based system<br>- "CUSTOM": Tells cmake to use an specific implementation provided by user. When setting this option, user must provide an implementation library and set option `AZ_CUSTOM_PLATFORM_IMPL_NAME` with the name of the library (i.e. <code>-DAZ_PLATFORM_IMPL=CUSTOM -DAZ_CUSTOM_PLATFORM_IMPL_NAME=user_platform_lib</code>). cmake will look for this library to link az_core</td>
 <td>No_value</td>
 </tr>
+<tr>
+<td>ADDRESS_SANITIZER</td>
+<td>This option enables asan (address sanitizer). This works on Windows and Linux and will catch memory errors at runtime. This option may also work on other platforms supporting address sanitizer. Do not use this option in production as asan is not a hardening tool and can leak layout information and defeat ASLR.</td>
+<td>OFF</td>
+</tr>
 </table>
 
 - ``Samples``: Storage Samples are built by default using the default PAL and HTTP adapter (see [running samples](#running-samples)). This means that running samples without building an HTTP transport adapter would throw errors like:
@@ -220,11 +232,11 @@ From there you can select targets to build and debug.
 
 We have set up the repo for easy integration into other projects which don't use CMake. Two main features make this possible:
 
-- To resolve all header file relative paths, you only need to include `sdk/inc` in your project. All header files are included in the sdk with relative paths to clearly demarcate the services they belong to. A couple examples being:
+- To resolve all header file relative paths, you only need to include `sdk/inc` in your project. All available header files for a service can be included with our simplified, all-inclusive service headers (`<az/az_<service>.h>`). For example:
 
 ```c
-#include <azure/core/az_span.h>
-#include <azure/iot/az_iot_hub_client.h>
+#include <az/az_core.h>
+#include <az/az_iot.h>
 ```
 
 - All source files are placed in a directory structure similar to the headers: `sdk/src`. Each service has its own subdirectory to separate files which you may be singularly interested in.
@@ -287,33 +299,40 @@ if you have already generated the build files, set environment variables, and th
 case, you must either delete the `CMakeCache.txt` file or delete the folder in which you are generating build
 files and start again.
 
-### Windows
+### Third Party Dependencies
 
-vcpkg is the easiest way to have dependencies installed. It downloads packages sources, headers and build libraries for whatever TRIPLET is set up (platform/arq).
-vcpkg maintains any installed package inside its own folder, allowing to have multiple vcpkg folder with different dependencies installed on each. This is also great because you don't have to install dependencies globally on your system.
+Azure SDK uses Vcpkg manifest mode to declare the [list of required 3rd party dependencies](https://github.com/Azure/azure-sdk-for-c/blob/main/vcpkg.json) for building the SDK libraries. It will also get and set up Vcpkg automatically. 
 
-Use the following steps to install vcpkg and have it linked to CMake.
+>Go to [next section](#build) and skip the next part if you are not interested in learning about alternatives for setting up dependencies.
 
-> **Note:** The Azure SDK is only officially supported against certain versions of vcpkg. Use the commit in [vcpkg-commit.txt](https://github.com/Azure/azure-sdk-for-c/blob/main/eng/vcpkg-commit.txt) to get a known working version.
+#### Customize the Vcpkg dependency integration
 
-```bash
-# Clone vcpkg:
-git clone https://github.com/Microsoft/vcpkg.git
-# (consider this path as PATH_TO_VCPKG)
-cd vcpkg
-# Checkout the vcpkg commit from the vcpkg-commit.txt file (link above)
-git checkout <vcpkg commit>
+If the CMake option _-DCMAKE_TOOLCHAIN_FILE=..._ is not defined to generate the project, the Azure SDK project will automatically get Vcpkg and link it to get the required dependencies. You can use the next environment variables to change this behavior:
 
-# build vcpkg
-.\bootstrap-vcpkg.bat
-# install dependencies and update triplet
-.\vcpkg.exe install --triplet x64-windows-static curl[winssl] cmocka paho-mqtt
-# Add this environment variables to link this vcpkg folder with cmake:
-# VCPKG_DEFAULT_TRIPLET=x64-windows-static
-# VCPKG_ROOT=PATH_TO_VCPKG (replace PATH_TO_VCPKG for where vcpkg is installed)
-```
+<center>
 
-> Note: Setting up a development environment in windows without vcpkg is not supported. It requires installing all dev-dependencies globally and manually setting cmake files to link each of them.
+<table>
+<tr>
+<td>Environment Variable</td>
+<td>Description</td>
+</tr>
+<tr>
+<td>AZURE_SDK_DISABLE_AUTO_VCPKG</td>
+<td>When defined, Vcpkg won't be automatically cloned and linked. Use this setting, for example, if your dependencies are installed on the system and you don't need to get them.</td>
+</tr>
+<tr>
+<td>AZURE_SDK_VCPKG_COMMIT</td>
+<td>This variable can set the git commit id to be used when automatically cloning Vcpkg.</td>
+</tr>
+<tr>
+<td>VCPKG_ROOT</td>
+<td>Use this variable to set an existing Vcpkg folder from your system to be linked for building. Use this, for example, when working with Vcpkg classic mode, to switch between different Vcpkg folders.</td>
+</tr>
+</table>
+
+</center>
+
+### Build
 
 Follow next steps to build project from command prompt:
 
@@ -334,108 +353,7 @@ cmake --build .
 
 #### Visual Studio 2019
 
-Open project folder with Visual Studio. If vcpkg has been previously installed and set up like mentioned [above](#vcpkg). Everything will be ready to build.
-Right after opening project, Visual Studio will read cmake files and generate cache files automatically.
-
-### Linux
-
-#### vcpkg
-
-vcpkg can be used to download packages sources, headers and build libraries for whatever TRIPLET is set up (platform/architecture).
-vcpkg maintains any installed package inside its own folder, allowing to have multiple vcpkg folder with different dependencies installed on each. This is also great because you don't have to install dependencies globally on your system.
-
-Use the following steps to install vcpkg and have it linked to CMake.
-
-> **Note:** The Azure SDK is only officially supported against certain versions of vcpkg. Use the commit in [vcpkg-commit.txt](https://github.com/Azure/azure-sdk-for-c/blob/main/eng/vcpkg-commit.txt) to get a known working version.
-
-```bash
-# Clone vcpkg:
-git clone https://github.com/Microsoft/vcpkg.git
-# (consider this path as PATH_TO_VCPKG)
-cd vcpkg
-# Checkout the vcpkg commit from the vcpkg-commit.txt file (link above)
-git checkout <vcpkg commit>
-
-# build vcpkg
-./bootstrap-vcpkg.sh
-./vcpkg install --triplet x64-linux curl cmocka paho-mqtt
-export VCPKG_DEFAULT_TRIPLET=x64-linux
-export VCPKG_ROOT=PATH_TO_VCPKG #replace PATH_TO_VCPKG for where vcpkg is installed
-```
-
-#### Debian
-
-Alternatively, for Ubuntu 18.04 you can use:
-
-`sudo apt install build-essential cmake libcmocka-dev libcmocka0 gcovr lcov doxygen curl libcurl4-openssl-dev libssl-dev ca-certificates`
-
-#### Build
-
-```bash
-# cd to project folder
-cd azure-sdk-for-c
-# create a new folder to generate cmake files for building (i.e. build)
-mkdir build
-cd build
-# generate files
-# cmake will automatically detect what C compiler is used by system by default and will generate files for it
-cmake ..
-# compile files. Cmake would call compiler and linker to generate libs
-make
-```
-
-> Note: The steps above would compile and generate the default output for azure-sdk-for-c which includes static libraries only. See section [CMake Options](#cmake-options)
-
-### Mac
-
-#### vcpkg
-
-vcpkg can be used to download packages sources, headers and build libraries for whatever TRIPLET is set up (platform/architecture).
-vcpkg maintains any installed package inside its own folder, allowing to have multiple vcpkg folder with different dependencies installed on each. This is also great because you don't have to install dependencies globally on your system.
-
-First, ensure that you have the latest `gcc` installed:
-
-    brew update
-    brew upgrade
-    brew info gcc
-    brew install gcc
-    brew cleanup
-
-Use the following steps to install vcpkg and have it linked to CMake.
-
-> **Note:** The Azure SDK is only officially supported against certain versions of vcpkg. Use the commit in [vcpkg-commit.txt](https://github.com/Azure/azure-sdk-for-c/blob/main/eng/vcpkg-commit.txt) to get a known working version.
-
-```bash
-# Clone vcpkg:
-git clone https://github.com/Microsoft/vcpkg.git
-# (consider this path as PATH_TO_VCPKG)
-cd vcpkg
-# Checkout the vcpkg commit from the vcpkg-commit.txt file (link above)
-git checkout <vcpkg commit>
-
-# build vcpkg
-./bootstrap-vcpkg.sh
-./vcpkg install --triplet x64-osx curl cmocka paho-mqtt
-export VCPKG_DEFAULT_TRIPLET=x64-osx
-export VCPKG_ROOT=PATH_TO_VCPKG #replace PATH_TO_VCPKG for where vcpkg is installed
-```
-
-#### Build
-
-```bash
-# cd to project folder
-cd azure-sdk-for-c
-# create a new folder to generate cmake files for building (i.e. build)
-mkdir build
-cd build
-# generate files
-# cmake will automatically detect what C compiler is used by system by default and will generate files for it
-cmake ..
-# compile files. Cmake would call compiler and linker to generate libs
-make
-```
-
-> Note: The steps above would compile and generate the default output for azure-sdk-for-c which includes static libraries only. See section [CMake Options](#cmake-options)
+Visual Studio will read cmake files and generate cache files automatically.
 
 ### Using your own HTTP stack implementation
 
@@ -513,3 +431,7 @@ Security issues and bugs should be reported privately, via email, to the Microso
 ### License
 
 Azure SDK for Embedded C is licensed under the [MIT](https://github.com/Azure/azure-sdk-for-c/blob/main/LICENSE) license.
+
+### Trademarks
+
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks/usage/general). Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party's policies.

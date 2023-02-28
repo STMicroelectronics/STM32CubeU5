@@ -244,28 +244,28 @@ uint16_t HW_IF_PWR_GetVoltage(uint8_t PortNum);
 int16_t HW_IF_PWR_GetCurrent(uint8_t PortNum);
 
 /**
-  * @brief  Connect the Rp resitors on the CC lines
+  * @brief  Connect the Rp resistors on the CC lines
   * @param  PortNum The port handle.
   * @retval none
   */
 void USBPDM1_AssertRp(uint8_t PortNum);
 
 /**
-  * @brief  Disconnect the Rp resitors on the CC lines
+  * @brief  Disconnect the Rp resistors on the CC lines
   * @param  PortNum The port handle.
   * @retval none
   */
 void USBPDM1_DeAssertRp(uint8_t PortNum);
 
 /**
-  * @brief  Connect the Rd resitors on the CC lines
+  * @brief  Connect the Rd resistors on the CC lines
   * @param  PortNum The port handle.
   * @retval none
   */
 void USBPDM1_AssertRd(uint8_t PortNum);
 
 /**
-  * @brief  Disconnect the Rd resitors on the CC lines
+  * @brief  Disconnect the Rd resistors on the CC lines
   * @param  PortNum The port handle.
   * @retval none
   */

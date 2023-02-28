@@ -1,6 +1,6 @@
 ## <b>GTZC_TZSC_MPCBB_TrustZone Example Description</b>
 
-How to use HAL GTZC MPCBB to build any example with SecureFault detection when TrustZone security is activated **(Option bit TZEN=1)**.
+How to use HAL GTZC MPCBB to build any example with illegal Access detection when TrustZone security is activated **(Option bit TZEN=1)**.
 
 The purpose of this example is to declare the SRAM3 (starting from 0x20040000) as non-secure
 with HAL GTZC MPCBB services and to demonstrate that a security violation is detected when non-secure application accesses secure SRAM1 memory.
@@ -13,9 +13,8 @@ The security violation detection at MPCBB level is triggered by two means:
 - before through the USER push-button key press.
 
 Any key press on USER push-button initiates an access in secure SRAM1 (SRAM1 base address).
-The secure fault is detected from the secure application SecureFault_Handler which calls a
-non-secure registered callback function to inform the non-secure application. The non-secure
-application switches on the error LED RED.
+The illegal Access is detected from the secure application which turned on LED RED.
+After returning to Non-Secure application, the LED RED is turned Off after a delay of 1s.
 
 This project is composed of two sub-projects:
 
@@ -24,7 +23,7 @@ This project is composed of two sub-projects:
 
 Please remember that on system with security enabled:
 
-- the system always boots in secure and the secure application is responsible for
+- the system always boots in secure, and the secure application is responsible for
 launching the non-secure application.
 - the SystemInit() function in secure application sets up the SAU/IDAU, FPU and
 secure/non-secure interrupts allocations defined in partition_stm32u575xx.h file.
@@ -40,7 +39,7 @@ The NUCLEO-U575ZI-Q (MB1549) board LEDs can be used to monitor the transfer stat
 
  -  **LED_GREEN is toggled** for 5s in non-secure (waiting for USER push-button key press),
  -  **LED_GREEN is ON** when the illegal access on internal SRAM is detected,
- -  **LED_RED is ON** when any error occurs.
+ -  **LED_RED is ON** when any error or an illegal access occurs.
 
 User Option Bytes configuration:
 

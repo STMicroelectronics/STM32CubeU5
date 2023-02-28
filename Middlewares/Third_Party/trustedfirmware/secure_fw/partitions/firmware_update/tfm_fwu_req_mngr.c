@@ -19,6 +19,10 @@
 #include "tfm_memory_utils.h"
 #endif
 
+#include "flash_layout.h"
+
+#if !defined(MCUBOOT_PRIMARY_ONLY)
+
 typedef struct tfm_fwu_ctx_s {
     psa_image_id_t image_id;
     uint8_t image_state;
@@ -275,6 +279,10 @@ static psa_status_t tfm_fwu_write_ipc(void)
     uint8_t image_index;
 
     /* Check input parameters. */
+    if (msg.in_size[2] > sizeof(data_block)) {
+        return PSA_ERROR_INVALID_ARGUMENT;
+    }
+
     if (msg.in_size[0] != sizeof(image_id) ||
         msg.in_size[1] != sizeof(block_offset)) {
         return PSA_ERROR_PROGRAMMER_ERROR;
@@ -521,3 +529,5 @@ psa_status_t tfm_fwu_init(void)
     return fwu_bootloader_init();
 #endif
 }
+
+#endif

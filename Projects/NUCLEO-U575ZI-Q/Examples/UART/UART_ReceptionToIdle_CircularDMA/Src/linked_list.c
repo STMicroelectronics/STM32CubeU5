@@ -80,6 +80,8 @@ HAL_StatusTypeDef MX_List_GPDMA1_Channel0_Config(void)
   /* Insert Node_GPDMA1_Channel0 to Queue */
   ret |= HAL_DMAEx_List_InsertNode_Tail(&List_GPDMA1_Channel0, &Node_GPDMA1_Channel0);
 
+  ret |= HAL_DMAEx_List_SetCircularMode(&List_GPDMA1_Channel0);
+
    return ret;
 }
 

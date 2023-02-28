@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   NetXDuo applicative file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
@@ -23,43 +23,59 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "app_netxduo.h"
 #include "app_azure_rtos.h"
 #include "console.h"
 #include "msg.h"
+#include "nxd_dhcp_client.h"
 #include "nxd_bsd.h"
 #include <stdbool.h>
+#include <inttypes.h>
+#include "io_pattern/mx_wifi_io.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+/* USER CODE BEGIN PV */
 static TX_THREAD AppMainThread;
+static CHAR AppMainThreadName[] = "App Main thread";
+
 static TX_THREAD AppMain2Thread;
+static CHAR AppMain2ThreadName[] = "App Main2 thread";
+
 static __IO bool AppMain2ThreadRunning = true;
 
 static TX_THREAD AppWiFiBasicsThread;
+static CHAR AppWiFiBasicsThreadName[] = "App WiFiBasics thread";
 
 TX_BYTE_POOL *AppBytePool;
 
 static NX_PACKET_POOL AppPacketPool;
 
 NX_IP IpInstance;
+static CHAR IpInstanceName[] = "NetX IP Instance 0";
 
 static NX_DHCP DhcpClient;
 static TX_SEMAPHORE DhcpSemaphore;
 
 static NX_DNS DnsClient;
+#ifdef NX_DNS_CACHE_ENABLE
 static UCHAR DnsLocalCache[2048];
+#endif /* NX_DNS_CACHE_ENABLE */
 
-/* USER CODE END PTD */
 
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-int32_t ping_cmd(int32_t argc, char **argv);
-int32_t scan_cmd(int32_t argc, char **argv);
-int32_t test_echo_server(int32_t argc, char **argv);
-int32_t http_download_cmd(int32_t argc, char *argv[]);
-
-const cmd_t cmdlist[] =
+static const cmd_t cmdlist[] =
 {
   {"help",                                         "print this message",          help_cmd},
   {"quit",                                                       "quit",          quit_cmd},
@@ -69,16 +85,6 @@ const cmd_t cmdlist[] =
   {"http", "http <url> (http://public.st.free.fr/500MO.bin by default)", http_download_cmd},
   {  NULL,                                                         NULL,              NULL}
 };
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-/* USER CODE BEGIN PV */
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -92,8 +98,9 @@ static VOID ip_address_change_notify_callback(NX_IP *ip_instance, VOID *ptr);
 
 static void NetXDuo_DeInit(void);
 
-
+static UINT dns_create(NX_DNS *dns_ptr);
 /* USER CODE END PFP */
+
 /**
   * @brief  Application NetXDuo Initialization.
   * @param memory_ptr: memory pointer
@@ -104,26 +111,30 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
   UINT ret = NX_SUCCESS;
   TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
 
-   /* USER CODE BEGIN App_NetXDuo_MEM_POOL */
-  (void)byte_pool;
+  /* USER CODE BEGIN App_NetXDuo_MEM_POOL */
   /* USER CODE END App_NetXDuo_MEM_POOL */
+  /* USER CODE BEGIN 0 */
+
+  /* USER CODE END 0 */
 
   /* USER CODE BEGIN MX_NetXDuo_Init */
-
-  MSG_INFO("Nx_Network_Basics application started..\n");
-  MSG_INFO("\n\n\n\n#### Welcome to WiFi Basics Application #####\n");
+  MSG_INFO("\nNx_Network_Basics application started.\n");
+  MSG_INFO("\n\n\n\n#### Welcome to Nx_Network_Basics application #####\n");
 
   MSG_INFO("# build: %s-%s, %s, %s %s\n",
            "SPI",
            "RTOS",
-#if MX_WIFI_NETWORK_BYPASS_MODE==1
-           "Network bypass",
+#if (defined(MX_WIFI_NETWORK_BYPASS_MODE) && (MX_WIFI_NETWORK_BYPASS_MODE == 1))
+           "Network on host",
 #else
            "Network on module",
 #endif /* MX_WIFI_NETWORK_BYPASS_MODE */
            __TIME__, __DATE__);
 
-  /* Initialize the NetX system.  */
+  MSG_INFO("\nTX_TIMER_TICKS_PER_SECOND: %" PRIu32 "\n", (uint32_t)TX_TIMER_TICKS_PER_SECOND);
+  MSG_INFO("NX_IP_PERIODIC_RATE      : %" PRIu32 "\n\n", (uint32_t)NX_IP_PERIODIC_RATE);
+
+  /* Initialize the NetX system. */
   nx_system_initialize();
 
   /* Allocate the memory for packet_pool.  */
@@ -148,22 +159,33 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
 
   /* Allocate the memory for Ip_Instance */
   {
-    const ULONG stack_size = MAIN_IP_THREAD_STACK_SIZE;
+    const ULONG stack_size = NETX_IP_THREAD_STACK_SIZE;
     VOID *stack_ptr;
     if (tx_byte_allocate(byte_pool, &stack_ptr, stack_size, TX_NO_WAIT) != TX_SUCCESS)
     {
       return TX_POOL_ERROR;
     }
 
-    /* Create the main NX_IP instance. */
-    ret = nx_ip_create(&IpInstance, "Main Ip instance", 0, 0, &AppPacketPool,
-                       nx_driver_emw3080_entry, stack_ptr, stack_size, MAIN_IP_THREAD_PRIORITY);
+    MSG_DEBUG("[%06" PRIu32 "] Calling nx_ip_create()\n", HAL_GetTick());
 
+    /* Create the main NX_IP instance. */
+    ret = nx_ip_create(&IpInstance, IpInstanceName, 0, 0,
+                       &AppPacketPool, nx_driver_emw3080_entry,
+                       stack_ptr, stack_size, NETX_IP_THREAD_PRIORITY);
     if (ret != NX_SUCCESS)
     {
       return NX_NOT_ENABLED;
     }
     MSG_DEBUG("nx_ip_create() done\n");
+  }
+
+  {
+    ret = nx_ip_address_change_notify(&IpInstance, ip_address_change_notify_callback, NULL);
+    if (ret != NX_SUCCESS)
+    {
+      Error_Handler();
+    }
+    MSG_DEBUG("nx_ip_address_change_notify() done\n");
   }
 
   /* Create the DHCP client. */
@@ -195,33 +217,39 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
   }
 
   /* Enable the ICMP */
-  ret = nx_icmp_enable(&IpInstance);
-
-  if (ret != NX_SUCCESS)
   {
-    return NX_NOT_ENABLED;
+    ret = nx_icmp_enable(&IpInstance);
+
+    if (ret != NX_SUCCESS)
+    {
+      return NX_NOT_ENABLED;
+    }
+    MSG_DEBUG("nx_icmp_enable() done\n");
   }
-  MSG_DEBUG("nx_icmp_enable() done\n");
 
-  /* Enable the UDP protocol required for  DHCP communication */
-  ret = nx_udp_enable(&IpInstance);
-
-  if (ret != NX_SUCCESS)
+  /* Enable the UDP protocol required for DNS/DHCP communication. */
   {
-    return NX_NOT_ENABLED;
+    ret = nx_udp_enable(&IpInstance);
+
+    if (ret != NX_SUCCESS)
+    {
+      return NX_NOT_ENABLED;
+    }
+    MSG_DEBUG("nx_udp_enable() done\n");
   }
-  MSG_DEBUG("nx_udp_enable() done\n");
 
   /* Enable the TCP protocol. */
-  ret = nx_tcp_enable(&IpInstance);
-
-  if (ret != NX_SUCCESS)
   {
-    return NX_NOT_ENABLED;
-  }
-  MSG_DEBUG("nx_tcp_enable() done\n");
+    ret = nx_tcp_enable(&IpInstance);
 
-  /* Allocate the memory for main thread   */
+    if (ret != NX_SUCCESS)
+    {
+      return NX_NOT_ENABLED;
+    }
+    MSG_DEBUG("nx_tcp_enable() done\n");
+  }
+
+  /* Allocate the memory for the main thread. */
   {
     const ULONG stack_size = MAIN_THREAD_STACK_SIZE;
     VOID *stack_ptr;
@@ -232,7 +260,7 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
     }
 
     /* Create the main thread */
-    ret = tx_thread_create(&AppMainThread, "App Main thread", App_Main_Thread_Entry,
+    ret = tx_thread_create(&AppMainThread, AppMainThreadName, App_Main_Thread_Entry,
                            (ULONG)byte_pool, stack_ptr, stack_size,
                            MAIN_THREAD_PRIORITY, MAIN_THREAD_PRIORITY, TX_NO_TIME_SLICE, TX_AUTO_START);
 
@@ -254,7 +282,7 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
     }
 
     /* Create the main2 thread. */
-    ret = tx_thread_create(&AppMain2Thread, "App Main2 thread", App_Main2_Thread_Entry,
+    ret = tx_thread_create(&AppMain2Thread, AppMain2ThreadName, App_Main2_Thread_Entry,
                            (ULONG)byte_pool, stack_ptr, stack_size,
                            MAIN2_THREAD_PRIORITY, MAIN2_THREAD_PRIORITY, TX_NO_TIME_SLICE, TX_AUTO_START);
 
@@ -265,9 +293,9 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
     MSG_DEBUG("tx_thread_create() done\n");
   }
 
-  /* Allocate the memory for WiFi Basics thread. */
+  /* Allocate the memory for the Network Basics thread. */
   {
-    const ULONG stack_size = WIFI_BASICS_THREAD_STACK_SIZE;
+    const ULONG stack_size = NETWORK_BASICS_THREAD_STACK_SIZE;
     VOID *stack_ptr;
 
     if (tx_byte_allocate(byte_pool, &stack_ptr, stack_size, TX_NO_WAIT) != TX_SUCCESS)
@@ -275,10 +303,10 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
       return TX_POOL_ERROR;
     }
 
-    /* Create the WiFi Basics thread. */
-    ret = tx_thread_create(&AppWiFiBasicsThread, "App WiFi Thread", App_WiFi_Thread_Entry,
+    /* Create the Network Basics thread. */
+    ret = tx_thread_create(&AppWiFiBasicsThread, AppWiFiBasicsThreadName, App_WiFi_Thread_Entry,
                            (ULONG)byte_pool, stack_ptr, stack_size,
-                           WIFI_BASICS_THREAD_PRIORITY, WIFI_BASICS_THREAD_PRIORITY, TX_NO_TIME_SLICE, TX_DONT_START);
+                           NETWORK_BASICS_THREAD_PRIORITY, NETWORK_BASICS_THREAD_PRIORITY, TX_NO_TIME_SLICE, TX_DONT_START);
 
     if (ret != TX_SUCCESS)
     {
@@ -298,16 +326,17 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
     }
 
     bsd_init_status = bsd_initialize(&IpInstance, &AppPacketPool,
-                                     stack_ptr, stack_size, BSD_COMPAT_LAYER_THREAD_PRIORITY);
+                                     (CHAR *)stack_ptr, stack_size, BSD_COMPAT_LAYER_THREAD_PRIORITY);
 
     /* Check for errors. */
     if (bsd_init_status != NX_SUCCESS)
     {
       return NX_NOT_ENABLED;
     }
+    MSG_DEBUG("bsd_initialize() done\n");
   }
 
-  /* set DHCP notification callback  */
+  /* Set DHCP notification callback */
   tx_semaphore_create(&DhcpSemaphore, "DHCP Semaphore", 0);
   /* USER CODE END MX_NetXDuo_Init */
 
@@ -316,7 +345,7 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
 
 /* USER CODE BEGIN 1 */
 /**
-  * @brief  ip address change callback.
+  * @brief ip address change callback.
   * @param ip_instance: NX_IP instance
   * @param ptr: user data
   * @retval none
@@ -326,11 +355,12 @@ static VOID ip_address_change_notify_callback(NX_IP *ip_instance, VOID *ptr)
   NX_PARAMETER_NOT_USED(ip_instance);
   NX_PARAMETER_NOT_USED(ptr);
 
-  MSG_DEBUG(">\n");
+  MSG_DEBUG(">\"%s\"\n", ip_instance->nx_ip_name);
 
-  /* release the semaphore as soon as an IP address is available */
+  /* Release the semaphore as soon as an IP address is available. */
   tx_semaphore_put(&DhcpSemaphore);
 }
+
 
 /**
   * @brief  Main thread entry.
@@ -339,10 +369,10 @@ static VOID ip_address_change_notify_callback(NX_IP *ip_instance, VOID *ptr)
   */
 static VOID App_Main_Thread_Entry(ULONG thread_input)
 {
-  UINT ret;
+  UINT ret = NX_SUCCESS;
   ULONG dhcp_ip_address;
   UCHAR dhcp_ip_string[4];
-  UINT size;
+
   NX_PARAMETER_NOT_USED(thread_input);
 
   MSG_DEBUG(">\n");
@@ -365,54 +395,83 @@ static VOID App_Main_Thread_Entry(ULONG thread_input)
   /* Wait until an IP address is ready. */
   if (tx_semaphore_get(&DhcpSemaphore, TX_WAIT_FOREVER) != TX_SUCCESS)
   {
-    MSG_ERROR("ERROR: Cannot connect WiFi interface !\n");
+    MSG_ERROR("ERROR: Cannot connect the WiFi interface!\n");
     Error_Handler();
   }
 
   /* Kill our terminator. */
   AppMain2ThreadRunning = false;
 
-#ifdef ENABLE_IOT_DEBUG
+
   {
-	  const UINT IpIndex = 0;
-	  CHAR *InterfaceName;
-	  ULONG IpAddress;
-	  ULONG NetworkMask;
-	  ULONG MtuSize;
-	  ULONG PhysicalAddresMsw;
-	  ULONG PhysicalAddressLsw;
+    const ULONG status_check_mask = \
+    NX_IP_INITIALIZE_DONE | NX_IP_ADDRESS_RESOLVED | NX_IP_LINK_ENABLED | \
+    NX_IP_ARP_ENABLED | NX_IP_UDP_ENABLED | NX_IP_TCP_ENABLED | \
+    /* NX_IP_IGMP_ENABLED | */ NX_IP_RARP_COMPLETE | NX_IP_INTERFACE_LINK_ENABLED;
+    ULONG interface_status = 0;
 
-	  _nx_ip_interface_info_get(&IpInstance, IpIndex, &InterfaceName,
-			  &IpAddress, &NetworkMask,
-			  &MtuSize,
-			  &PhysicalAddresMsw, &PhysicalAddressLsw);
-
-	  MSG_DEBUG("\nIP: \"%s\", MTU: %"PRIu32"\n", InterfaceName, (uint32_t)MtuSize);
+    ret = nx_ip_interface_status_check(&IpInstance, 0U, status_check_mask, &interface_status, NX_WAIT_FOREVER);
+    MSG_INFO("Interface status: %04" PRIX32 "\n", (uint32_t)interface_status);
   }
-#endif /* ENABLE_IOT_DEBUG */
 
+#ifdef ENABLE_IOT_INFO
   {
-    ULONG IpAddress;
-    ULONG NetMask;
-    ret = nx_ip_address_get(&IpInstance, &IpAddress, &NetMask);
+    const UINT IpIndex = 0;
+    CHAR *interface_name = NULL;
+    ULONG ip_address = 0;
+    ULONG net_mask = 0;
+    ULONG mtu_size = 0;
+    ULONG physical_addres_msw = 0;
+    ULONG physical_address_lsw = 0;
 
+    _nx_ip_interface_info_get(&IpInstance, IpIndex, &interface_name,
+                              &ip_address, &net_mask,
+                              &mtu_size,
+                              &physical_addres_msw, &physical_address_lsw);
+
+    MSG_INFO("\nIP: \"%s\", MTU: %" PRIu32 "\n", interface_name, (uint32_t)mtu_size);
+    MSG_DEBUG("0x%" PRIX32 "%" PRIX32 "\n", physical_addres_msw, physical_address_lsw);
+  }
+#endif /* ENABLE_IOT_INFO */
+
+  /* Read back IP address and gateway address. */
+  {
+    ULONG ip_address = 0;
+    ULONG net_mask = 0;
+    ULONG gateway_address = 0;
+
+    ret = nx_ip_address_get(&IpInstance, &ip_address, &net_mask);
+    if (ret != TX_SUCCESS)
+    {
+      Error_Handler();
+    }
+
+    ret = nx_ip_gateway_address_get(&IpInstance, &gateway_address);
     if (ret != TX_SUCCESS)
     {
       Error_Handler();
     }
 
     MSG_INFO("\n- Network Interface connected: ");
-    PRINT_IP_ADDRESS(IpAddress);
+    PRINT_IP_ADDRESS(ip_address);
     MSG_INFO("\n");
+
+    MSG_INFO("Mask: ");
+    PRINT_IP_ADDRESS(net_mask);
+
+    MSG_INFO("Gateway: ");
+    PRINT_IP_ADDRESS(gateway_address);
   }
 
   /* Check for Default Gateway IP from DHCP. */
-  size = sizeof(dhcp_ip_string);
-  ret = nx_dhcp_user_option_retrieve(&DhcpClient, NX_DHCP_OPTION_GATEWAYS,
-                                     dhcp_ip_string, &size);
-  if (ret)
   {
-    Error_Handler();
+    UINT size = sizeof(dhcp_ip_string);
+    ret = nx_dhcp_user_option_retrieve(&DhcpClient, NX_DHCP_OPTION_GATEWAYS,
+                                       dhcp_ip_string, &size);
+    if (ret)
+    {
+      Error_Handler();
+    }
   }
 
   /* Get the gateway address of IP instance. */
@@ -429,7 +488,7 @@ static VOID App_Main_Thread_Entry(ULONG thread_input)
     Error_Handler();
   }
 
-  /* the network is correctly initialized, start the WiFiBasics thread */
+  /* The network is correctly initialized, start the WiFiBasics thread. */
   tx_thread_resume(&AppWiFiBasicsThread);
 
   /* this thread is not needed any more, we relinquish it */
@@ -437,6 +496,7 @@ static VOID App_Main_Thread_Entry(ULONG thread_input)
 
   return;
 }
+
 
 /**
   * @brief  Main2 thread entry.
@@ -460,8 +520,8 @@ static VOID App_Main2_Thread_Entry(ULONG thread_input)
 
     if (time_out == 20)
     {
-      MSG_DEBUG("Could not get an IP address !\n");
-      MSG_INFO("ERROR: Cannot connect WiFi interface !\n");
+      MSG_DEBUG("Could not get an IP address!\n");
+      MSG_INFO("ERROR: Cannot connect WiFi interface!\n");
       Error_Handler();
     }
   }
@@ -470,30 +530,33 @@ static VOID App_Main2_Thread_Entry(ULONG thread_input)
 
 
 /**
-  * @brief  DNS Create Function.
+  * @brief DNS Create Function.
   * @param dns_ptr
   * @retval ret
   */
-UINT dns_create(NX_DNS *dns_ptr)
+static UINT dns_create(NX_DNS *dns_ptr)
 {
   UINT ret = NX_SUCCESS;
   MSG_DEBUG(">\n");
 
-  /* Create a DNS instance for the Client */
+  /* Create a DNS instance for the Client. */
   ret = nx_dns_create(dns_ptr, &IpInstance, (UCHAR *)"DNS Client");
   if (ret)
   {
     Error_Handler();
   }
+  MSG_DEBUG("nx_dns_create() done\n");
 
+#ifdef NX_DNS_CACHE_ENABLE
   ret = nx_dns_cache_initialize(dns_ptr, (VOID *)DnsLocalCache, (UINT)sizeof(DnsLocalCache));
+#endif /* NX_DNS_CACHE_ENABLE*/
 
 #ifndef NX_DNS_IP_GATEWAY_AND_DNS_SERVER
-  UCHAR  dns_ip_string[4];
+  UCHAR dns_ip_string[4];
   ULONG dns_server_address;
-  ULONG  size;
+  UINT size;
 
-  /* Obtain the IP address of the DNS server.  */
+  /* Obtain the IP address of the DNS server. */
   size = sizeof(dns_ip_string);
   ret = nx_dhcp_user_option_retrieve(&DhcpClient, NX_DHCP_OPTION_DNS_SVR,
                                      dns_ip_string, &size);
@@ -505,7 +568,8 @@ UINT dns_create(NX_DNS *dns_ptr)
   dns_server_address = nx_dhcp_user_option_convert(dns_ip_string);
   /*convert to network byte order*/
   dns_server_address = htonl(dns_server_address);
-  /* Initialize DNS instance with the DNS server Address */
+
+  /* Initialize DNS instance with the DNS server address. */
   ret = nx_dns_server_add(dns_ptr, dns_server_address);
   if (ret)
   {
@@ -516,36 +580,53 @@ UINT dns_create(NX_DNS *dns_ptr)
   return ret;
 }
 
+
 /**
   * @brief WiFiBasics thread entry.
   * @param thread_input: ULONG user argument used by the thread entry
   * @retval none
   */
-/* Define the client thread.  */
-static void App_WiFi_Thread_Entry(ULONG thread_input)
+static VOID App_WiFi_Thread_Entry(ULONG thread_input)
 {
   TX_BYTE_POOL *const byte_pool = (TX_BYTE_POOL *) thread_input;
-  UINT ret = NX_SUCCESS;
 
-  MSG_DEBUG(">\n");
+  MSG_DEBUG("[%06" PRIu32 "]>\n", HAL_GetTick());
 
-  /* Create a DNS client */
-  ret = dns_create(&DnsClient);
-
-  if (ret != NX_SUCCESS)
+  /* Create a DNS client. */
   {
-    Error_Handler();
+    UINT ret = dns_create(&DnsClient);
+    if (ret != NX_SUCCESS)
+    {
+      MSG_DEBUG("dns_create failed: 0x%x\n", ret);
+      Error_Handler();
+    }
+  }
+  {
+    MSG_INFO(" - Device Name    : %s.\n", wifi_obj_get()->SysInfo.Product_Name);
+    MSG_INFO(" - Device ID      : %s.\n", wifi_obj_get()->SysInfo.Product_ID);
+    MSG_INFO(" - Device Version : %s.\n", wifi_obj_get()->SysInfo.FW_Rev);
+    MSG_INFO(" - MAC address    : %02X.%02X.%02X.%02X.%02X.%02X\n\n",
+             wifi_obj_get()->SysInfo.MAC[0], wifi_obj_get()->SysInfo.MAC[1],
+             wifi_obj_get()->SysInfo.MAC[2], wifi_obj_get()->SysInfo.MAC[3],
+             wifi_obj_get()->SysInfo.MAC[4], wifi_obj_get()->SysInfo.MAC[5]);
   }
 
   {
-    MX_WIFIObject_t *pMxWifiObj = wifi_obj_get();
+    uint8_t ip_addr[4] = {0};
+    MX_WIFI_GetIPAddress(wifi_obj_get(), ip_addr, MC_STATION);
+    MSG_INFO("IP (STA)   : %02X.%02X.%02X.%02X\n", ip_addr[0], ip_addr[1], ip_addr[2], ip_addr[3]);
+  }
 
-    MSG_INFO(" - Device Name    : %s. \n", pMxWifiObj->SysInfo.Product_Name);
-    MSG_INFO(" - Device ID      : %s. \n", pMxWifiObj->SysInfo.Product_ID);
-    MSG_INFO(" - Device Version : %s. \n", pMxWifiObj->SysInfo.FW_Rev);
-    MSG_INFO(" - MAC address    : %02X.%02X.%02X.%02X.%02X.%02X\n",
-             pMxWifiObj->SysInfo.MAC[0], pMxWifiObj->SysInfo.MAC[1], pMxWifiObj->SysInfo.MAC[2],
-             pMxWifiObj->SysInfo.MAC[3], pMxWifiObj->SysInfo.MAC[4], pMxWifiObj->SysInfo.MAC[5]);
+  {
+    uint8_t ip_addr[4] = {0};
+    MX_WIFI_GetIPAddress(wifi_obj_get(), ip_addr, MC_SOFTAP);
+    MSG_INFO("IP (SOFTAP): %02X.%02X.%02X.%02X\n", ip_addr[0], ip_addr[1], ip_addr[2], ip_addr[3]);
+  }
+
+  {
+    uint8_t fw_rev[] = {'0', '1', '2', '.', '.', '.'}; /* Set a size less than the actual version string length. */
+    MX_WIFI_GetVersion(wifi_obj_get(), fw_rev, sizeof(fw_rev));
+    MSG_INFO("Version : %s.\n", fw_rev);
   }
 
   /* Share the byte pool with the commands needs. */
@@ -553,37 +634,44 @@ static void App_WiFi_Thread_Entry(ULONG thread_input)
 
   scan_cmd(0, NULL);
 
-  MSG_INFO("\n##### Please enter one of the following command:\n\n");
-  help_cmd(0, NULL);
-
   /* Application body. */
   console("App>", cmdlist);
 
   MSG_INFO("\n##### Quitting the application\n\n");
+
   NetXDuo_DeInit();
 
-  /* this thread is not needed any more, we relinquish it */
-  tx_thread_relinquish();
-
-  MSG_DEBUG("<\n");
+  /* Infinite loop */
+  for (;;)
+  {
+    MSG_INFO(".");
+    tx_thread_sleep(2 * TX_TIMER_TICKS_PER_SECOND);
+  }
 }
+
 
 static void NetXDuo_DeInit(void)
 {
   MSG_DEBUG(">\n");
 
   {
+    const UINT status = nx_dhcp_delete(&DhcpClient);
+    MSG_INFO("nx_dhcp_delete() done with 0x%" PRIx32 "\n", (uint32_t)status);
+  }
+
+  {
     const UINT status = nx_dns_delete(&DnsClient);
-    MSG_INFO("nx_dns_delete() done with 0x%"PRIx32"\n", (uint32_t)status);
+    MSG_INFO("nx_dns_delete() done with 0x%" PRIx32 "\n", (uint32_t)status);
   }
 
   {
+    MSG_INFO("nx_ip_delete()>\n");
     const UINT status = nx_ip_delete(&IpInstance);
-    MSG_INFO("nx_ip_delete() done with 0x%"PRIx32"\n", (uint32_t)status);
+    MSG_INFO("nx_ip_delete() done with 0x%" PRIx32 "\n", (uint32_t)status);
   }
 
   {
-    CHAR *name;
+    CHAR *name = (CHAR *)TX_NULL;
     ULONG available_bytes = 0;
     ULONG fragments = 0;
     TX_THREAD *first_suspended;
@@ -593,10 +681,10 @@ static void NetXDuo_DeInit(void)
     tx_byte_pool_info_get(AppBytePool, &name,
                           &available_bytes, &fragments,
                           &first_suspended, &suspended_count, &next_pool);
-    MSG_INFO("Pool \"%s\" (%"PRIu32")\n", name, (uint32_t)AppBytePool->tx_byte_pool_size);
-    MSG_INFO(" - available bytes: %"PRIu32"\n", (uint32_t)available_bytes);
-    MSG_INFO(" - fragments      : %"PRIu32"\n", (uint32_t)fragments);
-    MSG_INFO(" - suspended count: %"PRIu32"\n", (uint32_t)suspended_count);
+    MSG_INFO("Pool \"%s\" (%" PRIu32 ")\n", (name != TX_NULL) ? name : "", (uint32_t)AppBytePool->tx_byte_pool_size);
+    MSG_INFO(" - available bytes: %" PRIu32 "\n", (uint32_t)available_bytes);
+    MSG_INFO(" - fragments      : %" PRIu32 "\n", (uint32_t)fragments);
+    MSG_INFO(" - suspended count: %" PRIu32 "\n", (uint32_t)suspended_count);
   }
 
   {
@@ -610,12 +698,12 @@ static void NetXDuo_DeInit(void)
                             &total_packets, &free_packets,
                             &empty_pool_requests, &empty_pool_suspensions,
                             &invalid_packet_releases);
-    MSG_INFO("Packet Pool \"%s\" (%"PRIu32")\n",
+    MSG_INFO("Packet Pool \"%s\" (%" PRIu32 ")\n",
              AppPacketPool.nx_packet_pool_name,
              (uint32_t)AppPacketPool.nx_packet_pool_payload_size);
-    MSG_INFO(" - total packets          : %"PRIu32"\n", (uint32_t)total_packets);
-    MSG_INFO(" - free packets           : %"PRIu32"\n", (uint32_t)free_packets);
-    MSG_INFO(" - invalid packet releases: %"PRIu32"\n", (uint32_t)invalid_packet_releases);
+    MSG_INFO(" - total packets          : %" PRIu32 "\n", (uint32_t)total_packets);
+    MSG_INFO(" - free packets           : %" PRIu32 "\n", (uint32_t)free_packets);
+    MSG_INFO(" - invalid packet releases: %" PRIu32 "\n", (uint32_t)invalid_packet_releases);
   }
 
   MSG_DEBUG("<\n");

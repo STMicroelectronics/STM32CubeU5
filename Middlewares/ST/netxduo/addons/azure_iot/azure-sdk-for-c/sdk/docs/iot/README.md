@@ -8,7 +8,7 @@ Here you will find everything you need to get devices connected to Azure.
 
 The Azure IoT Client library is created to facilitate connectivity to Azure IoT services alongside an MQTT and TLS stack of the user's choice. This means that this SDK is **NOT** a platform but instead is a true SDK library.
 
-![Methods](./resources/embc_high_level_arch.png)
+<img src="./resources/embc_high_level_arch.png" width="80%">
 
 From a functional perspective, this means that the user's application code (not the SDK) calls directly to the MQTT stack of their choice. The SDK provides utilities (functions, default values, etc.) that help make the connection and feature set easier to use. Some examples of those utilities include:
 
@@ -26,7 +26,7 @@ For more details about the Azure IoT Device Provisioning Service (DPS), see the 
 
 ### Documentation
 
-Please view the API documentation [here](https://azuresdkdocs.blob.core.windows.net/$web/c/az_iot/1.0.0/index.html). After following that link, you can find the IoT specific documents by navigating to the **Files -> File List** section near the top and choosing any of the header files prefixed with `az_iot_`.
+Please view the API documentation [here](https://azure.github.io/azure-sdk-for-c/). After following that link, you can find the IoT specific documentation by navigating to the **IoT** section on the left of your screen, pick a version of the SDK, click on **Files -> File List**, then choose any of the header files prefixed with `az_iot_`.
 
 ### Build
 
@@ -34,8 +34,8 @@ The Azure IoT library is compiled following the same steps listed on the root [A
 
 The library targets made available via CMake are the following:
 
-- `az::iot::hub` - For Azure IoT Hub features ([API documentation here](https://azuresdkdocs.blob.core.windows.net/$web/c/az_iot/1.0.0/az__iot__hub__client_8h.html)).
-- `az::iot::provisioning` - For Azure IoT Provisioning features ([API documentation here](https://azuresdkdocs.blob.core.windows.net/$web/c/az_iot/1.0.0/az__iot__provisioning__client_8h.html)).
+- `az::iot::hub` - For Azure IoT Hub features (API documentation found by following the above link and selecting `azure_iot_hub_client.h`).
+- `az::iot::provisioning` - For Azure IoT Provisioning features (API documentation found by following the above link and selecting `azure_iot_provisioning_client.h`).
 
 ### Samples
 
@@ -53,11 +53,15 @@ For more detailed, step-by-step guides to setup and run the IoT Hub certificate 
 
 - Espressif ESP32: [How to Setup and Run Azure SDK for Embedded C IoT Hub Client on ESP32](https://github.com/Azure/azure-sdk-for-c/blob/main/sdk/samples/iot/aziot_esp32/readme.md)
 
+- Azure Device Update with Espressif ESP32 on Arduino IDE: [How to Setup and Run Azure SDK for Embedded C ADU on Espressif ESP32](https://github.com/Azure/azure-sdk-for-c-arduino/blob/main/examples/Azure_IoT_Adu_ESP32/readme.md)
+
+- VxWorks: [How to Setup and Run Azure SDK for Embedded C IoT Hub Client and Provisioning Client Samples on VxWorks](https://github.com/Azure/azure-sdk-for-c/blob/main/sdk/samples/iot/docs/how_to_iot_hub_samples_vxworks.md)
+
 **Important Note on Linux and Windows Samples**: While Windows and Linux devices are not likely to be considered constrained, these samples enable developers to test the Azure SDK for Embedded C libraries, debug, and step through the code, even without a real device. We understand not everyone will have a real device to test and that sometimes these devices won't have debugging capabilities.
 
 For extra guidance, please feel free to watch our Deep Dive Video below which goes over building the SDK, running the samples, and the architecture of the samples.
 
-[![Watch the video](./resources/deep_dive_screenshot.png)](https://youtu.be/qdb3QIq8msg)
+[<img src="./resources/deep_dive_screenshot.png" width="50%">](https://youtu.be/qdb3QIq8msg)
 
 ## Key Features
 

@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    Secure_nsclib/secure_nsc.h
-  * @author  MCD Application Team
-  * @brief   Header for secure non-secure callable APIs list
+  * @file    : Secure_nsclib/secure_nsc.h
+  * @author  : MCD Application Team
+  * @brief   : Header for secure non-secure callable APIs list
   ******************************************************************************
   * @attention
   *
@@ -25,7 +25,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
-#include <stdio.h>
+
 /* Exported types ------------------------------------------------------------*/
 /**
   * @brief  non-secure callback ID enumeration definition
@@ -39,12 +39,13 @@ typedef enum
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+void SECURE_ToggleRedLed(void);
 void SECURE_RegisterCallback(SECURE_CallbackIDTypeDef CallbackId, void *func);
 void SECURE_DisplayMessage(const uint8_t *format);
-void SECURE_ToggleRedLed(void);
-void SECURE_SAU_MPCWM2_SetInitConfig(void);
-void SECURE_SAU_MPCWM2_SetUserButtonErrorCaseConfig(void);
-void SECURE_SAU_MPCWM2_SetTamperButtonErrorCaseConfig(void);
+void SECURE_SAU_MPCWM_SetInitConfig(void);
+void SECURE_SAU_MPCWM_SetSecureFaultConfig(void);
+void SECURE_SAU_MPCWM_SetIllegalAccessConfig(void);
+
 #endif /* SECURE_NSC_H */
 /* USER CODE END Non_Secure_CallLib_h */
 

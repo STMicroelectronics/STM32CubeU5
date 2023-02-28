@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -25,10 +25,8 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-/*cstat -MISRAC2012-* */
 #include <stddef.h>
 #include <stdint.h>
-/*cstat +MISRAC2012-* */
 
 
 /* NOTE: MUST ENABLE STM32L HARDWARE CRC periph before use this API

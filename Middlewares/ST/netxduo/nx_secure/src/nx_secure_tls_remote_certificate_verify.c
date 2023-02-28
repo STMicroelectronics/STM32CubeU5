@@ -30,7 +30,7 @@
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
 /*    _nx_secure_tls_remote_certificate_verify            PORTABLE C      */
-/*                                                           6.1.10       */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Timothy Stapko, Microsoft Corporation                               */
@@ -53,11 +53,9 @@
 /*                                                                        */
 /*  CALLS                                                                 */
 /*                                                                        */
-/*    _nx_secure_x509_certificate_chain_verify                            */
-/*                                          Verify cert against stores    */
-/*    _nx_secure_x509_expiration_check      Verify expiration of cert     */
 /*    _nx_secure_x509_remote_endpoint_certificate_get                     */
 /*                                          Get remote host certificate   */
+/*    [nx_secure_remote_certificate_verify] Verify the remote certificate */
 /*    [nx_secure_tls_session_certificate_callback]                        */
 /*                                          Session certificate callback  */
 /*    [nx_secure_tls_session_time_function] Session time callback         */
@@ -81,6 +79,13 @@
 /*                                            improved code coverage      */
 /*                                            results,                    */
 /*                                            resulting in version 6.1.10 */
+/*  07-29-2022     Yuxin Zhou               Modified comment(s), and      */
+/*                                            checked expiration for all  */
+/*                                            the certs in the chain,     */
+/*                                            resulting in version 6.1.12 */
+/*  10-31-2022     Yanwu Cai                Modified comment(s), added    */
+/*                                            custom secret generation,   */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 UINT _nx_secure_tls_remote_certificate_verify(NX_SECURE_TLS_SESSION *tls_session)
@@ -123,44 +128,15 @@ ULONG                             current_time;
     {
         /* Get the current time from our callback. */
         current_time = tls_session -> nx_secure_tls_session_time_function();
-
-        /* Check the remote certificate against the current time. */
-        status = _nx_secure_x509_expiration_check(remote_certificate, current_time);
-
-        if (status != NX_SUCCESS)
-        {
-            return(status);
-        }
     }
 
     /* Now verify our remote certificate chain. If the certificate can be linked to an issuer in the trusted store
        through an issuer chain, this function will return NX_SUCCESS. */
-    status = _nx_secure_x509_certificate_chain_verify(store, remote_certificate);
+    status = tls_session -> nx_secure_remote_certificate_verify(store, remote_certificate, current_time);
 
     if (status != NX_SUCCESS)
     {
-
-        /* Translate some X.509 return values into TLS return values. NX_SECURE_X509_CERTIFICATE_NOT_FOUND is removed
-           as _nx_secure_x509_certificate_chain_verify() will not return this value. */
-        switch (status)
-        {
-        case NX_SECURE_X509_UNSUPPORTED_PUBLIC_CIPHER:
-            return(NX_SECURE_TLS_UNSUPPORTED_PUBLIC_CIPHER);
-        case NX_SECURE_X509_UNKNOWN_CERT_SIG_ALGORITHM:
-            return(NX_SECURE_TLS_UNKNOWN_CERT_SIG_ALGORITHM);
-        case NX_SECURE_X509_CERTIFICATE_SIG_CHECK_FAILED:
-            return(NX_SECURE_TLS_CERTIFICATE_SIG_CHECK_FAILED);
-#ifndef NX_SECURE_ALLOW_SELF_SIGNED_CERTIFICATES
-        case NX_SECURE_X509_INVALID_SELF_SIGNED_CERT:
-            return(NX_SECURE_TLS_INVALID_SELF_SIGNED_CERT);
-#endif
-        case NX_SECURE_X509_ISSUER_CERTIFICATE_NOT_FOUND:
-            return(NX_SECURE_TLS_ISSUER_CERTIFICATE_NOT_FOUND);
-        case NX_SECURE_X509_MISSING_CRYPTO_ROUTINE:
-            return(NX_SECURE_TLS_MISSING_CRYPTO_ROUTINE);
-        default:
-            return(status);
-        }
+        return(status);
     }
 
     /* Now, see if the application has defined a callback to check additional certificate information. */

@@ -53,8 +53,8 @@ __IO uint32_t UserButtonStatus = 0;  /* set to 1 after Wkup/Tamper push-button i
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void SystemPower_Config(void);
-static void MX_ICACHE_Init(void);
 static void MX_GPIO_Init(void);
+static void MX_ICACHE_Init(void);
 static void MX_DAC1_Init(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -72,7 +72,6 @@ static void MX_DAC1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  DAC_ChannelConfTypeDef sConfig;
 
   /* STM32U5xx HAL library initialization:
        - Configure the Flash prefetch
@@ -102,8 +101,8 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_ICACHE_Init();
   MX_GPIO_Init();
+  MX_ICACHE_Init();
   MX_DAC1_Init();
   /* USER CODE BEGIN 2 */
 
@@ -113,8 +112,6 @@ int main(void)
   /* Initialize the Wkup/Tamper push-button.
      It is used for changing the gain */
   BSP_PB_Init(BUTTON_USER, BUTTON_MODE_EXTI);
-  /*##########################################################################*/
-  /*## NORMAL POWER MODE #####################################################*/
 
   /*##-0- Set DAC Channel1 DHR register ######################################*/
   if (HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_8B_R, 0xFF) != HAL_OK)
@@ -130,65 +127,6 @@ int main(void)
     Error_Handler();
   }
 
-  /*##########################################################################*/
-  /*## LOW POWER MODE ########################################################*/
-
-  /* Wait UserButtonStatus pushed */
-  while (UserButtonStatus == 0)
-  {
-  }
-  UserButtonStatus = 0;
-
-
-  if (HAL_DAC_Stop(&hdac1, DAC_CHANNEL_1) != HAL_OK)
-  {
-    /* Start Error */
-    Error_Handler();
-  }
-
-  /*## DeInit the DAC peripheral ##########################################*/
-  if (HAL_DAC_DeInit(&hdac1) != HAL_OK)
-  {
-    /* Initialization Error */
-    Error_Handler();
-  }
-
-  /*## Configure the DAC peripheral #######################################*/
-  if (HAL_DAC_Init(&hdac1) != HAL_OK)
-  {
-    /* Initialization Error */
-    Error_Handler();
-  }
-
-  /*## Configure DAC channel1 #############################################*/
-  sConfig.DAC_SampleAndHold = DAC_SAMPLEANDHOLD_ENABLE;
-
-  if (HAL_DAC_ConfigChannel(&hdac1, &sConfig, DAC_CHANNEL_1) != HAL_OK)
-  {
-    /* Channel configuration Error */
-    Error_Handler();
-  }
-
-  /*## Set DAC Channel1 DHR register ######################################*/
-  if (HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_8B_R, 0xFF) != HAL_OK)
-  {
-    /* Setting value Error */
-    Error_Handler();
-  }
-
-  /*## Enable DAC Channel1 ################################################*/
-  if (HAL_DAC_Start(&hdac1, DAC_CHANNEL_1) != HAL_OK)
-  {
-    /* Start Error */
-    Error_Handler();
-  }
-
-  /*Suspend Tick increment to prevent wakeup by Systick interrupt. 
-  Otherwise the Systick interrupt will wake up the device within 1ms (HAL time base)*/
-  HAL_SuspendTick();
-
-  /* Enter SLEEP Mode , wake up is done once Key push button is pressed */  
- HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -219,7 +157,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI
                               |RCC_OSCILLATORTYPE_MSI;
@@ -245,7 +183,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
@@ -281,6 +219,8 @@ static void SystemPower_Config(void)
   {
     Error_Handler();
   }
+/* USER CODE BEGIN PWR */
+/* USER CODE END PWR */
 }
 
 /**
@@ -380,10 +320,14 @@ static void MX_ICACHE_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

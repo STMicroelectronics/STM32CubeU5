@@ -142,6 +142,7 @@ UINT nx_azure_iot_log(UCHAR *type_ptr, UINT type_len, UCHAR *msg_ptr, UINT msg_l
 
 #define NX_AZURE_IOT_EMPTY_JSON                           0x20016
 #define NX_AZURE_IOT_SAS_TOKEN_EXPIRED                    0x20017
+#define NX_AZURE_IOT_NO_MORE_ENTRIES                      0x20018
 
 /* Resource type managed by AZ_IOT.  */
 #define NX_AZURE_IOT_RESOURCE_IOT_HUB                     0x1
@@ -314,7 +315,7 @@ UINT nx_azure_iot_publish_mqtt_packet(NXD_MQTT_CLIENT *client_ptr, NX_PACKET *pa
                                       UINT topic_len, UCHAR *packet_id, UINT qos, UINT wait_option);
 UINT nx_azure_iot_publish_packet_get(NX_AZURE_IOT *nx_azure_iot_ptr, NXD_MQTT_CLIENT *client_ptr,
                                      NX_PACKET **packet_pptr, UINT wait_option);
-UINT nx_azure_iot_mqtt_packet_id_get(NXD_MQTT_CLIENT *client_ptr, UCHAR *packet_id, UINT wait_option);
+UINT nx_azure_iot_mqtt_packet_id_get(NXD_MQTT_CLIENT *client_ptr, UCHAR *packet_id);
 VOID nx_azure_iot_mqtt_packet_adjust(NX_PACKET *packet_ptr);
 UINT nx_azure_iot_mqtt_tls_setup(NXD_MQTT_CLIENT *client_ptr, NX_SECURE_TLS_SESSION *tls_session,
                                  NX_SECURE_X509_CERT *certificate,

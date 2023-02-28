@@ -22,12 +22,43 @@
 
 /* Private variables -------------------------------------------------------------------------------------------------*/
 /* LPBAM variables declaration */
-static LPBAM_LPTIM_StartFullDesc_t Start_1_Desc;
-static LPBAM_LPTIM_PWMFullDesc_t PWM_1_Desc;
-static LPBAM_LPTIM_PWMFullDesc_t PWM_2_Desc;
-static LPBAM_LPTIM_PWMFullDesc_t PWM_3_Desc;
-static LPBAM_LPTIM_PWMFullDesc_t PWM_4_Desc;
-static LPBAM_LPTIM_PWMFullDesc_t PWM_5_Desc;
+/* USER CODE BEGIN PWMGen_MultiValue_Descs 0 */
+
+/* USER CODE END PWMGen_MultiValue_Descs 0 */
+
+/* USER CODE BEGIN PWMUpdate_Q_Start_1_Desc */
+
+/* USER CODE END PWMUpdate_Q_Start_1_Desc */
+static LPBAM_LPTIM_StartFullDesc_t PWMUpdate_Q_Start_1_Desc;
+
+/* USER CODE BEGIN PWMUpdate_Q_PWM_1_Desc */
+
+/* USER CODE END PWMUpdate_Q_PWM_1_Desc */
+static LPBAM_LPTIM_PWMFullDesc_t PWMUpdate_Q_PWM_1_Desc;
+
+/* USER CODE BEGIN PWMUpdate_Q_PWM_2_Desc */
+
+/* USER CODE END PWMUpdate_Q_PWM_2_Desc */
+static LPBAM_LPTIM_PWMFullDesc_t PWMUpdate_Q_PWM_2_Desc;
+
+/* USER CODE BEGIN PWMUpdate_Q_PWM_3_Desc */
+
+/* USER CODE END PWMUpdate_Q_PWM_3_Desc */
+static LPBAM_LPTIM_PWMFullDesc_t PWMUpdate_Q_PWM_3_Desc;
+
+/* USER CODE BEGIN PWMUpdate_Q_PWM_4_Desc */
+
+/* USER CODE END PWMUpdate_Q_PWM_4_Desc */
+static LPBAM_LPTIM_PWMFullDesc_t PWMUpdate_Q_PWM_4_Desc;
+
+/* USER CODE BEGIN PWMUpdate_Q_PWM_5_Desc */
+
+/* USER CODE END PWMUpdate_Q_PWM_5_Desc */
+static LPBAM_LPTIM_PWMFullDesc_t PWMUpdate_Q_PWM_5_Desc;
+
+/* USER CODE BEGIN PWMGen_MultiValue_Descs 1 */
+
+/* USER CODE END PWMGen_MultiValue_Descs 1 */
 
 /* Exported variables ------------------------------------------------------------------------------------------------*/
 /* LPBAM queues declaration */
@@ -87,7 +118,7 @@ static void MX_PWMUpdate_Q_Build(void)
   pDMAListInfo_LPTIM.pInstance = LPDMA1;
   pStartFull_LPTIM.StartMode = LPBAM_LPTIM_START_CONTINUOUS;
   pStartFull_LPTIM.WakeupIT = LPBAM_LPTIM_IT_NONE;
-  if (ADV_LPBAM_LPTIM_Start_SetFullQ(LPTIM1, &pDMAListInfo_LPTIM, &pStartFull_LPTIM, &Start_1_Desc, &PWMUpdate_Q) != LPBAM_OK)
+  if (ADV_LPBAM_LPTIM_Start_SetFullQ(LPTIM1, &pDMAListInfo_LPTIM, &pStartFull_LPTIM, &PWMUpdate_Q_Start_1_Desc, &PWMUpdate_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -101,7 +132,7 @@ static void MX_PWMUpdate_Q_Build(void)
   pPWMFull_LPTIM.PulseValue = 163;
   pPWMFull_LPTIM.UpdateRepetition = ENABLE;
   pPWMFull_LPTIM.RepetitionValue = 0;
-  if (ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM1, LPBAM_LPTIM_CHANNEL_1, &pDMAListInfo_LPTIM, &pPWMFull_LPTIM, &PWM_1_Desc, &PWMUpdate_Q) != LPBAM_OK)
+  if (ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM1, LPBAM_LPTIM_CHANNEL_1, &pDMAListInfo_LPTIM, &pPWMFull_LPTIM, &PWMUpdate_Q_PWM_1_Desc, &PWMUpdate_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -112,7 +143,7 @@ static void MX_PWMUpdate_Q_Build(void)
   pPWMFull_LPTIM.PeriodValue = 654;
   pPWMFull_LPTIM.PulseValue = 327;
   pPWMFull_LPTIM.RepetitionValue = 1;
-  if (ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM1, LPBAM_LPTIM_CHANNEL_1, &pDMAListInfo_LPTIM, &pPWMFull_LPTIM, &PWM_2_Desc, &PWMUpdate_Q) != LPBAM_OK)
+  if (ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM1, LPBAM_LPTIM_CHANNEL_1, &pDMAListInfo_LPTIM, &pPWMFull_LPTIM, &PWMUpdate_Q_PWM_2_Desc, &PWMUpdate_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -123,7 +154,7 @@ static void MX_PWMUpdate_Q_Build(void)
   pPWMFull_LPTIM.PeriodValue = 982;
   pPWMFull_LPTIM.PulseValue = 491;
   pPWMFull_LPTIM.RepetitionValue = 2;
-  if (ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM1, LPBAM_LPTIM_CHANNEL_1, &pDMAListInfo_LPTIM, &pPWMFull_LPTIM, &PWM_3_Desc, &PWMUpdate_Q) != LPBAM_OK)
+  if (ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM1, LPBAM_LPTIM_CHANNEL_1, &pDMAListInfo_LPTIM, &pPWMFull_LPTIM, &PWMUpdate_Q_PWM_3_Desc, &PWMUpdate_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -134,7 +165,7 @@ static void MX_PWMUpdate_Q_Build(void)
   pPWMFull_LPTIM.PeriodValue = 1310;
   pPWMFull_LPTIM.PulseValue = 654;
   pPWMFull_LPTIM.RepetitionValue = 3;
-  if (ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM1, LPBAM_LPTIM_CHANNEL_1, &pDMAListInfo_LPTIM, &pPWMFull_LPTIM, &PWM_4_Desc, &PWMUpdate_Q) != LPBAM_OK)
+  if (ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM1, LPBAM_LPTIM_CHANNEL_1, &pDMAListInfo_LPTIM, &pPWMFull_LPTIM, &PWMUpdate_Q_PWM_4_Desc, &PWMUpdate_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -145,7 +176,7 @@ static void MX_PWMUpdate_Q_Build(void)
   pPWMFull_LPTIM.PeriodValue = 1637;
   pPWMFull_LPTIM.PulseValue = 818;
   pPWMFull_LPTIM.RepetitionValue = 4;
-  if (ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM1, LPBAM_LPTIM_CHANNEL_1, &pDMAListInfo_LPTIM, &pPWMFull_LPTIM, &PWM_5_Desc, &PWMUpdate_Q) != LPBAM_OK)
+  if (ADV_LPBAM_LPTIM_PWM_SetFullQ(LPTIM1, LPBAM_LPTIM_CHANNEL_1, &pDMAListInfo_LPTIM, &pPWMFull_LPTIM, &PWMUpdate_Q_PWM_5_Desc, &PWMUpdate_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -153,7 +184,7 @@ static void MX_PWMUpdate_Q_Build(void)
   /**
     * Set circular mode
     */
-  if (ADV_LPBAM_Q_SetCircularMode(&PWM_1_Desc, LPBAM_LPTIM_PWM_FULLQ_CONFIG_NODE, &PWMUpdate_Q) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetCircularMode(&PWMUpdate_Q_PWM_1_Desc, LPBAM_LPTIM_PWM_FULLQ_CONFIG_NODE, &PWMUpdate_Q) != LPBAM_OK)
   {
     Error_Handler();
   }

@@ -31,7 +31,11 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+#if defined(__ICCARM__)
 __root FLASH_TypeDef * const FLASH_DBG = FLASH;
+#elif defined(__ARMCC_VERSION)|| defined(__GNUC__)
+FLASH_TypeDef * const FLASH_DBG = FLASH;
+#endif
 FLASH_OBProgramInitTypeDef OptionsBytesInit;
 
 /* Private function prototypes -----------------------------------------------*/

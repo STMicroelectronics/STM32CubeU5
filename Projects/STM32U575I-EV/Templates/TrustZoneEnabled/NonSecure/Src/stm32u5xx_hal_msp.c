@@ -1,10 +1,9 @@
 /**
   ******************************************************************************
-  * @file    stm32u5xx_hal_msp_template.c
+  * @file    stm32u5xx_hal_msp.c
   * @author  MCD Application Team
   * @brief   HAL MSP module.
-  *          This file template is located in the HAL folder and should be copied
-  *          to the user folder.
+  *
   ******************************************************************************
   * @attention
   *
@@ -15,6 +14,14 @@
   * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
+  ******************************************************************************
+  @verbatim
+ ===============================================================================
+                     ##### How to use this driver #####
+ ===============================================================================
+    [..]
+
+  @endverbatim
   ******************************************************************************
   */
 
@@ -37,30 +44,26 @@
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
-/** @defgroup HAL_MSP_Private_Functions
+/** @defgroup HAL_MSP_Private_Functions HAL MSP Private Functions
   * @{
   */
 
 /**
-  * @brief  Initialize the Global MSP.
+  * @brief  Initializes the Global MSP.
   * @retval None
   */
 void HAL_MspInit(void)
 {
-  /* NOTE : This function is generated automatically by STM32CubeMX and eventually
-            modified by the user
-   */
+
 }
 
 /**
-  * @brief  DeInitialize the Global MSP.
+  * @brief  DeInitializes the Global MSP.
   * @retval None
   */
 void HAL_MspDeInit(void)
 {
-  /* NOTE : This function is generated automatically by STM32CubeMX and eventually
-            modified by the user
-   */
+
 }
 
 /**

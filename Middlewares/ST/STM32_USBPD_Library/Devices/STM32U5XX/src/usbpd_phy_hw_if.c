@@ -32,6 +32,48 @@
 
 /* Private typedef -----------------------------------------------------------*/
 
+/* Private define ------------------------------------------------------------*/
+
+/* If CFG3 register exists */
+#if defined(UCPD_CFG3_TRIM_CC1_RP)
+/****************  Bits definition for UCPD Trimming register  ****************/
+#define UCPD_VALUE_TRIM_CC1_RP_3A0_POS  (0U)
+#define UCPD_VALUE_TRIM_CC1_RP_3A0_MSK  (0xFUL << UCPD_VALUE_TRIM_CC1_RP_3A0_POS) /*!< 0x0000000F */
+#define UCPD_VALUE_TRIM_CC1_RP_3A0      UCPD_VALUE_TRIM_CC1_RP_3A0_MSK            /*!< SW trim value for RP 3A0 (CC1) */
+#define UCPD_VALUE_TRIM_CC1_RP_1A5_POS  (0U)
+#define UCPD_VALUE_TRIM_CC1_RP_1A5_MSK  (0xFUL << UCPD_VALUE_TRIM_CC1_RP_1A5_POS) /*!< 0x0000000F */
+#define UCPD_VALUE_TRIM_CC1_RP_1A5      UCPD_VALUE_TRIM_CC1_RP_1A5_MSK            /*!< SW trim value for RP 1A5 (CC1) */
+#define UCPD_VALUE_TRIM_CC1_RD_POS      (0U)
+#define UCPD_VALUE_TRIM_CC1_RD_MSK      (0xFUL << UCPD_VALUE_TRIM_CC1_RD_POS)     /*!< 0x0000000F */
+#define UCPD_VALUE_TRIM_CC1_RD          UCPD_VALUE_TRIM_CC1_RD_MSK                /*!< SW trim value for RD (CC1)     */
+#define UCPD_VALUE_TRIM_CC2_RP_3A0_POS  (0U)
+#define UCPD_VALUE_TRIM_CC2_RP_3A0_MSK  (0xFUL << UCPD_VALUE_TRIM_CC2_RP_3A0_POS) /*!< 0x0000000F */
+#define UCPD_VALUE_TRIM_CC2_RP_3A0      UCPD_VALUE_TRIM_CC2_RP_3A0_MSK            /*!< SW trim value for RP 3A0 (CC2) */
+#define UCPD_VALUE_TRIM_CC2_RP_1A5_POS  (0U)
+#define UCPD_VALUE_TRIM_CC2_RP_1A5_MSK  (0xFUL << UCPD_VALUE_TRIM_CC2_RP_1A5_POS) /*!< 0x0000000F */
+#define UCPD_VALUE_TRIM_CC2_RP_1A5      UCPD_VALUE_TRIM_CC2_RP_1A5_MSK            /*!< SW trim value for RP 1A5 (CC2) */
+#define UCPD_VALUE_TRIM_CC2_RD_POS      (0U)
+#define UCPD_VALUE_TRIM_CC2_RD_MSK      (0xFUL << UCPD_VALUE_TRIM_CC2_RD_POS)     /*!< 0x0000000F */
+#define UCPD_VALUE_TRIM_CC2_RD          UCPD_VALUE_TRIM_CC2_RD_MSK                /*!< SW trim value for RD (CC2)     */
+#endif /* UCPD_CFG3_TRIM_CC1_RP */
+
+/* Private variables -----------------------------------------------------------*/
+
+/* If CFG3 register exists */
+#if defined(UCPD_CFG3_TRIM_CC1_RP)
+/* Variables used for SW trimming procedure */
+uint32_t dev_id;
+uint32_t rev_id;
+
+/* UCPD software trim data - Non-volatile memory location */
+const __IO uint32_t *pUCPD_TRIM_3A0_CC1 = (uint32_t *)(0x0BFA0545UL);
+const __IO uint32_t *pUCPD_TRIM_3A0_CC2 = (uint32_t *)(0x0BFA0547UL);
+const __IO uint32_t *pUCPD_TRIM_1A5_CC1 = (uint32_t *)(0x0BFA07A7UL);
+const __IO uint32_t *pUCPD_TRIM_1A5_CC2 = (uint32_t *)(0x0BFA07A8UL);
+const __IO uint32_t *pUCPD_TRIM_Rd_CC1  = (uint32_t *)(0x0BFA0544UL);
+const __IO uint32_t *pUCPD_TRIM_Rd_CC2  = (uint32_t *)(0x0BFA0546UL);
+#endif /* UCPD_CFG3_TRIM_CC1_RP */
+
 /* Private function prototypes -----------------------------------------------*/
 USBPD_PORT_HandleTypeDef Ports[USBPD_PORT_COUNT];
 
@@ -44,6 +86,40 @@ void USBPD_HW_IF_GlobalHwInit(void)
   /* PWR register access (for disabling dead battery feature) */
   LL_AHB3_GRP1_EnableClock(LL_AHB3_GRP1_PERIPH_PWR);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_CRC);
+
+  /* If CFG3 register exists */
+#if defined(UCPD_CFG3_TRIM_CC1_RP)
+  /* The CC pull-up (Rp) and pull-down (Rd) must be trimmed to meet the required accuracy.
+     The trimming values are saved in the non-volatile memory. */
+
+  /* Retrieve device and revision ID */
+  dev_id = HAL_GetDEVID();
+  rev_id = HAL_GetREVID();
+
+  /* This is only needed for some devices/rev. */
+  if (((dev_id == 0x482UL) && (rev_id == 0x3000UL)) ||
+      ((dev_id == 0x481UL) && (rev_id == 0x2001UL)) ||
+      ((dev_id == 0x481UL) && (rev_id == 0x3000UL)) ||
+      ((dev_id == 0x476UL) && (rev_id == 0x1000UL)))
+  {
+    CLEAR_BIT(UCPD1->CFG3, (UCPD_CFG3_TRIM_CC1_RP | UCPD_CFG3_TRIM_CC2_RP |
+                            UCPD_CFG3_TRIM_CC1_RD | UCPD_CFG3_TRIM_CC2_RD)); /* Clear bits to change */
+
+    uint32_t temp;
+    temp = ((((*pUCPD_TRIM_3A0_CC1) & UCPD_VALUE_TRIM_CC1_RP_3A0_MSK) >>
+             UCPD_VALUE_TRIM_CC1_RP_3A0_POS) << UCPD_CFG3_TRIM_CC1_RP_Pos);
+    SET_BIT(UCPD1->CFG3, temp); /* Apply Rp trimming */
+    temp = ((((*pUCPD_TRIM_3A0_CC2) & UCPD_VALUE_TRIM_CC2_RP_3A0_MSK) >>
+             UCPD_VALUE_TRIM_CC2_RP_3A0_POS) << UCPD_CFG3_TRIM_CC2_RP_Pos);
+    SET_BIT(UCPD1->CFG3, temp); /* Apply Rp trimming */
+    temp = ((((*pUCPD_TRIM_Rd_CC1) & UCPD_VALUE_TRIM_CC1_RD_MSK) >> \
+             UCPD_VALUE_TRIM_CC1_RD_POS) << UCPD_CFG3_TRIM_CC1_RD_Pos);
+    SET_BIT(UCPD1->CFG3, temp); /* Apply Rd trimming */
+    temp = ((((*pUCPD_TRIM_Rd_CC2) & UCPD_VALUE_TRIM_CC2_RD_MSK) >> \
+             UCPD_VALUE_TRIM_CC2_RD_POS) << UCPD_CFG3_TRIM_CC2_RD_Pos);
+    SET_BIT(UCPD1->CFG3, temp); /* Apply Rd trimming */
+  }
+#endif /* UCPD_CFG3_TRIM_CC1_RP */
 }
 
 #if !defined(USBPDCORE_LIB_NO_PD)
@@ -136,9 +212,55 @@ void USBPDM1_AssertRp(uint8_t PortNum)
       break;
     case vRp_1_5A:
       LL_UCPD_SetRpResistor(Ports[PortNum].husbpd, LL_UCPD_RESISTOR_1_5A);
+
+      /* If CFG3 register exists */
+#if defined(UCPD_CFG3_TRIM_CC1_RP)
+      /* The CC pull-up (Rp) must be trimmed to meet the required accuracy.
+         The trimming values are saved in the non-volatile memory. */
+
+      /* This is only needed for some devices/rev */
+      if (((dev_id == 0x482UL) && (rev_id == 0x3000UL)) ||
+          ((dev_id == 0x481UL) && (rev_id == 0x2001UL)) ||
+          ((dev_id == 0x481UL) && (rev_id == 0x3000UL)) ||
+          ((dev_id == 0x476UL) && (rev_id == 0x1000UL)))
+      {
+        CLEAR_BIT(UCPD1->CFG3, (UCPD_CFG3_TRIM_CC1_RP | UCPD_CFG3_TRIM_CC2_RP)); /* Clear bits to change */
+
+        uint32_t temp;
+        temp = ((((*pUCPD_TRIM_1A5_CC1) & UCPD_VALUE_TRIM_CC1_RP_1A5_MSK) >>
+                 UCPD_VALUE_TRIM_CC1_RP_1A5_POS) << UCPD_CFG3_TRIM_CC1_RP_Pos);
+        SET_BIT(UCPD1->CFG3, temp); /* Apply Rp trimming */
+        temp = ((((*pUCPD_TRIM_1A5_CC2) & UCPD_VALUE_TRIM_CC2_RP_1A5_MSK) >>
+                 UCPD_VALUE_TRIM_CC2_RP_1A5_POS) << UCPD_CFG3_TRIM_CC2_RP_Pos);
+        SET_BIT(UCPD1->CFG3, temp); /* Apply Rp trimming */
+      }
+#endif /* UCPD_CFG3_TRIM_CC1_RP */
       break;
     case vRp_3_0A:
       LL_UCPD_SetRpResistor(Ports[PortNum].husbpd, LL_UCPD_RESISTOR_3_0A);
+
+      /* If CFG3 register exists */
+#if defined(UCPD_CFG3_TRIM_CC1_RP)
+      /* The CC pull-up (Rp) must be trimmed to meet the required accuracy.
+         The trimming values are saved in the non-volatile memory. */
+
+      /* This is only needed for some devices/rev */
+      if (((dev_id == 0x482UL) && (rev_id == 0x3000UL)) ||
+          ((dev_id == 0x481UL) && (rev_id == 0x2001UL)) ||
+          ((dev_id == 0x481UL) && (rev_id == 0x3000UL)) ||
+          ((dev_id == 0x476UL) && (rev_id == 0x1000UL)))
+      {
+        CLEAR_BIT(UCPD1->CFG3, (UCPD_CFG3_TRIM_CC1_RP | UCPD_CFG3_TRIM_CC2_RP)); /* Clear bits to change */
+
+        uint32_t temp;
+        temp = ((((*pUCPD_TRIM_3A0_CC1) & UCPD_VALUE_TRIM_CC1_RP_3A0_MSK) >>
+                 UCPD_VALUE_TRIM_CC1_RP_3A0_POS) << UCPD_CFG3_TRIM_CC1_RP_Pos);
+        SET_BIT(UCPD1->CFG3, temp); /* Apply Rp trimming */
+        temp = ((((*pUCPD_TRIM_3A0_CC2) & UCPD_VALUE_TRIM_CC2_RP_3A0_MSK) >>
+                 UCPD_VALUE_TRIM_CC2_RP_3A0_POS) << UCPD_CFG3_TRIM_CC2_RP_Pos);
+        SET_BIT(UCPD1->CFG3, temp); /* Apply Rp trimming */
+      }
+#endif /* UCPD_CFG3_TRIM_CC1_RP */
       break;
     default:
       break;
@@ -206,6 +328,14 @@ void USBPDM1_EnterErrorRecovery(uint8_t PortNum)
   LL_UCPD_SetSRCRole(Ports[PortNum].husbpd);
   LL_UCPD_SetRpResistor(Ports[PortNum].husbpd, LL_UCPD_RESISTOR_NONE);
   LL_UCPD_RxDisable(Ports[PortNum].husbpd);
+
+#if defined(USBPD_REV30_SUPPORT)
+  if (Ports[PortNum].settings->PE_PD3_Support.d.PE_FastRoleSwapSupport == USBPD_TRUE)
+  {
+    /* Set GPIO to disallow the FRSTX handling */
+    LL_UCPD_FRSDetectionDisable(Ports[PortNum].husbpd);
+  }
+#endif /* USBPD_REV30_SUPPORT */
 }
 
 void USBPDM1_Set_CC(uint8_t PortNum, CCxPin_TypeDef cc)
@@ -320,6 +450,12 @@ void HW_SignalDetachment(uint8_t PortNum)
 #if !defined(_LOW_POWER)
   /* Enable only detection interrupt */
   WRITE_REG(Ports[PortNum].husbpd->IMR, UCPD_IMR_TYPECEVT1IE | UCPD_IMR_TYPECEVT2IE);
+#else
+  if (USBPD_PORTPOWERROLE_SRC == Ports[PortNum].params->PE_PowerRole)
+  {
+    /* Enable detection interrupt */
+    WRITE_REG(Ports[PortNum].husbpd->IMR, UCPD_IMR_TYPECEVT1IE | UCPD_IMR_TYPECEVT2IE);
+  }
 #endif /* !_LOW_POWER */
 
   USBPD_HW_DeInit_DMATxInstance(PortNum);
@@ -336,6 +472,15 @@ void HW_SignalDetachment(uint8_t PortNum)
     /* DeInitialise VBUS power */
     (void)BSP_USBPD_PWR_VBUSDeInit(PortNum);
   }
+
+#if defined(USBPD_REV30_SUPPORT)
+  if (Ports[PortNum].settings->PE_PD3_Support.d.PE_FastRoleSwapSupport == USBPD_TRUE)
+  {
+    /* Set GPIO to disallow the FRSTX handling */
+    LL_UCPD_FRSDetectionDisable(Ports[PortNum].husbpd);
+  }
+#endif /* USBPD_REV30_SUPPORT */
+
 #endif /* !USBPDCORE_LIB_NO_PD */
   Ports[PortNum].CCx = CCNONE;
 #if !defined(USBPDCORE_LIB_NO_PD)
@@ -348,12 +493,58 @@ void USBPD_HW_IF_SetResistor_SinkTxNG(uint8_t PortNum)
 {
   /* set the resistor SinkTxNG 1.5A5V */
   LL_UCPD_SetRpResistor(Ports[PortNum].husbpd, LL_UCPD_RESISTOR_1_5A);
+
+  /* If CFG3 register exists */
+#if defined(UCPD_CFG3_TRIM_CC1_RP)
+  /* The CC pull-up (Rp) must be trimmed to meet the required accuracy.
+     The trimming values are saved in the non-volatile memory. */
+
+  /* This is only needed for some devices/rev */
+  if (((dev_id == 0x482UL) && (rev_id == 0x3000UL)) ||
+      ((dev_id == 0x481UL) && (rev_id == 0x2001UL)) ||
+      ((dev_id == 0x481UL) && (rev_id == 0x3000UL)) ||
+      ((dev_id == 0x476UL) && (rev_id == 0x1000UL)))
+  {
+    CLEAR_BIT(UCPD1->CFG3, (UCPD_CFG3_TRIM_CC1_RP | UCPD_CFG3_TRIM_CC2_RP)); /* Clear bits to change */
+
+    uint32_t temp;
+    temp = ((((*pUCPD_TRIM_1A5_CC1) & UCPD_VALUE_TRIM_CC1_RP_1A5_MSK) >>
+             UCPD_VALUE_TRIM_CC1_RP_1A5_POS) << UCPD_CFG3_TRIM_CC1_RP_Pos);
+    SET_BIT(UCPD1->CFG3, temp); /* Apply Rp trimming */
+    temp = ((((*pUCPD_TRIM_1A5_CC2) & UCPD_VALUE_TRIM_CC2_RP_1A5_MSK) >>
+             UCPD_VALUE_TRIM_CC2_RP_1A5_POS) << UCPD_CFG3_TRIM_CC2_RP_Pos);
+    SET_BIT(UCPD1->CFG3, temp); /* Apply Rp trimming */
+  }
+#endif /* UCPD_CFG3_TRIM_CC1_RP */
 }
 
 void USBPD_HW_IF_SetResistor_SinkTxOK(uint8_t PortNum)
 {
   /* set the resistor SinkTxNG 3.0A5V */
   LL_UCPD_SetRpResistor(Ports[PortNum].husbpd, LL_UCPD_RESISTOR_3_0A);
+
+  /* If CFG3 register exists */
+#if defined(UCPD_CFG3_TRIM_CC1_RP)
+  /* The CC pull-up (Rp) must be trimmed to meet the required accuracy.
+     The trimming values are saved in the non-volatile memory. */
+
+  /* This is only needed for some devices/rev */
+  if (((dev_id == 0x482UL) && (rev_id == 0x3000UL)) ||
+      ((dev_id == 0x481UL) && (rev_id == 0x2001UL)) ||
+      ((dev_id == 0x481UL) && (rev_id == 0x3000UL)) ||
+      ((dev_id == 0x476UL) && (rev_id == 0x1000UL)))
+  {
+    CLEAR_BIT(UCPD1->CFG3, (UCPD_CFG3_TRIM_CC1_RP | UCPD_CFG3_TRIM_CC2_RP)); /* Clear bits to change */
+
+    uint32_t temp;
+    temp = ((((*pUCPD_TRIM_3A0_CC1) & UCPD_VALUE_TRIM_CC1_RP_3A0_MSK) >>
+             UCPD_VALUE_TRIM_CC1_RP_3A0_POS) << UCPD_CFG3_TRIM_CC1_RP_Pos);
+    SET_BIT(UCPD1->CFG3, temp); /* Apply Rp trimming */
+    temp = ((((*pUCPD_TRIM_3A0_CC2) & UCPD_VALUE_TRIM_CC2_RP_3A0_MSK) >>
+             UCPD_VALUE_TRIM_CC2_RP_3A0_POS) << UCPD_CFG3_TRIM_CC2_RP_Pos);
+    SET_BIT(UCPD1->CFG3, temp); /* Apply Rp trimming */
+  }
+#endif /* UCPD_CFG3_TRIM_CC1_RP */
 }
 
 uint8_t USBPD_HW_IF_IsResistor_SinkTxOk(uint8_t PortNum)
@@ -383,4 +574,3 @@ void USBPD_HW_IF_FastRoleSwapSignalling(uint8_t PortNum)
 {
   LL_UCPD_SignalFRSTX(Ports[PortNum].husbpd);
 }
-

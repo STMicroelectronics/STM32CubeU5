@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -22,7 +22,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 /* Includes ------------------------------------------------------------------*/
 #include "ux_api.h"
@@ -66,5 +66,5 @@ void DFU_Jump(void);
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 #endif  /* __UX_DEVICE_DFU_MEDIA_H__ */

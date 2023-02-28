@@ -46,6 +46,7 @@ System, Security, SAES, AES,  TrustZone disabled
   - CRYP/CRYP_SAES_ECB_CBC/Inc/stm32u5xx_hal_conf.h    HAL configuration file
   - CRYP/CRYP_SAES_ECB_CBC/Inc/stm32u5xx_it.h          Interrupt handlers header file
   - CRYP/CRYP_SAES_ECB_CBC/Inc/main.h                  Header for main.c module
+  - CRYP/CRYP_SAES_ECB_CBC/Inc/b_u585i_iot02a_conf.h   BSP configuration file
   - CRYP/CRYP_SAES_ECB_CBC/Src/stm32u5xx_it.c          Interrupt handlers
   - CRYP/CRYP_SAES_ECB_CBC/Src/main.c                  Main program
   - CRYP/CRYP_SAES_ECB_CBC/Src/stm32u5xx_hal_msp.c     HAL MSP module

@@ -77,7 +77,7 @@ static void RTC_TestBackUpRegisters(void);
 int main(void)
 {
   /* SAU/IDAU, FPU and interrupts secure/non-secure allocation setup done */
-  /* in SystemInit() based on partition_stm32u575xx.h file's definitions. */
+/* in SystemInit() based on partition_stm32u575xx.h file's definitions. */
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -187,7 +187,7 @@ void SystemClock_Config(void)
   HAL_PWR_EnableBkUpAccess();
   __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_MEDIUMHIGH);
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSE|RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.LSEState = RCC_LSE_ON;
@@ -209,7 +209,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
@@ -245,6 +245,8 @@ static void SystemPower_Config(void)
   {
     Error_Handler();
   }
+/* USER CODE BEGIN PWR */
+/* USER CODE END PWR */
 }
 
 /**
@@ -440,7 +442,7 @@ static void MX_RTC_Init(void)
     Error_Handler();
   }
   secureState.rtcSecureFull = RTC_SECURE_FULL_NO;
-  secureState.rtcNonSecureFeatures = RTC_NONSECURE_FEATURE_NONE & RTC_NONSECURE_FEATURE_ALRB;
+  secureState.rtcNonSecureFeatures = RTC_NONSECURE_FEATURE_NONE&RTC_NONSECURE_FEATURE_ALRB;
   secureState.backupRegisterStartZone2 = RTC_BKP_DR10;
   secureState.backupRegisterStartZone3 = RTC_BKP_DR20;
   if (HAL_RTCEx_SecureModeSet(&hrtc, &secureState) != HAL_OK)
@@ -507,10 +509,14 @@ static void MX_RTC_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

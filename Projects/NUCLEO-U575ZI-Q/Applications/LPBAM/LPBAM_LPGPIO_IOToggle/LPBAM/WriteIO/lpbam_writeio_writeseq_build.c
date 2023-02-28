@@ -22,7 +22,18 @@
 
 /* Private variables -------------------------------------------------------------------------------------------------*/
 /* LPBAM variables declaration */
-static LPBAM_GPIO_WritePinSeqFullDesc_t WritePinSequence_1_Desc;
+/* USER CODE BEGIN WriteIO_WriteSeq_Descs 0 */
+
+/* USER CODE END WriteIO_WriteSeq_Descs 0 */
+
+/* USER CODE BEGIN ToggleIO_Q_WritePinSequence_1_Desc */
+
+/* USER CODE END ToggleIO_Q_WritePinSequence_1_Desc */
+static LPBAM_GPIO_WritePinSeqFullDesc_t ToggleIO_Q_WritePinSequence_1_Desc;
+
+/* USER CODE BEGIN WriteIO_WriteSeq_Descs 1 */
+
+/* USER CODE END WriteIO_WriteSeq_Descs 1 */
 
 /* Exported variables ------------------------------------------------------------------------------------------------*/
 /* LPBAM queues declaration */
@@ -83,14 +94,14 @@ static void MX_ToggleIO_Q_Build(void)
   pWritePinSeqFull_LPGPIO.Pin = LPBAM_GPIO_PIN_0;
   pWritePinSeqFull_LPGPIO.Size = 2;
   pWritePinSeqFull_LPGPIO.pData = (uint32_t*)&LPGPIOBufferState[0];
-  if (ADV_LPBAM_GPIO_WritePinSequence_SetFullQ(LPGPIO1, &pDMAListInfo_LPGPIO, &pWritePinSeqFull_LPGPIO, &WritePinSequence_1_Desc, &ToggleIO_Q) != LPBAM_OK)
+  if (ADV_LPBAM_GPIO_WritePinSequence_SetFullQ(LPGPIO1, &pDMAListInfo_LPGPIO, &pWritePinSeqFull_LPGPIO, &ToggleIO_Q_WritePinSequence_1_Desc, &ToggleIO_Q) != LPBAM_OK)
   {
     Error_Handler();
   }
   pTrigConfig_LPGPIO.TriggerConfig.TriggerMode = LPBAM_DMA_TRIGM_SINGLE_BURST_TRANSFER;
   pTrigConfig_LPGPIO.TriggerConfig.TriggerPolarity = LPBAM_DMA_TRIG_POLARITY_RISING;
   pTrigConfig_LPGPIO.TriggerConfig.TriggerSelection = LPBAM_LPDMA1_TRIGGER_LPTIM1_CH1;
-  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPGPIO, LPBAM_GPIO_WRITEPINSEQ_FULLQ_DATA_NODE, &WritePinSequence_1_Desc) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetTriggerConfig(&pTrigConfig_LPGPIO, LPBAM_GPIO_WRITEPINSEQ_FULLQ_DATA_NODE, &ToggleIO_Q_WritePinSequence_1_Desc) != LPBAM_OK)
   {
     Error_Handler();
   }
@@ -98,7 +109,7 @@ static void MX_ToggleIO_Q_Build(void)
   /**
     * Set circular mode
     */
-  if (ADV_LPBAM_Q_SetCircularMode(&WritePinSequence_1_Desc, LPBAM_GPIO_WRITEPINSEQ_FULLQ_DATA_NODE, &ToggleIO_Q) != LPBAM_OK)
+  if (ADV_LPBAM_Q_SetCircularMode(&ToggleIO_Q_WritePinSequence_1_Desc, LPBAM_GPIO_WRITEPINSEQ_FULLQ_DATA_NODE, &ToggleIO_Q) != LPBAM_OK)
   {
     Error_Handler();
   }

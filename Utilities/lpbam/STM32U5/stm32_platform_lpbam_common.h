@@ -180,7 +180,9 @@ typedef struct
 #define LPBAM_LPDMA1_TRIGGER_LPTIM3_CH1      (10U) /*!< LPBAM LPDMA1 HW Trigger signal is LPTIM3_CH1      */
 #define LPBAM_LPDMA1_TRIGGER_LPTIM4_OUT      (11U) /*!< LPBAM LPDMA1 HW Trigger signal is LPTIM4_OUT      */
 #define LPBAM_LPDMA1_TRIGGER_COMP1_OUT       (12U) /*!< LPBAM LPDMA1 HW Trigger signal is COMP1_OUT       */
+#if defined(COMP2)
 #define LPBAM_LPDMA1_TRIGGER_COMP2_OUT       (13U) /*!< LPBAM LPDMA1 HW Trigger signal is COMP2_OUT       */
+#endif /* defined(COMP2) */
 #define LPBAM_LPDMA1_TRIGGER_RTC_ALRA_TRG    (14U) /*!< LPBAM LPDMA1 HW Trigger signal is RTC_ALRA_TRG    */
 #define LPBAM_LPDMA1_TRIGGER_RTC_ALRB_TRG    (15U) /*!< LPBAM LPDMA1 HW Trigger signal is RTC_ALRB_TRG    */
 #define LPBAM_LPDMA1_TRIGGER_RTC_WUT_TRG     (16U) /*!< LPBAM LPDMA1 HW Trigger signal is RTC_WUT_TRG     */
@@ -239,6 +241,15 @@ typedef struct
 #define LPBAM_DMA_TCEM_LAST_LL_ITEM_TRANSFER   DMA_CTR2_TCEM   /*!< The TC event is generated at the end of the last
                                                                     linked-list item and the HT event is generated at
                                                                     the half of the last linked-list item             */
+/**
+  * @}
+  */
+
+/** @defgroup LPBAM_DMA_Queue_Type LPBAM DMA Queue Type
+  * @{
+  */
+#define LPBAM_DMA_STATIC_Q  QUEUE_TYPE_STATIC  /*!< Static DMA queue  */
+#define LPBAM_DMA_DYNAMIC_Q QUEUE_TYPE_DYNAMIC /*!< Dynamic DMA queue */
 /**
   * @}
   */

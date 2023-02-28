@@ -1,6 +1,17 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // SPDX-License-Identifier: MIT
 
+/**
+ * @file
+ *
+ * @brief Defines private implementation used by json.
+ *
+ * @note You MUST NOT use any symbols (macros, functions, structures, enums, etc.)
+ * prefixed with an underscore ('_') directly in your application code. These symbols
+ * are part of Azure SDK's internal implementation; we do not document these symbols
+ * and they are subject to change in future versions of the SDK which would break your code.
+ */
+
 #ifndef _az_JSON_PRIVATE_H
 #define _az_JSON_PRIVATE_H
 
@@ -107,6 +118,24 @@ AZ_NODISCARD AZ_INLINE _az_json_stack_item _az_json_stack_peek(_az_json_bit_stac
   // true (i.e. 1) means _az_JSON_STACK_OBJECT, while false (i.e. 0) means _az_JSON_STACK_ARRAY
   return (json_stack->_internal.az_json_stack & 1U) != 0 ? _az_JSON_STACK_OBJECT
                                                          : _az_JSON_STACK_ARRAY;
+}
+
+AZ_NODISCARD AZ_INLINE bool _az_is_valid_escaped_character(uint8_t byte)
+{
+  switch (byte)
+  {
+    case '\\':
+    case '"':
+    case '/':
+    case 'b':
+    case 'f':
+    case 'n':
+    case 'r':
+    case 't':
+      return true;
+    default:
+      return false;
+  }
 }
 
 #include <azure/core/_az_cfg_suffix.h>

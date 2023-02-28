@@ -25,7 +25,7 @@
 
 /* USER CODE END Includes */
 
-DMA_NodeTypeDef Node1;
+DMA_NodeTypeDef DACNode;
 DMA_QListTypeDef DACQueue;
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,11 +74,13 @@ HAL_StatusTypeDef MX_DACQueue_Config(void)
   pNodeConfig.DstAddress = 0;
   pNodeConfig.DataSize = 0;
 
-  /* Build Node1 Node */
-  ret |= HAL_DMAEx_List_BuildNode(&pNodeConfig, &Node1);
+  /* Build DACNode Node */
+  ret |= HAL_DMAEx_List_BuildNode(&pNodeConfig, &DACNode);
 
-  /* Insert Node1 to Queue */
-  ret |= HAL_DMAEx_List_InsertNode_Tail(&DACQueue, &Node1);
+  /* Insert DACNode to Queue */
+  ret |= HAL_DMAEx_List_InsertNode_Tail(&DACQueue, &DACNode);
+
+  ret |= HAL_DMAEx_List_SetCircularMode(&DACQueue);
 
    return ret;
 }

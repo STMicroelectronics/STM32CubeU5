@@ -1,0 +1,9 @@
+[ProjectFiles]
+HeaderPath=..\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK
+[Others]
+Define=
+HALModule=EXTI;I2C;UART
+[Groups]
+Doc=../README.md;
+Drivers/BSP/STM32U5x9J-DK=../../../../../../Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery.c;
+Drivers/STM32U5xx_HAL_Driver=../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_exti.c;

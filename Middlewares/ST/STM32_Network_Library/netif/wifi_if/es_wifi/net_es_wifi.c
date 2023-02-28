@@ -17,9 +17,11 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "net_conf.h"
 #include "net_connect.h"
 #include "net_internals.h"
 #include "es_wifi.h"
+#include "wifi.h"
 
 #define ESWIFI_MAX_CHANNEL_NBR           4
 #define WIFI_FREE_SOCKET                 0U
@@ -32,30 +34,30 @@
 #define WIFI_STARTED_SERVER_SOCKET       64U
 #define WIFI_CONNECTED_SOCKET_RW         (WIFI_CONNECTED_SOCKET | WIFI_SEND_OK | WIFI_RECV_OK)
 
-#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+#define MIN(A, B)  (((A) < (B)) ? (A) : (B))
 
-#define NET_NTOAR(N,A)   A[3] = (uint8_t)((N & 0xff000000U) >> 24U);\
-  A[2] = (uint8_t)((N & 0x00ff0000U) >> 16U);\
-  A[1] = (uint8_t)((N & 0x0000ff00U) >> 8U); \
-  A[0] = (uint8_t)((N & 0x000000ffU) >> 0U); \
+#define NET_NTOAR(N, A)                           \
+  (A)[3] = (uint8_t)(((N) & 0xff000000U) >> 24U); \
+  (A)[2] = (uint8_t)(((N) & 0x00ff0000U) >> 16U); \
+  (A)[1] = (uint8_t)(((N) & 0x0000ff00U) >> 8U);  \
+  (A)[0] = (uint8_t)(((N) & 0x000000ffU) >> 0U);  \
 
-#define NET_ARTON(A)     ((uint32_t)(((uint32_t)A[3] << 24U) |\
-                                     ((uint32_t)A[2] << 16U) |\
-                                     ((uint32_t)A[1] <<  8U) |\
-                                     ((uint32_t)A[0] <<  0U)))
+#define NET_ARTON(A)                      \
+  ((uint32_t)(((uint32_t)(A)[3] << 24U) | \
+              ((uint32_t)(A)[2] << 16U) | \
+              ((uint32_t)(A)[1] <<  8U) | \
+              ((uint32_t)(A)[0] <<  0U)))
 
-/* Declaration of generic class functions               */
-static   ES_WIFIObject_t  *castcontext(void *context)
+/* Declaration of generic class functions */
+static ES_WIFIObject_t *castcontext(void *context)
 {
   return (ES_WIFIObject_t *)context;
-
 }
 
 
-static   sockaddr_in_t *cast2sockaddr_in(const net_sockaddr_t *addr)
+static net_sockaddr_in_t *cast2net_sockaddr_in(const net_sockaddr_t *addr)
 {
-  return (sockaddr_in_t *) addr;
-
+  return (net_sockaddr_in_t *)addr;
 }
 
 
@@ -72,17 +74,17 @@ static int32_t es_wifi_if_connect(net_if_handle_t *pnetif);
 static int32_t es_wifi_if_disconnect(net_if_handle_t *pnetif);
 static int32_t es_wifi_cmd(net_if_handle_t *pnetif, char_t *cmd, char_t *resp);
 
-static int32_t es_wifi_socket(int32_t domain, int32_t type, int32_t protocol);
+static int32_t es_wifi_socket(int32_t Domain, int32_t Type, int32_t protocol);
 static int32_t es_wifi_bind(int32_t sock, const net_sockaddr_t *addr, uint32_t addrlen);
 static int32_t es_wifi_listen(int32_t sock, int32_t backlog);
 static int32_t es_wifi_accept(int32_t sock, net_sockaddr_t *addr, uint32_t *addrlen);
 static int32_t es_wifi_connect(int32_t sock, const net_sockaddr_t *addr, uint32_t addrlen);
-static int32_t es_wifi_send(int32_t sock, uint8_t *buf, int32_t len, int32_t flags);
+static int32_t es_wifi_send(int32_t sock, const uint8_t *buf, int32_t len, int32_t flags);
 static int32_t es_wifi_recv(int32_t sock, uint8_t *buf, int32_t len, int32_t flags);
-static int32_t es_wifi_sendto(int32_t sock, uint8_t *buf, int32_t len, int32_t flags, net_sockaddr_t *to,
-                              uint32_t tolen);
-static int32_t es_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t len, int32_t flags, net_sockaddr_t *from,
-                                uint32_t *fromlen);
+static int32_t es_wifi_sendto(int32_t sock, const uint8_t *buf, int32_t len, int32_t flags,
+                              net_sockaddr_t *to, uint32_t tolen);
+static int32_t es_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t len, int32_t flags,
+                                net_sockaddr_t *from, uint32_t *fromlen);
 static int32_t es_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, const void *optvalue, uint32_t optlen);
 static int32_t es_wifi_getsockopt(int32_t sock, int32_t level, int32_t optname, void *optvalue, uint32_t *optlen);
 static int32_t es_wifi_getsockname(int32_t sock, net_sockaddr_t *name, uint32_t *namelen);
@@ -95,37 +97,37 @@ static int32_t es_wifi_ping(net_if_handle_t *pnetif, net_sockaddr_t *addr, int32
                             int32_t response[]);
 
 /* Declaration and definition of class-specific functions */
-static void check_connection_lost(net_if_handle_t *pnetif, int32_t n);
-static  int32_t es_wifi_scan(net_if_handle_t *pnetif, net_wifi_scan_mode_t mode, char *ssid);
-static  int32_t es_wifi_get_scan_results(net_if_handle_t *pnetif, net_wifi_scan_results_t *results, uint8_t number);
+static void check_connection_lost(net_if_handle_t *pnetif, int32_t why);
+static int32_t es_wifi_scan(net_if_handle_t *pnetif, net_wifi_scan_mode_t mode, char *ssid);
+static int32_t es_wifi_get_scan_results(net_if_handle_t *pnetif, net_wifi_scan_results_t *results, uint8_t number);
 
-/* internal structure to manage es_wfi socket */
+/* Internal structure to manage es_wfi socket. */
 typedef struct eswifi_tls_data_s
 {
-  char_t *tls_ca_certs; /**< Socket option. */
-  char_t *tls_ca_crl;   /**< Socket option. */
-  char_t *tls_dev_cert; /**< Socket option. */
-  char_t *tls_dev_key;  /**< Socket option. */
-  uint8_t *tls_dev_pwd;        /**< Socket option. */
-  bool tls_srv_verification;   /**< Socket option. */
-  char_t *tls_srv_name;          /**< Socket option. */
+  char_t *tls_ca_certs;       /**< Socket option. */
+  char_t *tls_ca_crl;         /**< Socket option. */
+  char_t *tls_dev_cert;       /**< Socket option. */
+  char_t *tls_dev_key;        /**< Socket option. */
+  uint8_t *tls_dev_pwd;       /**< Socket option. */
+  bool tls_srv_verification;  /**< Socket option. */
+  char_t *tls_srv_name;       /**< Socket option. */
 } eswifi_tls_data_t;
 
 typedef struct WIFI_Channel_s
 {
-  uint8_t  Number;
-  uint8_t  status;
-  uint8_t  protocol;
-  uint8_t  type;
+  uint8_t Number;
+  uint8_t status;
+  uint8_t protocol;
+  uint8_t type;
   uint16_t localport;
-  uint32_t  localaddress;
+  uint32_t localaddress;
   uint32_t maxpconnections;
-  int32_t  blocking;
-  int32_t  sendtimeout;
-  int32_t  recvtimeout;
+  int32_t blocking;
+  int32_t sendtimeout;
+  int32_t recvtimeout;
   net_if_notify_func notify_callback;
-  void          *notify_context;
-  net_if_handle_t  *pnetif;
+  void *notify_context;
+  net_if_handle_t *pnetif;
 
 #ifdef NET_MBEDTLS_WIFI_MODULE_SUPPORT
   eswifi_tls_data_t        tlsData;
@@ -134,9 +136,6 @@ typedef struct WIFI_Channel_s
 } WIFI_Channel_t;
 
 static WIFI_Channel_t WifiChannel[ESWIFI_MAX_CHANNEL_NBR] = {.0};
-
-
-
 
 int32_t es_wifi_driver(net_if_handle_t *pnetif)
 {
@@ -147,12 +146,13 @@ int32_t es_wifi_driver(net_if_handle_t *pnetif)
 /**
   * @brief  Function description
   * @param  Params
-  * @retval socket status
+  * @retval operation status
   */
-int32_t  es_wifi_if_init(net_if_handle_t *pnetif)
+int32_t es_wifi_if_init(net_if_handle_t *pnetif)
 {
   int32_t ret;
-  net_if_drv_t *p = NET_MALLOC(sizeof(net_if_drv_t));
+  net_if_drv_t *const p = NET_MALLOC(sizeof(*p));
+
   if (p != NULL)
   {
     p->if_class = NET_INTERFACE_CLASS_WIFI;
@@ -165,7 +165,7 @@ int32_t  es_wifi_if_init(net_if_handle_t *pnetif)
 
     p->if_connect = es_wifi_if_connect;
     p->if_disconnect = es_wifi_if_disconnect;
-    p->if_atcmd        = es_wifi_cmd;
+    p->if_atcmd = es_wifi_cmd;
     p->psocket = es_wifi_socket;
     p->pbind = es_wifi_bind;
     p->plisten = es_wifi_listen;
@@ -181,22 +181,21 @@ int32_t  es_wifi_if_init(net_if_handle_t *pnetif)
     p->pgetpeername = es_wifi_getpeername;
     p->pclose = es_wifi_close;
     p->pshutdown = es_wifi_shutdown;
-
     p->pgethostbyname = es_wifi_gethostbyname;
     p->pping = es_wifi_ping;
-    net_if_wifi_class_extension_t       *pextwifi;
-    pextwifi = NET_MALLOC(sizeof(net_if_wifi_class_extension_t));
-    if (NULL == pextwifi)
+
+    net_if_wifi_class_extension_t *const p_wifi_ext = NET_MALLOC(sizeof(*p_wifi_ext));
+    if (NULL == p_wifi_ext)
     {
-      NET_DBG_ERROR("can't allocate memory for es_wifi_driver class\n");
+      NET_DBG_ERROR("Can't allocate memory for es_wifi_driver class\n");
       NET_FREE(p);
       ret = NET_ERROR_NO_MEMORY;
     }
     else
     {
-      (void) memset(pextwifi, 0, sizeof(net_if_wifi_class_extension_t));
+      (void)memset(p_wifi_ext, 0, sizeof(*p_wifi_ext));
       pnetif->pdrv = p;
-      p->extension.wifi = pextwifi;
+      p->extension.wifi = p_wifi_ext;
       p->extension.wifi->scan = es_wifi_scan;
       p->extension.wifi->get_scan_results = es_wifi_get_scan_results;
 
@@ -209,31 +208,31 @@ int32_t  es_wifi_if_init(net_if_handle_t *pnetif)
   }
   else
   {
-    NET_DBG_ERROR("can't allocate memory for es_wifi_driver class\n");
+    NET_DBG_ERROR("Can't allocate memory for es_wifi_driver class\n");
     ret = NET_ERROR_NO_MEMORY;
   }
   return ret;
 }
 
+
 static int32_t es_wifi_if_deinit(net_if_handle_t *pnetif)
 {
-  ES_WIFIObject_t  *pEsWifiObj;
-
-  pEsWifiObj = castcontext(pnetif->pdrv->context);
-  (void) ES_WIFI_DeInit(pEsWifiObj);
-
+  (void) ES_WIFI_DeInit(castcontext(pnetif->pdrv->context));
 
   NET_FREE(pnetif->pdrv->extension.wifi);
   pnetif->pdrv->extension.wifi = NULL;
+
   NET_FREE(pnetif->pdrv);
   pnetif->pdrv = NULL;
+
   return NET_OK;
 }
 
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  pnetif
+  * @retval operation status
   */
 static int32_t es_wifi_cmd(net_if_handle_t *pnetif, char_t *cmd, char_t *resp)
 {
@@ -243,26 +242,26 @@ static int32_t es_wifi_cmd(net_if_handle_t *pnetif, char_t *cmd, char_t *resp)
   {
     ret = NET_ERROR_INTERFACE_FAILURE;
   }
+
   return ret;
 }
+
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  pnetif
+  * @retval operation status
   */
-int32_t wifi_probe(void **ll_drv_context);
-
-static  int32_t es_wifi_if_probe(net_if_handle_t *pnetif)
+static int32_t es_wifi_if_probe(net_if_handle_t *pnetif)
 {
-  int32_t ret;
-
-  ES_WIFIObject_t  *pEsWifiObj;
+  int32_t ret = NET_ERROR_DEVICE_ERROR;
 
   if (wifi_probe(&pnetif->pdrv->context) == NET_OK)
   {
-    pEsWifiObj = castcontext(pnetif->pdrv->context);
-    /* Init the WiFi module */
-    if (ES_WIFI_STATUS_OK != ES_WIFI_Init(pEsWifiObj))
+    ES_WIFIObject_t *const p_es_wifi_obj = castcontext(pnetif->pdrv->context);
+
+    /* Initialize the WiFi module. */
+    if (ES_WIFI_STATUS_OK != ES_WIFI_Init(p_es_wifi_obj))
     {
       ret = NET_ERROR_INTERFACE_FAILURE;
     }
@@ -270,43 +269,38 @@ static  int32_t es_wifi_if_probe(net_if_handle_t *pnetif)
     {
       /* Retrieve the WiFi module information */
 
-      (void)strncpy(pnetif->DeviceName, (char_t *)pEsWifiObj->Product_Name, MIN((uint32_t)NET_DEVICE_NAME_LEN,
-                                                                                sizeof(pEsWifiObj->Product_Name)));
-      (void) strncpy(pnetif->DeviceID, (char_t *)pEsWifiObj->Product_ID, MIN((uint32_t)NET_DEVICE_ID_LEN,
-                                                                             sizeof(pEsWifiObj->Product_ID)));
-      (void) strncpy(pnetif->DeviceVer, (char_t *)pEsWifiObj->FW_Rev, MIN((uint32_t)NET_DEVICE_VER_LEN,
-                                                                          sizeof(pEsWifiObj->FW_Rev)));
-      (void) ES_WIFI_GetMACAddress(pEsWifiObj, pnetif->macaddr.mac);
+      (void)strncpy(pnetif->DeviceName, (const char *)p_es_wifi_obj->Product_Name,
+                    MIN((size_t)NET_DEVICE_NAME_LEN, sizeof(p_es_wifi_obj->Product_Name)));
+      (void)strncpy(pnetif->DeviceID, (const char *)p_es_wifi_obj->Product_ID,
+                    MIN((size_t)NET_DEVICE_ID_LEN, sizeof(p_es_wifi_obj->Product_ID)));
+      (void)strncpy(pnetif->DeviceVer, (const char *)p_es_wifi_obj->FW_Rev,
+                    MIN((size_t)NET_DEVICE_VER_LEN, sizeof(p_es_wifi_obj->FW_Rev)));
 
+      (void)ES_WIFI_GetMACAddress(p_es_wifi_obj, pnetif->macaddr.mac);
 
-      /* Initialise the Channels*/
+      /* Initialize the channels. */
       for (int32_t i = 0; i < ESWIFI_MAX_CHANNEL_NBR; i++)
       {
-        WifiChannel[i].status          = WIFI_FREE_SOCKET;
-        WifiChannel[i].Number          = (uint8_t) i;
-        WifiChannel[i].recvtimeout     = MIN((NET_SOCK_DEFAULT_RECEIVE_TO), (ES_WIFI_MAX_SO_TIMEOUT));
-        WifiChannel[i].sendtimeout     = MIN((NET_SOCK_DEFAULT_SEND_TO), (ES_WIFI_MAX_SO_TIMEOUT));
-        WifiChannel[i].blocking        = 1; /* default blocking */
-        WifiChannel[i].pnetif          = pnetif;
+        WifiChannel[i].status      = WIFI_FREE_SOCKET;
+        WifiChannel[i].Number      = (uint8_t) i;
+        WifiChannel[i].recvtimeout = MIN(NET_SOCK_DEFAULT_RECEIVE_TO, ES_WIFI_MAX_SO_TIMEOUT);
+        WifiChannel[i].sendtimeout = MIN(NET_SOCK_DEFAULT_SEND_TO, ES_WIFI_MAX_SO_TIMEOUT);
+        WifiChannel[i].blocking    = 1; /* default blocking */
+        WifiChannel[i].pnetif      = pnetif;
       }
       ret = NET_OK;
     }
   }
-  else
-  {
-    ret = NET_ERROR_DEVICE_ERROR;
-  }
+
   return ret;
 }
 
 
-
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  pnetif
+  * @retval operation status
   */
-
 int32_t es_wifi_if_start(net_if_handle_t *pnetif)
 {
   (void) net_state_manage_event(pnetif, NET_EVENT_INTERFACE_READY);
@@ -314,11 +308,10 @@ int32_t es_wifi_if_start(net_if_handle_t *pnetif)
 }
 
 
-
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  pnetif
+  * @retval operation status
   */
 static int32_t es_wifi_if_stop(net_if_handle_t *pnetif)
 {
@@ -326,24 +319,25 @@ static int32_t es_wifi_if_stop(net_if_handle_t *pnetif)
   return NET_OK;
 }
 
+
+#define MATCH(A, B)      (((A) & (B)) == (B))
+
+ES_WIFI_SecurityType_t GetESWifiSecurityType(int32_t security_in);
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  security_in the security type as an integer value
+  * @retval The security type as an enumerated value.
   */
-
-#define MATCH(a,b)      (((a) & (b)) == (b))
-ES_WIFI_SecurityType_t  GetESWifiSecurityType(int32_t    security_in);
-ES_WIFI_SecurityType_t  GetESWifiSecurityType(int32_t    security_in)
+ES_WIFI_SecurityType_t GetESWifiSecurityType(int32_t security_in)
 {
-  ES_WIFI_SecurityType_t        ret = ES_WIFI_SEC_UNKNOWN;
-  uint32_t    security = (uint32_t)     security_in;
+  ES_WIFI_SecurityType_t ret = ES_WIFI_SEC_UNKNOWN;
+  uint32_t security = (uint32_t) security_in;
 
   if (security == NET_WIFI_SM_OPEN)
   {
     ret = ES_WIFI_SEC_OPEN;
   }
-
   if (MATCH(security, NET_WEP_ENABLED))
   {
     ret = ES_WIFI_SEC_WEP;
@@ -360,7 +354,6 @@ ES_WIFI_SecurityType_t  GetESWifiSecurityType(int32_t    security_in)
   {
     ret = ES_WIFI_SEC_WPA;
   }
-
   if (MATCH(security, NET_WIFI_SM_WPA2_WPA_PSK))
   {
     ret = ES_WIFI_SEC_WPA_WPA2;
@@ -381,51 +374,47 @@ ES_WIFI_SecurityType_t  GetESWifiSecurityType(int32_t    security_in)
   return ret;
 }
 
+
 static int32_t es_wifi_if_connect_sta(net_if_handle_t *pnetif)
 {
-  ES_WIFI_Status_t      ret;
-  uint8_t addr[4];
-  ES_WIFIObject_t  *pEsWifiObj = castcontext(pnetif->pdrv->context);
+  ES_WIFI_Status_t ret;
+  ES_WIFIObject_t *const p_es_wifi_obj = castcontext(pnetif->pdrv->context);
 
-  const net_wifi_credentials_t *credentials =  pnetif->pdrv->extension.wifi->credentials;
+  const net_wifi_credentials_t *credentials = pnetif->pdrv->extension.wifi->credentials;
 
-  ret = ES_WIFI_Connect(pEsWifiObj, credentials->ssid, credentials->psk,
+  ret = ES_WIFI_Connect(p_es_wifi_obj, credentials->ssid, credentials->psk,
                         GetESWifiSecurityType(credentials->security_mode));
   if (ret == ES_WIFI_STATUS_OK)
   {
-    ret = ES_WIFI_GetNetworkSettings(pEsWifiObj);
+    ret = ES_WIFI_GetNetworkSettings(p_es_wifi_obj);
   }
 
   if (ES_WIFI_STATUS_OK == ret)
   {
-    if (pEsWifiObj->NetSettings.IsConnected != 0U)
+    if (p_es_wifi_obj->NetSettings.IsConnected != 0U)
     {
-      (void) memcpy(addr, pEsWifiObj->NetSettings.IP_Addr, 4);
-      pnetif->ipaddr.addr = NET_ARTON(addr);
+      pnetif->ipaddr.addr = NET_ARTON(p_es_wifi_obj->NetSettings.IP_Addr);
       (void) net_state_manage_event(pnetif, NET_EVENT_IPADDR);
       ret = ES_WIFI_STATUS_OK;
-
     }
     else
     {
       ret = ES_WIFI_STATUS_ERROR;
     }
   }
+
   return (int32_t)ret;
 }
 
 
-
 static int32_t es_wifi_if_connect_ap(net_if_handle_t *pnetif)
 {
-  ES_WIFI_Status_t      ret;
-  ES_WIFI_APConfig_t     ApConfig;
-  ES_WIFIObject_t  *pEsWifiObj = castcontext(pnetif->pdrv->context);
-  const net_wifi_credentials_t *credentials =  pnetif->pdrv->extension.wifi->credentials;
+  ES_WIFI_Status_t ret = ES_WIFI_STATUS_ERROR;
+  ES_WIFI_APConfig_t ApConfig = {0};
+  const net_wifi_credentials_t *const credentials = pnetif->pdrv->extension.wifi->credentials;
 
-
-  (void) strncpy((char_t *) ApConfig.SSID, credentials->ssid, sizeof(ApConfig.SSID));
-  (void) strncpy((char_t *) ApConfig.Pass, credentials->psk, sizeof(ApConfig.SSID));
+  (void) strncpy((char *) ApConfig.SSID, credentials->ssid, sizeof(ApConfig.SSID));
+  (void) strncpy((char *) ApConfig.Pass, credentials->psk, sizeof(ApConfig.SSID));
   ApConfig.Security = GetESWifiSecurityType(credentials->security_mode);
 
   ApConfig.Channel = pnetif->pdrv->extension.wifi->access_channel;
@@ -439,66 +428,69 @@ static int32_t es_wifi_if_connect_ap(net_if_handle_t *pnetif)
     ApConfig.Hidden = 0;
   }
 
-  ret = ES_WIFI_ActivateAP(pEsWifiObj, &ApConfig);
+  ret = ES_WIFI_ActivateAP(castcontext(pnetif->pdrv->context), &ApConfig);
 
   if (ret == ES_WIFI_STATUS_OK)
   {
-    /*FIX ME ? gateway/blabla  Address by default is 192.168.10.1 */
-    (void) NET_ATON("192.168.10.1", &(pnetif->ipaddr));
-    (void) net_state_manage_event(pnetif, NET_EVENT_IPADDR);
+    /* gateway?, network mask?...  Address by default is 192.168.10.1. */
+    (void)NET_ATON("192.168.10.1", &pnetif->ipaddr);
+    (void)net_state_manage_event(pnetif, NET_EVENT_IPADDR);
     ret = ES_WIFI_STATUS_OK;
   }
+
   return (int32_t)ret;
 }
 
 
 static int32_t es_wifi_if_connect(net_if_handle_t *pnetif)
 {
-  int32_t      ret;
+  int32_t ret;
   if (pnetif->pdrv->extension.wifi->mode == NET_WIFI_MODE_STA)
   {
-    ret =  es_wifi_if_connect_sta(pnetif);
+    ret = es_wifi_if_connect_sta(pnetif);
   }
   else
   {
-    ret =  es_wifi_if_connect_ap(pnetif);
+    ret = es_wifi_if_connect_ap(pnetif);
   }
   return ret;
 }
 
 
-
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  pnetif
+  * @retval operation status
   */
 static int32_t es_wifi_if_disconnect(net_if_handle_t *pnetif)
 {
-  ES_WIFIObject_t  *pEsWifiObj = castcontext(pnetif->pdrv->context);
-  (void) ES_WIFI_Disconnect(pEsWifiObj);
-  (void) net_state_manage_event(pnetif, NET_EVENT_INTERFACE_READY);
+  (void)ES_WIFI_Disconnect(castcontext(pnetif->pdrv->context));
+  (void)net_state_manage_event(pnetif, NET_EVENT_INTERFACE_READY);
+
   return NET_OK;
 }
 
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  Domain
+  * @param  Type
+  * @param  Protocol
+  * @retval the socket
   */
-static int32_t es_wifi_socket(int32_t domain, int32_t type, int32_t protocol_in)
+static int32_t es_wifi_socket(int32_t Domain, int32_t Type, int32_t Protocol)
 {
   int32_t ret = NET_OK;
-  int32_t protocol = protocol_in;
+  int32_t protocol = Protocol;
 
-  if (domain != NET_AF_INET)
+  if (Domain != NET_AF_INET)
   {
     ret = NET_ERROR_UNSUPPORTED;
   }
   else
   {
-    /* currently only SOCK_DGRAM and SOCK_STREAM are supported */
-    if ((type != (int32_t) NET_SOCK_STREAM) && (type != (int32_t) NET_SOCK_DGRAM))
+    /* Currently only SOCK_DGRAM and SOCK_STREAM are supported */
+    if ((Type != (int32_t) NET_SOCK_STREAM) && (Type != (int32_t) NET_SOCK_DGRAM))
     {
       ret = NET_ERROR_UNSUPPORTED;
     }
@@ -507,7 +499,7 @@ static int32_t es_wifi_socket(int32_t domain, int32_t type, int32_t protocol_in)
       /* Only support PROT_IP/TCP/UDP/IPV4 are supported */
       if ((protocol != NET_IPPROTO_TCP) && (protocol != NET_IPPROTO_UDP))
       {
-        if (type == (int32_t) NET_SOCK_STREAM)
+        if (Type == (int32_t) NET_SOCK_STREAM)
         {
           protocol = NET_IPPROTO_TCP;
         }
@@ -527,14 +519,14 @@ static int32_t es_wifi_socket(int32_t domain, int32_t type, int32_t protocol_in)
     {
       if (WifiChannel[i].status == WIFI_FREE_SOCKET)
       {
-        /* Initialise the socket*/
+        /* Initialize the socket. */
         WifiChannel[i].status = WIFI_ALLOCATED_SOCKET;
-        if (type == (int32_t) NET_SOCK_DGRAM)
+        if (Type == (int32_t) NET_SOCK_DGRAM)
         {
           WifiChannel[i].status |= WIFI_SEND_OK | WIFI_RECV_OK;
         }
-        WifiChannel[i].protocol        = (uint8_t) protocol;
-        WifiChannel[i].type            = (uint8_t) type;
+        WifiChannel[i].protocol = (uint8_t) protocol;
+        WifiChannel[i].type     = (uint8_t) Type;
         ret = i;
         break;
       }
@@ -544,33 +536,29 @@ static int32_t es_wifi_socket(int32_t domain, int32_t type, int32_t protocol_in)
   return ret;
 }
 
+
 /**
   * @brief  Function description
   * @param  Params
-  * @retval socket status
+  * @retval operation status
   */
 static int32_t es_wifi_bind(int32_t sock, const net_sockaddr_t *addr, uint32_t addrlen)
 {
-  int32_t ret;
-  sockaddr_in_t *source;
+  int32_t ret = NET_ERROR_INVALID_SOCKET;
 
-  if ((sock < 0) || (sock >= ESWIFI_MAX_CHANNEL_NBR))
-  {
-    ret = NET_ERROR_INVALID_SOCKET;
-  }
-  else
+  if ((0 <= sock) && (sock < ESWIFI_MAX_CHANNEL_NBR))
   {
     /* STREAM sockets cannot be bound after connection. */
-    if ((WifiChannel [sock].status == WIFI_ALLOCATED_SOCKET)
-        || (((WifiChannel [sock].status & WIFI_ALLOCATED_SOCKET) != 0U)
-            && ((uint8_t) WifiChannel [sock].type == (uint8_t) NET_SOCK_DGRAM)))
+    if ((WifiChannel[sock].status == WIFI_ALLOCATED_SOCKET) || \
+        (((WifiChannel[sock].status & WIFI_ALLOCATED_SOCKET) != 0U) && \
+         ((uint8_t) WifiChannel[sock].type == (uint8_t) NET_SOCK_DGRAM)))
     {
-      if (addrlen == sizeof(sockaddr_in_t))
+      if (addrlen == sizeof(net_sockaddr_in_t))
       {
-        source = cast2sockaddr_in(addr);
-        WifiChannel [sock].localport = NET_NTOHS(source->sin_port);
-        WifiChannel [sock].localaddress = source->sin_addr.s_addr;
-        WifiChannel [sock].status |= WIFI_BIND_SOCKET;
+        const net_sockaddr_in_t * const source = cast2net_sockaddr_in(addr);
+        WifiChannel[sock].localport = NET_NTOHS(source->sin_port);
+        WifiChannel[sock].localaddress = source->sin_addr.s_addr;
+        WifiChannel[sock].status |= WIFI_BIND_SOCKET;
         ret = NET_OK;
       }
       else
@@ -589,31 +577,28 @@ static int32_t es_wifi_bind(int32_t sock, const net_sockaddr_t *addr, uint32_t a
 
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  sock
+  * @param  backlog
+  * @retval operation status
   */
 static int32_t es_wifi_listen(int32_t sock, int32_t backlog)
 {
-  int32_t ret;
+  int32_t ret = NET_ERROR_INVALID_SOCKET;
 
-  if ((sock < 0) || (sock >= ESWIFI_MAX_CHANNEL_NBR))
+  if ((0 <= sock) && (sock < ESWIFI_MAX_CHANNEL_NBR))
   {
-    ret = NET_ERROR_INVALID_SOCKET;
-  }
-  else
-  {
-    ES_WIFIObject_t  *pEsWifiObj = castcontext(WifiChannel[sock].pnetif->pdrv->context);
     ES_WIFI_Conn_t conn;
-
     conn.Number = (uint8_t) sock;
     conn.LocalPort = WifiChannel[sock].localport;
     conn.Type = ES_WIFI_UDP_CONNECTION;
+
     if (WifiChannel[sock].protocol == (uint8_t) NET_IPPROTO_TCP)
     {
       conn.Type = ES_WIFI_TCP_CONNECTION;
     }
     conn.Backlog = (uint8_t) backlog;
-    ret = (int32_t) ES_WIFI_StartServerSingleConn(pEsWifiObj, &conn);
+
+    ret = (int32_t) ES_WIFI_StartServerSingleConn(castcontext(WifiChannel[sock].pnetif->pdrv->context), &conn);
     if ((int32_t) ES_WIFI_STATUS_OK == ret)
     {
       WifiChannel[sock].status |= WIFI_STARTED_SERVER_SOCKET;
@@ -623,36 +608,34 @@ static int32_t es_wifi_listen(int32_t sock, int32_t backlog)
   return ret;
 }
 
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  sock
+  * @retval operation status
   */
 static int32_t es_wifi_accept(int32_t sock, net_sockaddr_t *addr, uint32_t *addrlen)
 {
-  int32_t ret;
-  ES_WIFI_Status_t      status;
+  int32_t ret = NET_ERROR_INVALID_SOCKET;
+  ES_WIFI_Status_t status;
 
-  (void) addrlen;
-  sockaddr_in_t *addrin = cast2sockaddr_in(addr);
+  (void)addrlen;
 
-  if ((sock < 0) || (sock >= ESWIFI_MAX_CHANNEL_NBR))
-  {
-    ret = NET_ERROR_INVALID_SOCKET;
-  }
-  else
+  if ((0 <= sock) && (sock < ESWIFI_MAX_CHANNEL_NBR))
   {
     ES_WIFI_Conn_t conn;
 
-    conn.Number = (uint8_t) sock;
+    conn.Number = (uint8_t)sock;
     /* 0 value timeout means forever here */
     status = ES_WIFI_WaitServerConnection(castcontext(WifiChannel[sock].pnetif->pdrv->context), 0, &conn);
 
     if (ES_WIFI_STATUS_OK == status)
     {
-      addrin->sin_port = NET_NTOHS(conn.RemotePort);
-      addrin->sin_addr.s_addr = NET_ARTON(conn.RemoteIP);
-      WifiChannel [sock].status |= WIFI_CONNECTED_SOCKET_RW | WIFI_STARTED_SERVER_SOCKET ;
+      net_sockaddr_in_t *s_addr_in = cast2net_sockaddr_in(addr);
+
+      s_addr_in->sin_port = NET_NTOHS(conn.RemotePort);
+      s_addr_in->sin_addr.s_addr = NET_ARTON(conn.RemoteIP);
+      WifiChannel[sock].status |= WIFI_CONNECTED_SOCKET_RW | WIFI_STARTED_SERVER_SOCKET;
       ret = sock;
     }
     else
@@ -660,41 +643,38 @@ static int32_t es_wifi_accept(int32_t sock, net_sockaddr_t *addr, uint32_t *addr
       ret =  NET_ERROR_SOCKET_FAILURE;
     }
   }
+
   return ret;
 }
 
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  sock
+  * @retval operation status
   */
-static int32_t es_wifi_connect(int32_t sock,  const net_sockaddr_t *addr, uint32_t addrlen)
+static int32_t es_wifi_connect(int32_t sock, const net_sockaddr_t *addr, uint32_t addrlen)
 {
-  int32_t  ret;
-  sockaddr_in_t *dest;
+  int32_t ret = NET_ERROR_INVALID_SOCKET;
 
-  if ((sock < 0) || (sock >= ESWIFI_MAX_CHANNEL_NBR))
-  {
-    ret = NET_ERROR_INVALID_SOCKET;
-  }
-  else
+  if ((0 <= sock) && (sock < ESWIFI_MAX_CHANNEL_NBR))
   {
     ES_WIFI_Conn_t conn;
 #ifdef NET_MBEDTLS_WIFI_MODULE_SUPPORT
     eswifi_tls_data_t *tlsdata;
-    uint32_t      casize;
-    uint32_t      keysize;
-    uint32_t      devsize;
+    uint32_t casize;
+    uint32_t keysize;
+    uint32_t devsize;
 #endif /* NET_MBEDTLS_WIFI_MODULE_SUPPORT */
 
-    /*addr is an outbound address */
-    if (addrlen == sizeof(sockaddr_in_t))
+    /* addr parameter is an outbound address */
+    if (addrlen == sizeof(net_sockaddr_in_t))
     {
-      dest = cast2sockaddr_in(addr);
-      conn.Number = (uint8_t) sock;
+      const net_sockaddr_in_t *const s_addr_dest_in = cast2net_sockaddr_in(addr);
+      conn.Number = (uint8_t)sock;
       conn.LocalPort = WifiChannel[sock].localport;
-      conn.RemotePort = NET_NTOHS(dest->sin_port);
-      NET_NTOAR((dest->sin_addr.s_addr), (conn.RemoteIP));
+      conn.RemotePort = NET_NTOHS(s_addr_dest_in->sin_port);
+      NET_NTOAR(s_addr_dest_in->sin_addr.s_addr, conn.RemoteIP);
 
       switch (WifiChannel[sock].protocol)
       {
@@ -758,56 +738,54 @@ static int32_t es_wifi_connect(int32_t sock,  const net_sockaddr_t *addr, uint32
       ret = NET_ERROR_PARAMETER;
     }
   }
+
   return ret;
 }
 
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  sock
+  * @retval operation status
   */
 static int32_t es_wifi_shutdown(int32_t sock, int32_t mode)
 {
-  int32_t       ret;
-  if ((sock < 0) || (sock >= ESWIFI_MAX_CHANNEL_NBR))
+  int32_t ret = NET_ERROR_INVALID_SOCKET;
+
+  if ((0 <= sock) && (sock < ESWIFI_MAX_CHANNEL_NBR))
   {
-    ret =  NET_ERROR_INVALID_SOCKET;
-  }
-  else
-  {
-    if ((WifiChannel[sock].status &  WIFI_CONNECTED_SOCKET) != 0U)
+    if ((WifiChannel[sock].status & WIFI_CONNECTED_SOCKET) != 0U)
     {
       if (mode == NET_SHUTDOWN_R)
       {
-        WifiChannel[sock].status &=  ~WIFI_RECV_OK;
+        WifiChannel[sock].status &= ~WIFI_RECV_OK;
       }
       if (mode == NET_SHUTDOWN_W)
       {
-        WifiChannel[sock].status &=  ~WIFI_SEND_OK;
+        WifiChannel[sock].status &= ~WIFI_SEND_OK;
       }
       if (mode == NET_SHUTDOWN_RW)
       {
-        WifiChannel[sock].status &=  ~(WIFI_SEND_OK | WIFI_RECV_OK);
+        WifiChannel[sock].status &= ~(WIFI_SEND_OK | WIFI_RECV_OK);
       }
     }
     ret = NET_OK;
   }
+
   return ret;
 }
 
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  sock
+  * @retval operation status
   */
 static int32_t es_wifi_close(int32_t sock, bool isaclone)
 {
-  int32_t ret;
-  if ((sock < 0) || (sock >= ESWIFI_MAX_CHANNEL_NBR))
-  {
-    ret = NET_ERROR_INVALID_SOCKET;
-  }
-  else
+  int32_t ret = NET_ERROR_INVALID_SOCKET;
+
+  if ((0 <= sock) && (sock < ESWIFI_MAX_CHANNEL_NBR))
   {
     if ((WifiChannel [sock].status & WIFI_STARTED_SERVER_SOCKET) != 0U)
     {
@@ -844,6 +822,7 @@ static int32_t es_wifi_close(int32_t sock, bool isaclone)
     {
       ES_WIFI_Conn_t conn;
       conn.Number = (uint8_t) sock;
+
       if (ES_WIFI_StopClientConnection(castcontext(WifiChannel[sock].pnetif->pdrv->context), &conn)
           != ES_WIFI_STATUS_OK)
       {
@@ -857,13 +836,14 @@ static int32_t es_wifi_close(int32_t sock, bool isaclone)
       }
     }
   }
+
   return ret;
 }
 
 
-static void check_connection_lost(net_if_handle_t *pnetif, int32_t n)
+static void check_connection_lost(net_if_handle_t *pnetif, int32_t why)
 {
-  if (n <= 0)
+  if (why <= 0)
   {
     if (NET_STATE_CONNECTED == pnetif->state)
     {
@@ -882,16 +862,16 @@ static void check_connection_lost(net_if_handle_t *pnetif, int32_t n)
   }
 }
 
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  sock
+  * @retval operation status
   */
-static int32_t es_wifi_send(int32_t sock, uint8_t *buf, int32_t length, int32_t flags)
+static int32_t es_wifi_send(int32_t sock, const uint8_t *buf, int32_t length, int32_t flags)
 {
   int32_t ret;
   int32_t len = length;
-  uint16_t SentDatalen;
 
   if (flags != 0)
   {
@@ -907,6 +887,7 @@ static int32_t es_wifi_send(int32_t sock, uint8_t *buf, int32_t length, int32_t 
   }
   else
   {
+    uint16_t sent_len = 0;
 
     if (len > ES_WIFI_PAYLOAD_SIZE)
     {
@@ -915,12 +896,12 @@ static int32_t es_wifi_send(int32_t sock, uint8_t *buf, int32_t length, int32_t 
 
     if (ES_WIFI_STATUS_OK == ES_WIFI_SendData(castcontext(WifiChannel[sock].pnetif->pdrv->context),
                                               (uint8_t) sock,
-                                              buf,
+                                              (uint8_t *)buf,
                                               (uint16_t) len,
-                                              &SentDatalen,
+                                              &sent_len,
                                               (uint32_t) WifiChannel[sock].sendtimeout))
     {
-      ret = (int32_t) SentDatalen;
+      ret = (int32_t) sent_len;
     }
     else
     {
@@ -928,21 +909,21 @@ static int32_t es_wifi_send(int32_t sock, uint8_t *buf, int32_t length, int32_t 
     }
     check_connection_lost(WifiChannel[sock].pnetif, ret);
   }
+
   return ret;
 }
 
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  sock
+  * @retval operation status
   */
 static int32_t es_wifi_recv(int32_t sock, uint8_t *buf, int32_t length, int32_t flags)
 {
   int32_t ret;
   int32_t len = length;
-  uint16_t ReceivedDatalen;
-  uint32_t     timeout;
-
+  uint32_t timeout;
 
   if ((sock < 0) || (sock >= ESWIFI_MAX_CHANNEL_NBR))
   {
@@ -954,6 +935,8 @@ static int32_t es_wifi_recv(int32_t sock, uint8_t *buf, int32_t length, int32_t 
   }
   else
   {
+    uint16_t received_len = 0;
+
     if (flags == (int32_t) NET_MSG_DONTWAIT)
     {
       timeout = 0;
@@ -972,10 +955,10 @@ static int32_t es_wifi_recv(int32_t sock, uint8_t *buf, int32_t length, int32_t 
                                                  (uint8_t) sock,
                                                  buf,
                                                  (uint16_t) len,
-                                                 &ReceivedDatalen,
+                                                 &received_len,
                                                  (uint32_t) timeout))
     {
-      ret = (int32_t) ReceivedDatalen;
+      ret = (int32_t) received_len;
     }
     else
     {
@@ -984,19 +967,22 @@ static int32_t es_wifi_recv(int32_t sock, uint8_t *buf, int32_t length, int32_t 
 
     check_connection_lost(WifiChannel[sock].pnetif, ret);
   }
+
   return ret;
 }
 
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  sock
+  * @retval operation status
   */
-static int32_t es_wifi_sendto(int32_t sock, uint8_t *buf, int32_t length, int32_t flags, net_sockaddr_t *to,
-                              uint32_t tolen)
+static int32_t es_wifi_sendto(int32_t sock, const uint8_t *buf, int32_t length, int32_t flags,
+                              net_sockaddr_t *to, uint32_t tolen)
 {
   int32_t ret = NET_OK;
   int32_t len = length;
+
   if ((flags != 0) || (to->sa_family != (uint8_t) NET_AF_INET))
   {
     ret = NET_ERROR_UNSUPPORTED;
@@ -1009,24 +995,24 @@ static int32_t es_wifi_sendto(int32_t sock, uint8_t *buf, int32_t length, int32_
   {
     ret = NET_ERROR_SOCKET_FAILURE;
   }
-  else if ((WifiChannel [sock].status & WIFI_SEND_OK) == 0U)
+  else if ((WifiChannel[sock].status & WIFI_SEND_OK) == 0U)
   {
     ret =  NET_ERROR_SOCKET_FAILURE;
   }
   else
   {
-    if ((WifiChannel [sock].status & WIFI_STARTED_CLIENT_SOCKET) == 0U)
+    if ((WifiChannel[sock].status & WIFI_STARTED_CLIENT_SOCKET) == 0U)
     {
-      sockaddr_in_t *dest;
-      ES_WIFI_Conn_t conn;
 
-      if (tolen == sizeof(sockaddr_in_t))
+      if (tolen == sizeof(net_sockaddr_in_t))
       {
-        dest = cast2sockaddr_in(to);
+        const net_sockaddr_in_t *const s_addr_to_in = cast2net_sockaddr_in(to);
+        ES_WIFI_Conn_t conn;
+
         conn.Number = (uint8_t) sock;
         conn.LocalPort = WifiChannel[sock].localport;
-        conn.RemotePort = NET_NTOHS(dest->sin_port);
-        NET_NTOAR((dest->sin_addr.s_addr), (conn.RemoteIP));
+        conn.RemotePort = NET_NTOHS(s_addr_to_in->sin_port);
+        NET_NTOAR(s_addr_to_in->sin_addr.s_addr, conn.RemoteIP);
         conn.Type = ES_WIFI_UDP_CONNECTION;
 
         if (ES_WIFI_STATUS_OK ==
@@ -1043,29 +1029,28 @@ static int32_t es_wifi_sendto(int32_t sock, uint8_t *buf, int32_t length, int32_
 
     if (ret == NET_OK)
     {
-      uint16_t SentDatalen;
+      uint16_t sent_len = 0;
       if (len > ES_WIFI_PAYLOAD_SIZE)
       {
         len = ES_WIFI_PAYLOAD_SIZE;
       }
 
-      uint32_t remoteaddr ;
-      sockaddr_in_t *saddr = cast2sockaddr_in(to);
-      remoteaddr = NET_NTOHL(saddr->sin_addr.s_addr);
+      const net_sockaddr_in_t *const s_addr_to_in = cast2net_sockaddr_in(to);
+      const uint32_t remote_addr = NET_NTOHL(s_addr_to_in->sin_addr.s_addr);
 
-      uint32_t IPaddr = NET_NTOHL(remoteaddr);
-      uint16_t Port = NET_NTOHS(saddr->sin_port);
+      uint32_t ip_addr = NET_NTOHL(remote_addr);
+      uint16_t port = NET_NTOHS(s_addr_to_in->sin_port);
 
       if (ES_WIFI_STATUS_OK == ES_WIFI_SendDataTo(castcontext(WifiChannel[sock].pnetif->pdrv->context),
                                                   (uint8_t) sock,
-                                                  buf,
+                                                  (uint8_t*)buf,
                                                   (uint16_t) len,
-                                                  &SentDatalen,
+                                                  &sent_len,
                                                   (uint32_t) WifiChannel[sock].sendtimeout,
-                                                  (uint8_t *) &IPaddr,
-                                                  Port))
+                                                  (uint8_t *) &ip_addr,
+                                                  port))
       {
-        ret = (int32_t) SentDatalen;
+        ret = (int32_t) sent_len;
       }
       else
       {
@@ -1074,21 +1059,21 @@ static int32_t es_wifi_sendto(int32_t sock, uint8_t *buf, int32_t length, int32_
       check_connection_lost(WifiChannel[sock].pnetif, ret);
     }
   }
+
   return ret;
 }
 
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  sock
+  * @retval operation status
   */
-static int32_t es_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t length, int32_t flagsparam, net_sockaddr_t *from,
-                                uint32_t *fromlen)
+static int32_t es_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t length, int32_t flagsparam,
+                                net_sockaddr_t *from, uint32_t *fromlen)
 {
   int32_t ret = NET_OK;
-  uint32_t timeout = 0;
   int32_t flags = flagsparam;
-  int32_t len = length;
 
   if ((sock < 0) || (sock >= ESWIFI_MAX_CHANNEL_NBR))
   {
@@ -1104,6 +1089,8 @@ static int32_t es_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t length, int3
   }
   else
   {
+    uint32_t timeout = 0;
+
     if (((uint8_t) flags & (uint8_t) NET_MSG_DONTWAIT) == 0U)
     {
       timeout = (uint32_t) WifiChannel[sock].recvtimeout;
@@ -1115,10 +1102,10 @@ static int32_t es_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t length, int3
     }
     else
     {
-      if ((WifiChannel [sock].status & WIFI_STARTED_SERVER_SOCKET) == 0U)
+      if ((WifiChannel[sock].status & WIFI_STARTED_SERVER_SOCKET) == 0U)
       {
-        ES_WIFI_Conn_t  conn;
-        (void) memset(&conn, 0, sizeof(conn));
+        ES_WIFI_Conn_t conn;
+
         conn.Number = (uint8_t) sock;
         conn.LocalPort = WifiChannel[sock].localport;
         conn.Type = ES_WIFI_UDP_CONNECTION;
@@ -1128,7 +1115,6 @@ static int32_t es_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t length, int3
         {
           WifiChannel[sock].status |= WIFI_STARTED_SERVER_SOCKET;
           ret = NET_OK ;
-
         }
         else
         {
@@ -1138,8 +1124,9 @@ static int32_t es_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t length, int3
 
       if (ret == NET_OK)
       {
-        uint16_t ReceivedDatalen;
-        uint32_t IPaddr = 0;
+        int32_t len = length;
+        uint16_t received_len = 0;
+        uint32_t ip_addr = 0;
         uint16_t port = 0;
 
         if (len > ES_WIFI_PAYLOAD_SIZE)
@@ -1151,21 +1138,21 @@ static int32_t es_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t length, int3
                                                          (uint8_t) sock,
                                                          buf,
                                                          (uint16_t) len,
-                                                         &ReceivedDatalen,
+                                                         &received_len,
                                                          timeout,
-                                                         (uint8_t *) &IPaddr,
+                                                         (uint8_t *) &ip_addr,
                                                          &port))
         {
-          sockaddr_in_t saddr;
-          (void) memset(&saddr, 0, sizeof(sockaddr_in_t));
-          saddr.sin_family = NET_AF_INET;
-          saddr.sin_addr.s_addr = IPaddr;
-          saddr.sin_port = NET_HTONS(port);
-          saddr.sin_len = (uint8_t) sizeof(sockaddr_in_t);
-          (void)  memset(from, 0, *fromlen);
-          (void)  memcpy(from, &saddr, MIN((*fromlen), (saddr.sin_len)));
-          *fromlen = sizeof(sockaddr_in_t);
-          ret = (int32_t) ReceivedDatalen;
+          net_sockaddr_in_t *const s_addr_in = cast2net_sockaddr_in(from);
+
+          s_addr_in->sin_family = NET_AF_INET;
+          s_addr_in->sin_addr.s_addr = ip_addr;
+          s_addr_in->sin_port = NET_NTOHS(port);
+          s_addr_in->sin_len = (uint8_t) sizeof(*s_addr_in);
+          memset(s_addr_in->sin_zero, 0, sizeof(s_addr_in->sin_zero));
+
+          *fromlen = sizeof(*s_addr_in);
+          ret = (int32_t)received_len;
         }
         else
         {
@@ -1176,14 +1163,15 @@ static int32_t es_wifi_recvfrom(int32_t sock, uint8_t *buf, int32_t length, int3
       check_connection_lost(WifiChannel[sock].pnetif, ret);
     }
   }
-  return ret;
 
+  return ret;
 }
 
 
-static uint32_t conv_to_net_security(ES_WIFI_SecurityType_t     sec)
+static uint32_t conv_to_net_security(ES_WIFI_SecurityType_t sec)
 {
   uint32_t ret;
+
   switch (sec)
   {
     case ES_WIFI_SEC_OPEN:
@@ -1207,39 +1195,37 @@ static uint32_t conv_to_net_security(ES_WIFI_SecurityType_t     sec)
     default :
       ret = NET_WIFI_SM_UNKNOWN;
       break;
-
   }
+
   return ret;
 }
 
+
+#define OPTCHECKTYPE(type, optlen)     if (sizeof(type)!= optlen) return NET_ERROR_PARAMETER
+#define OPTCHECKSTRING(opt, optlen)    if (strlen(opt)!= (optlen-1)) return NET_ERROR_PARAMETER
+
 /**
   * @brief  function description
-  * @param  Params
-  * @retval socket status
+  * @param  sock
+  * @retval operation status
   */
-
-#define OPTCHECKTYPE(type,optlen)       if (sizeof(type)!= optlen) return NET_ERROR_PARAMETER
-#define OPTCHECKSTRING(opt,optlen)       if (strlen(opt)!= (optlen-1)) return NET_ERROR_PARAMETER
-
 static int32_t es_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, const void *optvalue, uint32_t optlen)
 {
-  int32_t ret = NET_ERROR_PARAMETER;
-  int32_t       *optint32 = (int32_t *)optvalue;
-  bool          *optbool = (bool *)optvalue;
+  int32_t ret = NET_ERROR_INVALID_SOCKET;
+  int32_t *optint32 = (int32_t *)optvalue;
+  bool *optbool = (bool *)optvalue;
 
-  (void) level;
+  (void)level;
 
-  if ((sock < 0) || (sock >= ESWIFI_MAX_CHANNEL_NBR))
+  if ((0 <= sock) || (sock < ESWIFI_MAX_CHANNEL_NBR))
   {
-    ret = NET_ERROR_INVALID_SOCKET;
-  }
-  else
-  {
+    ret = NET_ERROR_PARAMETER;
+
     switch (optname)
     {
       case NET_SO_RCVTIMEO:
         /* Receive time out. */
-        WifiChannel[sock].recvtimeout = * optint32;
+        WifiChannel[sock].recvtimeout = *optint32;
         ret = NET_OK;
         break;
 
@@ -1258,7 +1244,6 @@ static int32_t es_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, 
 
 #ifdef NET_MBEDTLS_WIFI_MODULE_SUPPORT
       case NET_SO_SECURE:
-
         if (WifiChannel[sock].protocol == (uint8_t) NET_IPPROTO_TCP)
         {
           WifiChannel[sock].protocol = (uint8_t) NET_IPPROTO_TCP_TLS;
@@ -1271,7 +1256,6 @@ static int32_t es_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, 
         break;
 
       case NET_SO_TLS_DEV_CERT:
-
         OPTCHECKSTRING(optvalue, optlen);
         if (WifiChannel[sock].protocol != (uint8_t) NET_IPPROTO_TCP_TLS)
         {
@@ -1283,7 +1267,6 @@ static int32_t es_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, 
         break;
 
       case NET_SO_TLS_DEV_KEY:
-
         OPTCHECKSTRING(optvalue, optlen);
         if (WifiChannel[sock].protocol != (uint8_t) NET_IPPROTO_TCP_TLS)
         {
@@ -1295,7 +1278,6 @@ static int32_t es_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, 
         break;
 
       case NET_SO_TLS_CA_CERT:
-
         if (WifiChannel[sock].protocol != (uint8_t) NET_IPPROTO_TCP_TLS)
         {
           NET_DBG_ERROR("Failed to set tls root ca, please set socket as secure before\n");
@@ -1307,7 +1289,6 @@ static int32_t es_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, 
         break;
 
       case NET_SO_TLS_CA_CRL:
-
         OPTCHECKSTRING(optvalue, optlen);
         if (WifiChannel[sock].protocol != (uint8_t) NET_IPPROTO_TCP_TLS)
         {
@@ -1319,7 +1300,6 @@ static int32_t es_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, 
         break;
 
       case NET_SO_TLS_PASSWORD:
-
         OPTCHECKSTRING(optvalue, optlen);
         if (WifiChannel[sock].protocol != (uint8_t) NET_IPPROTO_TCP_TLS)
         {
@@ -1332,7 +1312,6 @@ static int32_t es_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, 
 
 
       case NET_SO_TLS_SERVER_VERIFICATION:
-
         if (sizeof(bool) != optlen)
         {
           ret = NET_ERROR_PARAMETER;
@@ -1353,7 +1332,6 @@ static int32_t es_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, 
         break;
 
       case NET_SO_TLS_SERVER_NAME:
-
         OPTCHECKSTRING(optvalue, optlen);
         if (WifiChannel[sock].protocol != (uint8_t) NET_IPPROTO_TCP_TLS)
         {
@@ -1364,6 +1342,7 @@ static int32_t es_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, 
         ret = NET_OK;
         break;
 #endif /* NET_MBEDTLS_WIFI_MODULE_SUPPORT */
+
       case  NET_SO_BLOCKING:
         if (sizeof(bool) != optlen)
         {
@@ -1386,13 +1365,14 @@ static int32_t es_wifi_setsockopt(int32_t sock, int32_t level, int32_t optname, 
         ret =  NET_OK;
         break;
 
-
-      default :
+      default:
         break;
     }
   }
+
   return ret;
 }
+
 
 static int32_t es_wifi_getsockopt(int32_t sock, int32_t level, int32_t optname, void *optvalue, uint32_t *optlen)
 {
@@ -1405,17 +1385,12 @@ static int32_t es_wifi_getsockopt(int32_t sock, int32_t level, int32_t optname, 
   return NET_ERROR_UNSUPPORTED;
 }
 
+
 static int32_t es_wifi_getsockname(int32_t sock, net_sockaddr_t *name, uint32_t *namelen)
 {
-  int32_t  ret;
-  uint32_t  IPaddr;
-  uint16_t port;
+  int32_t ret = NET_ERROR_PARAMETER;
 
-  if (*namelen < sizeof(sockaddr_in_t))
-  {
-    ret = NET_ERROR_PARAMETER;
-  }
-  else
+  if (sizeof(net_sockaddr_in_t) <= *namelen)
   {
     if ((sock < 0) || (sock >= ESWIFI_MAX_CHANNEL_NBR))
     {
@@ -1423,19 +1398,23 @@ static int32_t es_wifi_getsockname(int32_t sock, net_sockaddr_t *name, uint32_t 
     }
     else
     {
+      uint32_t ip_addr = 0;
+      uint16_t port = 0;
+
       if (ES_WIFI_STATUS_OK == ES_WIFI_SockInfo(castcontext(WifiChannel[sock].pnetif->pdrv->context),
-                                                WifiChannel[sock].Number, (uint8_t *) &IPaddr, &port))
+                                                WifiChannel[sock].Number, (uint8_t *) &ip_addr, &port))
       {
-        sockaddr_in_t saddr;
+        net_sockaddr_in_t *const s_addr_in = cast2net_sockaddr_in(name);
+
+        s_addr_in->sin_family = NET_AF_INET;
+        s_addr_in->sin_addr.s_addr = ip_addr;
+        s_addr_in->sin_port = NET_NTOHS(port);
+        s_addr_in->sin_len = (uint8_t) sizeof(*s_addr_in);
+        memset(s_addr_in->sin_zero, 0, sizeof(s_addr_in->sin_zero));
+
+        *namelen = sizeof(*s_addr_in);
+
         ret = NET_OK;
-        (void) memset(&saddr, 0, sizeof(sockaddr_in_t));
-        saddr.sin_family = NET_AF_INET;
-        saddr.sin_addr.s_addr = IPaddr;
-        saddr.sin_port = NET_HTONS(port);
-        saddr.sin_len = (uint8_t) sizeof(sockaddr_in_t);
-        (void)  memset(name, 0, *namelen);
-        (void)  memcpy(name, &saddr, MIN((*namelen), (saddr.sin_len)));
-        *namelen = sizeof(sockaddr_in_t);
       }
       else
       {
@@ -1443,17 +1422,17 @@ static int32_t es_wifi_getsockname(int32_t sock, net_sockaddr_t *name, uint32_t 
       }
     }
   }
+
   return ret;
 }
 
 
 static int32_t es_wifi_getpeername(int32_t sock, net_sockaddr_t *name, uint32_t *namelen)
 {
-  int32_t  ret;
-  uint32_t  IPaddr;
+  int32_t ret;
   uint16_t port;
 
-  if (*namelen < sizeof(sockaddr_in_t))
+  if (*namelen < sizeof(net_sockaddr_in_t))
   {
     ret = NET_ERROR_PARAMETER;
   }
@@ -1465,19 +1444,21 @@ static int32_t es_wifi_getpeername(int32_t sock, net_sockaddr_t *name, uint32_t 
     }
     else
     {
+      uint32_t ip_addr = 0;
+
       if (ES_WIFI_STATUS_OK == ES_WIFI_PeerInfo(castcontext(WifiChannel[sock].pnetif->pdrv->context),
-                                                WifiChannel[sock].Number, (uint8_t *) &IPaddr, &port))
+                                                WifiChannel[sock].Number, (uint8_t *) &ip_addr, &port))
       {
-        sockaddr_in_t saddr;
+        net_sockaddr_in_t *const s_addr_in = cast2net_sockaddr_in(name);
+
+        s_addr_in->sin_family = NET_AF_INET;
+        s_addr_in->sin_addr.s_addr = ip_addr;
+        s_addr_in->sin_port = NET_NTOHS(port);
+        s_addr_in->sin_len = (uint8_t) sizeof(*s_addr_in);
+        memset(s_addr_in->sin_zero, 0, sizeof(s_addr_in->sin_zero));
+
+        *namelen = sizeof(*s_addr_in);
         ret = NET_OK;
-        (void) memset(&saddr, 0, sizeof(sockaddr_in_t));
-        saddr.sin_family = NET_AF_INET;
-        saddr.sin_addr.s_addr = IPaddr;
-        saddr.sin_port = NET_HTONS(port);
-        saddr.sin_len = (uint8_t) sizeof(sockaddr_in_t);
-        (void)  memset(name, 0, *namelen);
-        (void)  memcpy(name, &saddr, MIN((*namelen), (saddr.sin_len)));
-        *namelen = sizeof(sockaddr_in_t);
       }
       else
       {
@@ -1485,29 +1466,24 @@ static int32_t es_wifi_getpeername(int32_t sock, net_sockaddr_t *name, uint32_t 
       }
     }
   }
+
   return ret;
 }
 
+
 static int32_t es_wifi_gethostbyname(net_if_handle_t *pnetif, net_sockaddr_t *addr, char_t *name)
 {
-  int32_t ret;
-  uint8_t ipaddr[6];
+  int32_t ret = NET_ERROR_PARAMETER;
 
-  if (addr->sa_len < sizeof(sockaddr_in_t))
+  if (sizeof(net_sockaddr_in_t) <= addr->sa_len)
   {
-    ret = NET_ERROR_PARAMETER;
-  }
-  else
-  {
-    if (ES_WIFI_STATUS_OK == ES_WIFI_DNS_LookUp(castcontext(pnetif->pdrv->context), (char_t *)name, ipaddr))
+    uint8_t ip_addr[6] = {0};
+
+    if (ES_WIFI_STATUS_OK == ES_WIFI_DNS_LookUp(castcontext(pnetif->pdrv->context), (char_t *)name, ip_addr))
     {
-      uint8_t len = addr->sa_len;
-      sockaddr_in_t *saddr = cast2sockaddr_in(addr);
-
-      (void)  memset(saddr, 0, len);
-      saddr->sin_len = len;
-      saddr->sin_family = NET_AF_INET;
-      (void) memcpy(&(saddr->sin_addr), ipaddr, 4);
+      net_sockaddr_in_t *const s_addr_in = cast2net_sockaddr_in(addr);
+      s_addr_in->sin_family = NET_AF_INET;
+      s_addr_in->sin_addr.s_addr = NET_ARTON(ip_addr);
       ret = NET_OK;
     }
     else
@@ -1515,72 +1491,67 @@ static int32_t es_wifi_gethostbyname(net_if_handle_t *pnetif, net_sockaddr_t *ad
       ret = NET_ERROR_DNS_FAILURE;
     }
   }
+
   return ret;
 }
+
 
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  pnetif
+  * @retval operation status
   */
-
-
 int32_t es_wifi_ping(net_if_handle_t *pnetif, net_sockaddr_t *addr, int32_t count, int32_t delay, int32_t response[])
 {
-  int32_t ret;
-  uint8_t     ipaddr[6];
+  int32_t ret = NET_ERROR_NO_CONNECTION;
 
-  (void) memcpy(ipaddr, &addr->sa_data[2], 6);
-
-  if (ES_WIFI_STATUS_OK == ES_WIFI_Ping(castcontext(pnetif->pdrv->context), ipaddr, (uint16_t) count, (uint16_t) delay,
-                                        response))
+  if (ES_WIFI_STATUS_OK == ES_WIFI_Ping(castcontext(pnetif->pdrv->context), (uint8_t *)&addr->sa_data[2],
+                                        (uint16_t) count, (uint16_t) delay, response))
   {
     ret = NET_OK;
   }
-  else
-  {
-    ret = NET_ERROR_NO_CONNECTION;
-  }
+
   return ret;
 }
 
-static  int32_t es_wifi_scan(net_if_handle_t *pnetif, net_wifi_scan_mode_t mode, char_t *ssid)
+
+static int32_t es_wifi_scan(net_if_handle_t *pnetif, net_wifi_scan_mode_t mode, char_t *ssid)
 {
   (void) mode;
   (void) pnetif;
   (void) ssid;
+
   return 0;
 }
 
-static  int32_t es_wifi_get_scan_results(net_if_handle_t *pnetif, net_wifi_scan_results_t *results, uint8_t number)
+
+static int32_t es_wifi_get_scan_results(net_if_handle_t *pnetif, net_wifi_scan_results_t *results, uint8_t number)
 {
-  int32_t ret;
-  ES_WIFI_APs_t APs;
-  ES_WIFI_AP_t *AP = &APs.AP[0];
+  int32_t ret = NET_ERROR_NO_CONNECTION;
+  ES_WIFI_APs_t APs = {0};
 
   if (ES_WIFI_STATUS_OK == ES_WIFI_ListAccessPoints(castcontext(pnetif->pdrv->context), &APs))
   {
+    const ES_WIFI_AP_t *AP = &APs.AP[0];
+
     if (APs.nbr > number)
     {
       APs.nbr = number;
     }
     for (uint32_t i = 0; i < APs.nbr ; i++)
     {
-      (void) memset((void *) &results[i], 0, sizeof(net_wifi_scan_bss_t));
-      (void) memcpy(results[i].ssid.value, AP->SSID, NET_WIFI_MAX_SSID_SIZE);
+      (void)memset((void *) &results[i], 0, sizeof(*results));
+      (void)memcpy(results[i].ssid.value, AP->SSID, NET_WIFI_MAX_SSID_SIZE);
       results[i].ssid.length = (uint8_t) strlen((char_t *) AP->SSID);
       results[i].security = conv_to_net_security(AP->Security);
-      (void)  memcpy(&results[i].bssid, AP->MAC, NET_WIFI_MAC_ADDRESS_SIZE);
+      (void)memcpy(&results[i].bssid, AP->MAC, NET_WIFI_MAC_ADDRESS_SIZE);
       results[i].rssi = (int8_t)AP->RSSI;
       results[i].channel = AP->Channel;
-      (void) memcpy(results[i].country, ".CN", 4);  /* NOT SUPPORT for MX_WIFI */
+      (void)memcpy(results[i].country, ".CN", 4);
       AP++;
     }
     ret = (int32_t) APs.nbr;
   }
-  else
-  {
-    ret = NET_ERROR_NO_CONNECTION;
-  }
+
   return ret;
 }

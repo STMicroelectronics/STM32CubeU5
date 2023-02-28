@@ -546,6 +546,7 @@ static uint32_t SequentialIdx = 1U;
 
 /* Private macro -----------------------------------------------------------------------------------------------------*/
 /* Private function prototypes ---------------------------------------------------------------------------------------*/
+#if defined (HAL_I2C_MODULE_ENABLED)
 /** @defgroup LPBAM_I2C_Advanced_Private_Function_Prototypes LPBAM I2C Advanced Private Function Prototypes
   * @{
   */
@@ -553,6 +554,7 @@ static HAL_StatusTypeDef I2C_ISR(struct __I2C_HandleTypeDef *hi2c, uint32_t ITFl
 /**
   * @}
   */
+#endif /* HAL_I2C_MODULE_ENABLED */
 
 /* Exported functions ------------------------------------------------------------------------------------------------*/
 /** @defgroup LPBAM_I2C_Advanced_Exported_Functions LPBAM I2C Advanced Exported Functions

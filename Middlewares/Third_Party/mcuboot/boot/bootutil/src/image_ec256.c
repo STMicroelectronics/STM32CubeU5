@@ -182,7 +182,7 @@ bootutil_verify_sig(uint8_t *hash, uint32_t hlen, uint8_t *sig, size_t slen,
     if (hlen != NUM_ECC_BYTES) {
         goto out;
     }
-    BOOT_LOG_INF("verifying signature hlen %x",hlen);
+    BOOT_LOG_INF("verifying signature hlen %x", (unsigned int)hlen);
     bootutil_ecdsa_p256_init(&ctx);
     rc = bootutil_ecdsa_p256_verify(&ctx, pubkey,(end-pubkey), hash, signature);
     /* for more control , we need to implement FIH mechanisms within mbed tls */

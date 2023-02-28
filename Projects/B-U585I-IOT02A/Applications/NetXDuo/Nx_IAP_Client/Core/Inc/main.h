@@ -31,8 +31,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
-#include "mx_wifi_conf.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -58,7 +56,6 @@ extern "C" {
 /* USER CODE BEGIN EM */
 /* Define the SPI handler available for the WiFi device. */
 #define MXCHIP_SPI      hspi2
-
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -73,11 +70,7 @@ typedef enum
 
 void blink_led(LedStatus_TypeDef status);
 
-
-/* External declarations for Mxchip with SPI.*/
-void HAL_SPI_TransferCallback(SPI_HandleTypeDef *hspi);
-void mxchip_WIFI_ISR(uint16_t pin);
-extern void nx_driver_emw3080_interrupt(void);
+int hardware_rand(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -97,8 +90,8 @@ extern void nx_driver_emw3080_interrupt(void);
 #define MXCHIP_NSS_GPIO_Port GPIOB
 #define MXCHIP_RESET_Pin GPIO_PIN_15
 #define MXCHIP_RESET_GPIO_Port GPIOF
-/* USER CODE BEGIN Private defines */
 
+/* USER CODE BEGIN Private defines */
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

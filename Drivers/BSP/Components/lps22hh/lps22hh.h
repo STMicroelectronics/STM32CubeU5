@@ -30,24 +30,25 @@ extern "C"
 #include <string.h>
 
 /** @addtogroup BSP BSP
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup Component Component
- * @{
- */
+  * @{
+  */
 
 /** @addtogroup LPS22HH LPS22HH
- * @{
- */
+  * @{
+  */
 
 /** @defgroup LPS22HH_Exported_Types LPS22HH Exported Types
- * @{
- */
+  * @{
+  */
 
 typedef int32_t (*LPS22HH_Init_Func)(void);
 typedef int32_t (*LPS22HH_DeInit_Func)(void);
 typedef int32_t (*LPS22HH_GetTick_Func)(void);
+typedef void    (*LPS22HH_Delay_Func)(uint32_t);
 typedef int32_t (*LPS22HH_WriteReg_Func)(uint16_t, uint16_t, uint8_t *, uint16_t);
 typedef int32_t (*LPS22HH_ReadReg_Func)(uint16_t, uint16_t, uint8_t *, uint16_t);
 
@@ -60,6 +61,7 @@ typedef struct
   LPS22HH_WriteReg_Func      WriteReg;
   LPS22HH_ReadReg_Func       ReadReg;
   LPS22HH_GetTick_Func       GetTick;
+  LPS22HH_Delay_Func         Delay;
 } LPS22HH_IO_t;
 
 typedef struct
@@ -119,33 +121,37 @@ typedef enum
   LPS22HH_FIFO_TRIGGER_BYPASSTOFIFO_MODE      = (uint8_t)0xE0     /*!< BYPASS mode until trigger deasserted, then FIFO MODE*/
 } LPS22HH_FifoMode;
 
-typedef union{
+typedef union
+{
   int16_t i16bit[3];
   uint8_t u8bit[6];
 } lps22hh_axis3bit16_t;
 
-typedef union{
+typedef union
+{
   int16_t i16bit;
   uint8_t u8bit[2];
 } lps22hh_axis1bit16_t;
 
-typedef union{
+typedef union
+{
   int32_t i32bit[3];
   uint8_t u8bit[12];
 } lps22hh_axis3bit32_t;
 
-typedef union{
+typedef union
+{
   int32_t i32bit;
   uint8_t u8bit[4];
 } lps22hh_axis1bit32_t;
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @defgroup LPS22HH_Exported_Constants LPS22HH Exported Constants
- * @{
- */
+  * @{
+  */
 
 #define LPS22HH_OK                0
 #define LPS22HH_ERROR            -1
@@ -161,12 +167,12 @@ typedef union{
 #define LPS22HH_LOW_NOISE_EN       1
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @addtogroup LPS22HH_Exported_Functions LPS22HH Exported Functions
- * @{
- */
+  * @{
+  */
 
 int32_t LPS22HH_RegisterBusIO(LPS22HH_Object_t *pObj, LPS22HH_IO_t *pIO);
 int32_t LPS22HH_Init(LPS22HH_Object_t *pObj);
@@ -214,19 +220,19 @@ int32_t LPS22HH_Set_Power_Mode(LPS22HH_Object_t *pObj, uint8_t powerMode);
 int32_t LPS22HH_Set_Filter_Mode(LPS22HH_Object_t *pObj, uint8_t filterMode);
 
 /**
- * @}
- */
+  * @}
+  */
 
 /** @addtogroup LPS22HH_Exported_Variables LPS22HH Exported Variables
- * @{
- */
+  * @{
+  */
 extern LPS22HH_CommonDrv_t LPS22HH_COMMON_Driver;
 extern LPS22HH_PRESS_Drv_t LPS22HH_PRESS_Driver;
 extern LPS22HH_TEMP_Drv_t LPS22HH_TEMP_Driver;
 
 /**
- * @}
- */
+  * @}
+  */
 
 #ifdef __cplusplus
 }
@@ -235,13 +241,13 @@ extern LPS22HH_TEMP_Drv_t LPS22HH_TEMP_Driver;
 #endif
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */

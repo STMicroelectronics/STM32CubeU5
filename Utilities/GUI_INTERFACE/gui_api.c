@@ -702,9 +702,9 @@ uint32_t GUI_InitOS(void *MemoryPtr)
 
 #if defined(_RTOS) || defined(USBPD_THREADX)
 error:
-  return(_status);
+  return (_status);
 #else
-  return(USBPD_ENABLE);
+  return (USBPD_ENABLE);
 #endif /* _RTOS || USBPD_THREADX */
 }
 
@@ -1226,7 +1226,7 @@ USBPD_GUI_State GUI_SendNotification(uint8_t PortNum, uint8_t **pMsgToSend, uint
     {
       /* Is Connected*/
       (void)TLV_add(&send_tlv, (uint8_t)GUI_IND_ISCONNECTED, 1,
-                    (uint8_t[]){ DPM_Params[PortNum].PE_Power });
+                    (uint8_t[]) { DPM_Params[PortNum].PE_Power });
       if (USBPD_TRUE == DPM_Params[PortNum].PE_IsConnected)
       {
         uint8_t rp_value;
@@ -1281,8 +1281,7 @@ USBPD_GUI_State GUI_SendNotification(uint8_t PortNum, uint8_t **pMsgToSend, uint
           case USBPD_NOTIFY_GETSNKCAP_ACCEPTED :
             /* NumberOfRcvSNKPDO */
             (void)TLV_add(&send_tlv, (uint8_t)GUI_IND_NUMBEROFRCVSNKPDO, 1,
-                          (uint8_t[]) { GUI_SaveInformation[PortNum].NumberOfRcvSNKPDO
-            });
+                          (uint8_t[]) { GUI_SaveInformation[PortNum].NumberOfRcvSNKPDO });
             /* ListOfRcvSNKPDO*/
             (void)TLV_add(&send_tlv, (uint8_t)GUI_IND_LISTOFRCVSNKPDO,
                           (uint16_t)(GUI_SaveInformation[PortNum].NumberOfRcvSNKPDO * 4U),
@@ -2466,7 +2465,7 @@ static void Send_DpmConfigSetCnf(uint8_t PortNum, uint8_t *instruction, uint8_t 
 #if !defined(USBPDCORE_LIB_NO_PD)
         /* SOP & SOP1 & SOP2 */
         /* SOP1_Debug & SOP2_Debug not implemented */
-        DPM_Settings[PortNum].PE_SupportedSOP = value[0];
+        DPM_Settings[PortNum].PE_SupportedSOP = (USBPD_SupportedSOP_TypeDef)value[0];
 #endif /* !USBPDCORE_LIB_NO_PD */
         break;
 #if defined(USBPD_REV30_SUPPORT)

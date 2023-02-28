@@ -174,7 +174,7 @@ int32_t BSP_IOEXPANDER_DeInit(uint32_t Instance)
   *         the configuration information for the specified IO pin.
   * @retval BSP status
   */
-int32_t BSP_IO_Init(uint32_t Instance, BSP_IO_Init_t *Init)
+int32_t BSP_IO_Init(const uint32_t Instance, BSP_IO_Init_t *Init)
 {
   int32_t ret = BSP_ERROR_NONE;
 
@@ -469,7 +469,7 @@ static int32_t MFXSTM32L152_Probe(uint32_t Instance)
   MFXSTM32L152_IO_t    IOCtx;
   uint32_t             mfxstm32l152_id;
   uint32_t             i;
-  uint8_t i2c_address[] = {IO_I2C_ADDRESS, IO_I2C_ADDRESS_2};
+  const uint8_t i2c_address[] = {IO_I2C_ADDRESS, IO_I2C_ADDRESS_2};
 
   /* Configure the audio driver */
   IOCtx.Init        = BSP_I2C2_Init;

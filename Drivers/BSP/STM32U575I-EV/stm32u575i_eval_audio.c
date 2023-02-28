@@ -249,7 +249,7 @@ static int32_t CS42L51_Probe(void);
 static int32_t CS42L51_PowerUp(void);
 static int32_t CS42L51_PowerDown(void);
 static void    SAI_MspInit(SAI_HandleTypeDef *hsai);
-static void    SAI_MspDeInit(SAI_HandleTypeDef *hsai);
+static void    SAI_MspDeInit(const SAI_HandleTypeDef *hsai);
 #if (USE_HAL_SAI_REGISTER_CALLBACKS == 1)
 static void    SAI_TxCpltCallback(SAI_HandleTypeDef *hsai);
 static void    SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai);
@@ -259,7 +259,7 @@ static void    SAI_ErrorCallback(SAI_HandleTypeDef *hsai);
 #endif /* (USE_HAL_SAI_REGISTER_CALLBACKS == 1) */
 
 static void    MDF_BlockMspInit(MDF_HandleTypeDef *hmdf);
-static void    MDF_BlockMspDeInit(MDF_HandleTypeDef *hmdf);
+static void    MDF_BlockMspDeInit(const MDF_HandleTypeDef *hmdf);
 #if (USE_HAL_MDF_REGISTER_CALLBACKS == 1)
 static void    MDF_AcquisitionCpltCallback(MDF_HandleTypeDef *hadf_filter);
 static void    MDF_AcquisitionHalfCpltCallback(MDF_HandleTypeDef *hadf_filter);
@@ -1300,7 +1300,7 @@ void BSP_AUDIO_OUT_IRQHandler(uint32_t Instance, uint32_t Device)
   *         the SAI PLL input is MSI clock and that MSI is already enabled at 4 MHz.
   * @retval HAL status.
   */
-__weak HAL_StatusTypeDef MX_SAI1_ClockConfig(SAI_HandleTypeDef *hsai, uint32_t SampleRate)
+__weak HAL_StatusTypeDef MX_SAI1_ClockConfig(const SAI_HandleTypeDef *hsai, uint32_t SampleRate)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(hsai);
@@ -2791,7 +2791,7 @@ static void MDF_BlockMspInit(MDF_HandleTypeDef *hmdf)
   * @param  hmdf MDF filter handle.
   * @retval None.
   */
-static void MDF_BlockMspDeInit(MDF_HandleTypeDef *hmdf)
+static void MDF_BlockMspDeInit(const MDF_HandleTypeDef *hmdf)
 {
   /* De-initialize ADF1_CKOUT, ADF1_DATIN1 pins */
   HAL_GPIO_DeInit(AUDIO_ADF1_CCK0_GPIO_PORT, AUDIO_ADF1_CCK0_GPIO_PIN);
@@ -2931,7 +2931,7 @@ void HAL_MDF_ErrorCallback(MDF_HandleTypeDef *hadf_filter)
   * @param  SampleRate Audio sample rate used to record the audio stream.
   * @retval HAL status.
   */
-__weak HAL_StatusTypeDef MX_ADF1_ClockConfig(MDF_HandleTypeDef *hAdfBlock, uint32_t SampleRate)
+__weak HAL_StatusTypeDef MX_ADF1_ClockConfig(const MDF_HandleTypeDef *hAdfBlock, uint32_t SampleRate)
 {
   HAL_StatusTypeDef status = HAL_OK;
   RCC_PeriphCLKInitTypeDef RCC_ExCLKInitStruct;
@@ -3259,7 +3259,7 @@ static void SAI_MspInit(SAI_HandleTypeDef *hsai)
   * @param  hsai SAI handle.
   * @retval None.
   */
-static void SAI_MspDeInit(SAI_HandleTypeDef *hsai)
+static void SAI_MspDeInit(const SAI_HandleTypeDef *hsai)
 {
   if (hsai->Instance == SAI1_Block_A)
   {

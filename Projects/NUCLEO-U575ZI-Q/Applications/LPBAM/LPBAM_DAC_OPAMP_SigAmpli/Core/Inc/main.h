@@ -69,6 +69,7 @@ void Error_Handler(void);
 #define LPTIM3_PWM_PULSE 32U
 #define DAC_REFRECH_TIME 1U
 #define LPTIM3_PWM_PERIOD 64U
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

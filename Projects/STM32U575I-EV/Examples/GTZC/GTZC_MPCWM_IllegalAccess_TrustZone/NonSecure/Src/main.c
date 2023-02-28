@@ -1,8 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : GTZC/GTZC_MPCWM_IllegalAccess_TrustZone/NonSecure/Src/main.c
-  * @brief          : Main program body
+  * @file    : NonSecure/GTZC_MPCWM_IllegalAccess_TrustZone/NonSecure/Src/main.c
+  * @author  : MCD Application Team
+  * @brief   : Main program body
   ******************************************************************************
   * @attention
   *
@@ -43,9 +44,7 @@
 DCACHE_HandleTypeDef hdcache1;
 
 /* USER CODE BEGIN PV */
-DCACHE_HandleTypeDef hdcache1;
 __IO uint32_t UserButtonPressed = 0U;
-__IO uint32_t TamperButtonPressed = 0U;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -95,23 +94,24 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    while ((UserButtonPressed == 0U) && (TamperButtonPressed == 0U))
+
+    while (UserButtonPressed == 0U)
     {
+
       /* read/write test in first half of memory (non-secure area), should be OK
       * Reminder: in secure sub-project
-      * - FMC NOR memory size is 16Mb = 2MB = 16*128KB
-      * - mapped address range is 0x60000000..0x60200000
-      * - so half size is 8*128KB
-      * - first half is set as non-secure (8*128KB) in initial config
-      * - second half is set as secure (8*128KB) in initial config
+      * - External FMC memory size is 2MB = 16*128KB
+      * - Mapped address range is 0x60000000..0x601FFFFF
+      * - Hence, half size is 8*128KB
+      * - First half is set as non-secure (8*128KB) in initial config
+      * - Second half is set as secure (8*128KB) in initial config
       */
-
-      for (i = 0U; i < (8U * GTZC_TZSC_MPCWM_GRANULARITY_1); i+=4)
+      for (i = 0U; i < (8U * GTZC_TZSC_MPCWM_GRANULARITY_1); i+=GTZC_TZSC_MPCWM_GRANULARITY_1)
       {
-        read_value = *(uint32_t *)(FMC_BANK1 + i);
+        read_value = *(uint32_t *)(FMC_BASE + i);
         temp_value = ~read_value;
-        *(uint32_t *)(FMC_BANK1 + i) = temp_value;
-        if( *(uint32_t *)(FMC_BANK1 + i) != temp_value)
+        *(uint32_t *)(FMC_BASE + i) = temp_value;
+        if( *(uint32_t *)(FMC_BASE + i) != temp_value)
         {
           SECURE_DisplayMessage((const uint8_t *)"\n\rNon-secure read/write access mismatch in non-secure SRAM");
           /* Infinite loop */
@@ -119,14 +119,12 @@ int main(void)
         }
       }
 
-      /* on previous test success, blink green led */
-      HAL_GPIO_TogglePin(LED5_GPIO_PORT, LED5_PIN);
-
+      /* On previous test success, blink green led */
+      HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
       /* Insert delay 1000 ms */
       HAL_Delay(1000U);
-      HAL_GPIO_TogglePin(LED5_GPIO_PORT, LED5_PIN);
-
-
+      
+      HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
       /* Insert delay 1000 ms */
       HAL_Delay(1000U);
     }
@@ -136,59 +134,70 @@ int main(void)
       SECURE_DisplayMessage((const uint8_t *)"\n\rNon-secure detection of BUTTON_USER");
       /* here we do a write operation from the non-secure on a secure area.
       * This is of course not allowed, and the result should be a Secure fault
-      * event because it doesn't respect SAU rules (1st obstacle, before MPCWM)
+      * event because it doesn't respect SAU rules (1st obstacle, before MPCWM2)
       * This access is done at the beginning of the second half of memory, set
       * as secured in initial config.
       */
-      SECURE_DisplayMessage((const uint8_t *)"\n\rNon-secure Read test on Secure area of FMC NOR");
+      SECURE_DisplayMessage((const uint8_t *)"\n\rNon-secure Read test on Secure area of external FMC SRAM");
       read_value = 0xABABABAB;
-      *(uint32_t *)(FMC_BANK1 + 8 * GTZC_TZSC_MPCWM_GRANULARITY_1) = ~read_value;
+      *(uint32_t *)(FMC_BASE + 8U * GTZC_TZSC_MPCWM_GRANULARITY_1) = ~read_value;
 
-      /* In the secure fault interrupt handler (on secure sub-project), FMC NOR
+      /* In the secure fault interrupt handler (on secure sub-project), external FMC SRAM
       * memory security properties have been updated, in order to avoid an
       * infinite loop. So we need to restore initial properties, to continue
       * SW execution in good conditions.
       */
 
-      SECURE_DisplayMessage((const uint8_t *)"\n\rNon-secure requests to restore SAU/MPCWM2 initial configuration");
-      SECURE_SAU_MPCWM2_SetInitConfig();
+      SECURE_DisplayMessage((const uint8_t *)"\n\rNon-secure requests to restore SAU/MPCWM initial configuration");
+      SECURE_SAU_MPCWM_SetInitConfig();
 
-      /* Toggle RED LED after a 1s delay */
-      HAL_Delay(1000U);
-      SECURE_ToggleRedLed();
-      HAL_Delay(1000U);
+      /* Green LED is Lightning */
+      HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
 
-      UserButtonPressed = 0U;
+      while(UserButtonPressed == 1U)
+      {
+        /* Toggle RED LED after a 1s delay */
+        SECURE_ToggleRedLed();
+        HAL_Delay(1000U);
+        SECURE_ToggleRedLed();
+        HAL_Delay(1000U);
+      }
 
       /* invalidate the full cache content */
       HAL_DCACHE_Invalidate(&hdcache1);
 
     }
-    else if (TamperButtonPressed == 1U)
+    else if (UserButtonPressed == 2U)
     {
-      SECURE_DisplayMessage((const uint8_t *)"\n\rNon-secure detection of BUTTON_TAMPER");
+      SECURE_DisplayMessage((const uint8_t *)"\n\rNon-secure detection of a second push on USER BUTTON");
 
       /* here we do a write operation from the non-secure world on an address in
       * a non-secure area from SAU point of view (so should be OK) but on a
       * secure area from MPCWM2 point of view. This should triggered GTZC_IRQn.
-      * For this, we should misalign SAU and MPCWM configuration, do the access
+      * For this, we should misalign SAU and MPCWM2 configuration, do the access
       * and restore initial configurations.
       */
       SECURE_DisplayMessage((const uint8_t *)"\n\rNon-secure requests misalignment between SAU and MPCWM2 configuration");
-      SECURE_SAU_MPCWM2_SetTamperButtonErrorCaseConfig();
-      SECURE_DisplayMessage((const uint8_t *)"\n\rNon-Secure Write test on Secure area of FMC NOR");
+
+      /* Change SAU/MPCWM2 parameters to allow illegal access detection */
+      SECURE_SAU_MPCWM_SetIllegalAccessConfig();
+
+      SECURE_DisplayMessage((const uint8_t *)"\n\rNon-Secure Write test on Secure area of FMC SRAM");
       read_value = 0xBABABABA;
-      *(uint32_t *)(FMC_BANK1 + 8 * GTZC_TZSC_MPCWM_GRANULARITY_1) = ~read_value;
+      *(uint32_t *)FMC_BASE = ~read_value;
 
       SECURE_DisplayMessage((const uint8_t *)"\n\rNon-secure requests to restore SAU/MPCWM2 initial configuration");
-      SECURE_SAU_MPCWM2_SetInitConfig();
+
+      /* Return to initial SAU/MPCWM2 configuration */
+      SECURE_SAU_MPCWM_SetInitConfig();
 
       /* Toggle RED LED after a 1s delay */
+      SECURE_ToggleRedLed();
       HAL_Delay(1000U);
       SECURE_ToggleRedLed();
       HAL_Delay(1000U);
 
-      TamperButtonPressed = 0U;
+      UserButtonPressed = 0U;
 
       /* invalidate the full cache content */
       HAL_DCACHE_Invalidate(&hdcache1);
@@ -235,18 +244,15 @@ static void MX_DCACHE1_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOH_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LED5_PIN_GPIO_Port, LED5_PIN_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LED6_GPIO_Port, LED6_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED5_GPIO_Port, LED5_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : BUTTON_USER_Pin */
   GPIO_InitStruct.Pin = BUTTON_USER_Pin;
@@ -254,33 +260,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(BUTTON_USER_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LED5_PIN_Pin */
-  GPIO_InitStruct.Pin = LED5_PIN_Pin;
+  /*Configure GPIO pin : LED5_Pin */
+  GPIO_InitStruct.Pin = LED5_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(LED5_PIN_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : LED6_Pin */
-  GPIO_InitStruct.Pin = LED6_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(LED6_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : BUTTON_TAMPER_Pin */
-  GPIO_InitStruct.Pin = BUTTON_TAMPER_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  HAL_GPIO_Init(BUTTON_TAMPER_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(LED5_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI1_IRQn, 7, 0);
-  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
-
   HAL_NVIC_SetPriority(EXTI13_IRQn, 7, 0);
   HAL_NVIC_EnableIRQ(EXTI13_IRQn);
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -291,16 +283,12 @@ static void MX_GPIO_Init(void)
 */
 void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
 {
-  if (GPIO_Pin == BUTTON_USER_PIN)
+  if (GPIO_Pin == BUTTON_USER_Pin)
   {
-    UserButtonPressed = 1U;
+    UserButtonPressed++;
   }
-  else if (GPIO_Pin == BUTTON_TAMPER_PIN)
-  {
-    TamperButtonPressed = 1U;
-  }
-
 }
+
 /* USER CODE END 4 */
 
 /**

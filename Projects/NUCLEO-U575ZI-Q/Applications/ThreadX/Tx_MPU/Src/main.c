@@ -95,8 +95,7 @@ int main(void)
   SystemPower_Config();
   
   /* USER CODE BEGIN SysInit */
-  BSP_LED_Init(LED_GREEN);
-  BSP_LED_Init(LED_RED);
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -136,7 +135,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.MSIState = RCC_MSI_ON;
@@ -156,7 +155,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
@@ -278,9 +277,32 @@ static void MX_USART1_UART_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LED_GREEN_Port, LED_GREEN, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LED_RED_Port, LED_RED, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : LED_GREEN */
+  GPIO_InitStruct.Pin = LED_GREEN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LED_GREEN_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : LED_RED */
+  GPIO_InitStruct.Pin = LED_RED;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LED_RED_Port, &GPIO_InitStruct);
 
 }
 
@@ -329,14 +351,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  __disable_irq();
   printf(" Error \n");
-  BSP_LED_Off(LED_GREEN);
+  HAL_GPIO_WritePin(LED_GREEN_Port, LED_GREEN, GPIO_PIN_RESET);
   while(1)
   {
     /* Toggle LED_RED: Error */
-    BSP_LED_Toggle(LED_RED);
-    HAL_Delay(100);
+    HAL_GPIO_TogglePin(LED_RED_Port, LED_RED);
+    HAL_Delay(1000);
   }
   /* USER CODE END Error_Handler_Debug */
 }

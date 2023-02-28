@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -17,9 +17,6 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32u5xx_ll_rcc.h"
-#include "stm32u5xx_ll_bus.h"
-#include "stm32u5xx_ll_crs.h"
 #include "main.h"
 #include "app_threadx.h"
 #include "app_openbootloader.h"
@@ -32,14 +29,12 @@
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 
-/* Private functions ---------------------------------------------------------*/
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim6;
 
 /**
   * @brief  Main program.
-  * @param  None.
-  * @retval None.
+  * @retval int.
   */
 int main(void)
 {
@@ -49,17 +44,26 @@ int main(void)
        - Set NVIC Group Priority to 3
        - Low Level Initialization
      */
-  HAL_Init();
+
+  if (HAL_Init() != HAL_OK)
+  {
+    Error_Handler();
+  }
 
   /* Configure the System clock to have a frequency of 160 MHz */
   SystemClock_Config();
 
-  /* Initialize the OpenBootloader */
+  /* Initialize the Open Bootloader */
   OpenBootloader_Init();
 
   /* Initialize the Threads and start the kernel */
   MX_ThreadX_Init();
+
+  /* The code must never reach this point */
+  return 0;
 }
+
+/* Private functions ---------------------------------------------------------*/
 
 /**
   * @brief  System Clock Configuration
@@ -84,13 +88,17 @@ int main(void)
   */
 static void SystemClock_Config(void)
 {
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_CRSInitTypeDef RCC_CRSInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0U};
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0U};
+  RCC_CRSInitTypeDef RCC_CRSInitStruct = {0U};
 
   /* Enable voltage range 1 for frequency above 100 Mhz */
   __HAL_RCC_PWR_CLK_ENABLE();
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+  if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
   /* Switch to SMPS regulator instead of LDO */
   if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
@@ -107,12 +115,12 @@ static void SystemClock_Config(void)
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState        = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource       = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM            = 8;
-  RCC_OscInitStruct.PLL.PLLN            = 60;
-  RCC_OscInitStruct.PLL.PLLR            = 2;
-  RCC_OscInitStruct.PLL.PLLQ            = 6;
-  RCC_OscInitStruct.PLL.PLLP            = 6;
-  RCC_OscInitStruct.PLL.PLLFRACN        = 0;
+  RCC_OscInitStruct.PLL.PLLM            = 8U;
+  RCC_OscInitStruct.PLL.PLLN            = 60U;
+  RCC_OscInitStruct.PLL.PLLR            = 2U;
+  RCC_OscInitStruct.PLL.PLLQ            = 6U;
+  RCC_OscInitStruct.PLL.PLLP            = 6U;
+  RCC_OscInitStruct.PLL.PLLFRACN        = 0U;
 
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -120,8 +128,8 @@ static void SystemClock_Config(void)
   }
 
   /* Select PLL as system clock source and configure bus clocks dividers */
-  RCC_ClkInitStruct.ClockType      = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | \
-                                      RCC_CLOCKTYPE_PCLK2  | RCC_CLOCKTYPE_PCLK3);
+  RCC_ClkInitStruct.ClockType      = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_PCLK1
+                                      | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK3);
   RCC_ClkInitStruct.SYSCLKSource   = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider  = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
@@ -137,11 +145,12 @@ static void SystemClock_Config(void)
   RCC_CRSInitStruct.Prescaler             = RCC_CRS_SYNC_DIV1;
   RCC_CRSInitStruct.Source                = RCC_CRS_SYNC_SOURCE_USB;
   RCC_CRSInitStruct.Polarity              = RCC_CRS_SYNC_POLARITY_RISING;
-  RCC_CRSInitStruct.ReloadValue           = __HAL_RCC_CRS_RELOADVALUE_CALCULATE(48000000, 1000);
-  RCC_CRSInitStruct.ErrorLimitValue       = 34;
-  RCC_CRSInitStruct.HSI48CalibrationValue = 32;
+  RCC_CRSInitStruct.ReloadValue           = __HAL_RCC_CRS_RELOADVALUE_CALCULATE(48000000U, 1000U);
+  RCC_CRSInitStruct.ErrorLimitValue       = 34U;
+  RCC_CRSInitStruct.HSI48CalibrationValue = 32U;
 
   HAL_RCCEx_CRSConfig(&RCC_CRSInitStruct);
+
   /* Enable the SYSCFG APB clock */
   __HAL_RCC_CRS_CLK_ENABLE();
   __HAL_RCC_PWR_CLK_DISABLE();
@@ -154,15 +163,15 @@ static void SystemClock_Config(void)
 void System_DeInit(void)
 {
   /* Interfaces de-initialization */
-  USARTx_DeInit();
-  I2Cx_DeInit();
-  SPIx_DeInit();
+  (void)USARTx_DEINIT();
+  (void)I2Cx_DEINIT();
+  (void)SPIx_DEINIT();
 
-  HAL_RCC_DeInit();
+  (void)HAL_RCC_DeInit();
 
   /* Disable timer */
-  HAL_TIM_Base_DeInit(&htim6);
-  HAL_TIM_Base_Stop_IT(&htim6);
+  (void)HAL_TIM_Base_DeInit(&htim6);
+  (void)HAL_TIM_Base_Stop_IT(&htim6);
   __HAL_RCC_TIM6_CLK_DISABLE();
   HAL_NVIC_DisableIRQ(TIM6_IRQn);
 
@@ -171,7 +180,7 @@ void System_DeInit(void)
   HAL_NVIC_DisableIRQ(OTG_FS_IRQn);
 
   /* Disable SPI interrupt */
-  HAL_NVIC_DisableIRQ(SPIx_IRQn);
+  HAL_NVIC_DisableIRQ(SPIx_IRQ);
 }
 
 /**
@@ -180,19 +189,19 @@ void System_DeInit(void)
   */
 void Error_Handler(void)
 {
-  while (1)
+  while (true)
   {
   }
 }
 
 /**
- * @brief  Period elapsed callback in non blocking mode.
- * @note   This function is called  when TIM6 interrupt took place, inside
- * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
- * a global variable "uwTick" used as application time base.
- * @param  htim : TIM handle.
- * @retval None.
- */
+  * @brief  Period elapsed callback in non blocking mode.
+  * @note   This function is called  when TIM6 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle.
+  * @retval None.
+  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM6)
@@ -204,7 +213,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   }
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
@@ -218,8 +227,8 @@ void assert_failed(uint8_t *file, uint32_t line)
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 
   /* Infinite loop */
-  while (1)
+  while (true)
   {
   }
 }
-#endif
+#endif /* USE_FULL_ASSERT */

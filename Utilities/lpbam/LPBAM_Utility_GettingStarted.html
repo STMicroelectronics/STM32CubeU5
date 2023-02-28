@@ -571,18 +571,14 @@ ADV_LPBAM_Q_SetTriggerConfig() API. The trigger signal can be set to trigger the
 <input type="checkbox" id="collapse-section5" checked aria-hidden="true"> <label for="collapse-section5" aria-hidden="true">Product specificities</label>
 <div>
 <h1 id="product-specificities">Product specificities</h1>
-<h2 id="stm32u5">1. STM32U5</h2>
+<h2 id="dma-accessibility">1. DMA accessibility</h2>
 <ul>
-<li><strong>DMA accessibility</strong>
+<li>According to STM32 peripheral integration and power domain definition:
 <ul>
-<li>STM32U5 devices contain two DMA instances:
-<ul>
-<li>GPDMA, a general purpose DMA that can access any available address.<br />
-</li>
-<li>LPDMA, a low-power DMA that can access only SRD resources.</li>
+<li>DMA can access only to a reduced memory range. This DMA integration strategy must be took into consideration when building an LPBAM application.</li>
 </ul></li>
-</ul></li>
-<li><strong>Memory usage</strong>
+</ul>
+<h2 id="memory-usage">2. Memory usage</h2>
 <ul>
 <li>Generally, low-power STM32 lines embed memories of limited size that shall be managed with optimum memory usage.<br />
 </li>
@@ -591,12 +587,12 @@ ADV_LPBAM_Q_SetTriggerConfig() API. The trigger signal can be set to trigger the
 <li>Variables used by the program executed by CPU. They can be placed at any available SRAM address.<br />
 </li>
 <li>Variables used by the DMA in order to execute linked-list queue. They must be placed at SRAM addresses accessible by the DMA instance. These variables are LPBAM descriptors and data buffers.<br />
-=&gt; To optimize memory usage, it is recommended to place only the variables used during linked-list queue execution in SRAM4 when the LPBAM scenario is built to be executed by the LPDMA.</li>
+=&gt; To optimize memory usage, it is recommended to place only the variables used during linked-list queue execution in the SRAM accessible by the DMA instance used within the LPBAM application.</li>
 </ul></li>
-</ul></li>
-<li><strong>TrustZone<sup>®</sup> compliance</strong>
+</ul>
+<h2 id="trustzone-compliance">3. TrustZone<sup>®</sup> compliance</h2>
 <ul>
-<li>The LPBAM firmware solution is compliant with TrustZone software architecture.<br />
+<li>The LPBAM software solution is compliant with TrustZone software architecture.<br />
 </li>
 <li>As the DMA is a TrustZone-aware peripheral, configuring the source and the destination access attributes are possible.<br />
 </li>
@@ -604,11 +600,14 @@ ADV_LPBAM_Q_SetTriggerConfig() API. The trigger signal can be set to trigger the
 </li>
 <li>In the advanced layer, configuring DMA accesses attributes is possible only for the data nodes where the user can perform data transfer as follows:
 <ul>
-<li>from secure to secure addresses.</li>
-<li>from secure to non-secure addresses.</li>
-<li>from non-secure to secure addresses.</li>
-<li>from non-secure to non-secure addresses.</li>
-</ul></li>
+<li>from secure to secure addresses.<br />
+</li>
+<li>from secure to non-secure addresses.<br />
+</li>
+<li>from non-secure to secure addresses.<br />
+</li>
+<li>from non-secure to non-secure addresses.<br />
+</li>
 </ul></li>
 </ul>
 </div>
@@ -679,26 +678,14 @@ ADV_LPBAM_Q_SetTriggerConfig() API. The trigger signal can be set to trigger the
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>SRD</strong></td>
-<td><strong>S</strong>mart <strong>R</strong>un <strong>D</strong>omain</td>
-</tr>
-<tr class="even">
-<td><strong>GPDMA</strong></td>
-<td><strong>G</strong>eneral <strong>P</strong>urpose <strong>D</strong>irect <strong>M</strong>emory <strong>A</strong>ccess</td>
-</tr>
-<tr class="odd">
-<td><strong>LPDMA</strong></td>
-<td><strong>L</strong>ow <strong>P</strong>ower <strong>D</strong>irect <strong>M</strong>emory <strong>A</strong>ccess</td>
-</tr>
-<tr class="even">
 <td><strong>CPU</strong></td>
 <td><strong>C</strong>entral <strong>P</strong>rocessing <strong>U</strong>nit</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>EXTI</strong></td>
 <td><strong>EXT</strong>ended <strong>I</strong>nterrupts and event controller</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>NVIC</strong></td>
 <td><strong>N</strong>ested <strong>V</strong>ectored <strong>I</strong>nterrupt <strong>C</strong>ontroller</td>
 </tr>

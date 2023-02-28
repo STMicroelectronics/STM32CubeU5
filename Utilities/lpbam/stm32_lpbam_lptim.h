@@ -50,10 +50,10 @@ typedef struct
                                               This parameter can be a value of @ref LPBAM_LPTIM_Channel        */
 
   uint32_t Mode;                         /*!< Specifies the LPTIM Mode.
-                                              This parameter can be a value of @ref LPBAM_LPTIM_Mode           */
+                                              This parameter can be a value of @ref LPBAM_LPTIM_Stop_Mode      */
 
   uint32_t StartMode;                    /*!< Specifies the LPTIM Start Mode.
-                                              This parameter can be a value of @ref LPBAM_LPTIM_ContinuousMode */
+                                              This parameter can be a value of @ref LPBAM_LPTIM_Start_Mode     */
 
   LPBAM_FunctionalState UpdateStartMode; /*!< Specifies the start mode update state
                                               This parameter can be ENABLE or DISABLE                          */
@@ -68,6 +68,9 @@ typedef struct
   uint32_t Size;                         /*!< Specifies the LPTIM update number for PWM generation             */
 
   uint32_t CaptureCount;                 /*!< Specifies the LPTIM DMA access number for input capture          */
+
+  uint32_t CountValue;                   /*!< Specifies the LPTIM
+                                              this parameter can be read counter value                         */
 
 } LPBAM_LPTIM_Config_t;
 
@@ -97,6 +100,8 @@ typedef enum
   LPBAM_LPTIM_UPDATE_PULSE_ID,      /*!< LPBAM LPTIM Update Pulse node ID       */
 
   LPBAM_LPTIM_UPDATE_REPETITION_ID, /*!< LPBAM LPTIM Update Repetition node ID  */
+
+  LPBAM_LPTIM_GET_COUNTER_ID,       /*!< LPBAM LPTIM Get Counter node ID        */
 
   LPBAM_LPTIM_INPUT_CAPTURE_ID,     /*!< LPBAM LPTIM Input Capture node ID      */
 

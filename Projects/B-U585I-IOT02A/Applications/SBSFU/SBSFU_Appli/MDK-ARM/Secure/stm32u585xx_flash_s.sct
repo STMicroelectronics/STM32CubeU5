@@ -1,0 +1,29 @@
+#! armclang --target=arm-arm-none-eabi -march=armv8-m.main -E -xc
+#include "region_defs.h"
+
+LR_IROM2 S_CODE_START  S_CODE_SIZE {    ; load region size_region
+  ER_IROM2 S_CODE_START S_CODE_SIZE {  ; load address = execution address
+   *.o (RESET, +First)
+   *(InRoot$$Sections)
+   .ANY (+RO)
+   .ANY (+XO)
+  }
+  RW_IRAM2 S_DATA_START S_DATA_START  {  ; RW data
+   .ANY (+RW +ZI)
+  }
+  /* MSP */
+  ARM_LIB_STACK_MSP +0 ALIGN 32 EMPTY S_MSP_STACK_SIZE {
+  }
+  /* PSP */
+  ARM_LIB_STACK +0 ALIGN 32 EMPTY S_PSP_STACK_SIZE {
+  }
+
+  ARM_LIB_HEAP +0 ALIGN 8 EMPTY S_HEAP_SIZE {
+  }
+}
+
+LR_IROM3 CMSE_VENEER_REGION_START CMSE_VENEER_REGION_SIZE  {    ; load region size_region
+  ER_IROM3 CMSE_VENEER_REGION_START CMSE_VENEER_REGION_SIZE  {  ; load address = execution address
+   *(Veneer$$CMSE)                   ; check with partition.h
+  }
+}

@@ -17,10 +17,10 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-/*
-  This source implements a very basic DHCP server in order to allow
-  mobile phone connection when the WiFi is in access point.
-  The DHCP allocates 3 addresses for a limited period of time.
+/**
+  * This source implements a very basic DHCP server in order to allow
+  * mobile phone connection when the WiFi is in Access Point.
+  * The DHCP allocates 3 addresses for a limited period of time.
   */
 
 #include "net_connect.h"
@@ -29,7 +29,8 @@
 #include "net_errors.h"
 
 #include "lwip/tcpip.h"
-
+#include <stdbool.h>
+#include <inttypes.h>
 
 #define TASK_SDHCP_NAME                 "sdhcp"
 #define TASK_SDHCP_PRIORITY             (osPriorityNormal)
@@ -37,8 +38,8 @@
 
 #define MIN_IP                           15U
 #define MAX_IP                           17U
-#define MAX_ADRES_INFO                   (MAX_IP - MIN_IP)
-#define SDHCP_TIMEOUT                   300U
+#define MAX_ADDRESS_INFO                 (MAX_IP - MIN_IP)
+#define SDHCP_TIMEOUT                    300U
 
 #ifndef MIN
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -55,8 +56,8 @@
 
 
 #define MAX_UDP_MESSAGE_SIZE  (1000)
-#define DHCP_SERVER_PORT      (67)
-#define DHCP_CLIENT_PORT      (68)
+#define DHCP_SERVER_PORT      ((uint16_t)67)
+#define DHCP_CLIENT_PORT      ((uint16_t)68)
 #define BROADCAST_FLAG        (0x80U)
 #define MAX_HOSTNAME_LENGTH   (256)
 
@@ -74,15 +75,15 @@ typedef struct t_dhcp_addr
 
 typedef struct t_sdhcp_handle
 {
-  int32_t             hSocket;
-  uint32_t            lastOfferAddr;
-  struct net_sockaddr_in  nethost;
-  struct net_sockaddr_in  netmsk;
-  struct net_sockaddr_in  netmin;
-  struct net_sockaddr_in  netmax;
-  char_t             *pHostName;
-  dhcp_addr_t         tAddressInfo[MAX_ADRES_INFO];
-  uint32_t            szAddressInfo;
+  int32_t                 hSocket;
+  uint32_t                lastOfferAddr;
+  net_sockaddr_in_t       nethost;
+  net_sockaddr_in_t       netmsk;
+  net_sockaddr_in_t       netmin;
+  net_sockaddr_in_t       netmax;
+  char_t                 *pHostName;
+  dhcp_addr_t             tAddressInfo[MAX_ADDRESS_INFO];
+  uint32_t                szAddressInfo;
 } sdhcp_handle_t;
 
 
@@ -129,67 +130,70 @@ typedef struct t_sdhcp_process_request
 typedef enum t_op_values
 {
   BOOTREQUEST = 1,
-  BOOTREPLY = 2
+  BOOTREPLY   = 2
 } op_values_t;
 
 /* RFC 2132 section 9.6  */
 
 typedef enum t_option_values
 {
-  PAD = 0,
-  SUBNETMASK = 1,
-  HOSTNAME = 12,
+  PAD                = 0,
+  SUBNETMASK         = 1,
+  HOSTNAME           = 12,
   REQUESTEDIPADDRESS = 50,
   IPADDRESSLEASETIME = 51,
-  DHCPMESSAGETYPE = 53,
-  SERVERIDENTIFIER = 54,
-  CLIENTIDENTIFIER = 61,
-  ROUTER = 3,
-  END = 255
+  DHCPMESSAGETYPE    = 53,
+  SERVERIDENTIFIER   = 54,
+  CLIENTIDENTIFIER   = 61,
+  ROUTER             = 3,
+  END                = 255
 } option_values_t;
 
 typedef enum t_dhcp_msg_types
 {
-  DISCOVER = 1U,
-  OFFER = 2U,
-  REQUEST = 3U,
-  DECLINE = 4U,
-  ACK = 5U,
-  NAK = 6U,
-  RELEASE = 7U,
-  INFORM = 8U
+  DHCP_TYPE_DISCOVER    = 1U,
+  DHCP_TYPE_FIRST_VALUE = DHCP_TYPE_DISCOVER,
+  DHCP_TYPE_OFFER       = 2U,
+  DNCP_TYPE_REQUEST     = 3U,
+  DHCP_TYPE_DECLINE     = 4U,
+  DHCP_TYPE_ACK         = 5U,
+  DHCP_TYPE_NAK         = 6U,
+  DHCP_TYPE_RELEASE     = 7U,
+  DHCP_TYPE_INFORM      = 8U,
+  DHCP_TYPE_LAST_VALUE  = DHCP_TYPE_INFORM
 } dhcp_msg_types_t;
 
 typedef uint8_t(*sdhcp_find_cb)(dhcp_addr_t *raiui, void *pvFilterData);
 
+static net_if_handle_t *pNetifObject = NULL;
 
 /* DHCP magic cookie values*/
-static int8_t bRunTask = 0;
+static volatile int8_t RunTask = 0;
 
 #if (osCMSIS < 0x20000U)
-static osThreadId hSdhcpTask;
+static osThreadId SdhcpTask;
 #else
-static osThreadId_t hSdhcpTask;
+static osThreadId_t SdhcpTask;
 #endif /* osCMSIS */
 
-static uint32_t sdhcp_swap_ip(uint32_t dw);
+static uint32_t sdhcp_swap_ip(uint32_t Addr);
 static int32_t sdhcp_find_index(sdhcp_handle_t *pHandle, sdhcp_find_cb pFilter, void *pData);
 static uint8_t sdhcp_addInfo(sdhcp_handle_t *pHandle, dhcp_addr_t *pInfo);
-static uint8_t service_sdhcp_init(sdhcp_handle_t *pHandle);
-static uint8_t sdhcp_find_option(uint8_t bOption, uint8_t *pOptions, int32_t szOptions, uint8_t **pData,
-                                 uint32_t *pszData);
-static uint8_t sdhcp_get_message_type(uint8_t *pOptions,  int32_t szOptions, dhcp_msg_types_t *pMessageType);
-static uint8_t sdhcp_add_addr_filter(dhcp_addr_t  *pInfo, void *const pFilter);
+static uint8_t service_sdhcp_init(sdhcp_handle_t *pSdhcp);
+static uint8_t sdhcp_find_option(uint8_t Option, uint8_t *pOptions, int32_t OptionsLen,
+                                 uint8_t **pData, uint32_t *pDataLen);
+static uint8_t sdhcp_get_message_type(uint8_t *pOptions, int32_t OptionsLen, dhcp_msg_types_t *pMessageType);
+static uint8_t sdhcp_add_addr_filter(dhcp_addr_t *pInfo, void *const pFilter);
 static uint8_t sdhcp_check_address_in_use(dhcp_addr_t *pInfo, void *pFilter);
-static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t szData);
-static void service_sdhcp_task(void const *param);
+static void sdhcp_process_request(sdhcp_handle_t *pSdhcp, void *pData, uint32_t DataLen);
+static void service_sdhcp_task(void const *pParam);
 
-/* Reverse the IP order*/
-static uint32_t sdhcp_swap_ip(uint32_t dw_in)
+/* Reverse the IP address byte order. */
+static uint32_t sdhcp_swap_ip(uint32_t Addr)
 {
-  uint32_t dw = dw_in;
+  uint32_t dw = Addr;
   uint32_t swapped = 0;
-  for (int32_t  aa = 0; aa < 4; aa++)
+  for (int32_t aa = 0; aa < 4; aa++)
   {
     swapped <<= 8;
     swapped |= (dw & 0xFFU);
@@ -198,95 +202,116 @@ static uint32_t sdhcp_swap_ip(uint32_t dw_in)
   return swapped;
 }
 
-/* Find a client in the list */
+/* Find a client in the list. */
 static int32_t sdhcp_find_index(sdhcp_handle_t *pHandle, sdhcp_find_cb pFilter, void *pData)
 {
   int32_t ret = -1;
+
   SDHCP_ASSERT((0U != pFilter) && (NULL != pData));
-  for (int32_t  i = 0; i < (int32_t) pHandle->szAddressInfo; i++)
+
+  for (int32_t i = 0; i < (int32_t) pHandle->szAddressInfo; i++)
   {
     if (pFilter(&pHandle->tAddressInfo[i], pData) != 0U)
     {
-      ret =  i;
+      ret = i;
       break;
     }
   }
   return ret;
 }
 
-/* Add a client to the list */
+
+/* Add a client to the list. */
 static uint8_t sdhcp_addInfo(sdhcp_handle_t *pHandle, dhcp_addr_t *pInfo)
 {
-  uint8_t ret;
+  uint8_t ret = SDHCP_RES_FALSE;
 
+  SDHCP_ASSERT(NULL != pHandle);
   SDHCP_ASSERT(NULL != pInfo);
-  if (pHandle->szAddressInfo > MAX_ADRES_INFO)
-  {
-    ret = SDHCP_RES_FALSE;
-  }
-  else
+
+  if (pHandle->szAddressInfo <= MAX_ADDRESS_INFO)
   {
     pHandle->tAddressInfo[pHandle->szAddressInfo] = *pInfo;
     pHandle->szAddressInfo++;
     ret = SDHCP_RES_TRUE;
   }
+
   return ret;
 }
 
-/* Init the sdhcp instance */
-static uint8_t service_sdhcp_init(sdhcp_handle_t *pHandle)
+
+/* Initialize the SDHCP instance. */
+static uint8_t service_sdhcp_init(sdhcp_handle_t *pSdhcp)
 {
-  SDHCP_ASSERT(pHandle != NULL);
+  uint8_t status_done = SDHCP_RES_FALSE;
 
-  uint8_t bSuccess = SDHCP_RES_FALSE;
+  SDHCP_ASSERT(pSdhcp != NULL);
 
-  /* Open socket and set broadcast option on it    */
+  /* Open socket and set broadcast option on it. */
+  pSdhcp->hSocket = net_socket(NET_AF_INET, NET_SOCK_DGRAM, NET_IPPROTO_IP);
 
-  pHandle->hSocket = net_socket(NET_AF_INET, NET_SOCK_DGRAM, NET_IPPROTO_IP);
-  if (pHandle->hSocket >= 0)
+  if (pSdhcp->hSocket >= 0)
   {
-    struct net_sockaddr_in  sAddr;
-    sAddr.sin_family = NET_AF_INET;
-    sAddr.sin_addr.s_addr = pHandle->nethost.sin_addr.s_addr;  /* Already in network byte order*/
-    sAddr.sin_port = NET_HTONS((int16_t)DHCP_SERVER_PORT);
-    if (-1 != net_bind(pHandle->hSocket, (net_sockaddr_t *) &sAddr, sizeof(sAddr)))
+    net_sockaddr_in_t s_addr_in = {0};
+    s_addr_in.sin_len = sizeof(s_addr_in);
+    s_addr_in.sin_family = NET_AF_INET;
+    s_addr_in.sin_addr.s_addr = pSdhcp->nethost.sin_addr.s_addr;  /* Already in network byte order. */
+    s_addr_in.sin_port = NET_HTONS(DHCP_SERVER_PORT);
+
+    net_setsockopt(pSdhcp->hSocket, NET_SOL_SOCKET, NET_SO_BINDTODEVICE, pNetifObject, sizeof(pNetifObject));
+
+    if (-1 != net_bind(pSdhcp->hSocket, (net_sockaddr_t *) &s_addr_in, sizeof(s_addr_in)))
     {
-      int32_t bOption = (int32_t) SDHCP_RES_TRUE;
-      if (0 == net_setsockopt(pHandle->hSocket, NET_SOL_SOCKET, NET_SO_BROADCAST,
-                              (char_t *)(&bOption), sizeof(bOption)))
       {
-        bSuccess = SDHCP_RES_TRUE;
+        int32_t broadcast = (int32_t) SDHCP_RES_TRUE;
+        if (0 == net_setsockopt(pSdhcp->hSocket, NET_SOL_SOCKET, NET_SO_BROADCAST,
+                                (const void *)&broadcast, sizeof(broadcast)))
+        {
+          status_done = SDHCP_RES_TRUE;
+        }
+        else
+        {
+          NET_DBG_ERROR("Unable to set socket options.\n");
+        }
       }
-      else
       {
-        NET_DBG_ERROR("Unable to set socket options.");
+        int32_t timeout = (int32_t) SDHCP_TIMEOUT; /* 300 ms timeout. */
+        net_setsockopt(pSdhcp->hSocket, NET_SOL_SOCKET, NET_SO_RCVTIMEO, (const void *)&timeout, sizeof(timeout));
       }
-      bOption = (int32_t) SDHCP_TIMEOUT; /*300ms timeout */
-      net_setsockopt(pHandle->hSocket, NET_SOL_SOCKET, NET_SO_RCVTIMEO, (char *)(&bOption), sizeof(bOption));
     }
     else
     {
-      NET_DBG_ERROR("Unable to bind to server socket (port %d).", DHCP_SERVER_PORT);
+      NET_DBG_ERROR("Unable to bind to server socket (port %" PRIu32 ").\n", (uint32_t)DHCP_SERVER_PORT);
+    }
+
+    if (status_done != SDHCP_RES_TRUE)
+    {
+      net_closesocket(pSdhcp->hSocket);
     }
   }
   else
   {
-    NET_DBG_ERROR("Unable to open server socket (port %d).", DHCP_SERVER_PORT);
+    NET_DBG_ERROR("Unable to open server socket (port %" PRIu32 ").\n", (uint32_t)DHCP_SERVER_PORT);
   }
-  return bSuccess;
+
+  return status_done;
 }
 
-/* Find an option DHCP cmd */
-static uint8_t sdhcp_find_option(uint8_t bOption, uint8_t *pOptions, int32_t szOptions, uint8_t **pData,
-                                 uint32_t *pszData)
+
+/* Find an option DHCP command. */
+static uint8_t sdhcp_find_option(uint8_t Option, uint8_t *pOptions, int32_t OptionsLen,
+                                 uint8_t **pData, uint32_t *pDataLen)
 {
-  SDHCP_ASSERT(((0 == szOptions) || (0U != pOptions)) && (0U != pData) && (0U != pszData) &&
-               (PAD != bOption) && (END != bOption));
-  uint8_t bSuccess = SDHCP_RES_FALSE;
+  uint8_t status_done = SDHCP_RES_FALSE;
   /* RFC 2132 */
-  uint8_t bHitEND = SDHCP_RES_FALSE;
+  bool hit_end = false;
   uint8_t *pCur = pOptions;
-  while (((pCur - pOptions) < szOptions) && !bHitEND && !bSuccess)
+
+  SDHCP_ASSERT(((0 == OptionsLen) || (0U != pOptions)) && \
+               (0U != pData) && (0U != pDataLen) && (PAD != Option) && (END != Option));
+
+
+  while (((pCur - pOptions) < OptionsLen) && !hit_end && !status_done)
   {
     uint8_t bCur = *pCur;
     if (PAD == bCur)
@@ -295,94 +320,107 @@ static uint8_t sdhcp_find_option(uint8_t bOption, uint8_t *pOptions, int32_t szO
     }
     else if (END == bCur)
     {
-      bHitEND = SDHCP_RES_TRUE;
+      hit_end = true;
     }
     else
     {
       pCur++;
-      if ((pCur - pOptions) < szOptions)
+      if ((pCur - pOptions) < OptionsLen)
       {
         uint8_t bOptionLen = *pCur;
         pCur++;
-        if (bOption == bCur)
+        if (Option == bCur)
         {
           *pData = pCur;
-          *pszData = bOptionLen;
-          bSuccess = SDHCP_RES_TRUE;
+          *pDataLen = bOptionLen;
+          status_done = SDHCP_RES_TRUE;
         }
         pCur += bOptionLen;
       }
       else
       {
-        NET_DBG_PRINT("Invalid option data (not enough room for required length byte");
+        NET_DBG_PRINT("Invalid option data (not enough room for required length byte).\n");
       }
     }
   }
-  return bSuccess;
+
+  return status_done;
 }
 
-/* Return the option type */
-static uint8_t sdhcp_get_message_type(uint8_t *pOptions, int32_t szOptions, dhcp_msg_types_t *pMessageType)
+
+/* Return the option type. */
+static uint8_t sdhcp_get_message_type(uint8_t *pOptions, int32_t OptionsLen, dhcp_msg_types_t *pMessageType)
 {
-  SDHCP_ASSERT(((0 == szOptions) || (0U != pOptions)) && (0U != pMessageType));
-  uint8_t bSuccess = SDHCP_RES_FALSE;
-  uint8_t *pDHCPMessage;
-  uint32_t szDHCPMessage;
-  if (sdhcp_find_option(DHCPMESSAGETYPE, pOptions, szOptions, &pDHCPMessage, &szDHCPMessage) &&
-      (1 == szDHCPMessage) && (1 <= *pDHCPMessage) && (*pDHCPMessage <= 8))
+  uint8_t status_done = SDHCP_RES_FALSE;
+  uint8_t *p_dhcp_message = NULL;
+  uint32_t dhcp_message_len = 0;
+
+  SDHCP_ASSERT(((0 == OptionsLen) || (0U != pOptions)) && (0U != pMessageType));
+
+  if (sdhcp_find_option(DHCPMESSAGETYPE, pOptions, OptionsLen, &p_dhcp_message, &dhcp_message_len) &&
+      (1 == dhcp_message_len) && (DHCP_TYPE_FIRST_VALUE <= *p_dhcp_message) && (*p_dhcp_message <= DHCP_TYPE_LAST_VALUE))
   {
-    *pMessageType = (dhcp_msg_types_t)(*pDHCPMessage);
-    bSuccess = SDHCP_RES_TRUE;
+    *pMessageType = (dhcp_msg_types_t)(*p_dhcp_message);
+    status_done = SDHCP_RES_TRUE;
   }
-  return bSuccess;
+
+  return status_done;
 }
+
 
 /* Address filter */
-static uint8_t sdhcp_add_addr_filter(dhcp_addr_t  *pInfo, void *const pFilter)
+static uint8_t sdhcp_add_addr_filter(dhcp_addr_t *pInfo, void *const pFilter)
 {
-  uint32_t  *pAddrValue = (uint32_t *)pFilter;
+  uint32_t *pAddrValue = (uint32_t *)pFilter;
+
   return (*pAddrValue == pInfo->addrV4);
 }
 
-/* Check the address*/
+
+/* Check the address. */
 static uint8_t sdhcp_check_address_in_use(dhcp_addr_t *pInfo, void *pFilter)
 {
-  sdhcp_process_request_t  *pcid = (sdhcp_process_request_t *)pFilter;
+  sdhcp_process_request_t *pcid = (sdhcp_process_request_t *)pFilter;
+
   SDHCP_ASSERT(0U != pcid);
+
   return ((0U != pInfo->szClientID) && (pcid->szClientID == pInfo->szClientID) &&
           (0 == memcmp(pcid->pbClientIdentifier, pInfo->pClientID, pcid->szClientID)));
 }
 
 
-/* Process the DHCP request */
-static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t szData)
+/* Process the DHCP request. */
+static void sdhcp_process_request(sdhcp_handle_t *pSdhcp, void *pData, uint32_t DataLen)
 {
-  SDHCP_ASSERT(pHandle);
   static const uint8_t tCookie[] = { 99, 130, 83, 99 };
-  net_dhcp_msg_t  *pRequest = (net_dhcp_msg_t *)pData;
-  if ((((sizeof(*pRequest) + sizeof(tCookie)) <= szData)
+  net_dhcp_msg_t *const pRequest = (net_dhcp_msg_t *)pData;
+
+  SDHCP_ASSERT(pSdhcp);
+
+  if ((((sizeof(*pRequest) + sizeof(tCookie)) <= DataLen)
        &&  /* Take into account mandatory DHCP magic cookie values in options array (RFC 2131 section 3)*/
        ((uint8_t)BOOTREQUEST == pRequest->op) &&
        (0 == memcmp(tCookie, pRequest->options, sizeof(tCookie))))
      )
   {
     uint8_t *pOptions = pRequest->options + sizeof(tCookie);
-    int32_t szOptions = szData - (int)sizeof(*pRequest) - (int)sizeof(tCookie);
-    dhcp_msg_types_t dhcpmtMessageType;
-    if (sdhcp_get_message_type(pOptions, szOptions, &dhcpmtMessageType))
+    int32_t szOptions = DataLen - (int)sizeof(*pRequest) - (int)sizeof(tCookie);
+    dhcp_msg_types_t dhcp_msg_type;
+
+    if (sdhcp_get_message_type(pOptions, szOptions, &dhcp_msg_type))
     {
-      /* Determine client host name*/
-      char_t tHostName[MAX_HOSTNAME_LENGTH];
-      tHostName[0] = '\0';
-      uint8_t  *pHostNameData;
-      uint32_t  szHostNameData;
+      /* Determine client host name. */
+      char_t tHostName[MAX_HOSTNAME_LENGTH] = {0};
+      uint8_t *pHostNameData = NULL;
+      uint32_t szHostNameData = 0;
+
       if (sdhcp_find_option(HOSTNAME, pOptions, szOptions, &pHostNameData, &szHostNameData))
       {
         strncpy(tHostName, (char_t *)pHostNameData, szHostNameData);
         tHostName[szHostNameData] = 0;
 
       }
-      if ((pHandle->pHostName != 0U) && (strncmp(tHostName, pHandle->pHostName, strlen(pHandle->pHostName)) != 0U))
+      if ((pSdhcp->pHostName != 0U) && (strncmp(tHostName, pSdhcp->pHostName, strlen(pSdhcp->pHostName)) != 0U))
       {
         /* Determine client identifier in proper RFC 2131 order (client identifier option then chaddr)*/
         uint8_t *pServieReq;
@@ -397,16 +435,16 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
         uint8_t bSeenBefore = SDHCP_RES_FALSE;
         uint32_t OfferAddr = (uint32_t)NET_INADDR_BROADCAST;  /* Invalid IP address for later comparison*/
         sdhcp_process_request_t cid = { pServieReq, (uint32_t)szServieReq };
-        int32_t iIndex = sdhcp_find_index(pHandle, sdhcp_check_address_in_use, &cid);
+        int32_t iIndex = sdhcp_find_index(pSdhcp, sdhcp_check_address_in_use, &cid);
         if (-1 != iIndex)
         {
-          dhcp_addr_t *pInfo = &pHandle->tAddressInfo[iIndex];
+          dhcp_addr_t *pInfo = &pSdhcp->tAddressInfo[iIndex];
           OfferAddr = sdhcp_swap_ip(pInfo->addrV4);
           bSeenBefore = SDHCP_RES_TRUE;
         }
-        uint8_t tMsgBuffer[sizeof(net_dhcp_msg_t) + sizeof(net_dhcp_option_t)];
-        (void) memset(tMsgBuffer, 0, sizeof(tMsgBuffer));
-        net_dhcp_msg_t  *pReply = (net_dhcp_msg_t *)&tMsgBuffer;
+        uint8_t tMsgBuffer[sizeof(net_dhcp_msg_t) + sizeof(net_dhcp_option_t)] = {0};
+        net_dhcp_msg_t *pReply = (net_dhcp_msg_t *)&tMsgBuffer;
+
         pReply->op = BOOTREPLY;
         pReply->htype = pRequest->htype;
         pReply->hlen = pRequest->hlen;
@@ -414,7 +452,7 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
         pReply->flags = pRequest->flags;
         pReply->giaddr = pRequest->giaddr;
         memcpy(pReply->chaddr, pRequest->chaddr, sizeof(pReply->chaddr));
-        strncpy((char *)(pReply->sname), pHandle->pHostName, sizeof(pReply->sname));
+        strncpy((char *)(pReply->sname), pSdhcp->pHostName, sizeof(pReply->sname));
         net_dhcp_option_t  *pServerOptions = (net_dhcp_option_t *)(pReply->options);
         memcpy(pServerOptions->tMagic, tCookie, sizeof(pServerOptions->tMagic));
         pServerOptions->tMessageType[0] = DHCPMESSAGETYPE;
@@ -427,26 +465,28 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
         pServerOptions->tSubnetMask[0] = SUBNETMASK;
         pServerOptions->tSubnetMask[1] = 4;
         SDHCP_ASSERT(sizeof(uint32_t) == 4);
-        *((uint32_t *)(&(pServerOptions->tSubnetMask[2]))) = pHandle->netmsk.sin_addr.s_addr;
+        *((uint32_t *)(&(pServerOptions->tSubnetMask[2]))) = pSdhcp->netmsk.sin_addr.s_addr;
         pServerOptions->tServerID[0] = SERVERIDENTIFIER;
         pServerOptions->tServerID[1] = 4;
         SDHCP_ASSERT(sizeof(uint32_t) == 4);
-        *((uint32_t *)(&(pServerOptions->tServerID[2]))) = pHandle->nethost.sin_addr.s_addr;
+        *((uint32_t *)(&(pServerOptions->tServerID[2]))) = pSdhcp->nethost.sin_addr.s_addr;
         pServerOptions->tRouter[0] = ROUTER;
         pServerOptions->tRouter[1] = 4;
         SDHCP_ASSERT(sizeof(uint32_t) == 4);
-        *((uint32_t *)(&(pServerOptions->tRouter[2]))) = pHandle->nethost.sin_addr.s_addr;
+        *((uint32_t *)(&(pServerOptions->tRouter[2]))) = pSdhcp->nethost.sin_addr.s_addr;
         pServerOptions->bEND = END;
+
         uint8_t bSendDHCPMessage = SDHCP_RES_FALSE;
-        switch (dhcpmtMessageType)
+
+        switch (dhcp_msg_type)
         {
-          case DISCOVER:
+          case DHCP_TYPE_DISCOVER:
           {
             /* UNSUPPORTED: Requested IP Address option*/
             /* Initialize to max to wrap and offer min first*/
-            pHandle->lastOfferAddr = (uint32_t)sdhcp_swap_ip((uint32_t)pHandle->netmax.sin_addr.s_addr);
-            uint32_t minAddr = sdhcp_swap_ip(pHandle->netmin.sin_addr.s_addr);
-            uint32_t maxAddr = sdhcp_swap_ip(pHandle->netmax.sin_addr.s_addr);
+            pSdhcp->lastOfferAddr = (uint32_t)sdhcp_swap_ip((uint32_t)pSdhcp->netmax.sin_addr.s_addr);
+            uint32_t minAddr = sdhcp_swap_ip(pSdhcp->netmin.sin_addr.s_addr);
+            uint32_t maxAddr = sdhcp_swap_ip(pSdhcp->netmax.sin_addr.s_addr);
             uint32_t dwOfferAddrValue;
             uint8_t bOfferAddrValueValid = SDHCP_RES_FALSE;
             if (bSeenBefore)
@@ -456,9 +496,9 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
             }
             else
             {
-              dwOfferAddrValue = pHandle->lastOfferAddr + 1;
+              dwOfferAddrValue = pSdhcp->lastOfferAddr + 1;
             }
-            /* Search for an available address if necessary*/
+            /* Search for an available address if necessary. */
             uint32_t dwInitialOfferAddrValue = dwOfferAddrValue;
             uint8_t offeredInitial = SDHCP_RES_FALSE;
             /* Detect address exhaustion*/
@@ -469,7 +509,7 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
                 SDHCP_ASSERT(maxAddr + 1 == dwOfferAddrValue);
                 dwOfferAddrValue = minAddr;
               }
-              bOfferAddrValueValid = (-1 == sdhcp_find_index(pHandle, sdhcp_add_addr_filter, &dwOfferAddrValue));
+              bOfferAddrValueValid = (-1 == sdhcp_find_index(pSdhcp, sdhcp_add_addr_filter, &dwOfferAddrValue));
               offeredInitial = SDHCP_RES_TRUE;
               if (!bOfferAddrValueValid)
               {
@@ -478,7 +518,7 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
             }
             if (bOfferAddrValueValid)
             {
-              pHandle->lastOfferAddr = dwOfferAddrValue;
+              pSdhcp->lastOfferAddr = dwOfferAddrValue;
               uint32_t dwOfferAddr = sdhcp_swap_ip(dwOfferAddrValue);
               SDHCP_ASSERT((0U != szServieReq) && (0U != pServieReq));
               dhcp_addr_t info;
@@ -488,10 +528,10 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
               {
                 memcpy(info.pClientID, pServieReq, szServieReq);
                 info.szClientID = szServieReq;
-                if (bSeenBefore || sdhcp_addInfo(pHandle, &info))
+                if (bSeenBefore || sdhcp_addInfo(pSdhcp, &info))
                 {
                   pReply->yiaddr = dwOfferAddr;
-                  pServerOptions->tMessageType[2] = (uint8_t) OFFER;
+                  pServerOptions->tMessageType[2] = (uint8_t) DHCP_TYPE_OFFER;
                   bSendDHCPMessage = SDHCP_RES_TRUE;
                   NET_DBG_PRINT("SDNS:Offering client \"%s\" IP address %d.%d.%d.%d",
                                 tHostName, DWIP0(dwOfferAddr), DWIP1(dwOfferAddr),
@@ -518,35 +558,36 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
             }
           }
           break;
-          case REQUEST:
+
+          case DNCP_TYPE_REQUEST:
           {
-            /* Determine requested IP address*/
+            /* Determine requested IP address. */
             uint32_t reqIP = NET_INADDR_BROADCAST;  /* Invalid IP address for later comparison*/
-            uint8_t *pReqAddressData = 0;
+            uint8_t *pReqAddressData = NULL;
             uint32_t szReqAddressData = 0;
             if (sdhcp_find_option(REQUESTEDIPADDRESS, pOptions, szOptions, &pReqAddressData, &szReqAddressData)
                 && (sizeof(reqIP) == szReqAddressData))
             {
               reqIP = *((uint32_t *)pReqAddressData);
             }
-            /* Determine server identifier*/
+            /* Determine server identifier. */
             uint8_t *pRequServerID = 0;
             uint32_t szRequServerID = 0;
             if (sdhcp_find_option(SERVERIDENTIFIER, pOptions, szOptions, &pRequServerID, &szRequServerID) &&
-                (sizeof(pHandle->nethost.sin_addr.s_addr) == szRequServerID) &&
-                (pHandle->nethost.sin_addr.s_addr == *((uint32_t *)pRequServerID)))
+                (sizeof(pSdhcp->nethost.sin_addr.s_addr) == szRequServerID) &&
+                (pSdhcp->nethost.sin_addr.s_addr == *((uint32_t *)pRequServerID)))
             {
               /* Response to OFFER*/
               SDHCP_ASSERT(0 == pRequest->ciaddr);
               if (bSeenBefore)
               {
-                /* Already have an IP address for this client - ACK it*/
-                pServerOptions->tMessageType[2] = (uint8_t) ACK;
+                /* Already have an IP address for this client - ACK it. */
+                pServerOptions->tMessageType[2] = (uint8_t) DHCP_TYPE_ACK;
               }
               else
               {
-                /* Haven't seen this client before - NAK it*/
-                pServerOptions->tMessageType[2] = (uint8_t) NAK;
+                /* Haven't seen this client before - NAK it. */
+                pServerOptions->tMessageType[2] = (uint8_t) DHCP_TYPE_NAK;
               }
             }
             else
@@ -556,13 +597,13 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
               {
                 if (bSeenBefore && ((OfferAddr == reqIP) || (OfferAddr == pRequest->ciaddr)))
                 {
-                  /* Already have an IP address for this client - ACK it*/
-                  pServerOptions->tMessageType[2] = (uint8_t) ACK;
+                  /* Already have an IP address for this client - ACK it. */
+                  pServerOptions->tMessageType[2] = (uint8_t) DHCP_TYPE_ACK;
                 }
                 else
                 {
-                  /* Haven't seen this client before or requested IP address is invalid*/
-                  pServerOptions->tMessageType[2] = (uint8_t) NAK;
+                  /* Haven't seen this client before or requested IP address is invalid. */
+                  pServerOptions->tMessageType[2] = (uint8_t) DHCP_TYPE_NAK;
                 }
               }
               else
@@ -572,7 +613,7 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
             }
             switch (pServerOptions->tMessageType[2])
             {
-              case ACK:
+              case DHCP_TYPE_ACK:
                 SDHCP_ASSERT(NET_INADDR_BROADCAST != OfferAddr);
                 pReply->ciaddr = OfferAddr;
                 pReply->yiaddr = OfferAddr;
@@ -581,7 +622,7 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
                               tHostName, DWIP0(OfferAddr),
                               DWIP1(OfferAddr), DWIP2(OfferAddr), DWIP3(OfferAddr));
                 break;
-              case NAK:
+              case DHCP_TYPE_NAK:
                 SDHCP_ASSERT(0 == PAD);
                 (void) memset(pServerOptions->tLeaseTime, 0, sizeof(pServerOptions->tLeaseTime));
                 (void) memset(pServerOptions->tSubnetMask, 0, sizeof(pServerOptions->tSubnetMask));
@@ -594,14 +635,14 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
             }
           }
           break;
-          case DECLINE:
-          case RELEASE:
+          case DHCP_TYPE_DECLINE:
+          case DHCP_TYPE_RELEASE:
             break;
-          case INFORM:
+          case DHCP_TYPE_INFORM:
             break;
-          case OFFER:
-          case ACK:
-          case NAK:
+          case DHCP_TYPE_OFFER:
+          case DHCP_TYPE_ACK:
+          case DHCP_TYPE_NAK:
             NET_WARNING("Unexpected DHCP message type.");
             break;
           default:
@@ -610,7 +651,7 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
         }
         if (bSendDHCPMessage != 0U)
         {
-          /* Must have set an option if we're going to be sending this message*/
+          /* Must have set an option if we're going to be sending this message. */
           SDHCP_ASSERT(0U != pServerOptions->tMessageType[2]);
           /* Determine how to send the reply*/
           uint32_t ulAddr = NET_INADDR_LOOPBACK;  /* Invalid value */
@@ -618,8 +659,8 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
           {
             switch (pServerOptions->tMessageType[2])
             {
-              case OFFER:
-              case ACK:
+              case DHCP_TYPE_OFFER:
+              case DHCP_TYPE_ACK:
               {
                 if (0U == pRequest->ciaddr)
                 {
@@ -644,7 +685,7 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
                 }
               }
               break;
-              case NAK:
+              case DHCP_TYPE_NAK:
               {
                 ulAddr = NET_INADDR_BROADCAST;
               }
@@ -660,13 +701,12 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
             pReply->flags |= BROADCAST_FLAG;  /* Indicate to the relay agent that it must broadcast*/
           }
           SDHCP_ASSERT((NET_INADDR_LOOPBACK != ulAddr) && (0U != ulAddr));
-          struct net_sockaddr_in sAddr;
-          (void) memset(&sAddr, 0, sizeof(sAddr));
+          net_sockaddr_in_t sAddr = {0};
           sAddr.sin_len = (uint8_t) sizeof(sAddr);
           sAddr.sin_family = NET_AF_INET;
           sAddr.sin_addr.s_addr = ulAddr;
-          sAddr.sin_port = NET_HTONS((int16_t)DHCP_CLIENT_PORT);
-          int32_t ret = net_sendto(pHandle->hSocket, (uint8_t *)pReply, sizeof(tMsgBuffer),
+          sAddr.sin_port = NET_HTONS(DHCP_CLIENT_PORT);
+          int32_t ret = net_sendto(pSdhcp->hSocket, (uint8_t *)pReply, sizeof(tMsgBuffer),
                                    0, (net_sockaddr_t *) &sAddr, sizeof(sAddr));
           SDHCP_ASSERT(ret != -1);
         }
@@ -674,87 +714,109 @@ static void sdhcp_process_request(sdhcp_handle_t *pHandle, void *pData, uint32_t
     }
     else
     {
-      NET_WARNING("Invalid DHCP message (invalid or missing DHCP message type).");
+      NET_WARNING("Invalid DHCP message (invalid or missing DHCP message type).\n");
     }
   }
   else
   {
-    NET_WARNING("Invalid DHCP message (failed initial checks).");
+    NET_WARNING("Invalid DHCP message (failed initial checks).\n");
   }
 }
 
-/* DHCP task */
-static void service_sdhcp_task(void const *param)
+/* DHCP task. */
+static void service_sdhcp_task(void const *pParam)
 {
-  struct netif *netif = (struct netif *) param;
-  sdhcp_handle_t *pHandle = NET_MALLOC(sizeof(sdhcp_handle_t));
-  struct net_sockaddr_in sAddr;
-  uint32_t szAddr = sizeof(sAddr);
-  int32_t szRet;
-  uint8_t *pBuffer;
+  struct netif *const netif = (struct netif *) pParam;
+  sdhcp_handle_t *p_sdhcp = NET_MALLOC(sizeof(*p_sdhcp));
+  net_sockaddr_in_t s_addr_in = {0};
+  uint32_t s_addr_in_len = sizeof(s_addr_in);
 
-  SDHCP_ASSERT(pHandle);
-  (void) memset(pHandle, 0, sizeof(sdhcp_handle_t));
+  SDHCP_ASSERT(p_sdhcp);
 
+  (void) memset(p_sdhcp, 0, sizeof(*p_sdhcp));
 
-  pHandle->pHostName = "ST-HotSpot";
-#if LWIP_IPV4 && LWIP_IPV6
-  pHandle->netmin.sin_addr.s_addr = netif->ip_addr.u_addr.ip4.addr;
-  ((uint8_t *)&pHandle->netmin.sin_addr.s_addr)[3] = MIN_IP;
+  pNetifObject = (net_if_handle_t *)(netif->state);
+  SDHCP_ASSERT(pNetifObject);
 
-  pHandle->netmax.sin_addr.s_addr = netif->ip_addr.u_addr.ip4.addr;
-  ((uint8_t *)&pHandle->netmax.sin_addr.s_addr)[3] = MAX_IP;
+  p_sdhcp->pHostName = "ST-HotSpot";
 
-  pHandle->nethost.sin_addr.s_addr = netif->ip_addr.u_addr.ip4.addr;
-  pHandle->netmsk.sin_addr.s_addr = netif->netmask.u_addr.ip4.addr;
+#if (LWIP_IPV4 && LWIP_IPV6)
+  p_sdhcp->netmin.sin_addr.s_addr = netif->ip_addr.u_addr.ip4.addr;
+  ((uint8_t *)&p_sdhcp->netmin.sin_addr.s_addr)[3] = MIN_IP;
+
+  p_sdhcp->netmax.sin_addr.s_addr = netif->ip_addr.u_addr.ip4.addr;
+  ((uint8_t *)&p_sdhcp->netmax.sin_addr.s_addr)[3] = MAX_IP;
+
+  p_sdhcp->nethost.sin_addr.s_addr = netif->ip_addr.u_addr.ip4.addr;
+  p_sdhcp->netmsk.sin_addr.s_addr = netif->netmask.u_addr.ip4.addr;
+
 #else
-  pHandle->netmin.sin_addr.s_addr = netif->ip_addr.addr;
-  ((uint8_t *)&pHandle->netmin.sin_addr.s_addr)[3] = MIN_IP;
+  p_sdhcp->netmin.sin_addr.s_addr = netif->ip_addr.addr;
+  ((uint8_t *)&p_sdhcp->netmin.sin_addr.s_addr)[3] = MIN_IP;
 
-  pHandle->netmax.sin_addr.s_addr = netif->ip_addr.addr;
-  ((uint8_t *)&pHandle->netmax.sin_addr.s_addr)[3] = MAX_IP;
+  p_sdhcp->netmax.sin_addr.s_addr = netif->ip_addr.addr;
+  ((uint8_t *)&p_sdhcp->netmax.sin_addr.s_addr)[3] = MAX_IP;
 
-  pHandle->nethost.sin_addr.s_addr = netif->ip_addr.addr;
-  pHandle->netmsk.sin_addr.s_addr = netif->netmask.addr;
+  p_sdhcp->nethost.sin_addr.s_addr = netif->ip_addr.addr;
+  p_sdhcp->netmsk.sin_addr.s_addr = netif->netmask.addr;
 #endif /* LWIP_IPV4 && LWIP_IPV6 */
-  if ((pHandle->nethost.sin_addr.s_addr == 0U) && (pHandle->netmsk.sin_addr.s_addr == 0U))
+
+  if ((p_sdhcp->nethost.sin_addr.s_addr == 0U) && (p_sdhcp->netmsk.sin_addr.s_addr == 0U))
   {
-    NET_DBG_ERROR("Unable to run DHCP server, missing parameters.");
+    NET_DBG_ERROR("Unable to run DHCP server, missing parameters.\n");
   }
   else
   {
-    if (service_sdhcp_init(pHandle) == SDHCP_RES_FALSE)
+    if (service_sdhcp_init(p_sdhcp) == SDHCP_RES_FALSE)
     {
-      NET_DBG_ERROR("Unable to init DHCP server");
+      NET_DBG_ERROR("Unable to initialize the DHCP server.\n");
     }
     else
     {
-      pBuffer = (uint8_t *)NET_MALLOC(MAX_UDP_MESSAGE_SIZE);
-      if (NULL != pBuffer)
+      uint8_t *p_udp_buffer = (uint8_t *)NET_MALLOC(MAX_UDP_MESSAGE_SIZE);
+      if (NULL != p_udp_buffer)
       {
-        while (bRunTask != 0U)
+        while (RunTask != 0U)
         {
-          szRet = net_recvfrom(pHandle->hSocket, (uint8_t *)pBuffer, MAX_UDP_MESSAGE_SIZE,
-                               0, (net_sockaddr_t *)(&sAddr), &szAddr);
+          int32_t szRet = net_recvfrom(p_sdhcp->hSocket, (uint8_t *)p_udp_buffer, MAX_UDP_MESSAGE_SIZE,
+                                       0, (net_sockaddr_t *)&s_addr_in, &s_addr_in_len);
           if (szRet > 0)
           {
-            sdhcp_process_request(pHandle, pBuffer, (uint32_t) szRet);
+            sdhcp_process_request(p_sdhcp, p_udp_buffer, (uint32_t) szRet);
           }
         }
-        NET_FREE(pBuffer);
+        NET_DBG_PRINT("SDHCP: service exit.\n");
+        NET_FREE(p_udp_buffer);
       }
     }
+
+    if (p_sdhcp->hSocket >= 0)
+    {
+      net_closesocket(p_sdhcp->hSocket);
+    }
+    NET_FREE(p_sdhcp);
   }
-  NET_FREE(pHandle);
-  (void) osThreadTerminate(hSdhcpTask);
+
+  (void) osThreadTerminate(SdhcpTask);
 }
-/* Create the wakeup service */
-int32_t service_sdhcp_create(struct netif *netif)
+
+
+/* Create the wake-up service. */
+int32_t service_sdhcp_create(struct netif *pNetif)
 {
-  int32_t       ret = NET_OK;
+  int32_t ret = NET_OK;
+
 #if (osCMSIS < 0x20000U)
-  const osThreadDef_t os_thread_def = { TASK_SDHCP_NAME, service_sdhcp_task, TASK_SDHCP_PRIORITY, 0, TASK_SDHCP_STACK};
-  hSdhcpTask =  osThreadCreate(&os_thread_def, netif);
+  const osThreadDef_t os_thread_def =
+  {
+    TASK_SDHCP_NAME,
+    service_sdhcp_task,
+    TASK_SDHCP_PRIORITY,
+    0,
+    TASK_SDHCP_STACK
+  };
+  SdhcpTask = osThreadCreate(&os_thread_def, pNetif);
+
 #else
   const osThreadAttr_t attributes =
   {
@@ -762,27 +824,27 @@ int32_t service_sdhcp_create(struct netif *netif)
     .stack_size = TASK_SDHCP_STACK,
     .priority = TASK_SDHCP_PRIORITY,
   };
-  hSdhcpTask =  osThreadNew((osThreadFunc_t) service_sdhcp_task, netif, &attributes);
+  SdhcpTask = osThreadNew((osThreadFunc_t) service_sdhcp_task, pNetif, &attributes);
 #endif /* osCMSIS */
 
-  bRunTask = 1;
+  RunTask = 1;
 
-  NET_DBG_PRINT("SDHCP: Start Service");
+  NET_DBG_PRINT("SDHCP: Start Service.\n");
 
-  if (hSdhcpTask  == 0)
+  if (SdhcpTask  == 0)
   {
-    NET_DBG_ERROR("Create task %s", TASK_SDHCP_NAME);
-    ret =  NET_ERROR_UNSUPPORTED;
+    NET_DBG_ERROR("Create task %s\n", TASK_SDHCP_NAME);
+    ret = NET_ERROR_UNSUPPORTED;
   }
 
   return ret;
 }
 
 
-/* Delete the service */
+/* Delete the service. */
 int32_t service_sdhcp_delete(void)
 {
-  bRunTask = 0;
+  RunTask = 0;
 
   return NET_OK;
 }

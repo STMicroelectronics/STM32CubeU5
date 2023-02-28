@@ -33,6 +33,7 @@
 <ol type="1">
 <li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise the caller ISR process will be blocked. To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>
 <li><p>The application needs to ensure that the SysTick time base is always set to 1 millisecond to have correct HAL operation.</p></li>
+<li><p>This example can not be used in debug mode (debugger attached) due to the fact that Cortex-M33 SysTick would remain active and induce exit from low power mode. Example must be used in application mode: once the image is loaded, power off the board by unplugging the power cable then power on the board again.
 </ol>
 <h3 id="keywords"><b>Keywords</b></h3>
 <p>Analog, COMP, Comparator, Voltage, VrefInt, Wake Up, Low power, Stop2</p>
@@ -63,6 +64,7 @@
 <ul>
 <li>Open your preferred toolchain</li>
 <li>Rebuild all files and load your image into target memory</li>
+<li>Once the image is loaded, power off the board by unplugging the power cable then power on the board again</li>
 <li>Run the example</li>
 </ul>
 </div>

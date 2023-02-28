@@ -1,4 +1,3 @@
-
 /**************************************************************************/
 /*                                                                        */
 /*       Copyright (c) Microsoft Corporation. All rights reserved.        */
@@ -68,10 +67,7 @@ extern TX_SEMAPHORE sd_rx_semaphore;
 /* USER CODE END EM */
 
 /* Define the macro to get the current time in ticks */
-/* USER CODE BEGIN FX_STM32_SD_CURRENT_TIME_TX */
 #define FX_STM32_SD_CURRENT_TIME()                            tx_time_get()
-
-/* USER CODE END FX_STM32_SD_CURRENT_TIME_TX */
 
 /* Macro called before initializing the SD driver
  * e.g. create a semaphore used for transfer notification */

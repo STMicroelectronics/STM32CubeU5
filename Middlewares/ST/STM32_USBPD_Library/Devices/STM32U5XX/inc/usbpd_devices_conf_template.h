@@ -88,17 +88,17 @@ extern "C" {
 #define UCPDFRS_INSTANCE0_FRSCC1                                                      \
   do                                                                                  \
   {                                                                                   \
-    LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);                                                       \
-    LL_GPIO_SetPinMode(GPIOA, LL_GPIO_PIN_2, LL_GPIO_MODE_ALTERNATE);          \
-    LL_GPIO_SetAFPin_0_7(GPIOA, LL_GPIO_PIN_2, LL_GPIO_AF_11);   \
+    LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);                              \
+    LL_GPIO_SetPinMode(GPIOA, LL_GPIO_PIN_2, LL_GPIO_MODE_ALTERNATE);                \
+    LL_GPIO_SetAFPin_0_7(GPIOA, LL_GPIO_PIN_2, LL_GPIO_AF_11);                       \
   } while(0)
 
 #define UCPDFRS_INSTANCE0_FRSCC2                                                      \
   do                                                                                  \
   {                                                                                   \
-    LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);                                                       \
-    LL_GPIO_SetPinMode(GPIOC, LL_GPIO_PIN_11, LL_GPIO_MODE_ALTERNATE);          \
-    LL_GPIO_SetAFPin_0_7(GPIOC, LL_GPIO_PIN_11, LL_GPIO_AF_11);   \
+    LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);                              \
+    LL_GPIO_SetPinMode(GPIOC, LL_GPIO_PIN_11, LL_GPIO_MODE_ALTERNATE);                \
+    LL_GPIO_SetAFPin_8_15(GPIOC, LL_GPIO_PIN_11, LL_GPIO_AF_11);                       \
   } while(0)
 
 #define UCPD_INSTANCE0_ENABLEIRQ               \

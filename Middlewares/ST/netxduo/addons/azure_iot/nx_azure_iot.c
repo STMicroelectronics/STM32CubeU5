@@ -10,14 +10,15 @@
 /**************************************************************************/
 
 /* Version: 6.1 */
+#include <stdio.h>
+#include <stdarg.h>
 
-#include "nx_azure_iot.h"
+
 #ifndef NX_AZURE_DISABLE_IOT_SECURITY_MODULE
 #include "nx_azure_iot_security_module.h"
 #endif /* NX_AZURE_DISABLE_IOT_SECURITY_MODULE */
 
-#include <stdio.h>
-#include <stdarg.h>
+#include "nx_azure_iot.h"
 
 #include "azure/core/internal/az_log_internal.h"
 
@@ -407,12 +408,12 @@ USHORT id = 0;
     return(NX_AZURE_IOT_SUCCESS);
 }
 
-UINT nx_azure_iot_mqtt_packet_id_get(NXD_MQTT_CLIENT *client_ptr, UCHAR *packet_id, UINT wait_option)
+UINT nx_azure_iot_mqtt_packet_id_get(NXD_MQTT_CLIENT *client_ptr, UCHAR *packet_id)
 {
 UINT status;
 
     /* Get packet id under mutex */
-    status = tx_mutex_get(client_ptr -> nxd_mqtt_client_mutex_ptr, wait_option);
+    status = tx_mutex_get(client_ptr -> nxd_mqtt_client_mutex_ptr, NX_WAIT_FOREVER);
     if (status)
     {
         return(status);

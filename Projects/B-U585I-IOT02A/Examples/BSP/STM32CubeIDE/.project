@@ -333,9 +333,9 @@
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/lps22hh/lps22hh_reg.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/m24lr64.c</name>
+			<name>Drivers/BSP/Components/m24256.c</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/m24lr64/m24lr64.c</locationURI>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/m24256/m24256.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/Components/mx25lm51245g.c</name>
@@ -353,11 +353,6 @@
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/ov5640/ov5640_reg.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/platform.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/porting/platform.c</locationURI>
-		</link>
-		<link>
 			<name>Drivers/BSP/Components/veml6030.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/veml6030/veml6030.c</locationURI>
@@ -368,27 +363,32 @@
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/veml6030/veml6030_reg.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/vl53l5cx.c</name>
+			<name>Drivers/BSP/Components/vl53l5cx/platform.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/porting/platform.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/vl53l5cx/vl53l5cx.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/vl53l5cx.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/vl53l5cx_api.c</name>
+			<name>Drivers/BSP/Components/vl53l5cx/vl53l5cx_api.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_api.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/vl53l5cx_plugin_detection_thresholds.c</name>
+			<name>Drivers/BSP/Components/vl53l5cx/vl53l5cx_plugin_detection_thresholds.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_detection_thresholds.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/vl53l5cx_plugin_motion_indicator.c</name>
+			<name>Drivers/BSP/Components/vl53l5cx/vl53l5cx_plugin_motion_indicator.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_motion_indicator.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/vl53l5cx_plugin_xtalk.c</name>
+			<name>Drivers/BSP/Components/vl53l5cx/vl53l5cx_plugin_xtalk.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_xtalk.c</locationURI>
 		</link>

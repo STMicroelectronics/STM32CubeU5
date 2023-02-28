@@ -22,8 +22,23 @@
 
 /* Private variables -------------------------------------------------------------------------------------------------*/
 /* LPBAM variables declaration */
-static LPBAM_I2C_MasterTxDataDesc_t Master_Transmit_Data_1_Desc[1];
-static LPBAM_I2C_MasterRxDataDesc_t Master_Receive_Data_1_Desc[2];
+/* USER CODE BEGIN Master_ReloadSeq_Descs 0 */
+
+/* USER CODE END Master_ReloadSeq_Descs 0 */
+
+/* USER CODE BEGIN Master_Q_Master_Transmit_Data_1_Desc[1] */
+
+/* USER CODE END Master_Q_Master_Transmit_Data_1_Desc[1] */
+static LPBAM_I2C_MasterTxDataDesc_t Master_Q_Master_Transmit_Data_1_Desc[1];
+
+/* USER CODE BEGIN Master_Q_Master_Receive_Data_1_Desc[2] */
+
+/* USER CODE END Master_Q_Master_Receive_Data_1_Desc[2] */
+static LPBAM_I2C_MasterRxDataDesc_t Master_Q_Master_Receive_Data_1_Desc[2];
+
+/* USER CODE BEGIN Master_ReloadSeq_Descs 1 */
+
+/* USER CODE END Master_ReloadSeq_Descs 1 */
 
 /* Exported variables ------------------------------------------------------------------------------------------------*/
 /* LPBAM queues declaration */
@@ -77,6 +92,7 @@ static void MX_Master_Q_Build(void)
   LPBAM_I2C_DataAdvConf_t pTxData_I2C = {0};
   LPBAM_I2C_DataAdvConf_t pRxData_I2C = {0};
   uint32_t data_size = 0;
+  uint32_t tmp_data_size = 0;
   uint32_t transfer_idx = 0;
 
   /**
@@ -92,28 +108,32 @@ static void MX_Master_Q_Build(void)
   pTxData_I2C.Size = 55;
   /* Set transfer parameters */
   data_size = pTxData_I2C.Size;
+  tmp_data_size = pTxData_I2C.Size;
   transfer_idx = 0;
 
   /* Repeat inserting I2C master Tx data queue until completing all data */
-  while (pTxData_I2C.Size != 0U)
+  while (data_size != 0U)
   {
-    if (ADV_LPBAM_I2C_MasterTx_SetDataQ(I2C3, &pDMAListInfo_I2C, &pTxData_I2C, &Master_Transmit_Data_1_Desc[transfer_idx], &Master_Q) != LPBAM_OK)
+    if (ADV_LPBAM_I2C_MasterTx_SetDataQ(I2C3, &pDMAListInfo_I2C, &pTxData_I2C, &Master_Q_Master_Transmit_Data_1_Desc[transfer_idx], &Master_Q) != LPBAM_OK)
     {
       Error_Handler();
     }
 
     transfer_idx++;
+
     if (data_size > LPBAM_I2C_MAX_DATA_SIZE)
     {
       data_size -= LPBAM_I2C_MAX_DATA_SIZE;
     }
     else
     {
-    data_size = 0U;
+      data_size = 0U;
     }
 
     pTxData_I2C.Size = data_size;
   }
+
+  pTxData_I2C.Size = tmp_data_size;
 
   /**
     * Master queue Master_Receive_Data_1 build
@@ -126,29 +146,32 @@ static void MX_Master_Q_Build(void)
   pRxData_I2C.Size = 310;
   /* Set transfer parameters */
   data_size = pRxData_I2C.Size;
+  tmp_data_size = pRxData_I2C.Size;
   transfer_idx = 0;
 
   /* Repeat inserting I2C master Tx data queue until completing all data */
-  while (pRxData_I2C.Size != 0U)
+  while (data_size != 0U)
   {
-    if (ADV_LPBAM_I2C_MasterRx_SetDataQ(I2C3, &pDMAListInfo_I2C, &pRxData_I2C, &Master_Receive_Data_1_Desc[transfer_idx], &Master_Q) != LPBAM_OK)
+    if (ADV_LPBAM_I2C_MasterRx_SetDataQ(I2C3, &pDMAListInfo_I2C, &pRxData_I2C, &Master_Q_Master_Receive_Data_1_Desc[transfer_idx], &Master_Q) != LPBAM_OK)
     {
       Error_Handler();
     }
 
     transfer_idx++;
+
     if (data_size > LPBAM_I2C_MAX_DATA_SIZE)
     {
       data_size -= LPBAM_I2C_MAX_DATA_SIZE;
     }
     else
     {
-    data_size = 0U;
+      data_size = 0U;
     }
 
     pRxData_I2C.Size = data_size;
   }
 
+  pRxData_I2C.Size = tmp_data_size;
 }
 
 /* USER CODE BEGIN Master_ReloadSeq_Build */

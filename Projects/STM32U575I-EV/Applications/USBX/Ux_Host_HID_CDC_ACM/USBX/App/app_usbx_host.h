@@ -27,19 +27,17 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "ux_api.h"
-
+#include "main.h"
+#include "ux_host_mouse.h"
+#include "ux_host_keyboard.h"
+#include "ux_host_cdc_acm.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "main.h"
 #include "ux_system.h"
 #include "ux_utility.h"
 #include "ux_hcd_stm32.h"
-#include "ux_host_class_hid.h"
-#include "ux_host_class_hid_mouse.h"
-#include "ux_host_class_hid_keyboard.h"
-#include "ux_host_class_cdc_acm.h"
 #include "stm32u575i_eval.h"
-#include "app_azure_rtos_config.h"
 
 #if defined(_TRACE)
 #include "usbpd_trace.h"
@@ -52,6 +50,11 @@ extern "C" {
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
+#define USBX_HOST_MEMORY_STACK_SIZE     1024*24
+
+#define UX_HOST_APP_THREAD_STACK_SIZE   1024
+#define UX_HOST_APP_THREAD_PRIO         10
+
 /* USER CODE BEGIN EC */
 
 /* USER CODE END EC */
@@ -92,64 +95,34 @@ extern "C" {
 UINT MX_USBX_Host_Init(VOID *memory_ptr);
 
 /* USER CODE BEGIN EFP */
-UINT  App_USBX_Host_Init(void);
-void  usbx_app_thread_entry(ULONG arg);
-void  ucpd_app_thread_entry(ULONG arg);
-VOID  ux_host_error_callback(UINT system_level, UINT system_context, UINT error_code);
-UINT  ux_host_event_callback(ULONG event, UX_HOST_CLASS *p_host_class, VOID *p_instance);
+VOID USBX_APP_Host_Init(VOID);
 void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin);
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define USBX_APP_STACK_SIZE                          1024
-#define USBX_MEMORY_SIZE                             (64 * 1024)
 #define APP_QUEUE_SIZE                               1
-#define NEW_RECEIVED_DATA                            0x01
-#define NEW_DATA_TO_SEND                             0x02
 #define BUTTON_KEY                                   BUTTON_USER
 #define BUTTON_KEY_PIN                               BUTTON_USER_PIN
+
 /* USER CODE END PD */
 
-/* USER CODE BEGIN 1 */
+#ifndef UX_HOST_APP_THREAD_NAME
+#define UX_HOST_APP_THREAD_NAME  "USBX App Host Main Thread"
+#endif
 
-typedef enum
-{
-  USB_VBUS_FALSE = 0,
-  USB_VBUS_TRUE,
-} USB_VBUS_State;
+#ifndef UX_HOST_APP_THREAD_PREEMPTION_THRESHOLD
+#define UX_HOST_APP_THREAD_PREEMPTION_THRESHOLD  UX_HOST_APP_THREAD_PRIO
+#endif
 
-typedef enum
-{
-  Device_disconnected = 1,
-  Device_connected,
-  No_Device,
-} Device_state;
+#ifndef UX_HOST_APP_THREAD_TIME_SLICE
+#define UX_HOST_APP_THREAD_TIME_SLICE  TX_NO_TIME_SLICE
+#endif
 
-typedef enum
-{
-  Unknown_Device = 0,
-  CDC_ACM_Device = 1,
-  Mouse_Device = 2,
-  Keyboard_Device,
-  Composite_HID_CDC_ACM,
-  Unsupported_Device,
-} USB_Device_Type;
-
-typedef enum
-{
-  App_Ready = 1,
-  App_Start,
-  App_Idle,
-} ux_app_stateTypeDef;
-
-typedef struct
-{
-  USB_Device_Type CDC_Device_Type;
-  USB_Device_Type HID_Device_Type;
-  USB_Device_Type COMPO_Device_Type;
-  Device_state    Dev_state;
-} ux_app_devInfotypeDef;
+#ifndef UX_HOST_APP_THREAD_START_OPTION
+#define UX_HOST_APP_THREAD_START_OPTION  TX_AUTO_START
+#endif
 
 /* USER CODE BEGIN 1 */
 typedef enum

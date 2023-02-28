@@ -10,7 +10,7 @@
 /**************************************************************************/
 #include "lx_stm32_ospi_driver.h"
 
-/* HAL Polling based implementation for OctoSPI component MX25LM51245G
+/* HAL DMA API implementation for OctoSPI component MX25LM51245G
  * The present implementation assumes the following settings are set:
 
   Instance              = OCTOSPI2
@@ -102,6 +102,16 @@ INT lx_stm32_ospi_lowlevel_init(UINT instance)
 INT lx_stm32_ospi_lowlevel_deinit(UINT instance)
 {
   INT status = 0;
+
+  /* Delete semaphore objects */
+  tx_semaphore_delete(&ospi_tx_semaphore);
+  tx_semaphore_delete(&ospi_rx_semaphore);
+
+  /* Call the DeInit function to reset the driver */
+  if (HAL_OSPI_DeInit(&hospi2) != HAL_OK)
+  {
+    return 1;
+  }
 
   /* USER CODE BEGIN PRE_OSPI_DEINIT */
 
@@ -352,7 +362,7 @@ INT lx_stm32_ospi_write(UINT instance, ULONG *address, ULONG *buffer, ULONG word
       return 1;
     }
 
-	/* Check success of the transmission of the data */
+    /* Check success of the transmission of the data */
     if(tx_semaphore_get(&ospi_tx_semaphore, HAL_OSPI_TIMEOUT_DEFAULT_VALUE) != TX_SUCCESS)
     {
      return 1;
@@ -703,7 +713,6 @@ static uint8_t ospi_set_octal_mode(OSPI_HandleTypeDef *hospi)
   s_command.AddressMode     = HAL_OSPI_ADDRESS_NONE;
   s_command.DataMode        = HAL_OSPI_DATA_NONE;
   s_command.DummyCycles     = 0;
-
   /* Add a short delay to let the IP settle before starting the command */
   HAL_Delay(1);
 
@@ -839,7 +848,7 @@ static uint8_t ospi_set_octal_mode(OSPI_HandleTypeDef *hospi)
 
 /**
   * @brief  Rx Transfer completed callbacks.
-  * @param  hqspi OSPI handle
+  * @param  hospi OSPI handle
   * @retval None
   */
 void HAL_OSPI_RxCpltCallback(OSPI_HandleTypeDef *hospi)
@@ -857,7 +866,7 @@ void HAL_OSPI_RxCpltCallback(OSPI_HandleTypeDef *hospi)
 
 /**
   * @brief  Tx Transfer completed callbacks.
-  * @param  hqspi OSPI handle
+  * @param  hospi OSPI handle
   * @retval None
   */
 void HAL_OSPI_TxCpltCallback(OSPI_HandleTypeDef *hospi)

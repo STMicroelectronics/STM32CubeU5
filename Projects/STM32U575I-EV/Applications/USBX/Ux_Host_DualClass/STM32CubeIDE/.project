@@ -2814,6 +2814,11 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/usbx_host_classes/src/ux_host_class_storage_entry.c</locationURI>
 		</link>
 		<link>
+			<name>Middlewares/USBX/UX Host Class MSC/ux_host_class_storage_lock.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/usbx_host_classes/src/ux_host_class_storage_lock.c</locationURI>
+		</link>
+		<link>
 			<name>Middlewares/USBX/UX Host Class MSC/ux_host_class_storage_max_lun_get.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/usbx_host_classes/src/ux_host_class_storage_max_lun_get.c</locationURI>
@@ -2827,6 +2832,11 @@
 			<name>Middlewares/USBX/UX Host Class MSC/ux_host_class_storage_media_characteristics_get.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/usbx_host_classes/src/ux_host_class_storage_media_characteristics_get.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/USBX/UX Host Class MSC/ux_host_class_storage_media_check.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/usbx_host_classes/src/ux_host_class_storage_media_check.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/USBX/UX Host Class MSC/ux_host_class_storage_media_format_capacity_get.c</name>
@@ -3027,6 +3037,16 @@
 			<name>Middlewares/USBX/UX Host Controllers/ux_hcd_stm32_request_periodic_transfer.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/usbx_stm32_host_controllers/ux_hcd_stm32_request_periodic_transfer.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/USBX/UX Host Controllers/ux_hcd_stm32_request_trans_finish.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/usbx_stm32_host_controllers/ux_hcd_stm32_request_trans_finish.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/USBX/UX Host Controllers/ux_hcd_stm32_request_trans_prepare.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/usbx_stm32_host_controllers/ux_hcd_stm32_request_trans_prepare.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/USBX/UX Host Controllers/ux_hcd_stm32_request_transfer.c</name>

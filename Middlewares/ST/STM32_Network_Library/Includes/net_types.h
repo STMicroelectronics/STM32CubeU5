@@ -20,8 +20,8 @@
 #ifndef NET_TYPES_H
 #define NET_TYPES_H
 /* Includes ------------------------------------------------------------------*/
-#include "stdint.h"
-#include "stdbool.h"
+#include <stdint.h>
+#include <stdbool.h>
 
 typedef char            char_t;
 typedef unsigned char   uchar_t;

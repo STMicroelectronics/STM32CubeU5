@@ -10,15 +10,15 @@
       <TargetName>Nx_TCP_Echo_Server</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6140001::V6.14.1::ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32U585AIIx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32U5xx_DFP.1.0.5</PackID>
-          <PackURL>http://www.keil.com/pack</PackURL>
-          <Cpu>IRAM(0x20000000-0x200BFFFF) IROM(0x08000000-0x81FFFFF) CLOCK(8000000) FPU3(SFPU) CPUTYPE("Cortex-M33") ELITTLE TZ</Cpu>
+          <PackID>Keil.STM32U5xx_DFP.1.1.1</PackID>
+          <PackURL>http://www.keil.com/pack/</PackURL>
+          <Cpu>IRAM(0x20000000-0x200BFFFF) IROM(0x08000000-0x81FFFFF) CLOCK(8000000) FPU3(SFPU) CPUTYPE("Cortex-M33") ELITTLE TZ DSP</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
           <FlashDriverDll></FlashDriverDll>
@@ -186,6 +186,7 @@
             <RvdsVP>2</RvdsVP>
             <RvdsMve>0</RvdsMve>
             <RvdsCdeCp>0</RvdsCdeCp>
+            <nBranchProt>0</nBranchProt>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -339,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>NX_INCLUDE_USER_DEFINE_FILE,TX_INCLUDE_USER_DEFINE_FILE,TX_SINGLE_MODE_NON_SECURE=1,USE_HAL_DRIVER,STM32U585xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../NetXDuo/App;../Core/Inc;../AZURE_RTOS/App;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Middlewares/ST/netxduo/addons/dhcp;../../../../../../Middlewares/ST/threadx/common/inc;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Middlewares/ST/netxduo/common/inc;../../../../../../Middlewares/ST/netxduo/ports/cortex_m33/ac5/inc;../../../../../../Middlewares/ST/threadx/ports/cortex_m33/ac6/inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/BSP/Components/mx_wifi;../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip;../../../../../../Drivers/BSP/B-U585I-IOT02A;../NetXDuo/Target</IncludePath>
+              <IncludePath>../NetXDuo/App;../Core/Inc;../AZURE_RTOS/App;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Middlewares/ST/netxduo/addons/dhcp;../../../../../../Middlewares/ST/threadx/common/inc;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Middlewares/ST/netxduo/common/inc;../../../../../../Middlewares/ST/netxduo/ports/cortex_m33/ac5/inc;../../../../../../Middlewares/ST/threadx/ports/cortex_m33/ac6/inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/BSP/Components/mx_wifi;../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip;../NetXDuo/Target</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -456,16 +457,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Drivers/BSP/B-U585I-IOT02A</GroupName>
-          <Files>
-            <File>
-              <FileName>b_u585i_iot02a.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>Drivers/BSP/Components/mx_wifi</GroupName>
           <Files>
             <File>
@@ -497,6 +488,11 @@
               <FileName>mx_wifi_ipc.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_wifi_ipc.c</FilePath>
+            </File>
+            <File>
+              <FileName>mx_address.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Drivers/BSP/Components/mx_wifi/core/mx_address.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1349,11 +1345,6 @@
               <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_packet_transmit_release.c</FilePath>
             </File>
             <File>
-              <FileName>nx_ram_network_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_ram_network_driver.c</FilePath>
-            </File>
-            <File>
               <FileName>nx_rarp_disable.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_rarp_disable.c</FilePath>
@@ -1867,6 +1858,11 @@
               <FileName>nx_udp_source_extract.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_udp_source_extract.c</FilePath>
+            </File>
+            <File>
+              <FileName>nx_http_proxy_client.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_http_proxy_client.c</FilePath>
             </File>
             <File>
               <FileName>nx_utility.c</FileName>
@@ -3052,26 +3048,6 @@
               <FileName>nxd_nd_cache_ip_address_find.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nxd_nd_cache_ip_address_find.c</FilePath>
-            </File>
-            <File>
-              <FileName>nx_tcp_server_socket_driver_listen.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_server_socket_driver_listen.c</FilePath>
-            </File>
-            <File>
-              <FileName>nx_tcp_socket_driver_establish.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_socket_driver_establish.c</FilePath>
-            </File>
-            <File>
-              <FileName>nx_tcp_socket_driver_packet_receive.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_socket_driver_packet_receive.c</FilePath>
-            </File>
-            <File>
-              <FileName>nx_udp_socket_driver_packet_receive.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_udp_socket_driver_packet_receive.c</FilePath>
             </File>
           </Files>
         </Group>

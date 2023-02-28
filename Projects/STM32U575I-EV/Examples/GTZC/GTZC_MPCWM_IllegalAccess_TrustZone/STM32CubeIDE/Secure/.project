@@ -36,9 +36,9 @@
 			<locationURI>PARENT-2-PROJECT_LOC/README.md</locationURI>
 		</link>
 		<link>
-			<name>Application/User/hal_sram_helper.c</name>
+			<name>Application/User/external_memory_helper.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Secure/Src/hal_sram_helper.c</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Secure/Src/external_memory_helper.c</locationURI>
 		</link>
 		<link>
 			<name>Application/User/main.c</name>
@@ -174,11 +174,6 @@
 			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_ll_fmc.c</name>
 			<type>1</type>
 			<locationURI>PARENT-7-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_fmc.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/BSP/STM32U575I-EV/stm32u575i_eval.c</name>
-			<type>1</type>
-			<locationURI>PARENT-7-PROJECT_LOC/Drivers/BSP/STM32U575I-EV/stm32u575i_eval.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

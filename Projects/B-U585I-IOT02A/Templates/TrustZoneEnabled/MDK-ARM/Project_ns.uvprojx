@@ -10,7 +10,7 @@
       <TargetName>B-U585I-IOT02A_Templates_TrustZoneEnabled</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6140001::V6.14.1::ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -18,7 +18,7 @@
           <Vendor>STMicroelectronics</Vendor>
           <PackID>Keil.STM32U5xx_DFP.1.0.5</PackID>
           <PackURL>http://www.keil.com/pack</PackURL>
-          <Cpu>IROM(0x08100000-0x81FFFFF) IRAM(0x20040000-0x200BFFFF) CLOCK(8000000) FPU3(SFPU) CPUTYPE("Cortex-M33") ELITTLE TZ</Cpu>
+          <Cpu>IROM(0x08100000-0x81FFFFF) IRAM(0x20040000-0x200BFFFF) CLOCK(8000000) FPU3(SFPU) CPUTYPE("Cortex-M33") ELITTLE TZ DSP</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
           <FlashDriverDll></FlashDriverDll>
@@ -52,7 +52,7 @@
           <OutputName>$PROJ_FNAME$</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
-          <CreateHexFile>0</CreateHexFile>
+          <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
           <ListingPath></ListingPath>
@@ -186,10 +186,11 @@
             <RvdsVP>2</RvdsVP>
             <RvdsMve>0</RvdsMve>
             <RvdsCdeCp>0</RvdsCdeCp>
+            <nBranchProt>0</nBranchProt>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>1</useUlib>
+            <useUlib>0</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
@@ -206,7 +207,7 @@
             <Ro2Chk>0</Ro2Chk>
             <Ro3Chk>0</Ro3Chk>
             <Ir1Chk>1</Ir1Chk>
-            <Ir2Chk>1</Ir2Chk>
+            <Ir2Chk>0</Ir2Chk>
             <Ra1Chk>0</Ra1Chk>
             <Ra2Chk>0</Ra2Chk>
             <Ra3Chk>0</Ra3Chk>
@@ -313,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -339,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>STM32U585xx,USE_HAL_DRIVER,USE_B_U585I_IOT02A</Define>
               <Undefine></Undefine>
-              <IncludePath>../NonSecure/Inc;../Secure_nsclib;../../../../../Drivers/CMSIS/Include;../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../Drivers/BSP/B-U585I-IOT02A;../../../../../Drivers/BSP/Components/Common;../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include</IncludePath>
+              <IncludePath>../NonSecure/Inc;../Secure_nsclib;../../../../../Drivers/CMSIS/Include;../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../Drivers/BSP/B-U585I-IOT02A;../../../../../Drivers/BSP/Components/Common;../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../Drivers/BSP/Components/vl53l5cx/porting;../../../../../Drivers/BSP/Components/vl53l5cx/modules</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -352,7 +353,7 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <ClangAsOpt>4</ClangAsOpt>
+            <ClangAsOpt>1</ClangAsOpt>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -399,11 +400,6 @@
               <FilePath>../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a.c</FilePath>
             </File>
             <File>
-              <FileName>b_u585i_iot02a_light_sensor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_light_sensor.c</FilePath>
-            </File>
-            <File>
               <FileName>b_u585i_iot02a_bus.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_bus.c</FilePath>
@@ -422,6 +418,11 @@
               <FileName>b_u585i_iot02a_env_sensors.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_env_sensors.c</FilePath>
+            </File>
+            <File>
+              <FileName>b_u585i_iot02a_light_sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../Drivers/BSP/B-U585I-IOT02A/b_u585i_iot02a_light_sensor.c</FilePath>
             </File>
             <File>
               <FileName>b_u585i_iot02a_motion_sensors.c</FileName>
@@ -489,9 +490,9 @@
               <FilePath>../../../../../Drivers/BSP/Components/lps22hh/lps22hh_reg.c</FilePath>
             </File>
             <File>
-              <FileName>m24lr64.c</FileName>
+              <FileName>m24256.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../Drivers/BSP/Components/m24lr64/m24lr64.c</FilePath>
+              <FilePath>../../../../../Drivers/BSP/Components/m24256/m24256.c</FilePath>
             </File>
             <File>
               <FileName>mx25lm51245g.c</FileName>
@@ -541,12 +542,47 @@
             <File>
               <FileName>veml6030.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\Drivers\BSP\Components\veml6030\veml6030.c</FilePath>
+              <FilePath>../../../../../Drivers/BSP/Components/veml6030/veml6030.c</FilePath>
             </File>
             <File>
               <FileName>veml6030_reg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\Drivers\BSP\Components\veml6030\veml6030_reg.c</FilePath>
+              <FilePath>../../../../../Drivers/BSP/Components/veml6030/veml6030_reg.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drivers/BSP/Components/VL53L5CX</GroupName>
+          <Files>
+            <File>
+              <FileName>platform.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../Drivers/BSP/Components/vl53l5cx/porting/platform.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l5cx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../Drivers/BSP/Components/vl53l5cx/vl53l5cx.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l5cx_api.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_api.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l5cx_plugin_detection_thresholds.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_detection_thresholds.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l5cx_plugin_motion_indicator.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_motion_indicator.c</FilePath>
+            </File>
+            <File>
+              <FileName>vl53l5cx_plugin_xtalk.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_xtalk.c</FilePath>
             </File>
           </Files>
         </Group>

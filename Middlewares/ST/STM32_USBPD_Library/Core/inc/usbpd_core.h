@@ -128,14 +128,14 @@ uint32_t                USBPD_CAD_Process(void);
 void                    USBPD_CAD_PortEnable(uint8_t PortNum, USBPD_CAD_activation State);
 
 /**
-  * @brief  Set the resitor to present a SNK.
+  * @brief  Set the resistor to present a SNK.
   * @param  PortNum Index of current used port
   * @retval None
   */
 void                    USBPD_CAD_AssertRd(uint8_t PortNum);
 
 /**
-  * @brief  Set the resitor to present a SRC.
+  * @brief  Set the resistor to present a SRC.
   * @param  PortNum Index of current used port
   * @retval None
   */
@@ -787,7 +787,7 @@ void USBPD_PE_IsCableConnected(uint8_t PortNum, uint8_t IsConnected);
 
 /**
   * @brief  Increment PE Timers tick
-  * @note   This function must be called each elasped ms
+  * @note   This function must be called each ms
   * @param  PortNum Index of current used port
   * @retval None
   */

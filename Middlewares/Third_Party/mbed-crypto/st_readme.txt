@@ -2,7 +2,7 @@
   @verbatim
   ******************************************************************************
   *
-  *         Portions COPYRIGHT 2016-2019 STMicroelectronics, All Rights Reserved
+  *         Portions COPYRIGHT 2016-2022 STMicroelectronics, All Rights Reserved
   *         Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
   *
   * @file    st_readme.txt 
@@ -17,25 +17,26 @@
   ******************************************************************************
   @endverbatim
 
-### 14-December-2021 ###
+### 13-May-2022 ###
 ========================
-    + remove compilation warning
+    + backport mbedtls-2.28.0
+	++ alignment with TFM v1.3.0
+	+++ remove unsupported functions : psa_mac_compute, psa_mac_verify, psa_cipher_encrypt, psa_cipher_decrypt
+	+++ fix double inclusion path porting on crypto.h
+	+++ use deprecating define PSA_KEY_USAGE_SIGN_HASH (instead of PSA_KEY_USAGE_SIGN_MESSAGE)
+	+++ use deprecating define PSA_KEY_USAGE_VERIFY_HASH, (instead of PSA_KEY_USAGE_VERIFY_MESSAGE,)
+	+++ Allow creating a read-only key (for secure element)
 
-### 03-November-2021 ###
-========================
-    + fix some stsafe issues
+	++ miscellaneous warnings
 
-### 11-October-2021 ###
-========================
-    + use crypto lib from mbedtls-2.25.0
+	++ backport customizations
+	+++ HUK support for STM32U5, under switch USE_HUK
+	+++ double signature check
+	+++ using of vendor keys for secure element)
 
 ### 18-May-2021 ###
 ========================
     + Add LICENSE.txt
-
-### 20-October-2020 ###
-========================
-    + HUK support for STM32U5, under switch USE_HUK
 
 ### 12-June-2020 ###
 ========================

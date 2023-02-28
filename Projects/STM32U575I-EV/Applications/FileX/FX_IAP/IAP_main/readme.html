@@ -39,7 +39,7 @@
 <li>A power cycle or depressing the reset button is required in order to exit the programming mode.</li>
 </ul>
 <h4 id="loading-the-new-software-sequence"><b>Loading the new software sequence</b></h4>
-<p>If the user button is found to be not pressed at application start-up, the program will try to load the previously programmed application from the address defined by <strong>APP_ADDRESS</strong>.</p>
+<p>If the user button is not pressed at application start-up, the program will try to load the previously programmed application from the address defined by <strong>APP_ADDRESS</strong>.</p>
 <p>For that the steps below will be followed:</p>
 <ul>
 <li>signature of the to-be loaded application is checked prior of its starting to check if the it was already programmed starting at the previously mentioned address</li>
@@ -59,7 +59,7 @@
 <h3 id="expected-success-behavior"><b>Expected success behavior</b></h3>
 <p>In programming new software sequence, success is marked by a blinking green LED. In the loading new software sequence, the loaded application should start and run as expected.</p>
 <h3 id="error-behaviors"><b>Error behaviors</b></h3>
-<p>On failure, the red LED starts toggeling while the green LED is switched OFF.</p>
+<p>On failure, the red LED starts toggling while the green LED is switched OFF.</p>
 <h3 id="assumptions-if-any"><b>Assumptions if any</b></h3>
 <p>The SD card is expected to be inserted before application start (only in programming new software sequence). The loaded application must be placed in the root directory of the SD card as a raw binary.</p>
 <h3 id="known-limitations"><b>Known limitations</b></h3>
@@ -75,7 +75,7 @@
 <h4 id="threadx-usage-hints"><b>ThreadX usage hints</b></h4>
 <ul>
 <li>ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.</li>
-<li>ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the “tx_user.h”, the “TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in “tx_initialize_low_level.s” file too.</li>
+<li>ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the “tx_user.h”, the “TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in “tx_initialize_low_level.S” file too.</li>
 <li>ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL) should be done either at the beginning of the application or inside the thread entry functions.</li>
 <li>ThreadX offers the “tx_application_define()” function, that is automatically called by the tx_kernel_enter() API. It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools…) but it should not in any way contain a system API call (HAL).</li>
 <li>Using dynamic memory allocation requires to apply some changes to the linker file. ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function, using the “first_unused_memory” argument. This require changes in the linker files to expose this memory location.
@@ -87,7 +87,7 @@
 <li>For MDK-ARM:</li>
 </ul>
 <pre><code>either define the RW_IRAM1 region in the &quot;.sct&quot; file
-or modify the line below in &quot;tx_low_level_initilize.s to match the memory region being used
+or modify the line below in &quot;tx_initialize_low_level.S to match the memory region being used
     LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|</code></pre>
 <ul>
 <li>For STM32CubeIDE add the following section into the .ld file:</li>
@@ -105,7 +105,7 @@ The ._threadx_heap must be located between the .bss and the ._user_heap_stack se
 Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).  
 Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code></pre>
 <ul>
-<li>The “tx_initialize_low_level.s” should be also modified to enable the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
+<li>The “tx_initialize_low_level.S” should be also modified to enable the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 </ul></li>
 </ul>
 <h4 id="filexlevelx-usage-hints"><b>FileX/LevelX usage hints</b></h4>

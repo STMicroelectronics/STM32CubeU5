@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file         stm32u5xx_hal_msp.c
-  * @brief        This file provides code for the MSP Initialization
-  *               and de-Initialization codes.
+  * @file    : Secure/Src/stm32u5xx_hal_msp.c
+  * @author  : MCD Application Team
+  * @brief   : HAL MSP module.
   ******************************************************************************
   * @attention
   *
@@ -158,12 +158,69 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
 }
 
 /* USER CODE BEGIN 1 */
+
 /**
-* @brief  DeInitialize the Global MSP.
+* @brief  FMC_SRAM BSP Init
+* @param  hsram : FMC_SRAM handle
 * @retval None
 */
-void HAL_MspDeInit(void)
+void HAL_SRAM_MspInit(SRAM_HandleTypeDef *hsram)
+{
+  GPIO_InitTypeDef GPIO_Init_Structure;
+  /* Enable FMC clock */
+  __HAL_RCC_FMC_CLK_ENABLE();
+
+  /*** Configure the GPIOs ***/
+  /* Enable VddIO2 for GPIOG */
+  __HAL_RCC_PWR_CLK_ENABLE();
+  HAL_PWREx_EnableVddIO2();
+
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
+
+  GPIO_Init_Structure.Mode      = GPIO_MODE_AF_PP;
+  GPIO_Init_Structure.Pull      = GPIO_PULLUP;
+  GPIO_Init_Structure.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_Init_Structure.Alternate = GPIO_AF12_FMC;
+
+  GPIO_Init_Structure.Pin = GPIO_PIN_0 | GPIO_PIN_1 |GPIO_PIN_4 |GPIO_PIN_5 | GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_14|GPIO_PIN_15;
+  HAL_GPIO_Init(GPIOD, &GPIO_Init_Structure);
+
+  GPIO_Init_Structure.Pin = GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10| GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
+  HAL_GPIO_Init(GPIOE, &GPIO_Init_Structure);
+
+  /*CLK*/
+  GPIO_Init_Structure.Pin = GPIO_PIN_3;
+  HAL_GPIO_Init(GPIOD, &GPIO_Init_Structure);
+
+  /* Address */
+  GPIO_Init_Structure.Pin = GPIO_PIN_11 | GPIO_PIN_12 |GPIO_PIN_13;
+  HAL_GPIO_Init(GPIOD, &GPIO_Init_Structure);
+
+  GPIO_Init_Structure.Pin = GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 ;
+  HAL_GPIO_Init(GPIOE, &GPIO_Init_Structure);
+
+  GPIO_Init_Structure.Pin = GPIO_PIN_0 | GPIO_PIN_1 |GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 |GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
+  HAL_GPIO_Init(GPIOF, &GPIO_Init_Structure);
+
+  GPIO_Init_Structure.Pin = GPIO_PIN_0 | GPIO_PIN_1 |GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_13 | GPIO_PIN_14;
+  HAL_GPIO_Init(GPIOG, &GPIO_Init_Structure);
+
+  /*NBL0-NBL1*/
+  GPIO_Init_Structure.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+  HAL_GPIO_Init(GPIOE, &GPIO_Init_Structure);
+}
+
+/**
+* @brief  SRAM BSP DeInit
+* @param  hsram : FMC_SRAM handle
+* @retval None
+*/
+void HAL_SRAM_MspDeInit(SRAM_HandleTypeDef *hsram)
 {
 
 }
+
 /* USER CODE END 1 */

@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    sad.h
   * @author  MCD Application Team
-  * @brief   Sound Acquisiton Detection (SAD) interface header file
+  * @brief   Sound Acquisition Detection (SAD) interface header file
   ******************************************************************************
   * @attention
   *

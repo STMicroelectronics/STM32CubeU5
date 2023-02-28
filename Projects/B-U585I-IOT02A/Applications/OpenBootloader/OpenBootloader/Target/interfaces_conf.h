@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -26,30 +26,34 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32u5xx_ll_usart.h"
+#include "stm32u5xx_ll_bus.h"
+#include "stm32u5xx_ll_gpio.h"
 #include "stm32u5xx_ll_i2c.h"
 #include "stm32u5xx_ll_spi.h"
 
 #define MEMORIES_SUPPORTED                7U
 
-/* ------------------------- Definitions for USART -------------------------- */
-#define USARTx                            USART3
-#define USARTx_CLK_ENABLE()               __HAL_RCC_USART3_CLK_ENABLE()
-#define USARTx_CLK_DISABLE()              __HAL_RCC_USART3_CLK_DISABLE()
-#define USARTx_GPIO_CLK_ENABLE()          __HAL_RCC_GPIOD_CLK_ENABLE()
-#define USARTx_DeInit()                   LL_USART_DeInit(USARTx)
+/*-------------------------- Definitions for USART ---------------------------*/
+#define USARTx                            USART1
+#define USARTx_CLK_ENABLE()               __HAL_RCC_USART1_CLK_ENABLE()
+#define USARTx_CLK_DISABLE()              __HAL_RCC_USART1_CLK_DISABLE()
+#define USARTx_GPIO_CLK_TX_ENABLE()       __HAL_RCC_GPIOA_CLK_ENABLE()
+#define USARTx_GPIO_CLK_RX_ENABLE()       __HAL_RCC_GPIOA_CLK_ENABLE()
+#define USARTx_DEINIT()                   LL_USART_DeInit(USARTx)
 
-#define USARTx_TX_PIN                     GPIO_PIN_8
-#define USARTx_TX_GPIO_PORT               GPIOD
-#define USARTx_RX_PIN                     GPIO_PIN_9
-#define USARTx_RX_GPIO_PORT               GPIOD
-#define USARTx_ALTERNATE                  GPIO_AF7_USART3
+#define USARTx_TX_PIN                     GPIO_PIN_9
+#define USARTx_TX_GPIO_PORT               GPIOA
+#define USARTx_RX_PIN                     GPIO_PIN_10
+#define USARTx_RX_GPIO_PORT               GPIOA
+#define USARTx_ALTERNATE                  GPIO_AF7_USART1
 
-/* ------------------------- Definitions for I2C -------------------------- */
+/*-------------------------- Definitions for I2C -----------------------------*/
 #define I2Cx                              I2C2
 #define I2Cx_CLK_ENABLE()                 __HAL_RCC_I2C2_CLK_ENABLE()
 #define I2Cx_CLK_DISABLE()                __HAL_RCC_I2C2_CLK_DISABLE()
-#define I2Cx_GPIO_CLK_ENABLE()            __HAL_RCC_GPIOH_CLK_ENABLE()
-#define I2Cx_DeInit()                     LL_I2C_DeInit(I2Cx)
+#define I2Cx_GPIO_CLK_SCL_ENABLE()        __HAL_RCC_GPIOH_CLK_ENABLE()
+#define I2Cx_GPIO_CLK_SDA_ENABLE()        __HAL_RCC_GPIOH_CLK_ENABLE()
+#define I2Cx_DEINIT()                     LL_I2C_DeInit(I2Cx)
 
 #define I2Cx_SCL_PIN                      GPIO_PIN_4
 #define I2Cx_SCL_PIN_PORT                 GPIOH
@@ -60,12 +64,12 @@ extern "C" {
 #define OPENBL_I2C_TIMEOUT                0xFFFFF000U
 #define I2C_TIMING                        0x00800000U
 
-/* ------------------------- Definitions for FDCAN -------------------------- */
+/*-------------------------- Definitions for FDCAN ---------------------------*/
 #define FDCANx                            FDCAN1
 #define FDCANx_CLK_ENABLE()               __HAL_RCC_FDCAN1_CLK_ENABLE()
 #define FDCANx_CLK_DISABLE()              __HAL_RCC_FDCAN1_CLK_DISABLE()
-#define FDCANx_GPIO_CLK_ENABLE()          __HAL_RCC_GPIOB_CLK_ENABLE()
-
+#define FDCANx_GPIO_CLK_RX_ENABLE()       __HAL_RCC_GPIOB_CLK_ENABLE()
+#define FDCANx_GPIO_CLK_TX_ENABLE()       __HAL_RCC_GPIOB_CLK_ENABLE()
 #define FDCANx_TX_PIN                     GPIO_PIN_8
 #define FDCANx_TX_GPIO_PORT               GPIOB
 #define FDCANx_TX_AF                      GPIO_AF9_FDCAN1
@@ -73,20 +77,19 @@ extern "C" {
 #define FDCANx_RX_GPIO_PORT               GPIOB
 #define FDCANx_RX_AF                      GPIO_AF9_FDCAN1
 
-#define FDCANx_IT0_IRQn                   TIM16_FDCAN_IT0_IRQn
-#define FDCANx_IT1_IRQn                   TIM17_FDCAN_IT1_IRQn
-#define FDCANx_IRQHandler                 TIM16_FDCAN_IT0_IRQHandler
-
 #define FDCANx_FORCE_RESET()              __HAL_RCC_FDCAN1_FORCE_RESET()
 #define FDCANx_RELEASE_RESET()            __HAL_RCC_FDCAN1_RELEASE_RESET()
 
-/* -------------------------- Definitions for SPI --------------------------- */
+/*--------------------------- Definitions for SPI ----------------------------*/
 #define SPIx                              SPI1
 #define SPIx_CLK_ENABLE()                 __HAL_RCC_SPI1_CLK_ENABLE()
 #define SPIx_CLK_DISABLE()                __HAL_RCC_SPI1_CLK_DISABLE()
-#define SPIx_GPIO_CLK_ENABLE()            __HAL_RCC_GPIOE_CLK_ENABLE()
-#define SPIx_DeInit()                     LL_SPI_DeInit(SPIx)
-#define SPIx_IRQn                         SPI1_IRQn
+#define SPIx_GPIO_CLK_MOSI_ENABLE()       __HAL_RCC_GPIOE_CLK_ENABLE()
+#define SPIx_GPIO_CLK_MISO_ENABLE()       __HAL_RCC_GPIOE_CLK_ENABLE()
+#define SPIx_GPIO_CLK_SCK_ENABLE()        __HAL_RCC_GPIOE_CLK_ENABLE()
+#define SPIx_GPIO_CLK_NSS_ENABLE()        __HAL_RCC_GPIOE_CLK_ENABLE()
+#define SPIx_DEINIT()                     LL_SPI_DeInit(SPIx)
+#define SPIx_IRQ                          SPI1_IRQn
 
 #define SPIx_MOSI_PIN                     GPIO_PIN_15
 #define SPIx_MOSI_PIN_PORT                GPIOE
@@ -100,6 +103,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
 #endif /* INTERFACES_CONF_H */

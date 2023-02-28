@@ -26,7 +26,7 @@
 /*  COMPONENT DEFINITION                                   RELEASE        */
 /*                                                                        */
 /*    nx_crypto_const.h                                  PORTABLE C       */
-/*                                                           6.1.7        */
+/*                                                           6.2.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Timothy Stapko, Microsoft Corporation                               */
@@ -47,6 +47,12 @@
 /*                                            renamed FIPS symbol to      */
 /*                                            self-test,                  */
 /*                                            resulting in version 6.1.7  */
+/*  04-25-2022     Yuxin Zhou               Modified comment(s), added    */
+/*                                            x25519 and x448 curves,     */
+/*                                            resulting in version 6.1.11 */
+/*  10-31-2022     Yanwu Cai                Modified comment(s), added    */
+/*                                            EC curve type macro,        */
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 
@@ -195,6 +201,8 @@ extern   "C" {
 #define NX_CRYPTO_EC_BRAINPOOLP256r1             0x0006001A
 #define NX_CRYPTO_EC_BRAINPOOLP384r1             0x0006001B
 #define NX_CRYPTO_EC_BRAINPOOLP512r1             0x0006001C
+#define NX_CRYPTO_EC_X25519                      0x0006001D
+#define NX_CRYPTO_EC_X448                        0x0006001E
 #define NX_CRYPTO_EC_FFDHE2048                   0x00060100
 #define NX_CRYPTO_EC_FFDHE3072                   0x00060101
 #define NX_CRYPTO_EC_FFDHE4096                   0x00060102
@@ -207,6 +215,11 @@ extern   "C" {
 #define NX_CRYPTO_EC_POINT_UNCOMPRESSED              0
 #define NX_CRYPTO_EC_POINT_ANSIX962_COMPRESSED_PRIME 1
 #define NX_CRYPTO_EC_POINT_ANSIX962_COMPRESSED_CHAR2 2
+
+/* Elliptic curve type definitions. */
+#define NX_CRYPTO_EC_CURVE_TYPE_EXPLICIT_PRIME       1
+#define NX_CRYPTO_EC_CURVE_TYPE_EXPLICIT_CHAR2       2
+#define NX_CRYPTO_EC_CURVE_TYPE_NAMED_CURVE          3
 
 /* Define crypto ICV bits size. */
 #define NX_CRYPTO_AUTHENTICATION_ICV_TRUNC_BITS  96

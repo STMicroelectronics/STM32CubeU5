@@ -102,6 +102,7 @@ void HAL_OSPI_MspInit(OSPI_HandleTypeDef* hospi)
     }
 
     /* Peripheral clock enable */
+    __HAL_RCC_OSPIM_CLK_ENABLE();
     __HAL_RCC_OSPI2_CLK_ENABLE();
 
     __HAL_RCC_GPIOI_CLK_ENABLE();
@@ -123,7 +124,7 @@ void HAL_OSPI_MspInit(OSPI_HandleTypeDef* hospi)
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF6_OCTOSPI1;
+    GPIO_InitStruct.Alternate = GPIO_AF6_OCTOSPI2;
     HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = GPIO_PIN_5;
@@ -193,6 +194,7 @@ void HAL_OSPI_MspDeInit(OSPI_HandleTypeDef* hospi)
 
   /* USER CODE END OCTOSPI2_MspDeInit 0 */
     /* Peripheral clock disable */
+    __HAL_RCC_OSPIM_CLK_DISABLE();
     __HAL_RCC_OSPI2_CLK_DISABLE();
 
     /**OCTOSPI2 GPIO Configuration

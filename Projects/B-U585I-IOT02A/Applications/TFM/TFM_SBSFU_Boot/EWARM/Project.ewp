@@ -363,9 +363,12 @@
           <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Inc</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\BSP\B-U585I-IOT02A</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\BSP\Components\Common</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\CMSIS\Core\Include</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\CMSIS\Device\ST\STM32U5xx\Include</state>
           <state>$PROJ_DIR$\..\..\Linker</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include\psa</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\include</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\common</state>
@@ -1287,6 +1290,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\entropy.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\constant_time.c</name>
       </file>
     </group>
   </group>

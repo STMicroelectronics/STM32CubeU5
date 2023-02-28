@@ -57,9 +57,9 @@ uint8_t aTxBuffer[BUFFERSIZE];
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void SystemPower_Config(void);
-static void MX_ICACHE_Init(void);
-static void MX_DCACHE1_Init(void);
 static void MX_GPIO_Init(void);
+static void MX_DCACHE1_Init(void);
+static void MX_ICACHE_Init(void);
 static void MX_OCTOSPI1_Init(void);
 /* USER CODE BEGIN PFP */
 void Configure_APMemory(void);
@@ -113,9 +113,9 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_ICACHE_Init();
-  MX_DCACHE1_Init();
   MX_GPIO_Init();
+  MX_DCACHE1_Init();
+  MX_ICACHE_Init();
   MX_OCTOSPI1_Init();
   /* USER CODE BEGIN 2 */
   /* Enable Compensation cell */
@@ -151,7 +151,7 @@ int main(void)
   sCommand.Instruction        = WRITE_CMD;
   sCommand.InstructionMode    = HAL_OSPI_INSTRUCTION_8_LINES;
   sCommand.InstructionSize    = HAL_OSPI_INSTRUCTION_16_BITS;
-  sCommand.InstructionDtrMode = HAL_OSPI_INSTRUCTION_DTR_ENABLE; 
+  sCommand.InstructionDtrMode = HAL_OSPI_INSTRUCTION_DTR_ENABLE;
   sCommand.AddressMode        = HAL_OSPI_ADDRESS_8_LINES;
   sCommand.AddressSize        = HAL_OSPI_ADDRESS_32_BITS;
   sCommand.AddressDtrMode     = HAL_OSPI_ADDRESS_DTR_ENABLE;
@@ -204,10 +204,6 @@ int main(void)
       mem_addr++;
     }
 
-    /* In memory-mapped mode, not possible to check if the memory is ready
-    after the programming. So a delay corresponding to max page programming
-    time is added */
-    HAL_Delay(1);
   }
 
   /* Reading Sequence ----------------------------------------------- */
@@ -265,7 +261,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.MSIState = RCC_MSI_ON;
@@ -286,7 +282,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
-  /** Initializes the CPU, AHB and APB busses clocks
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
@@ -322,6 +318,8 @@ static void SystemPower_Config(void)
   {
     Error_Handler();
   }
+/* USER CODE BEGIN PWR */
+/* USER CODE END PWR */
 }
 
 /**
@@ -345,7 +343,6 @@ static void MX_DCACHE1_Init(void)
   {
     Error_Handler();
   }
-
   /* USER CODE BEGIN DCACHE1_Init 2 */
 
   /* USER CODE END DCACHE1_Init 2 */
@@ -451,6 +448,8 @@ static void MX_OCTOSPI1_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOI_CLK_ENABLE();
@@ -461,6 +460,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

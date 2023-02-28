@@ -63,7 +63,7 @@ typedef struct
 } LPBAM_OPAMP_StartFullAdvConf_t;
 
 /**
-  * @brief LPBAM start descriptor structure definition.
+  * @brief LPBAM start and stop descriptor structure definition.
   */
 typedef struct
 {
@@ -72,7 +72,7 @@ typedef struct
 
   uint32_t pReg[1U];          /*!< Specifies the content of register to be updated : only one value is needed         */
 
-} LPBAM_OPAMP_StartFullDesc_t;
+} LPBAM_OPAMP_StartFullDesc_t, LPBAM_OPAMP_StopFullDesc_t;
 /**
   * @}
   */
@@ -90,6 +90,13 @@ LPBAM_Status_t ADV_LPBAM_OPAMP_Start_SetFullQ(OPAMP_TypeDef                  *co
                                               LPBAM_OPAMP_StartFullAdvConf_t const *const pStartFull,
                                               LPBAM_OPAMP_StartFullDesc_t    *const pDescriptor,
                                               DMA_QListTypeDef               *const pQueue);
+/**
+  * @brief ADV_LPBAM_OPAMP_Stop_SetFullQ.
+  */
+LPBAM_Status_t ADV_LPBAM_OPAMP_Stop_SetFullQ(OPAMP_TypeDef              *const pInstance,
+                                             LPBAM_DMAListInfo_t        const *const pDMAListInfo,
+                                             LPBAM_OPAMP_StopFullDesc_t *const pDescriptor,
+                                             DMA_QListTypeDef           *const pQueue);
 /**
   * @}
   */

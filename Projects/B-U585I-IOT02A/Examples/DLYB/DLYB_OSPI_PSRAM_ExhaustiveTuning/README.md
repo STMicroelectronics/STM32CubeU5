@@ -2,14 +2,14 @@
 
 
 How to use Delay Block (DLYB) with an Exhaustive Tuning.  
-DLYB is used with OSPI PSRAM in indrect Read/Write mode.
+DLYB is used with OSPI PSRAM in indirect Read/Write mode.
 
-This example describes how to tune delay block with OSPI PSRAM in indrect Read/Write mode.  
+This example describes how to tune delay block with OSPI PSRAM in indirect Read/Write mode.  
 This Exhaustive tuning aims to browse all possible delay value and return its status (Passed/Failed).  
 This example can be used to determine the range of delay value which can be used in user applications.  
 Results will be printed into terminal I/O.
 
-LED_GREEN toggles as soon as Tuning is precessing.  
+LED_GREEN toggles as soon as Tuning is processing.  
 LED_GREEN is ON at the end of Tuning.  
 LED_RED toggles as soon as an error is returned by HAL API.
 

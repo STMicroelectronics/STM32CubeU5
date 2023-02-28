@@ -31,7 +31,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stm32u5xx_nucleo.h"
 #include <stdio.h>
 /* USER CODE END Includes */
 
@@ -58,6 +57,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define LED_RED GPIO_PIN_2
+#define LED_RED_Port GPIOG
+#define LED_GREEN GPIO_PIN_7
+#define LED_GREEN_Port GPIOC
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   app_azure_rtos application header file
   ******************************************************************************
-  * @attention
+   * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.

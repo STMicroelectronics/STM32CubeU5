@@ -38,7 +38,7 @@ The **AppMQTTClientThread**, once started:
 
   + creates an mqtt_client
 
-  + connects mqtt_client to the online MQTT broker; connection with server will be secure and a **tls_setup_callback** will set TLS parametres. By default MQTT_PORT for encrypted mode is 8883.
+  + connects mqtt_client to the online MQTT broker; connection with server will be secure and a **tls_setup_callback** will set TLS parameters. By default MQTT_PORT for encrypted mode is 8883.
 
           refer to note 1 below, to know how to setup an x509 certificate.
   
@@ -96,7 +96,7 @@ None
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
 
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.s" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
 
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.
 
@@ -115,7 +115,7 @@ None
     + For MDK-ARM:
 	```
     either define the RW_IRAM1 region in the ".sct" file
-    or modify the line below in "tx_low_level_initilize.s to match the memory region being used
+    or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
 	```
     + For STM32CubeIDE add the following section into the .ld file:
@@ -135,7 +135,7 @@ None
        Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).	 
        Read more in STM32CubeIDE User Guide, chapter: "Linker script".
 	  
-    + The "tx_initialize_low_level.s" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
+    + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
          
 ### <b>Keywords</b>
 
@@ -144,23 +144,26 @@ RTOS, Network, ThreadX, NetXDuo, WIFI, MQTT, DNS, TLS, MXCHIP, UART
 
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on STM32U585xx devices with a WiFi module (MXCHIP:EMW3080) with this configuration :
+ - To use the EMW3080B MXCHIP Wi-Fi module functionality, 2 software components are required:
+   1. The module driver running on the STM32 device
+   2. The module firmware running on the EMW3080B Wi-Fi module
 
-    + MXCHIP Firmware 2.1.11
+ - This application uses an updated version of the EMW3080B MXCHIP Wi-Fi module driver V2.3.4.
 
-    + Bypass mode 
+ - The B-U585I-IOT02A Discovery board Revision C is delivered with the EMW3080B MXCHIP Wi-Fi module firmware V2.1.11;
+   to upgrade your board with the required version V2.3.4, please visit [X-WIFI-EMW3080B](https://www.st.com/en/development-tools/x-wifi-emw3080b.html),
+   using the `EMW3080update_B-U585I-IOT02A-RevC_V2.3.4_SPI.bin` file under the V2.3.4/SPI folder.
 
-    + SPI mode used as interface
+ - Please note that module firmware version V2.1.11 is not backwards compatible with the driver V2.3.4 (the V2.1.11 module firmware is compatible with the driver versions from V2.1.11 to V2.1.13).
+ - The module driver is available under [/Drivers/BSP/Components/mx_wifi](../../../../../Drivers/BSP/Components/mx_wifi/), and its version is indicated in the [Release_Notes.html](../../../../../Drivers/BSP/Components/mx_wifi/Release_Notes.html) file.
 
-    The EMW3080B MXCHIP Wi-Fi module firmware and the way to update your board with it are available at <https://www.st.com/en/development-tools/x-wifi-emw3080b.html>
+ - Be aware that some STM32U5 SW packages (for examples X-CUBE-AZURE and X-CUBE-AWS) may continue to use older version of the EMW3080B MXCHIP module firmware;
+   thanks to refer to the release notes of each SW package to know the recommended module firmware's version which can be retrieved from this page
+   [X-WIFI-EMW3080B](https://www.st.com/en/development-tools/x-wifi-emw3080b.html).
 
-    Before using this project, you shall update your B-U585I-IOT02A board with the EMW3080B firmware version 2.1.11.
+ - This application has been tested with B-U585I-IOT02A (MB1551-U585AI) boards Revision: RevC and can be easily tailored to any other supported device and development board.
 
-    To achieve this, follow the instructions given at the above link, using the EMW3080updateV2.1.11RevC.bin flasher under the V2.1.11/SPI folder.
-
-  - This application has been tested with B-U585I-IOT02A (MB1551-U585AI) boards Revision: RevC and can be easily tailored to any other supported device and development board.
-
-  - This application uses USART1 to display logs, the hyperterminal configuration is as follows:
+ - This application uses USART1 to display logs, the hyperterminal configuration is as follows:
       - BaudRate = 115200 baud
       - Word Length = 8 Bits
       - Stop Bit = 1

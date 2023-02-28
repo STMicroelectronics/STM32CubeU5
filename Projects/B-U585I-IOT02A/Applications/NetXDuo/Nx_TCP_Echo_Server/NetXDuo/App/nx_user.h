@@ -24,7 +24,7 @@
 /*  PORT SPECIFIC C INFORMATION                            RELEASE        */
 /*                                                                        */
 /*    nx_user.h                                           PORTABLE C      */
-/*                                                           6.0          */
+/*                                                           6.1.11       */
 /*                                                                        */
 /*  AUTHOR                                                                */
 /*                                                                        */
@@ -43,6 +43,13 @@
 /*    DATE              NAME                      DESCRIPTION             */
 /*                                                                        */
 /*  05-19-2020     Yuxin Zhou               Initial Version 6.0           */
+/*  09-30-2020     Yuxin Zhou               Modified comment(s),          */
+/*                                            resulting in version 6.1    */
+/*  08-02-2021     Yuxin Zhou               Modified comment(s), and      */
+/*                                            supported TCP/IP offload,   */
+/*                                            resulting in version 6.1.8  */
+/*  04-25-2022     Yuxin Zhou               Modified comment(s),          */
+/*                                            resulting in version 6.1.11 */
 /*                                                                        */
 /**************************************************************************/
 
@@ -147,7 +154,7 @@
 */
 
 /* Defined, NetX Duo is built with NAT process. By default this option is not
-   defined. */
+   defined. This option can be defined only when NX_DISABLE_IPV4 is not selected. */
 /*
 #define NX_NAT_ENABLE
 */
@@ -912,7 +919,7 @@
 */
 
 /* If defined, this enables the DHCP Client to save its current DHCP Client
-   license ‘state’ including time remaining on the lease, and restore this
+   license 'state' including time remaining on the lease, and restore this
    state between DHCP Client application reboots.
    The default value is disabled. */
 /*
@@ -1175,12 +1182,6 @@
 #define NX_DHCPV6_MUTEX_WAIT                    TX_WAIT_FOREVER
 */
 
-/* Ratio of ticks to seconds. This is processor dependent.
-   The default value is 100. */
-/*
-#define NX_DHCPV6_TICKS_PER_SECOND              (NX_IP_PERIODIC_RATE)
-*/
-
 /* Time interval in seconds at which the IP lifetime timer updates the length
    of time the current IP address has been assigned to the Client.
    By default, this value is 1. */
@@ -1206,13 +1207,13 @@
 #define NX_DHCPV6_NUM_TIME_SERVERS              1
 */
 
-/* Size of the buffer in the Client record to hold the client’s network domain
+/* Size of the buffer in the Client record to hold the client's network domain
    name. The default value is 32. */
 /*
 #define NX_DHCPV6_DOMAIN_NAME_BUFFER_SIZE       32
 */
 
-/* Size of the buffer in the Client record to hold the Client’s time zone.
+/* Size of the buffer in the Client record to hold the Client's time zone.
    The default value is 16. */
 /*
 #define NX_DHCPV6_TIME_ZONE_BUFFER_SIZE         16
@@ -1235,14 +1236,14 @@
 */
 
 /* This defines the DHCPv6 Server thread priority. This should be lower than the
-   DHCPv6 Server’s IP thread task priority. The default value is 2. */
+   DHCPv6 Server's IP thread task priority. The default value is 2. */
 /*
 #define NX_DHCPV6_SERVER_THREAD_PRIORITY        2
 */
 
 /* Timer interval in seconds when the lease timer entry function is called by
    the ThreadX scheduler. The entry function sets a flag for the DHCPv6 Server
-   to increment all Clients’ accrued time on their lease by the timer interval.
+   to increment all Client's accrued time on their lease by the timer interval.
    By default, this value is 60. */
 /*
 #define NX_DHCPV6_IP_LEASE_TIMER_INTERVAL       (60)
@@ -1282,7 +1283,7 @@
 
 /* This defines the preference option value between 0 and 255, where the higher
    the value the higher the preference, in the DHCPv6 option of the same name.
-   This tells the Client what preference to place on this Server’s offer where
+   This tells the Client what preference to place on this Server's offer where
    multiple DHCPv6 Servers are available to assign IP addresses.
    A value of 255 instructs the Client to choose this server. A value of zero
    indicates the Client is free to choose. The default value is zero. */
@@ -1331,14 +1332,14 @@
 #define NX_DHCPV6_STATUS_MESSAGE_MAX           	100
 */
 
-/* Defines the size of the Server’s IP lease table (e.g. the max number of IPv6
+/* Defines the size of the Server's IP lease table (e.g. the max number of IPv6
    address available to lease that can be stored).
    By default, this value is 100. */
 /*
 #define NX_DHCPV6_MAX_LEASES                   	100
 */
 
-/* Defines the size of the Server’s Client record table (e.g. max number of
+/* Defines the size of the Server's Client record table (e.g. max number of
    Clients that can be stored). This value should be less than or equal to the
    value NX_DHCPV6_MAX_LEASES.By default, this value is 120. */
 /*
@@ -1467,7 +1468,7 @@
 */
 
 /* If defined and the Client IPv4 gateway address is non zero, the DNS Client
-   sets the IPv4 gateway as the Client’s primary DNS server. The default value
+   sets the IPv4 gateway as the Client's primary DNS server. The default value
    is disabled. */
 /*
 #define NX_DNS_IP_GATEWAY_AND_DNS_SERVER
@@ -1827,6 +1828,11 @@
 #define NX_MDNS_DISABLE_SERVER
 */
 
+/* Disable the mDNS Client functionality.  By default, mDNS client function is enabled. */
+/*
+#define NX_MDNS_DISABLE_CLIENT
+*/
+
 /* Maximum IPv6 addresses count of host. The default value is 2.*/
 /*
 #define NX_MDNS_IPV6_ADDRESS_COUNT        2
@@ -2069,7 +2075,7 @@
 #define NX_PPP_SERIAL_BUFFER_SIZE       2960
 */
 
-/* Specifies the size of “name” strings used in authentication.
+/* Specifies the size of name strings used in authentication.
    The default value is set to 32bytes,
    but can be redefined prior to inclusion of *nx_ppp.h.*/
 /*
@@ -2083,14 +2089,14 @@
 #define NX_PPP_PASSWORD_SIZE       32
 */
 
-/* Specifies the size of “value” strings used in CHAP authentication.
+/* Specifies the size of value strings used in CHAP authentication.
    The default value is set to 32bytes,
    but can be redefined prior to inclusion of nx_ppp.h.*/
 /*
 #define NX_PPP_VALUE_SIZE       32
 */
 
-/* Specifies the size of “hashed value” strings used in CHAP authentication.
+/* Specifies the size of hashed value strings used in CHAP authentication.
    The default value is set to 16 bytes, but can be redefined prior
    to inclusion of nx_ppp.h.*/
 /*
@@ -2204,7 +2210,7 @@
 */
 
 /* This option sets the UDP socket name. The NetX Duo SNTP Client UDP socket
-   name default is “SNTP Client socket”. */
+   name default is SNTP Client socket. */
 /*
 #define NX_SNTP_CLIENT_UDP_SOCKET_NAME          "SNTP Client socket"
 */
@@ -2537,6 +2543,33 @@
 /*
 #define NX_WEB_HTTP_SERVER_RETRY_MAX            10
 */
+
+/* Defined, the TCP/IP offload feature is enabled.
+   NX_ENABLE_INTERFACE_CAPABILITY must be defined to enable this feature. */
+/*
+#define NX_ENABLE_TCPIP_OFFLOAD
+*/
+
+/* Define the DHCP server thread stack size. */
+/*
+#define NX_DHCP_SERVER_THREAD_STACK_SIZE            1024
+*/
+
+/* Define name of DHCP server. */
+/*
+#define NX_DHCP_SERVER_NAME            NetX DHCP Server
+*/
+
+/* Size of the NAK list. */
+/*
+#define NX_PPP_OPTION_MESSAGE_LENGTH            64
+*/
+
+#ifdef NX_DISABLE_IPV6
+#ifdef NX_DISABLE_IPV4
+#error "At least one of the IPv4 or IPv6 protocols must be enabled"
+#endif
+#endif
 
 /* USER CODE BEGIN 2 */
 

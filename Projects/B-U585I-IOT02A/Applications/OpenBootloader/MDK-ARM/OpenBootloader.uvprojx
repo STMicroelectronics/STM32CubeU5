@@ -2178,6 +2178,11 @@
               <FileType>1</FileType>
               <FilePath>../../../../../Middlewares/ST/usbx/common/core/src/ux_utility_virtual_address.c</FilePath>
             </File>
+            <File>
+              <FileName>ux_dcd_stm32_transfer_abort.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Middlewares\ST\usbx\common\usbx_stm32_device_controllers\ux_dcd_stm32_transfer_abort.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

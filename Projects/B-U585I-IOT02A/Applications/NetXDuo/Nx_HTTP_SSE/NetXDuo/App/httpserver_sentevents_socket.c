@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    httpserver_sentevents_socket.c
   * @author  MCD Application Team
-  * @brief   Http server application.
+  * @brief   HTTP server application.
   ******************************************************************************
   * @attention
   *
@@ -46,14 +46,14 @@
 
 #define APP_TCP_PACKET_POOL_SIZE       ((PAYLOAD_SIZE + sizeof(NX_PACKET)) * APP_TCP_SOCKET_NUM)
 
-extern NX_IP IpInstance;
+
 
 /* Private variables ---------------------------------------------------------*/
 static NX_TCP_SOCKET TcpSockets[APP_TCP_SOCKET_NUM];
 
 /* Memory handlers. */
 static TX_BYTE_POOL *BytePool = NULL;
-/* Packet pool for our tcp server sockets. */
+/* Packet pool for our TCP server sockets. */
 static NX_PACKET_POOL PacketPool = {0};
 
 /* Private function prototypes -----------------------------------------------*/
@@ -120,7 +120,7 @@ static void tcp_listen_callback(NX_TCP_SOCKET *socket, UINT port)
     peer_addr[2] = (uint8_t)(peer_ip >> 8);
     peer_addr[3] = (uint8_t)(peer_ip);
 
-    MSG_DEBUG("\n[TCP %p] INCOMING CONNECTION from %02d.%02d.%02d.%02d:%"PRIu32"\n\n",
+    MSG_DEBUG("\n[TCP %p] INCOMING CONNECTION from %02d.%02d.%02d.%02d:%" PRIu32 "\n\n",
               socket,
               peer_addr[0], peer_addr[1], peer_addr[2], peer_addr[3], (uint32_t)peer_port);
   }
@@ -162,12 +162,12 @@ static void tcp_receive_notify(NX_TCP_SOCKET *socket)
     peer_addr[2] = (uint8_t)(peer_ip >> 8);
     peer_addr[3] = (uint8_t)(peer_ip);
 
-    MSG_DEBUG("\n[TCP %p] INCOMING PACKET (%"PRIu32" bytes) from %02d.%02d.%02d.%02d:%"PRIu32"\n\n",
+    MSG_DEBUG("\n[TCP %p] INCOMING PACKET (%" PRIu32 " bytes) from %02d.%02d.%02d.%02d:%" PRIu32 "\n\n",
               socket, (uint32_t)packet->nx_packet_length,
               peer_addr[0], peer_addr[1], peer_addr[2], peer_addr[3], (uint32_t)peer_port);
 
     snprintf(peer.info, sizeof(peer.info),
-             "%02d.%02d.%02d.%02d:%"PRIu32"",
+             "%02d.%02d.%02d.%02d:%" PRIu32 "",
              peer_addr[0], peer_addr[1], peer_addr[2], peer_addr[3], (uint32_t)peer_port);
 
     const char *const recv_buffer = (const char *)packet->nx_packet_prepend_ptr;
@@ -316,7 +316,7 @@ static void tcp_receive_notify(NX_TCP_SOCKET *socket)
       ClientInfosTypeDef *const p = &ClientObjetcs[i];
 
       TX_THREAD *const thread = &p->thread;
-      snprintf(p->thread_name, thread_name_len, "HTTP_%08"PRIX32, i);
+      snprintf(p->thread_name, thread_name_len, "HTTP_%08" PRIX32, i);
       p->thread_name[thread_name_len - 1] = '\0';
 
       UINT status = tx_thread_create(&p->thread, p->thread_name, sse_thread_entry,
@@ -435,7 +435,7 @@ static void task_list(char *buffer_string)
   /* The list of tasks and their status. */
   for (uint32_t count = 0; count < current_number_of_threads; count++)
   {
-    sprintf(buffer_string + strlen(buffer_string), "%-21s %-15s %3"PRIu32"  %p %p %"PRIu32" %p\r\n",
+    sprintf(buffer_string + strlen(buffer_string), "%-21s %-15s %3" PRIu32 "  %p %p %" PRIu32 " %p\r\n",
             thread_ptr->tx_thread_name,
             to_state_str[thread_ptr->tx_thread_state],
             (uint32_t)thread_ptr->tx_thread_priority,
@@ -460,7 +460,7 @@ static void get_uptime(char *buffer_string)
   uint32_t minutes = (uint32_t)((milliseconds / (1000 * 60)) % 60);
   uint32_t hours   = (uint32_t)((milliseconds / (1000 * 60 * 60)) % 24);
 
-  snprintf(uptime, sizeof(uptime), "UP Time is : %"PRIu32"hour : %"PRIu32"min : %"PRIu32"sec", hours, minutes, seconds);
+  snprintf(uptime, sizeof(uptime), "UP Time is : %" PRIu32 "hour : %" PRIu32 "min : %" PRIu32 "sec", hours, minutes, seconds);
   strcat(buffer_string, uptime);
 }
 
@@ -580,7 +580,7 @@ static UINT tcp_send(NX_TCP_SOCKET *socket, void *data, uint32_t data_length)
   if (status != NX_SUCCESS)
   {
     /* Connection can be already closed by peer. */
-    MSG_WARNING("[TCP %p] packet send failed: 0x%"PRIx32"\n", socket, (uint32_t)status);
+    MSG_WARNING("[TCP %p] packet send failed: 0x%" PRIx32 "\n", socket, (uint32_t)status);
     UINT done = nx_packet_release(packet);
     if (done != NX_SUCCESS)
     {
@@ -637,7 +637,7 @@ UINT http_server_socket_init(TX_BYTE_POOL *byte_pool)
                                   tcp_disconnect_callback);
     if (NX_SUCCESS != status)
     {
-      MSG_ERROR("socket%"PRIu32" create failed\n", i);
+      MSG_ERROR("socket%" PRIu32 " create failed\n", i);
       Error_Handler();
     }
     else
@@ -668,13 +668,13 @@ static void http_server_start_listening(void)
     /* Start listening if socket is idle */
     if (NX_TCP_CLOSED == state)
     {
-      MSG_DEBUG("\n\n[TCP %p] (%"PRIu32") S: %s Start listening\n", &TcpSockets[i], i, tcp_state_to_string(state));
+      MSG_DEBUG("\n\n[TCP %p] (%" PRIu32 ") S: %s Start listening\n", &TcpSockets[i], i, tcp_state_to_string(state));
       UINT status = nx_tcp_server_socket_listen(&IpInstance, APP_TCP_PORT, &TcpSockets[i], 0,
                                                 tcp_listen_callback);
 
       if (NX_SUCCESS != status)
       {
-        MSG_ERROR("socket listen failed (0x%"PRIx32")\n", (uint32_t)status);
+        MSG_ERROR("socket listen failed (0x%" PRIx32 ")\n", (uint32_t)status);
         Error_Handler();
       }
 
@@ -742,7 +742,7 @@ static void client_infos(const ClientInfosTypeDef *client)
 
 #if defined(ENABLE_IOT_DEBUG)
   static const char *client_status_strings[5] = { "UNK", "NEW", "COMM", "SSE", "END" };
-  MSG_DEBUG("[TCP %p] # info: %s S:%s Err: %d Messages: %"PRIi32"\n",
+  MSG_DEBUG("[TCP %p] # info: %s S:%s Err: %d Messages: %" PRIi32 "\n",
             client->tcp_socket, client->info, client_status_strings[client->status], client->err, client->message);
 #else
   UNUSED(client);

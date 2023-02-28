@@ -25,35 +25,35 @@
 #define NET_ISDIGIT(c)           (NET_IN_RANGE((c), '0', '9'))
 #define NET_ISXDIGIT(c)          (NET_ISDIGIT(c) || NET_IN_RANGE((c), 'a', 'f') || NET_IN_RANGE((c), 'A', 'F'))
 #define NET_ISLOWER(c)           (NET_IN_RANGE((c), 'a', 'z'))
-#define NET_ISSPACE(c)           (((c) == ' ')\
-                                  || ((c) == '\f') || ((c) == '\n') || ((c) == '\r') || ((c) == '\t') || ((c) == '\v'))
-/**
-  * @brief  Function description
-  * @param  Params
-  * @retval socket status
-  */
+#define NET_ISSPACE(c) \
+  (((c) == ' ') || ((c) == '\f') || ((c) == '\n') || ((c) == '\r') || ((c) == '\t') || ((c) == '\v'))
+
 #if !defined(NET_USE_LWIP_DEFINITIONS)
+
+/**
+  * @brief Convert IPv4 address from structure to string
+  * @note  IPv4 ONLY
+  *
+  * @param addr: an IP address structure
+  * @param buf: buffer to fill with string corresponding to the given IP address
+  * @param buflen: the length of the given buffer to fill
+  * @return IPv4 address string, like "192.168.1.10"
+  */
 char_t *net_ntoa_r(const net_ip_addr_t *addr, char_t *buf, int32_t buflen)
 {
-  uint32_t NET_S_ADDR;
-  uint8_t val;
   char_t inv[3];
-  uint8_t *ap;
-  uint8_t rem;
-  uint8_t i;
   int32_t len = 0;
-  char_t *buf_ret;
+  char_t *buf_ret = NULL;
+  const uint32_t addr_32bits = addr->addr;
+  const uint8_t *ap = (const uint8_t *)&addr_32bits;
 
-  NET_S_ADDR = addr->addr;
-
-  ap = (uint8_t *)&NET_S_ADDR;
   for (uint8_t n = 0; n < (uint8_t) 4; n++)
   {
-    i = 0;
-    val = ap[n];
+    uint8_t i = 0;
+    uint8_t val = ap[n];
     do
     {
-      rem = val % 10U;
+      const uint8_t rem = val % 10U;
       val /=  10U;
       inv[i] = (char_t)'0' + rem;
       i++;
@@ -80,45 +80,46 @@ char_t *net_ntoa_r(const net_ip_addr_t *addr, char_t *buf, int32_t buflen)
   {
     buf[len] = (char_t) '\0';
     buf_ret = buf;
-
-  }
-  else
-  {
-    buf_ret = NULL;
   }
 
   return buf_ret;
 }
 
+
 /**
-  * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @brief  Convert IPv4 address from structure to string
+  * @param  addr: an IP address structure
+  * @retval IP address as a string
   */
 char_t *net_ntoa(const net_ip_addr_t *addr)
 {
   static char_t str[16];
-  return net_ntoa_r(addr, str, 16);
+
+  memset(str, 0, sizeof(str));
+
+  return net_ntoa_r(addr, str, sizeof(str));
 }
 
+
 /**
-  * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @brief  Convert IP address from string to uint32
+  * @param  ptr: IP string buffer
+  * @param  addr: IP address structure
+  * @retval status 1 success, otherwise failed
   */
 int32_t net_aton(const char_t *ptr, net_ip_addr_t *addr)
 {
   uint32_t val = 0;
   uint32_t base;
   char_t c0;
-  const char_t *cp =  ptr;
+  const char_t *cp = ptr;
   uint32_t parts[4];
   uint32_t *pp = parts;
   int32_t ret = 1;
-  int32_t done;
+  int32_t done = 0;
 
   c0 = *cp;
-  done = 0;
+
   for (;;)
   {
     /*
@@ -182,7 +183,7 @@ int32_t net_aton(const char_t *ptr, net_ip_addr_t *addr)
          * Internet format:
          *  a.b.c.d
          *  a.b.c   (with c treated as 16 bits)
-         *  a.b (with b treated as 24 bits)
+         *  a.b     (with b treated as 24 bits)
          */
         if (pp >= (parts + 3))
         {
@@ -203,24 +204,20 @@ int32_t net_aton(const char_t *ptr, net_ip_addr_t *addr)
       }
     }
   }
-  /*
-   * Check for trailing characters.
-   */
+
+  /* Check for trailing characters. */
   if ((c0 != (char_t)'\0') && (NET_ISSPACE((c0)) == false))
   {
     ret = 0;
   }
   else
 
-    /*
-     * Concoct the address according to
-     * the number of parts specified.
-     */
+    /* Concoct the address according to the number of parts specified. */
   {
     switch (pp - parts + 1)
     {
       case 0:
-        ret = 0;      /* initial nondigit */
+        ret = 0;          /* initial nondigit */
         break;
 
       case 1:             /* a -- 32 bits */
@@ -267,45 +264,88 @@ int32_t net_aton(const char_t *ptr, net_ip_addr_t *addr)
   return ret;
 }
 
+
 /**
   * @brief  Function description
-  * @param  Params
-  * @retval socket status
+  * @param  cp: IP string buffer
+  * @retval IPv4 address value
   */
 int32_t net_aton_r(const char_t *cp)
 {
-  net_ip_addr_t val;
-  int32_t ret;
+  net_ip_addr_t val = {0};
+  int32_t ret = 0;
 
-  val.addr = 0;
   if (net_aton(cp, &val) != 0)
   {
     ret = (int32_t) val.addr;
   }
-  else
-  {
-    ret = 0;
-  }
-  return (ret);
+
+  return ret;
 }
 
 #endif /* NET_USE_LWIP_DEFINITIONS */
 
 
-uint16_t net_get_port(net_sockaddr_t *addr)
+/**
+  * @brief  Function description
+  * @param  pAddr: a socket structure
+  * @retval the port value
+  */
+uint16_t net_get_port(const net_sockaddr_t *pAddr)
 {
-  return (NET_NTOHS(((net_sockaddr_in_t *)addr)->sin_port));
-}
-void net_set_port(net_sockaddr_t *addr, uint16_t port)
-{
-  ((net_sockaddr_in_t *)addr)->sin_port = NET_HTONS(port);
+  return NET_NTOHS(((const net_sockaddr_in_t *)pAddr)->sin_port);
 }
 
-net_ip_addr_t net_get_ip_addr(net_sockaddr_t *addr)
+/**
+  * @brief  Function description
+  * @param  pAddr: a socket structure
+  * @param  Port: the port value
+  * @retval
+  */
+void net_set_port(net_sockaddr_t *pAddr, uint16_t Port)
 {
-  net_ip_addr_t ipaddr;
-  uint32_t addrv;
-  addrv = ((net_sockaddr_in_t *)addr)->sin_addr.s_addr;
-  NET_COPY(ipaddr, addrv);
-  return ipaddr;
+#if (defined(NET_USE_IPV6) && (NET_USE_IPV6 == 1))
+  if (pAddr->sa_family == NET_AF_INET6)
+  {
+    ((net_sockaddr_in6_t *)pAddr)->sin6_port = NET_HTONS(Port);
+  }
+  else
+
+#endif /* NET_USE_IPV6 */
+  {
+    ((net_sockaddr_in_t *)pAddr)->sin_port = NET_HTONS(Port);
+  }
+}
+
+
+/**
+  * @brief  Function description
+  * @param  pAddr: a socket structure
+  * @retval IP address value
+  */
+net_ip_addr_t net_get_ip_addr(const net_sockaddr_t *pAddr)
+{
+  net_ip_addr_t ip_addr = {0};
+
+#if (defined(NET_USE_IPV6) && (NET_USE_IPV6 == 1))
+  if (pAddr->sa_family == NET_AF_INET6)
+  {
+    net_sockaddr_in6_t *const p_s_addr_in6 = (net_sockaddr_in6_t *)pAddr;
+
+    ip_addr.type = (u8_t)IPADDR_TYPE_V6;
+    inet6_addr_to_ip6addr(&ip_addr.u_addr.ip6, &p_s_addr_in6->sin6_addr);
+  }
+  else
+#endif /* NET_USE_IPV6 */
+  {
+    const net_sockaddr_in_t *const p_s_addr_in = (const net_sockaddr_in_t *)pAddr;
+
+#ifdef NET_USE_LWIP_DEFINITIONS
+    ip_addr.u_addr.ip4.addr = p_s_addr_in->sin_addr.s_addr;
+#else
+    ip_addr.addr = p_s_addr_in->sin_addr.s_addr;
+#endif /* NET_USE_LWIP_DEFINITIONS */
+  }
+
+  return ip_addr;
 }

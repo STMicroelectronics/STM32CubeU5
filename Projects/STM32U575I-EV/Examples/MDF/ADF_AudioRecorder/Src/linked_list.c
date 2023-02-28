@@ -82,6 +82,8 @@ HAL_StatusTypeDef MX_SAIQueue_Config(void)
   /* Insert NodeTx to Queue */
   ret |= HAL_DMAEx_List_InsertNode_Tail(&SAIQueue, &NodeTx);
 
+  ret |= HAL_DMAEx_List_SetCircularMode(&SAIQueue);
+
    return ret;
 }
 
@@ -121,6 +123,8 @@ HAL_StatusTypeDef MX_MDFQueue_Config(void)
 
   /* Insert NodeRx to Queue */
   ret |= HAL_DMAEx_List_InsertNode_Tail(&MDFQueue, &NodeRx);
+
+  ret |= HAL_DMAEx_List_SetCircularMode(&MDFQueue);
 
    return ret;
 }
