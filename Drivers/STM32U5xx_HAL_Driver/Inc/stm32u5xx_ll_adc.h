@@ -4443,7 +4443,7 @@ __STATIC_INLINE void LL_ADC_REG_SetSequencerLength(ADC_TypeDef *ADCx, uint32_t S
   }
   else
   {
-    SET_BIT(ADCx->CHSELR, SequencerNbRanks);
+    MODIFY_REG(ADCx->CHSELR, ADC_CHSELR_CHSEL,SequencerNbRanks);
   }
 }
 
