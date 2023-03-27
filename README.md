@@ -17,7 +17,7 @@ The **STM32CubeU5 MCU Package** projects are directly running on the STM32U5 ser
 
 ## Some middleware libraries are unavailable in this repository
 
-In this repository, the middleware libraries listed below **along with** the projects (demos, applications, and examples) using them, are **not available** as they (the middleware libraries) are subject to some restrictive license terms requiring the user's approval via a "click thu" procedure.
+In this repository, the middleware libraries listed below **along with** the projects (demos, applications, and examples) using them, are **not available** as they (the middleware libraries) are subject to some restrictive license terms requiring the user's approval via a "click thru" procedure.
 * `./Middlewares/ST/SE_STSAFEA_API`
 * `./Middlewares/ST/STSAFE_A1xx`
 
