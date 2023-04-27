@@ -294,10 +294,10 @@ static void MX_I2C1_Init(void)
   LL_I2C_DisableGeneralCall(I2C1);
   LL_I2C_EnableClockStretching(I2C1);
   I2C_InitStruct.PeripheralMode = LL_I2C_MODE_I2C;
-  I2C_InitStruct.Timing = 0x10F02A89;
+  I2C_InitStruct.Timing = I2C_TIMING;
   I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
   I2C_InitStruct.DigitalFilter = 0x0;
-  I2C_InitStruct.OwnAddress1 = 180;
+  I2C_InitStruct.OwnAddress1 = SLAVE_OWN_ADDRESS;
   I2C_InitStruct.TypeAcknowledge = LL_I2C_ACK;
   I2C_InitStruct.OwnAddrSize = LL_I2C_OWNADDRESS1_7BIT;
   LL_I2C_Init(I2C1, &I2C_InitStruct);
@@ -387,7 +387,7 @@ static void MX_I2C3_Init(void)
   LL_I2C_DisableGeneralCall(I2C3);
   LL_I2C_EnableClockStretching(I2C3);
   I2C_InitStruct.PeripheralMode = LL_I2C_MODE_I2C;
-  I2C_InitStruct.Timing = 0x10F02A89;
+  I2C_InitStruct.Timing = I2C_TIMING;
   I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
   I2C_InitStruct.DigitalFilter = 0;
   I2C_InitStruct.OwnAddress1 = 0;
