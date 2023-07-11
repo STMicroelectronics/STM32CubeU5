@@ -551,8 +551,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../Drivers/BSP/Components/veml6030/veml6030.c</PathWithFileName>
-      <FilenameWithoutPath>veml6030.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../Drivers/BSP/Components/veml3235/veml3235.c</PathWithFileName>
+      <FilenameWithoutPath>veml3235.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -563,8 +563,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../Drivers/BSP/Components/veml6030/veml6030_reg.c</PathWithFileName>
-      <FilenameWithoutPath>veml6030_reg.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../Drivers/BSP/Components/veml3235/veml3235_reg.c</PathWithFileName>
+      <FilenameWithoutPath>veml3235_reg.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

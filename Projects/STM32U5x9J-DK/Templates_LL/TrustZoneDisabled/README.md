@@ -48,6 +48,8 @@ To port a LL example to the targeted board:
 
   - This template runs on STM32U5A9xx devices.
 
+  - This template runs on STM32U5G9xx devices.
+
   - This template has been tested with STMicroelectronics STM32U5x9J-DK (MB1829B)
     boards and can be easily tailored to any other supported device
     and development board.

@@ -684,27 +684,19 @@ static int32_t vl53l5cx_poll_for_measurement(VL53L5CX_Object_t *pObj, uint32_t T
   uint32_t TickStart;
   uint8_t NewDataReady = 0;
 
-  if (pObj == NULL)
-  {
-    ret = VL53L5CX_INVALID_PARAM;
-  }
-  else
-  {
-    ret =  VL53L5CX_TIMEOUT;
-    TickStart = pObj->IO.GetTick();
+  ret =  VL53L5CX_TIMEOUT;
+  TickStart = pObj->IO.GetTick();
 
-    do
+  do
+  {
+    (void)vl53l5cx_check_data_ready(&pObj->Dev, &NewDataReady);
+
+    if (NewDataReady == 1U)
     {
-      (void)vl53l5cx_check_data_ready(&pObj->Dev, &NewDataReady);
-
-      if (NewDataReady == 1U)
-      {
-        ret = VL53L5CX_OK;
-        break;
-      }
-    } while ((pObj->IO.GetTick() - TickStart) < Timeout);
-
-  }
+      ret = VL53L5CX_OK;
+      break;
+    }
+  } while ((pObj->IO.GetTick() - TickStart) < Timeout);
 
   return ret;
 }
@@ -715,7 +707,7 @@ static int32_t vl53l5cx_get_result(VL53L5CX_Object_t *pObj, VL53L5CX_Result_t *p
   uint8_t i, j;
   uint8_t resolution;
   uint8_t target_status;
-  VL53L5CX_ResultsData data;
+  static VL53L5CX_ResultsData data;
 
   if ((pObj == NULL) || (pResult == NULL))
   {

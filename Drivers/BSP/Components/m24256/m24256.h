@@ -86,9 +86,9 @@ typedef struct
 {
   int32_t (*Init)(M24256_Object_t *);
   int32_t (*DeInit)(M24256_Object_t *);
-  int32_t (*Write)(const M24256_Object_t * , uint16_t, uint8_t *, uint16_t);
-  int32_t (*Read)(const M24256_Object_t * , uint16_t, uint8_t *, uint16_t);
-  int32_t (*IsReady)(const M24256_Object_t * , uint32_t);
+  int32_t (*Write)(const M24256_Object_t *, uint16_t, uint8_t *, uint16_t);
+  int32_t (*Read)(const M24256_Object_t *, uint16_t, uint8_t *, uint16_t);
+  int32_t (*IsReady)(const M24256_Object_t *, uint32_t);
 } M24256_EEPROM_Drv_t;
 /**
   * @}
@@ -111,9 +111,9 @@ typedef struct
 int32_t M24256_RegisterBusIO(M24256_Object_t *pObj, M24256_IO_t *pIO);
 int32_t M24256_Init(M24256_Object_t *pObj);
 int32_t M24256_DeInit(M24256_Object_t *pObj);
-int32_t M24256_Write(const M24256_Object_t * pObj, uint16_t Addr, uint8_t *pData, uint16_t Length);
-int32_t M24256_Read(const M24256_Object_t * pObj, uint16_t Addr, uint8_t *pData, uint16_t Length);
-int32_t M24256_IsReady(const M24256_Object_t * pObj, uint32_t Trials);
+int32_t M24256_Write(const M24256_Object_t *pObj, uint16_t Addr, uint8_t *pData, uint16_t Length);
+int32_t M24256_Read(const M24256_Object_t *pObj, uint16_t Addr, uint8_t *pData, uint16_t Length);
+int32_t M24256_IsReady(const M24256_Object_t *pObj, uint32_t Trials);
 
 
 extern M24256_EEPROM_Drv_t   M24256_EEPROM_Driver;

@@ -35,11 +35,6 @@ LL_I2C_InitTypeDef i2c_initstruct;
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 /**
-  * @brief I2C devices settings
-  */
-#define I2C_TIMING               0x10F02A89
-
-/**
   * @brief Define related to SlaveTransmit process
   */
 #define SLAVE_BYTE_TO_SEND       (uint8_t)0xA5
@@ -297,7 +292,7 @@ static void MX_I2C1_Init(void)
   I2C_InitStruct.Timing = 0x10F02A89;
   I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
   I2C_InitStruct.DigitalFilter = 0x0;
-  I2C_InitStruct.OwnAddress1 = 180;
+  I2C_InitStruct.OwnAddress1 = SLAVE_OWN_ADDRESS;
   I2C_InitStruct.TypeAcknowledge = LL_I2C_ACK;
   I2C_InitStruct.OwnAddrSize = LL_I2C_OWNADDRESS1_7BIT;
   LL_I2C_Init(I2C1, &I2C_InitStruct);

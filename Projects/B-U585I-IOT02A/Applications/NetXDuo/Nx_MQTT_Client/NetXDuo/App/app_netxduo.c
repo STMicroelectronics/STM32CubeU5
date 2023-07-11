@@ -266,7 +266,7 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
 
   /* set DHCP notification callback  */
   tx_semaphore_create(&Semaphore, "DHCP Semaphore", 0);
-#endif 
+#endif
   /* USER CODE END MX_NetXDuo_Init */
 
   return ret;
@@ -411,7 +411,7 @@ ULONG nx_secure_tls_session_time_function(void)
 }
 
 /* Callback to setup TLS parameters for secure MQTT connection. */
-UINT tls_setup_callback(NXD_MQTT_CLIENT *client_pt, 
+UINT tls_setup_callback(NXD_MQTT_CLIENT *client_pt,
                         NX_SECURE_TLS_SESSION *TLS_session_ptr,
                         NX_SECURE_X509_CERT *certificate_ptr,
                         NX_SECURE_X509_CERT *trusted_certificate_ptr)
@@ -440,7 +440,7 @@ UINT tls_setup_callback(NXD_MQTT_CLIENT *client_pt,
   }
 
   /* Allocate space for packet reassembly. */
-  ret = nx_secure_tls_session_packet_buffer_set(TLS_session_ptr, tls_packet_buffer, 
+  ret = nx_secure_tls_session_packet_buffer_set(TLS_session_ptr, tls_packet_buffer,
                                                 sizeof(tls_packet_buffer));
   if (ret != TX_SUCCESS)
   {
@@ -448,7 +448,7 @@ UINT tls_setup_callback(NXD_MQTT_CLIENT *client_pt,
   }
 
   /* allocate space for the certificate coming in from the remote host */
-  ret = nx_secure_tls_remote_certificate_allocate(TLS_session_ptr, certificate_ptr, 
+  ret = nx_secure_tls_remote_certificate_allocate(TLS_session_ptr, certificate_ptr,
                                                   tls_packet_buffer, sizeof(tls_packet_buffer));
   if (ret != TX_SUCCESS)
   {
@@ -456,8 +456,8 @@ UINT tls_setup_callback(NXD_MQTT_CLIENT *client_pt,
   }
 
   /* initialize Certificate to verify incoming server certificates. */
-  ret = nx_secure_x509_certificate_initialize(trusted_certificate_ptr, (UCHAR*)mosquitto_org_der, 
-                                              mosquitto_org_der_len, NX_NULL, 0, NULL, 0, 
+  ret = nx_secure_x509_certificate_initialize(trusted_certificate_ptr, (UCHAR*)mosquitto_org_der,
+                                              mosquitto_org_der_len, NX_NULL, 0, NULL, 0,
                                               NX_SECURE_X509_KEY_TYPE_NONE);
   if (ret != TX_SUCCESS)
   {
@@ -584,7 +584,7 @@ static VOID App_MQTT_Client_Thread_Entry(ULONG thread_input)
   mqtt_server_ip.nxd_ip_version = 4;
 
   /* Look up MQTT Server address. */
-  ret = nx_dns_host_by_name_get(&DnsClient, (UCHAR *)MQTT_BROKER_NAME, 
+  ret = nx_dns_host_by_name_get(&DnsClient, (UCHAR *)MQTT_BROKER_NAME,
                                 &mqtt_server_ip.nxd_ip_address.v4, DEFAULT_TIMEOUT);
 
   /* Check status.  */
@@ -596,7 +596,7 @@ static VOID App_MQTT_Client_Thread_Entry(ULONG thread_input)
 
   /* Create MQTT client instance. */
   ret = nxd_mqtt_client_create(&MqttClient, "my_client", CLIENT_ID_STRING, STRLEN(CLIENT_ID_STRING),
-                               &IpInstance, &AppPool, (VOID*)mqtt_client_stack, MQTT_CLIENT_STACK_SIZE, 
+                               &IpInstance, &AppPool, (VOID*)mqtt_client_stack, MQTT_CLIENT_STACK_SIZE,
                                MQTT_THREAD_PRIORTY, NX_NULL, 0);
 
   if (ret != NX_SUCCESS)
@@ -660,22 +660,27 @@ static VOID App_MQTT_Client_Thread_Entry(ULONG thread_input)
     tx_event_flags_get(&mqtt_app_flag, DEMO_ALL_EVENTS, TX_OR_CLEAR, &events, TX_WAIT_FOREVER);
 
     /* check event received */
-    if(events & DEMO_MESSAGE_EVENT)
+        if (events & DEMO_MESSAGE_EVENT)
     {
-      /* get message from the broker */
-      ret = nxd_mqtt_client_message_get(&MqttClient, topic_buffer, sizeof(topic_buffer), &topic_length,
-                                        message_buffer, sizeof(message_buffer), &message_length);
-      if(ret == NXD_MQTT_SUCCESS)
+      /* Get messages from the broker. */
+      do
       {
-        printf("Message %d received: TOPIC = %s, MESSAGE = %s\n", message_count + 1, topic_buffer, message_buffer);
+        ret = nxd_mqtt_client_message_get(&MqttClient, topic_buffer, sizeof(topic_buffer), &topic_length, message_buffer, sizeof(message_buffer), &message_length);
+        if (ret  == NXD_MQTT_SUCCESS)
+        {
+          printf("Message %d received: TOPIC = \"%s\", MESSAGE = \"%s\"\n", message_count + 1, topic_buffer, message_buffer);
+        }
       }
-      else
+      while (ret == NXD_MQTT_SUCCESS);
+
+      if ( ret != NXD_MQTT_NO_MESSAGE)
       {
         Error_Handler();
       }
     }
 
-    /* Decrement message numbre */
+
+    /* Decrement message number */
     remaining_msg -- ;
     message_count ++ ;
 
@@ -684,7 +689,7 @@ static VOID App_MQTT_Client_Thread_Entry(ULONG thread_input)
 
   }
 
-  /* Now unsubscribe the topic. */
+  /* Now unsubscribe from topic. */
   ret = nxd_mqtt_client_unsubscribe(&MqttClient, TOPIC_NAME, STRLEN(TOPIC_NAME));
 
   if (ret != NX_SUCCESS)

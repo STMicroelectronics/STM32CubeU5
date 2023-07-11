@@ -414,7 +414,7 @@ VOID USBX_APP_Host_Init(VOID)
   /* USER CODE END USB_Host_Init_PreTreatment_0 */
 
   /* Initialize the LL driver */
-  MX_USB_HCD_Init();
+  MX_USB_DRD_FS_HCD_Init();
 
   /* Register all the USB host controllers available in this system. */
   ux_host_stack_hcd_register(_ux_system_host_hcd_stm32_name,

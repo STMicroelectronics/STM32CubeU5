@@ -11,7 +11,7 @@ all the peripherals, initialize the Flash interface and the systick.
 Then the SystemClock_Config() function is used to configure the system clock (SYSCLK)
 to run at 160 MHz.
 
-DMA channelx is configured to transfer the contents of a 32-word data
+DMA channelx is configured to transfer the contents of a 8-word data
 buffer placed on SRAM memory to the reception buffer placed on SRAM.
 
 The start of transfers are triggered by software.

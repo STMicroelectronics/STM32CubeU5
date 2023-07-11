@@ -79,8 +79,9 @@ Graphics, Display, LCD, LTDC, DMA2D, DSI, MIPI Alliance, Ultra low power mode, M
 ### <b>Hardware and Software environment</b>
 
 -   This example runs on STM32U5A9xx devices without security enabled (TZEN=0).
+-   This example runs on STM32U5G9xx devices without security enabled (TZEN=0).
 
--   This example has been tested with STMicroelectronics STM32U5x9J-DK (MB1829B)  
+-   This example has been tested with STMicroelectronics STM32U5x9J-DK (MB1829)  
     board and can be easily tailored to any other supported device  
     and development board.
 

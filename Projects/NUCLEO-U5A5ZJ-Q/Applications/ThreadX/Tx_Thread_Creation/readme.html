@@ -38,8 +38,8 @@ during kernel start, at this stage, the application creates 3 threads
 with different priorities :</p>
 <ul>
 <li>tx_app_thread (Prio : 5; Preemption Threshold : 5)</li>
-<li>ThreadOne (Prio : 10; Preemption Threshold : 9)</li>
-<li>ThreadTwo (Prio : 10; Preemption Threshold : 10)</li>
+<li>ThreadOne (Prio : 10; Preemption Threshold : 10)</li>
+<li>ThreadTwo (Prio : 10; Preemption Threshold : 9)</li>
 </ul>
 <p>Once started, the <b>tx_app_thread</b> is suspended waiting for the
 event flag. The <em>ThreadOne</em> starts to toggle the

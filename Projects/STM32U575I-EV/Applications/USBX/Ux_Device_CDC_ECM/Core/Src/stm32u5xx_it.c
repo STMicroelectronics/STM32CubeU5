@@ -23,7 +23,6 @@
 #include "usbpd.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "fx_stm32_sd_driver.h"
 #include "stm32u5xx_ll_exti.h"
 /* USER CODE END Includes */
 

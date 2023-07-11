@@ -198,10 +198,10 @@ typedef struct
 #endif /* USE_STM32U575I_EVAL */
 
 /**
-  * @brief STM32U575I_EVAL BSP Driver version number V1.2.0
+  * @brief STM32U575I_EVAL BSP Driver version number V1.3.0
   */
 #define STM32U575I_EVAL_BSP_VERSION_MAIN   (uint32_t)(0x01U) /*!< [31:24] main version */
-#define STM32U575I_EVAL_BSP_VERSION_SUB1   (uint32_t)(0x02U) /*!< [23:16] sub1 version */
+#define STM32U575I_EVAL_BSP_VERSION_SUB1   (uint32_t)(0x03U) /*!< [23:16] sub1 version */
 #define STM32U575I_EVAL_BSP_VERSION_SUB2   (uint32_t)(0x00U) /*!< [15:8]  sub2 version */
 #define STM32U575I_EVAL_BSP_VERSION_RC     (uint32_t)(0x00U) /*!< [7:0]  release candidate */
 #define STM32U575I_EVAL_BSP_VERSION        ((STM32U575I_EVAL_BSP_VERSION_MAIN << 24)\
@@ -210,7 +210,7 @@ typedef struct
                                             |(STM32U575I_EVAL_BSP_VERSION_RC))
 
 #define STM32U575I_EVAL_BSP_BOARD_NAME  "STM32U575I-EV";
-#define STM32U575I_EVAL_BSP_BOARD_ID    "MB1550B";
+#define STM32U575I_EVAL_BSP_BOARD_ID    "MB1550";
 
 /** @defgroup STM32U575I_EVAL_LOW_LEVEL_LED LOW LEVEL LED
   * @{

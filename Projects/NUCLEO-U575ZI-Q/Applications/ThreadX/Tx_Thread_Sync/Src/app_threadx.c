@@ -130,7 +130,7 @@ void ThreadOne_Entry(ULONG thread_input)
 	      printf("** ThreadOne : SyncObject acquired ** \n");
 
 	      /*sync object acquired, toggle the LED_GREEN each 500ms for 5s */
-	      Led_Toggle(LED3_Pin, LED3_GPIO_Port, 10);
+	      Led_Toggle(LED1_Pin, LED1_GPIO_Port, 10);
 
 	      /*release the sync object */
 	      APP_SYNC_PUT(&SyncObject);
@@ -191,7 +191,7 @@ void ThreadTwo_Entry(ULONG thread_input)
       printf("** ThreadTwo : SyncObject acquired ** \n");
 
       /*Sync object acquired toggle the LED_RED each 500ms for 5s*/
-      Led_Toggle(LED1_Pin, LED1_GPIO_Port, 10);
+      Led_Toggle(LED3_Pin, LED3_GPIO_Port, 10);
 
       /*release the sync object*/
       APP_SYNC_PUT(&SyncObject);

@@ -111,7 +111,7 @@ extern "C" {
 #define HFP          1
 #define HACT         480
 #define LCD_WIDTH    480
-#define LCD_HEIGHT   481
+#define LCD_HEIGHT   480
 
 #define PIXEL_PER_LINE    768U
 #define BYTE_PER_PIXEL    4U   /* ARGB8888 */

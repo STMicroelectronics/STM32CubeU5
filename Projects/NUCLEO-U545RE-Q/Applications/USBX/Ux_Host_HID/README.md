@@ -94,10 +94,10 @@ Connectivity, USBX Host, USBPD, ThreadX, USB, HID, Mouse, Keyboard, UART, USART,
 ### <b>Hardware and Software environment</b>
 
   - This application runs on STM32U545xx devices
-  - This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision: MB1549-B03.
+  - This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision: MB1841-A02
     and can be easily tailored to any other supported device and development board.
 
-- NUCLEO-U545RE-Q Set-up
+- NUCLEO-U545RE-Q Set-up :
     - Plug the USB HID device into the NUCLEO-U545RE-Q board through 'Type C  to A-Female' cable to the connector:
       - CN3 : to use USB DRD IP in full speed (FS)
     - Connect ST-Link cable to the PC USB port to display data on the HyperTerminal.

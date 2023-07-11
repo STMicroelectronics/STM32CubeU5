@@ -21,6 +21,10 @@
 #define __USBPD_DPM_CORE_C
 
 /* Includes ------------------------------------------------------------------*/
+
+/* OS management */
+#include "usbpd_os_port_mx.h"
+
 #include "usbpd_core.h"
 #include "usbpd_trace.h"
 #include "usbpd_dpm_core.h"
@@ -30,9 +34,6 @@
 #if defined(_LOW_POWER)
 #include "usbpd_lowpower.h"
 #endif /* _LOW_POWER */
-
-/* OS management */
-#include "usbpd_os_port_mx.h"
 
 /* Private definition -------------------------------------------------------*/
 /* function import prototypes -----------------------------------------------*/

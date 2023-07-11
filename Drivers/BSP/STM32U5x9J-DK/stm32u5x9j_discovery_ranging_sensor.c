@@ -54,7 +54,8 @@ static RANGING_SENSOR_Capabilities_t VL53L5A1_RANGING_SENSOR_Cap;
   * @}
   */
 
-/** @defgroup STM32U5x9J_DISCOVERY_RANGING_SENSOR_Private_Functions_Prototypes RANGING SENSOR Private Functions Prototypes
+/** @defgroup STM32U5x9J_DISCOVERY_RANGING_SENSOR_Private_Functions_Prototypes RANGING SENSOR
+  *           Private Functions Prototypes
   * @{
   */
 static int32_t VL53L5CX_Probe(uint32_t Instance);
@@ -114,7 +115,7 @@ int32_t BSP_RANGING_SENSOR_DeInit(uint32_t Instance)
 /**
   * @brief Read the ranging sensor device ID.
   * @param Instance    Ranging sensor instance.
-  * @param pId    Pointer to the device ID.
+  * @param pId         Pointer to the device ID.
   * @retval BSP status
   */
 int32_t BSP_RANGING_SENSOR_ReadID(const uint32_t Instance, uint32_t *pId)
@@ -139,7 +140,7 @@ int32_t BSP_RANGING_SENSOR_ReadID(const uint32_t Instance, uint32_t *pId)
 
 /**
   * @brief Get the ranging sensor capabilities.
-  * @param Instance    Ranging sensor instance.
+  * @param Instance         Ranging sensor instance.
   * @param pCapabilities    Pointer to the ranging sensor capabilities.
   * @retval BSP status
   */
@@ -165,7 +166,7 @@ int32_t BSP_RANGING_SENSOR_GetCapabilities(const uint32_t Instance, RANGING_SENS
 
 /**
   * @brief Set the ranging configuration profile.
-  * @param Instance    Ranging sensor instance.
+  * @param Instance   Ranging sensor instance.
   * @param pConfig    Pointer to the new configuration profile to be applied.
   * @retval BSP status
   */
@@ -191,7 +192,7 @@ int32_t BSP_RANGING_SENSOR_ConfigProfile(const uint32_t Instance, RANGING_SENSOR
 
 /**
   * @brief Configure the Region of Interest of the ranging sensor.
-  * @param Instance    Ranging sensor instance.
+  * @param Instance   Ranging sensor instance.
   * @param pConfig    Pointer to the ROI configuration struct.
   * @retval BSP status
   */
@@ -221,7 +222,7 @@ int32_t BSP_RANGING_SENSOR_ConfigROI(const uint32_t Instance, RANGING_SENSOR_ROI
 
 /**
   * @brief Configure the IT event generation parameters.
-  * @param Instance    Ranging sensor instance.
+  * @param Instance   Ranging sensor instance.
   * @param pConfig    Pointer to the IT configuration struct.
   * @note The threshold modes can be used only if supported by the device (check the capabilities).
   * @retval BSP status
@@ -234,9 +235,7 @@ int32_t BSP_RANGING_SENSOR_ConfigIT(const uint32_t Instance, RANGING_SENSOR_ITCo
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
-  else if (VL53L5A1_RANGING_SENSOR_Drv->ConfigIT(
-             VL53L5A1_RANGING_SENSOR_CompObj[Instance],
-             pConfig) < 0)
+  else if (VL53L5A1_RANGING_SENSOR_Drv->ConfigIT(VL53L5A1_RANGING_SENSOR_CompObj[Instance], pConfig) < 0)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
@@ -250,7 +249,7 @@ int32_t BSP_RANGING_SENSOR_ConfigIT(const uint32_t Instance, RANGING_SENSOR_ITCo
 
 /**
   * @brief Get the last distance measurement information.
-  * @param Instance    Ranging sensor instance.
+  * @param Instance   Ranging sensor instance.
   * @param pResult    Pointer to the result struct.
   * @retval BSP status
   */
@@ -380,19 +379,15 @@ int32_t BSP_RANGING_SENSOR_GetAddress(const uint32_t Instance, uint32_t *pAddres
 /**
   * @brief Set the power mode.
   * @param Instance    Ranging sensor instance.
-  * @param PowerMode    New power mode to be entered.
+  * @param PowerMode   New power mode to be entered.
   * @retval BSP status
   */
 int32_t BSP_RANGING_SENSOR_SetPowerMode(uint32_t Instance, uint32_t PowerMode)
 {
   int32_t ret;
 
-  if (Instance >= RANGING_SENSOR_INSTANCES_NBR)
-  {
-    ret = BSP_ERROR_WRONG_PARAM;
-  }
-  else if ((PowerMode != RANGING_SENSOR_POWERMODE_SLEEP) &&
-           (PowerMode != RANGING_SENSOR_POWERMODE_WAKEUP))
+  if ((Instance >= RANGING_SENSOR_INSTANCES_NBR)
+      || ((PowerMode != RANGING_SENSOR_POWERMODE_SLEEP) && (PowerMode != RANGING_SENSOR_POWERMODE_WAKEUP)))
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -411,7 +406,7 @@ int32_t BSP_RANGING_SENSOR_SetPowerMode(uint32_t Instance, uint32_t PowerMode)
 /**
   * @brief Get the power mode.
   * @param Instance    Ranging sensor instance.
-  * @param pPowerMode    Pointer to the current power mode.
+  * @param pPowerMode  Pointer to the current power mode.
   * @retval BSP status
   */
 int32_t BSP_RANGING_SENSOR_GetPowerMode(const uint32_t Instance, uint32_t *pPowerMode)
@@ -437,7 +432,7 @@ int32_t BSP_RANGING_SENSOR_GetPowerMode(const uint32_t Instance, uint32_t *pPowe
 /**
   * @brief Perform a xtalk calibration.
   * @param Instance    Ranging sensor instance.
-  * @param Reflectance    Target reflectance in percent (range: 1 - 99 %).
+  * @param Reflectance Target reflectance in percent (range: 1 - 99 %).
   * @param Distance    Target distance in mm (range 600 - 3000 mm).
   * @note The recommended target reflectance value for Xtalk calibration is 3 %.
   * @retval BSP status
@@ -496,22 +491,16 @@ static int32_t VL53L5CX_Probe(uint32_t Instance)
     VL53L5A1_RANGING_SENSOR_Drv = (RANGING_SENSOR_Drv_t *) &VL53L5CX_RANGING_SENSOR_Driver;
     VL53L5A1_RANGING_SENSOR_CompObj[Instance] = &(VL53L5CXObj[Instance]);
 
-    if (VL53L5CX_ReadID(&(VL53L5CXObj[Instance]), &id) != VL53L5CX_OK)
+    if ((VL53L5CX_ReadID(&(VL53L5CXObj[Instance]), &id) != VL53L5CX_OK)
+        || (VL53L5A1_RANGING_SENSOR_Drv->Init(VL53L5A1_RANGING_SENSOR_CompObj[Instance]) != VL53L5CX_OK)
+        || (VL53L5A1_RANGING_SENSOR_Drv->GetCapabilities(VL53L5A1_RANGING_SENSOR_CompObj[Instance],
+                                                         &VL53L5A1_RANGING_SENSOR_Cap) != VL53L5CX_OK))
     {
       ret = BSP_ERROR_COMPONENT_FAILURE;
     }
     else if (id != VL53L5CX_ID)
     {
       ret = BSP_ERROR_UNKNOWN_COMPONENT;
-    }
-    else if (VL53L5A1_RANGING_SENSOR_Drv->Init(VL53L5A1_RANGING_SENSOR_CompObj[Instance]) != VL53L5CX_OK)
-    {
-      ret = BSP_ERROR_COMPONENT_FAILURE;
-    }
-    else if (VL53L5A1_RANGING_SENSOR_Drv->GetCapabilities(VL53L5A1_RANGING_SENSOR_CompObj[Instance],
-                                                          &VL53L5A1_RANGING_SENSOR_Cap) != VL53L5CX_OK)
-    {
-      ret = BSP_ERROR_COMPONENT_FAILURE;
     }
     else
     {
@@ -524,6 +513,7 @@ static int32_t VL53L5CX_Probe(uint32_t Instance)
 
 /**
   * @brief This functions permits to avoid HW reset due to an I2C bug on the device.
+  * @retval BSP status
   */
 static int32_t vl53l5cx_i2c_recover(void)
 {

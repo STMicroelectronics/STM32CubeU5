@@ -678,14 +678,14 @@
               <FilePath>../../../../../Drivers/BSP/Components/tcpp0203/tcpp0203_reg.c</FilePath>
             </File>
             <File>
-              <FileName>veml6030.c</FileName>
+              <FileName>veml3235.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../Drivers/BSP/Components/veml6030/veml6030.c</FilePath>
+              <FilePath>../../../../../Drivers/BSP/Components/veml3235/veml3235.c</FilePath>
             </File>
             <File>
-              <FileName>veml6030_reg.c</FileName>
+              <FileName>veml3235_reg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../Drivers/BSP/Components/veml6030/veml6030_reg.c</FilePath>
+              <FilePath>../../../../../Drivers/BSP/Components/veml3235/veml3235_reg.c</FilePath>
             </File>
           </Files>
         </Group>

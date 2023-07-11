@@ -6,8 +6,8 @@ It demonstrates how to create and destroy multiple threads using Azure RTOS Thre
 The main entry function tx_application_define() is then called by ThreadX during kernel start, at this stage, the application creates 3 threads with different priorities :
  
   - tx_app_thread (Prio : 5; Preemption Threshold : 5)
-  - ThreadOne (Prio : 10; Preemption Threshold : 9)
-  - ThreadTwo (Prio : 10; Preemption Threshold : 10)
+  - ThreadOne (Prio : 10; Preemption Threshold : 10)
+  - ThreadTwo (Prio : 10; Preemption Threshold : 9)
 
 Once started, the <b>tx_app_thread</b> is suspended waiting for the event flag. 
 The *ThreadOne* starts to toggle the *LED_GREEN* each 500ms and <b>ThreadTwo</b> cannot as its priority is less than the *ThreadOne* threshold. 

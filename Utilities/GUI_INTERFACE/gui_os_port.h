@@ -27,6 +27,8 @@ extern "C" {
 #include "tx_api.h"
 #elif defined(_RTOS)
 #if (osCMSIS >= 0x20000U)
+#include "FreeRTOS.h"
+#include "cmsis_os2.h"
 #include "task.h"
 #else
 #include "cmsis_os.h"
@@ -91,9 +93,11 @@ extern "C" {
 #define GUIOS_QUEUE_ID TX_QUEUE
 
 #else
-
+#if (osCMSIS < 0x20000U)
 #define GUIOS_QUEUE_ID osMessageQId
-
+#else
+#define GUIOS_QUEUE_ID osMessageQueueId_t
+#endif /* osCMSIS < 0x20000U */
 #endif /* USBPD_THREADX */
 
 /**
@@ -251,7 +255,12 @@ extern "C" {
 #define GUIOS_TASK_ID   TX_THREAD
 #else
 
+#if (osCMSIS < 0x20000U)
 #define GUIOS_TASK_ID   osThreadId
+#else
+#define GUIOS_TASK_ID   osThreadId_t
+#endif /* osCMSIS < 0x20000U */
+
 #endif /* USBPD_THREADX */
 
 /**

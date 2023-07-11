@@ -47,7 +47,10 @@
 #define PAGE_MAX_NUMBER_IN_BANK 31
 #elif defined(STM32U585xx) || defined(STM32U575xx)
 #define PAGE_MAX_NUMBER_IN_BANK 127
-#elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+#elif defined (STM32U595xx) || defined (STM32U599xx) \
+   || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
+   || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
+   || defined (STM32U5G7xx)
 #define PAGE_MAX_NUMBER_IN_BANK 255
 #endif
 
@@ -1038,7 +1041,10 @@ static void secure_internal_flash(uint32_t offset_start, uint32_t offset_end)
 #elif defined(STM32U585xx) || defined(STM32U575xx)
     volatile uint32_t *SecBB[8]= {&FLASH_S->SECBB1R1, &FLASH_S->SECBB1R2, &FLASH_S->SECBB1R3, &FLASH_S->SECBB1R4,
                                   &FLASH_S->SECBB2R1, &FLASH_S->SECBB2R2, &FLASH_S->SECBB2R3, &FLASH_S->SECBB2R4};
-#elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+#elif defined (STM32U595xx) || defined (STM32U599xx) \
+   || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
+   || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
+   || defined (STM32U5G7xx)
     volatile uint32_t *SecBB[16] = {&FLASH_S->SECBB1R1, &FLASH_S->SECBB1R2, &FLASH_S->SECBB1R3, &FLASH_S->SECBB1R4,
                                     &FLASH_S->SECBB1R5, &FLASH_S->SECBB1R6, &FLASH_S->SECBB1R7, &FLASH_S->SECBB1R8,
                                     &FLASH_S->SECBB2R1, &FLASH_S->SECBB2R2, &FLASH_S->SECBB2R3, &FLASH_S->SECBB2R4,

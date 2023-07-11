@@ -50,12 +50,12 @@ extern "C" {
 
   /* Threads configuration */
 #define PAYLOAD_SIZE                1544
-#define NX_PACKET_POOL_SIZE         (( PAYLOAD_SIZE + sizeof(NX_PACKET)) * 10)
+#define NX_PACKET_POOL_SIZE         (( PAYLOAD_SIZE + sizeof(NX_PACKET)) * 20)
 #define DEFAULT_MEMORY_SIZE         1024
 #define ARP_MEMORY_SIZE             DEFAULT_MEMORY_SIZE
 #define DEFAULT_MAIN_PRIORITY       10
-#define MQTT_PRIORITY               3
-#define SNTP_PRIORITY               5
+#define MQTT_PRIORITY               12
+#define SNTP_PRIORITY               12
 #define THREAD_MEMORY_SIZE          4 * DEFAULT_MEMORY_SIZE
 #define APP_QUEUE_SIZE              10
 
@@ -89,7 +89,7 @@ extern "C" {
 
 /* Define how often we check on SNTP server status. */
 #define CHECK_SNTP_UPDATES_TIMEOUT   (180 * NX_IP_PERIODIC_RATE)
-#define EPOCH_TIME_DIFF              2208988800     /* is equivalent to 70 years in sec 
+#define EPOCH_TIME_DIFF              2208988800     /* is equivalent to 70 years in sec
                                                        calculated with www.epochconverter.com/date-difference */
 
 #define NULL_ADDRESS                0

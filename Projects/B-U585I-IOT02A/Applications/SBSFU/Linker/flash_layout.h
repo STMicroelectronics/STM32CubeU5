@@ -75,7 +75,10 @@
 #define FLASH_B_SIZE                    (0x40000)    /* 256 KBytes */
 #elif defined(STM32U585xx) || defined(STM32U575xx)
 #define FLASH_B_SIZE                    (0x100000)   /* 1 MBytes*/
-#elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+#elif defined (STM32U595xx) || defined (STM32U599xx) \
+   || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
+   || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
+   || defined (STM32U5G7xx)
 #define FLASH_B_SIZE                    (0x200000)   /* 2 MBytes*/
 #else
 #error "No STM32U5 version Defined"
@@ -170,10 +173,13 @@
 #define FLASH_S_PARTITION_SIZE          (0x06000) /* 24K KB for S partition */
 #if !defined(MCUBOOT_PRIMARY_ONLY)
 #if defined(STM32U535xx) || defined(STM32U545xx)
-#define FLASH_NS_PARTITION_SIZE         (0x1E000) /* 122 KB for NS partition */
+#define FLASH_NS_PARTITION_SIZE         (0x1E000) /* 120 KB for NS partition */
 #elif defined(STM32U585xx) || defined(STM32U575xx)
 #define FLASH_NS_PARTITION_SIZE         (0xA0000) /* 640 KB for NS partition */
-#elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+#elif defined (STM32U595xx) || defined (STM32U599xx) \
+   || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
+   || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
+   || defined (STM32U5G7xx)
 #define FLASH_NS_PARTITION_SIZE         (0x128000) /* 1184 KB for NS partition */
 #endif
 #else
@@ -181,7 +187,10 @@
 #define FLASH_NS_PARTITION_SIZE         (0x52000) /* 335 KB for NS partition */
 #elif defined(STM32U585xx) || defined(STM32U575xx)
 #define FLASH_NS_PARTITION_SIZE         (0x140000) /* 1,25 MB for NS partition */
-#elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+#elif defined (STM32U595xx) || defined (STM32U599xx) \
+   || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
+   || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
+   || defined (STM32U5G7xx)
 #define FLASH_NS_PARTITION_SIZE         (0x2F0000) /* 3,08 MB for NS partition */
 #endif
 

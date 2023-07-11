@@ -201,16 +201,17 @@ vary depending on the variations in voltage and temperature.*/
 #define  USE_HAL_DCMI_REGISTER_CALLBACKS       0U /* DCMI register callback disabled      */
 #define  USE_HAL_DMA2D_REGISTER_CALLBACKS      0U /* DMA2D register callback disabled     */
 #define  USE_HAL_DSI_REGISTER_CALLBACKS        0U /* DSI register callback disabled       */
-#define  USE_HAL_ETH_REGISTER_CALLBACKS        0U /* ETH register callback disabled       */
 #define  USE_HAL_FDCAN_REGISTER_CALLBACKS      0U /* FDCAN register callback disabled     */
 #define  USE_HAL_FMAC_REGISTER_CALLBACKS       0U /* FMAC register callback disabled      */
 #define  USE_HAL_GFXMMU_REGISTER_CALLBACKS     0U /* GFXMMU register callback disabled    */
+#define  USE_HAL_GFXTIM_REGISTER_CALLBACKS     0U /* GFXTIM register callback disabled    */
 #define  USE_HAL_GPU2D_REGISTER_CALLBACKS      0U /* GPU2D register callback disabled     */
 #define  USE_HAL_HASH_REGISTER_CALLBACKS       0U /* HASH register callback disabled      */
 #define  USE_HAL_HCD_REGISTER_CALLBACKS        0U /* HCD register callback disabled       */
 #define  USE_HAL_I2C_REGISTER_CALLBACKS        0U /* I2C register callback disabled       */
 #define  USE_HAL_IWDG_REGISTER_CALLBACKS       0U /* IWDG register callback disabled      */
 #define  USE_HAL_IRDA_REGISTER_CALLBACKS       0U /* IRDA register callback disabled      */
+#define  USE_HAL_JPEG_REGISTER_CALLBACKS       0U /* JPEG register callback disabled      */
 #define  USE_HAL_LPTIM_REGISTER_CALLBACKS      0U /* LPTIM register callback disabled     */
 #define  USE_HAL_LTDC_REGISTER_CALLBACKS       0U /* LTDC register callback disabled      */
 #define  USE_HAL_MDF_REGISTER_CALLBACKS        0U /* MDF register callback disabled       */
@@ -351,6 +352,10 @@ vary depending on the variations in voltage and temperature.*/
 #ifdef HAL_IWDG_MODULE_ENABLED
 #include "stm32u5xx_hal_iwdg.h"
 #endif /* HAL_IWDG_MODULE_ENABLED */
+
+#ifdef HAL_JPEG_MODULE_ENABLED
+#include "stm32u5xx_hal_jpeg.h"
+#endif /* HAL_JPEG_MODULE_ENABLED */
 
 #ifdef HAL_LPTIM_MODULE_ENABLED
 #include "stm32u5xx_hal_lptim.h"

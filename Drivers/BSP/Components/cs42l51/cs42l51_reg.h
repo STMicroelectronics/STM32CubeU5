@@ -87,8 +87,8 @@ extern "C" {
 
 /************** Generic Function  *******************/
 
-typedef int32_t (*CS42L51_Write_Func)(void *, uint16_t, uint8_t *, uint16_t);
-typedef int32_t (*CS42L51_Read_Func)(void *, uint16_t, uint8_t *, uint16_t);
+typedef int32_t (*CS42L51_Write_Func)(const void *, uint16_t, uint8_t *, uint16_t);
+typedef int32_t (*CS42L51_Read_Func)(const void *, uint16_t, uint8_t *, uint16_t);
 
 typedef struct
 {
@@ -103,8 +103,8 @@ typedef struct
   * Bit Group Name: None
   * Permission    : W
   *******************************************************************************/
-int32_t cs42l51_write_reg(cs42l51_ctx_t *ctx, uint16_t reg, uint8_t *data, uint16_t length);
-int32_t cs42l51_read_reg(cs42l51_ctx_t *ctx, uint16_t reg, uint8_t *data, uint16_t length);
+int32_t cs42l51_write_reg(const cs42l51_ctx_t *ctx, uint16_t reg, uint8_t *data, uint16_t length);
+int32_t cs42l51_read_reg(const cs42l51_ctx_t *ctx, uint16_t reg, uint8_t *data, uint16_t length);
 
 #ifdef __cplusplus
 }

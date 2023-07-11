@@ -250,7 +250,7 @@ VOID USBX_APP_Device_Init(VOID)
   /* USER CODE END USB_Device_Init_PreTreatment_0 */
 
   /* initialize the device controller HAL driver */
-  MX_USB_PCD_Init();
+  MX_USB_DRD_FS_PCD_Init();
 
   /* USER CODE BEGIN USB_Device_Init_PreTreatment_1 */
   HAL_PCDEx_PMAConfig(&hpcd_USB_DRD_FS, 0x00, PCD_SNG_BUF, 0x14);

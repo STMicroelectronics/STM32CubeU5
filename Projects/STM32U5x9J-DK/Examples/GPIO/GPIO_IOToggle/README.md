@@ -36,7 +36,7 @@ System, GPIO, Input, Output, Alternate function, Push-pull, Toggle
 ### <b>Hardware and Software environment</b>
 
   - This example runs on STM32U5A9xx devices.
-
+  - This example runs on STM32U5G9xx devices.
   - This example has been tested with STM32U5x9J-DK board and can be
     easily tailored to any other supported device and development board.
 

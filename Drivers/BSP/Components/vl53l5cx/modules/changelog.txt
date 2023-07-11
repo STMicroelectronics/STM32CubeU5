@@ -114,8 +114,59 @@ Comments :
 
 Version : 1.3.3
 Date : 06/17/2022
+Comments : 
+- Added functions to disable internal charge pump. It allows power consumption reduction when AVDD is supplied in 3V3
+- Fixed Xtalk calibration that might failed in some conditions
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+Version : 1.3.4
+Date : 07/05/2022
 - Removed a check in function vl53l5cx_check_data_ready() that may remove valid frames
 - Updated internal sensor firmware
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+Version : 1.3.5
+Date : 10/11/2022
+- Fixed MISRA errors. No impact on code or performances, only coding rules.
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+Version : 1.3.6
+Date : 01/19/2023
+- Changed licence from DUAL to full BSD3
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+Version : 1.3.7
+Date : 04/17/2023
+- Fixed bug in motion indicator: configuration was not correctly sent when resolution was changed
+- Improved specular target filtering
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+Version : 1.3.8
+Date : 04/24/2023
+- Fixed stop function that may fail when multi-sensors where used
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+Version : 1.3.9
+Date : 05/29/2023
+- Improved glare filter tuning
 
 
 ---------------------------------------------------------------------------------------------------------------

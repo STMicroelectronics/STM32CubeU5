@@ -114,15 +114,11 @@ int main(void)
   /* Turn LED3 on */
   BSP_LED_Off(LED3);
 
-#if defined (CPU_SLEEP_MODE)
   /* Suspend Tick increment */
   HAL_SuspendTick();
-
+#if defined (CPU_SLEEP_MODE)
   /* Enter the CPU to SLEEP mode */
   HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI) ;
-
-  /* Resume Tick increment */
-  HAL_ResumeTick();
 #elif defined (SYSTEM_STOP0_MODE)
   /* Enter the SYSTEM to STOP 0 mode */
   HAL_PWR_EnterSTOPMode(PWR_MAINREGULATOR_ON, PWR_STOPENTRY_WFI);
@@ -146,11 +142,13 @@ int main(void)
   /* Enter the SYSTEM to SHUTDOWN mode */
   HAL_PWREx_EnterSHUTDOWNMode();
 #endif /* Power mode */
+  /* Resume Tick increment */
+  HAL_ResumeTick();
 
 #if (!defined (SYSTEM_STANDBY_MODE) || !defined (SYSTEM_SHUTDOWN_MODE))
   /* Reset the system after wake up */
   HAL_NVIC_SystemReset();
-#endif /* */
+#endif
 
   /* USER CODE END 2 */
 

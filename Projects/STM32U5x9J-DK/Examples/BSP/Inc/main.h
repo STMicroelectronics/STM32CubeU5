@@ -66,8 +66,8 @@ typedef struct
 extern __IO FlagStatus UserButtonPressed;
 extern uint8_t DrawBackround;
 extern uint8_t AutoMode;
-extern uint16_t x;
-extern uint16_t y;
+__IO extern uint16_t x;
+__IO extern uint16_t y;
 extern uint16_t A;
 extern uint16_t B;
 extern const unsigned char back[7986UL + 1];

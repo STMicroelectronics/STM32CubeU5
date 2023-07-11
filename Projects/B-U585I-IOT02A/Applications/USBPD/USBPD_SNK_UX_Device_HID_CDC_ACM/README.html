@@ -67,7 +67,7 @@ the report buffer through the ux_device_class_hid_event_set() API.</code></pre>
 <li><p>The user has to check the list of HID and the COM ports in Device Manager to find out the HID device and the COM port number that have been assigned (by OS) to the VCP interface.</p></li>
 </ul>
 <h4 id="expected-success-behavior"><b>Expected success behavior</b></h4>
-<p>When plugged to PC host, the STM32U585xx must be properly enumerated a composite device as an HID ,USB Serial device and an STlink Com port. During the enumeration phase, device provides host with the requested descriptors (Device, configuration, string). Those descriptors are used by host driver to identify the device capabilities. Once STM32U585xx USB device successfully completed the enumeration phase. Connect USB cable to Host , Open two hyperterminals (USB com port and UART com port) to send/receive data to/from host to/from device. When USER_Button is pressed, the device sneds a HID report. Each report sent should move the PC host machine mouse cursor by one step.</p>
+<p>When plugged to PC host, the STM32U585xx must be properly enumerated a composite device as an HID ,USB Serial device and an STlink Com port. During the enumeration phase, device provides host with the requested descriptors (Device, configuration, string). Those descriptors are used by host driver to identify the device capabilities. Once STM32U585xx USB device successfully completed the enumeration phase. Open two hyperterminals (USB com port and UART com port) to send/receive data to/from host to/from device. When USER_Button is pressed, the device sends a HID report. Each report sent should move the PC host machine mouse cursor by one step.</p>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
 <p>Host PC shows that USB device does not operate as designed (Enumeration failed, for example PC Cursor doesn’t move or Com port enumeration failed).</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
@@ -139,7 +139,7 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 </ul>
 <p><b>Note</b></p>
 <ul>
-<li>When we configure the VCP baudrate under 9600 the USART1 baudrate shall be set to 9600.</li>
+<li>If we configure the VCP baudrate under 9600 the USART1 baudrate shall be set to 9600.</li>
 <li>_TRACE and _GUI_INTERFACE compilation switches are now disabled to allow proper execution of CDC_ACM application over VCP. If user wants to use STM32CUbeMonitorUCPD, those 2 flags need to be enabled in project compilation options.</li>
 </ul>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>

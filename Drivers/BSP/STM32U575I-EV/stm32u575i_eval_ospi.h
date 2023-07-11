@@ -209,7 +209,7 @@ int32_t BSP_OSPI_NOR_RegisterMspCallbacks(uint32_t Instance, BSP_OSPI_Cb_t *Call
 int32_t BSP_OSPI_NOR_RegisterDefaultMspCallbacks(uint32_t Instance);
 #endif /* (USE_HAL_OSPI_REGISTER_CALLBACKS == 1) */
 int32_t BSP_OSPI_NOR_Read(uint32_t Instance, uint8_t *pData, uint32_t ReadAddr, uint32_t Size);
-int32_t BSP_OSPI_NOR_Write(uint32_t Instance, uint8_t *pData, uint32_t WriteAddr, uint32_t Size);
+int32_t BSP_OSPI_NOR_Write(uint32_t Instance, const uint8_t *pData, uint32_t WriteAddr, uint32_t Size);
 int32_t BSP_OSPI_NOR_Erase_Block(uint32_t Instance, uint32_t BlockAddress, BSP_OSPI_NOR_Erase_t BlockSize);
 int32_t BSP_OSPI_NOR_Erase_Chip(uint32_t Instance);
 int32_t BSP_OSPI_NOR_GetStatus(uint32_t Instance);

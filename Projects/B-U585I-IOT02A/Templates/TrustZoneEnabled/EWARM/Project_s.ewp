@@ -1183,10 +1183,10 @@
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\tcpp0203\tcpp0203_reg.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\veml6030\veml6030.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\veml3235\veml3235.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\veml6030\veml6030_reg.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\veml3235\veml3235_reg.c</name>
                 </file>
             </group>
         </group>

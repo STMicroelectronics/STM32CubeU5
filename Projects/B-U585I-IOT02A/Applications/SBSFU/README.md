@@ -6,7 +6,7 @@ header-includes: <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png
 ::: {.row}
 ::: {.col-sm-12 .col-lg-8}
 
-# <b>SBSFU Application Description</b>
+## <b>SBSFU Application Description</b>
 
 The SBSFU provides a Root of Trust solution including Secure Boot and Secure Firmware Update functionalities that is used before
 executing the application and provides an example of secure service (GPIO toggle) that is isolated from the non-secure application
@@ -57,31 +57,31 @@ microcontrollers" available from the STMicroelectronics microcontroller website 
 ## <b>Hardware and Software environment</b>
 
    - This example runs on STM32U585xx devices.
-   - It is possible to tailor it for STM32U5A5xx or STM32U545xx devices, by following these steps for each project of SBSFU application:
+   - It is possible to tailor it for STM32U5A5xx, STM32U5A9xx, STM32U545xx or STM32U5G9xx devices, by following these steps for each project of SBSFU application:
 
   For IAR IDE:
 
     1- Go to "Options" and select "General Options" then in the "Target" field Select "device" to choose your device.
 
-    2- Go to "Options" and select "C/C++ Compiler" then "Preprocessor" tab and change the compilation symbol (STM32U5A5xx or STM32U545xx instead of STM32U585xx).
+    2- Go to "Options" and select "C/C++ Compiler" then "Preprocessor" tab and change the compilation symbol (STM32U5A5xx, STM32U5A9xx, STM32U545xx or STM32U5G9xx instead of STM32U585xx).
 
-    3- Go to "Options" and select "Build Actions" then in the "Prebuild command line" field change the compilation symbol (STM32U5A5xx or STM32U545xx instead of STM32U585xx).
+    3- Go to "Options" and select "Build Actions" then in the "Prebuild command line" field change the compilation symbol (STM32U5A5xx, STM32U5A9xx, STM32U545xx or STM32U5G9xx instead of STM32U585xx).
 
   For STM32CubeIDE:
 
-    1- Go to "Properties" and select "C/C++ Build" tab then "Settings" and in the "Build Steps" tab change the command in "Pre-build steps" and change the compilation symbol (STM32U5A5xx or STM32U545xx instead of STM32U585xx).
+    1- Go to "Properties" and select "C/C++ Build" tab then "Settings" and in the "Build Steps" tab change the command in "Pre-build steps" and change the compilation symbol (STM32U5A5xx, STM32U5A9xx, STM32U545xx or STM32U5G9xx instead of STM32U585xx).
 
-    2- Go to "Properties" and select "C/C++ General" tab then "Paths an Symbols" and in the "Symbols" tab select symbols for "GNU C" and change the compilation flag (for example STM32U5A5xx or STM32U545xx instead of STM32U585xx)
+    2- Go to "Properties" and select "C/C++ General" tab then "Paths an Symbols" and in the "Symbols" tab select symbols for "GNU C" and change the compilation flag (STM32U5A5xx, STM32U5A9xx, STM32U545xx or STM32U5G9xx instead of STM32U585xx)
 
   For Keil IDE:
 
     1- Go to "Options" and select "Device" tab to choose your device.
 
-    2- Go to "Options" and select "C/C++ (AC6)" tab then in the "Define" field in "Preprocessor Symbols" and change the compilation symbol (STM32U5A5xx or STM32U545xx instead of STM32U585xx).
+    2- Go to "Options" and select "C/C++ (AC6)" tab then in the "Define" field in "Preprocessor Symbols" and change the compilation symbol (STM32U5A5xx, STM32U5A9xx, STM32U545xx or STM32U5G9xx instead of STM32U585xx).
 
-    3- Go to "Options" and select "Linker" tab then "Misc controls" and add this line "--predefine=-DSTM32U5A5xx" or "--predefine=-DSTM32U545xx" to define your target.
+    3- Go to "Options" and select "Linker" tab then "Misc controls" and add this line "--predefine=-DSTM32U5A5xx", "--predefine=-DSTM32U5A9xx", "--predefine=-DSTM32U545xx" or "--predefine=-DSTM32U5G9xx" to define your target.
 
-    4- Go to "Options" and in the "User" tab change "Run #2" command in the "Before Build/Rebuild" field and add the define of your platform ("-DSTM32U5A5xx" or "-DSTM32U545xx" for example).
+    4- Go to "Options" and in the "User" tab change "Run #2" command in the "Before Build/Rebuild" field and add the define of your platform ("-DSTM32U5A5xx", "-DSTM32U5A9xx", "-DSTM32U545xx" or "-DSTM32U5G9xx").
 
   - This example has been tested with STMicroelectronics B-U585I-IOT02A board and can be easily tailored to any other supported device and
 development board.
@@ -89,7 +89,7 @@ development board.
   - This example needs a terminal emulator supporting YModem protocol. (Tera Term for example, open source free software terminal emulator
 that can be downloaded from https://osdn.net/projects/ttssh2/).
 
-  - This example needs at least STM32CubeProgrammer v2.8.0 version, available on www.st.com.
+  - This example needs at least STM32CubeProgrammer v2.14.0 version, available on www.st.com.
 
 ## <b>Known limitations</b>
 

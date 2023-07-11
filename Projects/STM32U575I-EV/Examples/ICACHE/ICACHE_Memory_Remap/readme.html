@@ -23,14 +23,15 @@
 <ul>
 <li><p>How to execute code from a remapped region configured through the ICACHE HAL driver.</p></li>
 <li><p>This example describes how to remap the external SRAM to C-bus and execute code located in this memory.</p></li>
-<li><p>First the code turn on the <strong>Green led</strong> from external SRAM before remap, then will turn it off after memory remapping.</p></li>
+<li>First the code blink once the <strong>Green led</strong> from external SRAM before remap.</li>
+<li>After remapping to C-Bus, the <strong>Green led</strong> will blink infinitely.</li>
 <li><p>This project is targeted to run on STM32U575xx devices on STM32U575I-EV board from STMicroelectronics.</p></li>
 <li><p>At the beginning of the main program the HAL_Init() function is called to reset all the peripherals, initialize the Flash interface and the systick. The SystemClock_Config() function is used to configure the system clock for STM32U575ZI-Q Devices :</p>
 <p>The CPU at 160MHz</p></li>
 </ul>
 <p>STM32U575I-EV board’s LED can be used to monitor the transfers status:</p>
 <ul>
-<li><strong>Green LED is off</strong> when no error detected.</li>
+<li><strong>Green LED is blinking</strong> when code has been correctly executed before and after remapping.</li>
 <li><strong>Red LED is ON</strong> when any error occurred.</li>
 </ul>
 <h4 id="notes"><b>Notes</b></h4>

@@ -103,7 +103,7 @@ USB_PD_Lib, UCPD, Type C, USBPD
 It is mandatory to check that the Jumpers below are fitted:
 
   -  JP25             : UCPD_5V Jumper is fitted in order to provide Vbus 5V.
-  -  JP25             : 5V_EXT  Jumper is fitted, the board must be powred using the power adaptor not STLIK cable.
+  -  JP25             : 5V_EXT  Jumper is fitted, the board must be powred using the power adaptor not STLINK cable.
   -  JP6 (UCPD_SNK03) : Not fitted
   -  JP8 (UCPD_SRC)   : Fitted. This application initialize the type C port in source mode with only one PDO at 5V.
   -  JP14 and JP15    : To ensure the correct functionality of TCPP03 (Protection IC).
@@ -115,7 +115,7 @@ In order to make the program work, you must do the following :
  - Open your preferred toolchain
  - Rebuild all files and load your image into target memory
  - Run the application
- - Run CubeMx Monitor and open trace tools
+ - Run STM32CubeMonitor-UCPD and open trace tools
 
 <b>Note</b>
 

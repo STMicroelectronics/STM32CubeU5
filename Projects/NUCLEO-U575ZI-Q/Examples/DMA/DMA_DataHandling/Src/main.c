@@ -41,10 +41,10 @@ static const uint8_t aSRC_Buffer[BUFFER_SIZE] = {0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0
 static uint8_t aDEST_Buffer[BUFFER_SIZE * 2U];
 
 /* Right aligned zero padding data expected result buffer */
-static const uint8_t aRightAlign_ZeroPadding_ExpectedResult_Buffer[BUFFER_SIZE] = {0xB0, 0x00, 0xB1, 0x00, 0xB2, 0x00, 0xB3, 0x00};
+static const uint8_t aRightAlign_ZeroPadding_ExpectedResult_Buffer[BUFFER_SIZE * 2U] = {0xB0, 0x00, 0xB1, 0x00, 0xB2, 0x00, 0xB3, 0x00, 0xB4, 0x00, 0xB5, 0x00, 0xB6, 0x00, 0xB7, 0x00};
 
 /* Right aligned sign extend data expected result buffer */
-static const uint8_t aRightAlign_SignExtend_ExpectedResult_Buffer[BUFFER_SIZE]  = {0xB0, 0xFF, 0xB1, 0xFF, 0xB2, 0xFF, 0xB3, 0xFF};
+static const uint8_t aRightAlign_SignExtend_ExpectedResult_Buffer[BUFFER_SIZE * 2U]  = {0xB0, 0xFF, 0xB1, 0xFF, 0xB2, 0xFF, 0xB3, 0xFF, 0xB4, 0xFF, 0xB5, 0xFF, 0xB6, 0xFF, 0xB7, 0xFF};
 
 /* Right aligned left truncated data expected result buffer */
 static const uint8_t aRightAlign_LeftTrunc_ExpectedResult_Buffer[BUFFER_SIZE]   = {0xB0, 0xB2, 0xB4, 0xB6, 0x00, 0x00, 0x00, 0x00};
@@ -136,7 +136,7 @@ int main(void)
   BSP_LED_Init(LED3);
 
   /* Flush destination buffer */
-  memset((void *)aDEST_Buffer, 0U, BUFFER_SIZE);
+  memset((void *)aDEST_Buffer, 0U, BUFFER_SIZE * 2U);
   TransferCompleteDetected = 0U;
   TransferErrorDetected    = 0U;
   /* USER CODE END SysInit */
@@ -156,13 +156,13 @@ int main(void)
   }
 
   /* Check destination buffer */
-  if (Buffercmp((uint8_t*)aDEST_Buffer, (uint8_t*)aRightAlign_ZeroPadding_ExpectedResult_Buffer, BUFFER_SIZE) != 0U)
+  if (Buffercmp((uint8_t*)aDEST_Buffer, (uint8_t*)aRightAlign_ZeroPadding_ExpectedResult_Buffer,  BUFFER_SIZE * 2U) != 0U)
   {
     Error_Handler();
   }
 
   /* Flush destination buffer */
-  memset((void *)aDEST_Buffer, 0U, BUFFER_SIZE);
+  memset((void *)aDEST_Buffer, 0U, BUFFER_SIZE * 2U);
   TransferCompleteDetected = 0U;
   TransferErrorDetected    = 0U;
 
@@ -180,13 +180,13 @@ int main(void)
   }
 
   /* Check destination buffer */
-  if (Buffercmp((uint8_t*)aDEST_Buffer, (uint8_t*)aRightAlign_SignExtend_ExpectedResult_Buffer, BUFFER_SIZE) != 0U)
+  if (Buffercmp((uint8_t*)aDEST_Buffer, (uint8_t*)aRightAlign_SignExtend_ExpectedResult_Buffer, BUFFER_SIZE * 2U) != 0U)
   {
     Error_Handler();
   }
 
   /* Flush destination buffer */
-  memset((void *)aDEST_Buffer, 0U, BUFFER_SIZE);
+  memset((void *)aDEST_Buffer, 0U, BUFFER_SIZE * 2U);
   TransferCompleteDetected = 0U;
   TransferErrorDetected    = 0U;
 

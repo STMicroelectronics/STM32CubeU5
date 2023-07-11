@@ -33,7 +33,6 @@
   */
 
 #define HAL_MODULE_ENABLED
-
 /*#define HAL_ADC_MODULE_ENABLED */
 /*#define HAL_MDF_MODULE_ENABLED */
 /*#define HAL_COMP_MODULE_ENABLED */
@@ -46,7 +45,8 @@
 /*#define HAL_FMAC_MODULE_ENABLED */
 #define HAL_GTZC_MODULE_ENABLED
 /*#define HAL_HASH_MODULE_ENABLED */
-/*#define HAL_HRTIM_MODULE_ENABLED */
+/*#define HAL_HCD_MODULE_ENABLED */
+#define HAL_ICACHE_MODULE_ENABLED
 /*#define HAL_IRDA_MODULE_ENABLED */
 /*#define HAL_IWDG_MODULE_ENABLED */
 /*#define HAL_I2C_MODULE_ENABLED */
@@ -59,11 +59,10 @@
 /*#define HAL_OTFDEC_MODULE_ENABLED */
 /*#define HAL_PCD_MODULE_ENABLED */
 /*#define HAL_PKA_MODULE_ENABLED */
-/*#define HAL_QSPI_MODULE_ENABLED */
+/*#define HAL_OSPI_MODULE_ENABLED */
 /*#define HAL_RNG_MODULE_ENABLED */
 /*#define HAL_RTC_MODULE_ENABLED */
 /*#define HAL_SAI_MODULE_ENABLED */
-/*#define HAL_CRYP_MODULE_ENABLED */
 /*#define HAL_SD_MODULE_ENABLED */
 /*#define HAL_MMC_MODULE_ENABLED */
 /*#define HAL_SMARTCARD_MODULE_ENABLED */
@@ -78,10 +77,8 @@
 /*#define HAL_WWDG_MODULE_ENABLED */
 /*#define HAL_DCMI_MODULE_ENABLED */
 /*#define HAL_PSSI_MODULE_ENABLED */
-#define HAL_ICACHE_MODULE_ENABLED
 /*#define HAL_DCACHE_MODULE_ENABLED */
 /*#define HAL_PCD_MODULE_ENABLED */
-/*#define HAL_HCD_MODULE_ENABLED */
 #define HAL_GPIO_MODULE_ENABLED
 #define HAL_EXTI_MODULE_ENABLED
 #define HAL_DMA_MODULE_ENABLED
@@ -200,7 +197,6 @@
 #define  USE_HAL_DAC_REGISTER_CALLBACKS        0U /* DAC register callback disabled       */
 #define  USE_HAL_DCMI_REGISTER_CALLBACKS       0U /* DCMI register callback disabled      */
 #define  USE_HAL_DMA2D_REGISTER_CALLBACKS      0U /* DMA2D register callback disabled     */
-#define  USE_HAL_ETH_REGISTER_CALLBACKS        0U /* ETH register callback disabled       */
 #define  USE_HAL_FDCAN_REGISTER_CALLBACKS      0U /* FDCAN register callback disabled     */
 #define  USE_HAL_FMAC_REGISTER_CALLBACKS       0U /* FMAC register callback disabled      */
 #define  USE_HAL_HASH_REGISTER_CALLBACKS       0U /* HASH register callback disabled      */
@@ -208,6 +204,7 @@
 #define  USE_HAL_I2C_REGISTER_CALLBACKS        0U /* I2C register callback disabled       */
 #define  USE_HAL_IWDG_REGISTER_CALLBACKS       0U /* IWDG register callback disabled      */
 #define  USE_HAL_IRDA_REGISTER_CALLBACKS       0U /* IRDA register callback disabled      */
+#define  USE_HAL_JPEG_REGISTER_CALLBACKS       0U /* JPEG register callback disabled      */
 #define  USE_HAL_LPTIM_REGISTER_CALLBACKS      0U /* LPTIM register callback disabled     */
 #define  USE_HAL_LTDC_REGISTER_CALLBACKS       0U /* LTDC register callback disabled      */
 #define  USE_HAL_MDF_REGISTER_CALLBACKS        0U /* MDF register callback disabled       */

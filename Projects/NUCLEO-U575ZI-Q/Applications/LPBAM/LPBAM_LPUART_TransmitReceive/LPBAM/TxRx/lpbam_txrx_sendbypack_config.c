@@ -411,13 +411,13 @@ static void MX_LPTIM1_DeInit(void)
   {
     Error_Handler();
   }
-  /* UnRegister LPTIM msp callbacks */
-  if (HAL_LPTIM_UnRegisterCallback(&hlptim1, HAL_LPTIM_MSPDEINIT_CB_ID) != HAL_OK)
+  /* Init LPTIM1 peripheral */
+  if (HAL_LPTIM_DeInit(&hlptim1) != HAL_OK)
   {
     Error_Handler();
   }
-  /* Init LPTIM1 peripheral */
-  if (HAL_LPTIM_DeInit(&hlptim1) != HAL_OK)
+  /* UnRegister LPTIM msp callbacks */
+  if (HAL_LPTIM_UnRegisterCallback(&hlptim1, HAL_LPTIM_MSPDEINIT_CB_ID) != HAL_OK)
   {
     Error_Handler();
   }
@@ -589,13 +589,13 @@ static void MX_LPUART1_DeInit(void)
   {
     Error_Handler();
   }
-  /* UnRegister UART msp callbacks */
-  if (HAL_UART_UnRegisterCallback(&hlpuart1, HAL_UART_MSPDEINIT_CB_ID) != HAL_OK)
+  /* Init LPUART1 peripheral */
+  if (HAL_UART_DeInit(&hlpuart1) != HAL_OK)
   {
     Error_Handler();
   }
-  /* Init LPUART1 peripheral */
-  if (HAL_UART_DeInit(&hlpuart1) != HAL_OK)
+  /* UnRegister UART msp callbacks */
+  if (HAL_UART_UnRegisterCallback(&hlpuart1, HAL_UART_MSPDEINIT_CB_ID) != HAL_OK)
   {
     Error_Handler();
   }

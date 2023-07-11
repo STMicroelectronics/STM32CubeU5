@@ -354,7 +354,7 @@ uint8_t BSP_MMC_GetCardState(void)
   */
 uint8_t BSP_MMC_GetCardInfo(BSP_MMC_CardInfo *CardInfo)
 {
-  return (HAL_MMC_GetCardInfo(&uSdHandle, CardInfo));
+  return ((HAL_MMC_GetCardInfo(&uSdHandle, CardInfo) == HAL_OK) ? MMC_TRANSFER_OK : MMC_TRANSFER_BUSY);
 }
 
 /**

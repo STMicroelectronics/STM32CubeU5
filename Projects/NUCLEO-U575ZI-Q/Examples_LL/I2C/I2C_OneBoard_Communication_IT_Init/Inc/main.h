@@ -65,13 +65,6 @@ extern "C" {
 #define LED_BLINK_FAST  200
 #define LED_BLINK_SLOW  500
 #define LED_BLINK_ERROR 1000
-/**
-  * @brief Slave settings
-  */
-#define SLAVE_OWN_ADDRESS                       180 /* This value is a left shift of a real 7 bits of a slave address
-                                                        value which can find in a Datasheet as example: b0101101
-                                                        mean in uint8_t equivalent at 0x2D and this value can be
-                                                        seen in the OAR1 register in bits OA1[1:7] */
 
 /* USER CODE END EC */
 
@@ -94,6 +87,7 @@ void Error_Callback(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define SLAVE_OWN_ADDRESS 180
 #define USER_BUTTON_Pin LL_GPIO_PIN_13
 #define USER_BUTTON_GPIO_Port GPIOC
 #define USER_BUTTON_EXTI_IRQn EXTI13_IRQn

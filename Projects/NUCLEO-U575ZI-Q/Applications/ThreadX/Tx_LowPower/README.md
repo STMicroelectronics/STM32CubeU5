@@ -15,7 +15,7 @@ The main entry function tx_application_define() is then called by ThreadX during
 
 The tx_app_semaphore is released each time user press the user button.
 
-The TX_LOW_POWER_USER_ENTER is defined as App_ThreadX_LowPower_Enter(), that is called to make the system enter in stop mode using the HAL_EnterStopMode() API.
+The TX_LOW_POWER_USER_ENTER is defined as App_ThreadX_LowPower_Enter(), that is called to make the system enter in stop mode using the HAL_PWREx_EnterSTOP2Mode() API.
 
 The TX_LOW_POWER_USER_EXIT is defined as App_ThreadX_LowPower_Exit(), that is called to make the system exit from stop mode by reconfiguring the system clock.
 

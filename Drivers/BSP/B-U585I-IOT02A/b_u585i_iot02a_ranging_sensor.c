@@ -234,9 +234,7 @@ int32_t BSP_RANGING_SENSOR_ConfigIT(uint32_t Instance, RANGING_SENSOR_ITConfig_t
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
-  else if (VL53L5A1_RANGING_SENSOR_Drv->ConfigIT(
-             VL53L5A1_RANGING_SENSOR_CompObj[Instance],
-             pConfig) < 0)
+  else if (VL53L5A1_RANGING_SENSOR_Drv->ConfigIT(VL53L5A1_RANGING_SENSOR_CompObj[Instance], pConfig) < 0)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
@@ -387,12 +385,8 @@ int32_t BSP_RANGING_SENSOR_SetPowerMode(uint32_t Instance, uint32_t PowerMode)
 {
   int32_t ret;
 
-  if (Instance >= RANGING_SENSOR_INSTANCES_NBR)
-  {
-    ret = BSP_ERROR_WRONG_PARAM;
-  }
-  else if ((PowerMode != RANGING_SENSOR_POWERMODE_SLEEP) &&
-           (PowerMode != RANGING_SENSOR_POWERMODE_WAKEUP))
+  if ((Instance >= RANGING_SENSOR_INSTANCES_NBR)
+      || ((PowerMode != RANGING_SENSOR_POWERMODE_SLEEP) && (PowerMode != RANGING_SENSOR_POWERMODE_WAKEUP)))
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -496,22 +490,17 @@ static int32_t VL53L5CX_Probe(uint32_t Instance)
     VL53L5A1_RANGING_SENSOR_Drv = (RANGING_SENSOR_Drv_t *) &VL53L5CX_RANGING_SENSOR_Driver;
     VL53L5A1_RANGING_SENSOR_CompObj[Instance] = &(VL53L5CXObj[Instance]);
 
-    if (VL53L5CX_ReadID(&(VL53L5CXObj[Instance]), &id) != VL53L5CX_OK)
+    /* Check if the Component ID is correct, Initialize the sensor and Check the Sensor capabilities */
+    if ((VL53L5CX_ReadID(&(VL53L5CXObj[Instance]), &id) != VL53L5CX_OK)
+        || (VL53L5A1_RANGING_SENSOR_Drv->Init(VL53L5A1_RANGING_SENSOR_CompObj[Instance]) != VL53L5CX_OK)
+        || (VL53L5A1_RANGING_SENSOR_Drv->GetCapabilities(VL53L5A1_RANGING_SENSOR_CompObj[Instance],
+                                                         &VL53L5A1_RANGING_SENSOR_Cap) != VL53L5CX_OK))
     {
       ret = BSP_ERROR_COMPONENT_FAILURE;
     }
     else if (id != VL53L5CX_ID)
     {
       ret = BSP_ERROR_UNKNOWN_COMPONENT;
-    }
-    else if (VL53L5A1_RANGING_SENSOR_Drv->Init(VL53L5A1_RANGING_SENSOR_CompObj[Instance]) != VL53L5CX_OK)
-    {
-      ret = BSP_ERROR_COMPONENT_FAILURE;
-    }
-    else if (VL53L5A1_RANGING_SENSOR_Drv->GetCapabilities(VL53L5A1_RANGING_SENSOR_CompObj[Instance],
-                                                          &VL53L5A1_RANGING_SENSOR_Cap) != VL53L5CX_OK)
-    {
-      ret = BSP_ERROR_COMPONENT_FAILURE;
     }
     else
     {

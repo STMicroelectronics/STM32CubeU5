@@ -22,6 +22,7 @@
 #define GUI_API_C
 
 #include <stdlib.h>
+#include "gui_os_port.h"
 #include "usbpd_core.h"
 #include "gui_api.h"
 #include "bsp_gui.h"
@@ -39,7 +40,6 @@
 #else
 #include "usbpd_tcpci.h"
 #endif /* USBPD_TCPM_MODULE_ENABLED */
-#include "gui_os_port.h"
 
 /* generic hal function valid for all stm32 */
 extern uint32_t HAL_GetTick(void);

@@ -576,7 +576,7 @@ VOID USBX_APP_Host_Init(VOID)
 
   /* USER CODE BEGIN USB_Host_Init_PreTreatment1 */
   /* Initialize user_button to handle sending data */
-  BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
+  BSP_PB_Init(BUTTON_USER, BUTTON_MODE_EXTI);
 
   /* Start Application Message */
   USBH_UsrLog(" **** USB OTG FS HID CDC_ACM Host **** \n");
@@ -597,7 +597,7 @@ VOID USBX_APP_Host_Init(VOID)
   */
 void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
 {
-  if (GPIO_Pin == BUTTON_KEY_PIN)
+  if (GPIO_Pin == BUTTON_USER_PIN)
   {
     /* Set NEW_DATA_TO_SEND flag */
     if (tx_event_flags_set(&ux_app_EventFlag, NEW_DATA_TO_SEND, TX_OR) != TX_SUCCESS)

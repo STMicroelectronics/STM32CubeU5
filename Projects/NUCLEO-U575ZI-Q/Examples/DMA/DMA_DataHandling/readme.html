@@ -24,7 +24,7 @@
 <li><p>How to use the DMA Controller to do data handling between transferred data from the source and transfer to the destination through the HAL API.</p></li>
 <li><p>This project is targeted to run on STM32U575ZITxQ devices on NUCLEO-U575ZI-Q board from STMicroelectronics.</p></li>
 <li><p>At the beginning of the main program the HAL_Init() function is called to reset all the peripherals, initialize the Flash interface and the systick. Then the SystemClock_Config() function is used to configure the system clock (SYSCLK) to run at 160 MHz.</p></li>
-<li><p>DMA channelx is configured to transfer the contents of a 32-word data buffer placed on SRAM memory to the reception buffer placed on SRAM.</p></li>
+<li><p>DMA channelx is configured to transfer the contents of a 8-word data buffer placed on SRAM memory to the reception buffer placed on SRAM.</p></li>
 <li><p>The start of transfers are triggered by software.</p></li>
 <li>Right aligned / Zero padding data handling : DMA loads data from source memory by byte, then will align data to the right, pad zeros and write it to the destination memory by half word.</li>
 <li>Right aligned / Sign extended data handling : DMA loads data from source memory by byte, then will align data to the right, extend the sign bit and write it to the destination memory by half word.</li>

@@ -64,14 +64,14 @@ int32_t OSPI_NOR_demo (void)
   __IO uint8_t *data_ptr;
   uint32_t index;
   uint8_t mode;
-  
+
   /* Demo Hint */
   OSPI_NOR_SetHint();
-  
+
   for (mode = 0; mode < 3; mode++)
   {
     /********************************** PART 1 **********************************/
-    
+
     /*##-1- Configure the OSPI NOR device ######################################*/
     /* OSPI NOR device configuration */
     if (mode == 0)
@@ -93,7 +93,7 @@ int32_t OSPI_NOR_demo (void)
       sOSPI_NOR_Init.TransferRate  = BSP_OSPI_NOR_DTR_TRANSFER;
     }
     status = BSP_OSPI_NOR_Init(0, &sOSPI_NOR_Init);
-    
+
     if (status != BSP_ERROR_NONE)
     {
       printf("\r\nOSPI NOR Initialization : Failed");
@@ -104,7 +104,7 @@ int32_t OSPI_NOR_demo (void)
     else
     {
       printf("\r\nOSPI NOR Initialization : OK");
-      
+
       /*##-2- Read & check the OSPI NOR info ###################################*/
       /* Initialize the structure */
       sOSPI_NOR_Info.FlashSize             = (uint32_t)0x00;
@@ -116,10 +116,10 @@ int32_t OSPI_NOR_demo (void)
       sOSPI_NOR_Info.EraseSubSector1Number = (uint32_t)0x00;
       sOSPI_NOR_Info.ProgPageSize          = (uint32_t)0x00;
       sOSPI_NOR_Info.ProgPagesNumber       = (uint32_t)0x00;
-      
+
       /* Read the OSPI NOR memory info */
       BSP_OSPI_NOR_GetInfo(0,&sOSPI_NOR_Info);
-      
+
       /* Test the correctness */
       if((sOSPI_NOR_Info.FlashSize             != MX25UM51245G_FLASH_SIZE)   ||
          (sOSPI_NOR_Info.EraseSectorSize       != MX25UM51245G_SECTOR_64K)   ||
@@ -139,7 +139,7 @@ int32_t OSPI_NOR_demo (void)
       else
       {
         printf("\r\nOSPI NOR Get Info : OK");
-        
+
         /*##-3- Erase OSPI NOR memory ##########################################*/
         if(BSP_OSPI_NOR_Erase_Block(0, OSPI_NOR_WRITE_READ_ADDR, MX25UM51245G_ERASE_64K) != BSP_ERROR_NONE)
         {
@@ -151,11 +151,11 @@ int32_t OSPI_NOR_demo (void)
         else
         {
           printf("\r\nOSPI NOR Erase : OK");
-          
+
           /*##-4- OSPI NOR memory read/write access  ###########################*/
           /* Fill the buffer to write */
           Fill_Buffer(ospi_nor_aTxBuffer, OSPI_NOR_BUFFER_SIZE, 0xD20F);
-          
+
           /* Write data to the OSPI NOR memory */
           if(BSP_OSPI_NOR_Write(0, ospi_nor_aTxBuffer, OSPI_NOR_WRITE_READ_ADDR, OSPI_NOR_BUFFER_SIZE) != BSP_ERROR_NONE)
           {
@@ -167,7 +167,7 @@ int32_t OSPI_NOR_demo (void)
           else
           {
             printf("\r\nOSPI NOR Write : OK");
-            
+
             /* Read back data from the OSPI NOR memory */
             if(BSP_OSPI_NOR_Read(0, ospi_nor_aRxBuffer, OSPI_NOR_WRITE_READ_ADDR, OSPI_NOR_BUFFER_SIZE) != BSP_ERROR_NONE)
             {
@@ -179,11 +179,11 @@ int32_t OSPI_NOR_demo (void)
             else
             {
               printf("\r\nOSPI NOR Read : OK");
-              
-              /*##-5- Checking data integrity ##################################*/  
+
+              /*##-5- Checking data integrity ##################################*/
               uint16_t error = 0;
               for (uint16_t index = 0; index < OSPI_NOR_BUFFER_SIZE; index++)
-              {             
+              {
                 if (ospi_nor_aRxBuffer[index] != ospi_nor_aTxBuffer[index])
                 {
                   error ++;
@@ -202,7 +202,7 @@ int32_t OSPI_NOR_demo (void)
                 else
                 {
                   printf("\r\nOSPI NOR Compare : OK");
-                  
+
                   /*##-6- OSPI NOR memory in memory-mapped mode###################*/
                   if(BSP_OSPI_NOR_EnableMemoryMappedMode(0) != BSP_ERROR_NONE)
                   {
@@ -214,7 +214,7 @@ int32_t OSPI_NOR_demo (void)
                   else
                   {
                     printf("\r\nOSPI NOR Mem-Mapped Cfg : OK");
-                    
+
                     for(index = 0, data_ptr = (__IO uint8_t *)(OSPI_NOR_BASE_ADDR + OSPI_NOR_WRITE_READ_ADDR);
                         index < OSPI_NOR_BUFFER_SIZE; index++, data_ptr++)
                     {
@@ -242,12 +242,12 @@ int32_t OSPI_NOR_demo (void)
         }
       }
     }
-    
+
     /********************************** PART 2 **********************************/
-    
+
     /*##-1- Deconfigure the OSPI NOR device ####################################*/
     status = BSP_OSPI_NOR_DeInit(0);
-    
+
     if (status != BSP_ERROR_NONE)
     {
       printf("\r\nOSPI NOR De-Initialization : Failed");
@@ -258,11 +258,11 @@ int32_t OSPI_NOR_demo (void)
     else
     {
       printf("\r\nOSPI NOR De-Initialization : OK");
-      
+
       /*##-2- Reconfigure the OSPI NOR device ##################################*/
       /* QSPI device configuration */
       status = BSP_OSPI_NOR_Init(0, &sOSPI_NOR_Init);
-      
+
       if (status != BSP_ERROR_NONE)
       {
         printf("\r\nOSPI NOR Initialization : Failed");
@@ -273,7 +273,7 @@ int32_t OSPI_NOR_demo (void)
       else
       {
         printf("\r\nOSPI NOR Initialization : OK");
-        
+
         /*##-3- Erase OSPI NOR memory ##########################################*/
         if(BSP_OSPI_NOR_Erase_Block(0, 0, MX25UM51245G_ERASE_4K) != BSP_ERROR_NONE)
         {
@@ -284,7 +284,7 @@ int32_t OSPI_NOR_demo (void)
         }
         else
         {
-          
+
           /*##-4- Suspend erase OSPI NOR memory ################################*/
           if(BSP_OSPI_NOR_SuspendErase(0) != BSP_ERROR_NONE)
           {
@@ -298,7 +298,7 @@ int32_t OSPI_NOR_demo (void)
           {
             printf("\r\nOSPI NOR Erase : OK");
             printf("\r\nOSPI NOR Erase Suspend : OK");
-            
+
             /*##-6- Resume erase OSPI NOR memory ###############################*/
             if(BSP_OSPI_NOR_ResumeErase(0) != BSP_ERROR_NONE)
             {
@@ -310,14 +310,14 @@ int32_t OSPI_NOR_demo (void)
             else
             {
               printf("\r\nOSPI NOR Erase Resume : OK");
-              
+
               /*##-7- Check OSPI NOR memory status  ############################*/
               /* Wait the end of the current operation on memory side */
               do
               {
                 status = BSP_OSPI_NOR_GetStatus(0);
               } while((status != BSP_ERROR_NONE) && (status != BSP_ERROR_COMPONENT_FAILURE));
-              
+
               if(status != BSP_ERROR_NONE)
               {
                 printf("\r\nOSPI NOR Memory Status : Failed");
@@ -328,7 +328,7 @@ int32_t OSPI_NOR_demo (void)
               else
               {
                 printf("\r\nOSPI NOR Memory Status : OK");
-                
+
                 /*##-8- OSPI NOR memory read access  ###########################*/
                 /* Read back data from the OSPI NOR memory */
                 if(BSP_OSPI_NOR_Read(0, ospi_nor_aRxBuffer, 0, MX25UM51245G_SUBSECTOR_4K) != BSP_ERROR_NONE)
@@ -341,7 +341,7 @@ int32_t OSPI_NOR_demo (void)
                 else
                 {
                   printf("\r\nOSPI NOR Read : OK");
-                  
+
                   /*##-9- Checking data integrity ##############################*/
                   if(DataCmp(ospi_nor_aRxBuffer, 0xFF, MX25UM51245G_SUBSECTOR_4K) > 0)
                   {
@@ -363,13 +363,13 @@ int32_t OSPI_NOR_demo (void)
         }
       }
     }
-    
-    
+
+
     /********************************** PART 3 **********************************/
-    
+
     /*##-1- Deconfigure the OSPI NOR device ####################################*/
     status = BSP_OSPI_NOR_DeInit(0);
-    
+
     if (status != BSP_ERROR_NONE)
     {
       printf("\r\nOSPI NOR De-Initialization : Failed");
@@ -380,11 +380,11 @@ int32_t OSPI_NOR_demo (void)
     else
     {
       printf("\r\nOSPI NOR De-Initialization : OK");
-      
+
       /*##-2- Reconfigure the OSPI NOR device ##################################*/
       /* OSPI NOR device configuration */
       status = BSP_OSPI_NOR_Init(0, &sOSPI_NOR_Init);
-      
+
       if (status != BSP_ERROR_NONE)
       {
         printf("\r\nOSPI NOR Initialization : Failed");
@@ -395,7 +395,7 @@ int32_t OSPI_NOR_demo (void)
       else
       {
         printf("\r\nOSPI NOR Initialization : OK");
-        
+
         /*##-3- Erase OSPI NOR memory ##########################################*/
         if(BSP_OSPI_NOR_Erase_Block(0, OSPI_NOR_WRITE_READ_ADDR, MX25UM51245G_ERASE_4K) != BSP_ERROR_NONE)
         {
@@ -407,11 +407,11 @@ int32_t OSPI_NOR_demo (void)
         else
         {
           printf("\r\nOSPI NOR Erase : OK");
-          
+
           /*##-4- OSPI NOR memory write access #################################*/
           /* Fill the buffer to write */
           Fill_Buffer(ospi_nor_aTxBuffer, OSPI_NOR_BUFFER_SIZE, 0xD20F);
-          
+
           /* Write data to the OSPI NOR memory */
           if(BSP_OSPI_NOR_Write(0, ospi_nor_aTxBuffer, OSPI_NOR_WRITE_READ_ADDR, OSPI_NOR_BUFFER_SIZE) != BSP_ERROR_NONE)
           {
@@ -423,7 +423,7 @@ int32_t OSPI_NOR_demo (void)
           else
           {
             printf("\r\nOSPI NOR Write : OK");
-            
+
             /*##-5- OSPI NOR memory in memory-mapped mode#######################*/
             if(BSP_OSPI_NOR_EnableMemoryMappedMode(0) != BSP_ERROR_NONE)
             {
@@ -435,7 +435,7 @@ int32_t OSPI_NOR_demo (void)
             else
             {
               printf("\r\nOSPI NOR Mem-Mapped Cfg : OK");
-              
+
               for(index = 0, data_ptr = (__IO uint8_t *)(OSPI_NOR_BASE_ADDR + OSPI_NOR_WRITE_READ_ADDR);
                   index < OSPI_NOR_BUFFER_SIZE; index++, data_ptr++)
               {
@@ -448,7 +448,7 @@ int32_t OSPI_NOR_demo (void)
                   break;
                 }
               }
-              
+
               if(index == OSPI_NOR_BUFFER_SIZE)
               {
                 printf("\r\nOSPI NOR Mem-Mapped Access : OK");
@@ -460,13 +460,13 @@ int32_t OSPI_NOR_demo (void)
         }
       }
     }
-    
-    
+
+
     /********************************** PART 4 **********************************/
-    
+
     /*##-1- Deconfigure the OSPI NOR device ####################################*/
     status = BSP_OSPI_NOR_DeInit(0);
-    
+
     if (status != BSP_ERROR_NONE)
     {
       printf("\r\nOSPI NOR De-Initialization : Failed");
@@ -477,11 +477,11 @@ int32_t OSPI_NOR_demo (void)
     else
     {
       printf("\r\nOSPI NOR De-Initialization : OK");
-      
+
       /*##-2- Reconfigure the OSPI NOR device ##################################*/
       /* OSPI NOR device configuration */
       status = BSP_OSPI_NOR_Init(0, &sOSPI_NOR_Init);
-      
+
       if (status != BSP_ERROR_NONE)
       {
         printf("\r\nOSPI NOR Initialization : Failed");
@@ -492,7 +492,7 @@ int32_t OSPI_NOR_demo (void)
       else
       {
         printf("\r\nOSPI NOR Initialization : OK");
-        
+
         /*##-3- Erase OSPI NOR memory ##########################################*/
         if(BSP_OSPI_NOR_Erase_Chip(0) != BSP_ERROR_NONE)
         {
@@ -504,13 +504,13 @@ int32_t OSPI_NOR_demo (void)
         else
         {
           printf("\r\nOSPI NOR Chip Erase : OK");
-          
+
           /* Wait the end of the current operation on memory side */
           do
           {
             status = BSP_OSPI_NOR_GetStatus(0);
           } while((status != BSP_ERROR_NONE) && (status != BSP_ERROR_COMPONENT_FAILURE));
-          
+
           if(status != BSP_ERROR_NONE)
           {
             printf("\r\nOSPI NOR Memory Status : Failed");
@@ -521,7 +521,7 @@ int32_t OSPI_NOR_demo (void)
           else
           {
             printf("\r\nOSPI NOR Memory Status : OK");
-            
+
             for (index = 0; index < (MX25UM51245G_FLASH_SIZE / MX25UM51245G_SUBSECTOR_4K); index++)
             {
               /*##-4- OSPI NOR memory read access  ###############################*/
@@ -547,7 +547,7 @@ int32_t OSPI_NOR_demo (void)
                 }
               }
             }
-            
+
             if (index == (MX25UM51245G_FLASH_SIZE / MX25UM51245G_SUBSECTOR_4K))
             {
               printf("\r\nOSPI NOR Test : OK");
@@ -557,17 +557,17 @@ int32_t OSPI_NOR_demo (void)
         }
       }
     }
-    
+
     /* De-initialization in order to have correct configuration memory on next try */
     BSP_OSPI_NOR_DeInit(0);
-    
+
   }
 
-  BSP_LCD_DrawBitmap(0, 210, 0, (uint8_t *)back); 
-  
-  while ((TS_State.TouchX < 190));
-  while ((TS_State.TouchX > 300));
-  while ((TS_State.TouchY > 55));
+  BSP_LCD_DrawBitmap(0, 210, 0, (uint8_t *)back);
+
+  while (x < 190);
+  while (x > 300);
+  while (y > 55);
   DrawBackround = 0;
   return 0;
 }
@@ -581,14 +581,14 @@ int32_t OSPI_NOR_demo (void)
 static void OSPI_NOR_SetHint(void)
 {
   /* Clear the LCD */
-  BSP_LCD_FillRect(0, 0, 0, 480, 480, LCD_COLOR_BLACK);  
-  
+  BSP_LCD_FillRect(0, 0, 0, 480, 480, LCD_COLOR_BLACK);
+
   /* Display text */
   UTIL_LCD_SetFont(&Font24);
   UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLACK);
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_LIGHTBLUE);
-  UTIL_LCD_DisplayStringAt(0, 170, (uint8_t *)"Test of OSPI", CENTER_MODE); 
-  
+  UTIL_LCD_DisplayStringAt(0, 170, (uint8_t *)"Test of OSPI", CENTER_MODE);
+
   UTIL_LCD_DisplayStringAt(0, 230, (uint8_t *)"Please check the result", CENTER_MODE);
   UTIL_LCD_DisplayStringAt(0, 250, (uint8_t *)"on IO Terminal", CENTER_MODE);
 }

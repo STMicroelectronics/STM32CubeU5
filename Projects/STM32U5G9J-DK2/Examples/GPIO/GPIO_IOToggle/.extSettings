@@ -1,0 +1,9 @@
+[ProjectFiles]
+HeaderPath=..\..\..\..\..\..\Drivers\BSP\STM32U5G9J-DK2
+[Others]
+Define=
+HALModule=EXTI
+[Groups]
+Doc=../README.md;
+Drivers/BSP/STM32U5G9J-DK2=../../../../../../Drivers/BSP/STM32U5G9J-DK2/stm32u5g9j_discovery.c;
+Drivers/STM32U5xx_HAL_Driver=../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_exti.c;

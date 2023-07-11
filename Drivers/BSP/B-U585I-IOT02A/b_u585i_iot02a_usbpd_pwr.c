@@ -1487,7 +1487,10 @@ static void MX_ADC4_Init(void)
     /* Ensure VBUS measurements is properly stopped */
     if (HAL_ADC_Stop(&hadc4) != HAL_OK)
     {
-      while (1U == 1U) {};
+      for (;;)
+      {
+        /* infinite loop */
+      }
     }
     (void)HAL_ADC_Init(&hadc4);
   }
@@ -1498,7 +1501,10 @@ static void MX_ADC4_Init(void)
 
   if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
   {
-    while (1U == 1U) {};
+    for (;;)
+    {
+      /* infinite loop */
+    }
   }
   /* USER CODE BEGIN ADC4_Init 2 */
   if (HAL_ADCEx_Calibration_Start(&hadc4, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)

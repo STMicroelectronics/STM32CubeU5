@@ -324,7 +324,7 @@
                 </option>
                 <option>
                     <name>CCRequirePrototypes</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCDiagWarnAreErr</name>
@@ -362,7 +362,6 @@
                     <state>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc</state>
                     <state>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy</state>
                     <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/addons/dhcp</state>
-                    <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/addons/http</state>
                     <state>$PROJ_DIR$/../../../../../../Middlewares/ST/threadx/common/inc</state>
                     <state>$PROJ_DIR$/../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include</state>
                     <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/inc</state>
@@ -372,6 +371,7 @@
                     <state>$PROJ_DIR$/../../../../../../Drivers/BSP/Components/mx_wifi</state>
                     <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip</state>
                     <state>$PROJ_DIR$/../NetXDuo/Target</state>
+                    <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/addons/http</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1293,10 +1293,16 @@
                 </file>
             </group>
             <group>
-                <name>Addons HTTP Client</name>
-                <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\netxduo\addons\http\nxd_http_client.c</name>
-                </file>
+                <name>Network</name>
+                <group>
+                    <name>NetXDuo</name>
+                    <group>
+                        <name>Addons_HTTP_Client</name>
+                        <file>
+                            <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\netxduo\addons\http\nxd_http_client.c</name>
+                        </file>
+                    </group>
+                </group>
             </group>
             <group>
                 <name>NX Core</name>

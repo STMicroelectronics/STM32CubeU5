@@ -93,8 +93,8 @@ enum image_attributes
   /* config with secure on bank 2 */
   RE_BL2_SEC1_END = (FLASH_B_SIZE-0x1),
   RE_BL2_SEC2_START = 0x0,
-  RE_BL2_SEC2_END = (FLASH_AREA_0_OFFSET+SECURE_IMAGE_MAX_SIZE-FLASH_B_SIZE-0x1)
-#endif
+  RE_BL2_SEC2_END = (FLASH_AREA_0_OFFSET+SECURE_IMAGE_MAX_SIZE-FLASH_B_SIZE-0x1),
+#endif /* (FLASH_AREA_0_OFFSET+SECURE_IMAGE_MAX_SIZE) < (FLASH_B_SIZE) */
   RE_BL2_WRP_START = (FLASH_AREA_PERSO_OFFSET),
   RE_BL2_WRP_END = (FLASH_AREA_BL2_NOHDP_OFFSET+FLASH_AREA_BL2_NOHDP_SIZE-0x1),
   RE_BL2_HDP_END = (FLASH_AREA_BL2_NOHDP_OFFSET-0x1),
@@ -111,7 +111,7 @@ enum image_attributes
   RE_IMAGE_FLASH_LOADER_ADDRESS = (0x0),
   RE_LOADER_NS_CODE_SIZE = (0x0),
   RE_LOADER_IMAGE_S_CODE_SIZE = (0x0),
-  RE_LOADER_WRP_START = (0x7f),
+  RE_LOADER_WRP_START = (FLASH_B_SIZE - 0x1),
   RE_LOADER_WRP_END = (0x0),
   RE_EXT_LOADER = (0x0),
 #endif /* MCUBOOT_EXT_LOADER */
@@ -130,7 +130,10 @@ enum image_attributes
   RE_FLASH_PAGE_NBR = (0x1F)
 #elif defined(STM32U585xx) || defined(STM32U575xx)
   RE_FLASH_PAGE_NBR = (0x7F)
-#elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+#elif defined (STM32U595xx) || defined (STM32U599xx) \
+   || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
+   || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
+   || defined (STM32U5G7xx)
   RE_FLASH_PAGE_NBR = (0xFF)
 #endif
 };

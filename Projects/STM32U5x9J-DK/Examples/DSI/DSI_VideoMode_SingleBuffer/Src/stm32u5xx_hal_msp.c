@@ -154,6 +154,8 @@ void HAL_DSI_MspInit(DSI_HandleTypeDef* hdsi)
 
     /* Set the TX escape clock division factor */
     hdsi->Instance->CCR = 4;
+    
+    HAL_Delay(1);
 
     /* Switch to DSI PHY PLL clock */
     DSIPHYInitPeriph.PeriphClockSelection = RCC_PERIPHCLK_DSI;
@@ -207,56 +209,6 @@ void HAL_DSI_MspDeInit(DSI_HandleTypeDef* hdsi)
   /* USER CODE BEGIN DSI_MspDeInit 1 */
 
   /* USER CODE END DSI_MspDeInit 1 */
-  }
-
-}
-
-/**
-* @brief GFXMMU MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hgfxmmu: GFXMMU handle pointer
-* @retval None
-*/
-void HAL_GFXMMU_MspInit(GFXMMU_HandleTypeDef* hgfxmmu)
-{
-  if(hgfxmmu->Instance==GFXMMU)
-  {
-  /* USER CODE BEGIN GFXMMU_MspInit 0 */
-
-  /* USER CODE END GFXMMU_MspInit 0 */
-    /* Peripheral clock enable */
-    __HAL_RCC_GFXMMU_CLK_ENABLE();
-    /* GFXMMU interrupt Init */
-    HAL_NVIC_SetPriority(GFXMMU_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(GFXMMU_IRQn);
-  /* USER CODE BEGIN GFXMMU_MspInit 1 */
-
-  /* USER CODE END GFXMMU_MspInit 1 */
-  }
-
-}
-
-/**
-* @brief GFXMMU MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hgfxmmu: GFXMMU handle pointer
-* @retval None
-*/
-void HAL_GFXMMU_MspDeInit(GFXMMU_HandleTypeDef* hgfxmmu)
-{
-  if(hgfxmmu->Instance==GFXMMU)
-  {
-  /* USER CODE BEGIN GFXMMU_MspDeInit 0 */
-
-  /* USER CODE END GFXMMU_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_GFXMMU_CLK_DISABLE();
-
-    /* GFXMMU interrupt DeInit */
-    HAL_NVIC_DisableIRQ(GFXMMU_IRQn);
-  /* USER CODE BEGIN GFXMMU_MspDeInit 1 */
-
-  /* USER CODE END GFXMMU_MspDeInit 1 */
   }
 
 }

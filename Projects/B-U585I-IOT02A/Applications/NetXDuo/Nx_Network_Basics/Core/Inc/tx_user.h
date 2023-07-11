@@ -112,7 +112,7 @@
 
 #define TX_MINIMUM_STACK                400
 
-/* Determine if timer expirations (application timers, timeouts, and tx_thread_sleep calls
+/* Determine if timer expirations (application timers, timeouts, and tx_thread_sleep) calls
    should be processed within the a system timer thread or directly in the timer ISR.
    By default, the timer thread is used. When the following is defined, the timer expiration
    processing is done directly from the timer ISR, thereby eliminating the timer thread control

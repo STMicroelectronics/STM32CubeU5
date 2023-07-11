@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -37,7 +37,7 @@ extern "C" {
 #define HAL_CORDIC_MODULE_ENABLED
 #define HAL_CORTEX_MODULE_ENABLED
 #define HAL_CRC_MODULE_ENABLED
-/* #define HAL_CRYP_MODULE_ENABLED */
+#define HAL_CRYP_MODULE_ENABLED
 #define HAL_DAC_MODULE_ENABLED
 #define HAL_DCACHE_MODULE_ENABLED
 #define HAL_DCMI_MODULE_ENABLED
@@ -62,9 +62,9 @@ extern "C" {
 #define HAL_NOR_MODULE_ENABLED
 #define HAL_OPAMP_MODULE_ENABLED
 #define HAL_OSPI_MODULE_ENABLED
-/* #define HAL_OTFDEC_MODULE_ENABLED */
+#define HAL_OTFDEC_MODULE_ENABLED
 #define HAL_PCD_MODULE_ENABLED
-/* #define HAL_PKA_MODULE_ENABLED */
+#define HAL_PKA_MODULE_ENABLED
 #define HAL_PSSI_MODULE_ENABLED
 #define HAL_PWR_MODULE_ENABLED
 #define HAL_RAMCFG_MODULE_ENABLED
@@ -82,6 +82,7 @@ extern "C" {
 #define HAL_UART_MODULE_ENABLED
 #define HAL_USART_MODULE_ENABLED
 #define HAL_WWDG_MODULE_ENABLED
+#define HAL_XSPI_MODULE_ENABLED
 
 /* ########################## Oscillator Values adaptation ####################*/
 /**
@@ -131,8 +132,13 @@ extern "C" {
   */
 #if !defined  (LSI_VALUE)
 #define LSI_VALUE               32000UL    /*!< LSI Typical Value in Hz*/
-#endif /* LSI_VALUE */                     /*!< Value of the Internal Low Speed oscillator in Hz. The real value may 
-                                                vary depending on the variations in voltage and temperature.*/
+#endif /* LSI_VALUE */                     /*!< Value of the Internal Low Speed oscillator in Hz. The real value may
+vary depending on the variations in voltage and temperature.*/
+
+#if !defined  (LSI_STARTUP_TIMEOUT)
+#define LSI_STARTUP_TIMEOUT    130UL      /*!< Time out for LSI start up, in ms */
+#endif /* LSI_STARTUP_TIMEOUT */
+
 /**
   * @brief External Low Speed oscillator (LSE) value.
   *        This value is used by the UART, RTC HAL module to compute the system frequency
@@ -143,7 +149,7 @@ extern "C" {
 
 #if !defined  (LSE_STARTUP_TIMEOUT)
 #define LSE_STARTUP_TIMEOUT    5000UL     /*!< Time out for LSE start up, in ms */
-#endif /* HSE_STARTUP_TIMEOUT */
+#endif /* LSE_STARTUP_TIMEOUT */
 
 /**
   * @brief External clock source for SAI1 peripheral
@@ -190,7 +196,6 @@ extern "C" {
 #define  USE_HAL_DAC_REGISTER_CALLBACKS        0U /* DAC register callback disabled       */
 #define  USE_HAL_DCMI_REGISTER_CALLBACKS       0U /* DCMI register callback disabled      */
 #define  USE_HAL_DMA2D_REGISTER_CALLBACKS      0U /* DMA2D register callback disabled     */
-#define  USE_HAL_ETH_REGISTER_CALLBACKS        0U /* ETH register callback disabled       */
 #define  USE_HAL_FDCAN_REGISTER_CALLBACKS      0U /* FDCAN register callback disabled     */
 #define  USE_HAL_FMAC_REGISTER_CALLBACKS       0U /* FMAC register callback disabled      */
 #define  USE_HAL_HASH_REGISTER_CALLBACKS       0U /* HASH register callback disabled      */
@@ -223,6 +228,7 @@ extern "C" {
 #define  USE_HAL_UART_REGISTER_CALLBACKS       0U /* UART register callback disabled      */
 #define  USE_HAL_USART_REGISTER_CALLBACKS      0U /* USART register callback disabled     */
 #define  USE_HAL_WWDG_REGISTER_CALLBACKS       0U /* WWDG register callback disabled      */
+#define  USE_HAL_XSPI_REGISTER_CALLBACKS       0U /* XSPI register callback disabled      */
 
 /* ################## SPI peripheral configuration ########################## */
 
@@ -441,6 +447,10 @@ extern "C" {
 #ifdef HAL_MDF_MODULE_ENABLED
 #include "stm32u5xx_hal_mdf.h"
 #endif /* HAL_MDF_MODULE_ENABLED */
+
+#ifdef HAL_XSPI_MODULE_ENABLED
+#include "stm32u5xx_hal_xspi.h"
+#endif /* HAL_XSPI_MODULE_ENABLED */
 
 /* Exported macro ------------------------------------------------------------*/
 #ifdef  USE_FULL_ASSERT

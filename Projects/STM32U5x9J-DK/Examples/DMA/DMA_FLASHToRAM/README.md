@@ -46,7 +46,7 @@ System, DMA, Data Transfer, Memory to memory, Stream, Flash, RAM
 ### <b>Hardware and Software environment</b>
 
 -   This example runs on STM32U5A9xx Devices.
-
+-   This example runs on STM32U5G9xx Devices.
 -   This example has been tested with STMicroelectronics STM32U5x9J-DK
     board and can be easily tailored to any other supported device
     and development board.

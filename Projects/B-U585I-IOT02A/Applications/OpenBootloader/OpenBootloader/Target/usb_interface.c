@@ -17,14 +17,13 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "app_usbx_device.h"
+#include "app_azure_rtos.h"
+
 #include "main.h"
 
 #include "openbl_core.h"
-
 #include "usb_interface.h"
-
-#include "app_usbx_device.h"
-#include "app_azure_rtos.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/

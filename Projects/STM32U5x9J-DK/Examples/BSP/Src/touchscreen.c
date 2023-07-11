@@ -35,6 +35,8 @@
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 static void Touchscreen_SetHint(void);
+uint16_t xpos_touch =0 ;
+uint16_t ypos_touch =0 ;
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -46,16 +48,19 @@ int32_t Touchscreen_demo(void)
 {
   /* Demo Hint */
   Touchscreen_SetHint();
-  
+
   while (1)
   {
-    if ((x > 100) & (x < 335) & (y > 100) & (y < 285))
-    { 
-      BSP_LCD_FillRect(0, x, y, 15, 15, LCD_COLOR_DARKRED);
-      x = 0;
-      y = 0;         
+    xpos_touch = x;
+    ypos_touch = y;
+
+    if ((xpos_touch > 100) & (xpos_touch < 335) & (ypos_touch > 100) & (ypos_touch < 285))
+    {
+      BSP_LCD_FillRect(0, xpos_touch, ypos_touch, 15, 15, LCD_COLOR_DARKRED);
+      xpos_touch = 0;
+      ypos_touch = 0;
     }
-    else if ((x > 190) & (x < 300) & (y < 55))
+    else if ((xpos_touch > 190) & (xpos_touch < 300) & (ypos_touch < 55))
     {
       DrawBackround = 0;
       return 0;
@@ -72,19 +77,19 @@ static void Touchscreen_SetHint(void)
 {
   /* Clear the LCD */
   BSP_LCD_FillRect(0, 0, 0, 480, 480, LCD_COLOR_BLACK);
-  
+
   BSP_LCD_DrawBitmap(0, 210, 0, (uint8_t *)back);
 
   BSP_LCD_FillRect(0, 100, 100, 254, 200, LCD_COLOR_WHITE);
-  
+
   /* Display text */
   UTIL_LCD_SetFont(&Font24);
   UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLACK);
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_LIGHTBLUE);
-  UTIL_LCD_DisplayStringAt(0, 315, (uint8_t *)"Test of", CENTER_MODE); 
-  
-  UTIL_LCD_DisplayStringAt(0, 335, (uint8_t *)"TouchScreen", CENTER_MODE); 
-  
+  UTIL_LCD_DisplayStringAt(0, 315, (uint8_t *)"Test of", CENTER_MODE);
+
+  UTIL_LCD_DisplayStringAt(0, 335, (uint8_t *)"TouchScreen", CENTER_MODE);
+
   HAL_Delay(500);
 
 }

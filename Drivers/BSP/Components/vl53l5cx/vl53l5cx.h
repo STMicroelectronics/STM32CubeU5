@@ -62,7 +62,7 @@ extern "C" {
 #define VL53L5CX_PROFILE_8x8_CONTINUOUS        (3U)
 #define VL53L5CX_PROFILE_8x8_AUTONOMOUS        (4U)
 
-/* vl53l5cx threshold/interrupt criterias */
+/* vl53l5cx threshold/interrupt criteria */
 #define VL53L5CX_IT_DEFAULT           (0xFFU) /*!< IT if new measurement is ready (thresholds are not considered) */
 #define VL53L5CX_IT_IN_WINDOW         (VL53L5CX_IN_WINDOW) /*!< IT if distance > HighThreshold */
 #define VL53L5CX_IT_OUT_OF_WINDOW     (VL53L5CX_OUT_OF_WINDOW) /*!< IT if distance < LowThreshold OR distance > HighThreshold */
@@ -93,7 +93,6 @@ extern "C" {
 typedef int32_t (*VL53L5CX_Init_Func)(void);
 typedef int32_t (*VL53L5CX_DeInit_Func)(void);
 typedef int32_t (*VL53L5CX_GetTick_Func)(void);
-typedef int32_t (*VL53L5CX_Delay_Func)(uint32_t);
 typedef int32_t (*VL53L5CX_WriteReg_Func)(uint16_t, uint16_t, uint8_t *, uint16_t);
 typedef int32_t (*VL53L5CX_ReadReg_Func)(uint16_t, uint16_t, uint8_t *, uint16_t);
 

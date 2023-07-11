@@ -42,7 +42,7 @@
   * Input         : Register Address, length of buffer
   * Output        : data Read
   *******************************************************************************/
-int32_t cs42l51_read_reg(cs42l51_ctx_t *ctx, uint16_t reg, uint8_t *data, uint16_t length)
+int32_t cs42l51_read_reg(const cs42l51_ctx_t *ctx, uint16_t reg, uint8_t *data, uint16_t length)
 {
   return ctx->ReadReg(ctx->handle, reg, data, length);
 }
@@ -54,7 +54,7 @@ int32_t cs42l51_read_reg(cs42l51_ctx_t *ctx, uint16_t reg, uint8_t *data, uint16
   * Input         : Register Address, data to be written, length of buffer
   * Output        : None
   *******************************************************************************/
-int32_t cs42l51_write_reg(cs42l51_ctx_t *ctx, uint16_t reg, uint8_t *data, uint16_t length)
+int32_t cs42l51_write_reg(const cs42l51_ctx_t *ctx, uint16_t reg, uint8_t *data, uint16_t length)
 {
   return ctx->WriteReg(ctx->handle, reg, data, length);
 }

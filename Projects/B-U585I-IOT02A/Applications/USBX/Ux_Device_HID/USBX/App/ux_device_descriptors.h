@@ -44,7 +44,7 @@ extern "C" {
 #define USBD_HID_CLASS_ACTIVATED                       1U
 #define USBD_HID_MOUSE_ACTIVATED                       1U
 
-#define USBD_CONFIG_MAXPOWER                           25U
+#define USBD_CONFIG_MAXPOWER                           0U
 #define USBD_COMPOSITE_USE_IAD                         0U
 #define USBD_DEVICE_FRAMEWORK_BUILDER_ENABLED          1U
 

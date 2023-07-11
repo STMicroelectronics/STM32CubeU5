@@ -214,11 +214,6 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/addons/dns/nxd_dns.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/NetXDuo/Addons HTTP Client/nxd_http_client.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/addons/http/nxd_http_client.c</locationURI>
-		</link>
-		<link>
 			<name>Middlewares/NetXDuo/Addons mDNS/nxd_mdns.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/addons/mdns/nxd_mdns.c</locationURI>
@@ -2967,6 +2962,16 @@
 			<name>Middlewares/ThreadX/Core/tx_thread_interrupt_control.S</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/threadx/ports/cortex_m33/gnu/src/tx_thread_interrupt_control.S</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/ThreadX/Core/tx_thread_interrupt_disable.S</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/threadx/ports/cortex_m33/gnu/src/tx_thread_interrupt_disable.S</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/ThreadX/Core/tx_thread_interrupt_restore.S</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/threadx/ports/cortex_m33/gnu/src/tx_thread_interrupt_restore.S</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/ThreadX/Core/tx_thread_preemption_change.c</name>

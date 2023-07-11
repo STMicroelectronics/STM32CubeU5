@@ -18,7 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "gfxmmu_lut.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -43,8 +42,6 @@ DMA2D_HandleTypeDef hdma2d;
 
 DSI_HandleTypeDef hdsi;
 
-GFXMMU_HandleTypeDef hgfxmmu;
-
 LTDC_HandleTypeDef hltdc;
 
 /* USER CODE BEGIN PV */
@@ -56,12 +53,6 @@ static const uint32_t * Images[] =
   life_augmented_argb8888,
 };
 
-#if defined(__ICCARM__)
-#pragma location =  0x200D0000
-#elif defined ( __GNUC__ )
-__attribute__((section (".RAM1_D")))
-#endif
-ALIGN_32BYTES (uint32_t   PhysFrameBuff[184320]);
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -73,7 +64,6 @@ static void MX_DMA2D_Init(void);
 static void MX_ICACHE_Init(void);
 static void MX_DSIHOST_DSI_Init(void);
 static void MX_LTDC_Init(void);
-static void MX_GFXMMU_Init(void);
 /* USER CODE BEGIN PFP */
 static uint32_t SetPanelConfig(void);
 static void CopyBuffer(uint32_t *pSrc, uint32_t *pDst, uint16_t x, uint16_t y, uint16_t xsize, uint16_t ysize);
@@ -131,17 +121,14 @@ int main(void)
   MX_ICACHE_Init();
   MX_DSIHOST_DSI_Init();
   MX_LTDC_Init();
-  MX_GFXMMU_Init();
   /* USER CODE BEGIN 2 */
   if(SetPanelConfig() != 0)
   {
     Error_Handler();
   }
-  
-  
-  
+
   /* Prepare area to display on LCD */
-  
+
   /* Set UTIL_LCD functions */
   LCD_Driver.DrawBitmap  = 0;
   LCD_Driver.FillRGBRect = LCD_FillRGBRect;
@@ -154,16 +141,16 @@ int main(void)
   LCD_Driver.GetYSize    = LCD_GetYSize;
   LCD_Driver.SetLayer    = 0;
   LCD_Driver.GetFormat   = LCD_GetFormat;
-  
+
   UTIL_LCD_SetFuncDriver(&LCD_Driver);
-  
+
   /* Clear LCD */
   UTIL_LCD_Clear(UTIL_LCD_COLOR_BLACK);
-  
+
   UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLUE);
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_WHITE);
   UTIL_LCD_SetFont(&Font20);
-  
+
   /* Display title */
   UTIL_LCD_FillRect(0, 70, LCD_WIDTH, 40, UTIL_LCD_COLOR_BLUE);
   UTIL_LCD_DisplayStringAt(0, 80, (uint8_t *) "DSI_VideoMode_SingleBuffer", CENTER_MODE);
@@ -175,12 +162,12 @@ int main(void)
   while (1)
   {
     CopyBuffer((uint32_t *)Images[ImageIndex ++], (uint32_t *)LCD_FRAME_BUFFER, 67, 140, IMAGE_WIDTH, IMAGE_HEIGHT);
-    
+
     if(ImageIndex >= 2)
     {
       ImageIndex = 0;
     }
-    
+
     /* Wait some time before switching to next stage */
     HAL_Delay(2000);
     /* USER CODE END WHILE */
@@ -445,44 +432,6 @@ static void MX_DSIHOST_DSI_Init(void)
 }
 
 /**
-  * @brief GFXMMU Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GFXMMU_Init(void)
-{
-
-  /* USER CODE BEGIN GFXMMU_Init 0 */
-
-  /* USER CODE END GFXMMU_Init 0 */
-
-  /* USER CODE BEGIN GFXMMU_Init 1 */
-
-  /* USER CODE END GFXMMU_Init 1 */
-  hgfxmmu.Instance = GFXMMU;
-  hgfxmmu.Init.BlocksPerLine = GFXMMU_192BLOCKS;
-  hgfxmmu.Init.DefaultValue = 0xFFFFFFFF;
-  hgfxmmu.Init.Buffers.Buf0Address = (uint32_t) PhysFrameBuff;
-  hgfxmmu.Init.Buffers.Buf1Address = 0;
-  hgfxmmu.Init.Buffers.Buf2Address = 0;
-  hgfxmmu.Init.Buffers.Buf3Address = 0;
-  hgfxmmu.Init.CachePrefetch.Activation = DISABLE;
-  hgfxmmu.Init.Interrupts.Activation = ENABLE;
-  if (HAL_GFXMMU_Init(&hgfxmmu) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_GFXMMU_ConfigLut(&hgfxmmu, GFXMMU_LUT_FIRST, GFXMMU_LUT_SIZE, (uint32_t)gfxmmu_lut_config) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN GFXMMU_Init 2 */
-
-  /* USER CODE END GFXMMU_Init 2 */
-
-}
-
-/**
   * @brief ICACHE Initialization Function
   * @param None
   * @retval None
@@ -560,8 +509,8 @@ static void MX_LTDC_Init(void)
   pLayerCfg.Alpha0 = 0;
   pLayerCfg.BlendingFactor1 = LTDC_BLENDING_FACTOR1_CA;
   pLayerCfg.BlendingFactor2 = LTDC_BLENDING_FACTOR2_CA;
-  pLayerCfg.FBStartAdress = GFXMMU_VIRTUAL_BUFFER0_BASE;
-  pLayerCfg.ImageWidth = PIXEL_PERLINE;
+  pLayerCfg.FBStartAdress = LCD_FRAME_BUFFER;
+  pLayerCfg.ImageWidth = LCD_WIDTH;
   pLayerCfg.ImageHeight = LCD_HEIGHT;
   pLayerCfg.Backcolor.Blue = 0;
   pLayerCfg.Backcolor.Green = 0;
@@ -624,10 +573,10 @@ static void MX_GPIO_Init(void)
 static void CopyBuffer(uint32_t *pSrc, uint32_t *pDst, uint16_t x, uint16_t y, uint16_t xsize, uint16_t ysize)
 {
 
-  uint32_t destination = (uint32_t)pDst + (y * PIXEL_PERLINE + x) * 4;
+  uint32_t destination = (uint32_t)pDst + (y * 480 + x) * 4;
   uint32_t source      = (uint32_t)pSrc;
 
-  hdma2d.Init.OutputOffset = PIXEL_PERLINE - xsize;
+  hdma2d.Init.OutputOffset = 480 - xsize;
 
 
   /* DMA2D Initialization */
@@ -648,7 +597,7 @@ static void CopyBuffer(uint32_t *pSrc, uint32_t *pDst, uint16_t x, uint16_t y, u
   */
 static uint32_t SetPanelConfig(void)
 {
-  
+
   if(HAL_DSI_Start(&hdsi) != HAL_OK) return 1;
 
   /* CMD Mode */
@@ -715,13 +664,13 @@ static uint32_t SetPanelConfig(void)
   HAL_Delay(120);
 
   /* Clear LCD_FRAME_BUFFER */
-  memset((uint32_t *)LCD_FRAME_BUFFER,0x00, 0xBFFFF);
+  memset((uint32_t *)LCD_FRAME_BUFFER,0x00, 0xFFFFF);
 
   /* Display On */
   if (HAL_DSI_ShortWrite(&hdsi, 0, DSI_DCS_SHORT_PKT_WRITE_P0, 0x29, 0x00) != HAL_OK) return 21;
 
   HAL_Delay(120);
-  
+
   /* All setting OK */
   return 0;
 }
@@ -734,15 +683,15 @@ int32_t LCD_FillRGBRect(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint8_t
   uint32_t StartAddress = 0;
   uint32_t i;
   uint32_t j;
-  
+
   /* Set the start address */
-  StartAddress = (hltdc.LayerCfg[0].FBStartAdress + (4 * (Ypos * PIXEL_PERLINE + Xpos)));
-  
-  
+  StartAddress = (hltdc.LayerCfg[0].FBStartAdress + (4 * (Ypos * 480 + Xpos)));
+
+
   /* Fill the rectangle */
   for (i = 0; i < Height; i++)
   {
-    Xaddress = StartAddress + (3072 * i);
+    Xaddress = StartAddress + (480 * 4 * i);
     for (j = 0; j < Width; j++)
     {
       *(__IO uint32_t *)(Xaddress) = *(uint32_t *) pData;
@@ -750,7 +699,7 @@ int32_t LCD_FillRGBRect(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint8_t
       Xaddress += 4;
     }
   }
-  
+
   return 0;
 }
 
@@ -760,21 +709,21 @@ int32_t LCD_FillRect(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t W
   uint32_t  Startaddress = 0;
   uint32_t  i;
   uint32_t  j;
-  
+
   /* Get the rectangle start address */
-  Startaddress = (hltdc.LayerCfg[0].FBStartAdress + (4 * (Ypos * PIXEL_PERLINE + Xpos)));
-  
+  Startaddress = (hltdc.LayerCfg[0].FBStartAdress + (4 * (Ypos * 480 + Xpos)));
+
   /* Fill the rectangle */
   for (i = 0; i < Height; i++)
   {
-    Xaddress = Startaddress + (3072 * i);
+    Xaddress = Startaddress + (480 * 4 * i);
     for (j = 0; j < Width; j++)
     {
       *(__IO uint32_t *)(Xaddress) = Color;
       Xaddress += 4;
     }
   }
-  
+
   return 0;
 }
 
@@ -782,16 +731,16 @@ int32_t LCD_GetXSize(uint32_t Instance, uint32_t *Xsize)
 {
   /* Get the display Xsize */
   *Xsize = 480U;
-  
+
   return 0;
 }
 
 int32_t LCD_GetYSize(uint32_t Instance, uint32_t *Ysize)
 {
-  
+
   /* Get the display Ysize */
   *Ysize = 480U;
-  
+
   return 0;
 }
 
@@ -800,7 +749,7 @@ int32_t LCD_GetFormat(uint32_t Instance, uint32_t *Format)
 {
   /* Get pixel format supported by LCD */
   *Format = LTDC_PIXEL_FORMAT_ARGB8888;
-  
+
   return 0;
 }
 

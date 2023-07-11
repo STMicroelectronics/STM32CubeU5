@@ -236,8 +236,8 @@ typedef struct
   * Bit Group Name: None
   * Permission    : W
   *******************************************************************************/
-int32_t sx8651_write_reg(const sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pbuf, uint16_t length);
-int32_t sx8651_read_reg(const sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pbuf, uint16_t length);
+int32_t sx8651_write_reg(const sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pdata, uint16_t length);
+int32_t sx8651_read_reg(const sx8651_ctx_t *ctx, uint8_t reg, uint8_t *pdata, uint16_t length);
 int32_t sx8651_read_data(const sx8651_ctx_t *ctx, uint8_t *pdata, uint16_t length);
 int32_t sx8651_write_cmd(const sx8651_ctx_t *ctx, uint8_t *pdata, uint16_t length);
 int32_t sx8651_read_chan(const sx8651_ctx_t *ctx, uint8_t chan, uint8_t *pdata, uint16_t length);

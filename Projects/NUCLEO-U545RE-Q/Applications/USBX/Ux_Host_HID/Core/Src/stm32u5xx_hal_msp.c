@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -179,7 +180,7 @@ void HAL_HCD_MspInit(HCD_HandleTypeDef* hhcd)
     }
 
     __HAL_RCC_GPIOA_CLK_ENABLE();
-    /**USB GPIO Configuration
+    /**USB_DRD_FS GPIO Configuration
     PA11     ------> USB_DM
     PA12     ------> USB_DP
     */
@@ -201,10 +202,8 @@ void HAL_HCD_MspInit(HCD_HandleTypeDef* hhcd)
     {
       HAL_PWREx_EnableVddUSB();
     }
-
     /* Peripheral clock enable */
     __HAL_RCC_USB_FS_CLK_ENABLE();
-
     /* USB_DRD_FS interrupt Init */
     HAL_NVIC_SetPriority(USB_IRQn, 3, 0);
     HAL_NVIC_EnableIRQ(USB_IRQn);
@@ -231,7 +230,7 @@ void HAL_HCD_MspDeInit(HCD_HandleTypeDef* hhcd)
     /* Peripheral clock disable */
     __HAL_RCC_USB_FS_CLK_DISABLE();
 
-    /**USB GPIO Configuration
+    /**USB_DRD_FS GPIO Configuration
     PA11     ------> USB_DM
     PA12     ------> USB_DP
     */

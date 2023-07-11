@@ -35,9 +35,12 @@
  */
 /* USER CODE END Header */
 
+#ifndef PARTITION_STM32U545XX_H
+#define PARTITION_STM32U545XX_H
 /*
 //-------- <<< Use Configuration Wizard in Context Menu >>> -----------------
 */
+
 /* USER CODE BEGIN 0 */
 /*
 // <e>Initialize Security Attribution Unit (SAU) CTRL register
@@ -57,7 +60,7 @@
 //   <i> Value for SAU->CTRL register bit ALLNS
 //   <i> When all Memory is Non-Secure (ALLNS is 1), IDAU can override memory map configuration.
 */
-#define SAU_INIT_CTRL_ALLNS   1
+#define SAU_INIT_CTRL_ALLNS  1
 
 /*
 // </e>
@@ -76,7 +79,17 @@
 //   <e>Initialize SAU Region 0
 //   <i> Setup SAU Region 0 memory attributes
 */
-#define SAU_INIT_REGION0    0
+#define SAU_INIT_REGION0    1
+
+/*
+//     <o>Start Address <0-0xFFFFFFE0>
+*/
+#define SAU_INIT_START0     0x0C0FE000      /* start address of SAU region 0 */
+
+/*
+//     <o>End Address <0x1F-0xFFFFFFFF>
+*/
+#define SAU_INIT_END0       0xc0fffff      /* end address of SAU region 0 */
 
 /*
 //     <o>Region is
@@ -92,14 +105,22 @@
 //   <e>Initialize SAU Region 1
 //   <i> Setup SAU Region 1 memory attributes
 */
-#define SAU_INIT_REGION1    0
+#define SAU_INIT_REGION1    1
 
+/*
+//     <o>Start Address <0-0xFFFFFFE0>
+*/
+#define SAU_INIT_START1       0x08100000      /* end address of SAU region 0 */
+/*
+//     <o>End Address <0x1F-0xFFFFFFFF>
+*/
+#define SAU_INIT_END1       0x81fffff      /* end address of SAU region 1 */
 /*
 //     <o>Region is
 //         <0=>Non-Secure
 //         <1=>Secure, Non-Secure Callable
 */
-#define SAU_INIT_NSC1       0
+#define SAU_INIT_NSC1       1
 /*
 //   </e>
 */
@@ -108,7 +129,17 @@
 //   <e>Initialize SAU Region 2
 //   <i> Setup SAU Region 2 memory attributes
 */
-#define SAU_INIT_REGION2    0
+#define SAU_INIT_REGION2    1
+
+/*
+//     <o>Start Address <0-0xFFFFFFE0>
+*/
+#define SAU_INIT_START2     0x20040000      /* start address of SAU region 2 */
+
+/*
+//     <o>End Address <0x1F-0xFFFFFFFF>
+*/
+#define SAU_INIT_END2       0x200bffff      /* end address of SAU region 2 */
 
 /*
 //     <o>Region is
@@ -124,7 +155,7 @@
 //   <e>Initialize SAU Region 3
 //   <i> Setup SAU Region 3 memory attributes
 */
-#define SAU_INIT_REGION3    0
+#define SAU_INIT_REGION3    1
 
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
@@ -134,7 +165,7 @@
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END3       0x4FFFFFFF      /* end address of SAU region 3 */
+#define SAU_INIT_END3       0x4fffffff      /* end address of SAU region 3 */
 
 /*
 //     <o>Region is
@@ -150,12 +181,17 @@
 //   <e>Initialize SAU Region 4
 //   <i> Setup SAU Region 4 memory attributes
 */
-#define SAU_INIT_REGION4    0
+#define SAU_INIT_REGION4    1
 
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
 #define SAU_INIT_START4     0x60000000      /* start address of SAU region 4 */
+
+/*
+//     <o>End Address <0x1F-0xFFFFFFFF>
+*/
+#define SAU_INIT_END4       0x9fffffff      /* end address of SAU region 4 */
 
 /*
 //     <o>Region is
@@ -171,7 +207,7 @@
 //   <e>Initialize SAU Region 5
 //   <i> Setup SAU Region 5 memory attributes
 */
-#define SAU_INIT_REGION5    0
+#define SAU_INIT_REGION5    1
 
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
@@ -181,7 +217,7 @@
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END5       0x0BFA8FFF      /* end address of SAU region 5 */
+#define SAU_INIT_END5       0xbfa8fff      /* end address of SAU region 5 */
 
 /*
 //     <o>Region is
@@ -248,7 +284,6 @@
 /*
 // </h>
 */
-
 /*
 // <e>Setup behaviour of Sleep and Exception Handling
 */
@@ -339,6 +374,7 @@
 //   <e>Initialize ITNS 0 (Interrupts 0..31)
 */
 #define NVIC_INIT_ITNS0    1
+
 /*
 // Interrupts 0..31
 //   <o.0>  WWDG_IRQn             <0=> Secure state
@@ -631,3 +667,4 @@ __STATIC_INLINE void TZ_SAU_Setup (void)
 }
 /* USER CODE END 2 */
 
+#endif  /* PARTITION_STM32U545XX_H */

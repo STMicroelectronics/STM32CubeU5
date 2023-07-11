@@ -344,7 +344,7 @@ __weak HAL_StatusTypeDef MX_HSPI_RAM_Init(XSPI_HandleTypeDef *hhspi, MX_HSPI_Ini
   hhspi->Init.ChipSelectBoundary      = 11U;
   hhspi->Init.DelayBlockBypass        = HAL_XSPI_DELAY_BLOCK_ON;
   /* tCEM = 2 us max => REFRESH+4 clock cycles for read */
-  hhspi->Init.Refresh                 = ((2U * (hspi_clk / (Init->ClockPrescaler + 1))) / 1000000U) - 4U;
+  hhspi->Init.Refresh                 = ((2U * (hspi_clk / (Init->ClockPrescaler + 1U))) / 1000000U) - 4U;
   hhspi->Init.MaxTran                 = 0U;
 
   status = HAL_XSPI_Init(hhspi);
@@ -410,7 +410,7 @@ int32_t BSP_HSPI_RAM_RegisterMspCallbacks(uint32_t Instance, BSP_HSPI_Cb_t *Call
     {
       ret = BSP_ERROR_PERIPH_FAILURE;
     }
-    else if (HAL_XSPI_RegisterCallback(&hhspi_ram[Instance], HAL_XSPI_MSP_DEINIT_CB_ID, \
+    else if (HAL_XSPI_RegisterCallback(&hhspi_ram[Instance], HAL_XSPI_MSP_DEINIT_CB_ID,
                                        CallBacks->pMspDeInitCb) != HAL_OK)
     {
       ret = BSP_ERROR_PERIPH_FAILURE;
@@ -444,7 +444,7 @@ int32_t BSP_HSPI_RAM_Read(uint32_t Instance, uint8_t *pData, uint32_t ReadAddr, 
     ret = BSP_ERROR_WRONG_PARAM;
   }
 
-  else if (Tuning_HSPI_Read(&hhspi_ram[Instance]) != 0UL)
+  else if (Tuning_HSPI_Read(&hhspi_ram[Instance]) != 0)
   {
     ret = BSP_ERROR_PERIPH_FAILURE;
   }
@@ -453,7 +453,8 @@ int32_t BSP_HSPI_RAM_Read(uint32_t Instance, uint8_t *pData, uint32_t ReadAddr, 
   {
     if (APS512XX_Read(&hhspi_ram[Instance], pData, ReadAddr, Size,
                       (uint32_t)APS512XX_READ_LATENCY((uint32_t)(Hspi_Ram_Ctx[Instance].ReadLatencyCode),
-                                                      (uint32_t)(Hspi_Ram_Ctx[Instance].LatencyType)), (uint32_t)(Hspi_Ram_Ctx[Instance].IOMode),
+                                                      (uint32_t)(Hspi_Ram_Ctx[Instance].LatencyType)),
+                      (uint32_t)(Hspi_Ram_Ctx[Instance].IOMode),
                       (uint32_t)(Hspi_Ram_Ctx[Instance].BurstType)) != (int32_t)APS512XX_OK)
     {
       ret = BSP_ERROR_COMPONENT_FAILURE;
@@ -489,7 +490,8 @@ int32_t BSP_HSPI_RAM_Read_DMA(uint32_t Instance, uint8_t *pData, uint32_t ReadAd
   {
     if (APS512XX_Read_DMA(&hhspi_ram[Instance], pData, ReadAddr, Size,
                           (uint32_t)APS512XX_READ_LATENCY((uint32_t)(Hspi_Ram_Ctx[Instance].ReadLatencyCode),
-                                                          (uint32_t)(Hspi_Ram_Ctx[Instance].LatencyType)), (uint32_t)(Hspi_Ram_Ctx[Instance].IOMode),
+                                                          (uint32_t)(Hspi_Ram_Ctx[Instance].LatencyType)),
+                          (uint32_t)(Hspi_Ram_Ctx[Instance].IOMode),
                           (uint32_t)(Hspi_Ram_Ctx[Instance].BurstType)) != (int32_t)APS512XX_OK)
     {
       ret = BSP_ERROR_COMPONENT_FAILURE;
@@ -522,7 +524,7 @@ int32_t BSP_HSPI_RAM_Write(uint32_t Instance, uint8_t *pData, uint32_t WriteAddr
     ret = BSP_ERROR_WRONG_PARAM;
   }
 
-  else if (Tuning_HSPI_Write(&hhspi_ram[Instance]) != 0UL)
+  else if (Tuning_HSPI_Write(&hhspi_ram[Instance]) != 0)
   {
     ret = BSP_ERROR_PERIPH_FAILURE;
   }
@@ -598,14 +600,15 @@ int32_t BSP_HSPI_RAM_EnableMemoryMappedMode(uint32_t Instance)
   }
   else
   {
-    if (Tuning_HSPI_Write(&hhspi_ram[Instance]) != 0UL)
+    if (Tuning_HSPI_Write(&hhspi_ram[Instance]) != 0)
     {
       ret = BSP_ERROR_PERIPH_FAILURE;
     }
-    else if (APS512XX_EnableMemoryMappedMode(&hhspi_ram[Instance],
-                                             (uint32_t)APS512XX_READ_LATENCY((uint32_t)((uint32_t)(Hspi_Ram_Ctx[Instance].ReadLatencyCode)),
-                                                                             (uint32_t)(Hspi_Ram_Ctx[Instance].LatencyType)),
-                                             APS512XX_WRITE_LATENCY((uint32_t)(Hspi_Ram_Ctx[Instance].WriteLatencyCode)),
+    else if (APS512XX_EnableMemoryMappedMode(&hhspi_ram[Instance], (uint32_t)APS512XX_READ_LATENCY((uint32_t)\
+                                             ((uint32_t)(Hspi_Ram_Ctx[Instance].ReadLatencyCode)),
+                                             (uint32_t)(Hspi_Ram_Ctx[Instance].LatencyType)),
+                                             APS512XX_WRITE_LATENCY((uint32_t)\
+                                                                    (Hspi_Ram_Ctx[Instance].WriteLatencyCode)),
                                              (uint32_t)(Hspi_Ram_Ctx[Instance].IOMode),
                                              (uint32_t)(Hspi_Ram_Ctx[Instance].BurstType)) != (int32_t)APS512XX_OK)
     {
@@ -664,7 +667,7 @@ int32_t BSP_HSPI_RAM_DisableMemoryMappedMode(uint32_t Instance)
       if (ret == BSP_ERROR_NONE)
       {
         /* Configure CR register with functional mode as indirect mode*/
-        MODIFY_REG(hhspi_ram[Instance].Instance->CR, (HSPI_CR_FMODE), 0);
+        MODIFY_REG(hhspi_ram[Instance].Instance->CR, (HSPI_CR_FMODE), 0U);
         Hspi_Ram_Ctx[Instance].IsInitialized = HSPI_ACCESS_INDIRECT;
       }
     }
@@ -689,7 +692,7 @@ int32_t BSP_HSPI_RAM_Config16BitsOctalRAM(uint32_t Instance, BSP_HSPI_RAM_Cfg_t 
 
   /* Check if the instance is supported */
   if ((Instance >= HSPI_RAM_INSTANCES_NUMBER)
-      || (Cfg->BurstLength == (BSP_HSPI_RAM_BurstLength_t)APS512XX_MR8_BL_2K_BYTES))
+      || (Cfg->BurstLength == APS512XX_BURST_2_KBYTES))
   {
     ret = BSP_ERROR_WRONG_PARAM;
   }
@@ -708,17 +711,17 @@ int32_t BSP_HSPI_RAM_Config16BitsOctalRAM(uint32_t Instance, BSP_HSPI_RAM_Cfg_t 
       {
         /* Reading the configuration of Mode Register 0 ***********************/
         if (APS512XX_ReadReg(&hhspi_ram[Instance], APS512XX_MR0_ADDRESS, reg,
-                             (uint32_t)APS512XX_READ_REG_LATENCY((uint32_t)(Hspi_Ram_Ctx[Instance].ReadLatencyCode))) != \
-            (int32_t)APS512XX_OK)
+                             (uint32_t)APS512XX_READ_REG_LATENCY((uint32_t)(Hspi_Ram_Ctx[Instance].ReadLatencyCode)))\
+            != (int32_t)APS512XX_OK)
         {
           ret = BSP_ERROR_COMPONENT_FAILURE;
         }
         else
         {
           /* Configure the 16-bits Octal RAM memory ***************************/
-          MODIFY_REG(reg[0], ((uint32_t)APS512XX_MR0_LATENCY_TYPE | (uint32_t)APS512XX_MR0_READ_LATENCY_CODE |
-                              (uint32_t)APS512XX_MR0_DRIVE_STRENGTH),
-                     ((uint32_t)(Cfg->LatencyType) | (uint32_t)(Cfg->ReadLatencyCode) | (uint32_t)CONF_HSPI_DS));
+          MODIFY_REG(reg[0], ((uint8_t)APS512XX_MR0_LATENCY_TYPE | (uint8_t)APS512XX_MR0_READ_LATENCY_CODE |
+                              (uint8_t)APS512XX_MR0_DRIVE_STRENGTH),
+                     ((uint8_t)(Cfg->LatencyType) | (uint8_t)(Cfg->ReadLatencyCode) | (uint8_t)CONF_HSPI_DS));
 
           if (APS512XX_WriteReg(&hhspi_ram[Instance], APS512XX_MR0_ADDRESS, reg[0]) != APS512XX_OK)
           {
@@ -735,15 +738,16 @@ int32_t BSP_HSPI_RAM_Config16BitsOctalRAM(uint32_t Instance, BSP_HSPI_RAM_Cfg_t 
         {
           /* Reading the configuration of Mode Register 4 ***********************/
           if (APS512XX_ReadReg(&hhspi_ram[Instance], APS512XX_MR4_ADDRESS, reg,
-                               (uint32_t)APS512XX_READ_REG_LATENCY((uint32_t)(Hspi_Ram_Ctx[Instance].ReadLatencyCode))) != (int32_t)APS512XX_OK)
+                               (uint32_t)APS512XX_READ_REG_LATENCY((uint32_t)(Hspi_Ram_Ctx[Instance].ReadLatencyCode)))\
+              != (int32_t)APS512XX_OK)
           {
             ret = BSP_ERROR_COMPONENT_FAILURE;
           }
           else
           {
             /* Configure the 16-bits Octal RAM memory ***************************/
-            MODIFY_REG(reg[0], (APS512XX_MR4_WRITE_LATENCY_CODE | APS512XX_MR4_RF_RATE | APS512XX_MR4_PASR),
-                       (Cfg->WriteLatencyCode | CONF_HSPI_RF | CONF_HSPI_PASR));
+            MODIFY_REG(reg[0], (uint8_t)(APS512XX_MR4_WRITE_LATENCY_CODE | APS512XX_MR4_RF_RATE | APS512XX_MR4_PASR),
+                       ((uint8_t)Cfg->WriteLatencyCode | CONF_HSPI_RF | CONF_HSPI_PASR));
 
             if (APS512XX_WriteReg(&hhspi_ram[Instance], APS512XX_MR4_ADDRESS, reg[0]) != APS512XX_OK)
             {
@@ -762,15 +766,17 @@ int32_t BSP_HSPI_RAM_Config16BitsOctalRAM(uint32_t Instance, BSP_HSPI_RAM_Cfg_t 
         {
           /* Reading the configuration of Mode Register 8 ***********************/
           if (APS512XX_ReadReg(&hhspi_ram[Instance], APS512XX_MR8_ADDRESS, reg,
-                               (uint32_t)APS512XX_READ_REG_LATENCY((uint32_t)(Hspi_Ram_Ctx[Instance].ReadLatencyCode))) != (int32_t)APS512XX_OK)
+                               (uint32_t)APS512XX_READ_REG_LATENCY((uint32_t)\
+                                                                   (Hspi_Ram_Ctx[Instance].ReadLatencyCode)))\
+              != (int32_t)APS512XX_OK)
           {
             ret = BSP_ERROR_COMPONENT_FAILURE;
           }
           else
           {
             /* Configure the 16-bits Octal RAM memory ***************************/
-            MODIFY_REG(reg[0], ((uint32_t)APS512XX_MR8_X8_X16 | (uint32_t)APS512XX_MR8_BL),
-                       ((uint32_t)(Cfg->IOMode) | (uint32_t)(Cfg->BurstLength)));
+            MODIFY_REG(reg[0], ((uint8_t)APS512XX_MR8_X8_X16 | (uint8_t)APS512XX_MR8_BL),
+                       ((uint8_t)(Cfg->IOMode) | (uint8_t)(Cfg->BurstLength)));
 
             if (APS512XX_WriteReg(&hhspi_ram[Instance], APS512XX_MR8_ADDRESS, reg[0]) != APS512XX_OK)
             {
@@ -1119,9 +1125,10 @@ static void HSPI_RAM_MspInit(XSPI_HandleTypeDef *hhspi)
   /* Enable the GPDMA clock */
   __HAL_RCC_GPDMA1_CLK_ENABLE();
 
-  /* Initialize the DMA channel */
   __HAL_LINKDMA(hhspi, hdmatx, hdmatx);
-  HAL_DMA_Init(&hdmatx);
+
+  /* Initialize the DMA channel */
+  (void)HAL_DMA_Init(&hdmatx);
 
   hdmarx.Init.Request = GPDMA1_REQUEST_HSPI1;
   hdmarx.Instance = GPDMA1_Channel7;
@@ -1142,9 +1149,10 @@ static void HSPI_RAM_MspInit(XSPI_HandleTypeDef *hhspi)
   /* Enable the GPDMA clock */
   __HAL_RCC_GPDMA1_CLK_ENABLE();
 
-  /* Initialize the DMA channel */
   __HAL_LINKDMA(hhspi, hdmarx, hdmarx);
-  HAL_DMA_Init(&hdmarx);
+
+  /* Initialize the DMA channel */
+  (void)HAL_DMA_Init(&hdmarx);
 
   /* Enable and set priority of the HSPI and DMA interrupts */
   HAL_NVIC_SetPriority(HSPI1_IRQn, BSP_HSPI_RAM_IT_PRIORITY, 0);

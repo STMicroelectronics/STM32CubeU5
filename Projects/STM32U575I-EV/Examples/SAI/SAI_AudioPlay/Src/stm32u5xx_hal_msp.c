@@ -93,7 +93,7 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef* hsai)
     PeriphClkInit.Sai1ClockSelection = RCC_SAI1CLKSOURCE_PLL2;
     PeriphClkInit.PLL2.PLL2Source = RCC_PLLSOURCE_MSI;
     PeriphClkInit.PLL2.PLL2M = 1;
-    PeriphClkInit.PLL2.PLL2N = 32;
+    PeriphClkInit.PLL2.PLL2N = 48;
     PeriphClkInit.PLL2.PLL2P = 17;
     PeriphClkInit.PLL2.PLL2Q = 2;
     PeriphClkInit.PLL2.PLL2R = 2;

@@ -57,9 +57,7 @@ void *Env_Sensor_CompObj[ENV_SENSOR_INSTANCES_NBR] = {0, 0};
 ENV_SENSOR_CommonDrv_t *Env_Sensor_Drv[ENV_SENSOR_INSTANCES_NBR] = {0, 0};
 
 /* Environmental sensor function driver */
-ENV_SENSOR_FuncDrv_t *Env_Sensor_FuncDrv[ENV_SENSOR_INSTANCES_NBR][ENV_SENSOR_FUNCTIONS_NBR] = {{0, 0, 0},
-  {0, 0, 0}
-};
+ENV_SENSOR_FuncDrv_t *Env_Sensor_FuncDrv[ENV_SENSOR_INSTANCES_NBR][ENV_SENSOR_FUNCTIONS_NBR] = {{0, 0, 0}, {0, 0, 0}};
 /**
   * @}
   */
@@ -93,11 +91,8 @@ int32_t BSP_ENV_SENSOR_Init(uint32_t Instance, uint32_t Functions)
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && ((Functions & ENV_PRESSURE) != 0U))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && ((Functions & ENV_HUMIDITY) != 0U))
+  else if (((Instance == 0U) && ((Functions & ENV_PRESSURE) != 0U))
+           || ((Instance == 1U) && ((Functions & ENV_HUMIDITY) != 0U)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -238,11 +233,8 @@ int32_t BSP_ENV_SENSOR_Enable(uint32_t Instance, uint32_t Function)
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && (Function == ENV_PRESSURE))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && (Function == ENV_HUMIDITY))
+  else if (((Instance == 0U) && (Function == ENV_PRESSURE))
+           || ((Instance == 1U) && (Function == ENV_HUMIDITY)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -280,11 +272,8 @@ int32_t BSP_ENV_SENSOR_Disable(uint32_t Instance, uint32_t Function)
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && (Function == ENV_PRESSURE))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && (Function == ENV_HUMIDITY))
+  else if (((Instance == 0U) && (Function == ENV_PRESSURE))
+           || ((Instance == 1U) && (Function == ENV_HUMIDITY)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -323,11 +312,8 @@ int32_t BSP_ENV_SENSOR_GetOutputDataRate(const uint32_t Instance, uint32_t Funct
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && (Function == ENV_PRESSURE))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && (Function == ENV_HUMIDITY))
+  else if (((Instance == 0U) && (Function == ENV_PRESSURE))
+           || ((Instance == 1U) && (Function == ENV_HUMIDITY)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -366,11 +352,8 @@ int32_t BSP_ENV_SENSOR_SetOutputDataRate(uint32_t Instance, uint32_t Function, f
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && (Function == ENV_PRESSURE))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && (Function == ENV_HUMIDITY))
+  else if (((Instance == 0U) && (Function == ENV_PRESSURE))
+           || ((Instance == 1U) && (Function == ENV_HUMIDITY)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -409,11 +392,8 @@ int32_t BSP_ENV_SENSOR_GetValue(const uint32_t Instance, uint32_t Function, floa
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && (Function == ENV_PRESSURE))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && (Function == ENV_HUMIDITY))
+  else if (((Instance == 0U) && (Function == ENV_PRESSURE))
+           || ((Instance == 1U) && (Function == ENV_HUMIDITY)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -481,6 +461,7 @@ static int32_t HTS221_Probe(uint32_t Functions)
   {
     Env_Sensor_CompObj[0] = &HTS221_Obj;
     Env_Sensor_Drv[0]     = (ENV_SENSOR_CommonDrv_t *) &HTS221_COMMON_Driver;
+    /* Initialize the component */
     if (Env_Sensor_Drv[0]->Init(Env_Sensor_CompObj[0]) < 0)
     {
       status = BSP_ERROR_COMPONENT_FAILURE;
@@ -542,6 +523,7 @@ static int32_t LPS22HH_Probe(uint32_t Functions)
   {
     Env_Sensor_CompObj[1] = &LPS22HH_Obj;
     Env_Sensor_Drv[1]     = (ENV_SENSOR_CommonDrv_t *) &LPS22HH_COMMON_Driver;
+    /* Initialize the component */
     if (Env_Sensor_Drv[1]->Init(Env_Sensor_CompObj[1]) < 0)
     {
       status = BSP_ERROR_COMPONENT_FAILURE;

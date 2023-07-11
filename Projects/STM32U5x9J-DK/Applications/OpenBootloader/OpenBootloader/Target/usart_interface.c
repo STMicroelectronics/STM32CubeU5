@@ -117,7 +117,7 @@ void OPENBL_USART_Configuration(void)
       Speed       : High speed.
   */
   GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull      = GPIO_NOPULL;
+  GPIO_InitStruct.Pull      = GPIO_PULLUP;
   GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.Alternate = USARTx_ALTERNATE;
 

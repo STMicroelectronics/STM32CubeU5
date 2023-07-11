@@ -57,7 +57,6 @@
 /* External variables --------------------------------------------------------*/
 extern DMA2D_HandleTypeDef hdma2d;
 extern DSI_HandleTypeDef hdsi;
-extern GFXMMU_HandleTypeDef hgfxmmu;
 extern LTDC_HandleTypeDef hltdc;
 /* USER CODE BEGIN EV */
 
@@ -213,20 +212,6 @@ void DMA2D_IRQHandler(void)
   /* USER CODE BEGIN DMA2D_IRQn 1 */
 
   /* USER CODE END DMA2D_IRQn 1 */
-}
-
-/**
-  * @brief This function handles GFXMMU global interrupt.
-  */
-void GFXMMU_IRQHandler(void)
-{
-  /* USER CODE BEGIN GFXMMU_IRQn 0 */
-
-  /* USER CODE END GFXMMU_IRQn 0 */
-  HAL_GFXMMU_IRQHandler(&hgfxmmu);
-  /* USER CODE BEGIN GFXMMU_IRQn 1 */
-
-  /* USER CODE END GFXMMU_IRQn 1 */
 }
 
 /**

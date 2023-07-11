@@ -117,9 +117,10 @@ int main(void)
     uhADCxConvertedData = HAL_ADC_GetValue(&hadc1);
 
     /* Computation of ADC conversions raw data to physical values             */
-    /* using helper macro.                                                    */
-    uhADCxConvertedData_Voltage_mVolt = __HAL_ADC_CALC_DATA_TO_VOLTAGE(hadc1.Instance, VDDA_APPLI, uhADCxConvertedData, \
-    ADC_RESOLUTION_14B);
+    uhADCxConvertedData_Voltage_mVolt = (int32_t)((((uhADCxConvertedData) * 2UL) * VDDA_APPLI)
+                                                   / __LL_ADC_DIGITAL_SCALE(hadc1.Instance, ADC_RESOLUTION_14B))
+                                                 - (int32_t)(VDDA_APPLI);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -249,7 +249,7 @@ static int32_t CS42L51_Probe(void);
 static int32_t CS42L51_PowerUp(void);
 static int32_t CS42L51_PowerDown(void);
 static void    SAI_MspInit(SAI_HandleTypeDef *hsai);
-static void    SAI_MspDeInit(const SAI_HandleTypeDef *hsai);
+static void    SAI_MspDeInit(SAI_HandleTypeDef *hsai);
 #if (USE_HAL_SAI_REGISTER_CALLBACKS == 1)
 static void    SAI_TxCpltCallback(SAI_HandleTypeDef *hsai);
 static void    SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai);
@@ -259,7 +259,7 @@ static void    SAI_ErrorCallback(SAI_HandleTypeDef *hsai);
 #endif /* (USE_HAL_SAI_REGISTER_CALLBACKS == 1) */
 
 static void    MDF_BlockMspInit(MDF_HandleTypeDef *hmdf);
-static void    MDF_BlockMspDeInit(const MDF_HandleTypeDef *hmdf);
+static void    MDF_BlockMspDeInit(MDF_HandleTypeDef *hmdf);
 #if (USE_HAL_MDF_REGISTER_CALLBACKS == 1)
 static void    MDF_AcquisitionCpltCallback(MDF_HandleTypeDef *hadf_filter);
 static void    MDF_AcquisitionHalfCpltCallback(MDF_HandleTypeDef *hadf_filter);
@@ -306,14 +306,20 @@ int32_t BSP_AUDIO_OUT_Init(uint32_t Instance, BSP_AUDIO_Init_t *AudioInit)
     /* Un-reset audio codec if not currently used by audio in instance 0 */
     if (Audio_In_Ctx[0].State == AUDIO_IN_STATE_RESET)
     {
+#if (USE_BSP_IO_CLASS == 1)
       if (CS42L51_PowerUp() != BSP_ERROR_NONE)
       {
         status = BSP_ERROR_COMPONENT_FAILURE;
       }
+#else /* USE_BSP_IO_CLASS == 1 */
+      (void)CS42L51_PowerUp();
+#endif /* USE_BSP_IO_CLASS == 1 */
     }
 
+#if (USE_BSP_IO_CLASS == 1)
     if (status == BSP_ERROR_NONE)
     {
+#endif /* USE_BSP_IO_CLASS == 1 */
       /* Fill audio out context structure */
       Audio_Out_Ctx[Instance].Device         = AudioInit->Device;
       Audio_Out_Ctx[Instance].SampleRate     = AudioInit->SampleRate;
@@ -429,7 +435,9 @@ int32_t BSP_AUDIO_OUT_Init(uint32_t Instance, BSP_AUDIO_Init_t *AudioInit)
           }
         }
       }
+#if (USE_BSP_IO_CLASS == 1)
     }
+#endif /* USE_BSP_IO_CLASS == 1 */
   }
   return status;
 }
@@ -452,14 +460,20 @@ int32_t BSP_AUDIO_OUT_DeInit(uint32_t Instance)
     /* Reset audio codec if not currently used by audio in instance 0 */
     if (Audio_In_Ctx[0].State == AUDIO_IN_STATE_RESET)
     {
+#if (USE_BSP_IO_CLASS == 1)
       if (CS42L51_PowerDown() != BSP_ERROR_NONE)
       {
         status = BSP_ERROR_COMPONENT_FAILURE;
       }
+#else /* USE_BSP_IO_CLASS == 1 */
+      (void)CS42L51_PowerDown();
+#endif /* USE_BSP_IO_CLASS == 1 */
     }
 
+#if (USE_BSP_IO_CLASS == 1)
     if (status == BSP_ERROR_NONE)
     {
+#endif /* USE_BSP_IO_CLASS == 1 */
       /* SAI peripheral de-initialization */
       if (HAL_SAI_DeInit(&haudio_out_sai) != HAL_OK)
       {
@@ -486,7 +500,9 @@ int32_t BSP_AUDIO_OUT_DeInit(uint32_t Instance)
         Audio_Out_Ctx[Instance].State  = AUDIO_OUT_STATE_RESET;
         Audio_Out_Ctx[Instance].IsMute = 0U;
       }
+#if (USE_BSP_IO_CLASS == 1)
     }
+#endif /* USE_BSP_IO_CLASS == 1 */
   }
   else
   {
@@ -1513,14 +1529,20 @@ int32_t BSP_AUDIO_IN_Init(uint32_t Instance, BSP_AUDIO_Init_t *AudioInit)
       /* Un-reset audio codec if not currently used by audio out instance 0 */
       if (Audio_Out_Ctx[0].State == AUDIO_OUT_STATE_RESET)
       {
+#if (USE_BSP_IO_CLASS == 1)
         if (CS42L51_PowerUp() != BSP_ERROR_NONE)
         {
           status = BSP_ERROR_COMPONENT_FAILURE;
         }
+#else /* USE_BSP_IO_CLASS == 1 */
+        (void)CS42L51_PowerUp();
+#endif /* USE_BSP_IO_CLASS == 1 */
       }
 
+#if (USE_BSP_IO_CLASS == 1)
       if (status == BSP_ERROR_NONE)
       {
+#endif /* USE_BSP_IO_CLASS == 1 */
         /* Fill audio in context structure */
         Audio_In_Ctx[Instance].Device         = AudioInit->Device;
         Audio_In_Ctx[Instance].SampleRate     = AudioInit->SampleRate;
@@ -1671,7 +1693,9 @@ int32_t BSP_AUDIO_IN_Init(uint32_t Instance, BSP_AUDIO_Init_t *AudioInit)
             }
           }
         }
+#if (USE_BSP_IO_CLASS == 1)
       }
+#endif /* USE_BSP_IO_CLASS == 1 */
     }
     else /* (Instance == 1U) */
     {
@@ -1706,9 +1730,9 @@ int32_t BSP_AUDIO_IN_Init(uint32_t Instance, BSP_AUDIO_Init_t *AudioInit)
             status = BSP_ERROR_PERIPH_FAILURE;
           }
         }
-#endif /* (USE_HAL_MDF_REGISTER_CALLBACKS == 0) */
         if (status == BSP_ERROR_NONE)
         {
+#endif /* (USE_HAL_MDF_REGISTER_CALLBACKS == 0) */
           /* Prepare MDF peripheral initialization */
           MX_ADF_InitTypeDef mxAdfInit;
           if ((Audio_In_Ctx[Instance].Device & AUDIO_IN_DEVICE_DIGITAL_MIC) == AUDIO_IN_DEVICE_DIGITAL_MIC)
@@ -1752,7 +1776,9 @@ int32_t BSP_AUDIO_IN_Init(uint32_t Instance, BSP_AUDIO_Init_t *AudioInit)
             /* Update audio in context state */
             Audio_In_Ctx[Instance].State = AUDIO_IN_STATE_STOP;
           }
+#if (USE_HAL_MDF_REGISTER_CALLBACKS == 1)
         }
+#endif /* (USE_HAL_MDF_REGISTER_CALLBACKS == 1) */
       }
     }
   }
@@ -1779,14 +1805,20 @@ int32_t BSP_AUDIO_IN_DeInit(uint32_t Instance)
       /* Reset audio codec if not currently used by audio out instance 0 */
       if (Audio_Out_Ctx[0].State == AUDIO_OUT_STATE_RESET)
       {
+#if (USE_BSP_IO_CLASS == 1)
         if (CS42L51_PowerDown() != BSP_ERROR_NONE)
         {
           status = BSP_ERROR_COMPONENT_FAILURE;
         }
+#else /* USE_BSP_IO_CLASS == 1 */
+        (void)CS42L51_PowerDown();
+#endif /* USE_BSP_IO_CLASS == 1 */
       }
 
+#if (USE_BSP_IO_CLASS == 1)
       if (status == BSP_ERROR_NONE)
       {
+#endif /* USE_BSP_IO_CLASS == 1 */
         /* SAI peripheral de-initialization */
         if (HAL_SAI_DeInit(&haudio_in_sai) != HAL_OK)
         {
@@ -1812,7 +1844,9 @@ int32_t BSP_AUDIO_IN_DeInit(uint32_t Instance)
           /* Update audio in context */
           Audio_In_Ctx[Instance].State = AUDIO_IN_STATE_RESET;
         }
+#if (USE_BSP_IO_CLASS == 1)
       }
+#endif /* USE_BSP_IO_CLASS == 1 */
     }
     else
     {
@@ -2791,7 +2825,7 @@ static void MDF_BlockMspInit(MDF_HandleTypeDef *hmdf)
   * @param  hmdf MDF filter handle.
   * @retval None.
   */
-static void MDF_BlockMspDeInit(const MDF_HandleTypeDef *hmdf)
+static void MDF_BlockMspDeInit(MDF_HandleTypeDef *hmdf)
 {
   /* De-initialize ADF1_CKOUT, ADF1_DATIN1 pins */
   HAL_GPIO_DeInit(AUDIO_ADF1_CCK0_GPIO_PORT, AUDIO_ADF1_CCK0_GPIO_PIN);
@@ -3259,7 +3293,7 @@ static void SAI_MspInit(SAI_HandleTypeDef *hsai)
   * @param  hsai SAI handle.
   * @retval None.
   */
-static void SAI_MspDeInit(const SAI_HandleTypeDef *hsai)
+static void SAI_MspDeInit(SAI_HandleTypeDef *hsai)
 {
   if (hsai->Instance == SAI1_Block_A)
   {
@@ -3284,7 +3318,6 @@ static void SAI_MspDeInit(const SAI_HandleTypeDef *hsai)
     HAL_GPIO_DeInit(AUDIO_SAI1_SD_A_GPIO_PORT, AUDIO_SAI1_SD_A_GPIO_PIN);
 
     /* Don't disable SAI clock potentially used for other SAI block */
-    /*AUDIO_SAI1_CLK_DISABLE(); */
   }
   else /* SAI1_BlockB */
   {
@@ -3311,7 +3344,6 @@ static void SAI_MspDeInit(const SAI_HandleTypeDef *hsai)
     HAL_GPIO_DeInit(AUDIO_SAI1_SD_B_GPIO_PORT, AUDIO_SAI1_SD_B_GPIO_PIN);
 
     /* Don't disable SAI clock potentially used for other SAI block */
-    /*AUDIO_SAI1_CLK_DISABLE(); */
   }
 }
 

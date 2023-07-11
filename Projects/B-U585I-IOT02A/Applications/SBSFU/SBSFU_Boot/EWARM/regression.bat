@@ -22,7 +22,7 @@ echo Provision default OEM2 key
 IF %errorlevel% NEQ 0 goto :error
 echo Remove bank1 protection
 %stm32programmercli% %connect% %remove_bank1_protect%
-IF %errorlevel% NEQ 0 goto :error 
+IF %errorlevel% NEQ 0 goto :error
 echo Remove bank2 protection and erase all
 %stm32programmercli% %connect_no_reset% %remove_bank2_protect% %erase_all%
 IF %errorlevel% NEQ 0 goto :error

@@ -482,7 +482,7 @@ void  boot_clean_ns_ram_area(void)
         pt[index] = 0;
     }
     /* unsecure all SRAM1 */
-    for (index = 0; index < 24 ; index++)
+    for (index = 0; index < (sizeof(GTZC_MPCBB1_S->SECCFGR) / sizeof(GTZC_MPCBB1_S->SECCFGR[0])) ; index++)
     {
         /* assume loader is only in SRAM1 */
         GTZC_MPCBB1_S->SECCFGR[index] = 0;

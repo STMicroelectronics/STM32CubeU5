@@ -19,7 +19,7 @@
 <body>
 <div class="row">
 <div class="col-sm-12 col-lg-8">
-<h2 id="ux_device_cdc_acm-application-description"><b>Ux_Device_CDC_ACM application description </b></h2>
+<h2 id="ux_device_cdc_acm-application-description"><b>Ux_Device_CDC_ACM Application Description </b></h2>
 <p>This application provides an example of Azure RTOS USBX stack usage on NUCLEO-U545RE-Q board, it shows how to develop USB Device communication Class “CDC_ACM” based application. The application is designed to emulate an USB-to-UART bridge following the Virtual COM Port (VCP) implementation, the code provides all required device descriptors framework and associated Class descriptor report to build a compliant USB CDC_ACM device. At the beginning ThreadX call the entry function tx_application_define(), at this stage, all USBx resources are initialized, the CDC_ACM Class driver is registered and the application creates 3 threads with the same priorities :</p>
 <ul>
 <li>app_ux_device_thread_entry (Prio : 10; PreemptionPrio : 10) used to initialize USB DRD HAL PCD driver and start the device.</li>
@@ -91,9 +91,11 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <p>RTOS, ThreadX, USBX, USBXDevice, USB_DRD, Full Speed, CDC, VCP, USART, DMA.</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
-<li>This application runs on STM32H5xx devices</li>
-<li><p>This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision MB1814-WS. and can be easily tailored to any other supported device and development board.</p></li>
-<li>NUCLEO-U545RE-Q Set-up:
+<li><p>This application runs on STM32U545xx devices</p></li>
+<li><p>This application has been tested with STMicroelectronics
+NUCLEO-U545RE-Q boards Revision: MB1841-A02 and can be easily tailored
+to any other supported device and development board.</p></li>
+<li><p>NUCLEO-U545RE-Q Set-up :</p>
 <ul>
 <li>Connect the NUCLEO-U545RE-Q board CN3 to the PC through “TYPE-C” to “Standard A” cable.</li>
 <li>For VCP the configuration is dynamic for example it can be:

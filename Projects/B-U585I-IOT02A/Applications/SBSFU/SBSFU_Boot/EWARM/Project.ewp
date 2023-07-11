@@ -713,7 +713,7 @@
       <archiveVersion>1</archiveVersion>
       <data>
         <prebuild>$PROJ_DIR$\prebuild.cmd "$PROJ_DIR$" "STM32U585xx"</prebuild>
-        <postbuild>cmd /C "cmd /C $PROJ_DIR$\postbuild.bat""</postbuild>
+        <postbuild>cmd /C "cmd /C $PROJ_DIR$\postbuild.bat"</postbuild>
       </data>
     </settings>
     <settings>

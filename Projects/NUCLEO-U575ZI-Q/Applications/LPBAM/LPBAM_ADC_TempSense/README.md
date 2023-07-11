@@ -26,13 +26,13 @@ The APB clock dividers APB1, APB2, APB3 peripherals to run at 160 MHz.
 Threshold2_Conversion queue. These two queues are started by the Thresholdx_Config ADV_LPBAM_DMA_Start_SetFullQ() functions.
 
     -   The sequence 1 configures the ADC peripheral using HAL as follow :
-        -   Channel               : Internal (Tempearture Sensor Channel).
+        -   Channel               : Internal (Temperature Sensor Channel).
         -   ScanConvMode          : Scan Direction is Forward.
         -   Signal trigger        : LPTIM1 Channel1 PWM (Rising Edge).
         -   Trigger low frequency : Disabled.
         -   ContinuousConvMode    : Disabled.
         -   DiscontinuousConvMode : Disabled.
-        -   Analog watchdog       : AWD1 is enabled for single channel (Tempearture Sensor Channel).
+        -   Analog watchdog       : AWD1 is enabled for single channel (Temperature Sensor Channel).
         -   DMAContinuousRequests : Enabled (Circular Mode).
         -   Low threshold is set to 0V.
         -   High threshold is set to 0.809V. ((1005 / 4095) * 3.3V)
@@ -43,13 +43,13 @@ Threshold2_Conversion queue. These two queues are started by the Thresholdx_Conf
 
     -   After Threshold1 is detected the LPTIM1 PWM trigger signal period is changed to 10ms by the Thresholdx_Config
     queue and the ADC is reconfigured using the LPBAM as follows:
-        -   Channel               : Internal (Tempearture Sensor Channel).
+        -   Channel               : Internal (Temperature Sensor Channel).
         -   ScanConvMode          : Scan Direction is Forward.
         -   Signal trigger        : LPTIM1 Channel1 PWM (Rising Edge).
         -   Trigger low frequency : Disabled.
         -   ContinuousConvMode    : Disabled.
         -   DiscontinuousConvMode : Disabled.
-        -   Analog watchdog       : AWD1 is enabled for single channel (Tempearture Sensor Channel).
+        -   Analog watchdog       : AWD1 is enabled for single channel (Temperature Sensor Channel).
         -   DMAContinuousRequests : Enabled (Circular Mode).
         -   low threshold is set to 0V.
         -   High threshold is set to 0.886V. ((1100 / 4095) * 3.3V)

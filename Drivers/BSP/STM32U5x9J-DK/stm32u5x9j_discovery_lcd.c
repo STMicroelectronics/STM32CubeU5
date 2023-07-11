@@ -116,7 +116,7 @@ GFXMMU_HandleTypeDef      hlcd_gfxmmu = {0};
 LTDC_HandleTypeDef        hlcd_ltdc   = {0};
 DSI_HandleTypeDef         hlcd_dsi    = {0};
 DMA2D_HandleTypeDef       hlcd_dma2d  = {0};
-static DSI_VidCfgTypeDef  VidCfg      = {0};
+static DSI_VidCfgTypeDef  DSIVidCfg   = {0};
 /**
   * @}
   */
@@ -124,7 +124,7 @@ static DSI_VidCfgTypeDef  VidCfg      = {0};
 /** @defgroup STM32U5x9J_DISCOVERY_LCD_Private_FunctionPrototypes LCD Private Function Prototypes
   * @{
   */
-static int32_t LCD_Init(uint32_t Orientation);
+static int32_t LCD_Init(void);
 static int32_t LCD_DeInit(void);
 
 static int32_t LCD_ConvertLineToARGB8888(uint32_t *pSrc, uint32_t *pDst, uint32_t xSize, uint32_t ColorMode);
@@ -168,7 +168,7 @@ int32_t BSP_LCD_Init(uint32_t Instance, uint32_t Orientation)
   }
   else
   {
-    if (LCD_Init(Orientation) != 0)
+    if (LCD_Init() != 0)
     {
       status = BSP_ERROR_PERIPH_FAILURE;
     }
@@ -312,7 +312,7 @@ int32_t BSP_LCD_GetXSize(uint32_t Instance, uint32_t *Xsize)
   else
   {
     /* Get the display Xsize */
-    *Xsize = 480U;
+    *Xsize = LCD_WIDTH;
   }
 
   return status;
@@ -335,7 +335,7 @@ int32_t BSP_LCD_GetYSize(uint32_t Instance, uint32_t *Ysize)
   else
   {
     /* Get the display Ysize */
-    *Ysize = 480U;
+    *Ysize = LCD_HEIGHT;
   }
 
   return status;
@@ -471,8 +471,7 @@ int32_t BSP_LCD_FillRGBRect(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uin
       Xaddress = StartAddress + (3072U * i);
       for (j = 0; j < Width; j++)
       {
-        *(__IO uint32_t *)(Xaddress) = *(uint32_t *)(pData);
-        pData += 4U;
+        *(__IO uint32_t *)(Xaddress) = *(uint32_t *)(pData + (4U * j));
         Xaddress += 4U;
       }
     }
@@ -755,7 +754,7 @@ __weak HAL_StatusTypeDef MX_LTDC_Init(LTDC_HandleTypeDef *hltdc)
   hltdc->Init.Backcolor.Blue     = 0;   /* Not used default value */
   hltdc->Init.Backcolor.Reserved = 0xFF;
 
-  if (HAL_LTDCEx_StructInitFromVideoConfig(&hlcd_ltdc, &VidCfg) != HAL_OK)
+  if (HAL_LTDCEx_StructInitFromVideoConfig(&hlcd_ltdc, &DSIVidCfg) != HAL_OK)
   {
     return HAL_ERROR;
   }
@@ -777,7 +776,7 @@ __weak HAL_StatusTypeDef MX_LTDC_ConfigLayer(LTDC_HandleTypeDef *hltdc, uint32_t
   LayerCfg.WindowX0        = 0;
   LayerCfg.WindowX1        = LCD_WIDTH;
   LayerCfg.WindowY0        = 1;
-  LayerCfg.WindowY1        = LCD_HEIGHT;
+  LayerCfg.WindowY1        = (uint32_t)LCD_HEIGHT + 1UL;
   LayerCfg.PixelFormat     = LTDC_PIXEL_FORMAT_ARGB8888;
   LayerCfg.Alpha           = 0xFF; /* NU default value */
   LayerCfg.Alpha0          = 0; /* NU default value */
@@ -785,7 +784,7 @@ __weak HAL_StatusTypeDef MX_LTDC_ConfigLayer(LTDC_HandleTypeDef *hltdc, uint32_t
   LayerCfg.BlendingFactor2 = LTDC_BLENDING_FACTOR2_PAxCA; /* Not Used: default value */
   LayerCfg.FBStartAdress   = GFXMMU_VIRTUAL_BUFFER0_BASE;
   LayerCfg.ImageWidth      = PIXEL_PER_LINE; /* Number of pixels per line in virtual frame buffer */
-  LayerCfg.ImageHeight     = 480;
+  LayerCfg.ImageHeight     = LCD_HEIGHT;
   LayerCfg.Backcolor.Red   = 0; /* Not Used: default value */
   LayerCfg.Backcolor.Green = 0; /* Not Used: default value */
   LayerCfg.Backcolor.Blue  = 0; /* Not Used: default value */
@@ -830,36 +829,36 @@ __weak HAL_StatusTypeDef MX_DSI_Init(DSI_HandleTypeDef *hdsi)
   }
 
   /* Configure the DSI for Video mode */
-  VidCfg.VirtualChannelID             = 0;
-  VidCfg.HSPolarity                   = DSI_HSYNC_ACTIVE_HIGH;
-  VidCfg.VSPolarity                   = DSI_VSYNC_ACTIVE_HIGH;
-  VidCfg.DEPolarity                   = DSI_DATA_ENABLE_ACTIVE_HIGH;
-  VidCfg.ColorCoding                  = DSI_RGB888;
-  VidCfg.Mode                         = DSI_VID_MODE_BURST;
-  VidCfg.PacketSize                   = LCD_WIDTH;
-  VidCfg.NullPacketSize               = 0xFFFU;
-  VidCfg.HorizontalSyncActive         = HSYNC * 3;
-  VidCfg.HorizontalBackPorch          = HBP * 3;
-  VidCfg.HorizontalLine               = (HACT + HSYNC + HBP + HFP) * 3;
-  VidCfg.VerticalSyncActive           = VSYNC;
-  VidCfg.VerticalBackPorch            = VBP;
-  VidCfg.VerticalFrontPorch           = VFP;
-  VidCfg.VerticalActive               = VACT;
-  VidCfg.LPCommandEnable              = DSI_LP_COMMAND_ENABLE;
-  VidCfg.LPLargestPacketSize          = 64;
+  DSIVidCfg.VirtualChannelID             = 0;
+  DSIVidCfg.HSPolarity                   = DSI_HSYNC_ACTIVE_HIGH;
+  DSIVidCfg.VSPolarity                   = DSI_VSYNC_ACTIVE_HIGH;
+  DSIVidCfg.DEPolarity                   = DSI_DATA_ENABLE_ACTIVE_HIGH;
+  DSIVidCfg.ColorCoding                  = DSI_RGB888;
+  DSIVidCfg.Mode                         = DSI_VID_MODE_BURST;
+  DSIVidCfg.PacketSize                   = LCD_WIDTH;
+  DSIVidCfg.NullPacketSize               = 0xFFFU;
+  DSIVidCfg.HorizontalSyncActive         = HSYNC * 3;
+  DSIVidCfg.HorizontalBackPorch          = HBP * 3;
+  DSIVidCfg.HorizontalLine               = (HACT + HSYNC + HBP + HFP) * 3;
+  DSIVidCfg.VerticalSyncActive           = VSYNC;
+  DSIVidCfg.VerticalBackPorch            = VBP;
+  DSIVidCfg.VerticalFrontPorch           = VFP;
+  DSIVidCfg.VerticalActive               = VACT;
+  DSIVidCfg.LPCommandEnable              = DSI_LP_COMMAND_ENABLE;
+  DSIVidCfg.LPLargestPacketSize          = 64;
   /* Specify for each region of the video frame, if the transmission of command in LP mode is allowed in this region */
   /* while streaming is active in video mode                                                                         */
-  VidCfg.LPHorizontalFrontPorchEnable = DSI_LP_HFP_ENABLE;
-  VidCfg.LPHorizontalBackPorchEnable  = DSI_LP_HBP_ENABLE;
-  VidCfg.LPVerticalActiveEnable       = DSI_LP_VACT_ENABLE;
-  VidCfg.LPVerticalFrontPorchEnable   = DSI_LP_VFP_ENABLE;
-  VidCfg.LPVerticalBackPorchEnable    = DSI_LP_VBP_ENABLE;
-  VidCfg.LPVerticalSyncActiveEnable   = DSI_LP_VSYNC_ENABLE;
-  VidCfg.FrameBTAAcknowledgeEnable    = DSI_FBTAA_ENABLE;
-  VidCfg.LooselyPacked                = DSI_LOOSELY_PACKED_DISABLE;
+  DSIVidCfg.LPHorizontalFrontPorchEnable = DSI_LP_HFP_ENABLE;
+  DSIVidCfg.LPHorizontalBackPorchEnable  = DSI_LP_HBP_ENABLE;
+  DSIVidCfg.LPVerticalActiveEnable       = DSI_LP_VACT_ENABLE;
+  DSIVidCfg.LPVerticalFrontPorchEnable   = DSI_LP_VFP_ENABLE;
+  DSIVidCfg.LPVerticalBackPorchEnable    = DSI_LP_VBP_ENABLE;
+  DSIVidCfg.LPVerticalSyncActiveEnable   = DSI_LP_VSYNC_ENABLE;
+  DSIVidCfg.FrameBTAAcknowledgeEnable    = DSI_FBTAA_ENABLE;
+  DSIVidCfg.LooselyPacked                = DSI_LOOSELY_PACKED_DISABLE;
 
   /* Drive the display */
-  if (HAL_DSI_ConfigVideoMode(&hlcd_dsi, &VidCfg) != HAL_OK)
+  if (HAL_DSI_ConfigVideoMode(&hlcd_dsi, &DSIVidCfg) != HAL_OK)
   {
     return HAL_ERROR;
   }
@@ -1193,11 +1192,9 @@ int32_t BSP_LCD_DMA2D_RegisterMspCallbacks(uint32_t Instance, BSP_LCD_DMA2D_Cb_t
 
 /**
   * @brief  Initialize LCD.
-  * @param  Orientation LCD_ORIENTATION_PORTRAIT, LCD_ORIENTATION_LANDSCAPE,
-  *                     LCD_ORIENTATION_PORTRAIT_ROT180 or LCD_ORIENTATION_LANDSCAPE_ROT180.
   * @retval BSP status.
   */
-static int32_t LCD_Init(uint32_t Orientation)
+static int32_t LCD_Init(void)
 {
   int32_t status = BSP_ERROR_NONE;
   uint32_t ErrorNumber = 0;
@@ -1365,7 +1362,9 @@ static int32_t LCD_Init(uint32_t Orientation)
     if (HAL_DSI_LongWrite(&hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 3, 0xB9, InitParam1) != HAL_OK) { ErrorNumber++; }
 
     /* SETPOWER */
-    uint8_t InitParam2[16] = {0x44, 0x1C, 0x1C, 0x37, 0x57, 0x90, 0xD0, 0xE2, 0x58, 0x80, 0x38, 0x38, 0xF8, 0x33, 0x34, 0x42};
+    uint8_t InitParam2[16] = {0x44, 0x1C, 0x1C, 0x37, 0x57, 0x90, 0xD0,
+                              0xE2, 0x58, 0x80, 0x38, 0x38, 0xF8, 0x33, 0x34, 0x42
+                             };
     if (HAL_DSI_LongWrite(&hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 16, 0xB1, InitParam2) != HAL_OK) { ErrorNumber++; }
 
     /* SETDISP */
@@ -1385,17 +1384,29 @@ static int32_t LCD_Init(uint32_t Orientation)
 
     if (HAL_DSI_ShortWrite(&hlcd_dsi, 0, DSI_DCS_SHORT_PKT_WRITE_P1, 0xD2, 0x77) != HAL_OK) { ErrorNumber++; }
 
-    uint8_t InitParam6[37] = {0x00, 0x07, 0x00, 0x00, 0x00, 0x08, 0x08, 0x32, 0x10, 0x01, 0x00, 0x01, 0x03, 0x72, 0x03, 0x72, 0x00, 0x08, 0x00, 0x08, 0x33, 0x33, 0x05, 0x05, 0x37, 0x05, 0x05, 0x37, 0x0A, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x01, 0x00, 0x0E};
+    uint8_t InitParam6[37] = {0x00, 0x07, 0x00, 0x00, 0x00, 0x08, 0x08, 0x32, 0x10, 0x01, 0x00, 0x01, 0x03, 0x72,
+                              0x03, 0x72, 0x00, 0x08, 0x00, 0x08, 0x33, 0x33, 0x05, 0x05, 0x37, 0x05, 0x05, 0x37,
+                              0x0A, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x01, 0x00, 0x0E
+                             };
     if (HAL_DSI_LongWrite(&hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 37, 0xD3, InitParam6) != HAL_OK) { ErrorNumber++; }
 
-    uint8_t InitParam7[34] = {0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x19, 0x19, 0x18, 0x18, 0x18, 0x18, 0x19, 0x19, 0x01, 0x00, 0x03, 0x02, 0x05, 0x04, 0x07, 0x06, 0x23, 0x22, 0x21, 0x20, 0x18, 0x18, 0x18, 0x18, 0x00, 0x00};
+    uint8_t InitParam7[34] = {0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x19, 0x19, 0x18, 0x18, 0x18, 0x18, 0x19,
+                              0x19, 0x01, 0x00, 0x03, 0x02, 0x05, 0x04, 0x07, 0x06, 0x23, 0x22, 0x21, 0x20, 0x18, 0x18,
+                              0x18, 0x18, 0x00, 0x00
+                             };
     if (HAL_DSI_LongWrite(&hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 34, 0xD5, InitParam7) != HAL_OK) { ErrorNumber++; }
 
-    uint8_t InitParam8[32] = {0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x19, 0x19, 0x18, 0x18, 0x19, 0x19, 0x18, 0x18, 0x06, 0x07, 0x04, 0x05, 0x02, 0x03, 0x00, 0x01, 0x20, 0x21, 0x22, 0x23, 0x18, 0x18, 0x18, 0x18};
+    uint8_t InitParam8[32] = {0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x19, 0x19, 0x18, 0x18, 0x19, 0x19, 0x18,
+                              0x18, 0x06, 0x07, 0x04, 0x05, 0x02, 0x03, 0x00, 0x01, 0x20, 0x21, 0x22, 0x23, 0x18, 0x18,
+                              0x18, 0x18
+                             };
     if (HAL_DSI_LongWrite(&hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 35, 0xD6, InitParam8) != HAL_OK) { ErrorNumber++; }
 
     /* SET GAMMA */
-    uint8_t InitParam9[42] = {0x00, 0x16, 0x1B, 0x30, 0x36, 0x3F, 0x24, 0x40, 0x09, 0x0D, 0x0F, 0x18, 0x0E, 0x11, 0x12, 0x11, 0x14, 0x07, 0x12, 0x13, 0x18, 0x00, 0x17, 0x1C, 0x30, 0x36, 0x3F, 0x24, 0x40, 0x09, 0x0C, 0x0F, 0x18, 0x0E, 0x11, 0x14, 0x11, 0x12, 0x07, 0x12, 0x14, 0x18};
+    uint8_t InitParam9[42] = {0x00, 0x16, 0x1B, 0x30, 0x36, 0x3F, 0x24, 0x40, 0x09, 0x0D, 0x0F, 0x18, 0x0E, 0x11, 0x12,
+                              0x11, 0x14, 0x07, 0x12, 0x13, 0x18, 0x00, 0x17, 0x1C, 0x30, 0x36, 0x3F, 0x24, 0x40, 0x09,
+                              0x0C, 0x0F, 0x18, 0x0E, 0x11, 0x14, 0x11, 0x12, 0x07, 0x12, 0x14, 0x18
+                             };
     if (HAL_DSI_LongWrite(&hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 42, 0xE0, InitParam9) != HAL_OK) { ErrorNumber++; }
 
     uint8_t InitParam10[3] = {0x2C, 0x2C, 00};
@@ -1403,17 +1414,26 @@ static int32_t LCD_Init(uint32_t Orientation)
 
     if (HAL_DSI_ShortWrite(&hlcd_dsi, 0, DSI_DCS_SHORT_PKT_WRITE_P1, 0xBD, 0x00) != HAL_OK) { ErrorNumber++; }
 
-    uint8_t InitParam11[] = {0x01, 0x00, 0x07, 0x0F, 0x16, 0x1F, 0x27, 0x30, 0x38, 0x40, 0x47, 0x4E, 0x56, 0x5D, 0x65, 0x6D, 0x74, 0x7D, 0x84, 0x8A, 0x90, 0x99, 0xA1, 0xA9, 0xB0, 0xB6, 0xBD, 0xC4, 0xCD, 0xD4, 0xDD, 0xE5, 0xEC, 0xF3, 0x36, 0x07, 0x1C, 0xC0, 0x1B, 0x01, 0xF1, 0x34, 0x00};
+    uint8_t InitParam11[] = {0x01, 0x00, 0x07, 0x0F, 0x16, 0x1F, 0x27, 0x30, 0x38, 0x40, 0x47, 0x4E, 0x56, 0x5D, 0x65,
+                             0x6D, 0x74, 0x7D, 0x84, 0x8A, 0x90, 0x99, 0xA1, 0xA9, 0xB0, 0xB6, 0xBD, 0xC4, 0xCD, 0xD4,
+                             0xDD, 0xE5, 0xEC, 0xF3, 0x36, 0x07, 0x1C, 0xC0, 0x1B, 0x01, 0xF1, 0x34, 0x00
+                            };
     if (HAL_DSI_LongWrite(&hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 42, 0xC1, InitParam11) != HAL_OK) { ErrorNumber++; }
 
     if (HAL_DSI_ShortWrite(&hlcd_dsi, 0, DSI_DCS_SHORT_PKT_WRITE_P1, 0xBD, 0x01) != HAL_OK) { ErrorNumber++; }
 
-    uint8_t InitParam12[] = {0x00, 0x08, 0x0F, 0x16, 0x1F, 0x28, 0x31, 0x39, 0x41, 0x48, 0x51, 0x59, 0x60, 0x68, 0x70, 0x78, 0x7F, 0x87, 0x8D, 0x94, 0x9C, 0xA3, 0xAB, 0xB3, 0xB9, 0xC1, 0xC8, 0xD0, 0xD8, 0xE0, 0xE8, 0xEE, 0xF5, 0x3B, 0x1A, 0xB6, 0xA0, 0x07, 0x45, 0xC5, 0x37, 0x00};
+    uint8_t InitParam12[] = {0x00, 0x08, 0x0F, 0x16, 0x1F, 0x28, 0x31, 0x39, 0x41, 0x48, 0x51, 0x59, 0x60, 0x68, 0x70,
+                             0x78, 0x7F, 0x87, 0x8D, 0x94, 0x9C, 0xA3, 0xAB, 0xB3, 0xB9, 0xC1, 0xC8, 0xD0, 0xD8, 0xE0,
+                             0xE8, 0xEE, 0xF5, 0x3B, 0x1A, 0xB6, 0xA0, 0x07, 0x45, 0xC5, 0x37, 0x00
+                            };
     if (HAL_DSI_LongWrite(&hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 42, 0xC1, InitParam12) != HAL_OK) { ErrorNumber++; }
 
     if (HAL_DSI_ShortWrite(&hlcd_dsi, 0, DSI_DCS_SHORT_PKT_WRITE_P1, 0xBD, 0x02) != HAL_OK) { ErrorNumber++; }
 
-    uint8_t InitParam13[42] = {0x00, 0x09, 0x0F, 0x18, 0x21, 0x2A, 0x34, 0x3C, 0x45, 0x4C, 0x56, 0x5E, 0x66, 0x6E, 0x76, 0x7E, 0x87, 0x8E, 0x95, 0x9D, 0xA6, 0xAF, 0xB7, 0xBD, 0xC5, 0xCE, 0xD5, 0xDF, 0xE7, 0xEE, 0xF4, 0xFA, 0xFF, 0x0C, 0x31, 0x83, 0x3C, 0x5B, 0x56, 0x1E, 0x5A, 0xFF};
+    uint8_t InitParam13[42] = {0x00, 0x09, 0x0F, 0x18, 0x21, 0x2A, 0x34, 0x3C, 0x45, 0x4C, 0x56, 0x5E, 0x66, 0x6E,
+                               0x76, 0x7E, 0x87, 0x8E, 0x95, 0x9D, 0xA6, 0xAF, 0xB7, 0xBD, 0xC5, 0xCE, 0xD5, 0xDF,
+                               0xE7, 0xEE, 0xF4, 0xFA, 0xFF, 0x0C, 0x31, 0x83, 0x3C, 0x5B, 0x56, 0x1E, 0x5A, 0xFF
+                              };
     if (HAL_DSI_LongWrite(&hlcd_dsi, 0, DSI_DCS_LONG_PKT_WRITE, 42, 0xC1, InitParam13) != HAL_OK) { ErrorNumber++; }
 
     if (HAL_DSI_ShortWrite(&hlcd_dsi, 0, DSI_DCS_SHORT_PKT_WRITE_P1, 0xBD, 0x00) != HAL_OK) { ErrorNumber++; }
@@ -1725,6 +1745,8 @@ static void DSI_MspInit(DSI_HandleTypeDef *hdsi)
 
   /* Set the TX escape clock division factor */
   hlcd_dsi.Instance->CCR = 4;
+
+  HAL_Delay(1);
 
   /* Config DSI Clock to DSI PHY */
   DSIPHYInitPeriph.PeriphClockSelection = RCC_PERIPHCLK_DSI;

@@ -31,7 +31,7 @@
 
 
 #define S_HEAP_SIZE             0x0001000
-#define S_MSP_STACK_SIZE_INIT   0x0000400
+#define S_MSP_STACK_SIZE_INIT   0x0000800
 #define S_MSP_STACK_SIZE        0x0000800
 #define S_PSP_STACK_SIZE        0x0000800
 
@@ -84,7 +84,10 @@
 #define _SRAM2_BASE_S           (0x30030000) /*!< SRAM2(64 KB) base address */
 #define _SRAM3_BASE_S           (0x30040000) /*!< SRAM3(512 KB) base address */
 #define _SRAM4_BASE_S           (0x38000000) /*!< SRAM4(16 KB) base address */
-#elif defined(STM32U595xx) || defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+#elif defined (STM32U595xx) || defined (STM32U599xx) \
+   || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
+   || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
+   || defined (STM32U5G7xx)
 #define _SRAM2_TOP              (0xD0000) /* 832Kbytes */
 #define _SRAM1_SIZE_MAX         (0xC0000)  /*!< SRAM1=768k*/
 #define _SRAM2_SIZE_MAX         (0x10000)  /*!< SRAM2=64k*/
@@ -320,9 +323,9 @@
 #define LOADER_MAX_CODE_SIZE                 (FLASH_TOTAL_SIZE - FLASH_AREA_3_OFFSET - FLASH_AREA_3_SIZE)
 #endif /*  MCUBOOT_PRIMARY_ONLY */
 
-#if LOADER_CODE_SIZE > LOADER_MAX_CODE_SIZE
+#if defined(MCUBOOT_EXT_LOADER) && (LOADER_CODE_SIZE > LOADER_MAX_CODE_SIZE)
 #error "Loader mapping overlapping slot %LOADER_CODE_SIZE %LOADER_MAX_CODE_SIZE"
-#endif /* LOADER_CODE_SIZE > LOADER_MAX_CODE_SIZE */
+#endif /* defined(MCUBOOT_EXT_LOADER) && LOADER_CODE_SIZE > LOADER_MAX_CODE_SIZE */
 
 /* TFM non volatile data (NVCNT/PS/ITS) region */
 #define TFM_NV_DATA_START                   (S_ROM_ALIAS(FLASH_NV_COUNTERS_AREA_OFFSET))

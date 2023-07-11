@@ -27,7 +27,6 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "sitronix_reg.h"
-#include <stddef.h>
 #include "sitronix_conf.h"
 
 /* Macros --------------------------------------------------------------------*/
@@ -92,7 +91,6 @@ typedef struct
 typedef int32_t (*SITRONIX_Init_Func)(void);
 typedef int32_t (*SITRONIX_DeInit_Func)(void);
 typedef int32_t (*SITRONIX_GetTick_Func)(void);
-typedef int32_t (*SITRONIX_Delay_Func)(uint32_t);
 typedef int32_t (*SITRONIX_WriteReg_Func)(uint16_t, uint16_t, uint8_t *, uint16_t);
 typedef int32_t (*SITRONIX_ReadReg_Func)(uint16_t, uint16_t, uint8_t *, uint16_t);
 typedef int32_t (*SITRONIX_ReadData_Func)(uint16_t, uint8_t *, uint16_t);
@@ -193,19 +191,19 @@ int32_t SITRONIX_GetCapabilities(SITRONIX_Object_t *pObj, SITRONIX_Capabilities_
   * @}
   */
 
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
 #ifdef __cplusplus
 }
 #endif
 #endif /* SITRONIX_H */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */

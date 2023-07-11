@@ -71,24 +71,24 @@ typedef struct
 
 typedef struct
 {
-  int32_t (*Init)(CS42L51_Object_t *, CS42L51_Init_t *);
+  int32_t (*Init)(CS42L51_Object_t *, const CS42L51_Init_t *);
   int32_t (*DeInit)(CS42L51_Object_t *);
   int32_t (*ReadID)(CS42L51_Object_t *, uint32_t *);
   int32_t (*Play)(CS42L51_Object_t *);
   int32_t (*Pause)(CS42L51_Object_t *);
   int32_t (*Resume)(CS42L51_Object_t *);
   int32_t (*Stop)(CS42L51_Object_t *, uint32_t);
-  int32_t (*SetFrequency)(CS42L51_Object_t *, uint32_t);
-  int32_t (*GetFrequency)(CS42L51_Object_t *, uint32_t *);
+  int32_t (*SetFrequency)(const CS42L51_Object_t *, uint32_t);
+  int32_t (*GetFrequency)(const CS42L51_Object_t *, const uint32_t *);
   int32_t (*SetVolume)(CS42L51_Object_t *, uint32_t, uint8_t);
   int32_t (*GetVolume)(CS42L51_Object_t *, uint32_t, uint8_t *);
   int32_t (*SetMute)(CS42L51_Object_t *, uint32_t);
-  int32_t (*SetOutputMode)(CS42L51_Object_t *, uint32_t);
-  int32_t (*SetResolution)(CS42L51_Object_t *, uint32_t);
-  int32_t (*GetResolution)(CS42L51_Object_t *, uint32_t *);
-  int32_t (*SetProtocol)(CS42L51_Object_t *, uint32_t);
-  int32_t (*GetProtocol)(CS42L51_Object_t *, uint32_t *);
-  int32_t (*Reset)(CS42L51_Object_t *);
+  int32_t (*SetOutputMode)(const CS42L51_Object_t *, uint32_t);
+  int32_t (*SetResolution)(const CS42L51_Object_t *, uint32_t);
+  int32_t (*GetResolution)(const CS42L51_Object_t *, const uint32_t *);
+  int32_t (*SetProtocol)(const CS42L51_Object_t *, uint32_t);
+  int32_t (*GetProtocol)(const CS42L51_Object_t *, const uint32_t *);
+  int32_t (*Reset)(const CS42L51_Object_t *);
 } CS42L51_Drv_t;
 
 
@@ -174,7 +174,7 @@ typedef struct
 ------------------------------------------------------------------------------*/
 /* High Layer codec functions */
 int32_t CS42L51_RegisterBusIO(CS42L51_Object_t *pObj, CS42L51_IO_t *pIO);
-int32_t CS42L51_Init(CS42L51_Object_t *pObj, CS42L51_Init_t *pInit);
+int32_t CS42L51_Init(CS42L51_Object_t *pObj, const CS42L51_Init_t *pInit);
 int32_t CS42L51_DeInit(CS42L51_Object_t *pObj);
 int32_t CS42L51_ReadID(CS42L51_Object_t *pObj, uint32_t *Id);
 int32_t CS42L51_Play(CS42L51_Object_t *pObj);
@@ -184,14 +184,14 @@ int32_t CS42L51_Stop(CS42L51_Object_t *pObj, uint32_t CodecPdwnMode);
 int32_t CS42L51_SetVolume(CS42L51_Object_t *pObj, uint32_t InputOutput, uint8_t Volume);
 int32_t CS42L51_GetVolume(CS42L51_Object_t *pObj, uint32_t InputOutput, uint8_t *Volume);
 int32_t CS42L51_SetMute(CS42L51_Object_t *pObj, uint32_t Cmd);
-int32_t CS42L51_SetOutputMode(CS42L51_Object_t *pObj, uint32_t Output);
-int32_t CS42L51_SetResolution(CS42L51_Object_t *pObj, uint32_t Resolution);
-int32_t CS42L51_GetResolution(CS42L51_Object_t *pObj, uint32_t *Resolution);
-int32_t CS42L51_SetProtocol(CS42L51_Object_t *pObj, uint32_t Protocol);
-int32_t CS42L51_GetProtocol(CS42L51_Object_t *pObj, uint32_t *Protocol);
-int32_t CS42L51_SetFrequency(CS42L51_Object_t *pObj, uint32_t AudioFreq);
-int32_t CS42L51_GetFrequency(CS42L51_Object_t *pObj, uint32_t *AudioFreq);
-int32_t CS42L51_Reset(CS42L51_Object_t *pObj);
+int32_t CS42L51_SetOutputMode(const CS42L51_Object_t *pObj, uint32_t Output);
+int32_t CS42L51_SetResolution(const CS42L51_Object_t *pObj, uint32_t Resolution);
+int32_t CS42L51_GetResolution(const CS42L51_Object_t *pObj, const uint32_t *Resolution);
+int32_t CS42L51_SetProtocol(const CS42L51_Object_t *pObj, uint32_t Protocol);
+int32_t CS42L51_GetProtocol(const CS42L51_Object_t *pObj, const uint32_t *Protocol);
+int32_t CS42L51_SetFrequency(const CS42L51_Object_t *pObj, uint32_t AudioFreq);
+int32_t CS42L51_GetFrequency(const CS42L51_Object_t *pObj, const uint32_t *AudioFreq);
+int32_t CS42L51_Reset(const CS42L51_Object_t *pObj);
 
 /* Audio driver structure */
 extern CS42L51_Drv_t CS42L51_Driver;

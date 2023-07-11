@@ -21,8 +21,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <inttypes.h>
-#include "main.h"
 #include "app_netxduo.h"
+#include "main.h"
 #include "nxd_bsd.h"
 #include "nx_icmp.h"
 

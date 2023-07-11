@@ -135,7 +135,7 @@ int32_t M24256_DeInit(M24256_Object_t *pObj)
   * @param  pObj  M24256 object
   * @retval Component status
   */
-int32_t M24256_Write(const M24256_Object_t * pObj, uint16_t Addr, uint8_t *pData, uint16_t Length)
+int32_t M24256_Write(const M24256_Object_t *pObj, uint16_t Addr, uint8_t *pData, uint16_t Length)
 {
   return pObj->Ctx.Write(pObj->Ctx.handle, Addr, pData, Length);
 }
@@ -145,9 +145,9 @@ int32_t M24256_Write(const M24256_Object_t * pObj, uint16_t Addr, uint8_t *pData
   * @param  pObj  M24256 object
   * @retval Component status
   */
-int32_t M24256_Read(const M24256_Object_t * pObj, uint16_t Addr, uint8_t *Data, uint16_t Length)
+int32_t M24256_Read(const M24256_Object_t *pObj, uint16_t Addr, uint8_t *pData, uint16_t Length)
 {
-  return pObj->Ctx.Read(pObj->Ctx.handle, Addr, Data, Length);
+  return pObj->Ctx.Read(pObj->Ctx.handle, Addr, pData, Length);
 }
 
 /**
@@ -156,7 +156,7 @@ int32_t M24256_Read(const M24256_Object_t * pObj, uint16_t Addr, uint8_t *Data, 
   * @param  Trials  The number of trials before returning a timeout error
   * @retval Component status
   */
-int32_t M24256_IsReady(const M24256_Object_t * pObj, uint32_t Trials)
+int32_t M24256_IsReady(const M24256_Object_t *pObj, uint32_t Trials)
 {
   return pObj->Ctx.IsReady(pObj->Ctx.handle, Trials);
 }
@@ -178,7 +178,7 @@ int32_t M24256_IsReady(const M24256_Object_t * pObj, uint32_t Trials)
 static int32_t M24256_ReadWrap(const void *handle, uint16_t Addr, uint8_t *pData, uint16_t Length)
 {
   /* Derogation MISRAC2012-Rule-11.5 */
-  const M24256_Object_t * pObj = (const M24256_Object_t *)handle;
+  const M24256_Object_t *pObj = (const M24256_Object_t *)handle;
 
   return pObj->IO.Read(pObj->IO.Address, Addr, pData, Length);
 }
@@ -194,7 +194,7 @@ static int32_t M24256_ReadWrap(const void *handle, uint16_t Addr, uint8_t *pData
 static int32_t M24256_WriteWrap(const void *handle, uint16_t Addr, uint8_t *pData, uint16_t Length)
 {
   /* Derogation MISRAC2012-Rule-11.5 */
-  const M24256_Object_t * pObj = (const M24256_Object_t *)handle;
+  const M24256_Object_t *pObj = (const M24256_Object_t *)handle;
 
   return pObj->IO.Write(pObj->IO.Address, Addr, pData, Length);
 }
@@ -208,7 +208,7 @@ static int32_t M24256_WriteWrap(const void *handle, uint16_t Addr, uint8_t *pDat
 static int32_t M24256_IsReadyWrap(const void *handle, uint32_t Trials)
 {
   /* Derogation MISRAC2012-Rule-11.5 */
-  const M24256_Object_t * pObj = (const M24256_Object_t *)handle;
+  const M24256_Object_t *pObj = (const M24256_Object_t *)handle;
 
   return pObj->IO.IsReady(pObj->IO.Address, Trials);
 }

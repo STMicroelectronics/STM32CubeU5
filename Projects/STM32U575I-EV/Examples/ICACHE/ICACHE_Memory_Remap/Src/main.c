@@ -62,7 +62,7 @@ extern uint32_t _extsram_region_init_length;
 /* Function pointer declaration used to call remapped function */
 typedef void (*funcptr)(void);
 
-funcptr IO_Toggle_extSRAM_Remapped;
+funcptr IO_Blink_extSRAM_Remapped;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -72,7 +72,7 @@ static void MX_GPIO_Init(void);
 static void MX_ICACHE_Init(void);
 static void MX_FMC_Init(void);
 /* USER CODE BEGIN PFP */
-static void IO_Toggle_extSRAM(void);
+static void IO_Blink_extSRAM(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -135,11 +135,11 @@ int main(void)
 
   if(HAL_SRAM_Write_8b(&hsram1, (uint32_t *)0x60000000, (uint8_t *)flash_addr, extsram_size) != HAL_OK)
   {
-    return 2;
+    Error_Handler();
   }
 
   /* Execute function from external RAM before remap */
-  IO_Toggle_extSRAM();    /* Toggle the Green Led before remapped */
+  IO_Blink_extSRAM();    /* Blink the Green Led once, before remapping */
 
   /* Remap SRAM memory */
   region_config.TrafficRoute    = ICACHE_MASTER2_PORT;
@@ -148,20 +148,20 @@ int main(void)
   region_config.BaseAddress     = 0x10000000;
   region_config.RemapAddress    = 0x60000000;
 
-  /* Set remap Toggle function pointer */
-  IO_Toggle_extSRAM_Remapped = (funcptr)(IO_Toggle_extSRAM);
-
   /* Disable Instruction cache */
   HAL_ICACHE_Disable();
 
   /* Enable the remapped region */
-  if(HAL_ICACHE_EnableRemapRegion(ICACHE_REGION_1, &region_config) != HAL_OK) return 21;
+  if(HAL_ICACHE_EnableRemapRegion(ICACHE_REGION_1, &region_config) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
   /* Enable the Instruction and Data Cache */
   HAL_ICACHE_Enable();
 
-  /* Toggle the Green led After remap*/
-  IO_Toggle_extSRAM_Remapped();
+   /* Set remap Blink function pointer */
+  IO_Blink_extSRAM_Remapped = (funcptr)(0x10000001UL);
 
   /* USER CODE END 2 */
 
@@ -169,6 +169,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    IO_Blink_extSRAM_Remapped();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -370,14 +371,35 @@ static void MX_GPIO_Init(void)
   * @retval None
   */
 #if defined(__ICCARM__)
-__root static void IO_Toggle_extSRAM(void) @ ".extsram_region"
+__root static void IO_Blink_extSRAM(void) @ ".extsram_region"
 
 #elif defined(__ARMCC_VERSION)|| defined(__GNUC__)
- static void __attribute__((section(".extsram_region"), noinline)) IO_Toggle_extSRAM(void)
+ static void __attribute__((section(".extsram_region"), noinline)) IO_Blink_extSRAM(void)
 #endif
 {
-    BSP_LED_Toggle(LED_GREEN);
-    HAL_Delay(500);
+  /* Turn on the Green Led */
+  __asm("ldr  r2, =0x42020414          \n"
+        "ldr  r1, [r2]                 \n"
+        "orr  r1, r1, #0x1 << 7        \n"
+        "str  r1, [r2]                 \n"
+        );
+
+  /* Delay */
+  for(uint32_t i=0;i< 0x1FFFFFU;i++ )
+  {
+    __asm("nop");
+  }
+
+  /* Turn off the Green Led */
+  __asm("bic  r1, r1, #0x1 << 7        \n"
+        "str  r1, [r2]                 \n"
+        );
+
+  /* Delay */
+  for(uint32_t i=0;i< 0x1FFFFFU;i++ )
+  {
+    __asm("nop");
+  }
 }
 
 /* USER CODE END 4 */

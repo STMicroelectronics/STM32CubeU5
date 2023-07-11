@@ -180,6 +180,11 @@ void SystemClock_Config(void)
   while (LL_PWR_IsActiveFlag_VOS() == 0)
   {
   }
+  LL_PWR_EnableBkUpAccess();
+  while (LL_PWR_IsEnabledBkUpAccess () == 0U)
+  {
+  }
+
   LL_RCC_LSI_Enable();
 
    /* Wait till LSI is ready */
@@ -197,7 +202,6 @@ void SystemClock_Config(void)
   LL_RCC_MSI_EnableRangeSelection();
   LL_RCC_MSIS_SetRange(LL_RCC_MSISRANGE_4);
   LL_RCC_MSI_SetCalibTrimming(16, LL_RCC_MSI_OSCILLATOR_1);
-  LL_PWR_EnableBkUpAccess();
   LL_RCC_PLL1_ConfigDomain_SYS(LL_RCC_PLL1SOURCE_MSIS, 1, 80, 2);
   LL_RCC_PLL1_EnableDomain_SYS();
   LL_RCC_SetPll1EPodPrescaler(LL_RCC_PLL1MBOOST_DIV_1);

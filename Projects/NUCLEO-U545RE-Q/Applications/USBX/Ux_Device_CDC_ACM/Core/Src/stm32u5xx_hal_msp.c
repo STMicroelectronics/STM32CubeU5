@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -216,7 +217,7 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef* hpcd)
     }
 
     __HAL_RCC_GPIOA_CLK_ENABLE();
-    /**USB GPIO Configuration
+    /**USB_DRD_FS GPIO Configuration
     PA11     ------> USB_DM
     PA12     ------> USB_DP
     */
@@ -266,7 +267,7 @@ void HAL_PCD_MspDeInit(PCD_HandleTypeDef* hpcd)
     /* Peripheral clock disable */
     __HAL_RCC_USB_FS_CLK_DISABLE();
 
-    /**USB GPIO Configuration
+    /**USB_DRD_FS GPIO Configuration
     PA11     ------> USB_DM
     PA12     ------> USB_DP
     */

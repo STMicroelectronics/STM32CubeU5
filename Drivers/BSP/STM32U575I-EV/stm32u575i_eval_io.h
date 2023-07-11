@@ -179,7 +179,7 @@ extern EXTI_HandleTypeDef              hio_exti;
 /** @addtogroup STM32U575I_EVAL_IO_Exported_Functions
   * @{
   */
-int32_t BSP_IO_Init(uint32_t Instance, BSP_IO_Init_t *Init);
+int32_t BSP_IO_Init(const uint32_t Instance, BSP_IO_Init_t *Init);
 int32_t BSP_IO_DeInit(uint32_t Instance);
 
 int32_t BSP_IO_GetIT(uint32_t Instance, uint32_t IoPin);

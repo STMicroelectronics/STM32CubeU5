@@ -1230,13 +1230,8 @@ static int32_t OSPI_NOR_ResetMemory(uint32_t Instance)
 {
   int32_t ret = BSP_ERROR_NONE;
 
-  /* Check if the instance is supported */
-  if (Instance >= OSPI_NOR_INSTANCES_NUMBER)
-  {
-    ret = BSP_ERROR_WRONG_PARAM;
-  }
-  else if (MX25UM51245G_ResetEnable(&hospi_nor[Instance], BSP_OSPI_NOR_SPI_MODE,
-                                    BSP_OSPI_NOR_STR_TRANSFER) != MX25UM51245G_OK)
+  if (MX25UM51245G_ResetEnable(&hospi_nor[Instance], BSP_OSPI_NOR_SPI_MODE,
+                               BSP_OSPI_NOR_STR_TRANSFER) != MX25UM51245G_OK)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
@@ -1289,14 +1284,9 @@ static int32_t OSPI_NOR_EnterDOPIMode(uint32_t Instance)
   int32_t ret;
   uint8_t reg[2];
 
-  /* Check if the instance is supported */
-  if (Instance >= OSPI_NOR_INSTANCES_NUMBER)
-  {
-    ret = BSP_ERROR_WRONG_PARAM;
-  }
   /* Enable write operations */
-  else if (MX25UM51245G_WriteEnable(&hospi_nor[Instance], Ospi_Nor_Ctx[Instance].InterfaceMode,
-                                    Ospi_Nor_Ctx[Instance].TransferRate) != MX25UM51245G_OK)
+  if (MX25UM51245G_WriteEnable(&hospi_nor[Instance], Ospi_Nor_Ctx[Instance].InterfaceMode,
+                               Ospi_Nor_Ctx[Instance].TransferRate) != MX25UM51245G_OK)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
@@ -1368,14 +1358,9 @@ static int32_t OSPI_NOR_EnterSOPIMode(uint32_t Instance)
   int32_t ret;
   uint8_t reg[2];
 
-  /* Check if the instance is supported */
-  if (Instance >= OSPI_NOR_INSTANCES_NUMBER)
-  {
-    ret = BSP_ERROR_WRONG_PARAM;
-  }
   /* Enable write operations */
-  else if (MX25UM51245G_WriteEnable(&hospi_nor[Instance], Ospi_Nor_Ctx[Instance].InterfaceMode,
-                                    Ospi_Nor_Ctx[Instance].TransferRate) != MX25UM51245G_OK)
+  if (MX25UM51245G_WriteEnable(&hospi_nor[Instance], Ospi_Nor_Ctx[Instance].InterfaceMode,
+                               Ospi_Nor_Ctx[Instance].TransferRate) != MX25UM51245G_OK)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }
@@ -1440,14 +1425,9 @@ static int32_t OSPI_NOR_ExitOPIMode(uint32_t Instance)
   int32_t ret = BSP_ERROR_NONE;
   uint8_t reg[2];
 
-  /* Check if the instance is supported */
-  if (Instance >= OSPI_NOR_INSTANCES_NUMBER)
-  {
-    ret = BSP_ERROR_WRONG_PARAM;
-  }
   /* Enable write operations */
-  else if (MX25UM51245G_WriteEnable(&hospi_nor[Instance], Ospi_Nor_Ctx[Instance].InterfaceMode,
-                                    Ospi_Nor_Ctx[Instance].TransferRate) != MX25UM51245G_OK)
+  if (MX25UM51245G_WriteEnable(&hospi_nor[Instance], Ospi_Nor_Ctx[Instance].InterfaceMode,
+                               Ospi_Nor_Ctx[Instance].TransferRate) != MX25UM51245G_OK)
   {
     ret = BSP_ERROR_COMPONENT_FAILURE;
   }

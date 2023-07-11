@@ -18,8 +18,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include <inttypes.h>
 #include "msg.h"
-#include "main.h"
 #include "app_netxduo.h"
+#include "main.h"
 #include "nxd_bsd.h"
 
 /* Using the ARM Mbed echo server. */

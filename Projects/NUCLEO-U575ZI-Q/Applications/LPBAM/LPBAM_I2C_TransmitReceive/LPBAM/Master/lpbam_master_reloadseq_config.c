@@ -406,13 +406,13 @@ static void MX_I2C3_DeInit(void)
   {
     Error_Handler();
   }
-  /* UnRegister I2C msp callbacks */
-  if (HAL_I2C_UnRegisterCallback(&hi2c3, HAL_I2C_MSPDEINIT_CB_ID) != HAL_OK)
+  /* Init I2C3 peripheral */
+  if (HAL_I2C_DeInit(&hi2c3) != HAL_OK)
   {
     Error_Handler();
   }
-  /* Init I2C3 peripheral */
-  if (HAL_I2C_DeInit(&hi2c3) != HAL_OK)
+  /* UnRegister I2C msp callbacks */
+  if (HAL_I2C_UnRegisterCallback(&hi2c3, HAL_I2C_MSPDEINIT_CB_ID) != HAL_OK)
   {
     Error_Handler();
   }
@@ -621,13 +621,13 @@ static void MX_RTC_DeInit(void)
   {
     Error_Handler();
   }
-  /* UnRegister RTC msp callbacks */
-  if (HAL_RTC_UnRegisterCallback(&hrtc, HAL_RTC_MSPDEINIT_CB_ID) != HAL_OK)
+  /* Init RTC peripheral */
+  if (HAL_RTC_DeInit(&hrtc) != HAL_OK)
   {
     Error_Handler();
   }
-  /* Init RTC peripheral */
-  if (HAL_RTC_DeInit(&hrtc) != HAL_OK)
+  /* UnRegister RTC msp callbacks */
+  if (HAL_RTC_UnRegisterCallback(&hrtc, HAL_RTC_MSPDEINIT_CB_ID) != HAL_OK)
   {
     Error_Handler();
   }

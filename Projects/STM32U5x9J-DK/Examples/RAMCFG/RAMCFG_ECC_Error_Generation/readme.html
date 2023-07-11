@@ -22,7 +22,7 @@
 <h2 id="ramcfg_ecc_error_generation-example-description"><b>RAMCFG_ECC_Error_Generation Example Description</b></h2>
 <ul>
 <li><p>How to configure and use the RAMCFG HAL API to manage ECC errors via RAMCFG peripheral.</p></li>
-<li><p>This project is targeted to run on STM32U575ZITxQ devices on STM32U599J_DK board from STMicroelectronics.</p></li>
+<li><p>This project is targeted to run on STM32U5x9J_DK board from STMicroelectronics.</p></li>
 <li><p>At the beginning of the main program the HAL_Init() function is called to reset all the peripherals, initialize the Flash interface and the systick. Then the SystemClock_Config() function is used to configure the system clock (SYSCLK) to run at 160 MHz.</p></li>
 <li><p>When the RAMCFG controller is disabled, the ECC calculation when writing memory is not performed. So, when enabling the RAMCFG after writing to SRAM, the ECC and data don’t match and the RAMCFG controller will generate interrupts according to ECC error type (Single or double). By default, interrupts are disabled. After enabling them (single error and double error interrupts), the RAMCFG generates interrupts on each read access to a corrupted data. The RAMCFG controller is able to detect and correct ECC single error data and only detect ECC double error data.</p></li>
 <li>STM32U5x9J-DK board’s LED can be used to monitor the project operation status:
@@ -52,6 +52,7 @@
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
 <li><p>This example runs on STM32U5A9xx devices.</p></li>
+<li><p>This example runs on STM32U5G9xx devices.</p></li>
 <li><p>This example has been tested with STMicroelectronics STM32U5x9J-DK (MB1829B) board and can be easily tailored to any other supported device and development board.</p></li>
 </ul>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>

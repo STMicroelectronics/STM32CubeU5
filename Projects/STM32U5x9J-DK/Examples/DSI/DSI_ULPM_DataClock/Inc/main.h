@@ -62,10 +62,9 @@ void Error_Handler(void);
 
 /* Private defines -----------------------------------------------------------*/
 #define VFP 50
-#define PIXEL_PERLINE 768
 #define LCD_WIDTH 480
 #define VBP 12
-#define LCD_FRAME_BUFFER GFXMMU_VIRTUAL_BUFFER0_BASE
+#define LCD_FRAME_BUFFER 0x200D0000
 #define HACT 480
 #define VSYNC 1
 #define HFP 1

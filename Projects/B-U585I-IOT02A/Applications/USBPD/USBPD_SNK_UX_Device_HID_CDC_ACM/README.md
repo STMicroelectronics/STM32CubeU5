@@ -61,8 +61,8 @@ When plugged to PC host, the STM32U585xx must be properly enumerated a composite
 During the enumeration phase, device provides host with the requested descriptors (Device, configuration, string).
 Those descriptors are used by host driver to identify the device capabilities. 
 Once STM32U585xx USB device successfully completed the enumeration phase.
-Connect USB cable to Host , Open two hyperterminals (USB com port and UART com port) to send/receive data to/from host to/from device.
-When USER_Button is pressed, the device sneds a HID report. Each report sent should move the PC host machine mouse cursor by one step.
+Open two hyperterminals (USB com port and UART com port) to send/receive data to/from host to/from device.
+When USER_Button is pressed, the device sends a HID report. Each report sent should move the PC host machine mouse cursor by one step.
 
 #### <b>Error behaviors</b>
 
@@ -150,7 +150,7 @@ USB_PD_Lib, UCPD, Type C, USBPD
 
 <b>Note</b>
 
- - When we configure the VCP baudrate under 9600 the USART1 baudrate shall be set to 9600.
+ - If we configure the VCP baudrate under 9600 the USART1 baudrate shall be set to 9600.
  - _TRACE and _GUI_INTERFACE compilation switches are now disabled to allow proper execution of CDC_ACM application over VCP. If user wants to use STM32CUbeMonitorUCPD, those 2 flags need to be enabled in project compilation options. 
 
 ### <b>How to use it ?</b>

@@ -214,11 +214,6 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/addons/dhcp/nxd_dhcpv6_client.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/NetXDuo/Addons HTTP Client/nxd_http_client.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/addons/http/nxd_http_client.c</locationURI>
-		</link>
-		<link>
 			<name>Middlewares/NetXDuo/NX Core/nx_arp_announce_send.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/common/src/nx_arp_announce_send.c</locationURI>
@@ -2964,6 +2959,16 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/threadx/ports/cortex_m33/gnu/src/tx_thread_interrupt_control.S</locationURI>
 		</link>
 		<link>
+			<name>Middlewares/ThreadX/Core/tx_thread_interrupt_disable.S</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/threadx/ports/cortex_m33/gnu/src/tx_thread_interrupt_disable.S</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/ThreadX/Core/tx_thread_interrupt_restore.S</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/threadx/ports/cortex_m33/gnu/src/tx_thread_interrupt_restore.S</locationURI>
+		</link>
+		<link>
 			<name>Middlewares/ThreadX/Core/tx_thread_preemption_change.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/threadx/common/src/tx_thread_preemption_change.c</locationURI>
@@ -3492,6 +3497,11 @@
 			<name>Drivers/BSP/Components/mx_wifi/io_pattern/mx_wifi_spi.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/mx_wifi/io_pattern/mx_wifi_spi.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/NetXDuo/Network/NetXDuo/Addons_HTTP_Client/nxd_http_client.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/netxduo/addons/http/nxd_http_client.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

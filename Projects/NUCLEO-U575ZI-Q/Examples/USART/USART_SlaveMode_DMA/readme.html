@@ -22,7 +22,7 @@
 <h2 id="usart_slavemode_dma-example-description"><b>USART_SlaveMode_DMA Example Description</b></h2>
 <p>This example describes an USART-SPI communication (transmit/receive) with DMA between two boards where the USART is configured as a slave.</p>
 <p>Boards: NUCLEO-U575ZI-Q (embeds a STM32U575xx device)</p>
-<p>Two identical boards are connected as shown on the picture above. Board 1: SPI Master board Board 2: USART Slave board</p>
+<p>Two identical boards are connected as shown below. Board 1: SPI Master board Board 2: USART Slave board</p>
 <p>In a first step, after the user press on the User push-button, Master (SPI) starts the communication by sending aTxBuffer and receiving aRxBuffer through HAL_SPI_TransmitReceive(), at the same time Slave (USART) transmits aTxBuffer and receives aRxBuffer through HAL_USART_TransmitReceive(). Finally, aRxBuffer and aTxBuffer are compared through Buffercmp() in order to check buffers correctness.</p>
 <p>WARNING: as both boards do not behave the same way, “SLAVE_BOARD” compilation switch is defined in Inc/main.h and must be enabled at compilation time before loading the executable in the USART slave board. The SPI master board needs to be loaded with an executable software obtained with SLAVE_BOARD disabled. if you want to repeat the execution of the example, you should reset the master board first else the execution will fail and a red led will be on.</p>
 <p>NUCLEO-U575ZI-Q board LEDs are used to monitor the transfer status:</p>

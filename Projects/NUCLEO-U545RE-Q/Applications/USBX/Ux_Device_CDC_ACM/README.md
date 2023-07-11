@@ -1,4 +1,4 @@
-## <b>Ux_Device_CDC_ACM application description </b>
+## <b>Ux_Device_CDC_ACM Application Description </b>
 
 This application provides an example of Azure RTOS USBX stack usage on NUCLEO-U545RE-Q board, it shows how to develop USB Device communication Class "CDC_ACM" based application.
 The application is designed to emulate an USB-to-UART bridge following the Virtual COM Port (VCP) implementation, the code provides all required device descriptors framework
@@ -103,8 +103,8 @@ RTOS, ThreadX, USBX, USBXDevice, USB_DRD, Full Speed, CDC, VCP, USART, DMA.
 
 ### <b>Hardware and Software environment</b>
 
-  - This application runs on STM32H5xx devices
-  - This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision MB1814-WS.
+  - This application runs on STM32U545xx devices
+  - This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision MB1841-A02
     and can be easily tailored to any other supported device and development board.
 
   - NUCLEO-U545RE-Q Set-up:

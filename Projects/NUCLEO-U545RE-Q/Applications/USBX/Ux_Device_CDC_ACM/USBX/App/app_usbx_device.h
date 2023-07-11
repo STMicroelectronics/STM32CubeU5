@@ -30,6 +30,7 @@ extern "C" {
 #include "ux_device_cdc_acm.h"
 #include "ux_device_descriptors.h"
 #include "app_azure_rtos_config.h"
+#include "ux_dcd_stm32.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -37,7 +38,6 @@ extern "C" {
 #include "ux_system.h"
 #include "ux_utility.h"
 #include "ux_device_stack.h"
-#include "ux_dcd_stm32.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

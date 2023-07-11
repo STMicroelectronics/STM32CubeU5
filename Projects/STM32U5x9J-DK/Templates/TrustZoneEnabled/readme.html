@@ -89,6 +89,7 @@
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
 <li><p>This template runs on STM32U5A9xx devices with security enabled (TZEN=1).</p></li>
+<li><p>This template runs on STM32U5G9xx devices with security enabled (TZEN=1).</p></li>
 <li><p>This template has been tested with STMicroelectronics STM32U5x9J-DK (MB1829B) board and can be easily tailored to any other supported device and development board.</p></li>
 <li>User Option Bytes requirement (with STM32CubeProgrammer tool)
 <ul>
@@ -97,7 +98,7 @@
 <li>SECWM2_PSTRT=0xFF SECWM2_PEND=0x0 No page of internal Flash Bank2 set as secure, hence Bank2 non-secure</li>
 </ul></li>
 </ul>
-<h3 id="how-to-use-it"></b>How to use it ?</b></h3>
+<h3 id="how-to-use-it"><b>How to use it ?</b></h3>
 <p>In order to make the program work, you must do the following :</p>
 <p><b>IAR</b></p>
 <ul>
@@ -108,6 +109,33 @@
 <li>Rebuild xxxxx_NS project</li>
 <li>Load the secure and non-secures images into target memory (Ctrl + D)</li>
 <li>Run the example</li>
+</ul>
+<p><b>MDK-ARM</b></p>
+<ul>
+<li>Open your toolchain</li>
+<li>Open Multi-projects workspace file Project.uvmpw</li>
+<li>Select the xxxxx_S project as Active Project (Set as Active Project)</li>
+<li>Build xxxxx_S project</li>
+<li>Select the xxxxx_NS project as Active Project (Set as Active Project)</li>
+<li>Build xxxxx_NS project</li>
+<li>Load the non-secure binary (F8) (this shall download the -ARM_ns_ns.axf to flash memory)</li>
+<li>Select the xxxxx_S project as Active Project (Set as Active Project)</li>
+<li>Load the secure binary (F8) (this shall download the -ARM_s_s.axf to flash memory)</li>
+<li>Run the example</li>
+</ul>
+<p><b>STM32CubeIDE</b></p>
+<ul>
+<li>Open STM32CubeIDE</li>
+<li>File &gt; Import. Point to the STM32CubeIDE folder of the example project. Click Finish.</li>
+<li>Select and build the xxxxx_NS project, this will automatically trigger build of xxxxx_S project</li>
+<li>Select the xxxxx_S project and select “Debug configuration”
+<ul>
+<li>Double click on “STM32 Cortex-M C/C++ Application”</li>
+<li>Select “Startup” &gt; “Add” &gt;</li>
+</ul></li>
+<li>Select the xxxxx_NS project</li>
+<li>Build configuration : Select Release/Debug</li>
+<li>Click Debug to debug the example</li>
 </ul>
 </div>
 </div>

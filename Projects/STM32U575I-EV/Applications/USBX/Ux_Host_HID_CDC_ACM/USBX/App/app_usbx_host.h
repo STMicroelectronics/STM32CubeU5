@@ -103,8 +103,6 @@ void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin);
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define APP_QUEUE_SIZE                               1
-#define BUTTON_KEY                                   BUTTON_USER
-#define BUTTON_KEY_PIN                               BUTTON_USER_PIN
 
 /* USER CODE END PD */
 

@@ -81,8 +81,8 @@ const TestProtection_t aProtectTests[] =
     {0x00000000, "Execution successful", TEST_END}
 };
 #else
-static __attribute__((__aligned__(4))) uint32_t DMA_NON_SECURE[2] = {  0, 0 };
-const  __attribute__((__aligned__(4))) uint32_t DMA_CONST[2] = {  0xfeedbeef, 0xcacadada };
+static __attribute__((__aligned__(32))) uint32_t DMA_NON_SECURE[2] = {  0, 0 };
+const  __attribute__((__aligned__(32))) uint32_t DMA_CONST[2] = {  0xfeedbeef, 0xcacadada };
 REGION_DECLARE(Load$$LR$$, LR_VENEER, $$Limit);
 REGION_DECLARE(Image$$, TFM_APP_RW_STACK_END, $$Base);
 REGION_DECLARE(Image$$, TFM_PSA_RW_STACK_END, $$Base);

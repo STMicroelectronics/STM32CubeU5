@@ -86,11 +86,8 @@ int32_t BSP_MOTION_SENSOR_Init(uint32_t Instance, uint32_t Functions)
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && ((Functions & MOTION_MAGNETO) != 0U))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && ((Functions & (MOTION_GYRO | MOTION_ACCELERO)) != 0U))
+  else if (((Instance == 0U) && ((Functions & MOTION_MAGNETO) != 0U))
+           || ((Instance == 1U) && ((Functions & (MOTION_GYRO | MOTION_ACCELERO)) != 0U)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -235,11 +232,8 @@ int32_t BSP_MOTION_SENSOR_Enable(uint32_t Instance, uint32_t Function)
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U))
+  else if (((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
+           || ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -278,11 +272,8 @@ int32_t BSP_MOTION_SENSOR_Disable(uint32_t Instance, uint32_t Function)
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U))
+  else if (((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
+           || ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -322,11 +313,8 @@ int32_t BSP_MOTION_SENSOR_GetAxes(const uint32_t Instance, uint32_t Function, BS
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U))
+  else if (((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
+           || ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -365,11 +353,8 @@ int32_t BSP_MOTION_SENSOR_GetAxesRaw(const uint32_t Instance, uint32_t Function,
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U))
+  else if (((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
+           || ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -408,11 +393,8 @@ int32_t BSP_MOTION_SENSOR_GetSensitivity(const uint32_t Instance, uint32_t Funct
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U))
+  else if (((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
+           || ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -451,11 +433,8 @@ int32_t BSP_MOTION_SENSOR_GetOutputDataRate(const uint32_t Instance, uint32_t Fu
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U))
+  else if (((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
+           || ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -494,11 +473,8 @@ int32_t BSP_MOTION_SENSOR_SetOutputDataRate(uint32_t Instance, uint32_t Function
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U))
+  else if (((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
+           || ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -537,11 +513,8 @@ int32_t BSP_MOTION_SENSOR_GetFullScale(const uint32_t Instance, uint32_t Functio
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U))
+  else if (((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
+           || ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }
@@ -580,11 +553,8 @@ int32_t BSP_MOTION_SENSOR_SetFullScale(uint32_t Instance, uint32_t Function, int
   {
     status = BSP_ERROR_WRONG_PARAM;
   }
-  else if ((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
-  {
-    status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
-  }
-  else if ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U))
+  else if (((Instance == 0U) && ((Function & MOTION_MAGNETO) != 0U))
+           || ((Instance == 1U) && ((Function & (MOTION_GYRO | MOTION_ACCELERO)) != 0U)))
   {
     status = BSP_ERROR_FEATURE_NOT_SUPPORTED;
   }

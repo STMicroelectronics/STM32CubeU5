@@ -149,6 +149,15 @@ System_StatusTypeDef system_config(RTC_StateTypeDef state, System_LowPowerModeTy
   {
     __HAL_RCC_APB3_CLK_ENABLE();
     __HAL_RCC_RTCAPB_CLK_ENABLE();
+
+    /* Disable LSE oscillator */
+    RCC_OscInitStruct.PLL.PLLState   = RCC_PLL_NONE;
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSE;
+    RCC_OscInitStruct.LSEState       = RCC_LSE_OFF;
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    {
+      return SYSTEM_ERROR;
+    }
   }
 
   return SYSTEM_OK;

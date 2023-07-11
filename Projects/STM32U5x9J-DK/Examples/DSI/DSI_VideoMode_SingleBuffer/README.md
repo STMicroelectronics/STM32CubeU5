@@ -59,9 +59,10 @@ Graphics, Display, LCD, DMA2D , DSI, MIPI Alliance, Video mode, Single buffer, L
 -   DSI/DSI_VideoMode_SingleBuffer/Src/main.c&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; Main program for Cortex-M33
 -   DSI/DSI_VideoMode_SingleBuffer/Src/stm32u5xx_hal_msp.c&emsp; &emsp; &emsp; &nbsp; HAL MSP file for Cortex-M33
 
-### <b>Hardware and Software environment</b>
+### <b>Hardware and Software environment</b>  
 
 -   This example runs on STM32U5A9xx devices without security enabled (TZEN=0).
+-   This example runs on STM32U5G9xx devices without security enabled (TZEN=0).
 
 -   This example has been tested with STMicroelectronics STM32U5x9J_DK (MB1829B)
     board and can be easily tailored to any other supported device

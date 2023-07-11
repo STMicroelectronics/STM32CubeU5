@@ -75,8 +75,8 @@ static uint32_t CS42L51_CurrentDevices = CS42L51_OUT_NONE;
 /** @defgroup CS42L51_Function_Prototypes Function Prototypes
   * @{
   */
-static int32_t CS42L51_ReadRegWrap(void *handle, uint16_t Reg, uint8_t *Data, uint16_t Length);
-static int32_t CS42L51_WriteRegWrap(void *handle, uint16_t Reg, uint8_t *Data, uint16_t Length);
+static int32_t CS42L51_ReadRegWrap(const void *handle, uint16_t Reg, uint8_t *Data, uint16_t Length);
+static int32_t CS42L51_WriteRegWrap(const void *handle, uint16_t Reg, uint8_t *Data, uint16_t Length);
 
 /**
   * @}
@@ -92,7 +92,7 @@ static int32_t CS42L51_WriteRegWrap(void *handle, uint16_t Reg, uint8_t *Data, u
   * @param pInit pointer de component init structure
   * @retval Component status
   */
-int32_t CS42L51_Init(CS42L51_Object_t *pObj, CS42L51_Init_t *pInit)
+int32_t CS42L51_Init(CS42L51_Object_t *pObj, const CS42L51_Init_t *pInit)
 {
   int32_t ret = 0;
   uint8_t tmp;
@@ -519,7 +519,7 @@ int32_t CS42L51_SetMute(CS42L51_Object_t *pObj, uint32_t Cmd)
   * @param  Output Only CS42L51_OUT_HEADPHONE output is supported
   * @retval Component status
   */
-int32_t CS42L51_SetOutputMode(CS42L51_Object_t *pObj, uint32_t Output)
+int32_t CS42L51_SetOutputMode(const CS42L51_Object_t *pObj, uint32_t Output)
 {
   (void)(pObj);
   (void)(Output);
@@ -537,7 +537,7 @@ int32_t CS42L51_SetOutputMode(CS42L51_Object_t *pObj, uint32_t Output)
   * @note This is applicable only for CS42L51_PROTOCOL_R_JUSTIFIED protocol
   * @retval Component status
   */
-int32_t CS42L51_SetResolution(CS42L51_Object_t *pObj, uint32_t Resolution)
+int32_t CS42L51_SetResolution(const CS42L51_Object_t *pObj, uint32_t Resolution)
 {
   (void)(pObj);
   (void)(Resolution);
@@ -551,7 +551,7 @@ int32_t CS42L51_SetResolution(CS42L51_Object_t *pObj, uint32_t Resolution)
   * @param pObj pointer to component object
   * @retval Audio resolution
   */
-int32_t CS42L51_GetResolution(CS42L51_Object_t *pObj, uint32_t *Resolution)
+int32_t CS42L51_GetResolution(const CS42L51_Object_t *pObj, const uint32_t *Resolution)
 {
   (void)(pObj);
   (void)(Resolution);
@@ -568,7 +568,7 @@ int32_t CS42L51_GetResolution(CS42L51_Object_t *pObj, uint32_t *Resolution)
   *                  or CS42L51_PROTOCOL_I2S
   * @retval Component status
   */
-int32_t CS42L51_SetProtocol(CS42L51_Object_t *pObj, uint32_t Protocol)
+int32_t CS42L51_SetProtocol(const CS42L51_Object_t *pObj, uint32_t Protocol)
 {
   (void)(pObj);
   (void)(Protocol);
@@ -583,7 +583,7 @@ int32_t CS42L51_SetProtocol(CS42L51_Object_t *pObj, uint32_t Protocol)
   * @param Protocol pointer to protocol value
   * @retval Component status
   */
-int32_t CS42L51_GetProtocol(CS42L51_Object_t *pObj, uint32_t *Protocol)
+int32_t CS42L51_GetProtocol(const CS42L51_Object_t *pObj, const uint32_t *Protocol)
 {
   (void)(pObj);
   (void)(Protocol);
@@ -598,7 +598,7 @@ int32_t CS42L51_GetProtocol(CS42L51_Object_t *pObj, uint32_t *Protocol)
   * @param AudioFreq Audio frequency
   * @retval Component status
   */
-int32_t CS42L51_SetFrequency(CS42L51_Object_t *pObj, uint32_t AudioFreq)
+int32_t CS42L51_SetFrequency(const CS42L51_Object_t *pObj, uint32_t AudioFreq)
 {
   (void)(pObj);
   (void)(AudioFreq);
@@ -613,7 +613,7 @@ int32_t CS42L51_SetFrequency(CS42L51_Object_t *pObj, uint32_t AudioFreq)
   * @param AudioFreq Audio frequency
   * @retval Component status
   */
-int32_t CS42L51_GetFrequency(CS42L51_Object_t *pObj, uint32_t *AudioFreq)
+int32_t CS42L51_GetFrequency(const CS42L51_Object_t *pObj, const uint32_t *AudioFreq)
 {
   (void)(pObj);
   (void)(AudioFreq);
@@ -627,7 +627,7 @@ int32_t CS42L51_GetFrequency(CS42L51_Object_t *pObj, uint32_t *AudioFreq)
   * @param pObj pointer to component object
   * @retval Component status
   */
-int32_t CS42L51_Reset(CS42L51_Object_t *pObj)
+int32_t CS42L51_Reset(const CS42L51_Object_t *pObj)
 {
   /* De-Initialize Audio Codec interface */
   pObj->IO.DeInit();
@@ -686,9 +686,9 @@ int32_t CS42L51_RegisterBusIO(CS42L51_Object_t *pObj, CS42L51_IO_t *pIO)
   * @param  Length  buffer size to be written
   * @retval error status
   */
-static int32_t CS42L51_ReadRegWrap(void *handle, uint16_t Reg, uint8_t *pData, uint16_t Length)
+static int32_t CS42L51_ReadRegWrap(const void *handle, uint16_t Reg, uint8_t *pData, uint16_t Length)
 {
-  CS42L51_Object_t *pObj = (CS42L51_Object_t *)handle;
+  const CS42L51_Object_t *pObj = (const CS42L51_Object_t *)handle;
 
   return pObj->IO.ReadReg(pObj->IO.Address, Reg, pData, Length);
 }
@@ -701,9 +701,9 @@ static int32_t CS42L51_ReadRegWrap(void *handle, uint16_t Reg, uint8_t *pData, u
   * @param  Length buffer size to be written
   * @retval error status
   */
-static int32_t CS42L51_WriteRegWrap(void *handle, uint16_t Reg, uint8_t *pData, uint16_t Length)
+static int32_t CS42L51_WriteRegWrap(const void *handle, uint16_t Reg, uint8_t *pData, uint16_t Length)
 {
-  CS42L51_Object_t *pObj = (CS42L51_Object_t *)handle;
+  const CS42L51_Object_t *pObj = (const CS42L51_Object_t *)handle;
 
   return pObj->IO.WriteReg(pObj->IO.Address, Reg, pData, Length);
 }

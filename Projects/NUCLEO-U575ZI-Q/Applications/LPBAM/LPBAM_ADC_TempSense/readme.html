@@ -42,13 +42,13 @@
 <ul>
 <li>The sequence 1 configures the ADC peripheral using HAL as follow :
 <ul>
-<li>Channel : Internal (Tempearture Sensor Channel).</li>
+<li>Channel : Internal (Temperature Sensor Channel).</li>
 <li>ScanConvMode : Scan Direction is Forward.</li>
 <li>Signal trigger : LPTIM1 Channel1 PWM (Rising Edge).</li>
 <li>Trigger low frequency : Disabled.</li>
 <li>ContinuousConvMode : Disabled.</li>
 <li>DiscontinuousConvMode : Disabled.</li>
-<li>Analog watchdog : AWD1 is enabled for single channel (Tempearture Sensor Channel).</li>
+<li>Analog watchdog : AWD1 is enabled for single channel (Temperature Sensor Channel).</li>
 <li>DMAContinuousRequests : Enabled (Circular Mode).</li>
 <li>Low threshold is set to 0V.</li>
 <li>High threshold is set to 0.809V. ((1005 / 4095) * 3.3V)</li>
@@ -56,13 +56,13 @@
 <li><p>In Threshold1_Conversion queue which is started by Thresholdx_Config queue the ADC converts data continuously that are transferred by DMA to SRAM (Threshold1_Data_Buffer buffer) until threshold1 is detected. Only conversion start and data storage are handled by LPBAM.</p></li>
 <li>After Threshold1 is detected the LPTIM1 PWM trigger signal period is changed to 10ms by the Thresholdx_Config queue and the ADC is reconfigured using the LPBAM as follows:
 <ul>
-<li>Channel : Internal (Tempearture Sensor Channel).</li>
+<li>Channel : Internal (Temperature Sensor Channel).</li>
 <li>ScanConvMode : Scan Direction is Forward.</li>
 <li>Signal trigger : LPTIM1 Channel1 PWM (Rising Edge).</li>
 <li>Trigger low frequency : Disabled.</li>
 <li>ContinuousConvMode : Disabled.</li>
 <li>DiscontinuousConvMode : Disabled.</li>
-<li>Analog watchdog : AWD1 is enabled for single channel (Tempearture Sensor Channel).</li>
+<li>Analog watchdog : AWD1 is enabled for single channel (Temperature Sensor Channel).</li>
 <li>DMAContinuousRequests : Enabled (Circular Mode).</li>
 <li>low threshold is set to 0V.</li>
 <li>High threshold is set to 0.886V. ((1100 / 4095) * 3.3V)</li>

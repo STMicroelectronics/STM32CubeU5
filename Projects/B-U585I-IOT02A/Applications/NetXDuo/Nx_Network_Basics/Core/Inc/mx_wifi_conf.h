@@ -27,8 +27,8 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 #include <stddef.h>
-#include "main.h"  /* Inherit some declarations from the current platform. */
 #include "mx_wifi_azure_rtos_conf.h"
+#include "main.h"  /* Inherit some declarations from the current platform. */
 #include "nx_driver_emw3080.h"
 
 /* Exported macros -----------------------------------------------------------*/

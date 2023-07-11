@@ -68,8 +68,12 @@ GUI_StatusTypeDef BSP_GUI_LoadDataFromFlash(void)
   uint32_t _addr = GUI_FLASH_ADDR_NB_PDO_SNK_P0;
 #endif /* GUI_FLASH_MAGIC_NUMBER */
 
-  /* Check that we did not reach the end of page */
+  /* Check that we did not reach the end of page/sector */
+#if defined(ADDR_FLASH_PAGE_END)
   if (GUI_FLASH_ADDR_RESERVED > ADDR_FLASH_PAGE_END)
+#else
+  if (GUI_FLASH_ADDR_RESERVED > ADDR_FLASH_SECTOR_END)
+#endif /* ADDR_FLASH_PAGE_END */
   {
     goto _exit;
   }
@@ -213,10 +217,13 @@ GUI_StatusTypeDef BSP_GUI_EraseDataInFlash(void)
   erase_init.TypeErase     = FLASH_TYPEERASE_SECTORS;
 #if defined(FLASH_VOLTAGE_RANGE_3)
   erase_init.VoltageRange  = FLASH_VOLTAGE_RANGE_3;
-#else
-  erase_init.Banks         = FLASH_BANK_SEL;
 #endif /* FLASH_VOLTAGE_RANGE_3 */
-  erase_init.Sector        = FLASH_SECTOR_ID;
+#if defined(FLASH_OPTR_DBANK) || defined(FLASH_DBANK_SUPPORT)
+  erase_init.Banks      = FLASH_BANK_2;
+#else
+  erase_init.Banks      = FLASH_BANK_1;
+#endif /* FLASH_OPTR_DBANK || FLASH_DBANK_SUPPORT */
+  erase_init.Sector        = INDEX_SECTOR;
   erase_init.NbSectors     = 1;
 #else
   erase_init.TypeErase  = FLASH_TYPEERASE_PAGES;
@@ -226,13 +233,11 @@ GUI_StatusTypeDef BSP_GUI_EraseDataInFlash(void)
 #else
   erase_init.Page       = INDEX_PAGE;
 #endif /* STM32F072xB || STM32F051x8 */
-#if defined (FLASH_OPTR_DBANK)
+#if defined(FLASH_OPTR_DBANK) || defined(FLASH_DBANK_SUPPORT)
   erase_init.Banks      = FLASH_BANK_2;
-#elif defined(FLASH_BANK_2)
-  erase_init.Banks      = FLASH_BANK_2;
-#elif defined(FLASH_BANK_1)
+#else
   erase_init.Banks      = FLASH_BANK_1;
-#endif /* FLASH_OPTR_DBANK */
+#endif /* FLASH_OPTR_DBANK || FLASH_DBANK_SUPPORT */
   erase_init.NbPages    = 1;
 
 #if defined(FLASH_SR_OPTVERR)
@@ -276,10 +281,13 @@ GUI_StatusTypeDef BSP_GUI_SaveDataInFlash(void)
   erase_init.TypeErase     = FLASH_TYPEERASE_SECTORS;
 #if defined(FLASH_VOLTAGE_RANGE_3)
   erase_init.VoltageRange  = FLASH_VOLTAGE_RANGE_3;
-#else
-  erase_init.Banks         = FLASH_BANK_SEL;
 #endif /* FLASH_VOLTAGE_RANGE_3 */
-  erase_init.Sector        = FLASH_SECTOR_ID;
+#if defined(FLASH_OPTR_DBANK) || defined(FLASH_DBANK_SUPPORT)
+  erase_init.Banks      = FLASH_BANK_2;
+#else
+  erase_init.Banks      = FLASH_BANK_1;
+#endif /* FLASH_OPTR_DBANK || FLASH_DBANK_SUPPORT */
+  erase_init.Sector        = INDEX_SECTOR;
   erase_init.NbSectors     = 1;
 #else
   erase_init.TypeErase  = FLASH_TYPEERASE_PAGES;
@@ -289,13 +297,11 @@ GUI_StatusTypeDef BSP_GUI_SaveDataInFlash(void)
 #else
   erase_init.Page       = INDEX_PAGE;
 #endif /* STM32F072xB || STM32F051x8 */
-#if defined (FLASH_OPTR_DBANK)
+#if defined(FLASH_OPTR_DBANK) || defined(FLASH_DBANK_SUPPORT)
   erase_init.Banks      = FLASH_BANK_2;
-#elif defined(FLASH_BANK_2)
-  erase_init.Banks      = FLASH_BANK_2;
-#elif defined(FLASH_BANK_1)
+#else
   erase_init.Banks      = FLASH_BANK_1;
-#endif /* FLASH_OPTR_DBANK */
+#endif /* FLASH_OPTR_DBANK || FLASH_DBANK_SUPPORT */
   erase_init.NbPages    = 1;
 
 #if defined(FLASH_SR_OPTVERR)

@@ -70,9 +70,11 @@ uint8_t DrawBackround = 0;
 uint8_t AutoMode = 0;
 TS_State_t TS_State;
 TS_Init_t TsInit;
-uint16_t x = 0;
-uint16_t y = 0;
 LCD_UTILS_Drv_t pDrv;
+__IO uint16_t x = 0;
+__IO uint16_t y = 0;
+uint16_t demo_xpos;
+uint16_t demo_ypos;
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -117,80 +119,77 @@ int main(void)
     if(TS_State.TouchDetected)
     {
       /* Get X and Y position of the touch post calibrated */
-      x = TS_State.TouchX;
-      y = TS_State.TouchY;
+      demo_xpos = x;
+      demo_ypos = y;
 
       /* Initialize touch coordinates */
       TS_State.TouchDetected = 0;
-      TS_State.TouchX = 0;
-      TS_State.TouchY = 0;
-
 
       /* Launch Led demo */
-      if ((x > 295) & (x < 435) & (y > 120) & (y < 260))
+      if ((demo_xpos > 295) & (demo_xpos < 435) & (demo_ypos > 120) & (demo_ypos < 260))
       {
-        x = 0;
-        y = 0;
+        demo_xpos = 0;
+        demo_ypos = 0;
         if (Led_demo() != 0)
         {
           Error_Handler();
         }
       }
       /* Launch OSPI demo */
-      if ((x > 32) & (x < 175) & (y > 0) & (y < 120))
+      if ((demo_xpos > 32) & (demo_xpos < 175) & (demo_ypos > 0) & (demo_ypos < 120))
       {
-        x = 0;
-        y = 0;
+        demo_xpos = 0;
+        demo_ypos = 0;
         if (OSPI_NOR_demo() != 0)
         {
           Error_Handler();
         }
       }
       /* Launch ToF demo */
-      if ((x > 32) & (x < 175) & (y > 120) & (y < 260))
+      if ((demo_xpos > 32) & (demo_xpos < 175) & (demo_ypos > 120) & (demo_ypos < 260))
       {
-        x = 0;
-        y = 0;
+        demo_xpos = 0;
+        demo_ypos = 0;
         if (Rs_demo() != 0)
         {
           Error_Handler();
         }
       }
       /* Launch eMMC demo */
-      if ((x > 175) & (x < 295) & (y > 50) & (y < 190))
+      if ((demo_xpos > 175) & (demo_xpos < 295) & (demo_ypos > 50) & (demo_ypos < 190))
       {
-        x = 0;
-        y = 0;
+        demo_xpos = 0;
+        demo_ypos = 0;
         if (eMMC_demo() != 0)
         {
           Error_Handler();
         }
       }
       /* Launch HSPI demo */
-      if ((x > 295) & (x < 435) & (y > 0) & (y < 120))
+      if ((demo_xpos > 295) & (demo_xpos < 435) & (demo_ypos > 0) & (demo_ypos < 120))
       {
-        x = 0;
-        y = 0;
+        demo_xpos = 0;
+        demo_ypos = 0;
         if (OSPI_RAM_demo() != 0)
         {
           Error_Handler();
         }
       }
       /* Launch TouchScreen demo */
-      if ((x > 155) & (x < 295) & (y > 190) & (y < 335))
+      if ((demo_xpos > 155) & (demo_xpos < 295) & (demo_ypos > 190) & (demo_ypos < 335))
       {
-        x = 0;
-        y = 0;
+        demo_xpos = 0;
+        demo_ypos = 0;
         if (Touchscreen_demo() != 0)
         {
           Error_Handler();
         }
       }
       /* Launch Lcd demo */
-      if ((x > 155) & (x < 295) & (y > 355) & (y < 480))
+      if ((demo_xpos > 155) & (demo_xpos < 295) & (demo_ypos > 355) & (demo_ypos < 480))
       {
-        x = 0;
-        y = 0;
+        demo_xpos = 0;
+        demo_ypos = 0;
         if (Lcd_demo() != 0)
         {
           Error_Handler();
@@ -403,6 +402,11 @@ void HAL_GPIO_EXTI_Falling_Callback(uint16_t GPIO_Pin)
       y = TS_State.TouchY;
     }
   }
+
+  TS_State.TouchX = 0;
+  TS_State.TouchY = 0;
+
+
   if (GPIO_Pin == VL53L5A1_INT_PIN)
   {
     if (BSP_TS_GetState(0, &TS_State) != BSP_ERROR_NONE)

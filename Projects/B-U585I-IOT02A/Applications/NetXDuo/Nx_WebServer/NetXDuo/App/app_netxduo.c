@@ -419,12 +419,12 @@ UINT webserver_request_notify_callback(NX_WEB_HTTP_SERVER *server_ptr, UINT requ
   }
   else if (strcmp(resource, "/LedOn") == 0)
   {
-    printf(" Loggling Green Led On \n");
+    printf(" Toggling Green Led On \n");
     tx_thread_resume(&LedThread);
   }
   else if (strcmp(resource, "/LedOff") == 0)
   {
-    printf(" Loggling Green Led Off \n");
+    printf(" Toggling Green Led Off \n");
     HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
     tx_thread_suspend(&LedThread);
   }

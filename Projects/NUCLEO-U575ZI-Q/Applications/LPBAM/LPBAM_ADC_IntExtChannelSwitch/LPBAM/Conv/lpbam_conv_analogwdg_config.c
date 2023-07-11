@@ -419,13 +419,13 @@ static void MX_ADC4_DeInit(void)
   {
     Error_Handler();
   }
-  /* UnRegister ADC msp callbacks */
-  if (HAL_ADC_UnRegisterCallback(&hadc4, HAL_ADC_MSPDEINIT_CB_ID) != HAL_OK)
+  /* Init ADC4 peripheral */
+  if (HAL_ADC_DeInit(&hadc4) != HAL_OK)
   {
     Error_Handler();
   }
-  /* Init ADC4 peripheral */
-  if (HAL_ADC_DeInit(&hadc4) != HAL_OK)
+  /* UnRegister ADC msp callbacks */
+  if (HAL_ADC_UnRegisterCallback(&hadc4, HAL_ADC_MSPDEINIT_CB_ID) != HAL_OK)
   {
     Error_Handler();
   }
@@ -584,13 +584,13 @@ static void MX_LPTIM1_DeInit(void)
   {
     Error_Handler();
   }
-  /* UnRegister LPTIM msp callbacks */
-  if (HAL_LPTIM_UnRegisterCallback(&hlptim1, HAL_LPTIM_MSPDEINIT_CB_ID) != HAL_OK)
+  /* Init LPTIM1 peripheral */
+  if (HAL_LPTIM_DeInit(&hlptim1) != HAL_OK)
   {
     Error_Handler();
   }
-  /* Init LPTIM1 peripheral */
-  if (HAL_LPTIM_DeInit(&hlptim1) != HAL_OK)
+  /* UnRegister LPTIM msp callbacks */
+  if (HAL_LPTIM_UnRegisterCallback(&hlptim1, HAL_LPTIM_MSPDEINIT_CB_ID) != HAL_OK)
   {
     Error_Handler();
   }

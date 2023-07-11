@@ -63,8 +63,7 @@ void Error_Handler(void);
 #define BUFFER1_SIZE 8U
 #define BUFFER2_SIZE 16U
 #define BUFFER3_SIZE 24U
-#define BUFFER0_SIZE 32U
-#define BUFFER_SIZE 32U
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

@@ -3,7 +3,7 @@
 - This example describes an USART-SPI communication (transmit/receive) between two boards where the USART is configured as a slave.
 
 - Boards: NUCLEO-U575ZI-Q (embeds a STM32U575xx device).
-- Two identical boards are connected as shown on the picture above.  
+- Two identical boards are connected as shown below.  
   - Board 1: SPI Master board
   - Board 2: USART Slave board
 

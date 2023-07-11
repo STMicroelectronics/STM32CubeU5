@@ -294,10 +294,10 @@ static void MX_DCMI_Init(void)
   hdcmi.Init.PCKPolarity = DCMI_PCKPOLARITY_RISING;
   hdcmi.Init.CaptureRate = DCMI_CR_ALL_FRAME;
   hdcmi.Init.ExtendedDataMode = DCMI_EXTEND_DATA_8B;
-  hdcmi.Init.SyncroCode.FrameEndCode = 0xF3;
   hdcmi.Init.SyncroCode.FrameStartCode = 0xF4;
-  hdcmi.Init.SyncroCode.LineStartCode = 0xF2;
+  hdcmi.Init.SyncroCode.FrameEndCode = 0xF3;
   hdcmi.Init.SyncroCode.LineEndCode = 0xF1;
+  hdcmi.Init.SyncroCode.LineStartCode = 0xF2;
   hdcmi.Init.JPEGMode = DCMI_JPEG_DISABLE;
   hdcmi.Init.ByteSelectMode = DCMI_BSM_ALL;
   hdcmi.Init.ByteSelectStart = DCMI_OEBS_ODD;

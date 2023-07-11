@@ -53,12 +53,12 @@ static uint8_t Buffercmp(uint32_t* pBuffer1, uint32_t* pBuffer2, uint16_t Buffer
 int32_t eMMC_demo (void)
 {
   int32_t MMC_state ;
-  
+
   /* Demo Hint */
-  eMMC_SetHint();  
-  
+  eMMC_SetHint();
+
   MMC_state = BSP_MMC_Init();
-  
+
   if(MMC_state != BSP_ERROR_NONE)
   {
     printf("\r\nMMC Initialization : Failed");
@@ -136,9 +136,9 @@ int32_t eMMC_demo (void)
   UTIL_LCD_DisplayStringAt(0, 230, (uint8_t *)"Please check the result", CENTER_MODE);
   UTIL_LCD_DisplayStringAt(0, 250, (uint8_t *)"on IO Terminal", CENTER_MODE);
 
-  while ((TS_State.TouchX < 190));
-  while ((TS_State.TouchX > 300));
-  while ((TS_State.TouchY > 55));
+  while (x < 190);
+  while (x > 300);
+  while (y > 55);
   DrawBackround = 0;
   return 0;
 }
@@ -151,13 +151,13 @@ int32_t eMMC_demo (void)
 static void eMMC_SetHint(void)
 {
   /* Clear the LCD */
-  BSP_LCD_FillRect(0, 0, 0, 480, 480, LCD_COLOR_BLACK);  
+  BSP_LCD_FillRect(0, 0, 0, 480, 480, LCD_COLOR_BLACK);
 
   /* Display text */
   UTIL_LCD_SetFont(&Font24);
   UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLACK);
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_LIGHTBLUE);
-  UTIL_LCD_DisplayStringAt(0, 170, (uint8_t *)"Test of eMMC", CENTER_MODE);  
+  UTIL_LCD_DisplayStringAt(0, 170, (uint8_t *)"Test of eMMC", CENTER_MODE);
 }
 
 /**

@@ -34,11 +34,11 @@ if [ $# -ge 4 ]; then
 fi
 if [ $dep != "nodep" ]; then
     depname="_"$dep
-    if [ $signing == "secure" ]; then
-        option="-d (0,$dep)"
-    fi
     if [ $signing == "nonsecure" ]; then
         option="-d (1,$dep)"
+    fi
+    if [ $signing == "secure" ]; then
+        option="-d (0,$dep)"
     fi
 fi
 if [ $# -ge 5 ]; then

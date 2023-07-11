@@ -28,11 +28,12 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "app_tx_freertos.h"
 #include "stm32u5xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "app_tx_freertos.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

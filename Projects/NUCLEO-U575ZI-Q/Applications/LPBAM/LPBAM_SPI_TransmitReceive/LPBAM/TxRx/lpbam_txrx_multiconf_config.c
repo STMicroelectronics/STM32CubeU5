@@ -412,13 +412,13 @@ static void MX_LPTIM1_DeInit(void)
   {
     Error_Handler();
   }
-  /* UnRegister LPTIM msp callbacks */
-  if (HAL_LPTIM_UnRegisterCallback(&hlptim1, HAL_LPTIM_MSPDEINIT_CB_ID) != HAL_OK)
+  /* Init LPTIM1 peripheral */
+  if (HAL_LPTIM_DeInit(&hlptim1) != HAL_OK)
   {
     Error_Handler();
   }
-  /* Init LPTIM1 peripheral */
-  if (HAL_LPTIM_DeInit(&hlptim1) != HAL_OK)
+  /* UnRegister LPTIM msp callbacks */
+  if (HAL_LPTIM_UnRegisterCallback(&hlptim1, HAL_LPTIM_MSPDEINIT_CB_ID) != HAL_OK)
   {
     Error_Handler();
   }
@@ -587,13 +587,13 @@ static void MX_SPI3_DeInit(void)
   {
     Error_Handler();
   }
-  /* UnRegister SPI msp callbacks */
-  if (HAL_SPI_UnRegisterCallback(&hspi3, HAL_SPI_MSPDEINIT_CB_ID) != HAL_OK)
+  /* Init SPI3 peripheral */
+  if (HAL_SPI_DeInit(&hspi3) != HAL_OK)
   {
     Error_Handler();
   }
-  /* Init SPI3 peripheral */
-  if (HAL_SPI_DeInit(&hspi3) != HAL_OK)
+  /* UnRegister SPI msp callbacks */
+  if (HAL_SPI_UnRegisterCallback(&hspi3, HAL_SPI_MSPDEINIT_CB_ID) != HAL_OK)
   {
     Error_Handler();
   }

@@ -19,6 +19,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "sitronix.h"
+#include <stddef.h>
 
 /** @addtogroup BSP
   * @{

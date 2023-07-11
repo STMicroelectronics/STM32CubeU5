@@ -150,6 +150,11 @@ void SystemClock_Config(void)
   while (LL_PWR_IsActiveFlag_VOS() == 0)
   {
   }
+  LL_PWR_EnableBkUpAccess();
+  while (LL_PWR_IsEnabledBkUpAccess () == 0U)
+  {
+  }
+
   LL_RCC_LSI_Enable();
 
    /* Wait till LSI is ready */

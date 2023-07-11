@@ -60,7 +60,7 @@ int32_t OSPI_RAM_demo (void)
 
   /* Demo Hint */
   hspi_SetHint();
-  
+
   printf("\r\n################## Start HSPI test #####################");
   printf("\r\n");
   for (mode = 0; mode < 5; mode++)
@@ -178,13 +178,13 @@ int32_t OSPI_RAM_demo (void)
   printf("\r\n");
 
   BSP_LCD_DrawBitmap(0, 210, 0, (uint8_t *)back);
-  
+
   UTIL_LCD_DisplayStringAt(0, 230, (uint8_t *)"Please check the result", CENTER_MODE);
   UTIL_LCD_DisplayStringAt(0, 250, (uint8_t *)"on IO Terminal", CENTER_MODE);
-  
-  while ((TS_State.TouchX < 190));
-  while ((TS_State.TouchX > 300));
-  while ((TS_State.TouchY > 55));
+
+  while (x < 190);
+  while (x > 300);
+  while (y > 55);
   DrawBackround = 0;
   return 0;
 }
@@ -197,13 +197,13 @@ int32_t OSPI_RAM_demo (void)
 static void hspi_SetHint(void)
 {
   /* Clear the LCD */
-  BSP_LCD_FillRect(0, 0, 0, 480, 480, LCD_COLOR_BLACK);  
-  
+  BSP_LCD_FillRect(0, 0, 0, 480, 480, LCD_COLOR_BLACK);
+
   /* Display text */
   UTIL_LCD_SetFont(&Font24);
   UTIL_LCD_SetBackColor(UTIL_LCD_COLOR_BLACK);
   UTIL_LCD_SetTextColor(UTIL_LCD_COLOR_LIGHTBLUE);
-  UTIL_LCD_DisplayStringAt(0, 170, (uint8_t *)"Test of HSPI", CENTER_MODE); 
+  UTIL_LCD_DisplayStringAt(0, 170, (uint8_t *)"Test of HSPI", CENTER_MODE);
 }
 
 /**

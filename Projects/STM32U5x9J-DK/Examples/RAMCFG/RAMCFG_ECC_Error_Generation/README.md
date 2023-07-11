@@ -2,7 +2,7 @@
 
 -   How to configure and use the RAMCFG HAL API to manage ECC errors via RAMCFG peripheral.
 
--   This project is targeted to run on STM32U575ZITxQ devices on STM32U599J_DK board from STMicroelectronics.
+-   This project is targeted to run on STM32U5x9J_DK board from STMicroelectronics.
 
 -   At the beginning of the main program the HAL_Init() function is called to reset
 all the peripherals, initialize the Flash interface and the systick.
@@ -48,7 +48,7 @@ RAMCFG, ECC, SRAM, Single error, Double error
 ### <b>Hardware and Software environment</b>
 
 -   This example runs on STM32U5A9xx devices.
-
+-   This example runs on STM32U5G9xx devices.
 -   This example has been tested with STMicroelectronics STM32U5x9J-DK (MB1829B)
     board and can be easily tailored to any other supported device
     and development board.

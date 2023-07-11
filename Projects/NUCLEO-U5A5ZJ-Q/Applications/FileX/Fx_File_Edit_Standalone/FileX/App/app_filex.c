@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   FileX applicative file
   ******************************************************************************
-   * @attention
+  * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.
@@ -45,7 +45,9 @@
 
 /* USER CODE BEGIN PV */
 /* Define FileX global data structures.  */
+/* FileX SRAM disk media instance */
 FX_MEDIA        sram_disk;
+/* FileX file instance */
 FX_FILE         fx_file;
 
 uint32_t media_memory[DEFAULT_SECTOR_SIZE / sizeof(uint32_t)];
@@ -66,10 +68,26 @@ UINT MX_FileX_Init(void)
 {
   UINT ret = FX_SUCCESS;
   /* USER CODE BEGIN MX_FileX_Init */
-  UINT status;
 
-  /* Initialize FileX.  */
+  /* USER CODE END MX_FileX_Init */
+
+/* Initialize FileX.  */
   fx_system_initialize();
+
+  /* USER CODE BEGIN MX_FileX_Init 1*/
+
+  /* USER CODE END MX_FileX_Init 1*/
+
+  return ret;
+}
+
+/* USER CODE BEGIN 1 */
+VOID MX_FileX_Process(void)
+{
+  UINT status;
+  ULONG bytes_read;
+  CHAR read_buffer[32];
+  CHAR data[] = "This is FileX working on STM32";
 
  /* Start application */
   printf("FileX SRAM Standalone Application Start.\n");
@@ -84,8 +102,7 @@ UINT MX_FileX_Init(void)
                             1,                            // Number of FATs
                             32,                           // Directory Entries
                             0,                            // Hidden sectors
-                            FX_SRAM_DISK_SIZE /
-							DEFAULT_SECTOR_SIZE,		  // Total sectors
+                            FX_SRAM_DISK_SIZE / DEFAULT_SECTOR_SIZE,		  // Total sectors
                             DEFAULT_SECTOR_SIZE,          // Sector size
                             8,                            // Sectors per cluster
                             1,                            // Heads
@@ -107,25 +124,6 @@ UINT MX_FileX_Init(void)
   }
 
   printf("SRAM Disk successfully formatted and opened.\n");
-  /* USER CODE END MX_FileX_Init */
-
-/* Initialize FileX.  */
-  fx_system_initialize();
-
-  /* USER CODE BEGIN MX_FileX_Init 1*/
-
-  /* USER CODE END MX_FileX_Init 1*/
-
-  return ret;
-}
-
-/* USER CODE BEGIN 1 */
-VOID MX_FileX_Process(void)
-{
-  UINT status;
-  ULONG bytes_read;
-  CHAR read_buffer[32];
-  CHAR data[] = "This is FileX working on STM32";
 
   /* Create a file called STM32.TXT in the root directory.  */
   status =  fx_file_create(&sram_disk, "STM32.TXT");
@@ -161,6 +159,8 @@ VOID MX_FileX_Process(void)
     /* Error performing file seek, call error handler.  */
     Error_Handler();
   }
+
+  printf("Writing data into the file. \n");
 
   /* Write a string to the test file.  */
   status =  fx_file_write(&fx_file, data, sizeof(data));
@@ -240,6 +240,8 @@ VOID MX_FileX_Process(void)
     /* Error closing the media, call error handler.  */
     Error_Handler();
   }
+
+  printf("Data successfully written.\n");
 
   /* Infinite loop */
   while (1)

@@ -4,8 +4,8 @@
 
 - This example describes how to remap the external SRAM to C-bus and execute code located in this memory.
 
-- First the code turn on the **Green led** from external SRAM before remap, then will turn it off after memory remapping.
-
+- First the code blink once the **Green led** from external SRAM before remap.
+- After remapping to C-Bus, the **Green led** will blink infinitely.
 - This project is targeted to run on STM32U575xx devices on STM32U575I-EV board from STMicroelectronics.
 
 - At the beginning of the main program the HAL_Init() function is called to reset all the peripherals, initialize the Flash interface and the systick.
@@ -15,7 +15,7 @@ The SystemClock_Config() function is used to configure the system clock for STM3
 
 STM32U575I-EV board's LED can be used to monitor the transfers status:
 
- - **Green LED is off** when no error detected.
+ - **Green LED is blinking** when code has been correctly executed before and after remapping.
  - **Red LED is ON** when any error occurred.
 
 #### <b>Notes</b>
@@ -57,4 +57,3 @@ In order to make the program work, you must do the following :
  - Open your preferred toolchain
  - Rebuild all files and load your image into target memory
  - Run the example
-

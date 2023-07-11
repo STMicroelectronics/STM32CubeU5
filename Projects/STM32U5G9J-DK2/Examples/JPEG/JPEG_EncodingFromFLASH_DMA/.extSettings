@@ -1,0 +1,11 @@
+[ProjectFiles]
+HeaderPath=..\..\..\..\..\..\Drivers\BSP\Components\Common;..\..\..\..\..\..\Drivers\BSP\STM32U5G9J-DK2;..\..\..\..\..\..\Utilities\JPEG
+[Others]
+Define=
+HALModule=DMA;EXTI;FLASH;GPIO;ICACHE;PWR;RCC;JPEG
+[Groups]
+Application/User=..//Src/encode_dma.c;..//Src/Image_argb_8888.c;..//Src/Image_rgb_565.c;..//Src/Image_rgb_888.c;
+Doc=../README.md;
+Drivers/BSP/STM32U5G9J-DK2=../../../../../../Drivers/BSP/STM32U5G9J-DK2/stm32u5g9j_discovery.c;
+Drivers/STM32U5xx_HAL_Driver=../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_jpeg.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc_ex.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr_ex.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_icache.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_gpio.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_flash_ex.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_flash.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_exti.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_dma_ex.c;../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_dma.c;
+Utilities=../../../../../../Utilities/JPEG/jpeg_utils.c;

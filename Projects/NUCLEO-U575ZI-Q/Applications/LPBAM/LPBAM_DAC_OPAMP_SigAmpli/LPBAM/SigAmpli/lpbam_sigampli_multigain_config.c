@@ -473,13 +473,13 @@ static void MX_DAC1_DeInit(void)
   {
     Error_Handler();
   }
-  /* UnRegister DAC msp callbacks */
-  if (HAL_DAC_UnRegisterCallback(&hdac1, HAL_DAC_MSPDEINIT_CB_ID) != HAL_OK)
+  /* Init DAC1 peripheral */
+  if (HAL_DAC_DeInit(&hdac1) != HAL_OK)
   {
     Error_Handler();
   }
-  /* Init DAC1 peripheral */
-  if (HAL_DAC_DeInit(&hdac1) != HAL_OK)
+  /* UnRegister DAC msp callbacks */
+  if (HAL_DAC_UnRegisterCallback(&hdac1, HAL_DAC_MSPDEINIT_CB_ID) != HAL_OK)
   {
     Error_Handler();
   }
@@ -623,13 +623,13 @@ static void MX_LPTIM3_DeInit(void)
   {
     Error_Handler();
   }
-  /* UnRegister LPTIM msp callbacks */
-  if (HAL_LPTIM_UnRegisterCallback(&hlptim3, HAL_LPTIM_MSPDEINIT_CB_ID) != HAL_OK)
+  /* Init LPTIM3 peripheral */
+  if (HAL_LPTIM_DeInit(&hlptim3) != HAL_OK)
   {
     Error_Handler();
   }
-  /* Init LPTIM3 peripheral */
-  if (HAL_LPTIM_DeInit(&hlptim3) != HAL_OK)
+  /* UnRegister LPTIM msp callbacks */
+  if (HAL_LPTIM_UnRegisterCallback(&hlptim3, HAL_LPTIM_MSPDEINIT_CB_ID) != HAL_OK)
   {
     Error_Handler();
   }
@@ -755,13 +755,13 @@ static void MX_OPAMP1_DeInit(void)
   {
     Error_Handler();
   }
-  /* UnRegister OPAMP msp callbacks */
-  if (HAL_OPAMP_UnRegisterCallback(&hopamp1, HAL_OPAMP_MSP_DEINIT_CB_ID) != HAL_OK)
+  /* Init OPAMP1 peripheral */
+  if (HAL_OPAMP_DeInit(&hopamp1) != HAL_OK)
   {
     Error_Handler();
   }
-  /* Init OPAMP1 peripheral */
-  if (HAL_OPAMP_DeInit(&hopamp1) != HAL_OK)
+  /* UnRegister OPAMP msp callbacks */
+  if (HAL_OPAMP_UnRegisterCallback(&hopamp1, HAL_OPAMP_MSP_DEINIT_CB_ID) != HAL_OK)
   {
     Error_Handler();
   }

@@ -16,8 +16,8 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
 #include "app_netxduo.h"
+#include "main.h"
 #include <inttypes.h>
 #include <stdbool.h>
 #include "msg.h"

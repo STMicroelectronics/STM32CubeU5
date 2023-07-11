@@ -371,13 +371,13 @@ static void MX_I2C3_DeInit(void)
   {
     Error_Handler();
   }
-  /* UnRegister I2C msp callbacks */
-  if (HAL_I2C_UnRegisterCallback(&hi2c3, HAL_I2C_MSPDEINIT_CB_ID) != HAL_OK)
+  /* Init I2C3 peripheral */
+  if (HAL_I2C_DeInit(&hi2c3) != HAL_OK)
   {
     Error_Handler();
   }
-  /* Init I2C3 peripheral */
-  if (HAL_I2C_DeInit(&hi2c3) != HAL_OK)
+  /* UnRegister I2C msp callbacks */
+  if (HAL_I2C_UnRegisterCallback(&hi2c3, HAL_I2C_MSPDEINIT_CB_ID) != HAL_OK)
   {
     Error_Handler();
   }

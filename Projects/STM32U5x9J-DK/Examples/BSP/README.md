@@ -25,6 +25,8 @@ Command Code is displayed on debugger as follows: View --> Terminal I/O<br>
 \
 When resorting to MDK-ARM KEIL IDE:<br>
 Command Code is displayed on debugger as follows: View --> Serial Windows --> Debug (printf) Viewer<br>
+***<span style="color: magenta">(To display data on MDK-ARM debugger please make sure to close the SB34 and open SB33 on the board)</span>***
+
 \
 When resorting to STM32CubeIDE:<br>
 In Debug configuration window\ Startup, in addition to "monitor reset halt" add the command "monitor arm semihosting enable" Command Code is displayed on debugger as follows: Window--> Show View--> Console<br>
@@ -44,6 +46,7 @@ In Debug configuration window\ Startup, in addition to "monitor reset halt" add 
 
  **HSPI**
 -   This example shows how to erase, write and read data available on the HexaDecaSPI ram memory available on the board.
+    Frequency 80Mhz for STM32U5G9xx and STM32U5A9xx
     ==> Result shown on Terminal I/O
 
  **MMC**
@@ -96,13 +99,18 @@ In Debug configuration window\ Startup, in addition to "monitor reset halt" add 
 
 BSP, Led, Button, LCD, eMMC, TouchScreen, OSPI, HSPI
 
-### <b>Hardware and Software environment</b>  
+### <b>Hardware and Software environment</b>
+
+-   This example runs on STM32U5A9xx Devices.
+-   This example runs on STM32U5G9xx Devices.
 
   - This example runs on STM32U5x5xx/STM32U5x9xx devices without security enabled (TZEN=0).
 
-  - This example has been tested with STMicroelectronics STM32U5x9J-DK (MB1829B)
+  - This example has been tested with STMicroelectronics STM32U5x9J-DK (MB1829)
     board and can be easily tailored to any other supported device
     and development board.
+	
+  - To be able to display data on MDK-ARM debugger please make sure to close the SB34 and open SB33
   
 ### <b>How to use it ?</b>
 

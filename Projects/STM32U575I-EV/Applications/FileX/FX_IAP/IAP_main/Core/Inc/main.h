@@ -32,7 +32,6 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stm32u575i_eval.h"
-#include "app_filex.h"
 #include <stdio.h>
 /* USER CODE END Includes */
 

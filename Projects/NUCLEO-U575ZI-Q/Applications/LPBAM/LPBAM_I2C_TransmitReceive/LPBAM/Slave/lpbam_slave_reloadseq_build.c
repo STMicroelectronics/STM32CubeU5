@@ -131,7 +131,6 @@ static void MX_Slave_Q_Build(void)
 
     pRxData_I2C.Size = data_size;
   }
-
   pRxData_I2C.Size = tmp_data_size;
 
   /**
@@ -168,8 +167,8 @@ static void MX_Slave_Q_Build(void)
 
     pTxData_I2C.Size = data_size;
   }
-
   pTxData_I2C.Size = tmp_data_size;
+
 }
 
 /* USER CODE BEGIN Slave_ReloadSeq_Build */

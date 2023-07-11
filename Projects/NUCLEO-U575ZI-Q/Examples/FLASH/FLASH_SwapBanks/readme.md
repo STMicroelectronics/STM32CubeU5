@@ -14,8 +14,8 @@ The SystemClock_Config() function is used to configure the system clock for STM3
 
 Below are the steps to run this example:
 
-1- Choose the FLASH_SwapBanks_Bank2 project and run it, this project will be loaded
-   in the bank2 of the flash: at the address 0x08100000
+1- Choose the FLASH_SwapBanks_Bank2 project and build it using your preferred toolchain (EWARM, MDK-ARM, STM32CubeIDE),then use STM32CubeProgrammer to flash the 
+  generated binary file FLASH_BANK2.bin into the bank2 at the address 0x08100000.
 
 ##### <b>note:</b>
       You have to configure your preferred toolchain in order to generate the binary
@@ -73,7 +73,22 @@ Memory, FLASH, Swap, Bank, Dual bank, Program, Sector, LED
 In order to make the program work, you must do the following :
 
   - Open your preferred toolchain.
-  - Rebuild all files and load your image into target memory.
-  - Run the example.
-
-
+  - Rebuild all files.
+  - Load the binary file generated with FLASH_SwapBanks_Bank2 into
+    the BANK2 at address 0x08100000 using STM32CubeProgrammer.
+  - Choose the FLASH_SwapBanks_Bank1 project and run the example.
+<b>STM32CubeIDE</b>
+In order to program the FLASH_SwapBanks_Bank1 and FLASH_SwapBanks_Bank2 projects into 0x8000000 and 0x8100000 using STM32CubeIDE, you must do the following steps:
+ - Rebuild all files
+ - Select the FLASH_SwapBanks_Bank1 project and select “Debug configuration”
+ - Double click on “STM32 Cortex-M C/C++ Application”
+ - Select  “Startup” >  “Add” >
+ - Select the FLASH_SwapBanks_Bank2 project
+     - Uncheck Perform build option
+     - In Use download offset(hex): Add 0x100000 to actually load the generated (.elf) file into 0x8100000
+ - Click Debug/Run to debug/run the example
+   STM32CubeIDE loses debug connection when the application toggles the SWAP_BANK option bit. Example can be compiled and executed on target, but debug does not work.
+   Target is not responding, retrying...
+   Target is not responding, retrying...
+   Shutting down...
+   

@@ -16,6 +16,10 @@
   ******************************************************************************
   @endverbatim
 
+### 2-June-2023 ###
+========================
+    + several enhancements (including security updates)
+
 ### 2-February-2023 ###
 ========================
     + remove compilation warnings for GCC compiler

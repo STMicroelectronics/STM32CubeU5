@@ -214,11 +214,11 @@ bootutil_img_hash(struct enc_key_data *enc_state, int image_index,
 #elif defined(MCUBOOT_SIGN_EC)
 #    define EXPECTED_SIG_TLV IMAGE_TLV_ECDSA224
 #    define SIG_BUF_SIZE 128
-#    define EXPECTED_SIG_LEN(x)  (1) /* always true, ASN.1 will validate */
+#    define EXPECTED_SIG_LEN(x)  ((x) <= 64) /* (tbc) 56 bytes for sign + 8 bytes for asn1 */
 #elif defined(MCUBOOT_SIGN_EC256)
 #    define EXPECTED_SIG_TLV IMAGE_TLV_ECDSA256
 #    define SIG_BUF_SIZE 128
-#    define EXPECTED_SIG_LEN(x)  (1) /* always true, ASN.1 will validate */
+#    define EXPECTED_SIG_LEN(x) ((x) <= 72) /* (tbc) 64 bytes for sign + 8 bytes for asn1 */
 #elif defined(MCUBOOT_SIGN_ED25519)
 #    define EXPECTED_SIG_TLV IMAGE_TLV_ED25519
 #    define SIG_BUF_SIZE 64
@@ -383,6 +383,9 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
     uint16_t len;
     uint16_t type;
     int sha256_valid = 0;
+#if defined(MCUBOOT_ENCRYPT_RSA) || defined(MCUBOOT_ENCRYPT_KW) || defined(MCUBOOT_ENCRYPT_EC256)
+    uint8_t tlv_enc = 0;
+#endif
 #ifdef EXPECTED_SIG_TLV
     fih_int valid_signature = FIH_FAILURE;
     int key_id = -1;
@@ -467,16 +470,18 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
                 goto out;
             }
             key_id = bootutil_find_key(image_index, buf, len);
-            /*
-             * The key may not be found, which is acceptable.  There
-             * can be multiple signatures, each preceded by a key.
-             */
+            /* The key must be found */
+            if (key_id < 0 || key_id >= bootutil_key_cnt)
+            {
+                rc = -1;
+                goto out;
+            }
 #else
         } else if (type == IMAGE_TLV_PUBKEY) {
             /*
              * Determine which key we should be checking.
              */
-            if (len > sizeof(key_buf)) {
+            if ((len > sizeof(key_buf)) || (len > sizeof(pubkey))) {
                 rc = -1;
                 goto out;
             }
@@ -485,12 +490,19 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
                 goto out;
             }
             key_id = bootutil_find_key(image_index, key_buf, len);
-            /*
-             * The key may not be found, which is acceptable.  There
-             * can be multiple signatures, each preceded by a key.
-             */
+            /* The key must be found */
+            if (key_id < 0 || key_id >= bootutil_key_cnt)
+            {
+                rc = -1;
+                goto out;
+            }
 #endif /* !MCUBOOT_HW_KEY */
         } else if (type == EXPECTED_SIG_TLV) {
+            /* Check signature lenght*/
+            if (!EXPECTED_SIG_LEN(len) || len > sizeof(buf)) {
+                rc = -1;
+                goto out;
+            }
 #if defined(MCUBOOT_USE_HASH_REF)
             if (ImageValidEnable == 1) {
                 /*
@@ -537,10 +549,6 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
                 key_id = -1;
                 continue;
             }
-            if (!EXPECTED_SIG_LEN(len) || len > sizeof(buf)) {
-                rc = -1;
-                goto out;
-            }
             rc = LOAD_IMAGE_DATA(hdr, fap, off, buf, len);
             if (rc) {
                 goto out;
@@ -564,6 +572,13 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
 #endif /* EXPECTED_SIG_TLV */
 #ifdef MCUBOOT_HW_ROLLBACK_PROT
         } else if (type == IMAGE_TLV_SEC_CNT) {
+            /* check that TLV is within protected area */
+            /* tlv off is set to next tlv */
+            if (it.tlv_off > it.prot_end)
+            {
+                rc= -1;
+                goto out;
+            }
             /*
              * Verify the image's security counter.
              * This must always be present.
@@ -606,25 +621,63 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
 #if defined(MCUBOOT_ENCRYPT_RSA)
             if (type == IMAGE_TLV_ENC_RSA2048)
             {
-                rc = 0;
+                /* Check tlv lenght */
+                if (len != 256) {
+                    rc = -1;
+                }
+                /* Only one non protected TLV allowed */
+                if (tlv_enc == 0)
+                {
+                    tlv_enc = 1;
+                    rc = 0;
+                }
             }
 #elif defined(MCUBOOT_ENCRYPT_KW)
             if (type == IMAGE_TLV_ENC_KW128)
             {
-                rc = 0;
+                /* Check tlv lenght */
+                if (len != TBC) {
+                    rc = -1;
+                }
+                /* Only one non protected TLV allowed */
+                if (tlv_enc == 0)
+                {
+                    tlv_enc = 1;
+                    rc = 0;
+                }
             }
 #elif defined(MCUBOOT_ENCRYPT_EC256)
             if (type == IMAGE_TLV_ENC_EC256)
             {
-                rc = 0;
+                /* Check tlv lenght */
+                if (len != 113) {
+                    rc = -1;
+                }
+                /* Only one non protected TLV allowed */
+                if (tlv_enc == 0)
+                {
+                    tlv_enc = 1;
+                    rc = 0;
+                }
             }
 #endif
             if (type == IMAGE_TLV_DEPENDENCY)
             {
-                rc = 0;
+                /* check that TLV is within protected area */
+                /* tlv off is set to next tlv */
+                if (it.tlv_off <= it.prot_end)
+                {
+                    rc = 0;
+                }
             }
             if (type == IMAGE_TLV_BOOT_RECORD)
             {
+                /* check that TLV is within protected area */
+                /* tlv off is set to next tlv */
+                if (it.tlv_off > it.prot_end)
+                {
+                    goto out;
+                }
                 rc = 0;
             }
             if (rc)
@@ -656,6 +709,12 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
     if (fap->fa_id == FLASH_AREA_IMAGE_SECONDARY(image_index))
     {
         off = it.tlv_end;
+       /* Check that tlv_end is not overlapping trailer */
+        if (off > boot_status_off(fap))
+        {
+            rc = -1;
+            goto out;
+        }
 
         /* read flash per byte, until next doubleword */
         if (off % 8)

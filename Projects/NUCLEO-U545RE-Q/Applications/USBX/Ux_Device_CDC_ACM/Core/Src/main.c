@@ -313,36 +313,38 @@ void MX_USART1_UART_Init(void)
 }
 
 /**
-  * @brief USB Initialization Function
+  * @brief USB_DRD_FS Initialization Function
   * @param None
   * @retval None
   */
-void MX_USB_PCD_Init(void)
+void MX_USB_DRD_FS_PCD_Init(void)
 {
 
-  /* USER CODE BEGIN USB_Init 0 */
+  /* USER CODE BEGIN USB_DRD_FS_Init 0 */
 
-  /* USER CODE END USB_Init 0 */
+  /* USER CODE END USB_DRD_FS_Init 0 */
 
-  /* USER CODE BEGIN USB_Init 1 */
+  /* USER CODE BEGIN USB_DRD_FS_Init 1 */
 
-  /* USER CODE END USB_Init 1 */
+  /* USER CODE END USB_DRD_FS_Init 1 */
   hpcd_USB_DRD_FS.Instance = USB_DRD_FS;
   hpcd_USB_DRD_FS.Init.dev_endpoints = 8;
-  hpcd_USB_DRD_FS.Init.speed = USBD_FS_SPEED;
+  hpcd_USB_DRD_FS.Init.speed = PCD_SPEED_FULL;
   hpcd_USB_DRD_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
   hpcd_USB_DRD_FS.Init.Sof_enable = DISABLE;
   hpcd_USB_DRD_FS.Init.low_power_enable = DISABLE;
   hpcd_USB_DRD_FS.Init.lpm_enable = DISABLE;
   hpcd_USB_DRD_FS.Init.battery_charging_enable = DISABLE;
   hpcd_USB_DRD_FS.Init.vbus_sensing_enable = DISABLE;
+  hpcd_USB_DRD_FS.Init.bulk_doublebuffer_enable = DISABLE;
+  hpcd_USB_DRD_FS.Init.iso_singlebuffer_enable = DISABLE;
   if (HAL_PCD_Init(&hpcd_USB_DRD_FS) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN USB_Init 2 */
+  /* USER CODE BEGIN USB_DRD_FS_Init 2 */
 
-  /* USER CODE END USB_Init 2 */
+  /* USER CODE END USB_DRD_FS_Init 2 */
 
 }
 

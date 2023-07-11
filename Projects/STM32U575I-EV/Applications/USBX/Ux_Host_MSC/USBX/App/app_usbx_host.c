@@ -302,24 +302,6 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *cur
 
       break;
 
-#if defined (UX_HOST_CLASS_STORAGE_NO_FILEX)
-    case UX_STORAGE_MEDIA_INSERTION:
-
-      /* USER CODE BEGIN UX_STORAGE_MEDIA_INSERTION */
-
-      /* USER CODE END UX_STORAGE_MEDIA_INSERTION */
-
-      break;
-
-    case UX_STORAGE_MEDIA_REMOVAL:
-
-      /* USER CODE BEGIN UX_STORAGE_MEDIA_REMOVAL */
-
-      /* USER CODE END UX_STORAGE_MEDIA_REMOVAL */
-
-      break;
-#endif
-
     case UX_DEVICE_CONNECTION:
 
       /* USER CODE BEGIN UX_DEVICE_CONNECTION */
