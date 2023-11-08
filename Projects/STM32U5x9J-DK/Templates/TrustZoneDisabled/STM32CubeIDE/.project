@@ -508,6 +508,16 @@
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/sitronix/sitronix_reg.c</locationURI>
 		</link>
 		<link>
+			<name>Drivers/BSP/Components/stts22h.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/stts22h/stts22h.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/stts22h_reg.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/stts22h/stts22h_reg.c</locationURI>
+		</link>
+		<link>
 			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5x9j_discovery.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery.c</locationURI>
@@ -516,6 +526,11 @@
 			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5x9j_discovery_bus.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_bus.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5x9j_discovery_env_sensors.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_env_sensors.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5x9j_discovery_hspi.c</name>

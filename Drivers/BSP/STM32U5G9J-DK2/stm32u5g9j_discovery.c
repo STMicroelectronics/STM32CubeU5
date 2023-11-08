@@ -6,7 +6,7 @@
   *          LEDs
   *          push-buttons
   *          COM ports
-  *          available on STM32U5G9J-DK board(MB1736) from STMicroelectronics.
+  *          available on STM32U5G9J-DK2 board(MB1918) from STMicroelectronics.
   ******************************************************************************
   * @attention
   *
@@ -31,22 +31,38 @@
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK
+/** @addtogroup STM32U5G9J_DK2
   * @{
   */
 
-/** @defgroup STM32U5G9J_DK_LOW_LEVEL LOW LEVEL
+/** @defgroup STM32U5G9J_DK2_LOW_LEVEL LOW LEVEL
   * @{
   */
 
-/** @defgroup STM32U5G9J_DK_LOW_LEVEL_Private_TypesDefinitions Private Types Definitions
+/** @defgroup STM32U5G9J_DK2_COMMON_Private_Defines STM32U5G9J_DK2 COMMON Private Defines
+  * @{
+  */
+
+/**
+  * @}
+  */
+
+/** @defgroup STM32U5G9J_DK2_COMMON_Private_Macros STM32U5G9J_DK2 COMMON Private Macros
+  * @{
+  */
+
+/**
+  * @}
+  */
+
+/** @defgroup STM32U5G9J_DK2_LOW_LEVEL_Private_TypesDefinitions LOW LEVEL Private Types Definitions
   * @{
   */
 typedef void (* BSP_EXTI_LineCallback)(void);
 /**
   * @}
   */
-/** @defgroup STM32U5G9J_DK_LOW_LEVEL_Private_FunctionPrototypes Private Function Prototypes
+/** @defgroup STM32U5G9J_DK2_LOW_LEVEL_Private_FunctionPrototypes LOW LEVEL Private Function Prototypes
   * @{
   */
 static void BUTTON_USER_EXTI_Callback(void);
@@ -58,7 +74,7 @@ static void UART_MspDeInit(UART_HandleTypeDef *huart);
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_LOW_LEVEL_Exported_Variables Exported Variables
+/** @defgroup STM32U5G9J_DK2_LOW_LEVEL_Exported_Variables LOW LEVEL Exported Variables
   * @{
   */
 EXTI_HandleTypeDef hpb_exti[BUTTONn];
@@ -70,7 +86,7 @@ USART_TypeDef *COM_UART[COMn]   = {COM1_UART, COM2_UART};
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_LOW_LEVEL_Private_Variables Private Variables
+/** @defgroup STM32U5G9J_DK2_LOW_LEVEL_Private_Variables LOW LEVEL Private Variables
   * @{
   */
 
@@ -117,7 +133,7 @@ static uint32_t IsComMspCbValid[COMn] = {0};
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_LOW_LEVEL_Exported_Functions Exported Functions
+/** @defgroup STM32U5G9J_DK2_LOW_LEVEL_Exported_Functions LOW LEVEL Exported Functions
   * @{
   */
 
@@ -127,7 +143,7 @@ static uint32_t IsComMspCbValid[COMn] = {0};
   */
 uint32_t BSP_GetVersion(void)
 {
-  return ((uint32_t)STM32U5G9J_DK_BSP_VERSION);
+  return ((uint32_t)STM32U5G9J_DK2_BSP_VERSION);
 }
 
 /**
@@ -136,7 +152,7 @@ uint32_t BSP_GetVersion(void)
   */
 const uint8_t *BSP_GetBoardName(void)
 {
-  return (const uint8_t *) STM32U5G9J_DK_BSP_BOARD_NAME;
+  return (const uint8_t *) STM32U5G9J_DK2_BSP_BOARD_NAME;
 }
 
 /**
@@ -145,7 +161,7 @@ const uint8_t *BSP_GetBoardName(void)
   */
 const uint8_t *BSP_GetBoardID(void)
 {
-  return (const uint8_t *)STM32U5G9J_DK_BSP_BOARD_ID;
+  return (const uint8_t *)STM32U5G9J_DK2_BSP_BOARD_ID;
 }
 
 /**
@@ -244,7 +260,7 @@ int32_t BSP_LED_On(Led_TypeDef Led)
   else
   {
     /* LED3/LED2 High active */
-    HAL_GPIO_WritePin(LED_PORT[Led], (uint16_t)LED_PIN[Led], GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LED_PORT[Led], (uint16_t)LED_PIN[Led], GPIO_PIN_RESET);
   }
 
   return ret;
@@ -269,7 +285,7 @@ int32_t BSP_LED_Off(Led_TypeDef Led)
   else
   {
     /* LED3/LED2 High active */
-    HAL_GPIO_WritePin(LED_PORT [Led], (uint16_t)LED_PIN[Led], GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED_PORT [Led], (uint16_t)LED_PIN[Led], GPIO_PIN_SET);
   }
 
   return ret;
@@ -649,7 +665,7 @@ PUTCHAR_PROTOTYPE
   * @}
   */
 
-/** @defgroup STM32H7B3I_DISCO_LOW_LEVEL_Private_Functions Private Functions
+/** @defgroup STM32H7B3I_DISCO_LOW_LEVEL_Private_Functions LOW LEVEL Private Functions
   * @{
   */
 #if (USE_BSP_COM_FEATURE > 0)

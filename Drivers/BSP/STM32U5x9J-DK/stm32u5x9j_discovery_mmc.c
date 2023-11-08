@@ -68,7 +68,7 @@
   */
 
 
-/** @defgroup STM32U5x9J_DISCOVERY_MMC_Exported_Variables Exported Variables
+/** @defgroup STM32U5x9J_DISCOVERY_MMC_Exported_Variables MMC Exported Variables
   * @{
   */
 MMC_HandleTypeDef uSdHandle;
@@ -77,7 +77,7 @@ MMC_HandleTypeDef uSdHandle;
   */
 
 
-/** @defgroup STM32U5x9J_DISCOVERY_MMC_Exported_Functions  Exported Functions
+/** @defgroup STM32U5x9J_DISCOVERY_MMC_Exported_Functions MMC Exported Functions
   * @{
   */
 

@@ -96,7 +96,7 @@ MOTION_SENSOR_FuncDrv_t   *Motion_Sensor_FuncDrv[MOTION_SENSOR_INSTANCES_NBR][MO
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_MOTION_SENSORS_Private_Function_Prototypes MOTION SENSORS Private
+/** @defgroup STM32U575I_EVAL_MOTION_SENSORS_Private_Function_Prototypes MOTION SENSORS Private Function Prototypes
   *   Function Prototypes
   * @{
   */
@@ -105,7 +105,7 @@ static int32_t LSM6DSO_Probe(uint32_t Functions);
   * @}
   */
 
-/** @addtogroup STM32U575I_EVAL_MOTION_SENSORS_Exported_Functions
+/** @addtogroup STM32U575I_EVAL_MOTION_SENSORS_Exported_Functions MOTION SENSORS Exported Functions
   * @{
   */
 /**

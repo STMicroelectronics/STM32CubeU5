@@ -124,12 +124,12 @@ int main(void)
     if (Jpeg_HWDecodingEnd != 0)
     {
       /* test ends properly */
-      HAL_GPIO_WritePin (LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
+      HAL_GPIO_WritePin (LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
     }
     else
     {
       /* test error */
-      HAL_GPIO_WritePin (LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+      HAL_GPIO_WritePin (LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
     }
   }
   /* USER CODE END 3 */
@@ -315,7 +315,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin|LED_GREEN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin|LED_GREEN_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : LED_RED_Pin LED_GREEN_Pin */
   GPIO_InitStruct.Pin = LED_RED_Pin|LED_GREEN_Pin;
@@ -343,7 +343,7 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
-    HAL_GPIO_WritePin (LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin (LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
   }
   /* USER CODE END Error_Handler_Debug */
 }

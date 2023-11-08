@@ -2,9 +2,9 @@
   ******************************************************************************
   * @file    stm32u5g9j_discovery.h
   * @author  MCD Application Team
-  * @brief   This file contains definitions for STM32U5G9J-DK:
+  * @brief   This file contains definitions for STM32U5G9J-DK2:
   *          LEDs
-  *          push-buttons
+  *          USER push-buttons
   *          COM ports
   *          hardware resources.
   ******************************************************************************
@@ -44,24 +44,24 @@ extern "C" {
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK
+/** @addtogroup STM32U5G9J_DK2
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK_LOW_LEVEL
+/** @addtogroup STM32U5G9J_DK2_LOW_LEVEL
   * @{
   */
 
-/** @defgroup STM32U5G9J_DK_LOW_LEVEL_Exported_Types Exported Types
+/** @defgroup STM32U5G9J_DK2_LOW_LEVEL_Exported_Types LOW LEVEL Exported Types
   * @{
   */
 
 typedef enum
 {
   LED2 = 0U,
-  LED_GREEN  = LED2,
+  LED_RED = LED2,
   LED3 = 1U,
-  LED_RED = LED3,
+  LED_GREEN = LED3,
   LEDn
 } Led_TypeDef;
 
@@ -135,40 +135,40 @@ typedef struct
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_LOW_LEVEL_Exported_Constants Exported Constants
+/** @defgroup STM32U5G9J_DK2_LOW_LEVEL_Exported_Constants LOW LEVEL Exported Constants
   * @{
   */
 
 /**
-  * @brief  Define for STM32U5G9J_DK board
+  * @brief  Define for STM32U5G9J_DK2 board
   */
 
-#if !defined (USE_STM32U5G9J_DK)
-#define USE_STM32U5G9J_DK
-#endif
+#if !defined (USE_STM32U5G9J_DK2)
+#define USE_STM32U5G9J_DK2
+#endif /* USE_STM32U5G9J_DK2 */
 /**
-  * @brief STM32U5G9J Discovery BSP Driver version number V1.0.0
+  * @brief STM32U5G9J Discovery BSP Driver version number V1.1.0
   */
-#define STM32U5G9J_DK_BSP_VERSION_MAIN   (0x01U) /*!< [31:24] main version */
-#define STM32U5G9J_DK_BSP_VERSION_SUB1   (0x00U) /*!< [23:16] sub1 version */
-#define STM32U5G9J_DK_BSP_VERSION_SUB2   (0x00U) /*!< [15:8]  sub2 version */
-#define STM32U5G9J_DK_BSP_VERSION_RC     (0x00U) /*!< [7:0]  release candidate */
-#define STM32U5G9J_DK_BSP_VERSION        ((STM32U5G9J_DK_BSP_VERSION_MAIN << 24)\
-                                          |(STM32U5G9J_DK_BSP_VERSION_SUB1 << 16)\
-                                          |(STM32U5G9J_DK_BSP_VERSION_SUB2 << 8 )\
-                                          |(STM32U5G9J_DK_BSP_VERSION_RC))
+#define STM32U5G9J_DK2_BSP_VERSION_MAIN   (0x01U) /*!< [31:24] main version */
+#define STM32U5G9J_DK2_BSP_VERSION_SUB1   (0x01U) /*!< [23:16] sub1 version */
+#define STM32U5G9J_DK2_BSP_VERSION_SUB2   (0x00U) /*!< [15:8]  sub2 version */
+#define STM32U5G9J_DK2_BSP_VERSION_RC     (0x00U) /*!< [7:0]  release candidate */
+#define STM32U5G9J_DK2_BSP_VERSION        ((STM32U5G9J_DK2_BSP_VERSION_MAIN << 24)\
+                                           |(STM32U5G9J_DK2_BSP_VERSION_SUB1 << 16)\
+                                           |(STM32U5G9J_DK2_BSP_VERSION_SUB2 << 8 )\
+                                           |(STM32U5G9J_DK2_BSP_VERSION_RC))
 
-#define STM32U5G9J_DK_BSP_BOARD_NAME  "STM32U5G9J-DK";
-#define STM32U5G9J_DK_BSP_BOARD_ID    "MB1918";
+#define STM32U5G9J_DK2_BSP_BOARD_NAME  "STM32U5G9J-DK2";
+#define STM32U5G9J_DK2_BSP_BOARD_ID    "MB1918";
 
-/** @defgroup STM32U5G9J_DK_LOW_LEVEL_LED EVAL LOW LEVEL LED
+/** @defgroup STM32U5G9J_DK2_LOW_LEVEL_LED EVAL LOW LEVEL LED
   * @{
   */
 #define LED2_GPIO_PORT                   GPIOD
-#define LED2_PIN                         GPIO_PIN_4
+#define LED2_PIN                         GPIO_PIN_2
 
 #define LED3_GPIO_PORT                   GPIOD
-#define LED3_PIN                         GPIO_PIN_2
+#define LED3_PIN                         GPIO_PIN_4
 
 #define LED2_GPIO_CLK_ENABLE()           __HAL_RCC_GPIOD_CLK_ENABLE()
 #define LED2_GPIO_CLK_DISABLE()          __HAL_RCC_GPIOD_CLK_DISABLE()
@@ -179,7 +179,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_LOW_LEVEL_BUTTON LOW LEVEL BUTTON
+/** @defgroup STM32U5G9J_DK2_LOW_LEVEL_BUTTON LOW LEVEL BUTTON
   * @{
   */
 /* Button state */
@@ -200,7 +200,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_LOW_LEVEL_COM LOW LEVEL COM
+/** @defgroup STM32U5G9J_DK2_LOW_LEVEL_COM LOW LEVEL COM
   * @{
   */
 #if (USE_BSP_COM_FEATURE > 0)
@@ -256,7 +256,7 @@ typedef struct
   * @}
   */
 
-/** @addtogroup STM32U5G9J_DK_LOW_LEVEL_Exported_Variables
+/** @addtogroup STM32U5G9J_DK2_LOW_LEVEL_Exported_Variables LOW LEVEL Exported Variables
   * @{
   */
 extern EXTI_HandleTypeDef hpb_exti[];
@@ -268,7 +268,7 @@ extern USART_TypeDef *COM_USART[];
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_LOW_LEVEL_Exported_FunctionsPrototypes Exported Functions Prototypes
+/** @defgroup STM32U5G9J_DK2_LOW_LEVEL_Exported_FunctionsPrototypes LOW LEVEL Exported Functions Prototypes
   * @{
   */
 uint32_t       BSP_GetVersion(void);

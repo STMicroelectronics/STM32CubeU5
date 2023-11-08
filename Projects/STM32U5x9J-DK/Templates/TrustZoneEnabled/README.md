@@ -89,6 +89,10 @@ Reference, Template, TrustZone
   - Templates/TrustZoneEnabled/NonSecure/Inc/stm32u5x9j_discovery_conf.h  Non-secure BSP Configuration file
   - Templates/TrustZoneEnabled/NonSecure/Inc/stm32u5xx_hal_conf.h         Non-secure HAL Configuration file
   - Templates/TrustZoneEnabled/NonSecure/Inc/stm32u5xx_it.h               Non-secure Interrupt handlers header file
+  - Templates/TrustZoneEnabled/NonSecure/Inc/aps512xx_conf.h              Non-secure aps512xx Configuration file 
+  - Templates/TrustZoneEnabled/NonSecure/Inc/mx25um51245g_conf.h          Non-secure mx25um51245g Configuration file 
+  - Templates/TrustZoneEnabled/NonSecure/Inc/sitronix_conf.h              Non-secure sitronix Configuration file  
+
 
 ### <b>Hardware and Software environment</b>
 

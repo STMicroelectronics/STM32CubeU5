@@ -35,15 +35,15 @@ extern "C" {
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A B_U585I_IOT02A
+/** @addtogroup B_U585I_IOT02A
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_RANGING_SENSOR RANGING SENSOR
+/** @addtogroup B_U585I_IOT02A_RANGING_SENSOR
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_RANGING_SENSOR_Exported_Constants Exported Constants
+/** @defgroup B_U585I_IOT02A_RANGING_SENSOR_Exported_Constants RANGING SENSOR Exported Constants
   * @{
   */
 #define RANGING_SENSOR_INSTANCES_NBR       3U
@@ -84,7 +84,7 @@ extern "C" {
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_RANGING_SENSOR_Exported_Types Exported Types
+/** @defgroup B_U585I_IOT02A_RANGING_SENSOR_Exported_Types RANGING SENSOR Exported Types
   * @{
   */
 typedef struct
@@ -137,7 +137,7 @@ typedef struct
   * @}
   */
 
-/** @addtogroup B_U585I_IOT02A_RANGING_SENSOR_Exported_Variables
+/** @addtogroup B_U585I_IOT02A_RANGING_SENSOR_Exported_Variables RANGING SENSOR Exported Variables
   * @{
   */
 extern void *VL53L5A1_RANGING_SENSOR_CompObj[RANGING_SENSOR_INSTANCES_NBR];
@@ -145,7 +145,7 @@ extern void *VL53L5A1_RANGING_SENSOR_CompObj[RANGING_SENSOR_INSTANCES_NBR];
   * @}
   */
 
-/** @addtogroup B_U585I_IOT02A_RANGING_SENSOR_Exported_Functions
+/** @addtogroup B_U585I_IOT02A_RANGING_SENSOR_Exported_Functions RANGING SENSOR Exported Functions
   * @{
   */
 int32_t BSP_RANGING_SENSOR_Init(uint32_t Instance);

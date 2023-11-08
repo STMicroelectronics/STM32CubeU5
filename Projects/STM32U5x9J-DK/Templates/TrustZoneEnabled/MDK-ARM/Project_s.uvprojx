@@ -16,8 +16,8 @@
         <TargetCommonOption>
           <Device>STM32U5A9NJHxQ</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32U59x_DFP.1.0.0</PackID>
-          <PackURL>http://www.keil.com/pack</PackURL>
+          <PackID>Keil.STM32U5xx_DFP.2.2.1</PackID>
+          <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x0C000000-0xC1FDFFF) IROM2(0x0C1FE000-0xC1FFFFF) IRAM(0x30000000-0x300CFFFF) CLOCK(8000000) FPU3(SFPU) CPUTYPE("Cortex-M33") ELITTLE TZ DSP</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>

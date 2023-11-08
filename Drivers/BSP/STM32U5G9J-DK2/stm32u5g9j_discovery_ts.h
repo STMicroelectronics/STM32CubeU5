@@ -17,8 +17,8 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef STM32U5G9J_DK_TS_H
-#define STM32U5G9J_DK_TS_H
+#ifndef STM32U5G9J_DK2_TS_H
+#define STM32U5G9J_DK2_TS_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,15 +33,15 @@ extern "C" {
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK
+/** @addtogroup STM32U5G9J_DK2
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK_TS
+/** @addtogroup STM32U5G9J_DK2_TS
   * @{
   */
 
-/** @defgroup STM32U5G9J_DK_TS_Exported_Constants Exported Constants
+/** @defgroup STM32U5G9J_DK2_TS_Exported_Constants TS Exported Constants
   * @{
   */
 #ifndef USE_TS_MULTI_TOUCH
@@ -86,7 +86,7 @@ extern "C" {
   */
 
 
-/** @defgroup STM32U5G9J_DK_TS_Exported_Types Exported Types
+/** @defgroup STM32U5G9J_DK2_TS_Exported_Types TS Exported Types
   * @{
   */
 typedef struct
@@ -164,7 +164,7 @@ typedef struct
   * @}
   */
 
-/** @addtogroup STM32U5G9J_DK_TS_Exported_Variables
+/** @addtogroup STM32U5G9J_DK2_TS_Exported_Variables TS Exported Variables
   * @{
   */
 extern void               *Ts_CompObj[TS_INSTANCES_NBR];
@@ -174,7 +174,7 @@ extern TS_Ctx_t           Ts_Ctx[TS_INSTANCES_NBR];
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_TS_Exported_FunctionsPrototypes Exported Functions Prototypes
+/** @defgroup STM32U5G9J_DK2_TS_Exported_FunctionsPrototypes TS Exported Functions Prototypes
   * @{
   */
 int32_t BSP_TS_Init(uint32_t Instance, TS_Init_t *TS_Init);
@@ -215,4 +215,4 @@ void    BSP_TS_IRQHandler(uint32_t Instance);
 }
 #endif
 
-#endif /* STM32U5G9J_DK_TS_H */
+#endif /* STM32U5G9J_DK2_TS_H */

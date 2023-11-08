@@ -336,8 +336,8 @@ static void MX_RTC_Init(void)
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 {
 
-  /* Turn LED2 on: Alarm generation */
-  BSP_LED_On(LED2);
+  /* Turn LED3 on: Alarm generation */
+  BSP_LED_On(LED3);
 
 
 }
@@ -372,8 +372,8 @@ void Error_Handler(void)
   RTCStatus = 0xE;
   while (1)
   {
-    /* Toggle LED3 with a period of one second */
-    BSP_LED_Toggle(LED3);
+    /* Toggle LED2 with a period of one second */
+    BSP_LED_Toggle(LED2);
     HAL_Delay(1000);
 
   }

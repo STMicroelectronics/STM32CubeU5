@@ -54,7 +54,7 @@ static RANGING_SENSOR_Capabilities_t VL53L5A1_RANGING_SENSOR_Cap;
   * @}
   */
 
-/** @defgroup STM32U5x9J_DISCOVERY_RANGING_SENSOR_Private_Functions_Prototypes RANGING SENSOR
+/** @defgroup STM32U5x9J_DISCOVERY_RANGING_SENSOR_Private_Functions RANGING SENSOR Private Functions
   *           Private Functions Prototypes
   * @{
   */
@@ -62,6 +62,10 @@ static int32_t VL53L5CX_Probe(uint32_t Instance);
 static int32_t vl53l5cx_i2c_recover(void);
 /**
   * @}
+  */
+
+/** @defgroup STM32U5x9J_DISCOVERY_RANGING_SENSOR_Exported_Functions RANGING SENSOR Exported Functions
+  * @{
   */
 
 /**
@@ -457,6 +461,10 @@ int32_t BSP_RANGING_SENSOR_XTalkCalibration(uint32_t Instance, uint16_t Reflecta
 
   return ret;
 }
+
+/**
+  * @}
+  */
 
 /** @defgroup STM32U5x9J_DISCOVERY_RANGING_SENSOR_Private_Functions RANGING SENSOR Private Functions
   * @{

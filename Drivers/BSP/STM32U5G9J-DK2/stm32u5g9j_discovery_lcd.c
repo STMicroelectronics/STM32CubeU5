@@ -3,7 +3,7 @@
   * @file    stm32u5g9j_discovery_lcd.c
   * @author  MCD Application Team
   * @brief   This file includes the driver for Liquid Crystal Display (LCD) module
-  *          mounted on STM32U5G9J_DK board.
+  *          mounted on STM32U5G9J_DK2 board.
   ******************************************************************************
   * @attention
   *
@@ -89,24 +89,21 @@
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK
+/** @addtogroup STM32U5G9J_DK2
   * @{
   */
 
-/** @defgroup STM32U5G9J_DK_LCD LCD
+/** @defgroup STM32U5G9J_DK2_LCD LCD
   * @{
   */
 
-/** @defgroup STM32U5G9J_DK_LCD_Private_Variables STM32U5G9J_DK LCD Private Variables
+/** @defgroup STM32U5G9J_DK2_LCD_Private_Variables LCD Private Variables
   * @{
   */
 /**
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_LCD_Private_TypesDefinitions STM32U5G9J_DK LCD Private TypesDefinitions
-  * @{
-  */
 /** @defgroup STM32H573I_DK_LCD_Private_Types LCD Private Types
   * @{
   */
@@ -128,11 +125,8 @@ const LCD_UTILS_Drv_t LCD_Driver =
 /**
   * @}
   */
-/**
-  * @}
-  */
 
-/** @defgroup STM32U5G9J_DK_LCD_Exported_Variables STM32U5G9J_DK LCD Exported Variables
+/** @defgroup STM32U5G9J_DK2_LCD_Exported_Variables LCD Exported Variables
   * @{
   */
 DMA2D_HandleTypeDef hlcd_dma2d;
@@ -142,7 +136,7 @@ BSP_LCD_Ctx_t       Lcd_Ctx[LCD_INSTANCES_NBR];
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_LCD_Private_FunctionPrototypes STM32U5G9J_DK LCD Private Function Prototypes
+/** @defgroup STM32U5G9J_DK2_LCD_Private_FunctionPrototypes LCD Private Function Prototypes
   * @{
   */
 
@@ -156,7 +150,7 @@ static void LL_ConvertLineToRGB(uint32_t Instance, uint32_t *pSrc, uint32_t *pDs
 /**
   * @}
   */
-/** @defgroup STM32U5G9J_DK_LCD_Private_Macros  STM32U5G9J_DK LCD Private Macros
+/** @defgroup STM32U5G9J_DK2_LCD_Private_Macros LCD Private Macros
   * @{
   */
 #define CONVERTRGB5652ARGB8888(Color)((((((((Color) >> (11U)) & 0x1FU) * 527U) + 23U) >> (6U)) << (16U)) |\
@@ -166,7 +160,7 @@ static void LL_ConvertLineToRGB(uint32_t Instance, uint32_t *pSrc, uint32_t *pDs
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_LCD_Exported_Functions STM32U5G9J_DK LCD Exported Functions
+/** @defgroup STM32U5G9J_DK2_LCD_Exported_Functions LCD Exported Functions
   * @{
   */
 /**
@@ -328,14 +322,14 @@ __weak HAL_StatusTypeDef MX_LTDC_Init(LTDC_HandleTypeDef *hltdc, uint32_t Width,
   hltdc->Init.DEPolarity = LTDC_DEPOLARITY_AL;
   hltdc->Init.PCPolarity = LTDC_PCPOLARITY_IPC;
 
-  hltdc->Init.HorizontalSync     = RK050HR18_HSYNC;
-  hltdc->Init.AccumulatedHBP     = RK050HR18_HSYNC + RK050HR18_HBP;
-  hltdc->Init.AccumulatedActiveW = RK050HR18_HSYNC + Width + RK050HR18_HBP;
-  hltdc->Init.TotalWidth         = RK050HR18_HSYNC + Width + RK050HR18_HBP + RK050HR18_HFP;
-  hltdc->Init.VerticalSync       = RK050HR18_VSYNC;
-  hltdc->Init.AccumulatedVBP     = RK050HR18_VSYNC + RK050HR18_VBP;
-  hltdc->Init.AccumulatedActiveH = RK050HR18_VSYNC + Height + RK050HR18_VBP;
-  hltdc->Init.TotalHeigh         = RK050HR18_VSYNC + Height + RK050HR18_VBP + RK050HR18_VFP;
+  hltdc->Init.HorizontalSync     = RK050HR18_HSYNC - 1U;
+  hltdc->Init.AccumulatedHBP     = RK050HR18_HSYNC + RK050HR18_HBP - 1U;
+  hltdc->Init.AccumulatedActiveW = RK050HR18_HSYNC + Width + RK050HR18_HBP - 1U;
+  hltdc->Init.TotalWidth         = RK050HR18_HSYNC + Width + RK050HR18_HBP + RK050HR18_HFP - 1U;
+  hltdc->Init.VerticalSync       = RK050HR18_VSYNC - 1U;
+  hltdc->Init.AccumulatedVBP     = RK050HR18_VSYNC + RK050HR18_VBP - 1U;
+  hltdc->Init.AccumulatedActiveH = RK050HR18_VSYNC + Height + RK050HR18_VBP - 1U;
+  hltdc->Init.TotalHeigh         = RK050HR18_VSYNC + Height + RK050HR18_VBP + RK050HR18_VFP - 1U;
 
   hltdc->Init.Backcolor.Blue  = 0xFF;
   hltdc->Init.Backcolor.Green = 0xFF;
@@ -1155,7 +1149,7 @@ int32_t BSP_LCD_GetFormat(uint32_t Instance, uint32_t *Format)
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_LCD_Private_Functions STM32U5G9J_DK LCD Private Functions
+/** @defgroup STM32U5G9J_DK2_LCD_Private_Functions LCD Private Functions
   * @{
   */
 /**
@@ -1359,27 +1353,23 @@ static void LTDC_MspDeInit(LTDC_HandleTypeDef *hltdc)
   if (hltdc->Instance == LTDC)
   {
     /* LTDC Pins deactivation */
-    /* GPIOA deactivation */
-    gpio_init_structure.Pin       = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_8 | GPIO_PIN_11 | GPIO_PIN_12 | \
-                                    GPIO_PIN_15 | GPIO_PIN_6 | GPIO_PIN_9 | GPIO_PIN_10;
-    HAL_GPIO_DeInit(GPIOA, gpio_init_structure.Pin);
-
     /* GPIOB deactivation */
-    gpio_init_structure.Pin       = GPIO_PIN_13 | GPIO_PIN_15 | GPIO_PIN_3 | GPIO_PIN_4 | \
-                                    GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_14;
+    gpio_init_structure.Pin       = GPIO_PIN_9 | GPIO_PIN_2;
     HAL_GPIO_DeInit(GPIOB, gpio_init_structure.Pin);
 
-    /* GPIOE deactivation */
-    gpio_init_structure.Pin       = GPIO_PIN_11 | GPIO_PIN_15;
-    HAL_GPIO_DeInit(GPIOE, gpio_init_structure.Pin);
+    /* GPIOC deactivation */
+    gpio_init_structure.Pin       = GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_6 | GPIO_PIN_7;
+    HAL_GPIO_DeInit(GPIOC, gpio_init_structure.Pin);
 
     /* GPIOF deactivation */
-    gpio_init_structure.Pin       = GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_9 | GPIO_PIN_7 | GPIO_PIN_15;
-    HAL_GPIO_DeInit(GPIOF, gpio_init_structure.Pin);
+    gpio_init_structure.Pin       = GPIO_PIN_0 | GPIO_PIN_3 | GPIO_PIN_6 | GPIO_PIN_13 | GPIO_PIN_1 | GPIO_PIN_8 | \
+                                    GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_14 | GPIO_PIN_15;
+    HAL_GPIO_DeInit(GPIOD, gpio_init_structure.Pin);
 
     /* GPIOG deactivation */
-    gpio_init_structure.Pin       = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_13 | GPIO_PIN_14;
-    HAL_GPIO_DeInit(GPIOG, gpio_init_structure.Pin);
+    gpio_init_structure.Pin       = GPIO_PIN_0 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 |  \
+                                    GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
+    HAL_GPIO_DeInit(GPIOE, gpio_init_structure.Pin);
 
     /** Force and let in reset state LTDC */
     __HAL_RCC_LTDC_FORCE_RESET();

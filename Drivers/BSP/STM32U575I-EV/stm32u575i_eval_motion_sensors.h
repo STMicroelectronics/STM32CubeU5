@@ -44,7 +44,7 @@ extern "C" {
   * @{
   */
 
-/** @defgroup STM32U575I_EVAL_MOTION_SENSORS_Exported_Types MOTION_SENSOR Exported Types
+/** @defgroup STM32U575I_EVAL_MOTION_SENSORS_Exported_Types MOTION SENSORS Exported Types
   * @{
   */
 /* Motion sensor axes */
@@ -87,7 +87,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_MOTION_SENSORS_Exported_Constants MOTION_SENSOR Exported Constants
+/** @defgroup STM32U575I_EVAL_MOTION_SENSORS_Exported_Constants MOTION SENSORS Exported Constants
   * @{
   */
 /* One motion sensor is mounted on the STM32U575I_EVAL board,
@@ -105,7 +105,7 @@ typedef struct
   * @}
   */
 
-/** @addtogroup STM32U575I_EVAL_MOTION_SENSORS_Exported_Variables
+/** @addtogroup STM32U575I_EVAL_MOTION_SENSORS_Exported_Variables MOTION SENSORS Exported Variables
   * @{
   */
 extern MOTION_SENSOR_Ctx_t        Motion_Sensor_Ctx[MOTION_SENSOR_INSTANCES_NBR];
@@ -116,7 +116,7 @@ extern MOTION_SENSOR_FuncDrv_t   *Motion_Sensor_FuncDrv[MOTION_SENSOR_INSTANCES_
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_MOTION_SENSORS_Exported_Functions MOTION_SENSOR Exported Functions
+/** @defgroup STM32U575I_EVAL_MOTION_SENSORS_Exported_Functions MOTION SENSORS Exported Functions
   * @{
   */
 int32_t BSP_MOTION_SENSOR_Init(uint32_t Instance, uint32_t Functions);

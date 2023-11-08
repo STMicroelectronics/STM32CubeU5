@@ -61,6 +61,10 @@ In Debug configuration window\ Startup, in addition to "monitor reset halt" add 
 -   This example shows how to use the Time of flight sensor.
     ==> Result is shown in the screen.
 
+ ** ENVIRONMENTAL SENSOR **
+-   This example shows how to use the temperature of the environmental sensor.
+    ==> Result is shown in the screen.
+
 #### <b>Notes</b>
 
  1. Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds)
@@ -81,6 +85,7 @@ In Debug configuration window\ Startup, in addition to "monitor reset halt" add 
   - BSP/Src/hspi.c                      HSPI features
   - BSP/Src/emmc.c                      MMC features 
   - BSP/Src/touchscreen.c               TS features  
+  - BSP/Src/env_sensor.c                Env sensor features
   - BSP/Src/stm32u5xx_hal_msp.c         HAL MSP module
   - BSP/Src/system_stm32u5xx.c          STM32U5xx system clock configuration file
   - BSP/Src/stm32u5xx_it.c              Interrupt handlers
@@ -92,19 +97,19 @@ In Debug configuration window\ Startup, in addition to "monitor reset halt" add 
   - BSP/Inc/hexagone.h                  Image used for the main menu of BSP example
   - BSP/Inc/back.h                      Image used for BSP example    
   - BSP/Inc/sitronix_conf.h             TS configuration file
-  - BSP/Inc/mx25lm51245g_conf.h         OSPI NOR memory configuration file
+  - BSP/Inc/mx25um51245g_conf.h         OSPI NOR memory configuration file
   - BSP/Inc/aps512xx_conf.h             HSPI NOR memory configuration file 
 
 ### <b>Keywords</b>
 
-BSP, Led, Button, LCD, eMMC, TouchScreen, OSPI, HSPI
+BSP, Led, Button, LCD, eMMC, TouchScreen, OSPI, HSPI, Env sensor
 
 ### <b>Hardware and Software environment</b>
 
 -   This example runs on STM32U5A9xx Devices.
 -   This example runs on STM32U5G9xx Devices.
 
-  - This example runs on STM32U5x5xx/STM32U5x9xx devices without security enabled (TZEN=0).
+  - This example runs on STM32U5x9xx devices without security enabled (TZEN=0).
 
   - This example has been tested with STMicroelectronics STM32U5x9J-DK (MB1829)
     board and can be easily tailored to any other supported device

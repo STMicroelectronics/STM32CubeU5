@@ -225,7 +225,7 @@ typedef enum
 
 #define APS512XX_READ_LATENCY(rlc, type) ((((type) & APS512XX_MR0_LATENCY_TYPE) == 0U) ? \
                                           ((((rlc) & APS512XX_MR0_READ_LATENCY_CODE) >> 2U) + 3U) : \
-                                          (((((rlc) & APS512XX_MR0_READ_LATENCY_CODE) >> 2U) + 3U)*2))
+                                          (((((rlc) & APS512XX_MR0_READ_LATENCY_CODE) >> 2U) + 3U)*2U))
 
 #define APS512XX_WRITE_LATENCY(wlc)      ((((wlc) & APS512XX_MR4_WRITE_LATENCY_CODE) == 0U) ? 3U : \
                                           ((((wlc) & APS512XX_MR4_WLC_7)             != 0U) ? 7U : \

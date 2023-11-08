@@ -82,7 +82,7 @@
   */
 
 /* Exported variables --------------------------------------------------------*/
-/** @addtogroup STM32U5x9J_DISCOVERY_HSPI_RAM_Exported_Variables
+/** @addtogroup STM32U5x9J_DISCOVERY_HSPI_RAM_Exported_Variables HSPI RAM Exported Variables
   * @{
   */
 XSPI_HandleTypeDef hhspi_ram[HSPI_RAM_INSTANCES_NUMBER] = {0};
@@ -102,7 +102,7 @@ HSPI_RAM_Ctx_t Hspi_Ram_Ctx[HSPI_RAM_INSTANCES_NUMBER] = {{
 
 /* Private constants --------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-/** @defgroup STM32U5x9J_DISCOVERY_HSPI_RAM_Private_Variables HSPI_RAM Private Variables
+/** @defgroup STM32U5x9J_DISCOVERY_HSPI_RAM_Private_Variables HSPI RAM Private Variables
   * @{
   */
 #if (USE_HAL_XSPI_REGISTER_CALLBACKS == 1)
@@ -114,13 +114,11 @@ static uint32_t HspiRam_IsMspCbValid[HSPI_RAM_INSTANCES_NUMBER] = {0};
 
 /* Private functions ---------------------------------------------------------*/
 
-/** @defgroup STM32U5x9J_DISCOVERY_HSPI_RAM_Private_Functions HSPI_RAM Private Functions
+/** @defgroup STM32U5x9J_DISCOVERY_HSPI_RAM_Private_Functions HSPI RAM Private Functions
   * @{
   */
 static void HSPI_RAM_MspInit(XSPI_HandleTypeDef *hhspi);
 static void HSPI_RAM_MspDeInit(const XSPI_HandleTypeDef *hhspi);
-static int32_t Tuning_HSPI_Write(XSPI_HandleTypeDef *hhspi);
-static int32_t Tuning_HSPI_Read(XSPI_HandleTypeDef *hhspi);
 
 /**
   * @}
@@ -128,7 +126,7 @@ static int32_t Tuning_HSPI_Read(XSPI_HandleTypeDef *hhspi);
 
 /* Exported functions ---------------------------------------------------------*/
 
-/** @addtogroup STM32U5x9J_DISCOVERY_HSPI_RAM_Exported_Functions
+/** @addtogroup STM32U5x9J_DISCOVERY_HSPI_RAM_Exported_Functions HSPI RAM Exported Functions
   * @{
   */
 
@@ -249,65 +247,6 @@ int32_t BSP_HSPI_RAM_DeInit(uint32_t Instance)
       {
         ret = BSP_ERROR_PERIPH_FAILURE;
       }
-    }
-  }
-
-  /* Return BSP status */
-  return ret;
-}
-
-/**
-  * @brief  Tuning the HSPI write.
-  * @param  hhspi          HSPI handle
-  * @retval BSP status
-  */
-static int32_t Tuning_HSPI_Write(XSPI_HandleTypeDef *hhspi)
-{
-  int32_t ret = BSP_ERROR_NONE;
-  XSPI_HSCalTypeDef sCfg;
-
-  hhspi->Instance = HSPI1;
-  hhspi->State    = HAL_XSPI_STATE_READY;
-
-  sCfg.DelayValueType        = HAL_XSPI_CAL_DATA_OUTPUT_DELAY;
-  sCfg.FineCalibrationUnit   = 0x11;
-  sCfg.CoarseCalibrationUnit = 0x05;
-  sCfg.MaxCalibration        = HAL_XSPI_MAXCAL_REACHED;
-  if (HAL_XSPI_SetDelayValue(hhspi, &sCfg) != HAL_OK)
-  {
-    if (hhspi->Instance == HSPI1)
-    {
-      ret = BSP_ERROR_PERIPH_FAILURE;
-    }
-  }
-
-  /* Return BSP status */
-  return ret;
-}
-
-/**
-  * @brief  Tuning the HSPI Read.
-  * @param  hhspi          HSPI handle
-  * @retval BSP status
-  */
-static int32_t Tuning_HSPI_Read(XSPI_HandleTypeDef *hhspi)
-{
-  int32_t ret = BSP_ERROR_NONE;
-  XSPI_HSCalTypeDef sCfg;
-
-  hhspi->Instance = HSPI1;
-  hhspi->State    = HAL_XSPI_STATE_READY;
-
-  sCfg.DelayValueType        = HAL_XSPI_CAL_DQS_INPUT_DELAY;
-  sCfg.FineCalibrationUnit   = 0x11;
-  sCfg.CoarseCalibrationUnit = 0x05;
-  sCfg.MaxCalibration        = HAL_XSPI_MAXCAL_NOT_REACHED;
-
-  if (HAL_XSPI_SetDelayValue(hhspi, &sCfg) != HAL_OK)
-  {
-    if (hhspi->Instance == HSPI1)
-    {
-      ret = BSP_ERROR_PERIPH_FAILURE;
     }
   }
 
@@ -444,11 +383,6 @@ int32_t BSP_HSPI_RAM_Read(uint32_t Instance, uint8_t *pData, uint32_t ReadAddr, 
     ret = BSP_ERROR_WRONG_PARAM;
   }
 
-  else if (Tuning_HSPI_Read(&hhspi_ram[Instance]) != 0)
-  {
-    ret = BSP_ERROR_PERIPH_FAILURE;
-  }
-
   else
   {
     if (APS512XX_Read(&hhspi_ram[Instance], pData, ReadAddr, Size,
@@ -524,11 +458,6 @@ int32_t BSP_HSPI_RAM_Write(uint32_t Instance, uint8_t *pData, uint32_t WriteAddr
     ret = BSP_ERROR_WRONG_PARAM;
   }
 
-  else if (Tuning_HSPI_Write(&hhspi_ram[Instance]) != 0)
-  {
-    ret = BSP_ERROR_PERIPH_FAILURE;
-  }
-
   else
   {
     if (APS512XX_Write(&hhspi_ram[Instance], pData, WriteAddr, Size,
@@ -600,17 +529,13 @@ int32_t BSP_HSPI_RAM_EnableMemoryMappedMode(uint32_t Instance)
   }
   else
   {
-    if (Tuning_HSPI_Write(&hhspi_ram[Instance]) != 0)
-    {
-      ret = BSP_ERROR_PERIPH_FAILURE;
-    }
-    else if (APS512XX_EnableMemoryMappedMode(&hhspi_ram[Instance], (uint32_t)APS512XX_READ_LATENCY((uint32_t)\
-                                             ((uint32_t)(Hspi_Ram_Ctx[Instance].ReadLatencyCode)),
-                                             (uint32_t)(Hspi_Ram_Ctx[Instance].LatencyType)),
-                                             APS512XX_WRITE_LATENCY((uint32_t)\
-                                                                    (Hspi_Ram_Ctx[Instance].WriteLatencyCode)),
-                                             (uint32_t)(Hspi_Ram_Ctx[Instance].IOMode),
-                                             (uint32_t)(Hspi_Ram_Ctx[Instance].BurstType)) != (int32_t)APS512XX_OK)
+    if (APS512XX_EnableMemoryMappedMode(&hhspi_ram[Instance], (uint32_t)APS512XX_READ_LATENCY((uint32_t)\
+                                        ((uint32_t)(Hspi_Ram_Ctx[Instance].ReadLatencyCode)),
+                                        (uint32_t)(Hspi_Ram_Ctx[Instance].LatencyType)),
+                                        APS512XX_WRITE_LATENCY((uint32_t)\
+                                                               (Hspi_Ram_Ctx[Instance].WriteLatencyCode)),
+                                        (uint32_t)(Hspi_Ram_Ctx[Instance].IOMode),
+                                        (uint32_t)(Hspi_Ram_Ctx[Instance].BurstType)) != (int32_t)APS512XX_OK)
     {
       ret = BSP_ERROR_COMPONENT_FAILURE;
     }
@@ -933,7 +858,7 @@ void BSP_HSPI_RAM_IRQHandler(uint32_t Instance)
   * @}
   */
 
-/** @addtogroup STM32U5x9J_DISCOVERY_HSPI_RAM_Private_Functions
+/** @addtogroup STM32U5x9J_DISCOVERY_HSPI_RAM_Private_Functions HSPI RAM Private Functions
   * @{
   */
 

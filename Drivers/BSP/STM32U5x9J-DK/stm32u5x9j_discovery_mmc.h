@@ -41,7 +41,7 @@ extern "C" {
   * @{
   */
 
-/** @defgroup STM32U5x9J_DISCOVERY_MMC_Exported_Types Exported Types
+/** @defgroup STM32U5x9J_DISCOVERY_MMC_Exported_Types MMC Exported Types
   * @{
   */
 extern MMC_HandleTypeDef uSdHandle;
@@ -54,7 +54,7 @@ extern MMC_HandleTypeDef uSdHandle;
   * @}
   */
 
-/** @defgroup STM32U5x9J_DISCOVERY_MMC_Exported_Constants Exported Constants
+/** @defgroup STM32U5x9J_DISCOVERY_MMC_Exported_Constants MMC Exported Constants
   * @{
   */
 /**
@@ -81,7 +81,7 @@ extern MMC_HandleTypeDef uSdHandle;
   */
 
 
-/** @addtogroup STM32U5x9J_DISCOVERY_MMC_Exported_Functions
+/** @addtogroup STM32U5x9J_DISCOVERY_MMC_Exported_Functions MMC Exported Functions
   * @{
   */
 uint8_t BSP_MMC_Init(void);

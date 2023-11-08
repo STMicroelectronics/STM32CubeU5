@@ -53,7 +53,7 @@ extern "C" {
   * @{
   */
 
-/** @defgroup STM32U575I_EVAL_USBPD_PWR_Exported_Types Exported Types
+/** @defgroup STM32U575I_EVAL_USBPD_PWR_Exported_Types USBPD PWR Exported Types
   * @{
   */
 
@@ -97,7 +97,7 @@ typedef void USBPD_PWR_VBUSDetectCallbackFunc(uint32_t PortNum,
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_USBPD_PWR_Exported_Constants Exported Constants
+/** @defgroup STM32U575I_EVAL_USBPD_PWR_Exported_Constants USBPD PWR Exported Constants
   * @{
   */
 /**
@@ -259,14 +259,14 @@ typedef void USBPD_PWR_VBUSDetectCallbackFunc(uint32_t PortNum,
   * @}
   */
 
-/** @addtogroup STM32U575I_EVAL_USBPD_PWR_Exported_Variables
+/** @addtogroup STM32U575I_EVAL_USBPD_PWR_Exported_Variables USBPD PWR Exported Variables
   * @{
   */
 /**
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_USBPD_PWR_Exported_Functions Exported Functions
+/** @defgroup STM32U575I_EVAL_USBPD_PWR_Exported_Functions USBPD PWR Exported Functions
   * @{
   */
 /* Common functions */

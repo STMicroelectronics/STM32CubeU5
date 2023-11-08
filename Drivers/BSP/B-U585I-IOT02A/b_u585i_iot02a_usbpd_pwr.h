@@ -53,7 +53,7 @@ extern "C" {
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_USBPD_PWR_Exported_Types Exported Types
+/** @defgroup B_U585I_IOT02A_USBPD_PWR_Exported_Types USBPD PWR Exported Types
   * @{
   */
 
@@ -97,7 +97,7 @@ typedef void USBPD_PWR_VBUSDetectCallbackFunc(uint32_t PortNum,
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_USBPD_PWR_Exported_Constants Exported Constants
+/** @defgroup B_U585I_IOT02A_USBPD_PWR_Exported_Constants USBPD PWR Exported Constants
   * @{
   */
 /**
@@ -248,14 +248,14 @@ typedef void USBPD_PWR_VBUSDetectCallbackFunc(uint32_t PortNum,
   * @}
   */
 
-/** @addtogroup B_U585I_IOT02A_USBPD_PWR_Exported_Variables
+/** @addtogroup B_U585I_IOT02A_USBPD_PWR_Exported_Variables USBPD PWR Exported Variables
   * @{
   */
 /**
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_USBPD_PWR_Exported_Functions Exported Functions
+/** @defgroup B_U585I_IOT02A_USBPD_PWR_Exported_Functions USBPD PWR Exported Functions
   * @{
   */
 /* Common functions */

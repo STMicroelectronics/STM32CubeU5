@@ -352,6 +352,10 @@
                     <state>$PROJ_DIR$\..\..\..\..\..\Drivers\CMSIS\Device\ST\STM32U5xx\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\porting</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\Common</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1080,15 +1084,81 @@
     <group>
         <name>Drivers</name>
         <group>
+            <name>BSP</name>
+            <group>
+                <name>Components</name>
+                <group>
+                    <name>VL53L5CX</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\porting\platform.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\vl53l5cx.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_api.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_plugin_detection_thresholds.c</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\vl53l5cx\modules\vl53l5cx_plugin_motion_indicator.c</name>
+                    </file>
+                </group>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\aps512xx\aps512xx.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx25um51245g\mx25um51245g.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\sitronix\sitronix.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\sitronix\sitronix_reg.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\stts22h\stts22h.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\stts22h\stts22h_reg.c</name>
+                </file>
+            </group>
+            <group>
+                <name>STM32U5x9J-DK</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery_bus.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery_env_sensors.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery_hspi.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery_lcd.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery_mmc.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery_ospi.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery_ranging_sensor.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery_ts.c</name>
+                </file>
+            </group>
+        </group>
+        <group>
             <name>CMSIS</name>
             <file>
                 <name>$PROJ_DIR$\..\NonSecure\Src\system_stm32u5xx_ns.c</name>
-            </file>
-        </group>
-        <group>
-            <name>STM32U5x9J-DK</name>
-            <file>
-                <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery.c</name>
             </file>
         </group>
         <group>

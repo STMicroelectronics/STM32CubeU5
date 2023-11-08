@@ -42,6 +42,7 @@ When resorting to STM32CubeIDE:<br> In Debug configuration window Startup, in a
 <p><strong>MMC</strong> - This example shows how to erase, write and read data available on the eMMC memory available on the board. ==&gt; Result shown on Terminal I/O</p>
 <p><strong>TOUCHSCREEN</strong> - This example shows how to use the touchscreen. ==&gt; Result is shown in the screen.</p>
 <p><strong>RANGING SENSOR</strong> - This example shows how to use the Time of flight sensor. ==&gt; Result is shown in the screen.</p>
+<p><strong>ENVIRONMENTAL SENSOR</strong> - This example shows how to use the temperature of the environmental sensor. ==&gt; Result is shown in the screen.</p>
 <h4 id="notes"><b>Notes</b></h4>
 <ol type="1">
 <li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise the caller ISR process will be blocked. To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>
@@ -56,6 +57,7 @@ When resorting to STM32CubeIDE:<br> In Debug configuration window Startup, in a
 <li>BSP/Src/hspi.c HSPI features</li>
 <li>BSP/Src/emmc.c MMC features</li>
 <li>BSP/Src/touchscreen.c TS features<br />
+<li>BSP/Src/env_sensor.c Env sensor features<br />
 </li>
 <li>BSP/Src/stm32u5xx_hal_msp.c HAL MSP module</li>
 <li>BSP/Src/system_stm32u5xx.c STM32U5xx system clock configuration file</li>
@@ -69,16 +71,16 @@ When resorting to STM32CubeIDE:<br> In Debug configuration window Startup, in a
 <li>BSP/Inc/back.h Image used for BSP example<br />
 </li>
 <li>BSP/Inc/sitronix_conf.h TS configuration file</li>
-<li>BSP/Inc/mx25lm51245g_conf.h OSPI NOR memory configuration file</li>
+<li>BSP/Inc/mx25um51245g_conf.h OSPI NOR memory configuration file</li>
 <li>BSP/Inc/aps512xx_conf.h HSPI NOR memory configuration file</li>
 </ul>
 <h3 id="keywords"><b>Keywords</b></h3>
-<p>BSP, Led, Button, LCD, eMMC, TouchScreen, OSPI, HSPI</p>
+<p>BSP, Led, Button, LCD, eMMC, TouchScreen, OSPI, HSPI, Env sensor</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
-<li>This example runs on STM32U5A9xx Devices.</li>
+<li><p>This example runs on STM32U5A9xx Devices.</p></li>
 <li><p>This example runs on STM32U5G9xx Devices.</p></li>
-<li><p>This example runs on STM32U5x5xx/STM32U5x9xx devices without security enabled (TZEN=0).</p></li>
+<li><p>This example runs on STM32U5x9xx devices without security enabled (TZEN=0).</p></li>
 <li><p>This example has been tested with STMicroelectronics STM32U5x9J-DK (MB1829) board and can be easily tailored to any other supported device and development board.</p></li>
 <li><p>To be able to display data on MDK-ARM debugger please make sure to close the SB34 and open SB33</p></li>
 </ul>

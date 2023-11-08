@@ -29,11 +29,11 @@
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_LIGHT_SENSORS LIGHT_SENSORS
+/** @defgroup B_U585I_IOT02A_LIGHT_SENSORS LIGHT SENSORS
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_LIGHT_SENSORS_Private_Defines LIGHT_SENSORS Private Defines
+/** @defgroup B_U585I_IOT02A_LIGHT_SENSORS_Private_Defines LIGHT SENSORS Private Defines
   * @{
   */
 
@@ -41,7 +41,7 @@
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_LIGHT_SENSORS_Exported_Variables LIGHT_SENSORS Exported Variables
+/** @defgroup B_U585I_IOT02A_LIGHT_SENSORS_Exported_Variables LIGHT SENSORS Exported Variables
   * @{
   */
 /* Ambiant Light sensor context */
@@ -53,7 +53,7 @@ static LIGHT_SENSOR_Drv_t *VEML3235_LIGHT_SENSOR_Drv[LIGHT_SENSOR_INSTANCES_NBR]
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_LIGHT_SENSORS_Private_Function_Prototypes LIGHT_SENSORS Private Function Prototypes
+/** @defgroup B_U585I_IOT02A_LIGHT_SENSORS_Private_Function_Prototypes LIGHT SENSORS Private Function Prototypes
   * @{
   */
 static int32_t VEML3235_Probe(uint32_t Instance);
@@ -61,7 +61,7 @@ static int32_t VEML3235_Probe(uint32_t Instance);
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_LIGHT_SENSORS_Exported_Functions LIGHT_SENSORS Exported Functions
+/** @defgroup B_U585I_IOT02A_LIGHT_SENSORS_Exported_Functions LIGHT SENSORS Exported Functions
   * @{
   */
 
@@ -506,7 +506,7 @@ int32_t BSP_LIGHT_SENSOR_SetControlMode(uint32_t Instance, uint32_t ControlMode,
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_LIGHT_SENSORS_Private_Functions LIGHT_SENSORS Private Functions
+/** @defgroup B_U585I_IOT02A_LIGHT_SENSORS_Private_Functions LIGHT SENSORS Private Functions
   * @{
   */
 /**

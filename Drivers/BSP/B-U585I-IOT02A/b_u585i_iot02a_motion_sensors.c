@@ -29,11 +29,11 @@
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_MOTION_SENSORS MOTION_SENSORS
+/** @defgroup B_U585I_IOT02A_MOTION_SENSORS MOTION SENSORS
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Private_Defines MOTION_SENSORS Private Defines
+/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Private_Defines MOTION SENSORS Private Defines
   * @{
   */
 /* Functions IDx */
@@ -44,7 +44,7 @@
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Exported_Variables MOTION_SENSORS Exported Variables
+/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Exported_Variables MOTION SENSORS Exported Variables
   * @{
   */
 MOTION_SENSOR_Ctx_t        Motion_Sensor_Ctx[MOTION_SENSOR_INSTANCES_NBR] = {{0}, {0}};
@@ -57,7 +57,7 @@ MOTION_SENSOR_FuncDrv_t   *Motion_Sensor_FuncDrv[MOTION_SENSOR_INSTANCES_NBR][MO
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Private_Function_Prototypes MOTION_SENSORS Private Function Prototypes
+/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Private_Function_Prototypes MOTION SENSORS Private Function Prototypes
   * @{
   */
 /* Components probe functions prototypes */
@@ -67,7 +67,7 @@ static int32_t IIS2MDC_Probe(uint32_t Functions);
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Exported_Functions MOTION_SENSORS Exported Functions
+/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Exported_Functions MOTION SENSORS Exported Functions
   * @{
   */
 /**
@@ -586,7 +586,7 @@ int32_t BSP_MOTION_SENSOR_SetFullScale(uint32_t Instance, uint32_t Function, int
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Private_Functions MOTION_SENSORS Private Functions
+/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Private_Functions  MOTION SENSORS Private Functions
   * @{
   */
 /**

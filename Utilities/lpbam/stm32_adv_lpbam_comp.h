@@ -48,17 +48,17 @@ extern "C" {
   */
 typedef struct
 {
-  uint32_t OutputPol;          /*!< Specifies the COMP polarity.
-                                    This parameter can be a value of @ref LPBAM_COMP_OutputPolarity                   */
+  uint32_t OutputPol;  /*!< Specifies the COMP polarity.
+                            This parameter can be a value of @ref LPBAM_COMP_OutputPolarity                   */
 
-  uint32_t InputPlus;          /*!< Specifies the COMP input plus.
-                                    Note:  When the comparator is configured as input window mode, the input plus will
-                                           be shared between the two comparator instances. For the comparator instance
-                                           which is not driving the window mode InputPlus parameter has no effect.
-                                           This parameter can be a value of @ref LPBAM_COMP_InputPlus                 */
+  uint32_t InputPlus;  /*!< Specifies the COMP input plus.
+                            Note:  When the comparator is configured as input window mode, the input plus will
+                                   be shared between the two comparator instances. For the comparator instance
+                                   which is not driving the window mode InputPlus parameter has no effect.
+                                   This parameter can be a value of @ref LPBAM_COMP_InputPlus                 */
 
-  uint32_t InputMinus;         /*!< Specifies the COMP input minus.
-                                    This parameter can be a value of @ref LPBAM_COMP_InputMinus                       */
+  uint32_t InputMinus; /*!< Specifies the COMP input minus.
+                            This parameter can be a value of @ref LPBAM_COMP_InputMinus                       */
 
 } LPBAM_COMP_StartFullAdvConf_t;
 

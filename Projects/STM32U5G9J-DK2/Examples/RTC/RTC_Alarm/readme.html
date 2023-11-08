@@ -35,7 +35,7 @@ The user can use also LSE as RTC clock source.
 </ol>
 <p><strong>HAL_RTC_SetDate()</strong> and <strong>HAL_RTC_SetTime()</strong> functions are called to initialize the time and the date. <strong>HAL_RTC_SetAlarm_IT()</strong> function is then called to initialize the Alarm feature with interrupt mode.</p>
 <p>In this example, the Time is set to 02:20:00 and the Alarm must be generated after 30 seconds on 02:20:30.</p>
-<p><strong>LED2</strong> is turned ON when the RTC Alarm is generated correctly. The current time is updated and displayed on the debugger in aShowTime variable. In case of error, <strong>LED3</strong> is toggled with a period of one second.</p>
+<p><strong>LED3</strong> is turned ON when the RTC Alarm is generated correctly. The current time is updated and displayed on the debugger in aShowTime variable. In case of error, <strong>LED2</strong> is toggled with a period of one second.</p>
 <ol start="2" type="1">
 <li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise the caller ISR process will be blocked. To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>
 <li><p>The application need to ensure that the SysTick time base is always set to 1 millisecond to have correct HAL operation.</p></li>

@@ -72,7 +72,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup STM32U5x9J_DISCOVERY_HSPI_RAM_Exported_Types HSPI_RAM Exported Types
+/** @defgroup STM32U5x9J_DISCOVERY_HSPI_RAM_Exported_Types HSPI RAM Exported Types
   * @{
   */
 #define BSP_HSPI_RAM_BurstLength_t      APS512XX_BurstLength_t

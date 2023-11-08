@@ -141,7 +141,7 @@ typedef struct
   * @}
   */
 
-/** @addtogroup STM32U5x9J_DISCOVERY_RANGING_SENSOR_Exported_Variables
+/** @addtogroup STM32U5x9J_DISCOVERY_RANGING_SENSOR_Exported_Variables RANGING SENSOR Exported Variables
   * @{
   */
 extern void *VL53L5A1_RANGING_SENSOR_CompObj[RANGING_SENSOR_INSTANCES_NBR];
@@ -149,7 +149,7 @@ extern void *VL53L5A1_RANGING_SENSOR_CompObj[RANGING_SENSOR_INSTANCES_NBR];
   * @}
   */
 
-/** @addtogroup STM32U5x9J_DISCOVERY_RANGING_SENSOR_Exported_Functions
+/** @addtogroup STM32U5x9J_DISCOVERY_RANGING_SENSOR_Exported_Functions RANGING SENSOR Exported Functions
   * @{
   */
 int32_t BSP_RANGING_SENSOR_Init(uint32_t Instance);

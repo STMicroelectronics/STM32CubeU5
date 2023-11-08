@@ -85,7 +85,7 @@ typedef void (* BSP_EXTI_LineCallback)(void);
   * @}
   */
 
-/** @addtogroup STM32U575I_EVAL_TS_Exported_Variables
+/** @addtogroup STM32U575I_EVAL_TS_Exported_Variables TS Exported Variables
   * @{
   */
 void     *Ts_CompObj[TS_INSTANCES_NBR] = {0};
@@ -108,12 +108,11 @@ static int32_t SX8651_Probe(uint32_t Instance);
 static int32_t MFX_Probe(uint32_t Instance);
 #endif /* USE_BSP_TS_MFX */
 static void    TS_EXTI_Callback(void);
-
 /**
   * @}
   */
 
-/** @addtogroup STM32U575I_EVAL_TS_Exported_Functions
+/** @addtogroup STM32U575I_EVAL_TS_Exported_Functions TS Exported Functions
   * @{
   */
 /**
@@ -724,8 +723,8 @@ static int32_t MFX_Probe(uint32_t Instance)
 #endif /*USE_BSP_TS_MFX */
 
 /**
-  * @brief  TS EXTI callback.
-  * @retval None.
+  * @brief  TS EXTI touch detection callbacks.
+  * @retval None
   */
 static void TS_EXTI_Callback(void)
 {
@@ -737,6 +736,7 @@ static void TS_EXTI_Callback(void)
     /* Nothing to do */
   }
 }
+
 /**
   * @}
   */

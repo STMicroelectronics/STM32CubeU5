@@ -103,7 +103,7 @@ int main(void)
   SystemPower_Config();
 
   /* USER CODE BEGIN SysInit */
-  /* Initialize LED2 and LED3 : GREEN and RED leds */
+  /* Initialize LED2 and LED3 : RED and GREEN leds */
   
   BSP_LED_Init(LED2);
   BSP_LED_Init(LED3);
@@ -235,7 +235,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     HAL_Delay(250);
-    BSP_LED_Toggle(LED2);
+    BSP_LED_Toggle(LED3);
   }
   /* USER CODE END 3 */
 }
@@ -474,8 +474,8 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
-  /* Turn LED3 on */
-  BSP_LED_On(LED3);
+  /* Turn LED2 on */
+  BSP_LED_On(LED2);
   while (1)
   {
   }

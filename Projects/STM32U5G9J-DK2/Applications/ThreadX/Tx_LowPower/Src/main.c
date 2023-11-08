@@ -234,7 +234,7 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, LED2_Pin|LED3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, LED2_Pin|LED3_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin : BUTTON_USER_Pin */
   GPIO_InitStruct.Pin = BUTTON_USER_Pin;
@@ -297,7 +297,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_SET);
   while (1)
   {
     HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);

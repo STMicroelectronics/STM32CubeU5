@@ -42,11 +42,6 @@
 			<locationURI>PARENT-2-PROJECT_LOC/NonSecure/Src/system_stm32u5xx_ns.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/STM32U5x9J-DK/stm32u5x9j_discovery.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery.c</locationURI>
-		</link>
-		<link>
 			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal.c</locationURI>
@@ -430,6 +425,101 @@
 			<name>Example/User/stm32u5xx_it.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/NonSecure/Src/stm32u5xx_it.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/aps512xx.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/aps512xx/aps512xx.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/mx25um51245g.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/mx25um51245g/mx25um51245g.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/sitronix.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/sitronix/sitronix.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/sitronix_reg.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/sitronix/sitronix_reg.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/stts22h.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/stts22h/stts22h.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/stts22h_reg.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/stts22h/stts22h_reg.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_bus.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_bus.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_env_sensors.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_env_sensors.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_hspi.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_hspi.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_lcd.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_lcd.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_mmc.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_mmc.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_ospi.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_ospi.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_ranging_sensor.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_ranging_sensor.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_ts.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_ts.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/vl53l5cx/vl53l5cx.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/vl53l5cx.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/vl53l5cx/vl53l5cx_api.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_api.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/vl53l5cx/vl53l5cx_plugin_detection_thresholds.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_detection_thresholds.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/vl53l5cx/vl53l5cx_plugin_motion_indicator.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/BSP/Components/vl53l5cx/modules/vl53l5cx_plugin_motion_indicator.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

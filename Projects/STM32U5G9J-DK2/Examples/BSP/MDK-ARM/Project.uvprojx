@@ -412,7 +412,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Drivers/BSP/STM32U5x9J_DK</GroupName>
+          <GroupName>Drivers/BSP/STM32U5G9J_DK2</GroupName>
           <Files>
             <File>
               <FileName>stm32u5g9j_discovery.c</FileName>

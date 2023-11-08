@@ -72,7 +72,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_NOR_Exported_Types OSPI_NOR Exported Types
+/** @defgroup STM32U575I_EVAL_OSPI_NOR_Exported_Types OSPI NOR Exported Types
   * @{
   */
 #define BSP_OSPI_NOR_Info_t                MX25LM51245G_Info_t
@@ -189,7 +189,7 @@ typedef struct
   */
 
 /* Exported variables --------------------------------------------------------*/
-/** @defgroup STM32U575I_EVAL_OSPI_NOR_Exported_Variables OSPI Exported Variables
+/** @defgroup STM32U575I_EVAL_OSPI_NOR_Exported_Variables OSPI NOR Exported Variables
   * @{
   */
 extern OSPI_HandleTypeDef hospi_nor[OSPI_NOR_INSTANCES_NUMBER];
@@ -199,7 +199,7 @@ extern OSPI_NOR_Ctx_t Ospi_Nor_Ctx[OSPI_NOR_INSTANCES_NUMBER];
   */
 
 /* Exported functions --------------------------------------------------------*/
-/** @defgroup STM32U575I_EVAL_OSPI_NOR_Exported_Functions OSPI Exported Functions
+/** @defgroup STM32U575I_EVAL_OSPI_NOR_Exported_Functions OSPI NOR Exported Functions
   * @{
   */
 int32_t BSP_OSPI_NOR_Init(uint32_t Instance, BSP_OSPI_NOR_Init_t *Init);

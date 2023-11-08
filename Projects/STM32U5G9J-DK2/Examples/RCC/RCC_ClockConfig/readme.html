@@ -54,7 +54,7 @@
 <li>Disable the HSI oscillator (optional, if the HSI is no more needed by the application)</li>
 </ol></li>
 </ul>
-<p>LED2 is toggled with a timing defined by the HAL_Delay() API.</p>
+<p>LED3 is toggled with a timing defined by the HAL_Delay() API.</p>
 <h4 id="notes"><b>Notes</b></h4>
 <ol type="1">
 <li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise the caller ISR process will be blocked. To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>

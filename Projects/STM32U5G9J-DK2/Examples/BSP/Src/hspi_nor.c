@@ -139,18 +139,18 @@ int32_t HSPI_NOR_demo (void)
       /*##-2- Erase HSPI NOR memory ##########################################*/
       if(BSP_HSPI_NOR_Erase_Block(0, HSPI_NOR_WRITE_READ_ADDR, MX66UW1G45G_ERASE_64K) != BSP_ERROR_NONE)
       {
-        UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Erase : Failed", display_mode); 
+        UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Erase Block 64 K: Failed", display_mode); 
         UTIL_LCD_DisplayStringAt(xpos, ypos+15, (uint8_t *)"Test Aborted", display_mode);
         break;
       }
       else
       {
-        UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Erase : OK", display_mode); 
-        
+        UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Erase Block 64 K: OK", display_mode); 
+
         /*##-4- HSPI NOR memory read/write access  ###########################*/
         /* Fill the buffer to write */
         Fill_Buffer(HSPI_nor_aTxBuffer, HSPI_NOR_BUFFER_SIZE, 0xD20F);
-        
+
         /* Write data to the HSPI NOR memory */
         if(BSP_HSPI_NOR_Write(0, HSPI_nor_aTxBuffer, HSPI_NOR_WRITE_READ_ADDR, HSPI_NOR_BUFFER_SIZE) != BSP_ERROR_NONE)
         {
@@ -235,7 +235,7 @@ int32_t HSPI_NOR_demo (void)
     
     /*##-1- Deconfigure the HSPI NOR device ####################################*/
     status = BSP_HSPI_NOR_DeInit(0);
-    
+
     if (status != BSP_ERROR_NONE)
     {
       Error_Handler();
@@ -244,7 +244,7 @@ int32_t HSPI_NOR_demo (void)
     {      /*##-2- Reconfigure the HSPI NOR device ##################################*/
       /* QSPI device configuration */
       status = BSP_HSPI_NOR_Init(0, &Hspi_NOR_Init);
-      
+
       if (status != BSP_ERROR_NONE)
       {
         Error_Handler();
@@ -255,7 +255,7 @@ int32_t HSPI_NOR_demo (void)
         /*##-3- Erase HSPI NOR memory ##########################################*/
         if(BSP_HSPI_NOR_Erase_Block(0, 0, MX66UW1G45G_ERASE_4K) != BSP_ERROR_NONE)
         {
-          UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Erase : Failed", display_mode);
+          UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Erase Sector 4K: Failed", display_mode);
           UTIL_LCD_DisplayStringAt(xpos, ypos+15, (uint8_t *)"Test Aborted", display_mode);
           break;
         }
@@ -337,7 +337,7 @@ int32_t HSPI_NOR_demo (void)
     
     /*##-1- Deconfigure the HSPI NOR device ####################################*/
     status = BSP_HSPI_NOR_DeInit(0);
-    
+
     if (status != BSP_ERROR_NONE)
     {
       Error_Handler();
@@ -347,7 +347,7 @@ int32_t HSPI_NOR_demo (void)
       /*##-2- Reconfigure the HSPI NOR device ##################################*/
       /* HSPI NOR device configuration */
       status = BSP_HSPI_NOR_Init(0, &Hspi_NOR_Init);
-      
+
       if (status != BSP_ERROR_NONE)
       {
         Error_Handler();
@@ -357,19 +357,19 @@ int32_t HSPI_NOR_demo (void)
         /*##-3- Erase HSPI NOR memory ##########################################*/
         if(BSP_HSPI_NOR_Erase_Block(0, HSPI_NOR_WRITE_READ_ADDR, MX66UW1G45G_ERASE_4K) != BSP_ERROR_NONE)
         {
-          UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Erase : Failed", display_mode);
+          UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Erase Sector 4K: Failed", display_mode);
           UTIL_LCD_DisplayStringAt(xpos, ypos+15, (uint8_t *)"Test Aborted", display_mode);
           break;
         }
         else
         {
           ypos += 15;
-          UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Erase : OK", display_mode);
-          
+          UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Erase Sector 4K: OK", display_mode);
+
           /*##-4- HSPI NOR memory write access #################################*/
           /* Fill the buffer to write */
           Fill_Buffer(HSPI_nor_aTxBuffer, HSPI_NOR_BUFFER_SIZE, 0xD20F);
-          
+
           /* Write data to the HSPI NOR memory */
           if(BSP_HSPI_NOR_Write(0, HSPI_nor_aTxBuffer, HSPI_NOR_WRITE_READ_ADDR, HSPI_NOR_BUFFER_SIZE) != BSP_ERROR_NONE)
           {
@@ -401,7 +401,7 @@ int32_t HSPI_NOR_demo (void)
                   break;
                 }
               }
-              
+
               if(index == HSPI_NOR_BUFFER_SIZE)
               {
                 UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Mem-Mapped Access : OK", display_mode);
@@ -411,91 +411,12 @@ int32_t HSPI_NOR_demo (void)
         }
       }
     }
-    
-    
-    /********************************** PART 4 **********************************/
-    
-    /*##-1- Deconfigure the HSPI NOR device ####################################*/
-    status = BSP_HSPI_NOR_DeInit(0);
-    
-    if (status != BSP_ERROR_NONE)
-    {
-      Error_Handler();
-    }
-    else
-    {
-      /*##-2- Reconfigure the HSPI NOR device ##################################*/
-      /* HSPI NOR device configuration */
-      status = BSP_HSPI_NOR_Init(0, &Hspi_NOR_Init);
-      
-      if (status != BSP_ERROR_NONE)
-      {
-        Error_Handler();
-      }
-      else
-      {
-        ypos += 15;
-        /*##-3- Erase HSPI NOR memory ##########################################*/
-        if(BSP_HSPI_NOR_Erase_Chip(0) != BSP_ERROR_NONE)
-        {
-          UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Chip Erase : Failed", display_mode);
-          UTIL_LCD_DisplayStringAt(xpos, ypos+15, (uint8_t *)"Test Aborted", display_mode);
-        }
-        else
-        {
-          UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Chip Erase : OK", display_mode);
-          
-          /* Wait the end of the current operation on memory side */
-          do
-          {
-            status = BSP_HSPI_NOR_GetStatus(0);
-          } while((status != BSP_ERROR_NONE) && (status != BSP_ERROR_COMPONENT_FAILURE));
-          
-          if(status != BSP_ERROR_NONE)
-          {
-            UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)"Memory Status : Failed", display_mode);
-            UTIL_LCD_DisplayStringAt(xpos, ypos+15, (uint8_t *)"Test Aborted", display_mode);
-            break;
-          }
-          else
-          {
-            ypos += 15;
-            for (index = 0; index < (MX66UW1G45G_FLASH_SIZE / MX66UW1G45G_BLOCK_4K); index++)
-            {
-              /*##-4- HSPI NOR memory read access  ###############################*/
-              /* Read back data from the HSPI NOR memory */
-              if(BSP_HSPI_NOR_Read(0, HSPI_nor_aRxBuffer, (index * MX66UW1G45G_BLOCK_4K), MX66UW1G45G_BLOCK_4K) != BSP_ERROR_NONE)
-              {
-                UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Read : Failed", display_mode);
-                UTIL_LCD_DisplayStringAt(xpos, ypos+15, (uint8_t *)"Test Aborted", display_mode);
-                break;
-              }
-              else
-              {
-                /*##-5- Checking data integrity ################################*/
-                if(DataCmp(HSPI_nor_aRxBuffer, 0xFF, MX66UW1G45G_BLOCK_4K) > 0)
-                {
-                  UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Compare : Failed", display_mode);
-                  UTIL_LCD_DisplayStringAt(xpos, ypos+15, (uint8_t *)"Test Aborted", display_mode);
-                  break;
-                }
-              }
-            }
-            
-            if (index == (MX66UW1G45G_FLASH_SIZE / MX66UW1G45G_BLOCK_4K))
-            {
-              UTIL_LCD_DisplayStringAt(xpos, ypos, (uint8_t *)" Compare : OK", display_mode);
-            }
-          }
-        }
-      }
-    }
-    
+
     /* De-initialization in order to have correct configuration memory on next try */
     BSP_HSPI_NOR_DeInit(0);
-    
+
   }
-  
+
   BSP_LCD_FillRect(0, 0, 0, 800, 30, LCD_COLOR_BLACK);
 
   BSP_LCD_DrawBitmap(0, 360, 0, (uint8_t *)back);

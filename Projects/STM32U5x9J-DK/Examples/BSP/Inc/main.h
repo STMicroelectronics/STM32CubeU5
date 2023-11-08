@@ -50,6 +50,7 @@
 #include "stm32u5x9j_discovery_hspi.h"
 #include "stm32u5x9j_discovery_mmc.h"
 #include "stm32u5x9j_discovery_ranging_sensor.h"
+#include "stm32u5x9j_discovery_env_sensors.h"
 
 #include "stm32_lcd.h"
 
@@ -86,6 +87,7 @@ void    Error_Handler(void);
 uint32_t CheckResult(void);
 void     StartTest(void);
 int32_t  Rs_demo(void);
+int32_t  Es_demo(void);
 #endif /* MAIN_H */
 
 

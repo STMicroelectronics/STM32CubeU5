@@ -254,7 +254,7 @@
   </Group>
 
   <Group>
-    <GroupName>Drivers/BSP/STM32U5x9J_DK</GroupName>
+    <GroupName>Drivers/BSP/STM32U5G9J_DK2</GroupName>
     <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>

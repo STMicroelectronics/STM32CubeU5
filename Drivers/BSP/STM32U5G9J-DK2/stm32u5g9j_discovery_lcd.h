@@ -43,15 +43,15 @@ extern "C" {
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK
+/** @addtogroup STM32U5G9J_DK2
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK_LCD
+/** @addtogroup STM32U5G9J_DK2_LCD
   * @{
   */
 
-/** @defgroup STM32U5G9J_DK_LCD_Exported_Constants STM32U5G9J_DK LCD Exported Constants
+/** @defgroup STM32U5G9J_DK2_LCD_Exported_Constants LCD Exported Constants
   * @{
   */
 #define LCD_INSTANCES_NBR          1U
@@ -194,7 +194,7 @@ extern "C" {
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_LCD_Exported_Types STM32U5G9J_DK LCD Exported Types
+/** @defgroup STM32U5G9J_DK2_LCD_Exported_Types LCD Exported Types
   * @{
   */
 typedef struct
@@ -233,7 +233,7 @@ typedef struct
   * @}
   */
 
-/** @addtogroup STM32U5G9J_DK_LCD_Exported_Variables
+/** @addtogroup STM32U5G9J_DK2_LCD_Exported_Variables LCD Exported Variables
   * @{
   */
 extern DMA2D_HandleTypeDef   hlcd_dma2d;
@@ -244,7 +244,7 @@ extern const LCD_UTILS_Drv_t LCD_Driver;
   * @}
   */
 
-/** @addtogroup STM32U5G9J_DK_LCD_Exported_Functions
+/** @addtogroup STM32U5G9J_DK2_LCD_Exported_Functions LCD Exported Functions
   * @{
   */
 /* Initialization APIs */

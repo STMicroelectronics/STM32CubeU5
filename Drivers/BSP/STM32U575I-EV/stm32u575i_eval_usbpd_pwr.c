@@ -33,18 +33,18 @@
   * @{
   */
 
-/** @addtogroup STM32U575I_EVAL_USBPD_PWR
+/** @addtogroup STM32U575I_EVAL_USBPD_PWR USBPD PWR
   * @{
   */
 
-/** @defgroup STM32U575I_EVAL_USBPD_PWR_Exported_Variables Exported Variables
+/** @defgroup STM32U575I_EVAL_USBPD_PWR_Exported_Variables USBPD PWR Exported Variables
   * @{
   */
 /**
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_USBPD_PWR_Private_Typedef Private Typedef
+/** @defgroup STM32U575I_EVAL_USBPD_PWR_Private_Typedef USBPD PWR Private Typedef
   * @{
   */
 /**
@@ -73,7 +73,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_USBPD_PWR_Private_Constants Private Constants
+/** @defgroup STM32U575I_EVAL_USBPD_PWR_Private_Constants USBPD PWR  Private Constants
   * @{
   */
 
@@ -94,7 +94,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_USBPD_PWR_Private_Macros Private Macros
+/** @defgroup STM32U575I_EVAL_USBPD_PWR_Private_Macros USBPD PWR Private Macros
   * @{
   */
 
@@ -102,7 +102,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_USBPD_PWR_Private_Functions Private Functions
+/** @defgroup STM32U575I_EVAL_USBPD_PWR_Private_Functions USBPD PWR Private Functions
   * @{
   */
 static void     PWR_TCPP0203_GPIOConfigInit(uint32_t PortNum);
@@ -120,7 +120,7 @@ static void MX_ADC1_Init(void);
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_USBPD_PWR_Private_Variables Private Variables
+/** @defgroup STM32U575I_EVAL_USBPD_PWR_Private_Variables USBPD PWR Private Variables
   * @{
   */
 static USBPD_PWR_PortConfig_t USBPD_PWR_Port_Configs[USBPD_PWR_INSTANCES_NBR] =
@@ -142,7 +142,7 @@ static TCPP0203_Object_t      USBPD_PWR_PortCompObj[USBPD_PWR_INSTANCES_NBR] = {
   * @}
   */
 
-/** @addtogroup STM32U575I_EVAL_USBPD_PWR_Exported_Functions
+/** @addtogroup STM32U575I_EVAL_USBPD_PWR_Exported_Functions USBPD PWR Exported Functions
   * @{
   */
 
@@ -1404,7 +1404,7 @@ void BSP_USBPD_PWR_EventCallback(uint32_t PortNum)
   * @}
   */
 
-/** @addtogroup STM32U575I_EVAL_USBPD_PWR_Private_Functions
+/** @addtogroup STM32U575I_EVAL_USBPD_PWR_Private_Functions USBPD PWR Private Functions
   * @{
   */
 

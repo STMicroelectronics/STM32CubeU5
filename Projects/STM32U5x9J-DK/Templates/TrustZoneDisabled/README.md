@@ -34,7 +34,7 @@ Reference, Template, TrustZone disabled
   - Templates/TrustZoneDisabled/Src/stm32u5xx_hal_msp.c            HAL MSP module
   - Templates/TrustZoneDisabled/Inc/main.h                         Main program header file
   - Templates/TrustZoneDisabled/Inc/aps512xx_conf.h                aps512xx Configuration file 
-  - Templates/TrustZoneDisabled/Inc/mx25lm51245g_conf.h            mx25lm51245g Configuration file 
+  - Templates/TrustZoneDisabled/Inc/mx25um51245g_conf.h            mx25um51245g Configuration file 
   - Templates/TrustZoneDisabled/Inc/sitronix_conf.h                sitronix Configuration file  
   - Templates/TrustZoneDisabled/Inc/stm32u5x9j_discovery_conf.h    BSP Configuration file
   - Templates/TrustZoneDisabled/Inc/stm32u5xx_hal_conf.h           HAL Configuration file

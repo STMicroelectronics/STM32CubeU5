@@ -45,7 +45,7 @@ extern "C" {
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Exported_Types ENVIRONMENTAL_SENSORS Exported Types
+/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Exported_Types ENVIRONMENTAL SENSORS Exported Types
   * @{
   */
 typedef struct
@@ -67,7 +67,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Exported_Constants ENVIRONMENTAL_SENSORS Exported Constants
+/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Exported_Constants ENVIRONMENTAL SENSORS Exported Constants
   * @{
   */
 /* Two environmental sensors are mounted on the B_U585I_IOT02A board,
@@ -85,7 +85,7 @@ typedef struct
   * @}
   */
 
-/** @addtogroup B_U585I_IOT02A_ENV_SENSORS_Exported_Variables
+/** @addtogroup B_U585I_IOT02A_ENV_SENSORS_Exported_Variables ENVIRONMENTAL SENSORS Exported Variables
   * @{
   */
 /* Environmental sensor context */
@@ -103,7 +103,7 @@ extern ENV_SENSOR_FuncDrv_t *Env_Sensor_FuncDrv[ENV_SENSOR_INSTANCES_NBR][ENV_SE
   * @}
   */
 
-/** @addtogroup B_U585I_IOT02A_ENV_SENSORS_Exported_Functions
+/** @addtogroup B_U585I_IOT02A_ENV_SENSORS_Exported_Functions ENVIRONMENTAL SENSORS Exported Functions
   * @{
   */
 int32_t BSP_ENV_SENSOR_Init(uint32_t Instance, uint32_t Functions);

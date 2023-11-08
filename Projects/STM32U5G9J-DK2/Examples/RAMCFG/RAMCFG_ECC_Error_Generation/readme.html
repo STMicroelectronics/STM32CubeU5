@@ -27,8 +27,8 @@
 <li><p>When the RAMCFG controller is disabled, the ECC calculation when writing memory is not performed. So, when enabling the RAMCFG after writing to SRAM, the ECC and data don’t match and the RAMCFG controller will generate interrupts according to ECC error type (Single or double). By default, interrupts are disabled. After enabling them (single error and double error interrupts), the RAMCFG generates interrupts on each read access to a corrupted data. The RAMCFG controller is able to detect and correct ECC single error data and only detect ECC double error data.</p></li>
 <li>STM32U5G9J-DK2 board’s LED can be used to monitor the project operation status:
 <ul>
-<li><strong>LED2 toggle</strong> when no error detected.</li>
-<li><strong>LED3 is ON</strong> when any project error was occurred.</li>
+<li><strong>LED3 toggle</strong> when no error detected.</li>
+<li><strong>LED2 is ON</strong> when any project error was occurred.</li>
 </ul></li>
 </ul>
 <h4 id="notes"><b>Notes</b></h4>

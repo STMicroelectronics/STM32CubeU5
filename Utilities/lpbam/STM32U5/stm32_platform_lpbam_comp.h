@@ -63,6 +63,11 @@ extern "C" {
 #define LPBAM_COMP_INPUT_PLUS_IO2 (0x0100U) /*!< LPBAM comparator input plus connected to IO2 (pin PB2 for COMP1, pin
                                                  PB6 for COMP2 when available within device)                          */
 #define LPBAM_COMP_INPUT_PLUS_IO3 (0x0200U) /*!< LPBAM comparator input plus connected to IO3 (pin PA2 for COMP1)     */
+#if defined(COMP_CSR_INPSEL_2)
+#define LPBAM_COMP_INPUT_PLUS_IO4 (0x0300U) /*!< LPBAM comparator input plus connected to IO4 (pin PB3 for COMP1)     */
+#define LPBAM_COMP_INPUT_PLUS_IO5 (0x0400U) /*!< LPBAM comparator input plus connected to IO5 (pin PB4 for COMP1)     */
+#define LPBAM_COMP_INPUT_PLUS_IO6 (0x0500U) /*!< LPBAM comparator input plus connected to IO6 (pin PB6 for COMP1)     */
+#endif /* COMP_CSR_INPSEL_2 */
 /**
   * @}
   */

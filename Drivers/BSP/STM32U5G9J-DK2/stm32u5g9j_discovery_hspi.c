@@ -3,7 +3,7 @@
   * @file    stm32u5g9j_discovery_hspi.c
   * @author  MCD Application Team
   * @brief   This file includes a standard driver for the MX66UW1G45G
-  *          HSPI memories mounted on the STM32U5G9J-DK board.
+  *          HSPI memories mounted on the STM32U5G9J-DK2 board.
   ******************************************************************************
   * @attention
   *
@@ -21,7 +21,7 @@
   ==============================================================================
   [..]
    (#) This driver is used to drive the MX66UW1G45G Octal NOR
-       external memories mounted on STM32U5G9J-DK board.
+       external memories mounted on STM32U5G9J-DK2 board.
 
    (#) This driver need specific component driver (MX66UW1G45G) to be included with.
 
@@ -70,16 +70,16 @@
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK
+/** @addtogroup STM32U5G9J_DK2
   * @{
   */
 
-/** @defgroup STM32U5G9J_DK_HSPI HSPI
+/** @defgroup STM32U5G9J_DK2_HSPI HSPI
   * @{
   */
 
 /* Exported variables --------------------------------------------------------*/
-/** @addtogroup STM32U5G9J_DK_HSPI_NOR_Exported_Variables Exported Variables
+/** @addtogroup STM32U5G9J_DK2_HSPI_NOR_Exported_Variables HSPI NOR Exported Variables
   * @{
   */
 static XSPI_HandleTypeDef hhspi_nor[HSPI_NOR_INSTANCES_NUMBER] = {0};
@@ -95,7 +95,7 @@ static HSPI_NOR_Ctx_t HSPI_Nor_Ctx[HSPI_NOR_INSTANCES_NUMBER]  = {{
 
 /* Private constants --------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-/** @defgroup STM32U5G9J_DK_HSPI_NOR_Private_Variables HSPI_NOR Private Variables
+/** @defgroup STM32U5G9J_DK2_HSPI_NOR_Private_Variables HSPI NOR Private Variables
   * @{
   */
 #if (USE_HAL_XSPI_REGISTER_CALLBACKS == 1U)
@@ -110,7 +110,7 @@ static uint32_t HSPINor_IsMspCbValid[HSPI_NOR_INSTANCES_NUMBER] = {0};
 
 /* Private functions ---------------------------------------------------------*/
 
-/** @defgroup STM32U5G9J_DK_HSPI_NOR_Private_Functions HSPI_NOR Private Functions
+/** @defgroup STM32U5G9J_DK2_HSPI_NOR_Private_Functions HSPI NOR Private Functions
   * @{
   */
 static void    HSPI_NOR_MspInit(XSPI_HandleTypeDef *hhspi);
@@ -125,7 +125,7 @@ static int32_t HSPI_NOR_ExitOPIMode(uint32_t Instance);
 
 /* Exported functions ---------------------------------------------------------*/
 
-/** @addtogroup STM32U5G9J_DK_HSPI_NOR_Exported_Functions
+/** @addtogroup STM32U5G9J_DK2_HSPI_NOR_Exported_Functions HSPI NOR Exported Functions
   * @{
   */
 
@@ -169,7 +169,7 @@ int32_t BSP_HSPI_NOR_Init(uint32_t Instance, BSP_HSPI_NOR_Init_t *Init)
       (void)MX66UW1G45G_GetFlashInfo(&pInfo);
 
       /* Fill config structure */
-      hspi_init.ClockPrescaler = 0x01; /* HSPI clock = 128MHz / ClockPrescaler = 64MHz */
+      hspi_init.ClockPrescaler = 0x00;
       hspi_init.MemorySize     = (uint32_t)POSITION_VAL((uint32_t)pInfo.FlashSize);
       hspi_init.SampleShifting = HAL_XSPI_SAMPLE_SHIFT_NONE;
       hspi_init.TransferRate   = (uint32_t)Init->TransferRate;
@@ -179,6 +179,12 @@ int32_t BSP_HSPI_NOR_Init(uint32_t Instance, BSP_HSPI_NOR_Init_t *Init)
       {
         ret = BSP_ERROR_PERIPH_FAILURE;
       }
+
+      if (MX_HSPI_ClockConfig(&hhspi_nor[Instance]) != HAL_OK)
+      {
+        ret = BSP_ERROR_PERIPH_FAILURE;
+      }
+
       /* HSPI memory reset */
       else if (HSPI_NOR_ResetMemory(Instance) != BSP_ERROR_NONE)
       {
@@ -262,9 +268,10 @@ int32_t BSP_HSPI_NOR_DeInit(uint32_t Instance)
   * @}
   */
 
-/** @addtogroup STM32U5G9J_DK_HSPI_Exported_Init_Functions
+/** @addtogroup STM32U5G9J_DK2_HSPI_Exported_Init_Functions HSPI Exported Init Functions
   * @{
   */
+
 /**
   * @brief  Initializes the HSPI interface.
   * @param  hhspi          HSPI handle
@@ -304,7 +311,49 @@ __weak HAL_StatusTypeDef MX_HSPI_NOR_Init(XSPI_HandleTypeDef *hhspi, MX_HSPI_Ini
   * @}
   */
 
-/** @addtogroup STM32U5G9J_DK_HSPI_NOR_Exported_Functions
+/** @addtogroup STM32U5G9J_DK2_HSPI_Exported_Init_Functions HSPI Exported Init Functions
+  * @{
+  */
+
+/**
+  * @brief  XSPI Clock Config for HSPI interface.
+  * @param  hhspi          HSPI handle
+  *         Being __weak it can be overwritten by the application
+  * @retval HAL_status
+  */
+__weak HAL_StatusTypeDef MX_HSPI_ClockConfig(XSPI_HandleTypeDef *hhspi)
+{
+
+  RCC_PeriphCLKInitTypeDef  PLL2InitPeriph = {0};
+
+  /* hhspi unused argument(s) compilation warning */
+  UNUSED(hhspi);
+
+  /* Start and configurre PLL2 */
+  /* HSE = 16MHZ */
+  /* 16/(M=4)  = 4MHz input */
+  /* 4*(N=65)  = 260MHz VCO (almost max) */
+  /* 260/(Q=2) = 130 for XSPI */
+  PLL2InitPeriph.PeriphClockSelection = RCC_PERIPHCLK_HSPI;
+  PLL2InitPeriph.HspiClockSelection = RCC_HSPICLKSOURCE_PLL2;
+  PLL2InitPeriph.PLL2.PLL2M = 4;
+  PLL2InitPeriph.PLL2.PLL2N = 65;
+  PLL2InitPeriph.PLL2.PLL2P = 2;
+  PLL2InitPeriph.PLL2.PLL2Q = 2;
+  PLL2InitPeriph.PLL2.PLL2R = 2;
+  PLL2InitPeriph.PLL2.PLL2FRACN = 0;
+  PLL2InitPeriph.PLL2.PLL2RGE =  RCC_PLLVCIRANGE_1;
+  PLL2InitPeriph.PLL2.PLL2ClockOut = RCC_PLL2_DIVQ;
+  PLL2InitPeriph.PLL2.PLL2Source = RCC_PLLSOURCE_HSE;
+  return HAL_RCCEx_PeriphCLKConfig(&PLL2InitPeriph);
+}
+/**
+  * @}
+  */
+
+
+
+/** @addtogroup STM32U5G9J_DK2_HSPI_NOR_Exported_Functions HSPI NOR Exported Functions
   * @{
   */
 #if (USE_HAL_XSPI_REGISTER_CALLBACKS == 1)
@@ -600,9 +649,8 @@ int32_t BSP_HSPI_NOR_Erase_Chip(uint32_t Instance)
     {
       ret = BSP_ERROR_COMPONENT_FAILURE;
     }/* Issue Chip erase command */
-    else if (MX66UW1G45G_BlockErase(&hhspi_nor[Instance], HSPI_Nor_Ctx[Instance].InterfaceMode,
-                                    HSPI_Nor_Ctx[Instance].TransferRate, MX66UW1G45G_4BYTES_SIZE, 0,
-                                    MX66UW1G45G_ERASE_BULK) != MX66UW1G45G_OK)
+    else if (MX66UW1G45G_ChipErase(&hhspi_nor[Instance], HSPI_Nor_Ctx[Instance].InterfaceMode,
+                                   HSPI_Nor_Ctx[Instance].TransferRate) != MX66UW1G45G_OK)
     {
       ret = BSP_ERROR_COMPONENT_FAILURE;
     }
@@ -1029,7 +1077,7 @@ int32_t BSP_HSPI_NOR_LeaveDeepPowerDown(uint32_t Instance)
   * @}
   */
 
-/** @addtogroup STM32U5G9J_DK_HSPI_NOR_Private_Functions
+/** @defgroup STM32U5G9J_DK2_HSPI_NOR_Private_Functions HSPI NOR Private Functions
   * @{
   */
 
@@ -1423,7 +1471,6 @@ static int32_t HSPI_NOR_ExitOPIMode(uint32_t Instance)
   /* Return BSP status */
   return ret;
 }
-
 
 /**
   * @}

@@ -29,11 +29,11 @@
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_ENV_SENSORS ENVIRONMENTAL_SENSORS
+/** @defgroup B_U585I_IOT02A_ENV_SENSORS ENVIRONMENTAL SENSORS
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Private_Defines ENVIRONMENTAL_SENSORS Private Defines
+/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Private_Defines ENVIRONMENTAL SENSORS Private Defines
   * @{
   */
 /* Functions IDx */
@@ -44,7 +44,7 @@
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Exported_Variables ENVIRONMENTAL_SENSORS Exported Variables
+/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Exported_Variables ENVIRONMENTAL SENSORS Exported Variables
   * @{
   */
 /* Environmental sensor context */
@@ -62,7 +62,7 @@ ENV_SENSOR_FuncDrv_t *Env_Sensor_FuncDrv[ENV_SENSOR_INSTANCES_NBR][ENV_SENSOR_FU
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Private_Function_Prototypes ENVIRONMENTAL_SENSORS Private Function Prototypes
+/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Private_Function_Prototypes ENVIRONMENTAL SENSORS Private Function Prototypes
   * @{
   */
 static int32_t HTS221_Probe(uint32_t Functions);
@@ -71,7 +71,7 @@ static int32_t LPS22HH_Probe(uint32_t Functions);
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Exported_Functions ENVIRONMENTAL_SENSORS Exported Functions
+/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Exported_Functions ENVIRONMENTAL SENSORS Exported Functions
   * @{
   */
 
@@ -417,7 +417,7 @@ int32_t BSP_ENV_SENSOR_GetValue(const uint32_t Instance, uint32_t Function, floa
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Private_Functions ENVIRONMENTAL_SENSORS Private Functions
+/** @defgroup B_U585I_IOT02A_ENV_SENSORS_Private_Functions ENVIRONMENTAL SENSORS Private Functions
   * @{
   */
 /**

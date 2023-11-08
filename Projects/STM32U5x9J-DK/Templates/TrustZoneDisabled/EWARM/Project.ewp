@@ -1116,12 +1116,6 @@
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\cs42l51\cs42l51_reg.c</name>
                 </file>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\hts221\hts221.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\hts221\hts221_reg.c</name>
-                </file>
-                <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\mx25um51245g\mx25um51245g.c</name>
                 </file>
                 <file>
@@ -1129,6 +1123,12 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\sitronix\sitronix_reg.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\stts22h\stts22h.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\Components\stts22h\stts22h_reg.c</name>
                 </file>
             </group>
             <group>
@@ -1138,6 +1138,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery_bus.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery_env_sensors.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery_hspi.c</name>

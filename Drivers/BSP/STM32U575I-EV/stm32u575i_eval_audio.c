@@ -1733,56 +1733,56 @@ int32_t BSP_AUDIO_IN_Init(uint32_t Instance, BSP_AUDIO_Init_t *AudioInit)
         if (status == BSP_ERROR_NONE)
         {
 #endif /* (USE_HAL_MDF_REGISTER_CALLBACKS == 0) */
-          /* Prepare MDF peripheral initialization */
-          MX_ADF_InitTypeDef mxAdfInit;
-          if ((Audio_In_Ctx[Instance].Device & AUDIO_IN_DEVICE_DIGITAL_MIC) == AUDIO_IN_DEVICE_DIGITAL_MIC)
+        /* Prepare MDF peripheral initialization */
+        MX_ADF_InitTypeDef mxAdfInit;
+        if ((Audio_In_Ctx[Instance].Device & AUDIO_IN_DEVICE_DIGITAL_MIC) == AUDIO_IN_DEVICE_DIGITAL_MIC)
+        {
+          if (MX_ADF1_Init(&haudio_in_mdf_filter, &mxAdfInit) != HAL_OK)
           {
-            if (MX_ADF1_Init(&haudio_in_mdf_filter, &mxAdfInit) != HAL_OK)
+            status = BSP_ERROR_PERIPH_FAILURE;
+          }
+
+#if (USE_HAL_MDF_REGISTER_CALLBACKS == 1)
+          if (status == BSP_ERROR_NONE)
+          {
+            /* Register MDF filter TC, HT and Error callbacks */
+            if (HAL_MDF_RegisterCallback(&haudio_in_mdf_filter, HAL_MDF_ACQ_COMPLETE_CB_ID,
+                                         MDF_AcquisitionCpltCallback) != HAL_OK)
             {
               status = BSP_ERROR_PERIPH_FAILURE;
             }
-
-#if (USE_HAL_MDF_REGISTER_CALLBACKS == 1)
-            if (status == BSP_ERROR_NONE)
+            else if (HAL_MDF_RegisterCallback(&haudio_in_mdf_filter, HAL_MDF_ACQ_HALFCOMPLETE_CB_ID,
+                                              MDF_AcquisitionHalfCpltCallback) != HAL_OK)
             {
-              /* Register MDF filter TC, HT and Error callbacks */
-              if (HAL_MDF_RegisterCallback(&haudio_in_mdf_filter, HAL_MDF_ACQ_COMPLETE_CB_ID,
-                                           MDF_AcquisitionCpltCallback) != HAL_OK)
+              status = BSP_ERROR_PERIPH_FAILURE;
+            }
+            else
+            {
+              if (HAL_MDF_RegisterCallback(&haudio_in_mdf_filter, HAL_MDF_ERROR_CB_ID, MDF_ErrorCallback) != HAL_OK)
               {
                 status = BSP_ERROR_PERIPH_FAILURE;
-              }
-              else if (HAL_MDF_RegisterCallback(&haudio_in_mdf_filter, HAL_MDF_ACQ_HALFCOMPLETE_CB_ID,
-                                                MDF_AcquisitionHalfCpltCallback) != HAL_OK)
-              {
-                status = BSP_ERROR_PERIPH_FAILURE;
-              }
-              else
-              {
-                if (HAL_MDF_RegisterCallback(&haudio_in_mdf_filter, HAL_MDF_ERROR_CB_ID, MDF_ErrorCallback) != HAL_OK)
-                {
-                  status = BSP_ERROR_PERIPH_FAILURE;
-                }
               }
             }
+          }
 #endif /* (USE_HAL_MDF_REGISTER_CALLBACKS == 1) */
-          }
-
-          if (status == BSP_ERROR_NONE)
-          {
-            /* Initialise transfer control flag */
-            Audio_DmaDigMicRecHalfBuffCplt = 0;
-            Audio_DmaDigMicRecBuffCplt     = 0;
-
-            /* Update audio in context state */
-            Audio_In_Ctx[Instance].State = AUDIO_IN_STATE_STOP;
-          }
-#if (USE_HAL_MDF_REGISTER_CALLBACKS == 1)
         }
-#endif /* (USE_HAL_MDF_REGISTER_CALLBACKS == 1) */
+
+        if (status == BSP_ERROR_NONE)
+        {
+          /* Initialise transfer control flag */
+          Audio_DmaDigMicRecHalfBuffCplt = 0;
+          Audio_DmaDigMicRecBuffCplt     = 0;
+
+          /* Update audio in context state */
+          Audio_In_Ctx[Instance].State = AUDIO_IN_STATE_STOP;
+        }
+#if (USE_HAL_MDF_REGISTER_CALLBACKS == 1)
       }
+#endif /* (USE_HAL_MDF_REGISTER_CALLBACKS == 1) */
     }
   }
-  return status;
+}
+return status;
 }
 
 /**

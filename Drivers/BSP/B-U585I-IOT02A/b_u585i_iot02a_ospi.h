@@ -73,7 +73,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_OSPI_NOR_Exported_Types OSPI_NOR Exported Types
+/** @defgroup B_U585I_IOT02A_OSPI_NOR_Exported_Types OSPI NOR Exported Types
   * @{
   */
 #define BSP_OSPI_NOR_Info_t                MX25LM51245G_Info_t
@@ -97,7 +97,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_OSPI_RAM_Exported_Types OSPI_RAM Exported Types
+/** @defgroup B_U585I_IOT02A_OSPI_RAM_Exported_Types OSPI RAM Exported Types
   * @{
   */
 #define BSP_OSPI_RAM_BurstLength_t APS6408_BurstLength_t
@@ -265,7 +265,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_OSPI_NOR_Exported_Constants OSPI_NOR Exported Constants
+/** @defgroup B_U585I_IOT02A_OSPI_NOR_Exported_Constants OSPI NOR Exported Constants
   * @{
   */
 #define OSPI_NOR_INSTANCES_NUMBER         1U
@@ -290,7 +290,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_OSPI_RAM_Exported_Constants OSPI_RAM Exported Constants
+/** @defgroup B_U585I_IOT02A_OSPI_RAM_Exported_Constants OSPI RAM Exported Constants
   * @{
   */
 #define OSPI_RAM_INSTANCES_NUMBER         1U
@@ -305,7 +305,7 @@ typedef struct
   */
 
 /* Exported variables --------------------------------------------------------*/
-/** @defgroup B_U585I_IOT02A_OSPI_NOR_Exported_Variables OSPI_NOR Exported Variables
+/** @defgroup B_U585I_IOT02A_OSPI_NOR_Exported_Variables OSPI NOR Exported Variables
   * @{
   */
 extern OSPI_HandleTypeDef hospi_nor[OSPI_NOR_INSTANCES_NUMBER];
@@ -314,7 +314,7 @@ extern OSPI_NOR_Ctx_t Ospi_Nor_Ctx[OSPI_NOR_INSTANCES_NUMBER];
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_OSPI_RAM_Exported_Variables OSPI_RAM Exported Variables
+/** @defgroup B_U585I_IOT02A_OSPI_RAM_Exported_Variables OSPI RAM Exported Variables
   * @{
   */
 extern OSPI_HandleTypeDef hospi_ram[OSPI_RAM_INSTANCES_NUMBER];
@@ -324,7 +324,7 @@ extern OSPI_RAM_Ctx_t Ospi_Ram_Ctx[OSPI_RAM_INSTANCES_NUMBER];
   */
 
 /* Exported functions --------------------------------------------------------*/
-/** @defgroup B_U585I_IOT02A_OSPI_NOR_Exported_Functions OSPI_NOR Exported Functions
+/** @defgroup B_U585I_IOT02A_OSPI_NOR_Exported_Functions OSPI NOR Exported Functions
   * @{
   */
 int32_t BSP_OSPI_NOR_Init(uint32_t Instance, BSP_OSPI_NOR_Init_t *Init);
@@ -352,7 +352,7 @@ int32_t BSP_OSPI_NOR_LeaveDeepPowerDown(uint32_t Instance);
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_OSPI_RAM_Exported_Functions OSPI_RAM Exported Functions
+/** @defgroup B_U585I_IOT02A_OSPI_RAM_Exported_Functions OSPI RAM Exported Functions
   * @{
   */
 int32_t BSP_OSPI_RAM_Init(uint32_t Instance);

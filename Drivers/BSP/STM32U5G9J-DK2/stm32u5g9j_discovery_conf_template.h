@@ -29,15 +29,33 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32u5xx_hal.h"
 
+/** @addtogroup BSP
+  * @{
+  */
+
+/** @addtogroup STM32U5G9J_DK2
+  * @{
+  */
+
+/** @defgroup STM32U5G9J_DK2_CONFIG Config
+  * @{
+  */
+
+/** @defgroup STM32U5G9J_DK2_CONFIG_Exported_Constants Exported Constants
+  * @{
+  */
+
 /* COM defines */
 #define USE_COM_LOG                         0U
 #define USE_BSP_COM_FEATURE                 0U
 
 /* Touch Sensing controller defines */
-#define USE_GT911_TS_CTRL                  1U
+#define USE_GT911_TS_CTRL                   1U
+
 /* TS supported features defines */
 #define USE_TS_GESTURE                      1U
 #define USE_TS_MULTI_TOUCH                  1U
+
 /* Default TS touch number */
 #define TS_TOUCH_NBR                        2U
 
@@ -48,6 +66,22 @@ extern "C" {
 /* IRQ priorities (Default is 15 as lowest priority level) */
 #define BSP_BUTTON_USER_IT_PRIORITY         15U
 #define BSP_TS_IT_PRIORITY                  15U
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 #ifdef __cplusplus
 }

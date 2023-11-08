@@ -166,8 +166,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    /* Turn LED2 on*/
-    BSP_LED_On(LED2);
+    /* Turn LED3 on*/
+    BSP_LED_On(LED3);
   }
   /* USER CODE END 3 */
 }
@@ -385,8 +385,8 @@ static uint32_t Buffercmp(uint8_t* pBuffer1, uint8_t* pBuffer2, uint16_t BufferL
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* Turn LED3 on: Transfer Error */
-  BSP_LED_On(LED3);
+  /* Turn LED2 on: Transfer Error */
+  BSP_LED_On(LED2);
   while (1)
   {
   }

@@ -90,10 +90,9 @@ extern "C" {
 #define LCD_COLOR_BER6 0xCCCCCCCCUL
 #define LCD_COLOR_BER7 0x0F0F0F0FUL
 #define LCD_COLOR_BER8 0x80808080UL
-/**
-  * @}
-  */
 
+
+/* LCD display enable pin */
 #define DSI_POWERON_GPIO_PORT           GPIOI
 #define DSI_POWERON_GPIO_PIN            GPIO_PIN_5
 #define DSI_POWERON_GPIO_CLOCK_ENABLE() __HAL_RCC_GPIOI_CLK_ENABLE()
@@ -115,6 +114,9 @@ extern "C" {
 
 #define PIXEL_PER_LINE    768U
 #define BYTE_PER_PIXEL    4U   /* ARGB8888 */
+/**
+  * @}
+  */
 
 /** @defgroup STM32U5x9J_DISCOVERY_LCD_Exported_Types LCD Exported Types
   * @{

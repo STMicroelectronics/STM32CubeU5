@@ -74,7 +74,7 @@
   * @{
   */
 
-/** @defgroup STM32U5x9J_DISCOVERY_LCD_Private_Defines LCD Private Constants
+/** @defgroup STM32U5x9J_DISCOVERY_LCD_Private_Defines LCD Private Defines
   * @{
   */
 
@@ -121,7 +121,7 @@ static DSI_VidCfgTypeDef  DSIVidCfg   = {0};
   * @}
   */
 
-/** @defgroup STM32U5x9J_DISCOVERY_LCD_Private_FunctionPrototypes LCD Private Function Prototypes
+/** @defgroup STM32U5x9J_DISCOVERY_LCD_Private_Function_Prototypes LCD Private Function Prototypes
   * @{
   */
 static int32_t LCD_Init(void);
@@ -144,7 +144,7 @@ static void    DMA2D_MspDeInit(DMA2D_HandleTypeDef *hdma2d);
   * @}
   */
 
-/** @addtogroup STM32U5x9J_DISCOVERY_LCD_Exported_Functions
+/** @addtogroup STM32U5x9J_DISCOVERY_LCD_Exported_Functions LCD Exported Functions
   * @{
   */
 /**

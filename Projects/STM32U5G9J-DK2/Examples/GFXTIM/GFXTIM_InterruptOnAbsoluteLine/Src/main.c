@@ -117,8 +117,17 @@ int main(void)
   {
     Time2Result = 1;
   }
-
+  
   HAL_GFXTIM_AbsoluteTimer_Stop(&hgfxtim);
+  
+  if ((Time1Result != 0) && (Time2Result != 0))
+  {
+    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+  }
+  else
+  {
+    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -128,14 +137,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    if ((Time1Result != 0) && (Time2Result != 0))
-    {
-      HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
-    }
-    else
-    {
-      HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-    }
   }
   /* USER CODE END 3 */
 }
@@ -319,7 +320,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin|LED_GREEN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin|LED_GREEN_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : LED_RED_Pin LED_GREEN_Pin */
   GPIO_InitStruct.Pin = LED_RED_Pin|LED_GREEN_Pin;
@@ -353,7 +354,7 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
-  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin|LED_GREEN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_RESET);
   while (1)
   {
 

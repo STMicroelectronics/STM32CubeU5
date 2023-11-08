@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>STM32U5A9NJHxQ</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32U5xx_DFP.2.0.3</PackID>
+          <PackID>Keil.STM32U5xx_DFP.2.2.0</PackID>
           <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x0C0000) IRAM2(0x30000000,0x0C0000) IROM(0x08000000,0x00400000) IROM2(0x0C000000,0x00400000) CPUTYPE("Cortex-M33") FPU3(SFPU) DSP TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -400,16 +400,6 @@
               <FilePath>../../../../../Drivers/BSP/Components/aps512xx/aps512xx.c</FilePath>
             </File>
             <File>
-              <FileName>hts221.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../Drivers/BSP/Components/hts221/hts221.c</FilePath>
-            </File>
-            <File>
-              <FileName>hts221_reg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../Drivers/BSP/Components/hts221/hts221_reg.c</FilePath>
-            </File>
-            <File>
               <FileName>mx25um51245g.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../Drivers/BSP/Components/mx25um51245g/mx25um51245g.c</FilePath>
@@ -424,10 +414,20 @@
               <FileType>1</FileType>
               <FilePath>../../../../../Drivers/BSP/Components/sitronix/sitronix_reg.c</FilePath>
             </File>
+            <File>
+              <FileName>stts22h_reg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\Components\stts22h\stts22h_reg.c</FilePath>
+            </File>
+            <File>
+              <FileName>stts22h.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\Components\stts22h\stts22h.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>Drivers/BSP/Components/VL53LL5CX</GroupName>
+          <GroupName>Drivers/BSP/Components/vl53l5cx</GroupName>
           <Files>
             <File>
               <FileName>platform.c</FileName>
@@ -503,6 +503,11 @@
               <FileName>stm32u5x9j_discovery_ts.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_ts.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32u5x9j_discovery_env_sensors.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\BSP\STM32U5x9J-DK\stm32u5x9j_discovery_env_sensors.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1008,6 +1013,11 @@
               <FileName>Retarget.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Retarget.c</FilePath>
+            </File>
+            <File>
+              <FileName>env_sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\env_sensor.c</FilePath>
             </File>
           </Files>
         </Group>

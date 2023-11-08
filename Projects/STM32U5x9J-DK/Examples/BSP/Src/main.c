@@ -195,6 +195,17 @@ int main(void)
           Error_Handler();
         }
       }
+
+      /* Launch ES demo */
+      if ((demo_xpos > 32) & (demo_xpos < 175) & (demo_ypos > 260) & (demo_ypos < 400))
+      {
+        demo_xpos = 0;
+        demo_ypos = 0;
+        if (Es_demo() != 0)
+        {
+          Error_Handler();
+        }
+      }
     }
   }
 }

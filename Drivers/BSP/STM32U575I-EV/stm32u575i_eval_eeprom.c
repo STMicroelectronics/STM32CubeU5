@@ -53,7 +53,7 @@
   * @{
   */
 
-/** @defgroup STM32U575I_EVAL_EEPROM_Exported_Variables Exported Variables
+/** @defgroup STM32U575I_EVAL_EEPROM_Exported_Variables EEPROM Exported Variables
   * @{
   */
 void   *Eeprom_CompObj = NULL;
@@ -61,7 +61,7 @@ void   *Eeprom_CompObj = NULL;
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_EEPROM_Private_Variables Private Variables
+/** @defgroup STM32U575I_EVAL_EEPROM_Private_Variables EEPROM Private Variables
   * @{
   */
 static M24256_EEPROM_Drv_t     *Eeprom_Drv = NULL;
@@ -69,7 +69,7 @@ static M24256_EEPROM_Drv_t     *Eeprom_Drv = NULL;
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_EEPROM_Private_Function_Prototypes Private Functions Prototypes
+/** @defgroup STM32U575I_EVAL_EEPROM_Private_Function_Prototypes EEPROM Private Functions Prototypes
   * @{
   */
 static int32_t M24256_Probe(void);
@@ -78,7 +78,7 @@ static int32_t EEPROM_WriteBytes(uint32_t Instance, uint8_t *pBuffer, uint32_t W
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_EEPROM_Exported_Functions Exported Functions
+/** @defgroup STM32U575I_EVAL_EEPROM_Exported_Functions EEPROM Exported Functions
   * @{
   */
 /**
@@ -409,7 +409,7 @@ int32_t BSP_EEPROM_IsDeviceReady(uint32_t Instance)
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_EEPROM_Private_Functions Private Functions
+/** @defgroup STM32U575I_EVAL_EEPROM_Private_Functions EEPROM Private Functions
   * @{
   */
 /**

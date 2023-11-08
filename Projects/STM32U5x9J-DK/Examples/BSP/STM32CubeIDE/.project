@@ -473,6 +473,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Src/emmc.c</locationURI>
 		</link>
 		<link>
+			<name>Example/User/env_sensor.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Src/env_sensor.c</locationURI>
+		</link>
+		<link>
 			<name>Example/User/hspi.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Src/hspi.c</locationURI>
@@ -518,16 +523,6 @@
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/aps512xx/aps512xx.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/Components/hts221.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/hts221/hts221.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/BSP/Components/hts221_reg.c</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/hts221/hts221_reg.c</locationURI>
-		</link>
-		<link>
 			<name>Drivers/BSP/Components/mx25um51245g.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/mx25um51245g/mx25um51245g.c</locationURI>
@@ -543,6 +538,16 @@
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/sitronix/sitronix_reg.c</locationURI>
 		</link>
 		<link>
+			<name>Drivers/BSP/Components/stts22h.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/stts22h/stts22h.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/Components/stts22h_reg.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/stts22h/stts22h_reg.c</locationURI>
+		</link>
+		<link>
 			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5x9j_discovery.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery.c</locationURI>
@@ -551,6 +556,11 @@
 			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5x9j_discovery_bus.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_bus.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5x9j_discovery_env_sensors.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/STM32U5x9J-DK/stm32u5x9j_discovery_env_sensors.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5x9j_discovery_hspi.c</name>

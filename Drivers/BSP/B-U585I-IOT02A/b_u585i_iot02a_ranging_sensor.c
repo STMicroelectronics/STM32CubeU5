@@ -33,11 +33,11 @@
   * @{
   */
 
-/** @addtogroup B_U585I_IOT02A_RANGING_SENSOR
+/** @addtogroup B_U585I_IOT02A_RANGING_SENSOR RANGING SENSOR
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_RANGING_SENSOR_Exported_Variables Exported Variables
+/** @defgroup B_U585I_IOT02A_RANGING_SENSOR_Exported_Variables RANGING SENSOR Exported Variables
   * @{
   */
 void *VL53L5A1_RANGING_SENSOR_CompObj[RANGING_SENSOR_INSTANCES_NBR] = {0};
@@ -45,7 +45,7 @@ void *VL53L5A1_RANGING_SENSOR_CompObj[RANGING_SENSOR_INSTANCES_NBR] = {0};
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_RANGING_SENSOR_Private_Variables Private Variables
+/** @defgroup B_U585I_IOT02A_RANGING_SENSOR_Private_Variables RANGING SENSOR Private Variables
   * @{
   */
 static RANGING_SENSOR_Drv_t *VL53L5A1_RANGING_SENSOR_Drv = NULL;
@@ -54,13 +54,18 @@ static RANGING_SENSOR_Capabilities_t VL53L5A1_RANGING_SENSOR_Cap;
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_RANGING_SENSOR_Private_Functions_Prototypes Private Functions Prototypes
+/** @defgroup B_U585I_IOT02A_RANGING_SENSOR_Private_Functions_Prototypes RANGING SENSOR Private Functions Prototypes
   * @{
   */
 static int32_t VL53L5CX_Probe(uint32_t Instance);
 static int32_t vl53l5cx_i2c_recover(void);
 /**
   * @}
+  */
+
+
+/** @addtogroup B_U585I_IOT02A_RANGING_SENSOR_Exported_Functions RANGING SENSOR Exported Functions
+  * @{
   */
 
 /**
@@ -456,8 +461,12 @@ int32_t BSP_RANGING_SENSOR_XTalkCalibration(uint32_t Instance, uint16_t Reflecta
 
   return ret;
 }
+/**
+  * @}
+  */
 
-/** @defgroup B_U585I_IOT02A_RANGING_SENSOR_Private_Functions Private Functions
+
+/** @defgroup B_U585I_IOT02A_RANGING_SENSOR_Private_Functions RANGING SENSOR Private Functions
   * @{
   */
 

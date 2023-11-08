@@ -145,10 +145,10 @@ typedef struct
 #endif /* USE_B_U585I_IOT02A */
 
 /**
-  * @brief B_U585I_IOT02A BSP Driver version number V1.3.0
+  * @brief B_U585I_IOT02A BSP Driver version number V1.4.0
   */
 #define B_U585I_IOT02A_BSP_VERSION_MAIN   (uint32_t)(0x01U) /*!< [31:24] main version */
-#define B_U585I_IOT02A_BSP_VERSION_SUB1   (uint32_t)(0x03U) /*!< [23:16] sub1 version */
+#define B_U585I_IOT02A_BSP_VERSION_SUB1   (uint32_t)(0x04U) /*!< [23:16] sub1 version */
 #define B_U585I_IOT02A_BSP_VERSION_SUB2   (uint32_t)(0x00U) /*!< [15:8]  sub2 version */
 #define B_U585I_IOT02A_BSP_VERSION_RC     (uint32_t)(0x00U) /*!< [7:0]  release candidate */
 #define B_U585I_IOT02A_BSP_VERSION        ((B_U585I_IOT02A_BSP_VERSION_MAIN << 24)\

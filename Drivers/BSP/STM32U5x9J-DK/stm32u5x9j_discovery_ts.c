@@ -102,7 +102,7 @@ static int32_t SITRONIX_Probe(uint32_t Instance);
   * @}
   */
 
-/** @addtogroup STM32U5x9J_DISCOVERY_TS_Exported_Functions
+/** @addtogroup STM32U5x9J_DISCOVERY_TS_Exported_Functions TS Exported Functions
   * @{
   */
 /**

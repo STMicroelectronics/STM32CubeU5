@@ -35,7 +35,7 @@
   * @{
   */
 
-/** @defgroup STM32U5x9J_DISCOVERY_COMMON_Private_Defines COMMON Private Defines
+/** @defgroup STM32U5x9J_DISCOVERY_COMMON_Private_Defines STM32U5x9J-DK COMMON Private Defines
   * @{
   */
 
@@ -43,7 +43,7 @@
   * @}
   */
 
-/** @defgroup STM32U5x9J_DISCOVERY_COMMON_Private_Macros COMMON Private Macros
+/** @defgroup STM32U5x9J_DISCOVERY_COMMON_Private_Macros STM32U5x9J-DK COMMON Private Macros
   * @{
   */
 

@@ -96,7 +96,7 @@
   */
 
 /* Exported variables --------------------------------------------------------*/
-/** @addtogroup B_U585I_IOT02A_OSPI_NOR_Exported_Variables
+/** @addtogroup B_U585I_IOT02A_OSPI_NOR_Exported_Variables OSPI NOR Exported Variables
   * @{
   */
 OSPI_HandleTypeDef hospi_nor[OSPI_NOR_INSTANCES_NUMBER] = {0};
@@ -111,7 +111,7 @@ OSPI_NOR_Ctx_t Ospi_Nor_Ctx[OSPI_NOR_INSTANCES_NUMBER] = {{
   */
 
 /* Exported variables --------------------------------------------------------*/
-/** @addtogroup B_U585I_IOT02A_OSPI_RAM_Exported_Variables
+/** @addtogroup B_U585I_IOT02A_OSPI_RAM_Exported_Variables OSPI RAM Exported Variables
   * @{
   */
 OSPI_HandleTypeDef hospi_ram[OSPI_RAM_INSTANCES_NUMBER] = {0};
@@ -129,7 +129,7 @@ OSPI_RAM_Ctx_t Ospi_Ram_Ctx[OSPI_RAM_INSTANCES_NUMBER] = {{
 
 /* Private constants --------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-/** @defgroup B_U585I_IOT02A_OSPI_NOR_Private_Variables OSPI_NOR Private Variables
+/** @defgroup B_U585I_IOT02A_OSPI_NOR_Private_Variables OSPI NOR Private Variables
   * @{
   */
 #if (USE_HAL_OSPI_REGISTER_CALLBACKS == 1)
@@ -139,7 +139,7 @@ static uint32_t OspiNor_IsMspCbValid[OSPI_NOR_INSTANCES_NUMBER] = {0};
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_OSPI_RAM_Private_Variables OSPI_RAM Private Variables
+/** @defgroup B_U585I_IOT02A_OSPI_RAM_Private_Variables OSPI RAM Private Variables
   * @{
   */
 #if (USE_HAL_OSPI_REGISTER_CALLBACKS == 1)
@@ -150,7 +150,7 @@ static uint32_t OspiRam_IsMspCbValid[OSPI_RAM_INSTANCES_NUMBER] = {0};
   */
 /* Private functions ---------------------------------------------------------*/
 
-/** @defgroup B-U585I-IOT02A_OSPI_NOR_Private_Functions OSPI_NOR Private Functions
+/** @defgroup B-U585I-IOT02A_OSPI_NOR_Private_Functions OSPI NOR Private Functions
   * @{
   */
 static void    OSPI_NOR_MspInit(const OSPI_HandleTypeDef *hospi);
@@ -163,7 +163,7 @@ static int32_t OSPI_NOR_ExitOPIMode(uint32_t Instance);
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_OSPI_RAM_Private_Functions OSPI_RAM Private Functions
+/** @defgroup B_U585I_IOT02A_OSPI_RAM_Private_Functions OSPI RAM Private Functions
   * @{
   */
 static void OSPI_RAM_MspInit(const OSPI_HandleTypeDef *hospi);
@@ -175,7 +175,7 @@ static int32_t OSPI_DLYB_Enable(OSPI_HandleTypeDef *hospi);
 
 /* Exported functions ---------------------------------------------------------*/
 
-/** @addtogroup B_U585I_IOT02A_OSPI_NOR_Exported_Functions
+/** @addtogroup B_U585I_IOT02A_OSPI_NOR_Exported_Functions OSPI NOR Exported Functions
   * @{
   */
 
@@ -1072,7 +1072,7 @@ int32_t BSP_OSPI_NOR_LeaveDeepPowerDown(uint32_t Instance)
   * @}
   */
 
-/** @addtogroup B_U585I_IOT02A_OSPI_RAM_Exported_Functions
+/** @addtogroup B_U585I_IOT02A_OSPI_RAM_Exported_Functions OSPI RAM Exported Functions
   * @{
   */
 
@@ -1085,6 +1085,12 @@ int32_t BSP_OSPI_RAM_Init(uint32_t Instance)
 {
   MX_OSPI_InitTypeDef ospi_init;
   int32_t ret = BSP_ERROR_NONE;
+
+  /* MR0 register for read and write */
+  uint8_t regW_MR0[2] = {0x24, 0x0D};
+
+  /* MR8 register for read and write */
+  uint8_t regW_MR8[2] = {0x0B, 0x08};
 
   /* Check if the instance is supported */
   if (Instance >= OSPI_RAM_INSTANCES_NUMBER)
@@ -1125,6 +1131,18 @@ int32_t BSP_OSPI_RAM_Init(uint32_t Instance)
       Ospi_Ram_Ctx[Instance].LatencyType   = BSP_OSPI_RAM_FIXED_LATENCY;
       Ospi_Ram_Ctx[Instance].BurstType     = BSP_OSPI_RAM_LINEAR_BURST;
     }
+  }
+
+  /* Configure Read Latency and drive Strength */
+  if (APS6408_WriteReg(&hospi_ram[Instance], 0x00, *regW_MR0) != HAL_OK)
+  {
+    ret = BSP_ERROR_PERIPH_FAILURE;
+  }
+
+  /* Configure Burst Length */
+  if (APS6408_WriteReg(&hospi_ram[Instance], 0x08, *regW_MR8) != HAL_OK)
+  {
+    ret = BSP_ERROR_PERIPH_FAILURE;;
   }
 
   /* Return BSP status */
@@ -1440,7 +1458,7 @@ int32_t BSP_OSPI_RAM_ReadID(uint32_t Instance, uint8_t *Id)
   * @}
   */
 
-/** @addtogroup B-U585I-IOT02A_OSPI_NOR_Private_Functions
+/** @addtogroup B-U585I-IOT02A_OSPI_NOR_Private_Functions OSPI NOR Private Functions
   * @{
   */
 

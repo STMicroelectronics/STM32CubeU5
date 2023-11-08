@@ -158,11 +158,11 @@ typedef struct
   */
 
 /**
-  * @brief STM32U5XX NUCLEO BSP Driver version number V1.2.0
+  * @brief STM32U5XX NUCLEO BSP Driver version number V1.2.1
   */
 #define STM32U5XX_NUCLEO_BSP_VERSION_MAIN   (0x01U) /*!< [31:24] main version */
 #define STM32U5XX_NUCLEO_BSP_VERSION_SUB1   (0x02U) /*!< [23:16] sub1 version */
-#define STM32U5XX_NUCLEO_BSP_VERSION_SUB2   (0x00U) /*!< [15:8]  sub2 version */
+#define STM32U5XX_NUCLEO_BSP_VERSION_SUB2   (0x01U) /*!< [15:8]  sub2 version */
 #define STM32U5XX_NUCLEO_BSP_VERSION_RC     (0x00U) /*!< [7:0]  release candidate */
 #define STM32U5XX_NUCLEO_BSP_VERSION        ((STM32U5XX_NUCLEO_BSP_VERSION_MAIN << 24)\
                                              |(STM32U5XX_NUCLEO_BSP_VERSION_SUB1 << 16)\
@@ -259,7 +259,7 @@ typedef struct
   * @}
   */
 
-/** @addtogroup STM32U5XX_NUCLEO_LOW_LEVEL_Exported_Variables
+/** @addtogroup STM32U5XX_NUCLEO_LOW_LEVEL_Exported_Variables LOW LEVEL Exported Variables
   * @{
   */
 extern EXTI_HandleTypeDef hpb_exti[];

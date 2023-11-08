@@ -45,7 +45,7 @@ extern "C" {
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Exported_Types MOTION_SENSORS Exported Types
+/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Exported_Types MOTION SENSORS Exported Types
   * @{
   */
 typedef struct
@@ -85,7 +85,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Exported_Constants MOTION_SENSORS Exported Constants
+/** @defgroup B_U585I_IOT02A_MOTION_SENSORS_Exported_Constants MOTION SENSORS Exported Constants
   * @{
   */
 /* Two motion sensors are mounted on the B_U585I_IOT02A board,
@@ -103,7 +103,7 @@ typedef struct
   * @}
   */
 
-/** @addtogroup B_U585I_IOT02A_MOTION_SENSORS_Exported_Variables
+/** @addtogroup B_U585I_IOT02A_MOTION_SENSORS_Exported_Variables MOTION SENSORS Exported Variables
   * @{
   */
 extern MOTION_SENSOR_Ctx_t        Motion_Sensor_Ctx[MOTION_SENSOR_INSTANCES_NBR];
@@ -114,7 +114,7 @@ extern MOTION_SENSOR_FuncDrv_t   *Motion_Sensor_FuncDrv[MOTION_SENSOR_INSTANCES_
   * @}
   */
 
-/** @addtogroup B_U585I_IOT02A_MOTION_SENSORS_Exported_Functions
+/** @addtogroup B_U585I_IOT02A_MOTION_SENSORS_Exported_Functions MOTION SENSORS Exported Functions
   * @{
   */
 int32_t BSP_MOTION_SENSOR_Init(uint32_t Instance, uint32_t Functions);

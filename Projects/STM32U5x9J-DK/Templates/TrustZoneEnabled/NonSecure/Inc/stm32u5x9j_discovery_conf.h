@@ -51,24 +51,6 @@ extern "C" {
 #define BSP_HSPI_RAM_IT_PRIORITY     0x0FUL  /* Default is lowest priority level */
 #define BSP_HSPI_RAM_DMA_IT_PRIORITY 0x0FUL  /* Default is lowest priority level */
 
-/* Touch screen interrupt priority */
-#define BSP_TS_IT_PRIORITY            0x15UL  /* Default is lowest priority level */
-
-/* Audio interrupt priorities */
-#define BSP_AUDIO_IN_IT_PRIORITY      0x02UL  /* Default is lowest priority level */
-#define BSP_AUDIO_OUT_IT_PRIORITY     0x02UL  /* Default is lowest priority level */
-
-/* SD card interrupt priority */
-#define BSP_SD_IT_PRIORITY            0x15UL  /* Default is lowest priority level */
-#define BSP_SD_RX_IT_PRIORITY         0x14UL  /* Default is lowest priority level */
-#define BSP_SD_TX_IT_PRIORITY         0x15UL  /* Default is lowest priority level */
-
-/* SRAM DMA interrupt priority */
-#define BSP_SRAM_DMA_IT_PRIORITY      0x15UL  /* Default is lowest priority level */
-
-/* Default AUDIO IN internal buffer size in 32-bit words per micro */
-#define BSP_AUDIO_IN_DEFAULT_BUFFER_SIZE  2048UL   /* 2048*4 = 8Kbytes */
-  
 #ifdef __cplusplus
 }
 #endif

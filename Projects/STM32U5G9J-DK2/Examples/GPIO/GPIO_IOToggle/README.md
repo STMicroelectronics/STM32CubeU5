@@ -2,7 +2,7 @@
 
 How to configure and use GPIOs through the HAL API.
 
-PD.04 and PD.02 IOs (configured in output pushpull mode) toggle in a forever loop.
+PD.02 and PD.04 IOs (configured in output pushpull mode) toggle in a forever loop.
 On STM32U5G9J-DK2 board these IOs are connected to LED2 and LED3.
 
 In this example, HCLK is configured at 160 MHz.

@@ -22,8 +22,8 @@ in the Flash memory. The written data is then read back and checked.
 
 The STM32U5G9J-DK2  board LEDs can be used to monitor the transfer status:
 
- -   **LED2 is ON** when there are no errors detected after data programming
- -   **LED3 is ON** when there are errors detected after data programming or when there is an
+ -   **LED3 is ON** when there are no errors detected after data programming
+ -   **LED2 is ON** when there are errors detected after data programming or when there is an
  issue during erase or program procedure
 
  2. Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds)

@@ -34,16 +34,16 @@ extern "C" {
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK
+/** @addtogroup STM32U5G9J_DK2
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK_HSPI
+/** @addtogroup STM32U5G9J_DK2_HSPI
   * @{
   */
 
 /* Exported types ------------------------------------------------------------*/
-/** @defgroup STM32U5G9J_DK_HSPI_Exported_Types HSPI Exported Types
+/** @defgroup STM32U5G9J_DK2_HSPI_Exported_Types HSPI Exported Types
   * @{
   */
 typedef enum
@@ -72,7 +72,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_HSPI_NOR_Exported_Types HSPI_NOR Exported Types
+/** @defgroup STM32U5G9J_DK2_HSPI_NOR_Exported_Types HSPI NOR Exported Types
   * @{
   */
 #define BSP_HSPI_NOR_Info_t                MX66UW1G45G_Info_t
@@ -97,7 +97,7 @@ typedef struct
   */
 
 /* Exported constants --------------------------------------------------------*/
-/** @defgroup STM32U5G9J_DK_HSPI_Exported_Constants HSPI Exported Constants
+/** @defgroup STM32U5G9J_DK2_HSPI_Exported_Constants HSPI Exported Constants
   * @{
   */
 
@@ -170,7 +170,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_HSPI_NOR_Exported_Constants HSPI_NOR Exported Constants
+/** @defgroup STM32U5G9J_DK2_HSPI_NOR_Exported_Constants HSPI NOR Exported Constants
   * @{
   */
 #define HSPI_NOR_INSTANCES_NUMBER         1U
@@ -197,7 +197,7 @@ typedef struct
 
 /* Exported functions --------------------------------------------------------*/
 
-/** @defgroup STM32U5G9J_DK_HSPI_NOR_Exported_Functions HSPI_NOR Exported Functions
+/** @defgroup STM32U5G9J_DK2_HSPI_NOR_Exported_Functions HSPI NOR Exported Functions
   * @{
   */
 int32_t BSP_HSPI_NOR_Init(uint32_t Instance, BSP_HSPI_NOR_Init_t *Init);
@@ -224,15 +224,16 @@ int32_t BSP_HSPI_NOR_LeaveDeepPowerDown(uint32_t Instance);
 /**
   * @}
   */
-
-
-/** @defgroup STM32U5G9J_DK_HSPI_Exported_Init_Functions HSPI_Init Exported Functions
+/** @defgroup STM32U5G9J_DK2_HSPI_Exported_Init_Functions HSPI Exported Init Functions
   * @{
   */
 
 /* These functions can be modified in case the current settings
    need to be changed for specific application needs */
-HAL_StatusTypeDef MX_HSPI_NOR_Init(XSPI_HandleTypeDef *hxspi, MX_HSPI_InitTypeDef *Init);
+HAL_StatusTypeDef MX_HSPI_NOR_Init(XSPI_HandleTypeDef *hhspi, MX_HSPI_InitTypeDef *Init);
+HAL_StatusTypeDef MX_HSPI_ClockConfig(XSPI_HandleTypeDef *hhspi);
+
+
 /**
   * @}
   */

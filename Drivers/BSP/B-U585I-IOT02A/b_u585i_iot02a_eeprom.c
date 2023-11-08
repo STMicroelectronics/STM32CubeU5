@@ -53,7 +53,7 @@
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_EEPROM_Exported_Variables Exported Variables
+/** @defgroup B_U585I_IOT02A_EEPROM_Exported_Variables EEPROM Exported Variables
   * @{
   */
 M24256_Object_t   *Eeprom_CompObj = NULL;
@@ -61,7 +61,7 @@ M24256_Object_t   *Eeprom_CompObj = NULL;
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_EEPROM_Private_Variables Private Variables
+/** @defgroup B_U585I_IOT02A_EEPROM_Private_Variables EEPROM Private Variables
   * @{
   */
 static M24256_EEPROM_Drv_t     *Eeprom_Drv = NULL;
@@ -69,7 +69,7 @@ static M24256_EEPROM_Drv_t     *Eeprom_Drv = NULL;
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_EEPROM_Private_Function_Prototypes Private Functions Prototypes
+/** @defgroup B_U585I_IOT02A_EEPROM_Private_Function_Prototypes EEPROM Private Functions Prototypes
   * @{
   */
 static int32_t M24256_Probe(void);
@@ -78,7 +78,7 @@ static int32_t EEPROM_WriteBytes(uint32_t Instance, uint8_t *pBuffer, uint32_t W
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_EEPROM_Exported_Functions Exported Functions
+/** @defgroup B_U585I_IOT02A_EEPROM_Exported_Functions EEPROM Exported Functions
   * @{
   */
 /**
@@ -409,7 +409,7 @@ int32_t BSP_EEPROM_IsDeviceReady(uint32_t Instance)
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_EEPROM_Private_Functions Private Functions
+/** @defgroup B_U585I_IOT02A_EEPROM_Private_Functions EEPROM Private Functions
   * @{
   */
 /**

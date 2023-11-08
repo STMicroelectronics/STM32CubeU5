@@ -34,14 +34,14 @@ extern "C" {
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK
+/** @addtogroup STM32U5G9J_DK2
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK_BUS
+/** @addtogroup STM32U5G9J_DK2_BUS
   * @{
   */
-/** @defgroup STM32U5G9J_DK_BUS_Exported_Types Exported Types
+/** @defgroup STM32U5G9J_DK2_BUS_Exported_Types BUS Exported Types
   * @{
   */
 #if (USE_HAL_I2C_REGISTER_CALLBACKS == 1)
@@ -55,7 +55,7 @@ typedef struct
 /**
   * @}
   */
-/** @defgroup STM32U5G9J_DK_BUS_Exported_Constants Exported Constants
+/** @defgroup STM32U5G9J_DK2_BUS_Exported_Constants BUS Exported Constants
   * @{
   */
 /* Definition for I2C2 clock resources */
@@ -86,7 +86,7 @@ typedef struct
   * @}
   */
 
-/** @addtogroup STM32U5G9J_DK_BUS_Exported_Variables
+/** @addtogroup STM32U5G9J_DK2_BUS_Exported_Variables BUS Exported Variables
   * @{
   */
 extern I2C_HandleTypeDef hbus_i2c2;
@@ -94,7 +94,7 @@ extern I2C_HandleTypeDef hbus_i2c2;
   * @}
   */
 
-/** @addtogroup STM32U5G9J_DK_BUS_Exported_Functions
+/** @addtogroup STM32U5G9J_DK2_BUS_Exported_Functions BUS Exported Functions
   * @{
   */
 int32_t BSP_I2C2_Init(void);

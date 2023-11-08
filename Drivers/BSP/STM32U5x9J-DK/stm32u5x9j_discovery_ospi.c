@@ -77,7 +77,7 @@
   */
 
 /* Exported variables --------------------------------------------------------*/
-/** @addtogroup STM32U5x9J_DISCOVERY_OSPI_NOR_Exported_Variables
+/** @addtogroup STM32U5x9J_DISCOVERY_OSPI_NOR_Exported_Variables OSPI NOR Exported Variables
   * @{
   */
 XSPI_HandleTypeDef hospi_nor[OSPI_NOR_INSTANCES_NUMBER] = {0};
@@ -95,7 +95,7 @@ OSPI_NOR_Ctx_t Ospi_Nor_Ctx[OSPI_NOR_INSTANCES_NUMBER] = {{
 
 /* Private constants --------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-/** @defgroup STM32U5x9J_DISCOVERY_OSPI_NOR_Private_Variables OSPI_NOR Private Variables
+/** @defgroup STM32U5x9J_DISCOVERY_OSPI_NOR_Private_Variables OSPI NOR Private Variables
   * @{
   */
 #if (USE_HAL_XSPI_REGISTER_CALLBACKS == 1)
@@ -109,7 +109,7 @@ static uint32_t OspiNor_IsMspCbValid[OSPI_NOR_INSTANCES_NUMBER] = {0};
 
 /* Private functions ---------------------------------------------------------*/
 
-/** @defgroup STM32U5x9J_DISCOVERY_OSPI_NOR_Private_Functions OSPI_NOR Private Functions
+/** @defgroup STM32U5x9J_DISCOVERY_OSPI_NOR_Private_Functions OSPI NOR Private Functions
   * @{
   */
 static void    OSPI_NOR_MspInit(XSPI_HandleTypeDef *hospi);
@@ -125,7 +125,7 @@ static int32_t OSPI_DLYB_Enable(XSPI_HandleTypeDef *hospi);
 
 /* Exported functions ---------------------------------------------------------*/
 
-/** @addtogroup STM32U5x9J_DISCOVERY_OSPI_NOR_Exported_Functions
+/** @addtogroup STM32U5x9J_DISCOVERY_OSPI_NOR_Exported_Functions OSPI NOR Exported Functions
   * @{
   */
 
@@ -1039,7 +1039,7 @@ int32_t BSP_OSPI_NOR_LeaveDeepPowerDown(uint32_t Instance)
 
 
 
-/** @addtogroup OSPI_NOR_Private_Functions
+/** @addtogroup STM32U5x9J_DISCOVERY_OSPI_NOR_Private_Functions OSPI NOR Private Functions
   * @{
   */
 

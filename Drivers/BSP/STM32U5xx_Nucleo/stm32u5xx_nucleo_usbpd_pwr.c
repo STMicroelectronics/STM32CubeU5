@@ -35,18 +35,18 @@
   * @{
   */
 
-/** @addtogroup STM32U5XX_NUCLEO_USBPD_PWR
+/** @addtogroup STM32U5XX_NUCLEO_USBPD_PWR USBPD PWR
   * @{
   */
 
-/** @defgroup STM32U5XX_NUCLEO_USBPD_PWR_Private_Typedef Private Typedef
+/** @defgroup STM32U5XX_NUCLEO_USBPD_PWR_Private_Typedef USBPD PWR Private Typedef
   * @{
   */
 /**
   * @}
   */
 
-/** @defgroup STM32U5XX_NUCLEO_USBPD_PWR_Private_Constants Private Constants
+/** @defgroup STM32U5XX_NUCLEO_USBPD_PWR_Private_Constants USBPD PWR Private Constants
   * @{
   */
 #define VDDA_APPLI            3300U
@@ -55,7 +55,7 @@
   * @}
   */
 
-/** @defgroup STM32U5XX_NUCLEO_USBPD_PWR_Private_Macros Private Macros
+/** @defgroup STM32U5XX_NUCLEO_USBPD_PWR_Private_Macros USBPD PWR Private Macros
   * @{
   */
 
@@ -63,7 +63,7 @@
   * @}
   */
 
-/** @defgroup STM32U5XX_NUCLEO_USBPD_PWR_Private_Variables Private Variables
+/** @defgroup STM32U5XX_NUCLEO_USBPD_PWR_Private_Variables USBPD PWR Private Variables
   * @{
   */
 
@@ -71,7 +71,7 @@
   * @}
   */
 
-/** @defgroup STM32U5XX_NUCLEO_USBPD_PWR_Private_Functions Private Functions
+/** @defgroup STM32U5XX_NUCLEO_USBPD_PWR_Private_Functions USBPD PWR Private Functions
   * @{
   */
 static void     MX_ADC1_Init(void);
@@ -80,7 +80,7 @@ static void     MX_ADC1_Init(void);
   * @}
   */
 
-/** @addtogroup STM32U5XX_NUCLEO_USBPD_PWR_Exported_Functions
+/** @addtogroup STM32U5XX_NUCLEO_USBPD_PWR_Exported_Functions USBPD PWR Exported Functions
   * @{
   */
 
@@ -766,7 +766,7 @@ int32_t BSP_USBPD_PWR_VCONNDischargeOff(uint32_t PortNum)
   * @}
   */
 
-/** @addtogroup STM32U5XX_NUCLEO_USBPD_PWR_Private_Functions
+/** @addtogroup STM32U5XX_NUCLEO_USBPD_PWR_Private_Functions USBPD PWR Private Functions
   * @{
   */
 

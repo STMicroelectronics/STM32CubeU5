@@ -40,6 +40,7 @@
 /*
 //-------- <<< Use Configuration Wizard in Context Menu >>> -----------------
 */
+
 /* USER CODE BEGIN 0 */
 /*
 // <e>Initialize Security Attribution Unit (SAU) CTRL register
@@ -375,6 +376,7 @@
 //   <e>Initialize ITNS 0 (Interrupts 0..31)
 */
 #define NVIC_INIT_ITNS0    1
+
 /*
 // Interrupts 0..31
 //   <o.0>  WWDG_IRQn             <0=> Secure state
@@ -520,6 +522,7 @@
 
 /*
 // Interrupts 96..125
+
 //   <o.0>  HASH_IRQn             <0=> Secure state
 //   <o.1>  PKA_IRQn              <0=> Secure state
 //   <o.2>  LPTIM3_IRQn           <0=> Secure state

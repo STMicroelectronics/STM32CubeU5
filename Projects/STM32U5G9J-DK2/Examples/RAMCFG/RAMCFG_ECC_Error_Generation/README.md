@@ -16,8 +16,8 @@ RAMCFG generates interrupts on each read access to a corrupted data.
 The RAMCFG controller is able to detect and correct ECC single error data and only detect ECC double error data.
 
 -   STM32U5G9J-DK2 board's LED can be used to monitor the project operation status:
-    - **LED2 toggle** when no error detected.
-    - **LED3 is ON** when any project error was occurred.
+    - **LED3 toggle** when no error detected.
+    - **LED2 is ON** when any project error was occurred.
 
 #### <b>Notes</b>
 

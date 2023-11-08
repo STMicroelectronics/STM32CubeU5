@@ -28,8 +28,8 @@
 <p>Once this operation is finished, page quad-word programming operation will be performed in the Flash memory. The written data is then read back and checked.</p>
 <p>The STM32U5G9J-DK2 board LEDs can be used to monitor the transfer status:</p>
 <ul>
-<li><strong>LED2 is ON</strong> when there are no errors detected after data programming</li>
-<li><strong>LED3 is ON</strong> when there are errors detected after data programming or when there is an issue during erase or program procedure</li>
+<li><strong>LED3 is ON</strong> when there are no errors detected after data programming</li>
+<li><strong>LED2 is ON</strong> when there are errors detected after data programming or when there is an issue during erase or program procedure</li>
 </ul>
 <ol start="2" type="1">
 <li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise the caller ISR process will be blocked. To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>

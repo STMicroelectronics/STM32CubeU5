@@ -29,8 +29,25 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32u5xx_hal.h"
 
+/** @addtogroup BSP
+  * @{
+  */
+
+/** @addtogroup STM32U5x9J_DISCOVERY
+  * @{
+  */
+
+/** @defgroup STM32U5x9J_DISCOVERY_CONFIG Config
+  * @{
+  */
+
+/** @defgroup STM32U5x9J_DISCOVERY_CONFIG_Exported_Constants Exported Constants
+  * @{
+  */
+
+
 /* Usage of STM32U5x9J_DISCOVERY board */
-#define USE_STM32U5x9J_DISCOVERY      1U
+#define USE_STM32U5x9J_DISCOVERY          1U
 
 /* COM define */
 #define USE_BSP_COM_FEATURE                  1U
@@ -44,14 +61,30 @@ extern "C" {
 #define BSP_BUTTON_USER_IT_PRIORITY          0x0FUL  /* Default is lowest priority level */
 
 /* LCD interrupt priorities */
-#define BSP_LCD_GFXMMU_IT_PRIORITY 0x0FUL  /* Default is lowest priority level */
-#define BSP_LCD_LTDC_IT_PRIORITY   0x0FUL  /* Default is lowest priority level */
-#define BSP_LCD_DSI_IT_PRIORITY    0x0FUL  /* Default is lowest priority level */
-#define BSP_LCD_DMA2D_IT_PRIORITY  0x0FUL  /* Default is lowest priority level */
+#define BSP_LCD_GFXMMU_IT_PRIORITY       0x0FUL  /* Default is lowest priority level */
+#define BSP_LCD_LTDC_IT_PRIORITY         0x0FUL  /* Default is lowest priority level */
+#define BSP_LCD_DSI_IT_PRIORITY          0x0FUL  /* Default is lowest priority level */
+#define BSP_LCD_DMA2D_IT_PRIORITY        0x0FUL  /* Default is lowest priority level */
 
 /* HSPI RAM interrupt priority */
-#define BSP_HSPI_RAM_IT_PRIORITY     0x0FUL  /* Default is lowest priority level */
-#define BSP_HSPI_RAM_DMA_IT_PRIORITY 0x0FUL  /* Default is lowest priority level */
+#define BSP_HSPI_RAM_IT_PRIORITY         0x0FUL  /* Default is lowest priority level */
+#define BSP_HSPI_RAM_DMA_IT_PRIORITY     0x0FUL  /* Default is lowest priority level */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 #ifdef __cplusplus
 }

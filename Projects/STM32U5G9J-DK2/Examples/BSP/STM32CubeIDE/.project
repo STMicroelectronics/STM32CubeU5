@@ -233,27 +233,27 @@
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/Components/mx66uw1g45g/mx66uw1g45g.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5g9j_discovery.c</name>
+			<name>Drivers/BSP/STM32U5G9J_DK2/stm32u5g9j_discovery.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/STM32U5G9J-DK2/stm32u5g9j_discovery.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5g9j_discovery_bus.c</name>
+			<name>Drivers/BSP/STM32U5G9J_DK2/stm32u5g9j_discovery_bus.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/STM32U5G9J-DK2/stm32u5g9j_discovery_bus.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5g9j_discovery_hspi.c</name>
+			<name>Drivers/BSP/STM32U5G9J_DK2/stm32u5g9j_discovery_hspi.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/STM32U5G9J-DK2/stm32u5g9j_discovery_hspi.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5g9j_discovery_lcd.c</name>
+			<name>Drivers/BSP/STM32U5G9J_DK2/stm32u5g9j_discovery_lcd.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/STM32U5G9J-DK2/stm32u5g9j_discovery_lcd.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/BSP/STM32U5x9J_DK/stm32u5g9j_discovery_ts.c</name>
+			<name>Drivers/BSP/STM32U5G9J_DK2/stm32u5g9j_discovery_ts.c</name>
 			<type>1</type>
 			<locationURI>PARENT-5-PROJECT_LOC/Drivers/BSP/STM32U5G9J-DK2/stm32u5g9j_discovery_ts.c</locationURI>
 		</link>

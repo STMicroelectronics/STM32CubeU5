@@ -37,7 +37,7 @@ the PLL oscillator source is checked using __HAL_RCC_GET_PLL_OSCSOURCE() macro:
      c. Select the PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers
      d. Disable the HSI oscillator (optional, if the HSI is no more needed by the application)
 
-LED2 is toggled with a timing defined by the HAL_Delay() API.
+LED3 is toggled with a timing defined by the HAL_Delay() API.
 
 #### <b>Notes</b>
 

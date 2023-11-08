@@ -43,6 +43,7 @@ Memory, OCTOSPI, DLYB, Memory Mapped, PSRAM
 
   - This example runs on STM32U575xx devices without security enabled (TZEN=0).
   - Make sure that the MB1242 PSRAM module is plugged (CN11) on the board (MB1550).
+  - The MB1242 hardware configuration is: SW1 (CS1: OFF, CS2: OFF) and SW2 (CS1: OFF, CS2: ON).
   - In this example, the clock is set to 160 MHz.
 
   - This example has been tested with STMicroelectronics STM32U575I-EV (MB1550)

@@ -99,8 +99,8 @@ int main(void)
   BSP_LED_Init(LED2);
   BSP_LED_Init(LED3);
 
-  /* Turn LED2 on */
-  BSP_LED_On(LED2);
+  /* Turn LED3 on */
+  BSP_LED_On(LED3);
 
   /* Delay 5 seconds */
   HAL_Delay(5000);
@@ -112,8 +112,8 @@ int main(void)
   MX_ICACHE_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
-  /* Turn LED2 on */
-  BSP_LED_Off(LED2);
+  /* Turn LED3 on */
+  BSP_LED_Off(LED3);
 
   /* Suspend Tick increment */
   HAL_SuspendTick();
@@ -362,8 +362,8 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  /* Turn LED3 on */
-  BSP_LED_On(LED3);
+  /* Turn LED2 on */
+  BSP_LED_On(LED2);
 
   __disable_irq();
   while (1)

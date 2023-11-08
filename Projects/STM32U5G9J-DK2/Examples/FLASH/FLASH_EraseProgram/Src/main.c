@@ -159,8 +159,8 @@ int main(void)
     /* Infinite loop */
     while (1)
     {
-      /* Turn on LED3 */
-      BSP_LED_On(LED3);
+      /* Turn on LED2 */
+      BSP_LED_On(LED2);
     }
   }
 
@@ -181,8 +181,8 @@ int main(void)
          User can add here some code to deal with this error */
       while (1)
       {
-        /* Turn on LED3 */
-        BSP_LED_On(LED3);
+        /* Turn on LED2 */
+        BSP_LED_On(LED2);
       }
     }
   }
@@ -219,13 +219,13 @@ int main(void)
   /*Check if there is an issue to program data*/
   if (MemoryProgramStatus == 0)
   {
-    /* No error detected. Switch on LED2*/
-    BSP_LED_On(LED2);
+    /* No error detected. Switch on LED3*/
+    BSP_LED_On(LED3);
   }
   else
   {
-    /* Error detected. Switch on LED3*/
-    BSP_LED_On(LED3);
+    /* Error detected. Switch on LED2*/
+    BSP_LED_On(LED2);
   }
 
   /* USER CODE END 2 */

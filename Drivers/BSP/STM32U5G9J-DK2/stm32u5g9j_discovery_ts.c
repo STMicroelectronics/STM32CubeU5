@@ -3,7 +3,7 @@
   * @file    stm32u5g9j_discovery_ts.c
   * @author  MCD Application Team
   * @brief   This file provides a set of firmware functions to communicate
-  *          with  external devices available on STM32U5G9J-DK board (MB1736) from
+  *          with  external devices available on STM32U5G9J-DK2 board (MB1736) from
   *          STMicroelectronics
   ******************************************************************************
   * @attention
@@ -23,7 +23,7 @@
 1. How To use this driver:
 --------------------------
    - This driver is used to drive the GT911 touch screen module
-     mounted over TFT-LCD on the STM32U5G9J_DK board.
+     mounted over TFT-LCD on the STM32U5G9J_DK2 board.
 
 2. Driver description:
 ---------------------
@@ -57,36 +57,36 @@
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK
+/** @addtogroup STM32U5G9J_DK2
   * @{
   */
 
-/** @defgroup STM32U5G9J_DK_TS TS
+/** @defgroup STM32U5G9J_DK2_TS TS
   * @{
   */
 
-/** @defgroup STM32U5G9J_DK_TS_Private_Types_Definitions Private Types Definitions
-  * @{
-  */
-/**
-  * @}
-  */
-
-/** @defgroup STM32U5G9J_DK_TS_Private_Defines Private Types Defines
+/** @defgroup STM32U5G9J_DK2_TS_Private_Types_Definitions TS Private Types Definitions
   * @{
   */
 /**
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_TS_Private_Macros Private Macros
+/** @defgroup STM32U5G9J_DK2_TS_Private_Defines TS Private Types Defines
+  * @{
+  */
+/**
+  * @}
+  */
+
+/** @defgroup STM32U5G9J_DK2_TS_Private_Macros TS Private Macros
   * @{
   */
 #define TS_MIN(a,b) ((a > b) ? b : a)
 /**
   * @}
   */
-/** @defgroup STM32U5G9J_DK_TS_Private_Function_Prototypes Private Function Prototypes
+/** @defgroup STM32U5G9J_DK2_TS_Private_Function_Prototypes TS Private Function Prototypes
   * @{
   */
 static int32_t GT911_Probe(uint32_t Instance);
@@ -95,7 +95,7 @@ static void TS_EXTI_Callback(void);
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_TS_Privates_Variables Privates Variables
+/** @defgroup STM32U5G9J_DK2_TS_Privates_Variables TS Privates Variables
   * @{
   */
 static TS_Drv_t   *Ts_Drv = NULL;
@@ -103,7 +103,7 @@ static TS_Drv_t   *Ts_Drv = NULL;
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_TS_Exported_Variables Exported Variables
+/** @defgroup STM32U5G9J_DK2_TS_Exported_Variables TS Exported Variables
   * @{
   */
 EXTI_HandleTypeDef hts_exti[TS_INSTANCES_NBR] = {0};
@@ -113,7 +113,7 @@ TS_Ctx_t  Ts_Ctx[TS_INSTANCES_NBR]     = {0};
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_TS_Exported_Functions Exported Functions
+/** @defgroup STM32U5G9J_DK2_TS_Exported_Functions TS Exported Functions
   * @{
   */
 
@@ -615,7 +615,7 @@ int32_t BSP_TS_Get_Orientation(uint32_t Instance, uint32_t *Orientation)
 /**
   * @}
   */
-/** @defgroup STM32U5G9J_DK_TS_Private_Functions Private Functions
+/** @defgroup STM32U5G9J_DK2_TS_Private_Functions TS Private Functions
   * @{
   */
 

@@ -29,7 +29,7 @@
   * @{
   */
 
-/** @addtogroup STM32U5XX_NUCLEO_LOW_LEVEL
+/** @addtogroup STM32U5XX_NUCLEO_LOW_LEVEL LOW LEVEL
   * @brief This file provides set of firmware functions to manage Leds and push-button
   *        available on STM32U5xx-Nucleo Kit from STMicroelectronics.
   * @{
@@ -43,7 +43,7 @@
   * @}
   */
 
-/** @defgroup STM32U5XX_NUCLEO_LOW_LEVEL_Private_TypesDefinitions LOW LEVEL Private Typedef
+/** @defgroup STM32U5XX_NUCLEO_LOW_LEVEL_Private_TypesDefinitions LOW LEVEL Private Types Definitions
   * @{
   */
 typedef void (* BSP_EXTI_LineCallback)(void);
@@ -104,7 +104,7 @@ static uint32_t IsComMspCbValid[COMn] = {0};
   * @}
   */
 
-/** @defgroup STM32U5XX_NUCLEO_LOW_LEVEL_Private_FunctionPrototypes LOW LEVEL Private functions Prototypes
+/** @defgroup STM32U5XX_NUCLEO_LOW_LEVEL_Private_FunctionPrototypes LOW LEVEL Private Functions Prototypes
   * @{
   */
 static void BUTTON_USER_EXTI_Callback(void);

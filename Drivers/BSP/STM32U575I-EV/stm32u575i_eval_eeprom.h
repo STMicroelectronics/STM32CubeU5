@@ -43,14 +43,14 @@ extern "C" {
   * @{
   */
 
-/** @defgroup STM32U575I_EVAL_EEPROM_Exported_Types Exported Types
+/** @defgroup STM32U575I_EVAL_EEPROM_Exported_Types EEPROM Exported Types
   * @{
   */
 /**
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_EEPROM_Exported_Constants Exported Constants
+/** @defgroup STM32U575I_EVAL_EEPROM_Exported_Constants EEPROM Exported Constants
   * @{
   */
 #define EEPROM_INSTANCES_NBR       1U
@@ -64,7 +64,7 @@ extern "C" {
 /**
   * @}
   */
-/** @addtogroup STM32U575I_EVAL_EEPROM_Exported_Variables
+/** @addtogroup STM32U575I_EVAL_EEPROM_Exported_Variables EEPROM Exported Variables
   * @{
   */
 extern void  *Eeprom_CompObj;
@@ -72,7 +72,7 @@ extern void  *Eeprom_CompObj;
   * @}
   */
 
-/** @defgroup STM32U575I_EVAL_EEPROM_Exported_FunctionsPrototypes Exported Functions Prototypes
+/** @defgroup STM32U575I_EVAL_EEPROM_Exported_FunctionsPrototypes EEPROM Exported Functions Prototypes
   * @{
   */
 int32_t BSP_EEPROM_Init(uint32_t Instance);

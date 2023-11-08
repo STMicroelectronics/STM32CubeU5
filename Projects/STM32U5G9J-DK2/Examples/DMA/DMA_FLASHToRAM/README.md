@@ -22,9 +22,9 @@ is enabled and the callback function (customized by user) is called.
 
 STM32U5G9J-DK2 board's LEDs can be used to monitor the transfer status:
 
- - LED2 is ON when the transfer is complete (into the Transfer Complete interrupt
+ - LED3 is ON when the transfer is complete (into the Transfer Complete interrupt
    routine).
- - LED3 is ON when an Error_Handler is called
+ - LED2 is ON when an Error_Handler is called
 
 #### <b>Notes</b>
 

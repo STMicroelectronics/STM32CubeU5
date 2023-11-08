@@ -323,7 +323,7 @@ UINT MX_FileX_Init(VOID *memory_ptr)
 
   while(1)
   {
-    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+    HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
     tx_thread_sleep(TX_TIMER_TICKS_PER_SECOND / 2);
   }
 

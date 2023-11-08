@@ -120,7 +120,7 @@ typedef struct
   * @}
   */
 
-/** @addtogroup B_U585I_IOT02A_BUS_Exported_Variables
+/** @addtogroup B_U585I_IOT02A_BUS_Exported_Variables BUS Exported Variables
   * @{
   */
 extern I2C_HandleTypeDef hbus_i2c1;
@@ -129,7 +129,7 @@ extern I2C_HandleTypeDef hbus_i2c2;
   * @}
   */
 
-/** @addtogroup B_U585I_IOT02A_BUS_Exported_Functions
+/** @addtogroup B_U585I_IOT02A_BUS_Exported_Functions BUS Exported Functions
   * @{
   */
 int32_t BSP_I2C1_Init(void);

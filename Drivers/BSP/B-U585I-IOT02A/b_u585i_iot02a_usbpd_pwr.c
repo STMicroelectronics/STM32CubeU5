@@ -33,18 +33,18 @@
   * @{
   */
 
-/** @addtogroup B_U585I_IOT02A_USBPD_PWR
+/** @addtogroup B_U585I_IOT02A_USBPD_PWR USBPD PWR
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_USBPD_PWR_Exported_Variables Exported Variables
+/** @defgroup B_U585I_IOT02A_USBPD_PWR_Exported_Variables USBPD PWR Exported Variables
   * @{
   */
 /**
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_USBPD_PWR_Private_Typedef Private Typedef
+/** @defgroup B_U585I_IOT02A_USBPD_PWR_Private_Typedef USBPD PWR Private Typedef
   * @{
   */
 /**
@@ -73,7 +73,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_USBPD_PWR_Private_Constants Private Constants
+/** @defgroup B_U585I_IOT02A_USBPD_PWR_Private_Constants USBPD PWR Private Constants
   * @{
   */
 
@@ -94,7 +94,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_USBPD_PWR_Private_Macros Private Macros
+/** @defgroup B_U585I_IOT02A_USBPD_PWR_Private_Macros USBPD PWR Private Macros
   * @{
   */
 
@@ -102,7 +102,7 @@ typedef struct
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_USBPD_PWR_Private_Functions Private Functions
+/** @defgroup B_U585I_IOT02A_USBPD_PWR_Private_Functions USBPD PWR Private Functions
   * @{
   */
 static void     PWR_TCPP0203_GPIOConfigInit(uint32_t PortNum);
@@ -120,7 +120,7 @@ static void MX_ADC4_Init(void);
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_USBPD_PWR_Private_Variables Private Variables
+/** @defgroup B_U585I_IOT02A_USBPD_PWR_Private_Variables USBPD PWR Private Variables
   * @{
   */
 static ADC_HandleTypeDef hadc4;
@@ -144,7 +144,7 @@ static TCPP0203_Object_t      USBPD_PWR_PortCompObj[USBPD_PWR_INSTANCES_NBR] = {
   * @}
   */
 
-/** @addtogroup B_U585I_IOT02A_USBPD_PWR_Exported_Functions
+/** @addtogroup B_U585I_IOT02A_USBPD_PWR_Exported_Functions USBPD PWR Exported Functions
   * @{
   */
 
@@ -1405,7 +1405,7 @@ void BSP_USBPD_PWR_EventCallback(uint32_t PortNum)
   * @}
   */
 
-/** @addtogroup B_U585I_IOT02A_USBPD_PWR_Private_Functions
+/** @addtogroup B_U585I_IOT02A_USBPD_PWR_Private_Functions USBPD PWR Private Functions
   * @{
   */
 

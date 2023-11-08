@@ -65,13 +65,13 @@ int main(void)
   /* Add your non-secure example code here
      */
 
-  BSP_LED_Init(LED2); /* Green LED */
+  BSP_LED_Init(LED3); /* Green LED */
 
   /* Infinite loop */
   while (1)
   {
     HAL_Delay(250);
-    BSP_LED_Toggle(LED2);
+    BSP_LED_Toggle(LED3);
   }
 }
 

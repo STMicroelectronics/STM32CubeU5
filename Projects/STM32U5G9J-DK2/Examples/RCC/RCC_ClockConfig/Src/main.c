@@ -125,8 +125,8 @@ int main(void)
       SwitchSystemClock();
     }
 
-    /* Toggle LED2 in an infinite loop */
-    BSP_LED_Toggle(LED2);
+    /* Toggle LED3 in an infinite loop */
+    BSP_LED_Toggle(LED3);
     HAL_Delay(100);
   }
 
@@ -556,8 +556,8 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   ClockSourceStatus = 0xE;
-  /* Turn LED3 on */
-  BSP_LED_On(LED3);
+  /* Turn LED2 on */
+  BSP_LED_On(LED2);
   /* User can add his own implementation to report the HAL error return state */
   while (1)
   {

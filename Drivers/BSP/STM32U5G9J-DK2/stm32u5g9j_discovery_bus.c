@@ -3,7 +3,7 @@
   * @file    stm32u5g9j_discovery_bus.c
   * @author  MCD Application Team
   * @brief   This file provides a set of firmware functions to communicate
-  *          with  external devices available on STM32U5G9J-DK board (MB1736) from
+  *          with  external devices available on STM32U5G9J-DK2 board (MB1736) from
   *          STMicroelectronics
   ******************************************************************************
   * @attention
@@ -25,19 +25,19 @@
   * @{
   */
 
-/** @addtogroup STM32U5G9J_DK
+/** @addtogroup STM32U5G9J_DK2
   * @{
   */
 
-/** @defgroup STM32U5G9J_DK_BUS BUS
+/** @defgroup STM32U5G9J_DK2_BUS BUS
   * @{
   */
 
-/** @defgroup STM32U5G9J_DK_BUS_Private_Constants Private Constants
+/** @defgroup STM32U5G9J_DK2_BUS_Private_Constants BUS Private Constants
   * @{
   */
 #ifndef I2C_VALID_TIMING_NBR
-#define I2C_VALID_TIMING_NBR                 128U
+#define I2C_VALID_TIMING_NBR                   128U
 #endif /* I2C_VALID_TIMING_NBR */
 #define I2C_SPEED_FREQ_STANDARD                0U    /* 100 kHz */
 #define I2C_SPEED_FREQ_FAST                    1U    /* 400 kHz */
@@ -56,7 +56,7 @@
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_BUS_Private_Types Private Types
+/** @defgroup STM32U5G9J_DK2_BUS_Private_Types BUS Private Types
   * @{
   */
 typedef struct
@@ -86,7 +86,7 @@ typedef struct
   * @}
   */
 
-/** @addtogroup STM32U5G9J_DK_BUS_Private_Constants
+/** @addtogroup STM32U5G9J_DK2_BUS_Private_Constants
   * @{
   */
 static const I2C_Charac_t I2C_Charac[] =
@@ -138,7 +138,7 @@ static const I2C_Charac_t I2C_Charac[] =
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_BUS_Private_Variables Private Variables
+/** @defgroup STM32U5G9J_DK2_BUS_Private_Variables BUS Private Variables
   * @{
   */
 #if (USE_HAL_I2C_REGISTER_CALLBACKS == 1)
@@ -154,7 +154,7 @@ static osSemaphoreId BspI2cSemaphore = 0;
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_BUS_Exported_Variables Exported Variables
+/** @defgroup STM32U5G9J_DK2_BUS_Exported_Variables BUS Exported Variables
   * @{
   */
 I2C_HandleTypeDef hbus_i2c2;
@@ -162,7 +162,7 @@ I2C_HandleTypeDef hbus_i2c2;
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_BUS_Private_FunctionPrototypes BUS Private FunctionPrototypes
+/** @defgroup STM32U5G9J_DK2_BUS_Private_FunctionPrototypes BUS Private Function Prototypes
   * @{
   */
 static void I2C2_MspInit(I2C_HandleTypeDef *phi2c);
@@ -176,7 +176,7 @@ static void     I2C_Compute_PRESC_SCLDEL_SDADEL(uint32_t clock_src_freq, uint32_
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_BUS_Exported_Functions Exported Functions
+/** @defgroup STM32U5G9J_DK2_BUS_Exported_Functions BUS Exported Functions
   * @{
   */
 
@@ -557,7 +557,7 @@ int32_t BSP_I2C2_RegisterMspCallbacks(BSP_I2C_Cb_t *Callback)
   * @}
   */
 
-/** @defgroup STM32U5G9J_DK_BUS_Private_Functions Private Functions
+/** @defgroup STM32U5G9J_DK2_BUS_Private_Functions BUS Private Functions
   * @{
   */
 /**
@@ -738,7 +738,8 @@ static uint32_t I2C_Compute_SCLL_SCLH(uint32_t clock_src_freq, uint32_t I2C_spee
           /* tSCL = tf + tLOW + tr + tHIGH */
           uint32_t tscl = tscl_l + tscl_h + I2C_Charac[I2C_speed].trise + I2C_Charac[I2C_speed].tfall;
 
-          if ((tscl >= clk_min) && (tscl <= clk_max) && (tscl_h >= I2C_Charac[I2C_speed].hscl_min) && (ti2cclk < tscl_h))
+          if ((tscl >= clk_min) && (tscl <= clk_max) && (tscl_h >= I2C_Charac[I2C_speed].hscl_min)
+              && (ti2cclk < tscl_h))
           {
             int32_t error = (int32_t)tscl - (int32_t)ti2cspeed;
 

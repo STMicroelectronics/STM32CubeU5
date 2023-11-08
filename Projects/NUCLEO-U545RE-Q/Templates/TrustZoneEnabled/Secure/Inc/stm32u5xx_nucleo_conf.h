@@ -43,7 +43,7 @@ extern "C" {
   * @{
   */
 /* Nucleo pin and part number defines */
-#define USE_NUCLEO_144
+/* #define USE_NUCLEO_144 */
 #define USE_NUCLEO_64
 
 /* COM define */

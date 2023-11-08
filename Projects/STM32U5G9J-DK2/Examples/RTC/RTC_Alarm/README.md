@@ -33,9 +33,9 @@ PWR, RTC clock source and BackUp). You may update this function to change RTC co
 In this example, the Time is set to 02:20:00 and the Alarm must be generated after
 30 seconds on 02:20:30.
 
-**LED2** is turned ON when the RTC Alarm is generated correctly.
+**LED3** is turned ON when the RTC Alarm is generated correctly.
 The current time is updated and displayed on the debugger in aShowTime variable.
-In case of error, **LED3** is toggled with a period of one second.
+In case of error, **LED2** is toggled with a period of one second.
 
  2. Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds)
       based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from

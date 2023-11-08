@@ -43,14 +43,14 @@ extern "C" {
   * @{
   */
 
-/** @defgroup B_U585I_IOT02A_EEPROM_Exported_Types Exported Types
+/** @defgroup B_U585I_IOT02A_EEPROM_Exported_Types EEPROM Exported Types
   * @{
   */
 /**
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_EEPROM_Exported_Constants Exported Constants
+/** @defgroup B_U585I_IOT02A_EEPROM_Exported_Constants EEPROM Exported Constants
   * @{
   */
 #define EEPROM_INSTANCES_NBR       1U
@@ -64,7 +64,7 @@ extern "C" {
 /**
   * @}
   */
-/** @addtogroup B_U585I_IOT02A_EEPROM_Exported_Variables
+/** @addtogroup B_U585I_IOT02A_EEPROM_Exported_Variables EEPROM Exported Variables
   * @{
   */
 extern M24256_Object_t  *Eeprom_CompObj;
@@ -72,7 +72,7 @@ extern M24256_Object_t  *Eeprom_CompObj;
   * @}
   */
 
-/** @defgroup B_U585I_IOT02A_EEPROM_Exported_FunctionsPrototypes Exported Functions Prototypes
+/** @defgroup B_U585I_IOT02A_EEPROM_Exported_FunctionsPrototypes EEPROM Exported Functions Prototypes
   * @{
   */
 int32_t BSP_EEPROM_Init(uint32_t Instance);
