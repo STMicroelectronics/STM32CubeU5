@@ -452,6 +452,7 @@ int32_t BSP_LCD_FillRGBRect(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uin
   int32_t  status = BSP_ERROR_NONE;
   uint32_t Xaddress;
   uint32_t StartAddress;
+  uint32_t *LineAddress;
   uint32_t i;
   uint32_t j;
 
@@ -464,14 +465,14 @@ int32_t BSP_LCD_FillRGBRect(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uin
     /* Set the start address */
     StartAddress = (hlcd_ltdc.LayerCfg[0].FBStartAdress + (4U * ((Ypos * PIXEL_PER_LINE) + Xpos)));
 
-
     /* Fill the rectangle */
     for (i = 0; i < Height; i++)
     {
       Xaddress = StartAddress + (3072U * i);
+      LineAddress = (uint32_t *)(pData) + (i * Width);
       for (j = 0; j < Width; j++)
       {
-        *(__IO uint32_t *)(Xaddress) = *(uint32_t *)(pData + (4U * j));
+        *(__IO uint32_t *)(Xaddress) = *(LineAddress + j);
         Xaddress += 4U;
       }
     }
