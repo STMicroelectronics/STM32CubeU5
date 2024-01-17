@@ -6,3 +6,23 @@
 	path = Drivers/CMSIS/Device/ST/STM32U5xx
 	url = https://github.com/STMicroelectronics/cmsis_device_u5.git
 	branch = main
+[submodule "Drivers/BSP/B-U585I-IOT02A"]
+	path = Drivers/BSP/B-U585I-IOT02A
+	url = https://github.com/STMicroelectronics/b-u585i-iot02a-bsp.git
+	branch = main
+[submodule "Drivers/BSP/STM32U575I-EV"]
+	path = Drivers/BSP/STM32U575I-EV
+	url = https://github.com/STMicroelectronics/stm32u575i-ev-bsp.git
+	branch = main
+[submodule "Drivers/BSP/STM32U5x9J-DK"]
+	path = Drivers/BSP/STM32U5x9J-DK
+	url = https://github.com/STMicroelectronics/stm32u5x9j-dk-bsp.git
+	branch = main
+[submodule "Drivers/BSP/STM32U5G9J-DK2"]
+	path = Drivers/BSP/STM32U5G9J-DK2
+	url = https://github.com/STMicroelectronics/stm32u5g9j-dk2-bsp.git
+	branch = main
+[submodule "Drivers/BSP/STM32U5xx_Nucleo"]
+	path = Drivers/BSP/STM32U5xx_Nucleo
+	url = https://github.com/STMicroelectronics/stm32u5xx-nucleo-bsp.git
+	branch = main
