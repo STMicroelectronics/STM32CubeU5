@@ -61,15 +61,13 @@ System_StatusTypeDef system_config(RTC_StateTypeDef state, System_LowPowerModeTy
     return SYSTEM_ERROR;
   }
 
-#ifdef Rev_2_1
   /* Enable Power Clock */
   __HAL_RCC_PWR_CLK_ENABLE();
 
-  /* Enable ultra low power mode mode in
+  /* Enable ultra low power mode in
   Stop 1, Stop 2, Stop 3 and Standby modes
   and when the regulator is in Range 4 (Run, Sleep or Stop 0 mode) */
   HAL_PWREx_EnableUltraLowPowerMode();
-#endif /* Rev_2_1 */
 
   /* Disable HSI oscillator */
   RCC_OscInitStruct.PLL.PLLState   = RCC_PLL_NONE;

@@ -75,6 +75,7 @@ static uint32_t ADC_Buffer_Check(void* Buffer, uint32_t BufferSize, uint16_t Thr
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */

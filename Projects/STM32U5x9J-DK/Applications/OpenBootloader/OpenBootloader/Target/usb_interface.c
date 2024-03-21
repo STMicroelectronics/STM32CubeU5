@@ -52,7 +52,8 @@ void OPENBL_USB_Configuration(void)
 
   hpcd_USB_HS.Instance                     = USB_OTG_HS;
   hpcd_USB_HS.Init.dev_endpoints           = 6U;
-  hpcd_USB_HS.Init.phy_itface              = PCD_PHY_EMBEDDED;
+  hpcd_USB_HS.Init.phy_itface              = PCD_PHY_UTMI;
+  hpcd_USB_HS.Init.speed                   = PCD_SPEED_HIGH;
   hpcd_USB_HS.Init.Sof_enable              = (uint32_t)DISABLE;
   hpcd_USB_HS.Init.low_power_enable        = (uint32_t)DISABLE;
   hpcd_USB_HS.Init.lpm_enable              = (uint32_t)DISABLE;

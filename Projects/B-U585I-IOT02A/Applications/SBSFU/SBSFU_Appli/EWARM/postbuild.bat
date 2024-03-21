@@ -170,10 +170,10 @@ set /A image_s_sectors=%image_s_size% / 0x2000
 
 echo "%signing% init image signing" >> %projectdir%\output.txt 2>&1
 IF "%signing%" == "nonsecure" (
-set "command_init=%python%%imgtool% sign -k %key_ns% %encrypt% -e little -S %image_ns_size% -M %image_ns_sectors% -H 0x400 --pad-header %option% -v %version% -s auto --align %val% %sbsfu_ns% %sbsfu_ns_init% >> %projectdir%\output.txt 2>&1"
+set "command_init=%python%%imgtool% sign -k %key_ns% %encrypt% -e little -S %image_ns_size% -M %image_ns_sectors% -H 0x400 --pad-header %option% -v %version% --confirm --pad -s auto --align %val% %sbsfu_ns% %sbsfu_ns_init% >> %projectdir%\output.txt 2>&1"
 goto :docommand_init
 )
-set "command_init=%python%%imgtool% sign -k %key_s% %encrypt% -e little -S %image_s_size% -M %image_s_sectors% -H 0x400 --pad-header %option% -v %version% -s auto --align %val% %sbsfu_s% %sbsfu_s_init% >> %projectdir%\output.txt 2>&1"
+set "command_init=%python%%imgtool% sign -k %key_s% %encrypt% -e little -S %image_s_size% -M %image_s_sectors% -H 0x400 --pad-header %option% -v %version% --confirm --pad -s auto --align %val% %sbsfu_s% %sbsfu_s_init% >> %projectdir%\output.txt 2>&1"
 :docommand_init
 %command_init%
 IF %ERRORLEVEL% NEQ 0 goto :error_init

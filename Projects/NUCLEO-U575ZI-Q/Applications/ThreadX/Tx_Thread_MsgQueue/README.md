@@ -75,7 +75,7 @@ None
 
 ### <b>Keywords</b>
 
-RTOS, ThreadX, Thread, Message Queue, Event chaining
+RTOS, ThreadX, Threading, Message Queue, Event chaining
 
 ### <b>Hardware and Software environment</b>
 

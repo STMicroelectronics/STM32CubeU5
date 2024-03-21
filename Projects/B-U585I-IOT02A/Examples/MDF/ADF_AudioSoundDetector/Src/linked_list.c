@@ -65,6 +65,7 @@ HAL_StatusTypeDef MX_MDFQueue_Config(void)
   pNodeConfig.Init.DestDataWidth = DMA_DEST_DATAWIDTH_WORD;
   pNodeConfig.Init.TransferEventMode = DMA_TCEM_BLOCK_TRANSFER;
   pNodeConfig.TriggerConfig.TriggerPolarity = DMA_TRIG_POLARITY_MASKED;
+  pNodeConfig.DataHandlingConfig.DataExchange = DMA_EXCHANGE_NONE;
   pNodeConfig.DataHandlingConfig.DataAlignment = DMA_DATA_RIGHTALIGN_ZEROPADDED;
   pNodeConfig.SrcAddress = 0;
   pNodeConfig.DstAddress = 0;

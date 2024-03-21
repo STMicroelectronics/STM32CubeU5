@@ -353,7 +353,7 @@
           <state>$PROJ_DIR$\..\..\..\Linker</state>
           <state>$PROJ_DIR$\..\..\Secure_nsclib</state>
           <state>$PROJ_DIR$\..\..\NonSecure\Inc</state>
-          <state>$PROJ_DIR$\..\..\..\..\..\..\..\Middlewares\Third_Party\trustedfirmware\platform\ext\driver</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\..\Middlewares\Third_Party\mcuboot\platform\ext\driver</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>

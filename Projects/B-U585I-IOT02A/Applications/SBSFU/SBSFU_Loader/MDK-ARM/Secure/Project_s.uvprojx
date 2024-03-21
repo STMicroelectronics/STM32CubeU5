@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>STM32U585xx,USE_HAL_DRIVER,LOCAL_LOADER_CONFIG,BL2</Define>
               <Undefine></Undefine>
-              <IncludePath>../../../../../../../Drivers/CMSIS/Include;../../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../Linker;../../Secure/Inc;../../Secure_nsclib;../../../../../../../Middlewares/Third_Party/trustedfirmware/platform/ext/driver</IncludePath>
+              <IncludePath>../../../../../../../Drivers/CMSIS/Include;../../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../Linker;../../Secure/Inc;../../Secure_nsclib;../../../../../../../Middlewares/Third_Party/mcuboot/platform/ext/driver</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

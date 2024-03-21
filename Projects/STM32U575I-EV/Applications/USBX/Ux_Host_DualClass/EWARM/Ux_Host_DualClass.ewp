@@ -1151,13 +1151,13 @@
         <group>
           <name>App</name>
           <file>
-            <name>$PROJ_DIR$\..\USBPD\App\usbpd.c</name>
-          </file>
-          <file>
             <name>$PROJ_DIR$\..\USBPD\App\usbpd_dpm_core.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\USBPD\App\usbpd_pwr_if.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\USBPD\App\usbpd.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\USBPD\App\usbpd_usb_if.c</name>
@@ -2721,6 +2721,9 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_timer_create.c</name>
         </file>
         <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/usbx/common/core/src/ux_utility_timer_delete.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_unicode_to_string.c</name>
         </file>
         <file>
@@ -2968,9 +2971,6 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\usbx\common\usbx_host_classes\src\ux_host_class_storage_lock.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\usbx\common\usbx_host_classes\src\ux_host_class_storage_media_check.c</name>
         </file>
       </group>
       <group>

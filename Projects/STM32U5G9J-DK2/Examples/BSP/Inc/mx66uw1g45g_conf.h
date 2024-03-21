@@ -2,9 +2,7 @@
   ******************************************************************************
   * @file    mx66uw1g45g_conf.h
   * @author  MCD Application Team
-  * @brief   MX66UW1G45G OctoSPI memory configuration template file.
-  *          This file should be copied to the application folder and renamed
-  *          to mx66uw1g45g_conf.h
+  * @brief   MX66UW1G45G OctoSPI memory configuration file.
   ******************************************************************************
   * @attention
   *

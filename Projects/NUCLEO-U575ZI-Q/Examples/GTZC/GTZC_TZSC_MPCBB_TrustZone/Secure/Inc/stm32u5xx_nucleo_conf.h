@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    stm32u5xx_nucleo_conf.h
   * @author  MCD Application Team
-  * @brief   STM32U5xx_Nuleo board configuration file.
+  * @brief   STM32U5xx_Nucleo board configuration file.
   ******************************************************************************
   * @attention
   *

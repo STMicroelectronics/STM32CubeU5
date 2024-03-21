@@ -78,6 +78,7 @@ TX_QUEUE                *ResidentQueue;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
+void default_module_start(ULONG id);
 void MainThread_Entry(ULONG thread_input);
 void Error_Handler(void);
 /* USER CODE END PFP */
@@ -87,43 +88,43 @@ void Error_Handler(void);
   * @param  id : Module ID
   * @retval None
   */
-void    default_module_start(ULONG id)
+void default_module_start(ULONG id)
 {
   CHAR    *pointer;
-  
+
   /* Allocate all the objects. In MPU mode, modules cannot allocate control blocks within
   their own memory area so they cannot corrupt the resident portion of ThreadX by overwriting
   the control block(s).  */
   txm_module_object_allocate((void*)&MainThread, sizeof(TX_THREAD));
   txm_module_object_allocate((void*)&ModuleBytePool, sizeof(TX_BYTE_POOL));
   txm_module_object_allocate((void*)&ModuleBlockPool, sizeof(TX_BLOCK_POOL));
-  
+
   /* Create a byte memory pool from which to allocate the thread stacks.  */
   tx_byte_pool_create(ModuleBytePool, "Module Byte Pool", (UCHAR*)default_module_pool_space, DEFAULT_BYTE_POOL_SIZE);
-  
+
   /* Allocate the stack for thread 0.  */
   tx_byte_allocate(ModuleBytePool, (VOID **) &pointer, DEFAULT_STACK_SIZE, TX_NO_WAIT);
-  
+
   /* Create the main thread.  */
   tx_thread_create(MainThread, "Module Main Thread", MainThread_Entry, 0,
                    pointer, DEFAULT_STACK_SIZE,
                    MAIN_THREAD_PRIO, MAIN_THREAD_PREEMPTION_THRESHOLD, TX_NO_TIME_SLICE, TX_AUTO_START);
-  
+
   /* Allocate the memory for a small block pool. */
   tx_byte_allocate(ModuleBytePool, (VOID **) &pointer,
                    DEFAULT_BLOCK_POOL_SIZE, TX_NO_WAIT);
-  
+
   /* Create a block memory pool. */
   tx_block_pool_create(ModuleBlockPool, "Module Block Pool",
                        sizeof(ULONG), pointer, DEFAULT_BLOCK_POOL_SIZE);
-  
+
   /* Allocate a block. */
   tx_block_allocate(ModuleBlockPool, (VOID **) &pointer,
                     TX_NO_WAIT);
-  
+
   /* Release the block back to the pool. */
   tx_block_release(pointer);
-  
+
 }
 
 /**

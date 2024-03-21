@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    b_u585i_iot02a_conf_template.h
+  * @file    b_u585i_iot02a_conf.h
   * @author  MCD Application Team
   * @brief   STM32U585-DK board configuration file.
   ******************************************************************************

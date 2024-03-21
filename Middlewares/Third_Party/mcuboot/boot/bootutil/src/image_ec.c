@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  * Copyright (c) 2016-2018 JUUL Labs
+ * Copyright (c) 2023 STMicroelectronics
  *
  * Original license:
  *

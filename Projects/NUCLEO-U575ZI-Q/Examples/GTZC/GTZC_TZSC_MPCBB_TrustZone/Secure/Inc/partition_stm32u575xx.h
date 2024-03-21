@@ -12,26 +12,24 @@
   *           - Setup behavior of Floating Point Unit
   *           - Setup Interrupt Target
   *
-  ******************************************************************************/
-/*
-  * Copyright (c) 2009-2016 ARM Limited. All rights reserved.
-  * Portions Copyright (c) 2021 STMicroelectronics, all rights reserved
+  ******************************************************************************
+  * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
+  * Copyright (c) 2023 STMicroelectronics. All rights reserved.  
   *
   * SPDX-License-Identifier: Apache-2.0
-
   *
- * Licensed under the Apache License, Version 2.0 (the License); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+  * Licensed under the Apache License, Version 2.0 (the License); you may
+  * not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
   *
- * http://www.apache.org/licenses/LICENSE-2.0
-   *
-
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an AS IS BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+  * www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  ******************************************************************************
  */
 /* USER CODE END Header */
 
@@ -40,10 +38,10 @@
 /*
 //-------- <<< Use Configuration Wizard in Context Menu >>> -----------------
 */
+
 /* USER CODE BEGIN 0 */
-/*
 // <e>Initialize Security Attribution Unit (SAU) CTRL register
-*/
+
 #define SAU_INIT_CTRL          1
 
 /*
@@ -59,7 +57,7 @@
 //   <i> Value for SAU->CTRL register bit ALLNS
 //   <i> When all Memory is Non-Secure (ALLNS is 1), IDAU can override memory map configuration.
 */
-#define SAU_INIT_CTRL_ALLNS   1
+#define SAU_INIT_CTRL_ALLNS  1
 
 /*
 // </e>
@@ -78,18 +76,16 @@
 //   <e>Initialize SAU Region 0
 //   <i> Setup SAU Region 0 memory attributes
 */
-#define SAU_INIT_REGION0    1
+#define SAU_INIT_REGION0    0
 
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-
-#define SAU_INIT_START0     0x0C0FE000      /* start address of SAU region 0 */
-
+#define SAU_INIT_START0     0x0C0FE000     /* start address of SAU region 0 */
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END0       0x0C0FFFFF      /* end address of SAU region 0 */
+#define SAU_INIT_END0     0x0C0FFFFF     /* end address of SAU region 0 */
 /*
 //     <o>Region is
 //         <0=>Non-Secure
@@ -104,17 +100,16 @@
 //   <e>Initialize SAU Region 1
 //   <i> Setup SAU Region 1 memory attributes
 */
-#define SAU_INIT_REGION1    1
+#define SAU_INIT_REGION1    0
 
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START1     0x08100000      /* start address of SAU region 1 */
-
+#define SAU_INIT_START1     0x08100000     /* start address of SAU region 1 */
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END1       0x081FFFFF      /* end address of SAU region 1 */
+#define SAU_INIT_END1     0x081FFFFF     /* end address of SAU region 1 */
 /*
 //     <o>Region is
 //         <0=>Non-Secure
@@ -129,18 +124,16 @@
 //   <e>Initialize SAU Region 2
 //   <i> Setup SAU Region 2 memory attributes
 */
-#define SAU_INIT_REGION2    1
+#define SAU_INIT_REGION2    0
 
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START2     0x20040000      /* start address of SAU region 2 */
-
+#define SAU_INIT_START2     0x20040000     /* start address of SAU region 2 */
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END2       0x200BFFFF      /* end address of SAU region 2 */
-
+#define SAU_INIT_END2       0x200BFFFF     /* end address of SAU region 2 */
 /*
 //     <o>Region is
 //         <0=>Non-Secure
@@ -155,7 +148,7 @@
 //   <e>Initialize SAU Region 3
 //   <i> Setup SAU Region 3 memory attributes
 */
-#define SAU_INIT_REGION3    1
+#define SAU_INIT_REGION3    0
 
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
@@ -165,7 +158,7 @@
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END3       0x4FFFFFFF      /* end address of SAU region 3 */
+#define SAU_INIT_END3       0x4fffffff      /* end address of SAU region 3 */
 
 /*
 //     <o>Region is
@@ -181,18 +174,16 @@
 //   <e>Initialize SAU Region 4
 //   <i> Setup SAU Region 4 memory attributes
 */
-#define SAU_INIT_REGION4    1
+#define SAU_INIT_REGION4    0
 
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
 #define SAU_INIT_START4     0x60000000      /* start address of SAU region 4 */
-
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END4       0x9FFFFFFF      /* end address of SAU region 4 */
-
+#define SAU_INIT_END4       0x9FFFFFFF     /* end address of SAU region 4 */
 /*
 //     <o>Region is
 //         <0=>Non-Secure
@@ -207,7 +198,7 @@
 //   <e>Initialize SAU Region 5
 //   <i> Setup SAU Region 5 memory attributes
 */
-#define SAU_INIT_REGION5    1
+#define SAU_INIT_REGION5    0
 
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
@@ -375,6 +366,7 @@
 //   <e>Initialize ITNS 0 (Interrupts 0..31)
 */
 #define NVIC_INIT_ITNS0    1
+
 /*
 // Interrupts 0..31
 //   <o.0>  WWDG_IRQn             <0=> Secure state
@@ -520,6 +512,7 @@
 
 /*
 // Interrupts 96..125
+
 //   <o.0>  HASH_IRQn             <0=> Secure state
 //   <o.1>  PKA_IRQn              <0=> Secure state
 //   <o.2>  LPTIM3_IRQn           <0=> Secure state
@@ -670,3 +663,4 @@ __STATIC_INLINE void TZ_SAU_Setup (void)
 /* USER CODE END 2 */
 
 #endif  /* PARTITION_STM32U575XX_H */
+

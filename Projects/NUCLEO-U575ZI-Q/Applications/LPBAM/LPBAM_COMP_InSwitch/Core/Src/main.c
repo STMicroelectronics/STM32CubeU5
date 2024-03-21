@@ -78,6 +78,7 @@ static void CompOutput_Data_Processing(uint32_t* pBuffer, uint16_t BufferLength)
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */

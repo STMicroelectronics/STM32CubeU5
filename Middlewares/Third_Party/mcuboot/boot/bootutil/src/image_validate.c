@@ -4,6 +4,7 @@
  * Copyright (c) 2017-2019 Linaro LTD
  * Copyright (c) 2016-2019 JUUL Labs
  * Copyright (c) 2019-2020 Arm Limited
+ * Copyright (c) 2023 STMicroelectronics
  *
  * Original license:
  *
@@ -29,6 +30,7 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include <string.h>
+#include <limits.h>
 
 #include <flash_map_backend/flash_map_backend.h>
 #include "bootutil/bootutil_log.h"
@@ -43,12 +45,14 @@
 #ifdef MCUBOOT_ENC_IMAGES
 #include "bootutil/enc_key.h"
 #endif
+#if !defined(MCUBOOT_USE_HAL)
 #if defined(MCUBOOT_SIGN_RSA)
 #include "mbedtls/rsa.h"
 #endif
 #if defined(MCUBOOT_SIGN_EC) || defined(MCUBOOT_SIGN_EC256)
 #include "mbedtls/ecdsa.h"
 #endif
+#endif /* not MCUBOOT_USE_HAL */
 #if defined(MCUBOOT_ENC_IMAGES) || defined(MCUBOOT_SIGN_RSA) || \
     defined(MCUBOOT_SIGN_EC) || defined(MCUBOOT_SIGN_EC256)
 #include "mbedtls/asn1.h"
@@ -498,7 +502,7 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
             }
 #endif /* !MCUBOOT_HW_KEY */
         } else if (type == EXPECTED_SIG_TLV) {
-            /* Check signature lenght*/
+            /* Check signature length*/
             if (!EXPECTED_SIG_LEN(len) || len > sizeof(buf)) {
                 rc = -1;
                 goto out;
@@ -560,9 +564,17 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
             fih_eq(valid_signature,FIH_SUCCESS) ? "OK" : "KO");
             key_id = -1;
 
+            /* Exit if signature is invalid. */
+            if (fih_not_eq(valid_signature, FIH_SUCCESS)) {
+                rc = -1;
+                goto out;
+            }
+
 #if defined(MCUBOOT_USE_HASH_REF)
-            if ((ImageValidEnable == 1) && (fih_eq(valid_signature, FIH_SUCCESS))) {
-                /* Store SHA256 as reference for next boot */
+            if (ImageValidEnable == 1) {
+                /* Prepare SHA256 as reference for next boot. The storage of the
+                   reference will be performed later in boot process after double
+                   verification. */
                 rc = boot_hash_ref_set(hash, sizeof(hash), image_index);
                 if (rc) {
                     goto out;
@@ -621,12 +633,14 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
 #if defined(MCUBOOT_ENCRYPT_RSA)
             if (type == IMAGE_TLV_ENC_RSA2048)
             {
-                /* Check tlv lenght */
-                if (len != 256) {
-                    rc = -1;
-                }
-                /* Only one non protected TLV allowed */
-                if (tlv_enc == 0)
+                /* Check tlv length */
+                if ((len == 256)
+#if !defined(MCUBOOT_PRIMARY_ONLY)
+                    /* Check image is encrypted */
+                    && ((hdr->ih_flags & IMAGE_F_ENCRYPTED) == IMAGE_F_ENCRYPTED)
+#endif /* !defined(MCUBOOT_PRIMARY_ONLY) */
+                    /* Only one non protected TLV allowed */
+                    && (tlv_enc == 0))
                 {
                     tlv_enc = 1;
                     rc = 0;
@@ -635,12 +649,14 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
 #elif defined(MCUBOOT_ENCRYPT_KW)
             if (type == IMAGE_TLV_ENC_KW128)
             {
-                /* Check tlv lenght */
-                if (len != TBC) {
-                    rc = -1;
-                }
-                /* Only one non protected TLV allowed */
-                if (tlv_enc == 0)
+                /* Check tlv length */
+                if ((len == TBC)
+#if !defined(MCUBOOT_PRIMARY_ONLY)
+                    /* Check image is encrypted */
+                    && ((hdr->ih_flags & IMAGE_F_ENCRYPTED) == IMAGE_F_ENCRYPTED)
+#endif /* !defined(MCUBOOT_PRIMARY_ONLY) */
+                    /* Only one non protected TLV allowed */
+                    && (tlv_enc == 0))
                 {
                     tlv_enc = 1;
                     rc = 0;
@@ -649,12 +665,14 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
 #elif defined(MCUBOOT_ENCRYPT_EC256)
             if (type == IMAGE_TLV_ENC_EC256)
             {
-                /* Check tlv lenght */
-                if (len != 113) {
-                    rc = -1;
-                }
-                /* Only one non protected TLV allowed */
-                if (tlv_enc == 0)
+                /* Check tlv length */
+                if ((len == 113)
+#if !defined(MCUBOOT_PRIMARY_ONLY)
+                    /* Check image is encrypted */
+                    && ((hdr->ih_flags & IMAGE_F_ENCRYPTED) == IMAGE_F_ENCRYPTED)
+#endif /* !defined(MCUBOOT_PRIMARY_ONLY) */
+                    /* Only one non protected TLV allowed */
+                    && (tlv_enc == 0))
                 {
                     tlv_enc = 1;
                     rc = 0;

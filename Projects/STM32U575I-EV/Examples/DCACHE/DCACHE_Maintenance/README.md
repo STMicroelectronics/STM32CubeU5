@@ -40,7 +40,7 @@ Then, these 2 DMA transfers are started, then source and destination buffers are
 Leds colors will indicate the buffer comparison results.
 In the first step, only one or two transfer comparison results could be wrong, depending
 on the chosen MPU configuration.
-Then, User has to press on Tamper button to do a Cache maintenance, in order to
+Then, User has to press on user button to do a Cache maintenance, in order to
 ensure the cache coherency between CPU and DMA.
 Thereafter, a new buffer comparison is done to indicate transfer status after Cache maintenance,
 and leds colors should indicate the correct comparison status for the 2 transfers.
@@ -59,7 +59,7 @@ STM32U575I-EV board's LEDs can be used to monitor the transfer status:
 
 **Expected behaviour:**
 
-LED_GREEN and LED_RED will be ON to indicating that the 2 transfers are correct, after pressing on TAMPER button 
+LED_GREEN and LED_RED will be ON to indicating that the 2 transfers are correct, after pressing on user button 
 
 Cache Maintenance:
 

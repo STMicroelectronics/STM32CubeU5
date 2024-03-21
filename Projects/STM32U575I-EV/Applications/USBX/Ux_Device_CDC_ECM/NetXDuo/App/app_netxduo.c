@@ -247,12 +247,12 @@ UINT webserver_request_notify_callback(NX_WEB_HTTP_SERVER *server_ptr,
     /* Check if requested data equal LED_ON */
     if (strncmp((char const *)request_data, LED_ON, sizeof(LED_ON)) == 0)
     {
-      HAL_GPIO_WritePin(GPIOH, GPIO_PIN_7, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
     }
     /* Check if requested data equal LED_OFF */
     else if (strncmp((char const *)request_data, LED_OFF, sizeof(LED_OFF)) == 0)
     {
-      HAL_GPIO_WritePin(GPIOH, GPIO_PIN_7, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
     }
   }
 

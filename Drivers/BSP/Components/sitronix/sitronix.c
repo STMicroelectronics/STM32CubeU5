@@ -215,7 +215,7 @@ int32_t SITRONIX_ReadID(SITRONIX_Object_t *pObj, uint32_t *Id)
   uint8_t data[28];
   uint8_t trial = 0;
 
-  for (trial = 0; trial < 10; trial++)
+  for (trial = 0; trial < 10U; trial++)
   {
     if (sitronix_read_data(&pObj->Ctx, data, 28) != SITRONIX_OK)
     {
@@ -244,7 +244,6 @@ int32_t SITRONIX_GetState(SITRONIX_Object_t *pObj, SITRONIX_State_t *State)
   int32_t ret = SITRONIX_OK;
   uint8_t  data[64];
 
-  State->TouchDetected = (uint32_t)SITRONIX_DetectTouch(pObj);
   if (sitronix_read_data(&pObj->Ctx, data, (uint16_t)sizeof(data)) != SITRONIX_OK)
   {
     ret = SITRONIX_ERROR;
@@ -257,6 +256,15 @@ int32_t SITRONIX_GetState(SITRONIX_Object_t *pObj, SITRONIX_State_t *State)
     State->TouchX = ((((uint32_t)data[2] & SITRONIX_TOUCH_POS_LSB_MASK) << 4) | ((uint32_t)data[3]));
     /* Send back first ready Y position to caller */
     State->TouchY = (((uint32_t)data[2] & SITRONIX_TOUCH_POS_MSB_MASK) << 8) | ((uint32_t)data[4]);
+
+    if ((data[2] & 0x80U) == 0x80U)
+    {
+      State->TouchDetected = 1;
+    }
+    else
+    {
+      State->TouchDetected = 0;
+    }
   }
 
   return ret;
@@ -379,14 +387,13 @@ int32_t SITRONIX_ClearIT(SITRONIX_Object_t *pObj)
   *         Try to detect new touches and forget the old ones (reset internal global
   *         variables).
   * @param  pObj Component object pointer
-  * @retval Number of active touches detected (can be between 0 and10) or SITRONIX_ERROR
+  * @retval Number of active touches detected (can be between 0 and 10) or SITRONIX_ERROR
   *         in case of error
   */
 static int32_t SITRONIX_DetectTouch(SITRONIX_Object_t *pObj)
 {
   int32_t ret;
   uint8_t nb_touch = 0;
-  static uint8_t first_event = 0;
   uint8_t data[28];
 
   if (sitronix_read_data(&pObj->Ctx, (uint8_t *)&data, 28) != SITRONIX_OK)
@@ -395,29 +402,15 @@ static int32_t SITRONIX_DetectTouch(SITRONIX_Object_t *pObj)
   }
   else
   {
-    if (first_event == 0)
+    if((data[2] & 0x80U) == 0x80U)
     {
-      if ((data[0] == 0x09))
-      {
-        nb_touch = 1;
-        first_event = 1;
-      }
-      else
-      {
-        nb_touch = 0;
-      }
+      nb_touch = 1;
     }
     else
     {
-      if (data[8] == 0x60)
-      {
-        nb_touch = 0;
-      }
-      else
-      {
-        nb_touch = 1;
-      }
+      nb_touch = 0;
     }
+
     ret = (int32_t)nb_touch;
   }
 

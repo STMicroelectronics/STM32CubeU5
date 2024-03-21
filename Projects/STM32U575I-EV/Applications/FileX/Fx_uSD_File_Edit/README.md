@@ -11,11 +11,24 @@ A single thread is created:
 
   - fx_app_thread (Prio : 10; PreemptionPrio : 10) used to initialize the SD driver and starting FileX's file operations.
 
+A message queue is used to signal the SD card detection event to the fx_app_thread thread:
+
+  - tx_msg_queue (Msg size : 1 (UINT); total messages : 16) used to notify the fx_app_thread about the SD card insertion status.
+
+The fx_app_thread starts by checking whether the SD card is initially inserted or not. In the true case, it sends a message to the queue to ensure
+
+that the first iteration starts properly. The wait on the message queue blocks till it receives a new message about whether the SD card is inserted
+
+or removed. Interrupt callback for SD detection is registered and it is used to send the event information to the message queue.
+
 The fx_app_thread uses FileX services to open the SD media for file operations and attempt to create file STM32.TXT. If the file exists already,
 
 it will be overwritten. Dummy content is then written into the file and it is closed. The file is opened once again in read mode and content
 
 is checked if matches what was previously written.
+
+It is possible to unplug/plug or replace the SD card without any need to reset the STM32U575I-EV.
+That is why MX_SDMMC1_SD_Init() should be public to initialize the newly plugged SD card.
 
 #### <b>Expected success behavior</b>
 
@@ -28,11 +41,11 @@ is checked if matches what was previously written.
 - Error handler is called at the spot where the error occurred.
 
 #### <b>Assumptions if any</b>
-None
+- The SD card should be plugged prior to run the application.
 
 #### <b>Known limitations</b>
 
-No SD card insertion/removal mechanisms are implemented.
+Performing quick plug/unplug of SD card may trigger the Error_Handler() function.
 
 ### <b>Notes</b>
 
@@ -41,7 +54,7 @@ No SD card insertion/removal mechanisms are implemented.
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it, by updating the "TX_TIMER_TICKS_PER_SECOND" define in the "tx_user.h" file. The update should be reflected in "tx_initialize_low_level.S" file too.
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
    It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL).

@@ -3,19 +3,8 @@
  */
 /*
  *  Copyright The Mbed TLS Contributors
+ *  Portions Copyright (C) STMicroelectronics, All Rights Reserved
  *  SPDX-License-Identifier: Apache-2.0
- *
- *  Licensed under the Apache License, Version 2.0 (the "License"); you may
- *  not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
  */
 
 #ifndef PSA_CRYPTO_MAC_H
@@ -52,8 +41,8 @@
  *         \p alg is not supported.
  * \retval #PSA_ERROR_BUFFER_TOO_SMALL
  *         \p mac_size is too small
- * \retval #PSA_ERROR_INSUFFICIENT_MEMORY
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
+ * \retval #PSA_ERROR_INSUFFICIENT_MEMORY \emptydescription
+ * \retval #PSA_ERROR_CORRUPTION_DETECTED \emptydescription
  */
 psa_status_t mbedtls_psa_mac_compute(
     const psa_key_attributes_t *attributes,
@@ -89,8 +78,8 @@ psa_status_t mbedtls_psa_mac_compute(
  *         Success.
  * \retval #PSA_ERROR_NOT_SUPPORTED
  *         \p alg is not supported.
- * \retval #PSA_ERROR_INSUFFICIENT_MEMORY
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
+ * \retval #PSA_ERROR_INSUFFICIENT_MEMORY \emptydescription
+ * \retval #PSA_ERROR_CORRUPTION_DETECTED \emptydescription
  * \retval #PSA_ERROR_BAD_STATE
  *         The operation state is not valid (it must be inactive).
  */
@@ -124,8 +113,8 @@ psa_status_t mbedtls_psa_mac_sign_setup(
  *         Success.
  * \retval #PSA_ERROR_NOT_SUPPORTED
  *         \p alg is not supported.
- * \retval #PSA_ERROR_INSUFFICIENT_MEMORY
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
+ * \retval #PSA_ERROR_INSUFFICIENT_MEMORY \emptydescription
+ * \retval #PSA_ERROR_CORRUPTION_DETECTED \emptydescription
  * \retval #PSA_ERROR_BAD_STATE
  *         The operation state is not valid (it must be inactive).
  */
@@ -158,13 +147,13 @@ psa_status_t mbedtls_psa_mac_verify_setup(
  *         Success.
  * \retval #PSA_ERROR_BAD_STATE
  *         The operation state is not valid (it must be active).
- * \retval #PSA_ERROR_INSUFFICIENT_MEMORY
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
+ * \retval #PSA_ERROR_INSUFFICIENT_MEMORY \emptydescription
+ * \retval #PSA_ERROR_CORRUPTION_DETECTED \emptydescription
  */
 psa_status_t mbedtls_psa_mac_update(
     mbedtls_psa_mac_operation_t *operation,
     const uint8_t *input,
-    size_t input_length );
+    size_t input_length);
 
 /** Finish the calculation of the MAC of a message using Mbed TLS.
  *
@@ -200,14 +189,14 @@ psa_status_t mbedtls_psa_mac_update(
  * \retval #PSA_ERROR_BUFFER_TOO_SMALL
  *         The size of the \p mac buffer is too small. A sufficient buffer size
  *         can be determined by calling PSA_MAC_LENGTH().
- * \retval #PSA_ERROR_INSUFFICIENT_MEMORY
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
+ * \retval #PSA_ERROR_INSUFFICIENT_MEMORY \emptydescription
+ * \retval #PSA_ERROR_CORRUPTION_DETECTED \emptydescription
  */
 psa_status_t mbedtls_psa_mac_sign_finish(
     mbedtls_psa_mac_operation_t *operation,
     uint8_t *mac,
     size_t mac_size,
-    size_t *mac_length );
+    size_t *mac_length);
 
 /** Finish the calculation of the MAC of a message and compare it with
  * an expected value using Mbed TLS.
@@ -241,13 +230,13 @@ psa_status_t mbedtls_psa_mac_sign_finish(
  * \retval #PSA_ERROR_BAD_STATE
  *         The operation state is not valid (it must be an active mac verify
  *         operation).
- * \retval #PSA_ERROR_INSUFFICIENT_MEMORY
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
+ * \retval #PSA_ERROR_INSUFFICIENT_MEMORY \emptydescription
+ * \retval #PSA_ERROR_CORRUPTION_DETECTED \emptydescription
  */
 psa_status_t mbedtls_psa_mac_verify_finish(
     mbedtls_psa_mac_operation_t *operation,
     const uint8_t *mac,
-    size_t mac_length );
+    size_t mac_length);
 
 /** Abort a MAC operation using Mbed TLS.
  *
@@ -267,10 +256,10 @@ psa_status_t mbedtls_psa_mac_verify_finish(
  *
  * \param[in,out] operation Initialized MAC operation.
  *
- * \retval #PSA_SUCCESS
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
+ * \retval #PSA_SUCCESS \emptydescription
+ * \retval #PSA_ERROR_CORRUPTION_DETECTED \emptydescription
  */
 psa_status_t mbedtls_psa_mac_abort(
-    mbedtls_psa_mac_operation_t *operation );
+    mbedtls_psa_mac_operation_t *operation);
 
 #endif /* PSA_CRYPTO_MAC_H */

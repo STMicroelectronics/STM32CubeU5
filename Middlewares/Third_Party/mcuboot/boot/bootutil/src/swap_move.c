@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  * Copyright (c) 2019 JUUL Labs
+ * Copyright (c) 2023 STMicroelectronics
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -147,7 +148,12 @@ swap_read_status_bytes(const struct flash_area *fap,
             return BOOT_EFLASH;
         }
 
+#ifdef MCUBOOT_USE_MCE
+        if (bootutil_buffer_is_erased(fap->fa_off + off + (i - 1) * write_sz,
+                                      fap, &status, 1)) {
+#else /* not MCUBOOT_USE_MCE */
         if (bootutil_buffer_is_erased(fap, &status, 1)) {
+#endif /* MCUBOOT_USE_MCE */
             if (rc != last_rc) {
                 erased_sections++;
             }

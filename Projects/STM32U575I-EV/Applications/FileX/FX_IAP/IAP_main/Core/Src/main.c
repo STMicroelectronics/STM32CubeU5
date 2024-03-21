@@ -33,8 +33,8 @@ typedef  void (*pFunction)(void);
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define RAM_START_ADDRESS  0x20010000
-#define RAM_RANGE_MASK     0xFFFF0000
+#define RAM_START_ADDRESS  0x20000000
+#define RAM_RANGE_MASK     0xFF000000
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -84,6 +84,7 @@ static void CallUserApp(uint32_t Address);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -130,6 +131,7 @@ int main(void)
   MX_ThreadX_Init();
 
   /* We should never get here as control is now taken by the scheduler */
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)

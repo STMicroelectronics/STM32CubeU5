@@ -41,6 +41,12 @@ stack.</li>
 <li>fx_thread_two: will create file system on OSPI NOR Flash using
 FileX/LevelX stacks.</li>
 </ul>
+<p>A message queue is used to signal the SD card detection event to the
+fx_thread_one thread:</p>
+<ul>
+<li>tx_msg_queue (Msg size : 1 (UINT); total messages : 16) used to
+notify the fx_thread_one about the SD card insertion status.</li>
+</ul>
 <p>fx_thread_one:</p>
 <ul>
 <li>fx_thread_one (Prio : 10; PreemptionPrio : 10) used to initialize
@@ -77,6 +83,9 @@ content is checked.</p>
 (using USRAT1) the flash size available before and after the example
 file is written into the flash. The number of occupied sectors is also
 shown.</p>
+<p>It is possible to unplug/plug or replace the SD card without any need
+to reset the STM32U575I-EV. That is why MX_SDMMC1_SD_Init() should be
+public to initialize the newly plugged SD card.</p>
 <h4 id="expected-success-behavior"><b>Expected success behavior</b></h4>
 <ul>
 <li>µSD card:
@@ -98,9 +107,12 @@ media is printed to the serial port(USART1).</li>
   - Error handler is called at the spot where the error occurred.
   </code></pre>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
-<p>None</p>
+<ul>
+<li>The SD card should be plugged prior to run the application.</li>
+</ul>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
-<p>No SD card insertion/removal mechanisms are implemented.</p>
+<p>Performing quick plug/unplug of SD card may trigger the
+Error_Handler() function.</p>
 <h3 id="notes"><b>Notes</b></h3>
 <ol type="1">
 <li>Before starting the application, the SD card should be present in
@@ -114,9 +126,9 @@ the SD card connector and formatted initially by user.</li>
 HAL uses a separate time base through the TIM IPs.</li>
 <li>ThreadX is configured with 100 ticks/sec by default, this should be
 taken into account when using delays or timeouts at application. It is
-always possible to reconfigure it in the “tx_user.h”, the
-“TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in
-“tx_initialize_low_level.S” file too.</li>
+always possible to reconfigure it, by updating the
+“TX_TIMER_TICKS_PER_SECOND” define in the “tx_user.h” file. The update
+should be reflected in “tx_initialize_low_level.S” file too.</li>
 <li>ThreadX is disabling all interrupts during kernel start-up to avoid
 any unexpected behavior, therefore all system related calls (HAL) should
 be done either at the beginning of the application or inside the thread

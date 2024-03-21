@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    aps512xx_conf.h
   * @author  MCD Application Team
-  * @brief   APS512XX 16bits-OSPI PSRAM memory configuration template file.
+  * @brief   APS512XX 16bits-OSPI PSRAM memory configuration file.
   ******************************************************************************
   * @attention
   *

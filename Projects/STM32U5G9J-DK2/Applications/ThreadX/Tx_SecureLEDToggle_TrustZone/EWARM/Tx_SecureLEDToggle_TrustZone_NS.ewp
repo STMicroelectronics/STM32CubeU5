@@ -66,7 +66,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>8.50.1.24770</state>
+          <state>8.50.9.33458</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -117,7 +117,7 @@
         <option>
           <name>GBECoreSlave</name>
           <version>28</version>
-          <state></state>
+          <state>0</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -134,11 +134,11 @@
         <option>
           <name>CoreVariant</name>
           <version>28</version>
-          <state>39</state>
+          <state>59</state>
         </option>
         <option>
           <name>GFPUDeviceSlave</name>
-          <state></state>
+          <state>STM32U5G9ZJ	ST STM32U5G9ZJ</state>
         </option>
         <option>
           <name>FPU2</name>
@@ -157,7 +157,7 @@
         <option>
           <name>GFPUCoreSlave2</name>
           <version>28</version>
-          <state>39</state>
+          <state>59</state>
         </option>
         <option>
           <name>OGCMSISPackSelectDevice</name>
@@ -227,7 +227,6 @@
           <state>USE_HAL_DRIVER</state>
           <state>STM32U5G9xx</state>
           <state>TX_INCLUDE_USER_DEFINE_FILE</state>
-          <state></state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -320,7 +319,7 @@
         </option>
         <option>
           <name>CCRequirePrototypes</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCDiagWarnAreErr</name>
@@ -487,7 +486,7 @@
       <name>AARM</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>10</version>
+        <version>11</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -613,7 +612,7 @@
         </option>
         <option>
           <name>AOutputFile</name>
-          <state></state>
+          <state>$FILE_BNAME$.o</state>
         </option>
         <option>
           <name>ALimitErrorsCheck</name>
@@ -642,6 +641,10 @@
         <option>
           <name>AsmNoLiteralPool</name>
           <state>0</state>
+        </option>
+        <option>
+          <name>PreInclude</name>
+          <state></state>
         </option>
       </data>
     </settings>
@@ -1076,7 +1079,7 @@
     <group>
       <name>EWARM</name>
       <file>
-        <name>$PROJ_DIR$/startup_stm32u5g9xx.s</name>
+        <name>$PROJ_DIR$\startup_stm32u5g9xx.s</name>
       </file>
     </group>
     <group>
@@ -1084,25 +1087,25 @@
       <group>
         <name>NonSecure</name>
         <file>
-          <name>$PROJ_DIR$/../NonSecure/Src/main.c</name>
+          <name>$PROJ_DIR$\..\NonSecure\Src\main.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../NonSecure/Src/tx_initialize_low_level.S</name>
+          <name>$PROJ_DIR$\..\NonSecure\Src\tx_initialize_low_level.S</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../NonSecure/Src/app_threadx.c</name>
+          <name>$PROJ_DIR$\..\NonSecure\Src\app_threadx.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../NonSecure/Src/app_azure_rtos.c</name>
+          <name>$PROJ_DIR$\..\NonSecure\Src\app_azure_rtos.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../NonSecure/Src/stm32u5xx_it.c</name>
+          <name>$PROJ_DIR$\..\NonSecure\Src\stm32u5xx_it.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../NonSecure/Src/stm32u5xx_hal_msp.c</name>
+          <name>$PROJ_DIR$\..\NonSecure\Src\stm32u5xx_hal_msp.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../NonSecure/Src/stm32u5xx_hal_timebase_tim.c</name>
+          <name>$PROJ_DIR$\..\NonSecure\Src\stm32u5xx_hal_timebase_tim.c</name>
         </file>
       </group>
     </group>
@@ -1110,11 +1113,17 @@
   <group>
     <name>Doc</name>
     <file>
-      <name>$PROJ_DIR$/../README.md</name>
+      <name>$PROJ_DIR$\..\README.md</name>
     </file>
   </group>
   <group>
     <name>Drivers</name>
+    <group>
+      <name>CMSIS</name>
+      <file>
+        <name>$PROJ_DIR$\..\NonSecure\Src\system_stm32u5xx_ns.c</name>
+      </file>
+    </group>
     <group>
       <name>STM32U5xx_HAL_Driver</name>
       <file>
@@ -1170,12 +1179,6 @@
       </file>
       <file>
         <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_tim_ex.c</name>
-      </file>
-    </group>
-    <group>
-      <name>CMSIS</name>
-      <file>
-        <name>$PROJ_DIR$/../NonSecure/Src/system_stm32u5xx_ns.c</name>
       </file>
     </group>
   </group>

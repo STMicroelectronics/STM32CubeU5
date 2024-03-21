@@ -29,6 +29,7 @@ echo Postbuild with python script
 imgtool=$mcuboot"/scripts/imgtool/main.py"
 #determine/check python version command
 cmd="python "
+python3 --version >& /dev/null && cmd="python3 "
 fi
 
 command=$cmd" "$imgtool" flash --layout "$preprocess_bl2_file" -b secbootadd0 -m  RE_BL2_BOOT_ADDRESS  -d 0x80  -s 0 "$regression

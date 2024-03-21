@@ -11,6 +11,10 @@ Each Thread will create its own file system using one instance:
   - fx_thread_one: will create file system on µSD using FileX stack.
   - fx_thread_two: will create file system on OSPI NOR Flash using FileX/LevelX stacks.
 
+A message queue is used to signal the SD card detection event to the fx_thread_one thread:
+
+  - tx_msg_queue (Msg size : 1 (UINT); total messages : 16) used to notify the fx_thread_one about the SD card insertion status.
+
 fx_thread_one:
   
   - fx_thread_one (Prio : 10; PreemptionPrio : 10) used to initialize the SD driver and starting FileX's file operations.
@@ -36,6 +40,9 @@ Upon successful opening of the flash media, FileX continue with creating a file 
 
 Through all the steps, FileX/LevelX services are called to print (using USRAT1) the flash size available before and after the example file is written into the flash. The number of occupied sectors is also shown.
 
+It is possible to unplug/plug or replace the SD card without any need to reset the STM32U575I-EV.
+That is why MX_SDMMC1_SD_Init() should be public to initialize the newly plugged SD card.
+
 #### <b>Expected success behavior</b>
 
 - µSD card:
@@ -52,11 +59,11 @@ Through all the steps, FileX/LevelX services are called to print (using USRAT1) 
 	  
 
 #### <b>Assumptions if any</b>
-None
+- The SD card should be plugged prior to run the application.
 
 #### <b>Known limitations</b>
 
-No SD card insertion/removal mechanisms are implemented.
+Performing quick plug/unplug of SD card may trigger the Error_Handler() function.
 
 ### <b>Notes</b>
 
@@ -66,7 +73,7 @@ No SD card insertion/removal mechanisms are implemented.
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it, by updating the "TX_TIMER_TICKS_PER_SECOND" define in the "tx_user.h" file. The update should be reflected in "tx_initialize_low_level.S" file too.
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
    It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL).

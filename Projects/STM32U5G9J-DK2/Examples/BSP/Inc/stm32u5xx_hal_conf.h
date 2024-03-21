@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2021-2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -60,20 +60,20 @@ extern "C" {
 /*#define HAL_IWDG_MODULE_ENABLED  */
 /*#define HAL_LPTIM_MODULE_ENABLED */
 #define HAL_LTDC_MODULE_ENABLED
-/*#define HAL_MDF_MODULE_ENABLED   */ 
+/*#define HAL_MDF_MODULE_ENABLED   */
 /*#define HAL_MMC_MODULE_ENABLED   */
 /*#define HAL_NAND_MODULE_ENABLED  */
 /*#define HAL_NOR_MODULE_ENABLED   */
 /*#define HAL_OPAMP_MODULE_ENABLED */
 #define HAL_OSPI_MODULE_ENABLED
-/*#define HAL_OTFDEC_MODULE_ENABLED */ 
+/*#define HAL_OTFDEC_MODULE_ENABLED */
 /*#define HAL_PCD_MODULE_ENABLED    */
 /*#define HAL_PKA_MODULE_ENABLED    */
 /*#define HAL_PSSI_MODULE_ENABLED   */
 #define HAL_PWR_MODULE_ENABLED
 /*#define HAL_RAMCFG_MODULE_ENABLED */
 #define HAL_RCC_MODULE_ENABLED
-/*#define HAL_RNG_MODULE_ENABLED       */  
+/*#define HAL_RNG_MODULE_ENABLED       */
 /*#define HAL_RTC_MODULE_ENABLED       */
 /*#define HAL_SAI_MODULE_ENABLED       */
 /*#define HAL_SD_MODULE_ENABLED        */
@@ -81,12 +81,12 @@ extern "C" {
 /*#define HAL_SMBUS_MODULE_ENABLED     */
 /*#define HAL_SPI_MODULE_ENABLED       */
 /*#define HAL_SRAM_MODULE_ENABLED      */
-/*#define HAL_TIM_MODULE_ENABLED       */
+#define HAL_TIM_MODULE_ENABLED
 /*#define HAL_TSC_MODULE_ENABLED       */
 /*#define HAL_UART_MODULE_ENABLED      */
 /*#define HAL_USART_MODULE_ENABLED     */
 /*#define HAL_WWDG_MODULE_ENABLED      */
-#define HAL_XSPI_MODULE_ENABLED 
+#define HAL_XSPI_MODULE_ENABLED
 
 /* ########################## Oscillator Values adaptation ####################*/
 /**

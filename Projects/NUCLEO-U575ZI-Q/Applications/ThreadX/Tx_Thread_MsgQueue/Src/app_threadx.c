@@ -42,8 +42,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-  TX_THREAD tx_app_thread;
-  TX_QUEUE tx_app_msg_queue;
+TX_THREAD tx_app_thread;
+TX_QUEUE tx_app_msg_queue;
 /* USER CODE BEGIN PV */
   TX_THREAD              MsgReceiverThread;
   TX_THREAD              MsgSenderThreadTwo;
@@ -69,7 +69,7 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   /* USER CODE BEGIN App_ThreadX_MEM_POOL */
   
   /* USER CODE END App_ThreadX_MEM_POOL */
-CHAR *pointer;
+  CHAR *pointer;
 
   /* Allocate the stack for Message Queue Sender Thread One  */
   if (tx_byte_allocate(byte_pool, (VOID**) &pointer,
@@ -77,7 +77,7 @@ CHAR *pointer;
   {
     return TX_POOL_ERROR;
   }
-   /* Create Message Queue Sender Thread One.  */
+  /* Create Message Queue Sender Thread One.  */
   if (tx_thread_create(&tx_app_thread, "Message Queue Sender Thread One", MsgSenderThreadOne_Entry, 0, pointer,
                        TX_APP_STACK_SIZE, TX_APP_THREAD_PRIO, TX_APP_THREAD_PREEMPTION_THRESHOLD,
                        TX_APP_THREAD_TIME_SLICE, TX_APP_THREAD_AUTO_START) != TX_SUCCESS)
@@ -148,7 +148,7 @@ CHAR *pointer;
 }
 /**
   * @brief  Function implementing the MsgSenderThreadOne_Entry thread.
-  * @param  thread_input: Not used.
+  * @param  thread_input: Hardcoded to 0.
   * @retval None
   */
 void MsgSenderThreadOne_Entry(ULONG thread_input)
@@ -171,7 +171,7 @@ void MsgSenderThreadOne_Entry(ULONG thread_input)
 }
 
   /**
-  * @brief  MX_ThreadX_Init
+  * @brief  Function that implements the kernel's initialization.
   * @param  None
   * @retval None
   */

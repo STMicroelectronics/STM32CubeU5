@@ -32,12 +32,16 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+/* USER CODE BEGIN VTOR_TABLE */
+
 /* Non-secure Vector table to jump to (internal Flash Bank2 here)             */
 /* Caution: address must correspond to non-secure internal Flash where is     */
 /*          mapped in the non-secure vector table                             */
+
 #define VTOR_TABLE_NS_START_ADDR  0x08100000UL
 
-extern funcptr_NS pSecureErrorCallback;
+/* USER CODE END VTOR_TABLE */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -49,6 +53,7 @@ extern funcptr_NS pSecureErrorCallback;
 
 /* USER CODE BEGIN PV */
 
+extern funcptr_NS pSecureErrorCallback;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -75,8 +80,10 @@ int main(void)
   /* SAU/IDAU, FPU and interrupts secure/non-secure allocation setup done */
   /* in SystemInit() based on partition_stm32u575xx.h file's definitions. */
   /* USER CODE BEGIN 1 */
-  /* Enable SecureFault handler (HardFault is default) */
+
+ /* Enable SecureFault handler (HardFault is default) */
   SCB->SHCSR |= SCB_SHCSR_SECUREFAULTENA_Msk;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -158,14 +165,6 @@ static void SystemPower_Config(void)
    * Disable the internal Pull-Up in Dead Battery pins of UCPD peripheral
    */
   HAL_PWREx_DisableUCPDDeadBattery();
-
-  /*
-   * Switch to SMPS regulator instead of LDO
-   */
-  if (HAL_PWREx_ConfigSupply(PWR_SMPS_SUPPLY) != HAL_OK)
-  {
-    Error_Handler();
-  }
 /* USER CODE BEGIN PWR */
 /* USER CODE END PWR */
 }
@@ -294,12 +293,8 @@ static void MX_ICACHE_Init(void)
 
   /* USER CODE END ICACHE_Init 1 */
 
-  /** Enable instruction cache in 1-way (direct mapped cache)
+  /** Enable instruction cache (default 2-ways set associative cache)
   */
-  if (HAL_ICACHE_ConfigAssociativityMode(ICACHE_1WAY) != HAL_OK)
-  {
-    Error_Handler();
-  }
   if (HAL_ICACHE_Enable() != HAL_OK)
   {
     Error_Handler();
@@ -337,10 +332,23 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_GTZC_TZIC_Callback(uint32_t PeriphId)
 {
-  if (PeriphId == GTZC_PERIPH_SRAM1)
+ 
+  funcptr_NS callback_NS; /* non-secure callback function pointer */
+
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(PeriphId);
+
+  if(pSecureErrorCallback != (funcptr_NS)NULL)
   {
-      /* LED_RED On */
-      BSP_LED_On(LED_RED);
+   /* return function pointer with cleared LSB */
+   callback_NS = (funcptr_NS)cmse_nsfptr_create(pSecureErrorCallback);
+
+   callback_NS();
+  }
+  else
+  {
+    /* Something went wrong in test case */
+    while(1);
   }
 }
 /* USER CODE END 4 */
@@ -353,7 +361,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  while (1)
+  while(1)
   {
   }
   /* USER CODE END Error_Handler_Debug */

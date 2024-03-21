@@ -51,13 +51,16 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-void MX_OCTOSPI2_Init(void);
+void MX_SDMMC1_SD_Init(void);
 
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define SDCARD_DETECT_Pin GPIO_PIN_0
+#define SDCARD_DETECT_GPIO_Port GPIOI
+#define SDCARD_DETECT_EXTI_IRQn EXTI0_IRQn
 #define LED1_Pin GPIO_PIN_7
 #define LED1_GPIO_Port GPIOB
 #define LED2_Pin GPIO_PIN_7

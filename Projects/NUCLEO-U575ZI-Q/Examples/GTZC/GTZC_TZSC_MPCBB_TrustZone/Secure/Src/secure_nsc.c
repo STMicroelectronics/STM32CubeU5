@@ -76,3 +76,4 @@ CMSE_NS_ENTRY void SECURE_RegisterCallback(SECURE_CallbackIDTypeDef CallbackId, 
   * @}
   */
 /* USER CODE END Non_Secure_CallLib */
+

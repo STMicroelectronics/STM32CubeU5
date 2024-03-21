@@ -73,6 +73,7 @@ int main(void)
 {
   /* SAU/IDAU, FPU and interrupts secure/non-secure allocation setup done */
 /* in SystemInit() based on partition_stm32u5a5xx.h file's definitions. */
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -132,6 +133,7 @@ int main(void)
   NonSecure_Init();
 
   /* Non-secure software does not return, this code is not executed */
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)

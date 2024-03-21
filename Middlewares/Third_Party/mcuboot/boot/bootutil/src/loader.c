@@ -4,6 +4,7 @@
  * Copyright (c) 2016-2020 Linaro LTD
  * Copyright (c) 2016-2019 JUUL Labs
  * Copyright (c) 2019-2020 Arm Limited
+ * Copyright (c) 2023 STMicroelectronics
  *
  * Original license:
  *
@@ -35,7 +36,6 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <string.h>
-#include <os/os_malloc.h>
 #include "bootutil/bootutil.h"
 #include "bootutil/image.h"
 #include "bootutil_priv.h"
@@ -51,7 +51,7 @@
 
 #include "mcuboot_config/mcuboot_config.h"
 
-#if defined(TFM_EXTERNAL_FLASH_ENABLE)
+#if defined(OTFDEC_EXTERNAL_FLASH_ENABLE)
 #include "boot_hal_otfdec.h"
 #endif
 #include "boot_hal_imagevalid.h"
@@ -703,12 +703,13 @@ out:
  * @param slot          Slot number of the image.
  * @param hdr           Pointer to the image header structure of the image
  *                      that is currently stored in the given slot.
+ * @param updated       Pointer to cnt updated status flag (1: yes, 0: no)
  *
  * @return              0 on success; nonzero on failure.
  */
 static int
 boot_update_security_counter(uint8_t image_index, int slot,
-                             struct image_header *hdr)
+                             struct image_header *hdr, uint32_t *updated)
 {
     const struct flash_area *fap = NULL;
     uint32_t img_security_cnt;
@@ -726,7 +727,7 @@ boot_update_security_counter(uint8_t image_index, int slot,
         goto done;
     }
 
-    rc = boot_nv_security_counter_update(image_index, img_security_cnt);
+    rc = boot_nv_security_counter_update(image_index, img_security_cnt, updated);
     if (rc != 0) {
         goto done;
     }
@@ -951,6 +952,7 @@ boot_copy_image(struct boot_loader_state *state, struct boot_status *bs)
     size_t this_size;
     const struct flash_area *fap_primary_slot;
     uint8_t image_index;
+    uint32_t security_counter_updated;
 
     (void)bs;
     /*  compute size of area  */
@@ -994,7 +996,8 @@ boot_copy_image(struct boot_loader_state *state, struct boot_status *bs)
      * boot_data structure have not been updated yet.
      */
     rc = boot_update_security_counter(BOOT_CURR_IMG(state), BOOT_PRIMARY_SLOT,
-                                      boot_img_hdr(state, BOOT_PRIMARY_SLOT));
+                                      boot_img_hdr(state, BOOT_PRIMARY_SLOT),
+                                      &security_counter_updated);
     if (rc != 0) {
         BOOT_LOG_ERR("Security counter update failed after image upgrade.");
         return rc;
@@ -1015,10 +1018,10 @@ boot_copy_image(struct boot_loader_state *state, struct boot_status *bs)
     int rc;
     size_t size;
     size_t this_size;
-    size_t last_sector;
     const struct flash_area *fap_primary_slot;
     const struct flash_area *fap_secondary_slot;
     uint8_t image_index;
+    uint32_t security_counter_updated;
 
 #if defined(MCUBOOT_OVERWRITE_ONLY_FAST)
     uint32_t sector;
@@ -1094,7 +1097,15 @@ boot_copy_image(struct boot_loader_state *state, struct boot_status *bs)
     }
 #endif
 
-    BOOT_LOG_INF("Copying the secondary slot to the primary slot: 0x%zx bytes",
+#if !defined(MCUBOOT_OVERWRITE_ONLY)
+    /* Confirm image after copy, as no revert possible */
+    rc = swap_set_image_ok(BOOT_CURR_IMG(state));
+    if (rc != 0) {
+      return rc;
+    }
+#endif /* !defined(MCUBOOT_OVERWRITE_ONLY) */
+
+    BOOT_LOG_INF("Copying the secondary slot to the primary slot: 0x%x bytes",
                  size);
     rc = boot_copy_region(state, fap_secondary_slot, fap_primary_slot, 0, 0, size);
     if (rc != 0) {
@@ -1115,7 +1126,8 @@ boot_copy_image(struct boot_loader_state *state, struct boot_status *bs)
      * boot_data structure have not been updated yet.
      */
     rc = boot_update_security_counter(BOOT_CURR_IMG(state), BOOT_PRIMARY_SLOT,
-                                boot_img_hdr(state, BOOT_SECONDARY_SLOT));
+                                boot_img_hdr(state, BOOT_SECONDARY_SLOT),
+                                &security_counter_updated);
     if (rc != 0) {
         BOOT_LOG_ERR("Security counter update failed after image upgrade.");
         return rc;
@@ -1123,22 +1135,11 @@ boot_copy_image(struct boot_loader_state *state, struct boot_status *bs)
 #endif /* MCUBOOT_HW_ROLLBACK_PROT */
 
     /*
-     * Erases header and trailer. The trailer is erased because when a new
-     * image is written without a trailer as is the case when using newt, the
-     * trailer that was left might trigger a new upgrade.
+     * Erases complete secondary slot. A new image download can be performed
+     * without remaining data from previously installed image.
      */
-    BOOT_LOG_DBG("erasing secondary header");
-    rc = boot_erase_region(fap_secondary_slot,
-                           boot_img_sector_off(state, BOOT_SECONDARY_SLOT, 0),
-                           boot_img_sector_size(state, BOOT_SECONDARY_SLOT, 0));
-    assert(rc == 0);
-    last_sector = boot_img_num_sectors(state, BOOT_SECONDARY_SLOT) - 1;
-    BOOT_LOG_DBG("erasing secondary trailer");
-    rc = boot_erase_region(fap_secondary_slot,
-                           boot_img_sector_off(state, BOOT_SECONDARY_SLOT,
-                               last_sector),
-                           boot_img_sector_size(state, BOOT_SECONDARY_SLOT,
-                               last_sector));
+    BOOT_LOG_DBG("erasing secondary slot");
+    rc = flash_area_erase(fap_secondary_slot, 0, fap_secondary_slot->fa_size);
     assert(rc == 0);
 
     flash_area_close(fap_primary_slot);
@@ -1454,9 +1455,10 @@ boot_perform_update(struct boot_loader_state *state, struct boot_status *bs)
     int rc;
 #ifndef MCUBOOT_OVERWRITE_ONLY
     uint8_t swap_type;
+    uint32_t security_counter_updated;
 #endif
 
-#if defined(TFM_EXTERNAL_FLASH_ENABLE)
+#if defined(OTFDEC_EXTERNAL_FLASH_ENABLE)
     /* At this point decision is taken to perform clean (not aborted) image
      * update. The otfdec symmetric key (for OSPI flash execution) located in
      * internal flash must be invalidated (it will be replaced by the new one)
@@ -1466,7 +1468,7 @@ boot_perform_update(struct boot_loader_state *state, struct boot_status *bs)
             return BOOT_EFLASH;
         }
     }
-#endif /* TFM_EXTERNAL_FLASH_ENABLE */
+#endif /* OTFDEC_EXTERNAL_FLASH_ENABLE */
 
     /* At this point there are no aborted swaps. */
 #if defined(MCUBOOT_OVERWRITE_ONLY)
@@ -1515,14 +1517,16 @@ boot_perform_update(struct boot_loader_state *state, struct boot_status *bs)
          */
 #ifdef MCUBOOT_PRIMARY_ONLY
         rc = boot_update_security_counter(
-                 BOOT_CURR_IMG(state),
-                 BOOT_PRIMARY_SLOT,
-                 boot_img_hdr(state, BOOT_PRIMARY_SLOT));
+                                    BOOT_CURR_IMG(state),
+                                    BOOT_PRIMARY_SLOT,
+                                    boot_img_hdr(state, BOOT_PRIMARY_SLOT)
+                                    &security_counter_updated);
 #else
         rc = boot_update_security_counter(
                                     BOOT_CURR_IMG(state),
                                     BOOT_PRIMARY_SLOT,
-                                    boot_img_hdr(state, BOOT_SECONDARY_SLOT));
+                                    boot_img_hdr(state, BOOT_SECONDARY_SLOT),
+                                    &security_counter_updated);
 #endif
         if (rc != 0) {
             BOOT_LOG_ERR("Security counter update failed after "
@@ -1797,6 +1801,11 @@ boot_prepare_image_for_update(struct boot_loader_state *state,
             boot_review_image_swap_types(state, false);
 #endif
 
+/* Below code introduces additional primary slot validation and is not needed if
+ * initial image in secondary slot is complete (inc. header and magic
+ * installation). It is then removed.
+ */
+#if 0
 #ifdef MCUBOOT_BOOTSTRAP
             if (BOOT_SWAP_TYPE(state) == BOOT_SWAP_TYPE_NONE) {
                 /* Header checks are done first because they are
@@ -1826,6 +1835,7 @@ boot_prepare_image_for_update(struct boot_loader_state *state,
                 }
             }
 #endif
+#endif
         }
     } else {
         /* In that case if slots are not compatible. */
@@ -1843,9 +1853,13 @@ context_boot_go(struct boot_loader_state *state, struct boot_rsp *rsp)
     fih_int fih_rc = FIH_FAILURE;
     int fa_id;
     int image_index;
+#if defined (MCUBOOT_HW_ROLLBACK_PROT) && !defined(MCUBOOT_OVERWRITE_ONLY)
+    struct boot_swap_state swap_state;
+#endif /* MCUBOOT_HW_ROLLBACK_PROT */
 #if (BOOT_IMAGE_NUMBER > 1) && !defined(MCUBOOT_PRIMARY_ONLY)
     bool has_upgrade;
 #endif /* BOOT_IMAGE_NUMBER > 1 */
+    uint32_t security_counter_updated;
 
     /* The array of slot sectors are defined here (as opposed to file scope) so
      * that they don't get allocated for non-boot-loader apps.  This is
@@ -1873,7 +1887,7 @@ context_boot_go(struct boot_loader_state *state, struct boot_rsp *rsp)
      */
     IMAGES_ITER(BOOT_CURR_IMG(state)) {
 
-#if defined(MCUBOOT_ENC_IMAGES) && (BOOT_IMAGE_NUMBER > 1) 
+#if defined(MCUBOOT_ENC_IMAGES) && ((BOOT_IMAGE_NUMBER > 1) || defined(MCUBOOT_ENC_SECURITY_CNT))
         /* The keys used for encryption may no longer be valid (could belong to
          * another images). Therefore, mark them as invalid to force their reload
          * by boot_enc_load().
@@ -1916,6 +1930,52 @@ context_boot_go(struct boot_loader_state *state, struct boot_rsp *rsp)
 #endif
     }
 
+#if defined(MCUBOOT_HW_ROLLBACK_PROT) && !defined(MCUBOOT_OVERWRITE_ONLY)
+    /* Iterate over all the images. At this point there are no aborted swaps
+     * and the swap types are determined for each image. By the end of the loop,
+     * the security counters will be updated.
+     * If a security counter update is performed, the system must reset,
+     * because swap type has to be re-evaluated.
+     */
+    IMAGES_ITER(BOOT_CURR_IMG(state)) {
+        /* Update the stored security counter with the active image's security
+         * counter value. It will only be updated if the new security counter is
+         * greater than the stored value, and if the active image is confirmed:
+         * image has marked itself "OK" (the image_ok flag has been set).
+         * This way a "revert" can be performed when it's necessary.
+         */
+        /* Get active image trailer state: primary slot confirmed? */
+        rc = boot_read_swap_state_by_id(FLASH_AREA_IMAGE_PRIMARY(BOOT_CURR_IMG(state)),
+                                        &swap_state);
+        assert(rc == 0);
+
+        /* Check if primary slot contains a confirmed image */
+        if ((swap_state.image_ok != BOOT_FLAG_UNSET) &&
+            (boot_is_header_valid(boot_img_hdr(state, BOOT_PRIMARY_SLOT),
+                                  BOOT_IMG_AREA(state, BOOT_PRIMARY_SLOT)))) {
+            /* Image already confirmed. */
+            rc = boot_update_security_counter(
+                                    BOOT_CURR_IMG(state),
+                                    BOOT_PRIMARY_SLOT,
+                                    boot_img_hdr(state, BOOT_PRIMARY_SLOT),
+                                    &security_counter_updated);
+            if (rc != 0) {
+                BOOT_LOG_ERR("Security counter update failed after image "
+                             "validation.");
+                goto out;
+            }
+
+            /* If security cnt has changed, then reset to start again mcuboot
+             * process from start with up to date NVCounters */
+            if (security_counter_updated) {
+                BOOT_LOG_INF("Security counter updated. Reset device");
+                NVIC_SystemReset();
+            }
+
+        }
+    }
+#endif /* MCUBOOT_HW_ROLLBACK_PROT && !MCUBOOT_OVERWRITE_ONLY */
+
 #if (BOOT_IMAGE_NUMBER > 1) && !defined(MCUBOOT_PRIMARY_ONLY)
     if (has_upgrade) {
         /* Iterate over all the images and verify whether the image dependencies
@@ -1940,7 +2000,7 @@ context_boot_go(struct boot_loader_state *state, struct boot_rsp *rsp)
      */
     IMAGES_ITER(BOOT_CURR_IMG(state)) {
 
-#if (BOOT_IMAGE_NUMBER > 1) 
+#if (BOOT_IMAGE_NUMBER > 1) || defined(MCUBOOT_ENC_SECURITY_CNT)
 #ifdef MCUBOOT_ENC_IMAGES
         /* The keys used for encryption may no longer be valid (could belong to
          * another images). Therefore, mark them as invalid to force their reload
@@ -1999,6 +2059,7 @@ context_boot_go(struct boot_loader_state *state, struct boot_rsp *rsp)
      * have finished. By the end of the loop each image in the primary slot will
      * have been re-validated.
      */
+    BOOT_LOG_INF("Starting validation of primary slot(s)");
     IMAGES_ITER(BOOT_CURR_IMG(state)) {
         if (BOOT_SWAP_TYPE(state) != BOOT_SWAP_TYPE_NONE) {
             /* Attempt to read an image header from each slot. Ensure that image
@@ -2042,7 +2103,7 @@ context_boot_go(struct boot_loader_state *state, struct boot_rsp *rsp)
         }
 #endif /* MCUBOOT_VALIDATE_PRIMARY_SLOT */
 
-#if defined(TFM_EXTERNAL_FLASH_ENABLE)
+#if defined(OTFDEC_EXTERNAL_FLASH_ENABLE)
         /* If not already valid in internal flash, the otfdec symmetric key (for
          * OSPI flash execution) is read from image TLV, decrypted, and stored
          * in internal flash. It will be used at boot time.
@@ -2065,31 +2126,24 @@ context_boot_go(struct boot_loader_state *state, struct boot_rsp *rsp)
                 goto out;
             }
         }
-#endif /* TFM_EXTERNAL_FLASH_ENABLE */
+#endif /* OTFDEC_EXTERNAL_FLASH_ENABLE */
 
-#ifdef MCUBOOT_HW_ROLLBACK_PROT
+#if defined(MCUBOOT_HW_ROLLBACK_PROT) && defined(MCUBOOT_OVERWRITE_ONLY)
         /* Update the stored security counter with the active image's security
          * counter value. It will only be updated if the new security counter is
          * greater than the stored value.
-         *
-         * In case of a successful image swapping when the swap type is TEST the
-         * security counter can be increased only after a reset, when the swap
-         * type is NONE and the image has marked itself "OK" (the image_ok flag
-         * has been set). This way a "revert" can be performed when it's
-         * necessary.
          */
-        if (BOOT_SWAP_TYPE(state) == BOOT_SWAP_TYPE_NONE) {
-            rc = boot_update_security_counter(
-                                    BOOT_CURR_IMG(state),
-                                    BOOT_PRIMARY_SLOT,
-                                    boot_img_hdr(state, BOOT_PRIMARY_SLOT));
-            if (rc != 0) {
-                BOOT_LOG_ERR("Security counter update failed after image "
-                             "validation.");
-                goto out;
-            }
+        rc = boot_update_security_counter(
+                                BOOT_CURR_IMG(state),
+                                BOOT_PRIMARY_SLOT,
+                                boot_img_hdr(state, BOOT_PRIMARY_SLOT),
+                                &security_counter_updated);
+        if (rc != 0) {
+            BOOT_LOG_ERR("Security counter update failed after image "
+                         "validation.");
+            goto out;
         }
-#endif /* MCUBOOT_HW_ROLLBACK_PROT */
+#endif /* MCUBOOT_HW_ROLLBACK_PROT && MCUBOOT_OVERWRITE_ONLY*/
 
 #ifdef MCUBOOT_MEASURED_BOOT
         rc = boot_save_boot_status(BOOT_CURR_IMG(state),

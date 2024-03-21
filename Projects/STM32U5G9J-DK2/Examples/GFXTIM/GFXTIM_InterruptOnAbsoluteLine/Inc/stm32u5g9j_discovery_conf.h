@@ -1,10 +1,8 @@
 /**
   ******************************************************************************
-  * @file    stm32u5g9j_discovery_conf_template.h
+  * @file    stm32u5g9j_discovery_conf.h
   * @author  MCD Application Team
   * @brief   STM32U5G9J_DISCOVERY board configuration file.
-  *          This file should be copied to the application folder and renamed
-  *          to stm32u5g9j_discovery_conf.h
   ******************************************************************************
   * @attention
   *

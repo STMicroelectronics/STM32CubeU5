@@ -51,10 +51,10 @@ extern "C" {
       usbpd_hw.c
 -------------------------------------------------------------------------------*/
 
-/* defined used to configure function : USBPD_HW_GetUSPDInstance */
+/* Define used to configure function : USBPD_HW_GetUSPDInstance */
 #define UCPD_INSTANCE0 UCPD1
 
-/* defined used to configure function : USBPD_HW_Init_DMARxInstance,USBPD_HW_DeInit_DMARxInstance */
+/* Define used to configure function : USBPD_HW_Init_DMARxInstance,USBPD_HW_DeInit_DMARxInstance */
 #define UCPDDMA_INSTANCE0_CLOCKENABLE_RX  \
   do                                      \
   {                                       \
@@ -69,7 +69,7 @@ extern "C" {
 
 #define UCPDDMA_INSTANCE0_CHANNEL_RX   GPDMA1_Channel5
 
-/* defined used to configure function : USBPD_HW_Init_DMATxInstance, USBPD_HW_DeInit_DMATxInstance */
+/* Define used to configure function : USBPD_HW_Init_DMATxInstance, USBPD_HW_DeInit_DMATxInstance */
 #define UCPDDMA_INSTANCE0_CLOCKENABLE_TX  \
   do                                      \
   {                                       \
@@ -93,13 +93,7 @@ extern "C" {
     LL_GPIO_SetAFPin_0_7(GPIOA, LL_GPIO_PIN_2, LL_GPIO_AF_11);                       \
   } while(0)
 
-#define UCPDFRS_INSTANCE0_FRSCC2                                                      \
-  do                                                                                  \
-  {                                                                                   \
-    LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);                              \
-    LL_GPIO_SetPinMode(GPIOC, LL_GPIO_PIN_11, LL_GPIO_MODE_ALTERNATE);                \
-    LL_GPIO_SetAFPin_8_15(GPIOC, LL_GPIO_PIN_11, LL_GPIO_AF_11);                       \
-  } while(0)
+#define UCPDFRS_INSTANCE0_FRSCC2    UCPDFRS_INSTANCE0_FRSCC1 /* Only one common FRSCC pin is available on this series */
 
 #define UCPD_INSTANCE0_ENABLEIRQ               \
   do                                           \

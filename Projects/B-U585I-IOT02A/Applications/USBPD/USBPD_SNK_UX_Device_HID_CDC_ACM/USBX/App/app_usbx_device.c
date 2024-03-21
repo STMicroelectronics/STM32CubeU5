@@ -42,7 +42,6 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-
 static ULONG hid_mouse_interface_number;
 static ULONG hid_mouse_configuration_number;
 static ULONG cdc_acm_interface_number;
@@ -352,10 +351,10 @@ VOID USBX_APP_Device_Init(VOID)
 
   /* USER CODE BEGIN USB_Device_Init_PreTreatment_1 */
   HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_FS, 0x80);
-  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, 0x10);
-  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 1, 0x20);
-  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 2, 0x10);
-  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 3, 0x10);
+  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, USBD_MAX_EP0_SIZE / 4);
+  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 1, USBD_CDCACM_EPIN_FS_MPS / 4);
+  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 2, USBD_CDCACM_EPINCMD_FS_MPS /4);
+  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 3, USBD_HID_MOUSE_EPIN_FS_MPS / 4);
   /* USER CODE END USB_Device_Init_PreTreatment_1 */
 
   /* Initialize the device controller driver*/

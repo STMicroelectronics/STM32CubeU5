@@ -1,4 +1,10 @@
 /*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright (c) 2021 STMicroelectronics
+ */
+
+/*
  * This module provides a thin abstraction over some of the crypto
  * primitives to make it easier to swap out the used crypto library.
  *
@@ -14,6 +20,7 @@
 
 #if (defined(MCUBOOT_USE_TINYCRYPT) + \
      defined(MCUBOOT_USE_CC310) + \
+     defined(MCUBOOT_USE_HAL) + \
      defined(MCUBOOT_USE_MBED_TLS)) != 1
     #error "One crypto backend must be defined: either CC310 or TINYCRYPT"
 #endif
@@ -28,6 +35,16 @@
     #include <cc310_glue.h>
     #define BOOTUTIL_CRYPTO_ECDSA_P256_HASH_SIZE (4 * 8)
 #endif /* MCUBOOT_USE_CC310 */
+
+#if defined(MCUBOOT_USE_HAL)
+    #include <cryptoboot_hal.h>
+    #define ST_ECDSA_TIMEOUT     (5000U)
+#if  defined(MCUBOOT_DOUBLE_SIGN_VERIF)
+    #include "boot_hal_imagevalid.h"
+    #include "bootutil_priv.h"
+    #define PKA_ECDSA_VERIF_OUT_SIGNATURE_R    ((PKA_ECDSA_SIGNATURE_ADDRESS - PKA_RAM_OFFSET)>>2)   /*!< Output result */
+#endif /* MCUBOOT_DOUBLE_SIGN_VERIF */
+#endif /* MCUBOOT_USE_HAL */
 
 #ifdef __cplusplus
 extern "C" {
@@ -126,6 +143,137 @@ static inline int bootutil_ecdsa_p256_verify(bootutil_ecdsa_p256_context *ctx, u
     return cc310_ecdsa_verify_secp256r1(hash, pk, sig, BOOTUTIL_CRYPTO_ECDSA_P256_HASH_SIZE);
 }
 #endif /* MCUBOOT_USE_CC310 */
+
+#if defined(MCUBOOT_USE_HAL)
+typedef struct
+{
+    PKA_HandleTypeDef hpka;
+}
+bootutil_ecdsa_p256_context;
+
+static inline void bootutil_ecdsa_p256_init(bootutil_ecdsa_p256_context *ctx)
+{
+    INPUT_VALIDATE( ctx != NULL );
+
+    /* Enable HW peripheral clock */
+    __HAL_RCC_PKA_CLK_ENABLE();
+
+    memset( ctx, 0, sizeof( bootutil_ecdsa_p256_context ) );
+}
+
+#if  defined(MCUBOOT_DOUBLE_SIGN_VERIF)
+/**
+  * @brief  Check PKA signature with a constant time execution.
+  * @param  hpka PKA handle
+  * @param  in Input information
+  * @retval IMAGE_VALID if equal, IMAGE_INVALID otherwise.
+  */
+static int CheckPKASignature(PKA_HandleTypeDef *hpka, PKA_ECDSAVerifInTypeDef *in)
+{
+  __IO uint8_t result = 0;
+  uint32_t i;
+  uint32_t j;
+  uint8_t* p_sign_PKA = (uint8_t*) &hpka->Instance->RAM[PKA_ECDSA_VERIF_OUT_SIGNATURE_R];
+  uint8_t* pSign = (uint8_t*)in->RSign;
+  uint32_t Size =  in->primeOrderSize;
+
+  /* Signature comparison LSB vs MSB */
+  for (i = 0U, j = Size - 1U; i < Size; i++, j--)
+  {
+    result |= pSign[i] ^ IMAGE_VALID ^ p_sign_PKA[j];
+  }
+
+  /* Loop fully executed ==> no basic HW attack */
+  /* Any other unexpected result */
+  if ( (i != Size) || (result != IMAGE_VALID) )
+  {
+    result = IMAGE_INVALID;
+  }
+
+  return result;
+}
+#endif /* MCUBOOT_DOUBLE_SIGN_VERIF */
+
+static inline int bootutil_ecdsa_p256_verify(bootutil_ecdsa_p256_context *ctx, const uint8_t *pk, int len, const uint8_t *hash, const uint8_t *sig)
+{
+    PKA_ECDSAVerifInTypeDef ECDSA_VerifyIn = {0};
+
+    INPUT_VALIDATE_RET( ctx != NULL );
+    INPUT_VALIDATE_RET( pk != NULL );
+    INPUT_VALIDATE_RET( hash != NULL );
+    INPUT_VALIDATE_RET( sig != NULL );
+    INPUT_VALIDATE_RET( len == (2*NUM_ECC_BYTES+1) );
+
+    /* Set HW peripheral input parameter : curve coefs */
+    ECDSA_VerifyIn.primeOrderSize =  sizeof(P_256_n);
+    ECDSA_VerifyIn.modulusSize =     sizeof(P_256_p);
+    ECDSA_VerifyIn.modulus =         P_256_p;
+    ECDSA_VerifyIn.coefSign =        P_256_a_sign;
+    ECDSA_VerifyIn.coef =            P_256_absA;
+    ECDSA_VerifyIn.basePointX =      P_256_Gx;
+    ECDSA_VerifyIn.basePointY =      P_256_Gy;
+    ECDSA_VerifyIn.primeOrder =      P_256_n;
+
+    /* Set HW peripheral input parameter : hash that was signed */
+    ECDSA_VerifyIn.hash = hash;
+
+   /* Set HW peripheral input parameter : public key */
+   /* Store public key except the first byte that is on the uncompressed form */
+   ECDSA_VerifyIn.pPubKeyCurvePtX = (uint8_t *)(&pk[1]);
+   ECDSA_VerifyIn.pPubKeyCurvePtY = (uint8_t *)(&pk[NUM_ECC_BYTES + 1]);
+
+   ECDSA_VerifyIn.RSign = &sig[0];
+   ECDSA_VerifyIn.SSign = &sig[NUM_ECC_BYTES];
+
+   /* Initialize HW peripheral */
+   ctx->hpka.Instance = PKA;
+   if (HAL_PKA_Init(&ctx->hpka) != HAL_OK)
+   {
+       return ERR_PLATFORM_HW_ACCEL_FAILED;
+   }
+
+   /* Reset PKA RAM */
+   HAL_PKA_RAMReset(&ctx->hpka);
+
+   if (HAL_PKA_ECDSAVerif(&ctx->hpka, &ECDSA_VerifyIn, ST_ECDSA_TIMEOUT) != HAL_OK)
+   {
+       return ERR_PLATFORM_HW_ACCEL_FAILED;
+   }
+
+   /* Check the result */
+   if (HAL_PKA_ECDSAVerif_IsValidSignature(&ctx->hpka) != 1U)
+   {
+       return ERR_ECP_VERIFY_FAILED;
+   }
+#if defined(MCUBOOT_DOUBLE_SIGN_VERIF)
+    /* Double the signature verification (using another way) to resist to basic HW attacks.
+     * The second verification is applicable to final signature check on primary slot images
+     * only (condition: ImageValidEnable).
+     * It is performed in 2 steps:
+     * 1- save signature status in global variable ImageValidStatus[]
+     *    Return value of HAL api (0 failed, 1 passed) is mul with IMAGE_VALID to avoid
+     *    value 1 for success: IMAGE_VALID for success.
+     * 2- verify saved signature status later in boot process
+     */
+    if (ImageValidEnable == 1)
+    {
+        /* Check ImageValidIndex is in expected range MCUBOOT_IMAGE_NUMBER */
+        if (ImageValidIndex >= MCUBOOT_IMAGE_NUMBER)
+        {
+            return ERR_ECP_VERIFY_FAILED;
+        }
+        ImageValidStatus[ImageValidIndex++] = CheckPKASignature(&ctx->hpka, &ECDSA_VerifyIn);
+    }
+#endif /* MCUBOOT_DOUBLE_SIGN_VERIF */
+   return 0;
+}
+static inline void bootutil_ecdsa_p256_drop(bootutil_ecdsa_p256_context *ctx)
+{
+    INPUT_VALIDATE( ctx != NULL );
+    HAL_PKA_DeInit(&ctx->hpka);
+    __HAL_RCC_PKA_CLK_DISABLE();
+}
+#endif /* MCUBOOT_USE_HAL */
 
 #ifdef __cplusplus
 }

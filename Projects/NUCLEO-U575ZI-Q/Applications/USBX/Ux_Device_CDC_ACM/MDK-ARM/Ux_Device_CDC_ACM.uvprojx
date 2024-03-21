@@ -16,8 +16,8 @@
         <TargetCommonOption>
           <Device>STM32U575ZITx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32U5xx_DFP.1.1.1</PackID>
-          <PackURL>http://www.keil.com/pack/</PackURL>
+          <PackID>Keil.STM32U5xx_DFP.2.2.3</PackID>
+          <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000-0x200BFFFF) IROM(0x08000000-0x81FFFFF) CLOCK(8000000) FPU3(SFPU) CPUTYPE("Cortex-M33") ELITTLE TZ DSP</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -81,7 +81,7 @@
           </BeforeMake>
           <AfterMake>
             <RunUserProg1>0</RunUserProg1>
-            <RunUserProg2>0</RunUserProg2>
+            <RunUserProg2>1</RunUserProg2>
             <UserProg1Name></UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
@@ -445,11 +445,6 @@
           <GroupName>Application/User/USBPD/App</GroupName>
           <Files>
             <File>
-              <FileName>usbpd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../USBPD/App/usbpd.c</FilePath>
-            </File>
-            <File>
               <FileName>usbpd_dpm_core.c</FileName>
               <FileType>1</FileType>
               <FilePath>../USBPD/App/usbpd_dpm_core.c</FilePath>
@@ -458,6 +453,11 @@
               <FileName>usbpd_pwr_if.c</FileName>
               <FileType>1</FileType>
               <FilePath>../USBPD/App/usbpd_pwr_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbpd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../USBPD/App/usbpd.c</FilePath>
             </File>
             <File>
               <FileName>usbpd_usb_if.c</FileName>
@@ -1903,6 +1903,11 @@
               <FileName>ux_utility_timer_create.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_utility_timer_create.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_utility_timer_delete.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_utility_timer_delete.c</FilePath>
             </File>
             <File>
               <FileName>ux_utility_unicode_to_string.c</FileName>

@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    sx8651_conf_template.h
+  * @file    sx8651_conf.h
   * @author  MCD Application Team
   * @brief   This file contains specific configuration for the
   *          sx8651.c that can be modified by user.

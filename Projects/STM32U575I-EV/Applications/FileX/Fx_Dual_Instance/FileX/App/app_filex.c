@@ -47,11 +47,21 @@
 #define THREAD_ID_2                      2
 
 #define read_buffer_size                 40
+
+#define DEFAULT_QUEUE_LENGTH             16
+
+/* Message content*/
+typedef enum {
+CARD_STATUS_CHANGED             = 99,
+CARD_STATUS_DISCONNECTED        = 88,
+CARD_STATUS_CONNECTED           = 77
+} SD_ConnectionStateTypeDef;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+#define MEDIA_CLOSED                     1UL
+#define MEDIA_OPENED                     0UL
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -69,7 +79,7 @@ ALIGN_32BYTES (uint32_t fx_nor_ospi_media_memory[FX_NOR_OSPI_SECTOR_SIZE / sizeo
 FX_MEDIA        nor_ospi_flash_disk;
 
 /* USER CODE BEGIN PV */
-
+static UINT media_status;
 /* Define FileX global data structures.  */
 FX_FILE         fx_file_sd;
 FX_FILE         fx_file_ospi;
@@ -78,6 +88,7 @@ TX_THREAD       fx_thread_one;
 TX_THREAD       fx_thread_two;
 /* Define child threads completion event flags */
 TX_EVENT_FLAGS_GROUP    finish_flag;
+TX_QUEUE        tx_msg_queue;
 
 /* USER CODE END PV */
 
@@ -90,6 +101,8 @@ void fx_app_thread_entry(ULONG thread_input);
 VOID fx_thread_one_entry(ULONG thread_input);
 VOID fx_thread_two_entry(ULONG thread_input);
 VOID App_Error_Handler(INT id);
+static uint8_t SD_IsDetected(uint32_t Instance);
+static VOID media_close_callback (FX_MEDIA *media_ptr);
 /* USER CODE END PFP */
 
 /**
@@ -159,6 +172,15 @@ UINT MX_FileX_Init(VOID *memory_ptr)
 
   /* An event flag to indicate the status of execution */
   tx_event_flags_create(&finish_flag, "event_flag");
+
+  /* Create the message queue */
+  ret = tx_queue_create(&tx_msg_queue, "sd_event_queue", 1, pointer, DEFAULT_QUEUE_LENGTH * sizeof(ULONG));
+
+/* Check main thread creation */
+  if (ret != TX_SUCCESS)
+  {
+    return TX_THREAD_ERROR;
+  }
 /* USER CODE END MX_FileX_Init */
 
 /* Initialize FileX.  */
@@ -201,20 +223,20 @@ UINT MX_FileX_Init(VOID *memory_ptr)
   }
 
 /* Format the OCTO-SPI NOR flash as FAT */
-  nor_ospi_status =  fx_media_format(&nor_ospi_flash_disk,                               // nor_ospi_flash_disk pointer
-                                     fx_stm32_levelx_nor_driver,                         // Driver entry
-                                     (VOID *)LX_NOR_OSPI_DRIVER_ID,                      // Device info pointer
-                                     (UCHAR *) fx_nor_ospi_media_memory,                 // Media buffer pointer
-                                     sizeof(fx_nor_ospi_media_memory),                   // Media buffer size
-                                     FX_NOR_OSPI_VOLUME_NAME,                            // Volume Name
-                                     FX_NOR_OSPI_NUMBER_OF_FATS,                         // Number of FATs
-                                     32,                                                 // Directory Entries
-                                     FX_NOR_OSPI_HIDDEN_SECTORS,                         // Hidden sectors
-                                     LX_STM32_OSPI_FLASH_SIZE / FX_NOR_OSPI_SECTOR_SIZE, // Total sectors
-                                     FX_NOR_OSPI_SECTOR_SIZE,                            // Sector size
-                                     8,                                                  // Sectors per cluster
-                                     1,                                                  // Heads
-                                     1);                                                 // Sectors per track
+  nor_ospi_status =  fx_media_format(&nor_ospi_flash_disk,                                                           // nor_ospi_flash_disk pointer
+                                     fx_stm32_levelx_nor_driver,                                                     // Driver entry
+                                     (VOID *)LX_NOR_OSPI_DRIVER_ID,                                                  // Device info pointer
+                                     (UCHAR *) fx_nor_ospi_media_memory,                                             // Media buffer pointer
+                                     sizeof(fx_nor_ospi_media_memory),                                               // Media buffer size
+                                     FX_NOR_OSPI_VOLUME_NAME,                                                        // Volume Name
+                                     FX_NOR_OSPI_NUMBER_OF_FATS,                                                     // Number of FATs
+                                     32,                                                                             // Directory Entries
+                                     FX_NOR_OSPI_HIDDEN_SECTORS,                                                     // Hidden sectors
+                                     (LX_STM32_OSPI_FLASH_SIZE - LX_STM32_OSPI_SECTOR_SIZE)/ FX_NOR_OSPI_SECTOR_SIZE,// Total sectors
+                                     FX_NOR_OSPI_SECTOR_SIZE,                                                        // Sector size
+                                     8,                                                                              // Sectors per cluster
+                                     1,                                                                              // Heads
+                                     1);                                                                             // Sectors per track
 
 /* Check the format nor_ospi_status */
   if (nor_ospi_status != FX_SUCCESS)
@@ -289,131 +311,198 @@ UINT MX_FileX_Init(VOID *memory_ptr)
 
 VOID fx_thread_one_entry(ULONG thread_input)
 {
-
-  UINT status;
+  UINT sd_status = FX_SUCCESS;
+  ULONG r_msg;
+  ULONG s_msg = CARD_STATUS_CHANGED;
+  ULONG last_status = CARD_STATUS_DISCONNECTED;
   ULONG bytes_read;
   CHAR read_buffer[read_buffer_size];
   CHAR data[] = "This file is stored in the microSD card";
 
-  /* Create a file called STM32_FILE1.TXT in the root directory.  */
-  status =  fx_file_create(&sdio_disk, "STM32_FILE1.TXT");
+  fx_media_close_notify_set(&sdio_disk, media_close_callback);
 
-  /* Check the create status.  */
-  if (status != FX_SUCCESS)
+  if(SD_IsDetected(FX_STM32_SD_INSTANCE) == HAL_OK)
   {
-    /* Check for an already created status. This is expected on the
-    second pass of this loop!  */
-    if (status != FX_ALREADY_CREATED)
+    /* SD card is already inserted, place the info into the queue */
+    tx_queue_send(&tx_msg_queue, &s_msg, TX_NO_WAIT);
+  }
+  else
+  {
+    /* Indicate that SD card is not inserted from start */
+    HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
+  }
+
+  /* Infinite Loop */
+  for( ;; )
+  {
+
+    /* We wait here for a valid SD card insertion event, if it is not inserted already */
+    while(1)
     {
-      /* Create error, call error handler.  */
+
+      while(tx_queue_receive(&tx_msg_queue, &r_msg, TX_TIMER_TICKS_PER_SECOND / 2) != TX_SUCCESS)
+      {
+        /* Toggle GREEN LED to indicate idle state after a successful operation */
+        if(last_status == CARD_STATUS_CONNECTED)
+        {
+          HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+        }
+      }
+
+      /* check if we received the correct event message */
+      if(r_msg == CARD_STATUS_CHANGED)
+      {
+        /* reset the status */
+        r_msg = 0;
+
+        /* for debouncing purpose we wait a bit till it settles down */
+        tx_thread_sleep(TX_TIMER_TICKS_PER_SECOND / 2);
+
+        if(SD_IsDetected(FX_STM32_SD_INSTANCE) == HAL_OK)
+        {
+          /* We have a valid SD insertion event, start processing.. */
+          /* Update last known status */
+          last_status = CARD_STATUS_CONNECTED;
+          HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET); /*LED_RED Off*/
+          break;
+        }
+        else
+        {
+          /* Update last known status */
+          last_status = CARD_STATUS_DISCONNECTED;
+          HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);  /*LED_GREEN Off*/
+          HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET); /*LED_RED On*/
+        }
+      }
+    }
+
+    /* Create a file called STM32.TXT in the root directory.  */
+    if (media_status == MEDIA_CLOSED)
+    {
+      sd_status = fx_media_open(&sdio_disk, FX_SD_VOLUME_NAME, fx_stm32_sd_driver, (VOID *)FX_NULL, (VOID *) fx_sd_media_memory, sizeof(fx_sd_media_memory));
+
+      /* Check the media open sd_status */
+      if (sd_status != FX_SUCCESS)
+      {
+        App_Error_Handler(THREAD_ID_1);
+      }
+      media_status = MEDIA_OPENED;
+    }
+
+    sd_status =  fx_file_create(&sdio_disk, "STM32_FILE1.TXT");
+
+    /* Check the create status.  */
+    if (sd_status != FX_SUCCESS)
+    {
+      /* Check for an already created status. This is expected on the
+      second pass of this loop!  */
+      if (sd_status != FX_ALREADY_CREATED)
+      {
+        App_Error_Handler(THREAD_ID_1);
+      }
+    }
+
+    /* Open the test file.  */
+    sd_status =  fx_file_open(&sdio_disk, &fx_file_sd, "STM32_FILE1.TXT", FX_OPEN_FOR_WRITE);
+
+    /* Check the file open status.  */
+    if (sd_status != FX_SUCCESS)
+    {
       App_Error_Handler(THREAD_ID_1);
     }
-  }
 
-  /* Open the test file.  */
-  status =  fx_file_open(&sdio_disk, &fx_file_sd, "STM32_FILE1.TXT", FX_OPEN_FOR_WRITE);
+    /* Seek to the beginning of the test file.  */
+    sd_status =  fx_file_seek(&fx_file_sd, 0);
 
-  /* Check the file open status.  */
-  if (status != FX_SUCCESS)
-  {
-    /* Error opening file, call error handler.  */
-    App_Error_Handler(THREAD_ID_1);
-  }
+    /* Check the file seek status.  */
+    if (sd_status != FX_SUCCESS)
+    {
+      App_Error_Handler(THREAD_ID_1);
+    }
 
-  /* Seek to the beginning of the test file.  */
-  status =  fx_file_seek(&fx_file_sd, 0);
+    /* Write a string to the test file.  */
+    sd_status =  fx_file_write(&fx_file_sd, data, sizeof(data));
 
-  /* Check the file seek status.  */
-  if (status != FX_SUCCESS)
-  {
-    /* Error performing file seek, call error handler.  */
-    App_Error_Handler(THREAD_ID_1);
-  }
+    /* Check the file write status.  */
+    if (sd_status != FX_SUCCESS)
+    {
+      App_Error_Handler(THREAD_ID_1);
+    }
 
-  /* Write a string to the test file.  */
-  status =  fx_file_write(&fx_file_sd, data, sizeof(data));
+    /* Close the test file.  */
+    sd_status =  fx_file_close(&fx_file_sd);
 
-  /* Check the file write status.  */
-  if (status != FX_SUCCESS)
-  {
-    /* Error writing to a file, call error handler.  */
-    App_Error_Handler(THREAD_ID_1);
-  }
+    /* Check the file close status.  */
+    if (sd_status != FX_SUCCESS)
+    {
+      App_Error_Handler(THREAD_ID_1);
+    }
 
-  /* Close the test file.  */
-  status =  fx_file_close(&fx_file_sd);
+    sd_status = fx_media_flush(&sdio_disk);
 
-  /* Check the file close status.  */
-  if (status != FX_SUCCESS)
-  {
-    /* Error closing the file, call error handler.  */
-    App_Error_Handler(THREAD_ID_1);
-  }
+    /* Check the media flush  status.  */
+    if (sd_status != FX_SUCCESS)
+    {
+      App_Error_Handler(THREAD_ID_1);
+    }
 
-  status = fx_media_flush(&sdio_disk);
+    /* Open the test file.  */
+    sd_status =  fx_file_open(&sdio_disk, &fx_file_sd, "STM32_FILE1.TXT", FX_OPEN_FOR_READ);
 
-  /* Check the media flush  status.  */
-  if (status != FX_SUCCESS)
-  {
-    /* Error closing the file, call error handler.  */
-    App_Error_Handler(THREAD_ID_1);
-  }
+    /* Check the file open status.  */
+    if (sd_status != FX_SUCCESS)
+    {
+      App_Error_Handler(THREAD_ID_1);
+    }
 
-  /* Open the test file.  */
-  status =  fx_file_open(&sdio_disk, &fx_file_sd, "STM32_FILE1.TXT", FX_OPEN_FOR_READ);
+    /* Seek to the beginning of the test file.  */
+    sd_status =  fx_file_seek(&fx_file_sd, 0);
 
-  /* Check the file open status.  */
-  if (status != FX_SUCCESS)
-  {
-    /* Error opening file, call error handler.  */
-    App_Error_Handler(THREAD_ID_1);
-  }
+    /* Check the file seek status.  */
+    if (sd_status != FX_SUCCESS)
+    {
+      App_Error_Handler(THREAD_ID_1);
+    }
 
-  /* Seek to the beginning of the test file.  */
-  status =  fx_file_seek(&fx_file_sd, 0);
+    /* Read the first 28 bytes of the test file.  */
+    sd_status =  fx_file_read(&fx_file_sd, read_buffer, sizeof(data), &bytes_read);
 
-  /* Check the file seek status.  */
-  if (status != FX_SUCCESS)
-  {
-    /* Error performing file seek, call error handler.  */
-    App_Error_Handler(THREAD_ID_1);
-  }
+    /* Check the file read status.  */
+    if ((sd_status != FX_SUCCESS) || (bytes_read != sizeof(data)))
+    {
+      App_Error_Handler(THREAD_ID_1);
+    }
 
-  /* Read the content of the test file.  */
-  status =  fx_file_read(&fx_file_sd, read_buffer, sizeof(read_buffer), &bytes_read);
+    /* Close the test file.  */
+    sd_status =  fx_file_close(&fx_file_sd);
 
-  /* Check the file read status.  */
-  if ((status != FX_SUCCESS) || (bytes_read != sizeof(read_buffer)))
-  {
-    /* Error reading file, call error handler.  */
-    App_Error_Handler(THREAD_ID_1);
-  }
+    /* Check the file close status.  */
+    if (sd_status != FX_SUCCESS)
+    {
+      App_Error_Handler(THREAD_ID_1);
+    }
 
-  /* Close the test file.  */
-  status =  fx_file_close(&fx_file_sd);
+    /* Close the media.  */
+    sd_status =  fx_media_close(&sdio_disk);
 
-  /* Check the file close status.  */
-  if (status != FX_SUCCESS)
-  {
-    /* Error closing the file, call error handler.  */
-    App_Error_Handler(THREAD_ID_1);
-  }
+    /* Check the media close status.  */
+    if (sd_status != FX_SUCCESS)
+    {
+      App_Error_Handler(THREAD_ID_1);
+    }
 
-  status = tx_event_flags_set(&finish_flag, FX_BOOT_ERROR, TX_OR);
+    sd_status = tx_event_flags_set(&finish_flag, FX_SUCCESS, TX_OR);
 
-  /* Check the event setting status.  */
-  if (status != TX_SUCCESS)
-  {
-    /* Error calling the event setter, call error handler.  */
-    App_Error_Handler(THREAD_ID_1);
-  }
+    /* Check the event setting status.  */
+    if (sd_status != TX_SUCCESS)
+    {
+      /* Error calling the event setter, call error handler.  */
+      App_Error_Handler(THREAD_ID_1);
+    }
 
-  while (1)
-  {
     /* Do nothing wait for the other thread */
     tx_thread_sleep(TX_TIMER_TICKS_PER_SECOND);
   }
-
 }
 VOID fx_thread_two_entry(ULONG thread_input)
 {
@@ -614,5 +703,73 @@ VOID App_Error_Handler(INT id)
   /* Call the main error handler */
   Error_Handler();
 
+}
+
+/**
+ * @brief  Detects if SD card is correctly plugged in the memory slot or not.
+ * @param Instance  SD Instance
+ * @retval Returns if SD is detected or not
+ */
+static uint8_t SD_IsDetected(uint32_t Instance)
+{
+  uint8_t ret;
+  if(Instance >= 1)
+  {
+    ret = HAL_ERROR;
+  }
+  else
+  {
+    /* Check SD card detect pin */
+    if (HAL_GPIO_ReadPin(SDCARD_DETECT_GPIO_Port, SDCARD_DETECT_Pin) == GPIO_PIN_SET)
+    {
+      ret = HAL_ERROR;
+    }
+    else
+    {
+      ret = HAL_OK;
+    }
+  }
+
+  return ret;
+}
+
+/**
+  * @brief  EXTI line detection callback.
+  * @param  GPIO_Pin: Specifies the port pin connected to corresponding EXTI line.
+  * @retval None
+  */
+void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
+{
+  ULONG s_msg = CARD_STATUS_CHANGED;
+
+  if(GPIO_Pin == SDCARD_DETECT_Pin)
+  {
+    tx_queue_send(&tx_msg_queue, &s_msg, TX_NO_WAIT);
+  }
+}
+
+/**
+  * @brief  EXTI line detection callback.
+  * @param  GPIO_Pin: Specifies the port pin connected to corresponding EXTI line.
+  * @retval None
+  */
+void HAL_GPIO_EXTI_Falling_Callback(uint16_t GPIO_Pin)
+{
+  ULONG s_msg = CARD_STATUS_CHANGED;
+
+  if(GPIO_Pin == SDCARD_DETECT_Pin)
+  {
+    tx_queue_send(&tx_msg_queue, &s_msg, TX_NO_WAIT);
+  }
+}
+
+/**
+  * @brief  Media close notify callback function.
+  * @param  media_ptr: Media control block pointer
+  * @retval None
+  */
+static VOID media_close_callback(FX_MEDIA *media_ptr)
+{
+  media_status = MEDIA_CLOSED;
 }
 /* USER CODE END 1 */

@@ -10,14 +10,14 @@
       <TargetName>BSP</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
+      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32U5G9ZJTxQ</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32U5Fx-5Gx_DFP.0.0.1</PackID>
-          <PackURL>http://www.keil.com/pack</PackURL>
+          <PackID>Keil.STM32U5xx_DFP.2.2.3</PackID>
+          <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x002F0000) IRAM2(0x24000000,0x01000000) IROM(0x08000000,0x00400000) XRAM(0x28000000,0x00004000) CPUTYPE("Cortex-M33") FPU3(SFPU) DSP TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -588,6 +588,16 @@
               <FileName>stm32u5xx_ll_dlyb.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_dlyb.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32u5xx_hal_tim_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32u5xx_hal_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim.c</FilePath>
             </File>
           </Files>
         </Group>

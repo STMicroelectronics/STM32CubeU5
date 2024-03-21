@@ -200,7 +200,7 @@ static ARM_USART_MODEM_STATUS USART0_GetModemStatus(void)
   return modem_status;
 }
 
-ARM_DRIVER_USART TFM_Driver_USART0 =
+ARM_DRIVER_USART Driver_USART0 =
 {
   USART_GetVersion,
   USART_GetCapabilities,

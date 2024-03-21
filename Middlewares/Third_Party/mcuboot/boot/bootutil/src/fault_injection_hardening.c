@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  * Copyright (c) 2020 Arm Limited
+ * Copyright (c) 2023 STMicroelectronics
  */
 
 #include "bootutil/fault_injection_hardening.h"

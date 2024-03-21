@@ -67,6 +67,9 @@ typedef enum
   CLASS_TYPE_DFU      = 5,
   CLASS_TYPE_PIMA_MTP = 6,
   CLASS_TYPE_RNDIS    = 7,
+  CLASS_TYPE_VIDEO    = 8,
+  CLASS_TYPE_CCID     = 9,
+  CLASS_TYPE_PRINTER  = 10,
 } USBD_CompositeClassTypeDef;
 
 /* Enum HID Interface Type */

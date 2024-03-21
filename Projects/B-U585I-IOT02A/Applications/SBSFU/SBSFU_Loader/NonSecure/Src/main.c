@@ -66,7 +66,7 @@ PUTCHAR_PROTOTYPE
   return ch;
 }
 
-/* Redirects printf to TFM_DRIVER_STDIO in case of ARMCLANG*/
+/* Redirects printf to DRIVER_STDIO in case of ARMCLANG*/
 #if defined(__ARMCC_VERSION)
 FILE __stdout;
 
@@ -80,7 +80,7 @@ int fputc(int ch, FILE *f)
   return ch;
 }
 #elif defined(__GNUC__)
-/* Redirects printf to TFM_DRIVER_STDIO in case of GNUARM */
+/* Redirects printf to DRIVER_STDIO in case of GNUARM */
 int _write(int fd, char *str, int len)
 {
   int i;

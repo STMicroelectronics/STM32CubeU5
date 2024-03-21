@@ -127,7 +127,9 @@ int32_t MX25UM51245G_AutoPollingMemReady(XSPI_HandleTypeDef *Ctx, MX25UM51245G_I
                                     : DUMMY_CYCLES_REG_OCTAL);
   s_command.DataLength         = (Rate == MX25UM51245G_DTR_TRANSFER) ? 2U : 1U;
   s_command.DQSMode            = (Rate == MX25UM51245G_DTR_TRANSFER) ? HAL_XSPI_DQS_ENABLE : HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   s_config.MatchValue    = 0U;
   s_config.MatchMask     = MX25UM51245G_SR_WIP;
@@ -200,8 +202,9 @@ int32_t MX25UM51245G_ReadSTR(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interface_t M
   s_command.DummyCycles        = (Mode == MX25UM51245G_SPI_MODE) ? DUMMY_CYCLES_READ : DUMMY_CYCLES_READ_OCTAL;
   s_command.DataLength         = Size;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
-
+#endif
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
@@ -249,7 +252,9 @@ int32_t MX25UM51245G_ReadDTR(XSPI_HandleTypeDef *Ctx, uint8_t *pData, uint32_t R
   s_command.DummyCycles        = DUMMY_CYCLES_READ_OCTAL_DTR;
   s_command.DataLength         = Size;
   s_command.DQSMode            = HAL_XSPI_DQS_ENABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -320,7 +325,9 @@ int32_t MX25UM51245G_PageProgram(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interface
   s_command.DummyCycles        = 0U;
   s_command.DataLength         = Size;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Configure the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -368,7 +375,9 @@ int32_t MX25UM51245G_PageProgramDTR(XSPI_HandleTypeDef *Ctx, uint8_t *pData, uin
   s_command.DummyCycles        = 0U;
   s_command.DataLength         = Size;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Configure the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -438,7 +447,9 @@ int32_t MX25UM51245G_BlockErase(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interface_
   s_command.DataMode           = HAL_XSPI_DATA_NONE;
   s_command.DummyCycles        = 0U;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   switch (Mode)
   {
@@ -516,7 +527,9 @@ int32_t MX25UM51245G_ChipErase(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interface_t
   s_command.DataMode           = HAL_XSPI_DATA_NONE;
   s_command.DummyCycles        = 0U;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -572,7 +585,9 @@ int32_t MX25UM51245G_EnableSTRMemoryMappedMode(XSPI_HandleTypeDef *Ctx, MX25UM51
   s_command.DataDTRMode        = HAL_XSPI_DATA_DTR_DISABLE;
   s_command.DummyCycles        = (Mode == MX25UM51245G_SPI_MODE) ? DUMMY_CYCLES_READ : DUMMY_CYCLES_READ_OCTAL;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the read command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -637,7 +652,9 @@ int32_t MX25UM51245G_EnableDTRMemoryMappedMode(XSPI_HandleTypeDef *Ctx, MX25UM51
   s_command.DataDTRMode        = HAL_XSPI_DATA_DTR_ENABLE;
   s_command.DummyCycles        = DUMMY_CYCLES_READ_OCTAL_DTR;
   s_command.DQSMode            = HAL_XSPI_DQS_ENABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -705,7 +722,9 @@ int32_t MX25UM51245G_Suspend(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interface_t M
   s_command.DataMode           = HAL_XSPI_DATA_NONE;
   s_command.DummyCycles        = 0U;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -754,7 +773,9 @@ int32_t MX25UM51245G_Resume(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interface_t Mo
   s_command.DataMode           = HAL_XSPI_DATA_NONE;
   s_command.DummyCycles        = 0U;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -805,7 +826,9 @@ int32_t MX25UM51245G_WriteEnable(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interface
   s_command.DataMode           = HAL_XSPI_DATA_NONE;
   s_command.DummyCycles        = 0U;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -891,7 +914,9 @@ int32_t MX25UM51245G_WriteDisable(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interfac
   s_command.DataMode           = HAL_XSPI_DATA_NONE;
   s_command.DummyCycles        = 0U;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -955,7 +980,9 @@ int32_t MX25UM51245G_ReadStatusRegister(XSPI_HandleTypeDef *Ctx, MX25UM51245G_In
                                     : DUMMY_CYCLES_REG_OCTAL);
   s_command.DataLength             = (Rate == MX25UM51245G_DTR_TRANSFER) ? 2U : 1U;
   s_command.DQSMode            = (Rate == MX25UM51245G_DTR_TRANSFER) ? HAL_XSPI_DQS_ENABLE : HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -1032,7 +1059,9 @@ int32_t MX25UM51245G_WriteStatusRegister(XSPI_HandleTypeDef *Ctx, MX25UM51245G_I
   s_command.DummyCycles        = 0U;
   s_command.DataLength             = (Mode == MX25UM51245G_SPI_MODE) ? 2U : ((Rate == MX25UM51245G_DTR_TRANSFER) ? 2U : 1U);
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -1112,7 +1141,9 @@ int32_t MX25UM51245G_WriteCfgRegister(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Inte
   s_command.DummyCycles        = 0U;
   s_command.DataLength             = (Mode == MX25UM51245G_SPI_MODE) ? 2U : ((Rate == MX25UM51245G_DTR_TRANSFER) ? 2U : 1U);
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -1181,7 +1212,9 @@ int32_t MX25UM51245G_ReadCfgRegister(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Inter
                                     : DUMMY_CYCLES_REG_OCTAL);
   s_command.DataLength             = (Rate == MX25UM51245G_DTR_TRANSFER) ? 2U : 1U;
   s_command.DQSMode            = (Rate == MX25UM51245G_DTR_TRANSFER) ? HAL_XSPI_DQS_ENABLE : HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -1247,7 +1280,9 @@ int32_t MX25UM51245G_WriteCfg2Register(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Int
   s_command.DummyCycles        = 0U;
   s_command.DataLength             = (Mode == MX25UM51245G_SPI_MODE) ? 1U : ((Rate == MX25UM51245G_DTR_TRANSFER) ? 2U : 1U);
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -1316,7 +1351,9 @@ int32_t MX25UM51245G_ReadCfg2Register(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Inte
                                     : DUMMY_CYCLES_REG_OCTAL);
   s_command.DataLength             = (Rate == MX25UM51245G_DTR_TRANSFER) ? 2U : 1U;
   s_command.DQSMode            = (Rate == MX25UM51245G_DTR_TRANSFER) ? HAL_XSPI_DQS_ENABLE : HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -1376,7 +1413,9 @@ int32_t MX25UM51245G_WriteSecurityRegister(XSPI_HandleTypeDef *Ctx, MX25UM51245G
   s_command.DataMode           = HAL_XSPI_DATA_NONE;
   s_command.DummyCycles        = 0U;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -1440,7 +1479,9 @@ int32_t MX25UM51245G_ReadSecurityRegister(XSPI_HandleTypeDef *Ctx, MX25UM51245G_
                                     : DUMMY_CYCLES_REG_OCTAL);
   s_command.DataLength             = (Rate == MX25UM51245G_DTR_TRANSFER) ? 2U : 1U;
   s_command.DQSMode            = (Rate == MX25UM51245G_DTR_TRANSFER) ? HAL_XSPI_DQS_ENABLE : HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -1515,7 +1556,9 @@ int32_t MX25UM51245G_ReadID(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interface_t Mo
                                     : DUMMY_CYCLES_REG_OCTAL);
   s_command.DataLength             = 3U;
   s_command.DQSMode            = (Rate == MX25UM51245G_DTR_TRANSFER) ? HAL_XSPI_DQS_ENABLE : HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Configure the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -1571,7 +1614,9 @@ int32_t MX25UM51245G_ResetEnable(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interface
   s_command.DataMode           = HAL_XSPI_DATA_NONE;
   s_command.DummyCycles        = 0U;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -1620,7 +1665,9 @@ int32_t MX25UM51245G_ResetMemory(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interface
   s_command.DataMode           = HAL_XSPI_DATA_NONE;
   s_command.DummyCycles        = 0U;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -1667,7 +1714,9 @@ int32_t MX25UM51245G_NoOperation(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interface
   s_command.DataMode           = HAL_XSPI_DATA_NONE;
   s_command.DummyCycles        = 0U;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
@@ -1718,7 +1767,9 @@ int32_t MX25UM51245G_EnterPowerDown(XSPI_HandleTypeDef *Ctx, MX25UM51245G_Interf
   s_command.DataMode           = HAL_XSPI_DATA_NONE;
   s_command.DummyCycles        = 0U;
   s_command.DQSMode            = HAL_XSPI_DQS_DISABLE;
+#if defined (XSPI_CCR_SIOO)
   s_command.SIOOMode           = HAL_XSPI_SIOO_INST_EVERY_CMD;
+#endif
 
   /* Send the command */
   if (HAL_XSPI_Command(Ctx, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)

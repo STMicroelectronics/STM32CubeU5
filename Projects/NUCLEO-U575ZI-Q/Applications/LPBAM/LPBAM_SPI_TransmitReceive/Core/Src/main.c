@@ -91,6 +91,7 @@ static void BufferProcessing(uint8_t* pBuffer1_8bits, uint16_t* pBuffer1_16bits,
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */

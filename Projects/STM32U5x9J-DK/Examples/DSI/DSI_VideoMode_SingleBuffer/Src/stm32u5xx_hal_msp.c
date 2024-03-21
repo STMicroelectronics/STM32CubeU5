@@ -62,6 +62,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -136,43 +137,6 @@ void HAL_DSI_MspInit(DSI_HandleTypeDef* hdsi)
   if(hdsi->Instance==DSI)
   {
   /* USER CODE BEGIN DSI_MspInit 0 */
-    RCC_PeriphCLKInitTypeDef  DSIPHYInitPeriph;
-
-    __HAL_RCC_DSI_CLK_ENABLE();
-
-    /* Switch to D-PHY source clock */
-    /* Enable the DSI host */
-    __HAL_DSI_ENABLE(hdsi);
-
-    /* Enable the DSI PLL */
-    __HAL_DSI_PLL_ENABLE(hdsi);
-
-    HAL_Delay(1);
-
-    /* Enable the clock lane and the digital section of the D-PHY   */
-    hdsi->Instance->PCTLR |= (DSI_PCTLR_CKE | DSI_PCTLR_DEN);
-
-    /* Set the TX escape clock division factor */
-    hdsi->Instance->CCR = 4;
-    
-    HAL_Delay(1);
-
-    /* Switch to DSI PHY PLL clock */
-    DSIPHYInitPeriph.PeriphClockSelection = RCC_PERIPHCLK_DSI;
-    DSIPHYInitPeriph.DsiClockSelection    = RCC_DSICLKSOURCE_DSIPHY;
-
-    HAL_RCCEx_PeriphCLKConfig(&DSIPHYInitPeriph);
-
-    HAL_Delay(11);
-    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_5, GPIO_PIN_SET);
-    HAL_Delay(150);
-
-    hdsi->Instance->CCR &= ~DSI_CCR_TXECKDIV;
-
-    __HAL_DSI_PLL_DISABLE(hdsi);
-
-    __HAL_DSI_DISABLE(hdsi);
-
   /* USER CODE END DSI_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_DSI_CLK_ENABLE();
@@ -197,6 +161,7 @@ void HAL_DSI_MspDeInit(DSI_HandleTypeDef* hdsi)
   if(hdsi->Instance==DSI)
   {
   /* USER CODE BEGIN DSI_MspDeInit 0 */
+
     __HAL_RCC_DSI_FORCE_RESET();
     __HAL_RCC_DSI_RELEASE_RESET();
 

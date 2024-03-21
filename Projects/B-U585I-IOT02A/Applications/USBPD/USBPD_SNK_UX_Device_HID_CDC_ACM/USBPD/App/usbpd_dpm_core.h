@@ -29,7 +29,12 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
+/* Exported define -----------------------------------------------------------*/
+/* USER CODE BEGIN Define */
+#define OS_PE_STACK_SIZE                  1024
 
+#define OS_CAD_STACK_SIZE                 1024
+/* USER CODE END Define */
 /* Exported typedef ----------------------------------------------------------*/
 /* USER CODE BEGIN typedef */
 

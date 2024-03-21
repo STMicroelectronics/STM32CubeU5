@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    mx25um51245g_conf.h
   * @author  MCD Application Team
-  * @brief   MX25UM51245G OctoSPI memory configuration template file.
+  * @brief   MX25UM51245G OctoSPI memory configuration file.
   ******************************************************************************
   * @attention
   *

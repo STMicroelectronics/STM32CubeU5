@@ -47,4 +47,4 @@ uint32_t extMemory_Config(void);
 /**
 * @}
 */
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+

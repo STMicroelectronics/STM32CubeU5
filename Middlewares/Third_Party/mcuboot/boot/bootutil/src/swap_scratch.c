@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  * Copyright (c) 2019 JUUL Labs
+ * Copyright (c) 2023 STMicroelectronics
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,7 +119,12 @@ swap_read_status_bytes(const struct flash_area *fap,
             return BOOT_EFLASH;
         }
 
+#ifdef MCUBOOT_USE_MCE
+        if (bootutil_buffer_is_erased(fap->fa_off + off + i * BOOT_WRITE_SZ(state),
+                                      fap, &status, 1)) {
+#else /* not MCUBOOT_USE_MCE */
         if (bootutil_buffer_is_erased(fap, &status, 1)) {
+#endif /* MCUBOOT_USE_MCE */
             if (found && !found_idx) {
                 found_idx = i;
             }
@@ -715,14 +721,24 @@ swap_run(struct boot_loader_state *state, struct boot_status *bs,
         last_idx_secondary_slot++;
     }
 
+#if defined(__ICCARM__)
     BOOT_LOG_INF("Swapping secondary and primary slots: 0x%x bytes", copy_size);
+#else /* __ICCARM__ */
+    BOOT_LOG_INF("Swapping secondary and primary slots: 0x%lx bytes", (long unsigned int)copy_size);
+#endif /* __ICCARM__ */
 
     swap_idx = 0;
     while (last_sector_idx >= 0) {
         sz = boot_copy_sz(state, last_sector_idx, &first_sector_idx);
         if (swap_idx >= (bs->idx - BOOT_STATUS_IDX_0)) {
+#if defined(__ICCARM__)
             BOOT_LOG_INF("Swapping: swap index 0x%x, sector index 0x%x, size 0x%x",
                          swap_idx, first_sector_idx, sz);
+#else /* __ICCARM__ */
+            BOOT_LOG_INF("Swapping: swap index 0x%lx, sector index 0x%lx, size 0x%lx",
+                         (long unsigned int)swap_idx, (long unsigned int)first_sector_idx,
+                         (long unsigned int)sz);
+#endif /* __ICCARM__ */
             boot_swap_sectors(first_sector_idx, sz, state, bs);
         }
 

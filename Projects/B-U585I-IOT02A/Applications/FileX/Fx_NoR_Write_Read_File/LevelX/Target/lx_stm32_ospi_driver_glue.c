@@ -542,6 +542,7 @@ static uint8_t ospi_memory_reset(OSPI_HandleTypeDef *hospi)
 
   /* Configure automatic polling mode to wait the memory is ready */
   s_command.Instruction  = LX_STM32_OSPI_OCTAL_READ_STATUS_REG_CMD;
+  s_command.InstructionSize = HAL_OSPI_INSTRUCTION_16_BITS;
   s_command.DataMode     = HAL_OSPI_DATA_1_LINE;
   s_command.NbData       = 1;
   s_command.DataDtrMode  = HAL_OSPI_DATA_DTR_DISABLE;

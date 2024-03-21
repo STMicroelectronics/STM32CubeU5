@@ -4,6 +4,7 @@
  * Copyright (c) 2017-2020 Linaro LTD
  * Copyright (c) 2017-2019 JUUL Labs
  * Copyright (c) 2019-2020 Arm Limited
+ * Copyright (c) 2023 STMicroelectronics
  *
  * Original license:
  *
@@ -342,8 +343,14 @@ int boot_read_enc_key(int image_index, uint8_t slot, struct boot_status *bs);
  * @returns true if the buffer is erased; false if any of the bytes is not
  * erased, or when buffer is NULL, or when len == 0.
  */
+#ifdef MCUBOOT_USE_MCE
+bool bootutil_buffer_is_erased(uint32_t off,
+                               const struct flash_area *area,
+                               const void *buffer, size_t len);
+#else /* not MCUBOOT_USE_MCE */
 bool bootutil_buffer_is_erased(const struct flash_area *area,
                                const void *buffer, size_t len);
+#endif /* MCUBOOT_USE_MCE */
 
 /**
  * Safe (non-overflowing) uint32_t addition.  Returns true, and stores

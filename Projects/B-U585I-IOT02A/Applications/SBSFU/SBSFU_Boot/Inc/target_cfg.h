@@ -17,13 +17,12 @@
 #ifndef __STM32U5xx_CFG_H__
 #define __STM32U5xx_CFG_H__
 
-#include "platform/ext/common/uart_stdout.h"
+#include "uart_stdout.h"
 #include "tfm_peripherals_def.h"
 #ifdef TFM_FIH_PROFILE_ON
 #include "fih.h"
 #endif
-#define TFM_DRIVER_STDIO    TFM_Driver_USART0
-#define NS_DRIVER_STDIO     TFM_Driver_USART0
+#define DRIVER_STDIO     Driver_USART0
 
 /*
 // <o>Floating Point Unit usage

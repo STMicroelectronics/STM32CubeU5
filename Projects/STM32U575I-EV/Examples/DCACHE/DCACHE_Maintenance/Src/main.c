@@ -158,8 +158,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
   BSP_LED_Init(LED_GREEN);
   BSP_LED_Init(LED_RED);
-  /* Configure the Tamper push-button in GPIO Mode */
-  BSP_PB_Init(BUTTON_TAMPER, BUTTON_MODE_GPIO);
+  /* Configure the user-button in GPIO Mode */
+  BSP_PB_Init(BUTTON_USER, BUTTON_MODE_GPIO);
 
   /* Turn off leds */
   BSP_LED_Off(LED_GREEN);
@@ -218,16 +218,16 @@ int main(void)
       BSP_LED_On(LED_RED);
   }
 
-  /*## -3- Wait for Tamper Key press / release  #########################################*/
+  /*## -3- Wait for User Key press / release  #########################################*/
   /*#####################################################################################*/
 
-  /* Wait for Tamper Key press before starting the Cache maintenance */
-  while (BSP_PB_GetState(BUTTON_TAMPER) == RESET)
+  /* Wait for user-button Key press before starting the Cache maintenance */
+  while (BSP_PB_GetState(BUTTON_USER) == RESET)
   {
   }
 
-  /* Wait for Tamper Key to be released before starting the Cache maintenance */
-  while (BSP_PB_GetState(BUTTON_TAMPER) == SET)
+  /* Wait for user-button Key to be released before starting the Cache maintenance */
+  while (BSP_PB_GetState(BUTTON_USER) == SET)
   {
   }
 

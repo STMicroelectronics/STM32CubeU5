@@ -66,7 +66,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>8.50.1.24770</state>
+          <state>8.50.9.33458</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -117,7 +117,7 @@
         <option>
           <name>GBECoreSlave</name>
           <version>28</version>
-          <state></state>
+          <state>59</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -134,11 +134,11 @@
         <option>
           <name>CoreVariant</name>
           <version>28</version>
-          <state>39</state>
+          <state>59</state>
         </option>
         <option>
           <name>GFPUDeviceSlave</name>
-          <state></state>
+          <state>STM32U5A5ZJ	ST STM32U5A5ZJ</state>
         </option>
         <option>
           <name>FPU2</name>
@@ -157,7 +157,7 @@
         <option>
           <name>GFPUCoreSlave2</name>
           <version>28</version>
-          <state>39</state>
+          <state>59</state>
         </option>
         <option>
           <name>OGCMSISPackSelectDevice</name>
@@ -227,7 +227,6 @@
           <state>FX_INCLUDE_USER_DEFINE_FILE</state>
           <state>USE_HAL_DRIVER</state>
           <state>STM32U5A5xx</state>
-          <state></state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -320,7 +319,7 @@
         </option>
         <option>
           <name>CCRequirePrototypes</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCDiagWarnAreErr</name>
@@ -488,7 +487,7 @@
       <name>AARM</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>10</version>
+        <version>11</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -614,7 +613,7 @@
         </option>
         <option>
           <name>AOutputFile</name>
-          <state></state>
+          <state>$FILE_BNAME$.o</state>
         </option>
         <option>
           <name>ALimitErrorsCheck</name>
@@ -643,6 +642,10 @@
         <option>
           <name>AsmNoLiteralPool</name>
           <state>0</state>
+        </option>
+        <option>
+          <name>PreInclude</name>
+          <state></state>
         </option>
       </data>
     </settings>
@@ -1077,7 +1080,7 @@
     <group>
       <name>EWARM</name>
       <file>
-        <name>$PROJ_DIR$/startup_stm32u5a5xx.s</name>
+        <name>$PROJ_DIR$\startup_stm32u5a5xx.s</name>
       </file>
     </group>
     <group>
@@ -1085,13 +1088,13 @@
       <group>
         <name>Core</name>
         <file>
-          <name>$PROJ_DIR$/../Core/Src/main.c</name>
+          <name>$PROJ_DIR$\..\Core\Src\main.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../Core/Src/stm32u5xx_it.c</name>
+          <name>$PROJ_DIR$\..\Core\Src\stm32u5xx_it.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../Core/Src/stm32u5xx_hal_msp.c</name>
+          <name>$PROJ_DIR$\..\Core\Src\stm32u5xx_hal_msp.c</name>
         </file>
       </group>
       <group>
@@ -1099,7 +1102,7 @@
         <group>
           <name>App</name>
           <file>
-            <name>$PROJ_DIR$/../FileX/App/app_filex.c</name>
+            <name>$PROJ_DIR$\..\FileX\App\app_filex.c</name>
           </file>
         </group>
       </group>
@@ -1108,78 +1111,78 @@
   <group>
     <name>Doc</name>
     <file>
-      <name>$PROJ_DIR$/../README.md</name>
+      <name>$PROJ_DIR$\..\README.md</name>
     </file>
   </group>
   <group>
     <name>Drivers</name>
     <group>
-      <name>STM32U5xx_HAL_Driver</name>
+      <name>CMSIS</name>
       <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_cortex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_i2c.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_i2c_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_flash.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_flash_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_gpio.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_dma.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_dma_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_exti.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_gtzc.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_icache.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_tim.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_tim_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_uart.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_uart_ex.c</name>
+        <name>$PROJ_DIR$\..\Core\Src\system_stm32u5xx.c</name>
       </file>
     </group>
     <group>
-      <name>CMSIS</name>
+      <name>STM32U5xx_HAL_Driver</name>
       <file>
-        <name>$PROJ_DIR$/../Core/Src/system_stm32u5xx.c</name>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_cortex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_i2c.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_i2c_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rcc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_rcc_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_flash.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_flash_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_gpio.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_dma.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_dma_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_exti.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_pwr.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_pwr_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_gtzc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_icache.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim_ex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_uart.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_uart_ex.c</name>
       </file>
     </group>
   </group>
@@ -1190,706 +1193,706 @@
       <group>
         <name>Core</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_attributes_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_attributes_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_attributes_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_attributes_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_create.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_create.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_default_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_default_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_default_get_copy.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_default_get_copy.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_default_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_default_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_delete.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_delete.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_entry_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_entry_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_entry_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_entry_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_exFAT_entry_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_exFAT_entry_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_exFAT_entry_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_exFAT_entry_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_exFAT_free_search.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_exFAT_free_search.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_exFAT_unicode_entry_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_exFAT_unicode_entry_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_first_entry_find.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_first_entry_find.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_first_full_entry_find.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_first_full_entry_find.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_free_search.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_free_search.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_information_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_information_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_local_path_clear.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_local_path_clear.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_local_path_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_local_path_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_local_path_get_copy.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_local_path_get_copy.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_local_path_restore.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_local_path_restore.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_local_path_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_local_path_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_long_name_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_long_name_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_long_name_get_extended.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_long_name_get_extended.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_name_extract.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_name_extract.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_name_test.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_name_test.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_next_entry_find.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_next_entry_find.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_next_full_entry_find.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_next_full_entry_find.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_rename.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_rename.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_search.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_search.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_short_name_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_short_name_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_directory_short_name_get_extended.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_directory_short_name_get_extended.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_add_bitmap_log.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_add_bitmap_log.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_add_checksum_log.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_add_checksum_log.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_add_dir_log.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_add_dir_log.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_add_FAT_log.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_add_FAT_log.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_apply_logs.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_apply_logs.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_calculate_checksum.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_calculate_checksum.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_cleanup_FAT_chain.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_cleanup_FAT_chain.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_create_log_file.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_create_log_file.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_enable.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_enable.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_read_directory_sector.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_read_directory_sector.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_read_FAT.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_read_FAT.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_read_log_file.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_read_log_file.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_recover.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_recover.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_reset_log_file.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_reset_log_file.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_set_FAT_chain.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_set_FAT_chain.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_transaction_end.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_transaction_end.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_transaction_fail.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_transaction_fail.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_transaction_start.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_transaction_start.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_fault_tolerant_write_log_file.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_fault_tolerant_write_log_file.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_allocate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_allocate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_attributes_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_attributes_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_attributes_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_attributes_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_best_effort_allocate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_best_effort_allocate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_close.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_close.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_create.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_create.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_date_time_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_date_time_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_delete.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_delete.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_extended_allocate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_extended_allocate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_extended_best_effort_allocate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_extended_best_effort_allocate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_extended_relative_seek.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_extended_relative_seek.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_extended_seek.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_extended_seek.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_extended_truncate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_extended_truncate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_extended_truncate_release.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_extended_truncate_release.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_open.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_open.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_relative_seek.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_relative_seek.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_rename.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_rename.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_seek.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_seek.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_truncate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_truncate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_truncate_release.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_truncate_release.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_file_write_notify_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_file_write_notify_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_abort.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_abort.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_boot_info_extract.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_boot_info_extract.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_cache_invalidate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_cache_invalidate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_check.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_check.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_check_FAT_chain_check.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_check_FAT_chain_check.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_check_lost_cluster_check.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_check_lost_cluster_check.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_close.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_close.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_close_notify_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_close_notify_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_exFAT_format.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_exFAT_format.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_extended_space_available.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_extended_space_available.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_flush.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_flush.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_format.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_format.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_format_oem_name_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_format_oem_name_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_format_type_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_format_type_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_format_volume_id_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_format_volume_id_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_open.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_open.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_open_notify_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_open_notify_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_space_available.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_space_available.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_volume_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_volume_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_volume_get_extended.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_volume_get_extended.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_volume_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_volume_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_media_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_media_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_partition_offset_calculate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_partition_offset_calculate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_system_date_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_system_date_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_system_date_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_system_date_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_system_initialize.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_system_initialize.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_system_time_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_system_time_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_system_time_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_system_time_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_system_timer_entry.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_system_timer_entry.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_directory_create.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_directory_create.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_directory_entry_change.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_directory_entry_change.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_directory_entry_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_directory_entry_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_directory_rename.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_directory_rename.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_directory_search.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_directory_search.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_file_create.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_file_create.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_file_rename.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_file_rename.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_length_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_length_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_length_get_extended.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_length_get_extended.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_name_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_name_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_name_get_extended.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_name_get_extended.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_short_name_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_short_name_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_unicode_short_name_get_extended.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_unicode_short_name_get_extended.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_16_unsigned_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_16_unsigned_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_16_unsigned_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_16_unsigned_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_32_unsigned_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_32_unsigned_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_32_unsigned_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_32_unsigned_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_64_unsigned_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_64_unsigned_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_64_unsigned_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_64_unsigned_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_absolute_path_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_absolute_path_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_allocate_new_cluster.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_allocate_new_cluster.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_bitmap_cache_prepare.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_bitmap_cache_prepare.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_bitmap_cache_update.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_bitmap_cache_update.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_bitmap_flush.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_bitmap_flush.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_bitmap_free_cluster_find.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_bitmap_free_cluster_find.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_bitmap_initialize.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_bitmap_initialize.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_bitmap_start_sector_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_bitmap_start_sector_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_cluster_free.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_cluster_free.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_cluster_state_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_cluster_state_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_cluster_state_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_cluster_state_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_geometry_check.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_geometry_check.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_name_hash_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_name_hash_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_size_calculate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_size_calculate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_system_area_checksum_verify.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_system_area_checksum_verify.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_system_area_checksum_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_system_area_checksum_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_system_area_format.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_system_area_format.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_system_sector_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_system_sector_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_unicode_name_hash_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_unicode_name_hash_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_exFAT_upcase_table.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_exFAT_upcase_table.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_FAT_entry_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_FAT_entry_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_FAT_entry_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_FAT_entry_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_FAT_flush.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_FAT_flush.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_FAT_map_flush.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_FAT_map_flush.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_FAT_sector_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_FAT_sector_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_logical_sector_cache_entry_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_logical_sector_cache_entry_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_logical_sector_flush.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_logical_sector_flush.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_logical_sector_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_logical_sector_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_logical_sector_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_logical_sector_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_memory_copy.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_memory_copy.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_memory_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_memory_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_string_length_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_string_length_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fx_utility_token_length_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fx_utility_token_length_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_attributes_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_attributes_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_attributes_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_attributes_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_create.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_create.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_default_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_default_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_default_get_copy.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_default_get_copy.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_default_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_default_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_delete.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_delete.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_first_entry_find.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_first_entry_find.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_first_full_entry_find.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_first_full_entry_find.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_information_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_information_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_local_path_clear.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_local_path_clear.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_local_path_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_local_path_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_local_path_get_copy.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_local_path_get_copy.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_local_path_restore.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_local_path_restore.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_local_path_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_local_path_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_long_name_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_long_name_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_long_name_get_extended.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_long_name_get_extended.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_name_test.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_name_test.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_next_entry_find.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_next_entry_find.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_next_full_entry_find.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_next_full_entry_find.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_rename.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_rename.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_short_name_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_short_name_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_directory_short_name_get_extended.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_directory_short_name_get_extended.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_fault_tolerant_enable.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_fault_tolerant_enable.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_allocate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_allocate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_attributes_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_attributes_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_attributes_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_attributes_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_best_effort_allocate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_best_effort_allocate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_close.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_close.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_create.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_create.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_date_time_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_date_time_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_delete.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_delete.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_extended_allocate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_extended_allocate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_extended_best_effort_allocate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_extended_best_effort_allocate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_extended_relative_seek.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_extended_relative_seek.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_extended_seek.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_extended_seek.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_extended_truncate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_extended_truncate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_extended_truncate_release.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_extended_truncate_release.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_open.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_open.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_relative_seek.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_relative_seek.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_rename.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_rename.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_seek.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_seek.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_truncate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_truncate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_truncate_release.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_truncate_release.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_file_write_notify_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_file_write_notify_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_abort.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_abort.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_cache_invalidate.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_cache_invalidate.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_check.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_check.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_close.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_close.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_close_notify_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_close_notify_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_exFAT_format.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_exFAT_format.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_extended_space_available.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_extended_space_available.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_flush.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_flush.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_format.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_format.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_open.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_open.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_open_notify_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_open_notify_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_read.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_read.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_space_available.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_space_available.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_volume_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_volume_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_volume_get_extended.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_volume_get_extended.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_volume_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_volume_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_media_write.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_media_write.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_system_date_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_system_date_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_system_date_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_system_date_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_system_time_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_system_time_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_system_time_set.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_system_time_set.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_unicode_directory_create.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_unicode_directory_create.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_unicode_directory_rename.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_unicode_directory_rename.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_unicode_file_create.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_unicode_file_create.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_unicode_file_rename.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_unicode_file_rename.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_unicode_name_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_unicode_name_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_unicode_name_get_extended.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_unicode_name_get_extended.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_unicode_short_name_get.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_unicode_short_name_get.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/src/fxe_unicode_short_name_get_extended.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\src\fxe_unicode_short_name_get_extended.c</name>
         </file>
       </group>
       <group>
         <name>Internal Ram interface</name>
         <file>
-          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/filex/common/drivers/fx_stm32_sram_driver.c</name>
+          <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\filex\common\drivers\fx_stm32_sram_driver.c</name>
         </file>
       </group>
     </group>

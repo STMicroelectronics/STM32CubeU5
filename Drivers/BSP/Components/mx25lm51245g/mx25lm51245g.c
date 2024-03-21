@@ -4,6 +4,16 @@
   * @modify  MCD Application Team
   * @brief   This file provides the MX25LM51245G OSPI drivers.
   ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2017-2022 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
   * MX25LM51245G action :
   *   STR Octal IO protocol (SOPI) and DTR Octal IO protocol (DOPI) bits of
   *   Configuration Register 2 :
@@ -20,16 +30,6 @@
   *
   *   Memory commands support STR(Single Transfer Rate) &
   *   DTR(Double Transfer Rate) modes in SPI
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2017-2019 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */

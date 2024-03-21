@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2018-2019 JUUL Labs
  * Copyright (c) 2019 Arm Limited
+ * Copyright (c) 2023 STMicroelectronics
  */
 
 #include "mcuboot_config/mcuboot_config.h"
@@ -13,10 +14,9 @@
 #include <string.h>
 
 #if defined(MCUBOOT_ENCRYPT_RSA)
-#include "mbedtls/rsa.h"
-#include "mbedtls/rsa_internal.h"
+#include "bootutil/crypto/rsa_oaep.h"
 #include "mbedtls/asn1.h"
-#endif
+#endif /* MCUBOOT_ENCRYPT_RSA */
 
 #if defined(MCUBOOT_ENCRYPT_KW)
 #include "bootutil/crypto/aes_kw.h"
@@ -90,7 +90,7 @@ done:
 
 #if defined(MCUBOOT_ENCRYPT_RSA)
 static int
-parse_rsa_enckey(mbedtls_rsa_context *ctx, uint8_t **p, uint8_t *end)
+parse_rsa_enckey(bootutil_rsa_context *ctx, uint8_t **p, uint8_t *end)
 {
     size_t len;
 
@@ -107,18 +107,20 @@ parse_rsa_enckey(mbedtls_rsa_context *ctx, uint8_t **p, uint8_t *end)
     if ( /* version */
         mbedtls_asn1_get_int(p, end, &ctx->ver) != 0 ||
          /* public modulus */
-        mbedtls_asn1_get_mpi(p, end, &ctx->N) != 0 ||
+        bootutil_asn1_get_rsa_number(p, end, &ctx->N) != 0 ||
          /* public exponent */
-        mbedtls_asn1_get_mpi(p, end, &ctx->E) != 0 ||
+        bootutil_asn1_get_rsa_number(p, end, &ctx->E) != 0 ||
          /* private exponent */
-        mbedtls_asn1_get_mpi(p, end, &ctx->D) != 0 ||
+        bootutil_asn1_get_rsa_number(p, end, &ctx->D) != 0 ||
          /* primes */
-        mbedtls_asn1_get_mpi(p, end, &ctx->P) != 0 ||
-        mbedtls_asn1_get_mpi(p, end, &ctx->Q) != 0) {
+        bootutil_asn1_get_rsa_number(p, end, &ctx->P) != 0 ||
+        bootutil_asn1_get_rsa_number(p, end, &ctx->Q) != 0) {
 
         return -3;
     }
+    ctx->len = bootutil_rsa_number_size(&ctx->N);
 
+#if defined(MCUBOOT_USE_MBED_TLS)
 #if !defined(MBEDTLS_RSA_NO_CRT)
     /*
      * DP/DQ/QP are only used inside mbedTLS if it was built with the
@@ -127,10 +129,10 @@ parse_rsa_enckey(mbedtls_rsa_context *ctx, uint8_t **p, uint8_t *end)
      */
     if (*p < end) {
         if ( /* d mod (p-1) and d mod (q-1) */
-            mbedtls_asn1_get_mpi(p, end, &ctx->DP) != 0 ||
-            mbedtls_asn1_get_mpi(p, end, &ctx->DQ) != 0 ||
+            bootutil_asn1_get_rsa_number(p, end, &ctx->DP) != 0 ||
+            bootutil_asn1_get_rsa_number(p, end, &ctx->DQ) != 0 ||
              /* q ^ (-1) mod p */
-            mbedtls_asn1_get_mpi(p, end, &ctx->QP) != 0) {
+            bootutil_asn1_get_rsa_number(p, end, &ctx->QP) != 0) {
 
             return -4;
         }
@@ -142,11 +144,10 @@ parse_rsa_enckey(mbedtls_rsa_context *ctx, uint8_t **p, uint8_t *end)
     }
 #endif
 
-    ctx->len = mbedtls_mpi_size(&ctx->N);
-
     if (mbedtls_rsa_check_privkey(ctx) != 0) {
         return -6;
     }
+#endif /* MCUBOOT_USE_MBED_TLS */
 
     return 0;
 }
@@ -461,7 +462,8 @@ int
 boot_enc_decrypt(const uint8_t *buf, uint8_t *enckey)
 {
 #if defined(MCUBOOT_ENCRYPT_RSA)
-    mbedtls_rsa_context rsa;
+    bootutil_rsa_context rsa;
+
     uint8_t *cp;
     uint8_t *cpend;
     size_t olen;
@@ -488,21 +490,20 @@ boot_enc_decrypt(const uint8_t *buf, uint8_t *enckey)
     int rc = -1;
 
 #if defined(MCUBOOT_ENCRYPT_RSA)
-
-    mbedtls_rsa_init(&rsa, MBEDTLS_RSA_PKCS_V21, MBEDTLS_MD_SHA256);
+    bootutil_rsa_init(&rsa, BOOTUTIL_RSA_PKCS_V21, BOOTUTIL_MD_SHA256);
 
     cp = (uint8_t *)bootutil_enc_key.key;
     cpend = cp + *bootutil_enc_key.len;
 
     rc = parse_rsa_enckey(&rsa, &cp, cpend);
     if (rc) {
-        mbedtls_rsa_free(&rsa);
+        bootutil_rsa_drop(&rsa);
         return rc;
     }
 
-    rc = mbedtls_rsa_rsaes_oaep_decrypt(&rsa, NULL, NULL, MBEDTLS_RSA_PRIVATE,
+    rc = bootutil_rsa_oaep_decrypt(&rsa, NULL, NULL, BOOTUTIL_RSA_PRIVATE,
             NULL, 0, &olen, buf, enckey, BOOT_ENC_KEY_SIZE);
-    mbedtls_rsa_free(&rsa);
+    bootutil_rsa_drop(&rsa);
     while(olen!=0)
     {  BOOT_LOG_INF("%x, %x, %x, %x, %x, %x , %x ,%x,",
 	   enckey[BOOT_ENC_KEY_SIZE-olen],

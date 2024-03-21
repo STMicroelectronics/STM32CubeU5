@@ -5,16 +5,13 @@ How to use HAL GTZC MPCBB to build any example with illegal Access detection whe
 The purpose of this example is to declare the SRAM3 (starting from 0x20040000) as non-secure
 with HAL GTZC MPCBB services and to demonstrate that a security violation is detected when non-secure application accesses secure SRAM1 memory.
 
-The non-secure application toggles **LED1** every second until the security violation is detected.
-
-The security violation detection at MPCBB level is triggered by two means:
-
-- automatically after 5 seconds
-- before through the USER push-button key press.
+In non-secure application, LED GREEN is TOGGLING.
+The security violation detection at MPCBB level is triggered by pressing the USER push-button key:
 
 Any key press on USER push-button initiates an access in secure SRAM1 (SRAM1 base address).
-The illegal Access is detected from the secure application which turned on LED RED.
-After returning to Non-Secure application, the LED RED is turned Off after a delay of 1s.
+The illegal Access is detected from the secure application.
+After returning to non-secure application, the GREEN LED is ON to indicate that illegal access
+is detected by the secure application.
 
 This project is composed of two sub-projects:
 
@@ -23,7 +20,7 @@ This project is composed of two sub-projects:
 
 Please remember that on system with security enabled:
 
-- the system always boots in secure, and the secure application is responsible for
+- the system always boots in secure and the secure application is responsible for
 launching the non-secure application.
 - the SystemInit() function in secure application sets up the SAU/IDAU, FPU and
 secure/non-secure interrupts allocations defined in partition_stm32u575xx.h file.
@@ -35,11 +32,10 @@ into two halves:
  - the first half for the secure application and
  - the second half for the non-secure application.
 
-The NUCLEO-U575ZI-Q (MB1549) board LEDs can be used to monitor the transfer status:
+The NUCLEO-U575ZI-Q (MB1549) board LED GREEN can be used to monitor the transfer status:
 
- -  **LED_GREEN is toggled** for 5s in non-secure (waiting for USER push-button key press),
- -  **LED_GREEN is ON** when the illegal access on internal SRAM is detected,
- -  **LED_RED is ON** when any error or an illegal access occurs.
+ -  **LED_GREEN is TOGGLING** in non-secure (waiting for USER push-button key press),
+ -  **LED_GREEN is ON** when the illegal access on internal SRAM1 is detected,
 
 User Option Bytes configuration:
 
@@ -48,9 +44,9 @@ SECWM1_PSTRT/SECWM1_PEND and SECWM2_PSTRT/SECWM2_PEND should be set according to
 configuration. Here the proper User Option Bytes setup in line with the project linker/scatter
 file is as follows:
 
-     - TZEN=1
-     - SECWM1_PSTRT=0x0  SECWM1_PEND=0x7F  meaning all 128 pages of Bank1 set as secure
-     - SECWM2_PSTRT=0x1  SECWM2_PEND=0x0   meaning no page of Bank2 set as secure, hence Bank2 non-secure
+  - TZEN=1
+  - SECWM1_PSTRT=0x0  SECWM1_PEND=0x7F  meaning all 128 pages of Bank1 set as secure
+  - SECWM2_PSTRT=0x1  SECWM2_PEND=0x0   meaning no page of Bank2 set as secure, hence Bank2 non-secure
 
 This project is targeted to run on STM32U5 device on boards from STMicroelectronics.
 
@@ -66,10 +62,9 @@ This example configures the maximum system clock frequency at 160Mhz.
 
  2. The application need to ensure that the SysTick time base is always set to 1 millisecond
     to have correct HAL operation.
-
  3. The following sequence is needed to disable TrustZone:
- 
-      - **Boot from user Flash memory**:  
+
+      - **Boot from user Flash memory**:
          a.	Make sure that secure and non-secure applications are well loaded and executed (jump done on non-secure application).
          b.	If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution.
          c.	Use a power supply different from ST-LINK in order to be able to connect to the target.
@@ -80,8 +75,8 @@ This example configures the maximum system clock frequency at 160Mhz.
          b.	If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution.
          c.	Use a power supply different from ST-LINK in order to be able to connect to the target.
          d.	Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply.
-		 
-	Please refer to AN5347 for more details.	 
+
+	Please refer to AN5347 for more details.
 
 ### <b>Keywords</b>
 
@@ -119,9 +114,9 @@ Security, TrustZone, GTZC, MPCBB, Memory protection, Block-Based, Memory, intern
 
   - User Option Bytes requirement (with STM32CubeProgrammer tool)
 
-        - TZEN = 1                            System with TrustZone-M enabled
-        - SECWM1_PSTRT=0x0  SECWM1_PEND=0x7F  All 128 pages of internal Flash Bank1 set as secure
-        - SECWM2_PSTRT=0x1  SECWM2_PEND=0x0   No page of internal Flash Bank2 set as secure, hence Bank2 non-secure
+    - TZEN=1                              System with TrustZone-M enabled
+    - SECWM1_PSTRT=0x0  SECWM1_PEND=0x7F  All 128 pages of internal Flash Bank1 set as secure
+    - SECWM2_PSTRT=0x1  SECWM2_PEND=0x0   No page of internal Flash Bank2 set as secure, hence Bank2 non-secure
 
 ### <b>How to use it ?</b>
 

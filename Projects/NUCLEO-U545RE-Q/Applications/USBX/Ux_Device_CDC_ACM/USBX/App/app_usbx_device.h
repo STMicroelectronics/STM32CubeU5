@@ -72,6 +72,7 @@ VOID USBX_APP_UART_Init(UART_HandleTypeDef **huart);
 /* USER CODE BEGIN PD */
 
 /* USER CODE END PD */
+
 #ifndef UX_DEVICE_APP_THREAD_NAME
 #define UX_DEVICE_APP_THREAD_NAME  "USBX Device App Main Thread"
 #endif

@@ -1,3 +1,11 @@
+
+---
+pagetitle: Readme
+lang: en
+---
+::: {.row}
+::: {.col-sm-12 .col-lg-8}
+
 ## <b>PWR_ModesSelection Example Description</b>
 
 -   How to configure the system using HAL drivers to measure the current consumption in different low-power modes.
@@ -27,9 +35,9 @@ is printed in the hyperterminal.
  1. To measure the current consumption remove JP5 jumper
     and connect an amperemeter to JP5 to measure IDD current.
 
- 2. This example can not be used in DEBUG mode due to the fact
+ 2. **This example can not be used in DEBUG mode due to the fact
     that the Cortex-M33 core is no longer clocked during low power mode
-    so debugging features are disabled.
+    so debugging features are disabled.**
 
  3. Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds)
     based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from
@@ -84,5 +92,7 @@ Power, PWR, Run, Stop1, Stop2, Stop3, Standby, Shutdown, Retention, Regulator, S
 -   In order to make the program work, you must do the following :
     -   Open your preferred toolchain
     -   Rebuild all files and load your image into target memory
-    -   Run the example
-
+    -   Power reset the board
+    -   Open hyperterminal
+    -   Select the low power mode to run
+    -   Start measuring the consumption

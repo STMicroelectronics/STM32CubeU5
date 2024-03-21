@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    sitronix_conf_template.h
+  * @file    sitronix_conf.h
   * @author  MCD Application Team
   * @brief   This file contains specific configuration for the
   *          sitronix.c that can be modified by user.

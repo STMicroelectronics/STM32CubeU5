@@ -68,6 +68,7 @@ static void MX_SDMMC1_SD_Init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */

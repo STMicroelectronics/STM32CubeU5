@@ -48,7 +48,7 @@ void mxchip_WIFI_ISR(uint16_t pin);
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 extern void mxchip_WIFI_ISR(uint16_t pin);
-extern void nx_driver_emw3080_interrupt();
+extern void nx_driver_emw3080_interrupt(void);
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

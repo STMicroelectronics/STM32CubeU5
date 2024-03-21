@@ -17,6 +17,10 @@
   ******************************************************************************
   @endverbatim
 
+### 01-January-2024 ###
+========================
+    + Synchronize secure_fw/partitions/crypto/crypto_spe.h with mbed-crypto/tests/include/spe/crypto_spe.h (mbed-tls-v2.28.5_20240108)
+	
 ### 16-December-2022 ###
 ========================
     + Fix Keil and STM32CubeIDE compilation errors and warnings

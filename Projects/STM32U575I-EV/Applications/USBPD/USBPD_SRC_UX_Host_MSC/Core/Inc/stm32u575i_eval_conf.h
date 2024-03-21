@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    stm32u575i_eval_conf_template.h
+  * @file    stm32u575i_eval_conf.h
   * @author  MCD Application Team
   * @brief   STM32U575I_EVAL board configuration file.
   ******************************************************************************

@@ -1,44 +1,46 @@
-<!--
+_Note:_ this is a template, please remove the parts that are not
+applicable (these initial notes, and the "Bug" section for a Feature request
+and vice-versa).
 
-   ************************************** WARNING **************************************
+**Note:** to report a security vulnerability, see
+[SECURITY.md](../SECURITY.md). Please do not use github issues for
+vulnerabilities.
 
-   The ciarcom bot parses this header automatically. Any deviation from the 
-   template may cause the bot to automatically correct this header or may result in a 
-   warning message, requesting updates.
+_Note:_ to get support, see [SUPPORT.md](../SUPPORT.md). Please do not use
+github issues for questions.
 
-   Please ensure that nothing follows the Issue request type section, all 
-   issue details are within the Description section and no changes are made to the 
-   template format (as detailed below).
-
-   *************************************************************************************
-
--->
-
+---------------------------------------------------------------
 ### Description
+- Type: Bug | Enhancement / Feature Request
+- Priority: Blocker | Major | Minor
 
-<!--
-    Required
-    Add detailed description of what you are reporting.
-    Good example: https://os.mbed.com/docs/latest/reference/workflow.html
-    Things to consider sharing:
-    - What target does this relate to?
-    - What toolchain (name + version) are you using?
-    - What tools (name + version - is it mbed-cli, online compiler or IDE) are you using?
-    - What is the SHA of Mbed OS (git log -n1 --oneline)?
-    - Steps to reproduce. (Did you publish code or a test case that exhibits the problem?)
--->
+---------------------------------------------------------------
+## Bug
 
+**OS**  
+Mbed OS|linux|windows|
 
-### Issue request type
+**Mbed TLS build:**  
+Version: x.x.x or git commit id  
+OS version: x.x.x  
+Configuration: please attach config.h file where possible  
+Compiler and options (if you used a pre-built binary, please indicate how you obtained it):  
+Additional environment information:  
 
-<!--
-    Required
-    Please add only one X to one of the following types. Do not fill multiple types (split the issue otherwise.)
-    Please note this is not a GitHub task list, indenting the boxes or changing the format to add a '.' or '*' in front
-    of them would change the meaning incorrectly. The only changes to be made are to add a description text under the
-    description heading and to add a 'x' to the correct box.
--->
-    [ ] Question
-    [ ] Enhancement
-    [ ] Bug
+**Peer device TLS stack and version**  
+OpenSSL|GnuTls|Chrome|NSS(Firefox)|SecureChannel (IIS/Internet Explorer/Edge)|Other  
+Version:  
+
+**Expected behavior**   
+
+**Actual behavior**  
+
+**Steps to reproduce**  
+
+----------------------------------------------------------------
+## Enhancement / Feature Request
+
+**Suggested enhancement**  
+
+**Justification - why does the library need this feature?**  
 

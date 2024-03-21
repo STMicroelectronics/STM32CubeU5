@@ -2,10 +2,10 @@
   @verbatim
   ******************************************************************************
   *
-  *         Portions COPYRIGHT 2016-2022 STMicroelectronics, All Rights Reserved
-  *         Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
+  * Portions Copyright (C) 2016-2023 STMicroelectronics, All Rights Reserved
+  * Copyright (C) 2006-2023, ARM Limited, All Rights Reserved
   *
-  * @file    st_readme.txt 
+  * @file    st_readme.txt
   * @author  MCD Application Team
   * @brief   This file lists the main modification done by STMicroelectronics on
   *          mbed-crypto for integration with STM32Cube solution.
@@ -16,6 +16,59 @@
   *
   ******************************************************************************
   @endverbatim
+
+### 07-February-2023 ###
+========================
+    + Move to Mbed-TLS V2.28.7
+    + Removed dual license, STMicroelectronics provides the Mbed-TLS middleware
+	  under only the Apache-2.0 license.
+    + Fixed IAR Warning[Pe546]: transfer of control bypasses initialization
+      variable : padding
+    + Update st_readme.txt
+
+
+### 08-December-2023 ###
+========================
+    + Add ST Copyright
+    + Update st_readme.txt
+    + Add support when using STM32 Secure Element.
+    + Add support when using STM32 HUK.
+    + Add double signature check, with single signature computation.
+    + Fix inclusion path : replaced "psa/crypto.h" by "crypto.h" when building
+      TFM project.
+    + Fix warning : enumerated type mixed with another type (mbedtls_md_type_t).
+    + Execlude macro when building project for TFM to avoid Warning[Pa181]:
+      incompatible redefinition of macros : "PSA_KEY_EXPORT_MAX_SIZE",
+      “PSA_MAX_BLOCK_CIPHER_BLOCK_SIZE”, “PSA_HASH_SIZE”,  “PSA_MAC_FINAL_SIZE”
+      & “PSA_ALG_TLS12_PSK_TO_MS_MAX_PSK_LEN”.
+
+### 27-November-2023 ###
+========================
+    + Add LICENSE.txt
+    + update st_readme.txt
+    + psa_crypto_aead.c & pas_crypto_driver_wrappers.c :
+      add MBEDTLS_PSA_BUILTIN_AEAD flag to avoid Keil Error: L6218E: Undefined
+      symbol.
+    + psa_crypto.c : Add AT_LEAST_ONE_BUILTIN_KDF flag to avoid IAR
+      Warning[Pe111].
+    + pkcs5.c : moved padding variable declaration to the begining of
+      mbedtls_pkcs5_pbes2_ext to avoid IAR warning.
+    + gcm.c & nist_kw.c : improved Mbed TLS Self-test to skip AES-192 key size
+      test when the alternative implementation does not support it.
+    + crypto_spe.h : add function definition to avoid duplication of symbols
+      between TF-M and Mbed Crypto.
+
+### 15-November-2023 ###
+========================
+    Move to Mbed-TLS v2.28.5
+
+### 17-August-2023 ###
+========================
+    Move to Mbed-TLS v2.28.4
+
+### 25-May-2023 ###
+========================
+    Move to Mbed-TLS v2.28.3
 
 ### 13-May-2022 ###
 ========================

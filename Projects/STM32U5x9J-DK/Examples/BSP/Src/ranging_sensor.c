@@ -51,7 +51,6 @@ static void ToF_SetHint(void);
   */
 int32_t Rs_demo(void)
 {
-  int32_t                   result  = 0;
   uint32_t                  chipId;
   RANGING_SENSOR_Result_t   distance;
   int32_t object_detected = 0;
@@ -60,14 +59,25 @@ int32_t Rs_demo(void)
   ToF_SetHint();
 
   /* Initialize user button */
-  if (BSP_PB_Init(BUTTON_USER, BUTTON_MODE_EXTI) != BSP_ERROR_NONE) result--;
+  if (BSP_PB_Init(BUTTON_USER, BUTTON_MODE_EXTI) != BSP_ERROR_NONE)
+  {
+    Error_Handler();
+  }
 
-  if (BSP_RANGING_SENSOR_Init(VL53L5A1_DEV_CENTER) != BSP_ERROR_NONE) result--;
+  if (BSP_RANGING_SENSOR_Init(VL53L5A1_DEV_CENTER) != BSP_ERROR_NONE)
+  {
+    Error_Handler();
+  }
 
-  /* set the profile if different from default one */
-  if (BSP_RANGING_SENSOR_ConfigProfile(VL53L5A1_DEV_CENTER, &Profile) != BSP_ERROR_NONE) result--;
-  if (BSP_RANGING_SENSOR_ReadID(VL53L5A1_DEV_CENTER, &chipId) != BSP_ERROR_NONE) result--;
-  if (BSP_RANGING_SENSOR_GetCapabilities(VL53L5A1_DEV_CENTER, &Cap) != BSP_ERROR_NONE) result--;
+  if (BSP_RANGING_SENSOR_ReadID(VL53L5A1_DEV_CENTER, &chipId) != BSP_ERROR_NONE)
+  {
+    Error_Handler();
+  }
+
+  if (BSP_RANGING_SENSOR_GetCapabilities(VL53L5A1_DEV_CENTER, &Cap) != BSP_ERROR_NONE)
+  {
+    Error_Handler();
+  }
 
   Profile.RangingProfile = RS_PROFILE_4x4_CONTINUOUS;
   Profile.TimingBudget = 30; /* 5 ms < TimingBudget < 100 ms */
@@ -80,16 +90,29 @@ int32_t Rs_demo(void)
   Profile_IT.LowThreshold =  200;
 
   /* set the profile if different from default one */
-  if (BSP_RANGING_SENSOR_ConfigProfile(VL53L5A1_DEV_CENTER, &Profile) != BSP_ERROR_NONE) result--;
-  if (BSP_RANGING_SENSOR_ConfigIT(VL53L5A1_DEV_CENTER, &Profile_IT) != BSP_ERROR_NONE) result--;
-  if (BSP_RANGING_SENSOR_Start(VL53L5A1_DEV_CENTER, RS_MODE_BLOCKING_CONTINUOUS) != BSP_ERROR_NONE)  result--;
+  if (BSP_RANGING_SENSOR_ConfigProfile(VL53L5A1_DEV_CENTER, &Profile) != BSP_ERROR_NONE)
+  {
+    Error_Handler();
+  }
+  if (BSP_RANGING_SENSOR_ConfigIT(VL53L5A1_DEV_CENTER, &Profile_IT) != BSP_ERROR_NONE)
+  {
+    Error_Handler();
+  }
+  if (BSP_RANGING_SENSOR_Start(VL53L5A1_DEV_CENTER, RS_MODE_BLOCKING_CONTINUOUS) != BSP_ERROR_NONE)
+  {
+    Error_Handler();
+  }
 
   /* GetDistance function */
   while (1)
   {
     xpos =x ;
     ypos =y ;
-    if (BSP_RANGING_SENSOR_GetDistance(VL53L5A1_DEV_CENTER, &distance) != BSP_ERROR_NONE) result--;
+
+    if (BSP_RANGING_SENSOR_GetDistance(VL53L5A1_DEV_CENTER, &distance) != BSP_ERROR_NONE)
+    {
+      Error_Handler();
+    }
 
     if(distance.ZoneResult[0].Distance[0] < 150)
     {
@@ -107,6 +130,11 @@ int32_t Rs_demo(void)
     }
     else if ((xpos > 190) & (xpos < 300) & (ypos < 55))
     {
+      /* De-initialization, To ensure proper sensor re-initialization on the next attempt */
+      if (BSP_RANGING_SENSOR_DeInit(VL53L5A1_DEV_CENTER) != BSP_ERROR_NONE)
+      {
+        Error_Handler();
+      }
       DrawBackround = 0;
       return 0;
     }

@@ -179,8 +179,8 @@ static void  unsecure_sram1(uint32_t start, uint32_t end)
   MPCBB_ConfigTypeDef MPCBB_desc;
   uint32_t regwrite = 0xffffffff;
   uint32_t index;
-  uint32_t block_start = (start - 0x20000000) / (256);
-  uint32_t block_end = block_start + ((end - start) + 1) / (256);
+  uint32_t block_start = (start - 0x20000000) / GTZC_MPCBB_BLOCK_SIZE;
+  uint32_t block_end = block_start + ((end - start) + 1) / GTZC_MPCBB_BLOCK_SIZE;
 
   if (start & 0xff)
     /*  Check alignment to avoid further problem  */

@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    stm32u5x9j_discovery_conf_template.h
+  * @file    stm32u5x9j_discovery_conf.h
   * @author  MCD Application Team
   * @brief   STM32U5x9J_DISCOVERY board configuration file.
   ******************************************************************************

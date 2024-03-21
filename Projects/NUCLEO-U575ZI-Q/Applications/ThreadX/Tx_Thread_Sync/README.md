@@ -89,7 +89,7 @@ None
 
 ### <b>Keywords</b>
 
-RTOS, ThreadX, Thread, Semaphore, Mutex
+RTOS, ThreadX, Threading, Semaphore, Mutex
 
 
 ### <b>Hardware and Software environment</b>

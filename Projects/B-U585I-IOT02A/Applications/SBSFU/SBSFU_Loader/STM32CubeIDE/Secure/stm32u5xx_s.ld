@@ -71,19 +71,19 @@ SECTIONS
         KEEP(*(.eh_frame*))
     } > FLASH
 
-    .ARM.extab :
+    .ARM.extab (READONLY) : /* The READONLY keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
     {
         *(.ARM.extab* .gnu.linkonce.armextab.*)
     } > FLASH
 
     __exidx_start = .;
-    .ARM.exidx :
+    .ARM.exidx (READONLY) : /* The READONLY keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
     {
         *(.ARM.exidx* .gnu.linkonce.armexidx.*)
     } > FLASH
     __exidx_end = .;
 
-    .copy.table :
+    .copy.table (READONLY) : /* The READONLY keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
     {
         . = ALIGN(4);
         __copy_table_start__ = .;
@@ -96,7 +96,7 @@ SECTIONS
     /* To clear multiple BSS sections,
      * uncomment .zero.table section and,
      * define __STARTUP_CLEAR_BSS_MULTIPLE  */
-    .zero.table :
+    .zero.table (READONLY) : /* The READONLY keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
     {
         . = ALIGN(4);
         __zero_table_start__ = .;

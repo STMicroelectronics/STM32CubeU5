@@ -146,7 +146,7 @@ IF "%signing%" == "secure" (
 goto :docommand_nonsecure_end
 )
 echo "%signing% init ns image signing" >> %projectdir%\output.txt 2>&1
-set "command_init_ns=%python%%imgtool% sign -k %key_ns% %encrypt% -e little -S %image_ns_size% -M %image_ns_sectors% -H 0x20 --pad-header %option% -v %version% -s auto --align %val% %sbsfu_ns% %sbsfu_ns_init% >> %projectdir%\output.txt 2>&1"
+set "command_init_ns=%python%%imgtool% sign -k %key_ns% %encrypt% -e little -S %image_ns_size% -M %image_ns_sectors% -H 0x20 --pad-header %option% -v %version% --confirm --pad -s auto --align %val% %sbsfu_ns% %sbsfu_ns_init% >> %projectdir%\output.txt 2>&1"
 %command_init_ns%
 IF %ERRORLEVEL% NEQ 0 goto :error_init_ns
 
@@ -168,7 +168,7 @@ IF "%signing%" == "nonsecure" (
 goto :docommand_secure_end
 )
 echo "%signing% init s image signing" >> %projectdir%\output.txt 2>&1
-set "command_init_s=%python%%imgtool% sign -k %key_s% %encrypt% -e little -S %image_s_size% -M %image_s_sectors% -H 0x20 --pad-header %option% -v %version% -s auto --align %val% %sbsfu_s% %sbsfu_s_init% >> %projectdir%\output.txt 2>&1"
+set "command_init_s=%python%%imgtool% sign -k %key_s% %encrypt% -e little -S %image_s_size% -M %image_s_sectors% -H 0x20 --pad-header %option% -v %version% --confirm --pad -s auto --align %val% %sbsfu_s% %sbsfu_s_init% >> %projectdir%\output.txt 2>&1"
 %command_init_s%
 IF %ERRORLEVEL% NEQ 0 goto :error_init_s
 

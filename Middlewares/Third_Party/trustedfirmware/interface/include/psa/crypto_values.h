@@ -1708,6 +1708,16 @@
  */
 #define PSA_KEY_USAGE_DECRYPT                   ((psa_key_usage_t)0x00000200)
 
+/** Whether the key may be used to verify a message.
+ *
+ * This flag allows the key to be used for a MAC verification operation or for
+ * an asymmetric message signature verification operation, if otherwise
+ * permitted by the key’s type and policy.
+ *
+ * For a key pair, this concerns the public key.
+ */
+#define PSA_KEY_USAGE_VERIFY_MESSAGE            ((psa_key_usage_t) 0x00000800)
+
 /** Whether the key may be used to sign a message.
  *
  * This flag allows the key to be used for a MAC calculation operation

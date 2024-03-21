@@ -88,6 +88,7 @@ else
     echo dataimg with python script
     imgtool=$mcuboot_dir"/scripts/imgtool/main.py"
     python="python "
+    python3 --version >& /dev/null && python="python3 "
 fi
 
 #sign mode
@@ -144,7 +145,7 @@ let "image_s_sectors=$image_s_size/0x2000"
 
 if [ "$signing" != "secure" ]; then
     echo $signing init ns image signing
-    command_init_ns=$python$imgtool" sign -k "$key_ns" "$encrypt" -e little -S "$image_ns_size" -M "$image_ns_sectors" -H 0x20 --pad-header "$option" -v "$version" -s auto --align "$val" "$sbsfu_ns" "$sbsfu_ns_init
+    command_init_ns=$python$imgtool" sign -k "$key_ns" "$encrypt" -e little -S "$image_ns_size" -M "$image_ns_sectors" -H 0x20 --pad-header "$option" -v "$version" --confirm --pad -s auto --align "$val" "$sbsfu_ns" "$sbsfu_ns_init
     $command_init_ns >> $projectdir"/output.txt"
     ret=$?
     if [ $ret != 0 ]; then
@@ -173,7 +174,7 @@ fi
 
 if [ "$signing" != "nonsecure" ]; then
     echo $signing init s image signing
-    command_init_s=$python$imgtool" sign -k "$key_s" "$encrypt" -e little -S "$image_s_size" -M "$image_s_sectors" -H 0x20 --pad-header "$option" -v "$version" -s auto --align "$val" "$sbsfu_s" "$sbsfu_s_init
+    command_init_s=$python$imgtool" sign -k "$key_s" "$encrypt" -e little -S "$image_s_size" -M "$image_s_sectors" -H 0x20 --pad-header "$option" -v "$version" --confirm --pad -s auto --align "$val" "$sbsfu_s" "$sbsfu_s_init
     $command_init_s >> $projectdir"/output.txt"
     ret=$?
     if [ $ret != 0 ]; then

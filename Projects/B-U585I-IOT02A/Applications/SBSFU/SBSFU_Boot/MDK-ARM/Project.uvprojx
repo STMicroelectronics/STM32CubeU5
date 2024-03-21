@@ -10,14 +10,14 @@
       <TargetName>B-U585I-IOT02A_SBSFU_Boot</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6130001::V6.13.1::.\ARMCLANG</pCCUsed>
+      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32U585AIIx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32U5xx_DFP.1.0.4</PackID>
-          <PackURL>http://www.keil.com/pack</PackURL>
+          <PackID>Keil.STM32U5xx_DFP.2.2.3</PackID>
+          <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000-0x8007FFF) IRAM(0x20000000-0x20002FFF) CLOCK(8000000) FPU3(SFPU) CPUTYPE("Cortex-M33") ELITTLE TZ</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -72,7 +72,7 @@
           <BeforeMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name>$J\..\bin\armclang --target=arm-arm-none-eabi -march=armv8-m.main -E -P -xc -DSTM32U585xx -DBL2 -I..\..\Linker -I..\Inc ..\Src\image_macros_to_preprocess_bl2.c -o image_macros_preprocessed_bl2.c</UserProg1Name>
+            <UserProg1Name>$J\..\bin\armclang --target=arm-arm-none-eabi -march=armv8-m.main -E -P -xc -DSTM32U585xx -DBL2 -I..\..\Linker -I..\Inc -I..\..\..\..\..\..\Drivers\CMSIS\Include -I..\..\..\..\..\..\Drivers\CMSIS\Device\ST\STM32U5xx\Include -I..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Inc ..\Src\image_macros_to_preprocess_bl2.c -o image_macros_preprocessed_bl2.c</UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -185,6 +185,8 @@
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
             <RvdsMve>0</RvdsMve>
+            <RvdsCdeCp>0</RvdsCdeCp>
+            <nBranchProt>0</nBranchProt>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -338,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>STM32U585xx,USE_HAL_DRIVER,NDEBUG,MCUBOOT_TARGET_CONFIG=&lt;flash_layout.h&gt;,MBEDTLS_CONFIG_FILE=&lt;config-boot.h&gt;,MCUBOOT_DOUBLE_SIGN_VERIF,FLOW_CONTROL,BL2,DEFAULT_UART_BAUDRATE=115200,TFM_DEV_MODE,BOOT_MAX_ALIGN=16</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/BSP/B-U585I-IOT02A;../../../../../../Drivers/BSP/Components/Common;../../Linker;../../../../../../Middlewares/Third_Party/mbed-crypto/include;../../../../../../Middlewares/Third_Party/mbed-crypto/library;../../../../../../Middlewares/Third_Party/trustedfirmware;../../../../../../Middlewares/Third_Party/trustedfirmware/platform/include;../../../../../../Middlewares/Third_Party/trustedfirmware/platform/ext/common;../../../../../../Middlewares/Third_Party/trustedfirmware/platform/ext/driver;../../../../../../Middlewares/Third_Party/trustedfirmware/bl2/include;../../../../../../Middlewares/Third_Party/trustedfirmware/bl2/ext/mcuboot;../../../../../../Middlewares/Third_Party/trustedfirmware/bl2/ext/mcuboot/include;../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/include;../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/src;../../../../../../Middlewares/Third_Party/mcuboot/ext/tinycrypt/lib/include</IncludePath>
+              <IncludePath>../Inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/BSP/B-U585I-IOT02A;../../../../../../Drivers/BSP/Components/Common;../../Linker;../../../../../../Middlewares/Third_Party/mbed-crypto/include;../../../../../../Middlewares/Third_Party/mbed-crypto/library;../../../../../../Middlewares/Third_Party/mcuboot;../../../../../../Middlewares/Third_Party/mcuboot/platform/include;../../../../../../Middlewares/Third_Party/mcuboot/platform/ext/common;../../../../../../Middlewares/Third_Party/mcuboot/platform/ext/driver;../../../../../../Middlewares/Third_Party/mcuboot/bl2/include;../../../../../../Middlewares/Third_Party/mcuboot/bl2/ext/mcuboot;../../../../../../Middlewares/Third_Party/mcuboot/bl2/ext/mcuboot/include;../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/include;../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/src;../../../../../../Middlewares/Third_Party/mcuboot/ext/tinycrypt/lib/include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -351,7 +353,7 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <uClangAs>0</uClangAs>
+            <ClangAsOpt>4</ClangAsOpt>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -802,40 +804,35 @@
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/src/tlv.c</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Middlewares/trustedfirmware</GroupName>
-          <Files>
             <File>
               <FileName>bl2_main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/Third_Party/trustedfirmware/bl2/ext/mcuboot/bl2_main.c</FilePath>
+              <FilePath>../../../../../../Middlewares/Third_Party/mcuboot/bl2/ext/mcuboot/bl2_main.c</FilePath>
             </File>
             <File>
               <FileName>flash_map.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/Third_Party/trustedfirmware/bl2/src/flash_map.c</FilePath>
+              <FilePath>../../../../../../Middlewares/Third_Party/mcuboot/bl2/src/flash_map.c</FilePath>
             </File>
             <File>
               <FileName>flash_map_extended.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/Third_Party/trustedfirmware/bl2/ext/mcuboot/flash_map_extended.c</FilePath>
+              <FilePath>../../../../../../Middlewares/Third_Party/mcuboot/bl2/ext/mcuboot/flash_map_extended.c</FilePath>
             </File>
             <File>
               <FileName>flash_map_legacy.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/Third_Party/trustedfirmware/bl2/ext/mcuboot/flash_map_legacy.c</FilePath>
+              <FilePath>../../../../../../Middlewares/Third_Party/mcuboot/bl2/ext/mcuboot/flash_map_legacy.c</FilePath>
             </File>
             <File>
               <FileName>security_cnt.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/Third_Party/trustedfirmware/bl2/src/security_cnt.c</FilePath>
+              <FilePath>../../../../../../Middlewares/Third_Party/mcuboot/bl2/src/security_cnt.c</FilePath>
             </File>
             <File>
               <FileName>uart_stdout.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/Third_Party/trustedfirmware/platform/ext/common/uart_stdout.c</FilePath>
+              <FilePath>../../../../../../Middlewares/Third_Party/mcuboot/platform/ext/common/uart_stdout.c</FilePath>
             </File>
           </Files>
         </Group>

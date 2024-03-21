@@ -26,8 +26,6 @@
 
 #include <bootutil/sign_key.h>
 #include "mcuboot_config/mcuboot_config.h"
-#include "platform/include/tfm_attest_hal.h"
-#include "platform/include/tfm_plat_crypto_keys.h"
 #include "psa/crypto_types.h"
 #include "psa/crypto_values.h"
 #include "flash_layout.h"

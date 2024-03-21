@@ -474,7 +474,7 @@ void psa_unsupported_mac_test(const psa_key_type_t key_type,
     ret->val = TEST_PASSED;
 
     /* Setup the key policy */
-    psa_set_key_usage_flags(&key_attributes, PSA_KEY_USAGE_VERIFY);
+    psa_set_key_usage_flags(&key_attributes, PSA_KEY_USAGE_VERIFY_MESSAGE);
     psa_set_key_algorithm(&key_attributes, alg);
     psa_set_key_type(&key_attributes, key_type);
 
@@ -550,7 +550,7 @@ void psa_mac_test(const psa_algorithm_t alg,
     psa_mac_operation_t handle = psa_mac_operation_init();
     psa_key_attributes_t key_attributes = psa_key_attributes_init();
     psa_key_attributes_t retrieved_attributes = psa_key_attributes_init();
-    psa_key_usage_t usage = PSA_KEY_USAGE_VERIFY;
+    psa_key_usage_t usage = PSA_KEY_USAGE_VERIFY_MESSAGE;
 
     ret->val = TEST_PASSED;
 

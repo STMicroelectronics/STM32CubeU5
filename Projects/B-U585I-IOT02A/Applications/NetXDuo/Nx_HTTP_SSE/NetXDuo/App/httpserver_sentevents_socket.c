@@ -84,6 +84,8 @@ static char *chop(char *str);
 static void task_list(char *buffer_string);
 static void get_uptime(char *buffer_string);
 
+extern char *strtok_r(char *, const char *, char **);
+
 #ifdef ENABLE_IOT_DEBUG
 static const char *tcp_state_to_string(UINT state);
 

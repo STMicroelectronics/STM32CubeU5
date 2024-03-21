@@ -1,3 +1,4 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file    usbpd_gui_memmap.h
@@ -7,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2021 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -16,12 +17,13 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
 
 #ifndef __USBPD_GUI_MEMMAP_H_
 #define __USBPD_GUI_MEMMAP_H_
 
 #ifdef __cplusplus
-extern "C" {
+ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -55,7 +57,7 @@ extern "C" {
 #define INDEX_PAGE              (FLASH_PAGE_NB - 1U)                           /* Index of latest page     */
 #endif /* FLASH_OPTR_DBANK || FLASH_DBANK_SUPPORT */
 #endif /* STM32L552xx || STM32L562xx */
-#define ADDR_FLASH_LAST_PAGE    (FLASH_BASE + (INDEX_PAGE * FLASH_PAGE_SIZE))  /* Base @ of latest page    */
+#define ADDR_FLASH_LAST_PAGE    (FLASH_BASE + (INDEX_PAGE * FLASH_PAGE_SIZE))  /* Base @ of latest page */
 #define ADDR_FLASH_PAGE_END     (ADDR_FLASH_LAST_PAGE + FLASH_PAGE_SIZE - 1U)
 
 #define GUI_FLASH_MAGIC_NUMBER         ADDR_FLASH_LAST_PAGE                    /* Base @ of magic number   */

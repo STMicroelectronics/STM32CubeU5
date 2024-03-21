@@ -74,6 +74,7 @@ int32_t LCD_FillRect(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t W
 int32_t LCD_GetXSize(uint32_t Instance, uint32_t *Xsize);
 int32_t LCD_GetYSize(uint32_t Instance, uint32_t *Ysize);
 int32_t LCD_GetFormat(uint32_t Instance, uint32_t *Format);
+void LCD_Set_Default_Clock(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -426,7 +427,7 @@ static void MX_DSIHOST_DSI_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN DSIHOST_Init 2 */
-
+  LCD_Set_Default_Clock();
   /* USER CODE END DSIHOST_Init 2 */
 
 }
@@ -752,7 +753,21 @@ int32_t LCD_GetFormat(uint32_t Instance, uint32_t *Format)
 
   return 0;
 }
+void LCD_Set_Default_Clock(void)
+{
+  RCC_PeriphCLKInitTypeDef  DSIPHYInitPeriph;
 
+  /* Switch to DSI PHY PLL clock */
+  DSIPHYInitPeriph.PeriphClockSelection = RCC_PERIPHCLK_DSI;
+  DSIPHYInitPeriph.DsiClockSelection    = RCC_DSICLKSOURCE_DSIPHY;
+
+  HAL_RCCEx_PeriphCLKConfig(&DSIPHYInitPeriph);
+
+  /* LCD Reset */
+  HAL_Delay(11);
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_5, GPIO_PIN_SET);
+  HAL_Delay(150);
+}
 
 /* USER CODE END 4 */
 

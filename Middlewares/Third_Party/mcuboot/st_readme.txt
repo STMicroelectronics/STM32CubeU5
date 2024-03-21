@@ -16,9 +16,55 @@
   ******************************************************************************
   @endverbatim
 
-### 2-June-2023 ###
+### 30-January-2024 ###
 ========================
-    + several enhancements (including security updates)
+    + Add log for validation of primary slot(s)
+    + Remove unused folders and restore imgtool script presence
+
+### 16-January-2024 ###
+========================
+    + Add log when device is reset
+
+### 19-December-2023 ###
+========================
+    + Improvement of swapping process
+
+### 11-December-2023 ###
+========================
+    + Add security fix
+
+### 29-November-2023 ###
+========================
+    + Add some security updates
+    + Integrate features from the middleware 'trustedfirmware'
+    + Remove unused parts
+    + Add copyright information
+
+### 17-October-2023 ###
+========================
+    + Remove extra validation of primary slot (MCUBOOT_BOOTSTRAP)
+
+### 5-October-2023 ###
+========================
+    + Improve the support of encrypted security counters (MCUBOOT_ENC_SECURITY_CNT)
+    + Add some security updates
+
+### 16-June-2023 ###
+========================
+    + Add compliance with MCE
+    + Remove the compliance with PKA2 V1
+
+### 12-June-2023 ###
+========================
+    + Add compliance with PKA2 V1
+
+### 30-May-2023 ###
+========================
+    + Add the feature "MCUBOOT_USE_HAL"
+
+### 8-February-2023 ###
+========================
+    + After installation in overwrite mode, erase the complete secondary slot
 
 ### 2-February-2023 ###
 ========================

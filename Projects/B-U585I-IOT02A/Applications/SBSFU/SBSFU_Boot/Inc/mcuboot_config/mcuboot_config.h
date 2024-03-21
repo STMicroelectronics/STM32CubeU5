@@ -76,6 +76,8 @@ extern "C" {
  */
 #define MCUBOOT_USE_MBED_TLS
 
+#include "stm32u5xx_hal.h"
+
 /*
  * Logging
  */

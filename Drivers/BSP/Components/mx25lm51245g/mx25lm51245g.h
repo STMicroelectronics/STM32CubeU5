@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2017-2019 STMicroelectronics.
+  * Copyright (c) 2017-2022 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -123,7 +123,7 @@ extern "C" {
 #define MX25LM51245G_READ_CFG_REG_CMD                     0x15U   /*!< Read configuration Register                           */
 #define MX25LM51245G_WRITE_STATUS_REG_CMD                 0x01U   /*!< Write Status Register                                 */
 #define MX25LM51245G_READ_CFG_REG2_CMD                    0x71U   /*!< Read configuration Register2                          */
-#define MX25LM51245G_WRITE_CFG_REG2_CMD                   0x72U   /*!< Write configuration Register2                                */
+#define MX25LM51245G_WRITE_CFG_REG2_CMD                   0x72U   /*!< Write configuration Register2                         */
 #define MX25LM51245G_READ_FAST_BOOT_REG_CMD               0x16U   /*!< Read fast boot Register                               */
 #define MX25LM51245G_WRITE_FAST_BOOT_REG_CMD              0x17U   /*!< Write fast boot Register                              */
 #define MX25LM51245G_ERASE_FAST_BOOT_REG_CMD              0x18U   /*!< Erase fast boot Register                              */

@@ -78,6 +78,7 @@ TX_QUEUE                *ResidentQueue;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
+void default_module_start(ULONG id);
 void MainThread_Entry(ULONG thread_input);
 void Error_Handler(void);
 /* USER CODE END PFP */
@@ -87,7 +88,7 @@ void Error_Handler(void);
   * @param  id : Module ID
   * @retval None
   */
-void    default_module_start(ULONG id)
+void default_module_start(ULONG id)
 {
   CHAR    *pointer;
 

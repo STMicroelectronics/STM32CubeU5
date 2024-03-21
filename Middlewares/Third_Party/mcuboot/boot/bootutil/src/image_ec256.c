@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2016-2019 JUUL Labs
  * Copyright (c) 2017 Linaro LTD
+ * Copyright (c) 2023 STMicroelectronics
  *
  * Original license:
  *

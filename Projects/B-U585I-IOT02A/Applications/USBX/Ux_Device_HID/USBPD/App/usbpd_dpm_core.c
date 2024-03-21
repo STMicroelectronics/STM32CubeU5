@@ -59,10 +59,8 @@ void TimerPE1function(void *pArg);
 /* Private typedef -----------------------------------------------------------*/
 
 #define OS_PE_PRIORITY                    1
-#define OS_PE_STACK_SIZE                  1024
 
 #define OS_CAD_PRIORITY                   1
-#define OS_CAD_STACK_SIZE                 1024
 
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/

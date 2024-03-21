@@ -44,6 +44,7 @@ else
 echo Keygen with python script
 imgtool=$mcuboot_dir"/scripts/imgtool/main.py"
 python="python "
+python3 --version >& /dev/null && python="python3 "
 fi
 
 key_rsa_s=$sbsfu_key_dir"/root-rsa-2048.pem"

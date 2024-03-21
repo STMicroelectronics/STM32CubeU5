@@ -317,10 +317,12 @@ static void SwitchSystemClock(void)
   *            System Clock source            = PLL (HSI)
   *            SYSCLK(Hz)                     = 160000000
   *            HCLK(Hz)                       = 160000000
-  *            AHB Prescaler                  = 2
-  *            APB1 Prescaler                 = 2
-  *            APB2 Prescaler                 = 2
+  *            AHB Prescaler                  = 1
+  *            APB1 Prescaler                 = 1
+  *            APB2 Prescaler                 = 1
+  *            APB3 Prescaler                 = 1
   *            HSI Frequency(Hz)              = 16000000
+  *            PLL_MBOOST                     = 1
   *            PLLM                           = 2
   *            PLLN                           = 40
   *            PLLP                           = 2
@@ -350,6 +352,7 @@ static void SystemClockHSI_Config(void)
   RCC_OscInitStruct.HSICalibrationValue  = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState         = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource        = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLMBOOST        = RCC_PLLMBOOST_DIV1;
   RCC_OscInitStruct.PLL.PLLM             = 2;
   RCC_OscInitStruct.PLL.PLLN             = 40;
   RCC_OscInitStruct.PLL.PLLP             = 2;
@@ -362,12 +365,13 @@ static void SystemClockHSI_Config(void)
     Error_Handler();
   }
 
-  /* -3- Select the PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers */
-  RCC_ClkInitStruct.ClockType       = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2); 
+  /* -3- Select the PLL as system clock source and configure the HCLK, PCLK1, PCLK2 and PCLK3 clocks dividers */
+  RCC_ClkInitStruct.ClockType       = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_PCLK3); 
   RCC_ClkInitStruct.SYSCLKSource    = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider   = RCC_SYSCLK_DIV2;
-  RCC_ClkInitStruct.APB1CLKDivider  = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider  = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.AHBCLKDivider   = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider  = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider  = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB3CLKDivider  = RCC_HCLK_DIV1;
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
   {
     /* Initialization Error */
@@ -395,11 +399,13 @@ static void SystemClockHSI_Config(void)
   *            System Clock source            = PLL (MSI)
   *            SYSCLK(Hz)                     = 160000000
   *            HCLK(Hz)                       = 160000000
-  *            AHB Prescaler                  = 2
-  *            APB1 Prescaler                 = 2
-  *            APB2 Prescaler                 = 2
+  *            AHB Prescaler                  = 1
+  *            APB1 Prescaler                 = 1
+  *            APB2 Prescaler                 = 1
+  *            APB3 Prescaler                 = 1
   *            MSI Frequency(Hz)              = 4000000
   *            PLL_M                          = 1
+  *            PLL_MBOOST                     = 1
   *            PLL_N                          = 80
   *            PLL_Q                          = 2
   *            PLL_P                          = 2
@@ -424,10 +430,11 @@ static void SystemClockMSI_Config(void)
   /* -2- Enable MSI Oscillator, select it as PLL source and finally activate the PLL */
   RCC_OscInitStruct.OscillatorType      = RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.MSIState            = RCC_MSI_ON;
-  RCC_OscInitStruct.MSIClockRange       = RCC_MSIRANGE_6;
+  RCC_OscInitStruct.MSIClockRange       = RCC_MSIRANGE_4;
   RCC_OscInitStruct.MSICalibrationValue = RCC_MSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState        = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource       = RCC_PLLSOURCE_MSI;
+  RCC_OscInitStruct.PLL.PLLMBOOST       = RCC_PLLMBOOST_DIV1;
   RCC_OscInitStruct.PLL.PLLM            = 1;
   RCC_OscInitStruct.PLL.PLLN            = 80;
   RCC_OscInitStruct.PLL.PLLP            = 2;
@@ -439,12 +446,13 @@ static void SystemClockMSI_Config(void)
     Error_Handler();
   }
 
-  /* -3- Select the PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 clocks dividers */
-  RCC_ClkInitStruct.ClockType       = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
+  /* -3- Select the PLL as system clock source and configure the HCLK, PCLK1, PCLK2 and PCLK3 clocks dividers */
+  RCC_ClkInitStruct.ClockType       = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_PCLK3);
   RCC_ClkInitStruct.SYSCLKSource    = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider   = RCC_SYSCLK_DIV2;
-  RCC_ClkInitStruct.APB1CLKDivider  = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider  = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.AHBCLKDivider   = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider  = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider  = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB3CLKDivider  = RCC_HCLK_DIV1;
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
   {
     Error_Handler();
