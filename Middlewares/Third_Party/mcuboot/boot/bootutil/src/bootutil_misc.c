@@ -223,8 +223,10 @@ boot_trailer_sz(uint32_t min_write_sz)
            /* swap_type + swap_size */
            BOOT_MAX_ALIGN * 2                     +
 #endif
+#if !defined(MCUBOOT_PRIMARY_ONLY)
            /* copy_done + image_ok */
            BOOT_MAX_ALIGN * 2                     +
+#endif /* MCUBOOT_PRIMARY_ONLY */
            BOOT_MAGIC_SZ;
 }
 

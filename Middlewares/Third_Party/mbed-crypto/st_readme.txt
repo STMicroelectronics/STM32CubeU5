@@ -8,24 +8,28 @@
   * @file    st_readme.txt
   * @author  MCD Application Team
   * @brief   This file lists the main modification done by STMicroelectronics on
-  *          mbed-crypto for integration with STM32Cube solution.
+  *          mbed-TLS for integration with STM32Cube solution.
   ******************************************************************************
   *
-  * original licensing conditions
+  * Original licensing conditions
   * as issued by SPDX-License-Identifier: Apache-2.0
   *
   ******************************************************************************
   @endverbatim
 
+### 19-April-2024 ###
+========================
+    + Move to Mbed-TLS V2.28.8 under only the Apache-2.0 license.
+    + Update st_readme.txt
+
 ### 07-February-2023 ###
 ========================
     + Move to Mbed-TLS V2.28.7
     + Removed dual license, STMicroelectronics provides the Mbed-TLS middleware
-	  under only the Apache-2.0 license.
+      under only the Apache-2.0 license.
     + Fixed IAR Warning[Pe546]: transfer of control bypasses initialization
       variable : padding
     + Update st_readme.txt
-
 
 ### 08-December-2023 ###
 ========================
@@ -73,19 +77,19 @@
 ### 13-May-2022 ###
 ========================
     + backport mbedtls-2.28.0
-	++ alignment with TFM v1.3.0
-	+++ remove unsupported functions : psa_mac_compute, psa_mac_verify, psa_cipher_encrypt, psa_cipher_decrypt
-	+++ fix double inclusion path porting on crypto.h
-	+++ use deprecating define PSA_KEY_USAGE_SIGN_HASH (instead of PSA_KEY_USAGE_SIGN_MESSAGE)
-	+++ use deprecating define PSA_KEY_USAGE_VERIFY_HASH, (instead of PSA_KEY_USAGE_VERIFY_MESSAGE,)
-	+++ Allow creating a read-only key (for secure element)
+    ++ alignment with TFM v1.3.0
+    +++ remove unsupported functions : psa_mac_compute, psa_mac_verify, psa_cipher_encrypt, psa_cipher_decrypt
+    +++ fix double inclusion path porting on crypto.h
+    +++ use deprecating define PSA_KEY_USAGE_SIGN_HASH (instead of PSA_KEY_USAGE_SIGN_MESSAGE)
+    +++ use deprecating define PSA_KEY_USAGE_VERIFY_HASH, (instead of PSA_KEY_USAGE_VERIFY_MESSAGE,)
+    +++ Allow creating a read-only key (for secure element)
 
-	++ miscellaneous warnings
+    ++ miscellaneous warnings
 
-	++ backport customizations
-	+++ HUK support for STM32U5, under switch USE_HUK
-	+++ double signature check
-	+++ using of vendor keys for secure element)
+    ++ backport customizations
+    +++ HUK support for STM32U5, under switch USE_HUK
+    +++ double signature check
+    +++ using of vendor keys for secure element)
 
 ### 18-May-2021 ###
 ========================

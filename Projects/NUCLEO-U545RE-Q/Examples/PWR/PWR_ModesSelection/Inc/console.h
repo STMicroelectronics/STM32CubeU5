@@ -38,11 +38,16 @@ typedef enum
 
 /* Exported constants --------------------------------------------------------*/
 
-#if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
-#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
+#if defined(__ICCARM__)
+/* New definition from EWARM V9, compatible with EWARM8 */
+int iar_fputc(int ch);
+#define PUTCHAR_PROTOTYPE int iar_fputc(int ch)
+#elif defined ( __CC_ARM ) || defined(__ARMCC_VERSION)
+/* ARM Compiler 5/6*/
 #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
+#elif defined(__GNUC__)
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#endif /* __ICCARM__ */
 
 #define CODE_ASCII_0 (0x30) /* "0" code ascii */
 #define CODE_ASCII_1 (0x31) /* "1" code ascii */

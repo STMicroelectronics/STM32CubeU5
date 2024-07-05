@@ -62,6 +62,7 @@ primary_only=
 crypto_scheme=
 encrypted=
 over_write=
+flash_area_scratch_size=
 # End of updated field
 
 current_directory=`pwd`
@@ -69,26 +70,25 @@ echo $current_directory
 cd $projectdir/../Src
 sbsfu_key_dir=`pwd`
 cd $current_directory
-cd $projectdir/../../../../../../Middlewares/Third_Party/mcuboot
-mcuboot_dir=`pwd`
+cd $projectdir/../../
+envdir=`pwd`
 cd $current_directory
 #Make sure we have a Binary sub-folder in UserApp folder
 if [ ! -e $userAppBinary ]; then
     mkdir $userAppBinary
 fi
 
-imgtool=$mcuboot_dir"/scripts/dist/imgtool/imgtool.exe"
-uname | grep -i -e windows -e mingw
-if [ $? == 0 ] && [ -e "$imgtool" ]; then
-#line for window executable
-    echo dataimg with windows executable
-    python=
-else
-#line for python
-    echo dataimg with python script
-    imgtool=$mcuboot_dir"/scripts/imgtool/main.py"
-    python="python "
-    python3 --version >& /dev/null && python="python3 "
+source $envdir/env.sh
+
+if [ ! -e "$imgtool" ];then
+  echo ""
+  echo "!!! WARNING : imgtool has not been found on your installation."
+  echo ""
+  echo "  Install CubeProgrammer on your machine in default path : ~/STMicroelectronics/STM32Cube/STM32CubeProgrammer"
+  echo "  or "
+  echo "  Update your $envdir/env.sh with the proper path."
+  echo ""
+  exit 0
 fi
 
 #sign mode
@@ -140,21 +140,28 @@ echo $signing" "$mode" "$option
 
 val=16
 
-let "image_ns_sectors=$image_ns_size/0x2000"
-let "image_s_sectors=$image_s_size/0x2000"
+if [ $over_write == "1" ]; then
+    image_ns_sectors=""
+    image_s_sectors=""
+    flag=""
+else
+    let image_ns_sectors="((($image_ns_size+1) / $flash_area_scratch_size)+1)"
+    let image_s_sectors="((($image_s_size+1) / $flash_area_scratch_size)+1)"
+    flag="-M"
+fi
 
 if [ "$signing" != "secure" ]; then
     echo $signing init ns image signing
-    command_init_ns=$python$imgtool" sign -k "$key_ns" "$encrypt" -e little -S "$image_ns_size" -M "$image_ns_sectors" -H 0x20 --pad-header "$option" -v "$version" --confirm --pad -s auto --align "$val" "$sbsfu_ns" "$sbsfu_ns_init
-    $command_init_ns >> $projectdir"/output.txt"
+    command_init_ns=" sign -k "$key_ns" "$encrypt" -e little -S "$image_ns_size" "$flag" "$image_ns_sectors" -H 0x20 --pad-header "$option" -v "$version" --confirm --pad -s auto --align "$val" "$sbsfu_ns" "$sbsfu_ns_init
+    "$imgtool" $command_init_ns >> $projectdir"/output.txt"
     ret=$?
     if [ $ret != 0 ]; then
         echo "dataimg.sh failed"
         exit 1
     fi
     echo $signing clear ns image signing
-    command_clear_ns=$python$imgtool" sign -k "$key_ns" -e little -S "$image_ns_size" -M "$image_ns_sectors" -H 0x20 --pad-header "$option" -v "$version" -s auto --align "$val" "$sbsfu_ns" "$sbsfu_ns_sign
-    $command_clear_ns >> $projectdir"/output.txt"
+    command_clear_ns=" sign -k "$key_ns" -e little -S "$image_ns_size" "$flag" "$image_ns_sectors" -H 0x20 --pad-header "$option" -v "$version" -s auto --align "$val" "$sbsfu_ns" "$sbsfu_ns_sign
+    "$imgtool" $command_clear_ns >> $projectdir"/output.txt"
     ret=$?
     if [ $ret != 0 ]; then
         echo "dataimg.sh failed"
@@ -162,8 +169,8 @@ if [ "$signing" != "secure" ]; then
     fi
     if [ $encrypted != "0" ]; then
         echo $signing enc ns image encrypting and signing
-        command_enc_ns=$python$imgtool" sign -k "$key_ns" -E "$key_enc_pub" -e little -S "$image_ns_size" -M "$image_ns_sectors" -H 0x20 --pad-header "$option" -v "$version" -s auto --align "$val" "$sbsfu_ns" "$sbsfu_ns_enc_sign
-        $command_enc_ns >> $projectdir"/output.txt"
+        command_enc_ns=" sign -k "$key_ns" -E "$key_enc_pub" -e little -S "$image_ns_size" "$flag" "$image_ns_sectors" -H 0x20 --pad-header "$option" -v "$version" -s auto --align "$val" "$sbsfu_ns" "$sbsfu_ns_enc_sign
+        "$imgtool" $command_enc_ns >> $projectdir"/output.txt"
         ret=$?
         if [ $ret != 0 ]; then
             echo "dataimg.sh failed"
@@ -174,16 +181,16 @@ fi
 
 if [ "$signing" != "nonsecure" ]; then
     echo $signing init s image signing
-    command_init_s=$python$imgtool" sign -k "$key_s" "$encrypt" -e little -S "$image_s_size" -M "$image_s_sectors" -H 0x20 --pad-header "$option" -v "$version" --confirm --pad -s auto --align "$val" "$sbsfu_s" "$sbsfu_s_init
-    $command_init_s >> $projectdir"/output.txt"
+    command_init_s=" sign -k "$key_s" "$encrypt" -e little -S "$image_s_size" "$flag" "$image_s_sectors" -H 0x20 --pad-header "$option" -v "$version" --confirm --pad -s auto --align "$val" "$sbsfu_s" "$sbsfu_s_init
+    "$imgtool" $command_init_s >> $projectdir"/output.txt"
     ret=$?
     if [ $ret != 0 ]; then
         echo "dataimg.sh failed"
         exit 1
     fi
     echo $signing clear s image signing
-    command_clear_s=$python$imgtool" sign -k "$key_s" -e little -S "$image_s_size" -M "$image_s_sectors" -H 0x20 --pad-header "$option" -v "$version" -s auto --align "$val" "$sbsfu_s" "$sbsfu_s_sign
-    $command_clear_s >> $projectdir"/output.txt"
+    command_clear_s=" sign -k "$key_s" -e little -S "$image_s_size" "$flag" "$image_s_sectors" -H 0x20 --pad-header "$option" -v "$version" -s auto --align "$val" "$sbsfu_s" "$sbsfu_s_sign
+    "$imgtool" $command_clear_s >> $projectdir"/output.txt"
     ret=$?
     if [ $ret != 0 ]; then
         echo "dataimg.sh failed"
@@ -191,8 +198,8 @@ if [ "$signing" != "nonsecure" ]; then
     fi
     if [ $encrypted != "0" ]; then
         echo $signing enc s image encrypting and signing
-        command_enc_s=$python$imgtool" sign -k "$key_s" -E "$key_enc_pub" -e little -S "$image_s_size" -M "$image_s_sectors" -H 0x20 --pad-header "$option" -v "$version" -s auto --align "$val" "$sbsfu_s" "$sbsfu_s_enc_sign
-        $command_enc_s >> $projectdir"/output.txt"
+        command_enc_s=" sign -k "$key_s" -E "$key_enc_pub" -e little -S "$image_s_size" "$flag" "$image_s_sectors" -H 0x20 --pad-header "$option" -v "$version" -s auto --align "$val" "$sbsfu_s" "$sbsfu_s_enc_sign
+        "$imgtool" $command_enc_s >> $projectdir"/output.txt"
         ret=$?
         if [ $ret != 0 ]; then
             echo "dataimg.sh failed"

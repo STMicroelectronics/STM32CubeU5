@@ -261,6 +261,13 @@ static void MX_I2C2_SMBUS_Init(void)
   {
     Error_Handler();
   }
+
+  /** Configure Digital filter
+  */
+  if (HAL_SMBUS_ConfigDigitalFilter(&hsmbus2, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
   /* USER CODE BEGIN I2C2_Init 2 */
 
   /* USER CODE END I2C2_Init 2 */

@@ -27,8 +27,8 @@ string rand_key_usage (void)
         case 0:  return "PSA_KEY_USAGE_EXPORT";
         case 1:  return "PSA_KEY_USAGE_ENCRYPT";
         case 2:  return "PSA_KEY_USAGE_DECRYPT";
-        case 3:  return "PSA_KEY_USAGE_SIGN";
-        case 4:  return "PSA_KEY_USAGE_VERIFY";
+        case 3:  return "PSA_KEY_USAGE_SIGN_HASH";
+        case 4:  return "PSA_KEY_USAGE_VERIFY_HASH";
         case 5:  return "PSA_KEY_USAGE_DERIVE";
     }
     return "";  /* placate compiler */

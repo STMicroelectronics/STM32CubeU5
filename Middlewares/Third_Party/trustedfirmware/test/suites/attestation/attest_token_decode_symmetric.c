@@ -90,7 +90,7 @@ decode_register_verify_key(psa_key_handle_t *verify_key_handle)
     }
 
     /* Setup the key attributes */
-    psa_set_key_usage_flags(&key_attributes, PSA_KEY_USAGE_VERIFY);
+    psa_set_key_usage_flags(&key_attributes, PSA_KEY_USAGE_VERIFY_HASH);
     psa_set_key_algorithm(&key_attributes, key_alg);
     psa_set_key_type(&key_attributes, PSA_KEY_TYPE_HMAC);
 

@@ -27,7 +27,7 @@
 static psa_key_handle_t symmetric_iak_handle = 0;
 
 /* Instance ID for symmetric IAK */
-static uint8_t instance_id_buf[PSA_HASH_SIZE(INSTANCE_ID_HASH_ALG) + 1];
+static uint8_t instance_id_buf[PSA_HASH_LENGTH(INSTANCE_ID_HASH_ALG) + 1];
 static size_t instance_id_len = 0;
 
 #ifdef INCLUDE_COSE_KEY_ID
@@ -177,7 +177,7 @@ enum psa_attest_err_t attest_register_initial_attestation_key(void)
     }
 
     /* Setup the key attributes */
-    psa_set_key_usage_flags(&key_attributes, PSA_KEY_USAGE_SIGN);
+    psa_set_key_usage_flags(&key_attributes, PSA_KEY_USAGE_SIGN_HASH);
     psa_set_key_algorithm(&key_attributes, key_alg);
     psa_set_key_type(&key_attributes, PSA_KEY_TYPE_HMAC);
 

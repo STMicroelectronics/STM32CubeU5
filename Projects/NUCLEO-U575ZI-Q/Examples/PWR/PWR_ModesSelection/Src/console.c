@@ -21,6 +21,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#if defined(__ICCARM__)
+#include <LowLevelIOInterface.h>
+#endif /* __ICCARM__ */
+
 /** @addtogroup STM32U5xx_HAL_Driver
   * @{
   */
@@ -77,14 +81,34 @@ Console_StatusTypeDef Console_GetCommand(uint8_t *Cmd, uint16_t CmdSize)
 }
 
 /**
-  * @brief  Retargets the C library printf function to the UART.
-  * @param  None.
-  * @retval None.
+  * @brief  Retargets the C library __write function to the IAR function iar_fputc.
+  * @param  file: file descriptor.
+  * @param  ptr: pointer to the buffer where the data is stored.
+  * @param  len: length of the data to write in bytes.
+  * @retval length of the written data in bytes.
+  */
+#if defined(__ICCARM__)
+size_t __write(int file, unsigned char const *ptr, size_t len)
+{
+  size_t idx;
+  unsigned char const *pdata = ptr;
+
+  for (idx = 0; idx < len; idx++)
+  {
+    iar_fputc((int)*pdata);
+    pdata++;
+  }
+  return len;
+}
+#endif /* __ICCARM__ */
+
+/**
+  * @brief  Retargets the C library printf function to the USART.
   */
 PUTCHAR_PROTOTYPE
 {
   /* Place your implementation of fputc here */
-  /* e.g. write a character to the EVAL_COM1 and Loop until the end of transmission */
+  /* e.g. write a character to the USART1 and Loop until the end of transmission */
   HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);
 
   return ch;

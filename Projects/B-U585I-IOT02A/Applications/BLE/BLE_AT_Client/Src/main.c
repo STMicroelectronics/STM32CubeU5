@@ -25,6 +25,10 @@
 #include "stm32wb_at_client.h"
 #include "ble_at_appli.h"
 
+#if defined(__ICCARM__)
+#include <LowLevelIOInterface.h>
+#endif /* __ICCARM__ */
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -33,13 +37,17 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart4;
 
 /* Private function prototypes -----------------------------------------------*/
-#if defined (__ICCARM__) || defined (__ARMCC_VERSION)
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#elif defined(__GNUC__)
-   /* With GCC, small printf (option LD Linker->Libraries->Small printf
+#if defined(__ICCARM__)
+/* New definition from EWARM V9, compatible with EWARM8 */
+int iar_fputc(int ch);
+#define PUTCHAR_PROTOTYPE int iar_fputc(int ch)
+#elif defined ( __GNUC__) && !defined(__clang__)
+/* With GCC, small printf (option LD Linker->Libraries->Small printf
    set to 'Yes') calls __io_putchar() */
 #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#endif /* __ICCARM__ || __ARMCC_VERSION */
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __ICCARM__ */
 
 static void SystemClock_Config(void);
 static void CACHE_Enable(void);
@@ -292,9 +300,29 @@ static void CACHE_Enable(void)
 }
 
 /**
+  * @brief  Retargets the C library __write function to the IAR function iar_fputc.
+  * @param  file: file descriptor.
+  * @param  ptr: pointer to the buffer where the data is stored.
+  * @param  len: length of the data to write in bytes.
+  * @retval length of the written data in bytes.
+  */
+#if defined(__ICCARM__)
+size_t __write(int file, unsigned char const *ptr, size_t len)
+{
+  size_t idx;
+  unsigned char const *pdata = ptr;
+
+  for (idx = 0; idx < len; idx++)
+  {
+    iar_fputc((int)*pdata);
+    pdata++;
+  }
+  return len;
+}
+#endif /* __ICCARM__ */
+
+/**
   * @brief  Retargets the C library printf function to the USART.
-  * @param  None
-  * @retval None
   */
 PUTCHAR_PROTOTYPE
 {

@@ -53,7 +53,7 @@ static size_t   attestation_public_key_len = 0;
 static psa_ecc_family_t attestation_key_curve;
 
 #ifdef INCLUDE_COSE_KEY_ID
-static uint8_t attestation_key_id[PSA_HASH_SIZE(PSA_ALG_SHA_256)]; /* 32bytes */
+static uint8_t attestation_key_id[PSA_HASH_LENGTH(PSA_ALG_SHA_256)]; /* 32bytes */
 #endif
 
 /* Instance ID for asymmetric IAK */
@@ -103,7 +103,7 @@ attest_register_initial_attestation_key()
     }
 
     /* Setup the key policy for private key */
-    psa_set_key_usage_flags(&key_attributes, PSA_KEY_USAGE_SIGN);
+    psa_set_key_usage_flags(&key_attributes, PSA_KEY_USAGE_SIGN_HASH);
     psa_set_key_algorithm(&key_attributes, PSA_ALG_ECDSA(PSA_ALG_SHA_256));
     psa_set_key_type(&key_attributes, PSA_KEY_TYPE_ECC_KEY_PAIR(psa_curve));
 
@@ -454,7 +454,7 @@ attest_get_initial_attestation_key_id(struct q_useful_buf_c *attest_key_id)
     struct q_useful_buf    buffer_for_attest_key_id;
 
     buffer_for_attest_key_id.ptr = attestation_key_id;
-    buffer_for_attest_key_id.len = PSA_HASH_SIZE(PSA_ALG_SHA_256);
+    buffer_for_attest_key_id.len = PSA_HASH_LENGTH(PSA_ALG_SHA_256);
 
     /* Needs to calculate only once */
     if (attest_key_id_calculated == 0) {

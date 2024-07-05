@@ -26,6 +26,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#if defined(__ICCARM__)
+#include <LowLevelIOInterface.h>
+#endif /* __ICCARM__ */
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -123,6 +126,21 @@ static void FlushBuffer8(uint8_t* pBuffer1, uint16_t BufferLength);
 #if defined(__GNUC__) && defined(MASTER_BOARD) && !defined(__ARMCC_VERSION)
 extern void initialise_monitor_handles(void); /*rtt*/
 #endif
+
+#if (USE_VCP_CONNECTION == 1)
+#if defined(__ICCARM__)
+/* New definition from EWARM V9, compatible with EWARM8 */
+int iar_fputc(int ch);
+#define PUTCHAR_PROTOTYPE int iar_fputc(int ch)
+#elif defined (__GNUC__)
+/* With GCC, small printf (option LD Linker->Libraries->Small printf
+   set to 'Yes') calls __io_putchar() */
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else 
+#defined PUTCHAR_PROTOTYPE fputc(int ch, FILE *f)
+#endif /* __ICCARM__ */
+#endif /* USE_VCP_CONNECTION */
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -584,21 +602,34 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 #if (USE_VCP_CONNECTION == 1)
 /**
-  * @brief  Retargets the C library printf function to the USARTx.
-  * @param  ch: character to send
-  * @param  f: pointer to file (not used)
-  * @retval The character transmitted
+  * @brief  Retargets the C library __write function to the IAR function iar_fputc.
+  * @param  file: file descriptor.
+  * @param  ptr: pointer to the buffer where the data is stored.
+  * @param  len: length of the data to write in bytes.
+  * @retval length of the written data in bytes.
   */
-#ifdef __GNUC__
-/* With GCC, small printf (option LD Linker->Libraries->Small printf
-   set to 'Yes') calls __io_putchar() */
-int __io_putchar(int ch)
-#else
-int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
+#if defined(__ICCARM__)
+size_t __write(int file, unsigned char const *ptr, size_t len)
+{
+  size_t idx;
+  unsigned char const *pdata = ptr;
+
+  for (idx = 0; idx < len; idx++)
+  {
+    iar_fputc((int)*pdata);
+    pdata++;
+  }
+  return len;
+}
+#endif /* __ICCARM__ */
+
+/**
+  * @brief  Retargets the C library printf function to the USART.
+  */
+PUTCHAR_PROTOTYPE
 {
   /* Place your implementation of fputc here */
-  /* e.g. write a character to the EVAL_COM1 and Loop until the end of transmission */
+  /* e.g. write a character to the USART1 and Loop until the end of transmission */
   HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 1, UART_TIMEOUT_VALUE); 
 
   return ch;

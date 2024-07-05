@@ -180,6 +180,22 @@ boot_status_internal_off(const struct boot_status *bs, int elem_sz)
  * area, and have sizes that are a multiple of each other (powers of two
  * presumably!).
  */
+#if defined(MCUBOOT_FLASH_HOMOGENOUS) && !defined(MCUBOOT_OVERWRITE_ONLY)
+int
+boot_slots_compatible(struct boot_loader_state *state)
+{
+  size_t primary_sz, secondary_sz;
+  size_t scratch_sz;
+  primary_sz = BOOT_IMG_AREA(state, BOOT_PRIMARY_SLOT)->fa_size;
+  secondary_sz = BOOT_IMG_AREA(state, BOOT_SECONDARY_SLOT)->fa_size;
+  scratch_sz = boot_scratch_area_size(state);
+  if ((primary_sz != secondary_sz) || (primary_sz > (scratch_sz * BOOT_STATUS_MAX_ENTRIES))) {
+    BOOT_LOG_WRN("Cannot upgrade: more swap than trailer status size");
+    return 0;
+  }
+  return 1;
+}
+#else
 int
 boot_slots_compatible(struct boot_loader_state *state)
 {
@@ -269,6 +285,7 @@ boot_slots_compatible(struct boot_loader_state *state)
 
     return 1;
 }
+#endif /* MCUBOOT_FLASH_HOMOGENOUS and not MCUBOOT_OVERWRITE_ONLY */
 
 #define BOOT_LOG_SWAP_STATE(area, state)                            \
     BOOT_LOG_INF("%s: magic=%s, swap_type=0x%x, copy_done=0x%x, "   \

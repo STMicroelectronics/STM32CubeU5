@@ -69,54 +69,8 @@ typedef MBEDTLS_PSA_DEPRECATED psa_algorithm_t mbedtls_deprecated_psa_algorithm_
 #define MBEDTLS_DEPRECATED_CONSTANT( type, value )      \
     ( (mbedtls_deprecated_##type) ( value ) )
 
-/*
- * Deprecated PSA Crypto error code definitions (PSA Crypto API  <= 1.0 beta2)
- */
-#define PSA_ERROR_UNKNOWN_ERROR \
-    MBEDTLS_DEPRECATED_CONSTANT( psa_status_t, PSA_ERROR_GENERIC_ERROR )
-#define PSA_ERROR_OCCUPIED_SLOT \
-    MBEDTLS_DEPRECATED_CONSTANT( psa_status_t, PSA_ERROR_ALREADY_EXISTS )
-#define PSA_ERROR_EMPTY_SLOT \
-    MBEDTLS_DEPRECATED_CONSTANT( psa_status_t, PSA_ERROR_DOES_NOT_EXIST )
-#define PSA_ERROR_INSUFFICIENT_CAPACITY \
-    MBEDTLS_DEPRECATED_CONSTANT( psa_status_t, PSA_ERROR_INSUFFICIENT_DATA )
 #define PSA_ERROR_TAMPERING_DETECTED \
     MBEDTLS_DEPRECATED_CONSTANT( psa_status_t, PSA_ERROR_CORRUPTION_DETECTED )
-
-/*
- * Deprecated PSA Crypto numerical encodings (PSA Crypto API  <= 1.0 beta3)
- */
-#define PSA_KEY_USAGE_SIGN \
-    MBEDTLS_DEPRECATED_CONSTANT( psa_key_usage_t, PSA_KEY_USAGE_SIGN_HASH )
-#define PSA_KEY_USAGE_VERIFY \
-    MBEDTLS_DEPRECATED_CONSTANT( psa_key_usage_t, PSA_KEY_USAGE_VERIFY_HASH )
-
-/*
- * Deprecated PSA Crypto size calculation macros (PSA Crypto API  <= 1.0 beta3)
- */
-#define PSA_ASYMMETRIC_SIGNATURE_MAX_SIZE \
-    MBEDTLS_DEPRECATED_CONSTANT( size_t, PSA_SIGNATURE_MAX_SIZE )
-#define PSA_ASYMMETRIC_SIGN_OUTPUT_SIZE( key_type, key_bits, alg ) \
-    MBEDTLS_DEPRECATED_CONSTANT( size_t, PSA_SIGN_OUTPUT_SIZE( key_type, key_bits, alg ) )
-
-/*
- * Deprecated PSA Crypto function names (PSA Crypto API  <= 1.0 beta3)
- */
-MBEDTLS_PSA_DEPRECATED psa_status_t psa_asymmetric_sign( psa_key_handle_t key,
-                            psa_algorithm_t alg,
-                            const uint8_t *hash,
-                            size_t hash_length,
-                            uint8_t *signature,
-                            size_t signature_size,
-                            size_t *signature_length );
-
-MBEDTLS_PSA_DEPRECATED psa_status_t psa_asymmetric_verify( psa_key_handle_t key,
-                              psa_algorithm_t alg,
-                              const uint8_t *hash,
-                              size_t hash_length,
-                              const uint8_t *signature,
-                              size_t signature_length );
-
 
 /*
  * Size-specific elliptic curve families.

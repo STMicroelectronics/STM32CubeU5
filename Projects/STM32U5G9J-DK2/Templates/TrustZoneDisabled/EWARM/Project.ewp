@@ -1320,6 +1320,9 @@
                 <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_sd_ex.c</name>
             </file>
             <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_sdio.c</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_smartcard.c</name>
             </file>
             <file>

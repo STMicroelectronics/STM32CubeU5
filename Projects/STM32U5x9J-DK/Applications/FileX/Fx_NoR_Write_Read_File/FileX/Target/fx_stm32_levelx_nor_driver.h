@@ -59,7 +59,7 @@ extern "C" {
 #include "lx_stm32_nor_custom_driver.h"
 #define LX_NOR_CUSTOM_DRIVERS   {.name = NOR_CUSTOM_DRIVER_NAME, .id = NOR_CUSTOM_DRIVER_ID, .nor_driver_initialize = NOR_CUSTOM_DRIVER_INIT}
 
-/* USER CODE BEIGN NOR_CUSTOM_DRIVERS */
+/* USER CODE BEGIN NOR_CUSTOM_DRIVERS */
 
 /* USER CODE END NOR_CUSTOM_DRIVERS */
 

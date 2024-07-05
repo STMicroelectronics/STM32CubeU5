@@ -244,7 +244,11 @@ _Static_assert(BOOT_IMAGE_NUMBER > 0, "Invalid value for BOOT_IMAGE_NUMBER");
 #endif
 
 /** Maximum number of image sectors supported by the bootloader. */
+#if defined(MCUBOOT_FLASH_HOMOGENOUS) && defined(MCUBOOT_STATUS_MAX_ENTRIES) && (MCUBOOT_STATUS_MAX_ENTRIES!=0)
+#define BOOT_STATUS_MAX_ENTRIES         MCUBOOT_STATUS_MAX_ENTRIES
+#else
 #define BOOT_STATUS_MAX_ENTRIES         BOOT_MAX_IMG_SECTORS
+#endif
 
 #define BOOT_PRIMARY_SLOT               0
 #define BOOT_SECONDARY_SLOT             1

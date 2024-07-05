@@ -143,7 +143,7 @@ enum t_cose_err_t make_ecdsa_key_pair(int32_t            cose_algorithm_id,
     /* Say what algorithm and operations the key can be used with / for */
     psa_key_policy_t policy = psa_key_policy_init();
     psa_key_policy_set_usage(&policy,
-                             PSA_KEY_USAGE_SIGN | PSA_KEY_USAGE_VERIFY,
+                             PSA_KEY_USAGE_SIGN_HASH | PSA_KEY_USAGE_VERIFY_HASH,
                              key_alg);
     crypto_result = psa_set_key_policy(key_handle, &policy);
     if (crypto_result != PSA_SUCCESS) {

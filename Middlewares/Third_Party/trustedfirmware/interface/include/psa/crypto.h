@@ -790,7 +790,7 @@ psa_status_t psa_export_public_key(psa_key_id_t key,
  * \param hash_size         Size of the \p hash buffer in bytes.
  * \param[out] hash_length  On success, the number of bytes
  *                          that make up the hash value. This is always
- *                          #PSA_HASH_SIZE(\p alg).
+ *                          #PSA_HASH_LENGTH(\p alg).
  *
  * \retval #PSA_SUCCESS
  *         Success.
@@ -1000,7 +1000,7 @@ psa_status_t psa_hash_update(psa_hash_operation_t *operation,
  * \param hash_size             Size of the \p hash buffer in bytes.
  * \param[out] hash_length      On success, the number of bytes
  *                              that make up the hash value. This is always
- *                              #PSA_HASH_SIZE(\c alg) where \c alg is the
+ *                              #PSA_HASH_LENGTH(\c alg) where \c alg is the
  *                              hash algorithm that is calculated.
  *
  * \retval #PSA_SUCCESS
@@ -1009,7 +1009,7 @@ psa_status_t psa_hash_update(psa_hash_operation_t *operation,
  *         The operation state is not valid (it must be active).
  * \retval #PSA_ERROR_BUFFER_TOO_SMALL
  *         The size of the \p hash buffer is too small. You can determine a
- *         sufficient buffer size by calling #PSA_HASH_SIZE(\c alg)
+ *         sufficient buffer size by calling #PSA_HASH_LENGTH(\c alg)
  *         where \c alg is the hash algorithm that is calculated.
  * \retval #PSA_ERROR_INSUFFICIENT_MEMORY
  * \retval #PSA_ERROR_COMMUNICATION_FAILURE

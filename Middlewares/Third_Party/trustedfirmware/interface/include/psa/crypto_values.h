@@ -355,7 +355,7 @@
  * used for.
  *
  * HMAC keys should generally have the same size as the underlying hash.
- * This size can be calculated with #PSA_HASH_SIZE(\c alg) where
+ * This size can be calculated with #PSA_HASH_LENGTH(\c alg) where
  * \c alg is the HMAC algorithm or the underlying hash algorithm. */
 #define PSA_KEY_TYPE_HMAC                           ((psa_key_type_t)0x1100)
 
@@ -1707,6 +1707,16 @@
  * For a key pair, this concerns the private key.
  */
 #define PSA_KEY_USAGE_DECRYPT                   ((psa_key_usage_t)0x00000200)
+
+/** Whether the key may be used to sign a message.
+ *
+ * This flag allows the key to be used for a MAC calculation operation or for
+ * an asymmetric message signature operation, if otherwise permitted by the
+ * key’s type and policy.
+ *
+ * For a key pair, this concerns the private key.
+ */
+#define PSA_KEY_USAGE_SIGN_MESSAGE              ((psa_key_usage_t) 0x00000400)
 
 /** Whether the key may be used to verify a message.
  *

@@ -64,11 +64,534 @@
 <div class="col-sm-12 col-lg-8">
 <h2 id="update-history"><strong>Update History</strong></h2>
 <div class="collapse">
-<input type="checkbox" id="collapse-section9" checked aria-hidden="true"> <label for="collapse-section9" checked aria-hidden="true"><strong>V1.5.0 / 13-February-2024</strong></label>
+<input type="checkbox" id="collapse-section10" checked aria-hidden="true"> <label for="collapse-section10" checked aria-hidden="true"><strong>V1.6.0 / 05-June-2024</strong></label>
 <div>
 <h2 id="main-changes">Main Changes</h2>
-<p>Maintenance Release V1.5.0 of <span style="font-weight: bold;">STM32CubeU5</span> Firmware Package supporting <strong>STM32U535xx, STM32U545xx, STM32U575xx, STM32U585xx, STM32U595xx, STM32U5A5xx, STM32U599xx, STM32U5A9xx, STM32U5F7xx, STM32U5G7xx, STM32U5F9xx</strong> and <strong>STM32U5G9xx</strong> devices</p>
+<ul>
+<li>Maintenance Release V1.6.0 of <span style="font-weight: bold;">STM32CubeU5</span> Firmware Package to deploy the new HAL SDIO driver.</li>
+<li>General updates to fix known defects and implementation enhancements.</li>
+<li>Upgrade <strong>mbed-crypto</strong> Lib to use <strong>v2.28.8 (ST modified 2024-05-27)</strong>.</li>
+<li>Upgrade <strong>trustedfirmware</strong> Lib to use <strong>v1.3.0.11</strong>.</li>
+<li>Upgrade <strong>mcuboot</strong> Lib to use <strong>v1.7.2.24</strong>.</li>
+</ul>
 <h2 id="contents">Contents</h2>
+<h3 id="halll-drivers-updates"><strong>HAL/LL Drivers</strong> updates</h3>
+<ul>
+<li><strong>HAL GENERIC</strong> driver
+<ul>
+<li>update stm32u5xx_hal_conf_template file to add the support for the new HAL SDIO driver.</li>
+</ul></li>
+<li><strong>HAL CORTEX</strong> driver
+<ul>
+<li>Use MPUx instead of MPU inside MPU_ConfigRegion() API when disabling the region.</li>
+</ul></li>
+<li><strong>HAL DSI</strong> driver
+<ul>
+<li>Update startup sequence: PLL tuning must be done before PLL Enable.</li>
+</ul></li>
+<li><strong>HAL DAC</strong> driver
+<ul>
+<li>Fix HAL_DACEx_SelfCalibrate() API to manage case of calibration factor equal to range maximum value: Previously, in this case calibration factor was reset, leading to voltage accuracy not optimal.</li>
+<li>Update trimming factor to use 6bits width.</li>
+</ul></li>
+<li><strong>HAL SDMMC</strong> driver
+<ul>
+<li>Support new HAL SDIO driver.</li>
+</ul></li>
+</ul>
+<h3 id="bsp-drivers-updates"><strong>BSP Drivers</strong> updates</h3>
+<ul>
+<li>B-U585I-IOT02A/ STM32U5x9J-DK/ STM32U5xx_Nucleo/ STM32U575I-EV:
+<ul>
+<li>Fix printf() API implementation to be compliant with IAR 9.x.</li>
+</ul></li>
+<li>B-U585I-IOT02A:
+<ul>
+<li>Update BSP_OSPI_RAM_Init() API to be compliant with MISRAC2012 rule 10.4.</li>
+</ul></li>
+<li>STM32U5xx_Nucleo:
+<ul>
+<li>Update USBPD_PWR driver to be compliant with MISRAC2012 rules 2.3 and 10.4_a.</li>
+</ul></li>
+</ul>
+<h3 id="middlewares-updates"><strong>Middlewares</strong> updates</h3>
+<ul>
+<li>Upgrade <strong>mbed-crypto</strong> Lib to use <strong>v2.28.8_20240527</strong></li>
+<li>Upgrade <strong>trustedfirmware</strong> Lib to use <strong>v1.3.0.11</strong></li>
+<li>Upgrade <strong>mcuboot</strong> Lib to use <strong>v1.7.2.24</strong></li>
+</ul>
+<h3 id="projects-updates"><strong>Projects</strong> updates</h3>
+<ul>
+<li>Fix printf() API implementation to be compliant with IAR 9.x.</li>
+<li>Update Template projects to support new HAL SDIO driver.</li>
+<li>Update HAL SMBUS examples available for NUCLEO-U575ZI-Q board to configure digital filter:
+<ul>
+<li>Add a call to HAL_SMBUS_ConfigDigitalFilter() API inside MX_I2Cx_SMBUS_Init() API.</li>
+</ul></li>
+<li>General update to align user tags naming sections with STM32CubeMx V6.12.0</li>
+<li>Update scripts of SBSFU and TFM applications to:
+<ul>
+<li>Add missing -M (–max-sectors) in the .sh files.</li>
+<li>Use AppliCfg instead of imgtool flash commands.</li>
+<li>Remove the –hardRst option to work with latest CubeProgrammer versions.</li>
+<li>Use the correct –max-sectors value in imgtool command during image preparation.</li>
+</ul></li>
+<li>Fix in TFM application for the test Protection failure issue when using STM32CubeIDE1.15.0</li>
+<li>Update of mbeb-crypto projects for security fixes.</li>
+<li>Update of mcuboot projects.</li>
+</ul>
+<h3 id="utilities-updates"><strong>Utilities</strong> updates</h3>
+<ul>
+<li>Upgrade EWARM and MDK-ARM patches to support new STM32U5 part numbers.</li>
+</ul>
+<h3 id="section"></h3>
+<p>The <strong>STM32CubeU5</strong> Firmware package comes with template running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains The exhaustive list of projects is provided in this table <a href="Projects/STM32CubeProjectsList.html"><strong>STM32CubeProjectsList.html</strong></a></p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Projects</td>
+<td style="text-align: left;">V1.6.0</td>
+<td style="text-align: left;"><a href="Projects/Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>The following sequence is needed to disable TrustZone:
+<ul>
+<li>Boot from user Flash memory:
+<ul>
+<li>Make sure that secure and non-secure applications are well loaded and executed (jump done on non-secure application)</li>
+<li>If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution</li>
+<li>Use a power supply different from ST-LINK in order to be able to connect to the target</li>
+<li>Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply</li>
+</ul></li>
+<li>Boot from RSS:
+<ul>
+<li>Make sure to apply a high level on BOOT0 pin (make sure that nSWBOOT0 Option Byte is checked)</li>
+<li>If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution</li>
+<li>Use a power supply different from ST-LINK in order to be able to connect to the target</li>
+<li>Uncheck the TZEN box and set RDP to level 0 (option byte value 0xAA), then click on Apply Please refer to AN5347 for more details</li>
+</ul></li>
+</ul></li>
+<li>The MicroLIB option should be enabled to display messages in HyperTerminal in the <strong>MDK-ARM</strong> projects. Detailed list is in the Project’s <a href="Projects/Release_Notes.html">release notes</a>.</li>
+<li>The user should unplug then Plug STLINK connection on Slave Board to perform a power-on-reset when running I2C_WakeUpFromStop example on NUCLEO-U575ZI-Q board.</li>
+</ul>
+<h3 id="components"><strong>Components</strong></h3>
+<p><small>The components flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
+<table>
+<caption><strong>Drivers</strong></caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">CMSIS</td>
+<td style="text-align: left;">V5.9.0</td>
+<td style="text-align: left;"><a href="Drivers/CMSIS/Documentation/General/html/index.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32U5xx CMSIS</td>
+<td style="text-align: left;">V1.4.0</td>
+<td style="text-align: left;"><a href="Drivers/CMSIS/Device/ST/STM32U5xx/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32U5xx HAL <span class="icon-st-update"></span></td>
+<td style="text-align: left;">V1.6.0</td>
+<td style="text-align: left;"><a href="Drivers/STM32U5xx_HAL_Driver/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32U5xx NUCLEO <span class="icon-st-update"></span></td>
+<td style="text-align: left;">V1.2.2</td>
+<td style="text-align: left;"><a href="Drivers/BSP/STM32U5xx_Nucleo/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32U575I-EV <span class="icon-st-update"></span></td>
+<td style="text-align: left;">V1.4.1</td>
+<td style="text-align: left;"><a href="Drivers/BSP/STM32U575I-EV/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP B-U585I-IOT02A <span class="icon-st-update"></span></td>
+<td style="text-align: left;">V1.4.1</td>
+<td style="text-align: left;"><a href="Drivers/BSP/B-U585I-IOT02A/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP STM32U5x9J-DK <span class="icon-st-update"></span></td>
+<td style="text-align: left;">V1.3.1</td>
+<td style="text-align: left;"><a href="Drivers/BSP/STM32U5x9J-DK/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP STM32U5G9J-DK2</td>
+<td style="text-align: left;">V1.2.0</td>
+<td style="text-align: left;"><a href="Drivers/BSP/STM32U5G9J-DK2/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP aps512xx</td>
+<td style="text-align: left;">V1.0.2</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/aps512xx/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP aps6408</td>
+<td style="text-align: left;">V1.0.2</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/aps6408/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP Common</td>
+<td style="text-align: left;">V7.2.1</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/Common/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP cs42l51</td>
+<td style="text-align: left;">V2.0.6</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/cs42l51/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP gt911</td>
+<td style="text-align: left;">V1.0.0</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/gt911/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP hts221</td>
+<td style="text-align: left;">V5.5.0</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/hts221/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP hx8347i</td>
+<td style="text-align: left;">V2.0.3</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/hx8347i/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP iis2mdc</td>
+<td style="text-align: left;">V1.3.0</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/iis2mdc/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP ism330dhcx</td>
+<td style="text-align: left;">V1.3.0</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/ism330dhcx/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP lps22hh</td>
+<td style="text-align: left;">V1.4.0</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/lps22hh/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP lsm6dso</td>
+<td style="text-align: left;">V1.7.0</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/lsm6dso/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP m24256</td>
+<td style="text-align: left;">V1.0.2</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/m24256/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP mfxstm32l152</td>
+<td style="text-align: left;">V4.0.1</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/mfxstm32l152/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP mx_wifi</td>
+<td style="text-align: left;">V2.3.4</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/mx_wifi/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP mx25lm51245g</td>
+<td style="text-align: left;">V2.0.9</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/mx25lm51245g/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP mx25um51245g</td>
+<td style="text-align: left;">V1.0.1</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/mx25um51245g/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP mx66uw1g45g</td>
+<td style="text-align: left;">V1.0.0</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/mx66uw1g45g/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP ov5640</td>
+<td style="text-align: left;">V3.2.4</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/ov5640/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP rk050hr18</td>
+<td style="text-align: left;">V1.0.0</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/rk050hr18/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP sitronix</td>
+<td style="text-align: left;">V1.0.3</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/sitronix/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP stm32wb_at</td>
+<td style="text-align: left;">V1.0.12</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/stm32wb_at/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP stts22h</td>
+<td style="text-align: left;">V1.5.0</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/stts22h/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP sx8651</td>
+<td style="text-align: left;">V1.0.3</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/sx8651/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP tcpp0203</td>
+<td style="text-align: left;">V1.2.2</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/tcpp0203/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BSP veml3235</td>
+<td style="text-align: left;">V1.0.3</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/veml3235/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BSP vl53l5cx</td>
+<td style="text-align: left;">V1.0.7</td>
+<td style="text-align: left;"><a href="Drivers/BSP/Components/vl53l5cx/Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><strong>Middlewares</strong></caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">STM32_TouchSensing_Library</td>
+<td style="text-align: left;">V2.2.11</td>
+<td style="text-align: left;"><a href="Middlewares/ST/STM32_TouchSensing_Library/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32_Network_Library</td>
+<td style="text-align: left;">V2.3.0</td>
+<td style="text-align: left;"><a href="Middlewares/ST/STM32_Network_Library/Release_notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32_USBPD_Core_Library</td>
+<td style="text-align: left;">V4.1.2</td>
+<td style="text-align: left;"><a href="Middlewares/ST/STM32_USBPD_Library/Core/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32_USBPD_Device_Library</td>
+<td style="text-align: left;">u5_v3.3.0</td>
+<td style="text-align: left;"><a href="Middlewares/ST/STM32_USBPD_Library/Devices/STM32U5XX/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mbed-crypto <span class="icon-st-update"></span></td>
+<td style="text-align: left;">mbed-tls-v2.28.8_20240527</td>
+<td style="text-align: left;"><a href="Middlewares/Third_Party/mbed-crypto/st_readme.txt">ST release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STSAFE_A1xx</td>
+<td style="text-align: left;">MW_V3.3.5</td>
+<td style="text-align: left;"><a href="Middlewares/ST/STSAFE_A1xx/Release_Notes.html">ST release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SE_STSAFEA_API</td>
+<td style="text-align: left;">SE_STSAFEA_API_V1.0.0</td>
+<td style="text-align: left;"><a href="Middlewares/ST/SE_STSAFEA_API/Release_Notes.html">ST release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">trustedfirmware <span class="icon-st-update"></span></td>
+<td style="text-align: left;">tfm/v1.3.0.11</td>
+<td style="text-align: left;"><a href="Middlewares/Third_Party/trustedfirmware/st_readme.txt">ST release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mcuboot <span class="icon-st-update"></span></td>
+<td style="text-align: left;">v1.7.2.24</td>
+<td style="text-align: left;"><a href="Middlewares/Third_Party/mcuboot/st_readme.txt">ST release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">OpenBootloader</td>
+<td style="text-align: left;">V6.1.1</td>
+<td style="text-align: left;"><a href="Middlewares/ST/OpenBootloader/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ThreadX</td>
+<td style="text-align: left;">threadx-6.2.0.221223</td>
+<td style="text-align: left;"><a href="https://github.com/azure-rtos/threadx/releases/tag/v6.2.0_rel">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NetXduo</td>
+<td style="text-align: left;">netxduo-6.2.0.221223</td>
+<td style="text-align: left;"><a href="https://github.com/azure-rtos/netxduo/releases/tag/v6.2.0_rel">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">USBX</td>
+<td style="text-align: left;">usbx-6.2.0.221223</td>
+<td style="text-align: left;"><a href="https://github.com/azure-rtos/usbx/releases/tag/v6.2.0_rel">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FileX</td>
+<td style="text-align: left;">filex-6.2.0.221223</td>
+<td style="text-align: left;"><a href="https://github.com/azure-rtos/filex/releases/tag/v6.2.0_rel">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">LevelX</td>
+<td style="text-align: left;">levelx-6.2.0.221223</td>
+<td style="text-align: left;"><a href="https://github.com/azure-rtos/levelx/releases/tag/v6.2.0_rel">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cmsis_rtos_threadx</td>
+<td style="text-align: left;">tx-cmsis-1.2.0.230421</td>
+<td style="text-align: left;"><a href="Middlewares/ST/cmsis_rtos_threadx/Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><strong>Utilities</strong></caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Release note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Common</td>
+<td style="text-align: left;">V1.6.1</td>
+<td style="text-align: left;"><a href="Utilities/Common/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Fonts</td>
+<td style="text-align: left;">V2.0.4</td>
+<td style="text-align: left;"><a href="Utilities/Fonts/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">JPEG</td>
+<td style="text-align: left;">V2.0.3</td>
+<td style="text-align: left;"><a href="Utilities/JPEG/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GUI_INTERFACE</td>
+<td style="text-align: left;">GUI_V2.3.0</td>
+<td style="text-align: left;"><a href="Utilities/GUI_INTERFACE/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lcd</td>
+<td style="text-align: left;">V2.0.3</td>
+<td style="text-align: left;"><a href="Utilities/lcd/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">lpbam</td>
+<td style="text-align: left;">V1.4.0</td>
+<td style="text-align: left;"><a href="Utilities/lpbam/Release_Notes.html">release notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TRACER_EMB</td>
+<td style="text-align: left;">V1.10.0</td>
+<td style="text-align: left;"><a href="Utilities/TRACER_EMB/Release_Notes.html">release notes</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="development-toolchains-and-compilers">Development toolchains and compilers</h2>
+<ul>
+<li>IAR Embedded Workbench for ARM (EWARM) toolchain <strong>V9.20.4</strong> + ST-LINK, patches available here:
+<ul>
+<li><a href="Utilities\PC_Software\IDEs_Patches\EWARM\EWARMv8_STM32U53x-54x_V1.0.3.zip">Utilities\PC_Software\IDEs_Patches\EWARM\EWARMv8_STM32U53x-54x_V1.0.3.zip</a>
+<ul>
+<li>This patch supports STM32U535/545 devices</li>
+</ul></li>
+<li><a href="Utilities\PC_Software\IDEs_Patches\EWARM\EWARMv8_STM32U57x-58x_V1.4.2.zip">Utilities\PC_Software\IDEs_Patches\EWARM\EWARMv8_STM32U57x-58x_V1.4.2.zip</a>
+<ul>
+<li>This patch supports STM32U575/585 devices</li>
+</ul></li>
+<li><a href="Utilities\PC_Software\IDEs_Patches\EWARM\EWARMv8_STM32U59x-5Ax_V1.3.1.zip">Utilities\PC_Software\IDEs_Patches\EWARM\EWARMv8_STM32U59x-5Ax_V1.3.1.zip</a>
+<ul>
+<li>This patch supports STM32U595/5A5/599/5A9 devices</li>
+</ul></li>
+<li><a href="Utilities\PC_Software\IDEs_Patches\EWARM\EWARMv8_STM32U5Fx-5Gx_V1.0.1.zip">Utilities\PC_Software\IDEs_Patches\EWARM\EWARMv8_STM32U5Fx-5Gx_V1.0.1.zip</a>
+<ul>
+<li>This patch supports STM32U5F7/5G7/5F9/5G9 devices</li>
+</ul></li>
+</ul></li>
+<li>RealView Microcontroller Development Kit (MDK-ARM) toolchain <strong>V5.37</strong> which supports ARM Compiler 6 (AC-5 like warnings)+ ST-LINK, patch available here:
+<ul>
+<li><a href="Utilities\PC_Software\IDEs_Patches\MDK-ARM\Keil.STM32U5xx_DFP.2.2.3.zip">Utilities\PC_Software\IDEs_Patches\MDK-ARM\Keil.STM32U5xx_DFP.2.2.3.zip</a>
+<ul>
+<li>This patch supports STM32U535/545/575/585/595/5A5/599/5A9/5F7/5G7/5F9/5G9 devices</li>
+</ul></li>
+</ul></li>
+<li>STM32CubeIDE <strong>V1.15.0</strong> (gcc12)</li>
+</ul>
+<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<ul>
+<li>Devices:
+<ul>
+<li>STM32U5F7/STM32U5G7/STM32U5F9/STM32U5G9 devices rev Z</li>
+<li>STM32U575/STM32U585 devices rev W</li>
+<li>STM32U595/STM32U5A5/STM32U599/STM32U5A9 devices rev W</li>
+<li>STM32U535/STM32U545 devices rev Y</li>
+</ul></li>
+<li>Boards:
+<ul>
+<li>NUCLEO-U575ZI-Q Nucleo board rev.C</li>
+<li>NUCLEO-U5A5ZJ-Q Nucleo board rev.C</li>
+<li>NUCLEO-U545RE-Q Nucleo board rev.D</li>
+<li>STM32U575I-EV Evaluation board rev.C</li>
+<li>B-U585I-IOT02A Discovery board rev.D</li>
+<li>STM32U5A9J-DK Discovery board rev.B</li>
+<li>STM32U5G9J-DK1 Discovery board rev.B</li>
+<li>STM32U5G9J-DK2 Discovery board rev.C</li>
+</ul></li>
+</ul>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>This software release is compatible with:
+<ul>
+<li>STM32CubeMX version V6.12.0</li>
+<li>STM32CubeProgrammer version V2.16.0</li>
+</ul></li>
+<li>It is recommended to use CLI of STM32CubeProgrammer for execution of SBSFU and TFM applications, please refer to readme file of applications for more details</li>
+<li>The BLE_AT_Client application requires to have Flash BLE_AT_Server module application using STM32CubeProgrammer: file BLE_AT_Server_reference.hex present in .\STM32Cube_FW_WB_V1.x.x\Projects\P-NUCLEO-WB55.Nucleo\Applications\BLE\BLE_AT_Server\Binary\BLE_AT_Server_reference.hex</li>
+<li>The EMW3080B MXCHIP Wi-Fi module firmware version used is V2.3.4, for more details refer to Wi-Fi example readme files which can be found at Projects\B-U585I-IOT02A under Applications\NetXDuo and \Demonstrations\IOT_HTTP_WebServer.</li>
+<li>The IOT_HTTP_WebServer demonstration uses an updated version of STM32CubeU5_Demo_U585I-IOT02A_v1.2.hex binaries. To upgrade your B-U585I-IOT02A Discovery board with the required version V1.2, please visit <a href="https://www.st.com/en/evaluation-tools/b-u585i-iot02a.html#documentation">B-U585I-IOT02A compiled demo binary</a></li>
+<li>The EVAL Demonstration requires to have STM32CubeU5_Demo_STM32U575I-EV.hex binaries on your STM32U575I-EV Evaluation board with the required version V1.0. To upgrade your board, please visit <a href="https://www.st.com/en/evaluation-tools/stm32u575i-ev.html#documentation">STM32U575I-EV compiled demo binary</a></li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li>Some project are not generated with STM32CubeMX tool for the exhaustive list please refer to the table available in <a href="Projects/STM32CubeProjectsList.html"><strong>STM32CubeProjectsList.html</strong></a></li>
+<li>The component “USBX/CoreSystem” must be selected alongside either “USBX/UX Host CoreStack” or “USBX/UX Device CoreStack”</li>
+<li>In NetXDuo, some configuration flags, that are not used in the STM32Cube FW package examples, might be non-functional when combined. This limitation will be fixed in upcoming releases</li>
+<li>B-U585I-IOT02A\Applications\NetXDuo\Nx_HTTP_SSE project is not provided with STM32CubeIDE release configuration. This limitation will be fixed in upcoming releases</li>
+<li>Comment error in “MX_WIFI BSP Component” Release_Notes : “The EMW3080B MXCHIP Wi-Fi module firmware version has to be V2.3.4 instead of V2.3.4 rc 13”</li>
+<li>The devices MX66UW1G45G and MX66LM1G45G are driven by the same BSP component driver.</li>
+</ul>
+<h2 id="backward-compatibility">Backward compatibility</h2>
+<ul>
+<li>None.</li>
+</ul>
+</div>
+</div>
+<div class="collapse">
+<input type="checkbox" id="collapse-section9" aria-hidden="true"> <label for="collapse-section9" aria-hidden="true"><strong>V1.5.0 / 13-February-2024</strong></label>
+<div>
+<h2 id="main-changes-1">Main Changes</h2>
+<p>Maintenance Release V1.5.0 of <span style="font-weight: bold;">STM32CubeU5</span> Firmware Package supporting <strong>STM32U535xx, STM32U545xx, STM32U575xx, STM32U585xx, STM32U595xx, STM32U5A5xx, STM32U599xx, STM32U5A9xx, STM32U5F7xx, STM32U5G7xx, STM32U5F9xx</strong> and <strong>STM32U5G9xx</strong> devices</p>
+<h2 id="contents-1">Contents</h2>
 <h3 id="cmsis-drivers-updates"><strong>CMSIS Drivers</strong> updates</h3>
 <ul>
 <li>CMSIS Device Maintenance Release version of bits and registers definition aligned with <strong>RM0456</strong> (STM32U5 reference manual) (Please Refer to the <a href="Drivers/CMSIS/Device/ST/STM32U5xx/Release_Notes.html"><strong>release notes</strong></a> for details)</li>
@@ -82,7 +605,7 @@
 <li>Fix wrong declaration of g_pfnVectors size in GCC <strong>startup_stm32u5XXxx.s</strong> files</li>
 <li>Update linker files to properly mark sections readonly for GCC</li>
 </ul>
-<h3 id="halll-drivers-updates"><strong>HAL/LL Drivers</strong> updates</h3>
+<h3 id="halll-drivers-updates-1"><strong>HAL/LL Drivers</strong> updates</h3>
 <ul>
 <li>HAL and LL drivers Maintenance Release for STM32U5XX devices (Please Refer to the <a href="Drivers/STM32U5xx_HAL_Driver/Release_Notes.html"><strong>release notes</strong></a> for details)</li>
 <li>Add the <strong>HAL MMC</strong> replay protected memory block management feature</li>
@@ -263,20 +786,20 @@
 <li>Rename LL_UTILS_PACKAGETYPE_WLCSP144_SMPS to LL_UTILS_PACKAGETYPE_LQFP100_DSI_SMPS define</li>
 </ul></li>
 </ul>
-<h3 id="bsp-drivers-updates"><strong>BSP Drivers</strong> updates</h3>
+<h3 id="bsp-drivers-updates-1"><strong>BSP Drivers</strong> updates</h3>
 <ul>
 <li>Add PWM backlight control in <strong>stm32u5g9j_discovery_lcd</strong> drivers of STM32U5G9J-DK2 board</li>
 <li>Set DSI default clock in <strong>stm32u5x9j_discovery_lcd</strong> driver of STM32U5x9J-DK board</li>
 <li>Restore GPIO configuration for I2C after being previously initialized in <strong>stm32u5x9j_discovery_ranging_sensor</strong> driver of STM32U5x9J-DK board</li>
 </ul>
-<h3 id="projects-updates"><strong>Projects</strong> updates</h3>
+<h3 id="projects-updates-1"><strong>Projects</strong> updates</h3>
 <ul>
 <li>Add <strong>ADC_ContinuousConversion_TriggerSW_LowPower_Init</strong> project on NUCLEO-U575ZI-Q board with <strong>EWARM</strong>, <strong>MDK-ARM</strong> and <strong>STM32CubeIDE</strong> toolchains support available under:
 <ul>
 <li>Projects\NUCLEO-U575ZI-Q\Examples_LL\ADC\ADC_ContinuousConversion_TriggerSW_LowPower_Init</li>
 </ul></li>
 </ul>
-<h3 id="section"></h3>
+<h3 id="section-1"></h3>
 <p>The <strong>STM32CubeU5</strong> Firmware package comes with template running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains The exhaustive list of projects is provided in this table <a href="Projects/STM32CubeProjectsList.html"><strong>STM32CubeProjectsList.html</strong></a></p>
 <table>
 <thead>
@@ -316,7 +839,7 @@
 <li>The MicroLIB option should be enabled to display messages in HyperTerminal in the <strong>MDK-ARM</strong> projects. Detailed list is in the Project’s <a href="Projects/Release_Notes.html">release notes</a>.</li>
 <li>The user should unplug then Plug STLINK connection on Slave Board to perform a power-on-reset when running I2C_WakeUpFromStop example on NUCLEO-U575ZI-Q board.</li>
 </ul>
-<h3 id="components"><strong>Components</strong></h3>
+<h3 id="components-1"><strong>Components</strong></h3>
 <p><small>The components flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <table>
 <caption><strong>Drivers</strong></caption>
@@ -639,7 +1162,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="development-toolchains-and-compilers">Development toolchains and compilers</h2>
+<h2 id="development-toolchains-and-compilers-1">Development toolchains and compilers</h2>
 <ul>
 <li>IAR Embedded Workbench for ARM (EWARM) toolchain <strong>V8.50.9</strong> + ST-LINK, patches available here:
 <ul>
@@ -669,7 +1192,7 @@
 </ul></li>
 <li>STM32CubeIDE <strong>V1.15.0</strong> (gcc12)</li>
 </ul>
-<h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
+<h2 id="supported-devices-and-boards-1">Supported Devices and boards</h2>
 <ul>
 <li>Devices:
 <ul>
@@ -690,7 +1213,7 @@
 <li>STM32U5G9J-DK2 Discovery board rev.C</li>
 </ul></li>
 </ul>
-<h2 id="dependencies">Dependencies</h2>
+<h2 id="dependencies-1">Dependencies</h2>
 <ul>
 <li>This software release is compatible with:
 <ul>
@@ -703,7 +1226,7 @@
 <li>The IOT_HTTP_WebServer demonstration uses an updated version of STM32CubeU5_Demo_U585I-IOT02A_v1.2.hex binaries. To upgrade your B-U585I-IOT02A Discovery board with the required version V1.2, please visit <a href="https://www.st.com/en/evaluation-tools/b-u585i-iot02a.html#documentation">B-U585I-IOT02A compiled demo binary</a></li>
 <li>The EVAL Demonstration requires to have STM32CubeU5_Demo_STM32U575I-EV.hex binaries on your STM32U575I-EV Evaluation board with the required version V1.0. To upgrade your board, please visit <a href="https://www.st.com/en/evaluation-tools/stm32u575i-ev.html#documentation">STM32U575I-EV compiled demo binary</a></li>
 </ul>
-<h2 id="known-limitations">Known Limitations</h2>
+<h2 id="known-limitations-1">Known Limitations</h2>
 <ul>
 <li>Some project are not generated with STM32CubeMX tool for the exhaustive list please refer to the table available in <a href="Projects/STM32CubeProjectsList.html"><strong>STM32CubeProjectsList.html</strong></a></li>
 <li>The component “USBX/CoreSystem” must be selected alongside either “USBX/UX Host CoreStack” or “USBX/UX Device CoreStack”</li>
@@ -712,7 +1235,7 @@
 <li>Comment error in “MX_WIFI BSP Component” Release_Notes : “The EMW3080B MXCHIP Wi-Fi module firmware version has to be V2.3.4 instead of V2.3.4 rc 13”</li>
 <li>The devices MX66UW1G45G and MX66LM1G45G are driven by the same BSP component driver.</li>
 </ul>
-<h2 id="backward-compatibility">Backward compatibility</h2>
+<h2 id="backward-compatibility-1">Backward compatibility</h2>
 <ul>
 <li>veml6030 BSP is replaced by veml3235 BSP component Driver in B-U585I-IOT02A projects</li>
 </ul>
@@ -721,34 +1244,34 @@
 <div class="collapse">
 <input type="checkbox" id="collapse-section8" aria-hidden="true"> <label for="collapse-section8" checked aria-hidden="true"><strong>V1.4.0 / 20-October-2023</strong></label>
 <div>
-<h2 id="main-changes-1">Main Changes</h2>
+<h2 id="main-changes-2">Main Changes</h2>
 <p>Maintenance Release V1.4.0 of <span style="font-weight: bold;">STM32CubeU5</span> Firmware Package supporting <strong>STM32U535xx, STM32U545xx, STM32U575xx, STM32U585xx, STM32U595xx, STM32U5A5xx, STM32U599xx, STM32U5A9xx, STM32U5F7xx, STM32U5G7xx, STM32U5F9xx</strong> and <strong>STM32U5G9xx</strong> devices</p>
-<h2 id="contents-1">Contents</h2>
+<h2 id="contents-2">Contents</h2>
 <h3 id="cmsis-drivers-updates-1"><strong>CMSIS Drivers</strong> updates</h3>
 <ul>
 <li>CMSIS Device Official Release version of bits and registers definition aligned with <strong>RM0456</strong> (STM32U5 reference manual) (Please Refer to the <a href="Drivers/CMSIS/Device/ST/STM32U5xx/Release_Notes.html"><strong>release notes</strong></a> for details)</li>
 <li>Update STM32U5A5xx devices list with STM32U5A5QII3Q under “stm32u5xx.h” file</li>
 </ul>
-<h3 id="halll-drivers-updates-1"><strong>HAL/LL Drivers</strong> updates</h3>
+<h3 id="halll-drivers-updates-2"><strong>HAL/LL Drivers</strong> updates</h3>
 <ul>
 <li>HAL and LL drivers Official Release for STM32U535xx/STM32U545xx, STM32U575xx/STM32U585xx, STM32U595xx/STM32U5A5xx, STM32U599xx/STM32U5A9xx, STM32U5F7xx/STM32U5G7xx and STM32U5F9xx/STM32U5G9xx devices (Please Refer to the <a href="Drivers/STM32U5xx_HAL_Driver/Release_Notes.html"><strong>release notes</strong></a> for details)</li>
 <li>Update <strong>ADC</strong> HAL and LL drivers to fix known defects and add implementation enhancements</li>
 <li>The HAL and LL drivers provided within this package are <strong>MISRA-C, MCU ASTYLE</strong> and <strong>CodeSonar compliant</strong>, and have been reviewed with a static analysis tool to eliminate possible run-time errors</li>
 </ul>
-<h3 id="bsp-drivers-updates-1"><strong>BSP Drivers</strong> updates</h3>
+<h3 id="bsp-drivers-updates-2"><strong>BSP Drivers</strong> updates</h3>
 <ul>
 <li>Add stts22h BSP Component Driver</li>
 <li>Add <strong>stm32u5x9j_discovery_env_sensors</strong> driver to support Temperature sensor on STM32U5x9J-DK board</li>
 </ul>
-<h3 id="utilities-updates"><strong>Utilities</strong> updates</h3>
+<h3 id="utilities-updates-1"><strong>Utilities</strong> updates</h3>
 <ul>
 <li>Add of LPBAM utility version 1.4.0</li>
 </ul>
-<h3 id="projects-updates-1"><strong>Projects</strong> updates</h3>
+<h3 id="projects-updates-2"><strong>Projects</strong> updates</h3>
 <ul>
 <li>Update <strong>BSP</strong> and <strong>HAL Templates (TZEN=0 and TZEN=1)</strong> projects on STM32U5x9J-DK board to support Temperature sensor with EWARM, MDK-ARM and STM32CubeIDE toolchains</li>
 </ul>
-<h3 id="section-1"></h3>
+<h3 id="section-2"></h3>
 <p>The <strong>STM32CubeU5</strong> Firmware package comes with template running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains The exhaustive list of projects is provided in this table <a href="Projects/STM32CubeProjectsList.html"><strong>STM32CubeProjectsList.html</strong></a></p>
 <table>
 <thead>
@@ -788,7 +1311,7 @@
 <li>The MicroLIB option should be enabled to display messages in HyperTerminal in the <strong>MDK-ARM</strong> projects. Detailed list is in the Project’s <a href="Projects/Release_Notes.html">release notes</a>.</li>
 <li>The user should unplug then Plug STLINK connection on Slave Board to perform a power-on-reset when running I2C_WakeUpFromStop example on NUCLEO-U575ZI-Q board.</li>
 </ul>
-<h3 id="components-1"><strong>Components</strong></h3>
+<h3 id="components-2"><strong>Components</strong></h3>
 <p><small>The components flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <table>
 <caption><strong>Drivers</strong></caption>
@@ -1111,7 +1634,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="development-toolchains-and-compilers-1">Development toolchains and compilers</h2>
+<h2 id="development-toolchains-and-compilers-2">Development toolchains and compilers</h2>
 <ul>
 <li>IAR Embedded Workbench for ARM (EWARM) toolchain <strong>V8.50.9</strong> + ST-LINK, patches available here:
 <ul>
@@ -1141,7 +1664,7 @@
 </ul></li>
 <li>STM32CubeIDE <strong>V1.13.0</strong> (gcc11.3.rel1.20230519-1941)</li>
 </ul>
-<h2 id="supported-devices-and-boards-1">Supported Devices and boards</h2>
+<h2 id="supported-devices-and-boards-2">Supported Devices and boards</h2>
 <ul>
 <li>Devices:
 <ul>
@@ -1162,7 +1685,7 @@
 <li>STM32U5A9J-DK Discovery board rev.B</li>
 </ul></li>
 </ul>
-<h2 id="dependencies-1">Dependencies</h2>
+<h2 id="dependencies-2">Dependencies</h2>
 <ul>
 <li>This software release is compatible with:
 <ul>
@@ -1175,14 +1698,14 @@
 <li>The IOT_HTTP_WebServer demonstration uses an updated version of STM32CubeU5_Demo_U585I-IOT02A_v1.2.hex binaries. To upgrade your B-U585I-IOT02A Discovery board with the required version V1.2, please visit <a href="https://www.st.com/en/evaluation-tools/b-u585i-iot02a.html#documentation">B-U585I-IOT02A compiled demo binary</a></li>
 <li>The EVAL Demonstration requires to have STM32CubeU5_Demo_STM32U575I-EV.hex binaries on your STM32U575I-EV Evaluation board with the required version V1.0. To upgrade your board, please visit <a href="https://www.st.com/en/evaluation-tools/stm32u575i-ev.html#documentation">STM32U575I-EV compiled demo binary</a></li>
 </ul>
-<h2 id="known-limitations-1">Known Limitations</h2>
+<h2 id="known-limitations-2">Known Limitations</h2>
 <ul>
 <li>Some project are not generated with STM32CubeMX tool for the exhaustive list please refer to the table available in <a href="Projects/STM32CubeProjectsList.html"><strong>STM32CubeProjectsList.html</strong></a></li>
 <li>The component “USBX/CoreSystem” must be selected alongside either “USBX/UX Host CoreStack” or “USBX/UX Device CoreStack”</li>
 <li>In NetXDuo, some configuration flags, that are not used in the STM32Cube FW package examples, might be non-functional when combined. This limitation will be fixed in upcoming releases</li>
 <li>Comment error in “MX_WIFI BSP Component” Release_Notes : “The EMW3080B MXCHIP Wi-Fi module firmware version has to be V2.3.4 instead of V2.3.4 rc 13”</li>
 </ul>
-<h2 id="backward-compatibility-1">Backward compatibility</h2>
+<h2 id="backward-compatibility-2">Backward compatibility</h2>
 <ul>
 <li>veml6030 BSP is replaced by veml3235 BSP component Driver in B-U585I-IOT02A projects</li>
 </ul>
@@ -1191,14 +1714,14 @@
 <div class="collapse">
 <input type="checkbox" id="collapse-section7" aria-hidden="true"> <label for="collapse-section7" checked aria-hidden="true"><strong>V1.3.0 / 09-June-2023</strong></label>
 <div>
-<h2 id="main-changes-2">Main Changes</h2>
+<h2 id="main-changes-3">Main Changes</h2>
 <p>First Official Release V1.3.0 of <span style="font-weight: bold;">STM32CubeU5</span> Firmware Package supporting <strong>new STM32U5F9xx, STM32U5G9xx, STM32U5F7xx</strong> and <strong>STM32U5G7xx devices</strong></p>
 <ul>
 <li>Support of <strong>STM32U535xx, STM32U545xx, STM32U575xx, STM32U585xx, STM32U595xx, STM32U5A5xx, STM32U599xx, STM32U5A9xx, STM32U5F7xx, STM32U5G7xx, STM32U5F9xx</strong> and <strong>STM32U5G9xx</strong> devices</li>
 <li>Add 2 new HAL drivers : <strong>GFXTIM</strong> and <strong>JPEG</strong> highlighting the graphics aspect of STM32U5F7/STM32U5G7/STM32U5F9/STM32U5G9 devices</li>
 <li>Add 25 new projects on STM32U5G9J-DK2 board with EWARM, MDK-ARM and STM32CubeIDE toolchains</li>
 </ul>
-<h2 id="contents-2">Contents</h2>
+<h2 id="contents-3">Contents</h2>
 <h3 id="cmsis-updates"><strong>CMSIS</strong> updates</h3>
 <ul>
 <li>Support of CMSIS version 5.9.0</li>
@@ -1208,13 +1731,13 @@
 <li>CMSIS Device Official Release version of bits and registers definition aligned with <strong>RM0456</strong> (STM32U5 reference manual) (Please Refer to the <a href="Drivers/CMSIS/Device/ST/STM32U5xx/Release_Notes.html"><strong>release notes</strong></a> for details)</li>
 <li>Add support of <strong>new STM32U5F9xx, STM32U5G9xx, STM32U5F7xx</strong> and <strong>STM32U5G7xx devices</strong></li>
 </ul>
-<h3 id="halll-drivers-updates-2"><strong>HAL/LL Drivers</strong> updates</h3>
+<h3 id="halll-drivers-updates-3"><strong>HAL/LL Drivers</strong> updates</h3>
 <ul>
 <li>HAL and LL drivers Official Release for STM32U535xx/STM32U545xx, STM32U575xx/STM32U585xx, STM32U595xx/STM32U5A5xx, STM32U599xx/STM32U5A9xx, STM32U5F7xx/STM32U5G7xx and STM32U5F9xx/STM32U5G9xx devices (Please Refer to the <a href="Drivers/STM32U5xx_HAL_Driver/Release_Notes.html"><strong>release notes</strong></a> for details)</li>
 <li>Add 2 new HAL drivers : <strong>GFXTIM</strong> and <strong>JPEG</strong> highlighting the graphics aspect of STM32U5F7/STM32U5G7/STM32U5F9/STM32U5G9 devices</li>
 <li>The HAL and LL drivers provided within this package are <strong>MISRA-C, MCU ASTYLE</strong> and <strong>CodeSonar compliant</strong>, and have been reviewed with a static analysis tool to eliminate possible run-time errors</li>
 </ul>
-<h3 id="bsp-drivers-updates-2"><strong>BSP Drivers</strong> updates</h3>
+<h3 id="bsp-drivers-updates-3"><strong>BSP Drivers</strong> updates</h3>
 <ul>
 <li>Add <strong>STM32U5G9J-DK2</strong> BSP Drivers to support STM32U5G9J-DK2 board for STM32U5F9xx and STM32U5G9xx devices</li>
 <li>Update <strong>STM32U5GxJ-DK</strong> BSP Drivers to support STM32U5G9J-DK1 board for STM32U5F9xx and STM32U5G9xx devices</li>
@@ -1223,17 +1746,17 @@
 <li>Add rk050hr18 BSP Component Driver</li>
 <li>Replace veml6030 by veml3235 BSP Component Driver</li>
 </ul>
-<h3 id="middlewares-updates"><strong>Middlewares</strong> updates</h3>
+<h3 id="middlewares-updates-1"><strong>Middlewares</strong> updates</h3>
 <ul>
 <li>Support of STM32_USBPD_Core_Library version 4.1.2</li>
 <li>Support of mcuboot version v1.7.2.10.20230607</li>
 </ul>
-<h3 id="utilities-updates-1"><strong>Utilities</strong> updates</h3>
+<h3 id="utilities-updates-2"><strong>Utilities</strong> updates</h3>
 <ul>
 <li>Add JPEG utility</li>
 <li>Add the support of stm32U5F9xx and stm32U5G9xx devices for LPBAM utility</li>
 </ul>
-<h3 id="projects-updates-2"><strong>Projects</strong> updates</h3>
+<h3 id="projects-updates-3"><strong>Projects</strong> updates</h3>
 <ul>
 <li>Add <strong>25 new projects</strong> on STM32U5G9J-DK2 board with EWARM, MDK-ARM and STM32CubeIDE toolchains support,</li>
 <li>Add 1 new project <strong>“UART_WakeUpFromStopUsingFIFO”</strong> on NUCLEO-U575ZI-Q board with EWARM, MDK-ARM and STM32CubeIDE toolchains support,</li>
@@ -1249,7 +1772,7 @@
 <li>Add <strong>PWR_ModesSelection</strong> project on NUCLEO-U545RE-Q board with MDK-ARM toolchain support,</li>
 <li>Add <strong>FLASH_SwapBanks</strong> project on NUCLEO-U575ZI-Q board with STM32CubeIDE toolchain support,</li>
 </ul>
-<h3 id="section-2"></h3>
+<h3 id="section-3"></h3>
 <p>The <strong>STM32CubeU5</strong> Firmware package comes with template running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains The exhaustive list of projects is provided in this table <a href="Projects/STM32CubeProjectsList.html"><strong>STM32CubeProjectsList.html</strong></a></p>
 <table>
 <thead>
@@ -1289,7 +1812,7 @@
 <li>The MicroLIB option should be enabled to display messages in HyperTerminal in the <strong>MDK-ARM</strong> projects. Detailed list is in the Project’s <a href="Projects/Release_Notes.html">release notes</a>.</li>
 <li>The user should unplug then Plug STLINK connection on Slave Board to perform a power-on-reset when running I2C_WakeUpFromStop example on NUCLEO-U575ZI-Q board.</li>
 </ul>
-<h3 id="components-2"><strong>Components</strong></h3>
+<h3 id="components-3"><strong>Components</strong></h3>
 <p><small>The components flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <table>
 <caption><strong>Drivers</strong></caption>
@@ -1607,7 +2130,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="development-toolchains-and-compilers-2">Development toolchains and compilers</h2>
+<h2 id="development-toolchains-and-compilers-3">Development toolchains and compilers</h2>
 <ul>
 <li>IAR Embedded Workbench for ARM (EWARM) toolchain <strong>V8.50.9</strong> + ST-LINK, patches available here:
 <ul>
@@ -1637,7 +2160,7 @@
 </ul></li>
 <li>STM32CubeIDE <strong>V1.13.0</strong> (gcc11.3.rel1.20230519-1941)</li>
 </ul>
-<h2 id="supported-devices-and-boards-2">Supported Devices and boards</h2>
+<h2 id="supported-devices-and-boards-3">Supported Devices and boards</h2>
 <ul>
 <li>Devices:
 <ul>
@@ -1658,7 +2181,7 @@
 <li>STM32U5A9J-DK Discovery board rev.B</li>
 </ul></li>
 </ul>
-<h2 id="dependencies-2">Dependencies</h2>
+<h2 id="dependencies-3">Dependencies</h2>
 <ul>
 <li>This software release is compatible with:
 <ul>
@@ -1671,14 +2194,14 @@
 <li>The IOT_HTTP_WebServer demonstration uses an updated version of STM32CubeU5_Demo_U585I-IOT02A_v1.2.hex binaries. To upgrade your B-U585I-IOT02A Discovery board with the required version V1.2, please visit <a href="https://www.st.com/en/evaluation-tools/b-u585i-iot02a.html#documentation">B-U585I-IOT02A compiled demo binary</a></li>
 <li>The EVAL Demonstration requires to have STM32CubeU5_Demo_STM32U575I-EV.hex binaries on your STM32U575I-EV Evaluation board with the required version V1.0. To upgrade your board, please visit <a href="https://www.st.com/en/evaluation-tools/stm32u575i-ev.html#documentation">STM32U575I-EV compiled demo binary</a></li>
 </ul>
-<h2 id="known-limitations-2">Known Limitations</h2>
+<h2 id="known-limitations-3">Known Limitations</h2>
 <ul>
 <li>Some project are not generated with STM32CubeMX tool for the exhaustive list please refer to the table available in <a href="Projects/STM32CubeProjectsList.html"><strong>STM32CubeProjectsList.html</strong></a></li>
 <li>The component “USBX/CoreSystem” must be selected alongside either “USBX/UX Host CoreStack” or “USBX/UX Device CoreStack”</li>
 <li>In NetXDuo, some configuration flags, that are not used in the STM32Cube FW package examples, might be non-functional when combined. This limitation will be fixed in upcoming releases</li>
 <li>Comment error in “MX_WIFI BSP Component” Release_Notes : “The EMW3080B MXCHIP Wi-Fi module firmware version has to be V2.3.4 instead of V2.3.4 rc 13”</li>
 </ul>
-<h2 id="backward-compatibility-2">Backward compatibility</h2>
+<h2 id="backward-compatibility-3">Backward compatibility</h2>
 <ul>
 <li>veml6030 BSP is replaced by veml3235 BSP component Driver in B-U585I-IOT02A projects</li>
 </ul>
@@ -1687,9 +2210,9 @@
 <div class="collapse">
 <input type="checkbox" id="collapse-section6" aria-hidden="true"> <label for="collapse-section6" checked aria-hidden="true"><strong>V1.2.0 / 08-February-2023</strong></label>
 <div>
-<h2 id="main-changes-3">Main Changes</h2>
+<h2 id="main-changes-4">Main Changes</h2>
 <p>Official Release of <span style="font-weight: bold;">STM32CubeU5</span> Firmware Package supporting <strong>STM32U535xx, STM32U545xx, STM32U575xx, STM32U585xx, STM32U595xx, STM32U5A5xx, STM32U599xx</strong> and <strong>STM32U5A9xx</strong> devices</p>
-<h2 id="contents-3">Contents</h2>
+<h2 id="contents-4">Contents</h2>
 <h3 id="cmsis-drivers-updates-3"><strong>CMSIS Drivers</strong> updates</h3>
 <p><strong>CMSIS Device</strong> Official Release version of bits and registers definition aligned with <strong>RM0456</strong> (STM32U5 reference manual) (Please Refer to the <a href="Drivers/CMSIS/Device/ST/STM32U5xx/Release_Notes.html"><strong>release notes</strong></a> for details)</p>
 <ul>
@@ -1697,14 +2220,14 @@
 <li>Add startup files “startup_stm32u535xx.s” and “startup_stm32u545xx.s” for EWARM and STM32CUBEIDE toolchains</li>
 <li>Add Universal serial bus full-speed host/device interface (USB) for STM32U535xx and STM32U545xx devices</li>
 </ul>
-<h3 id="halll-drivers-updates-3"><strong>HAL/LL Drivers</strong> updates</h3>
+<h3 id="halll-drivers-updates-4"><strong>HAL/LL Drivers</strong> updates</h3>
 <ul>
 <li><strong>HAL and LL drivers</strong> Official Release for STM32U535xx, STM32U545xx, STM32U575xx, STM32U585xx, STM32U595xx, STM32U5A5xx, STM32U599xx and STM32U5A9xx devices (Please Refer to the <a href="Drivers/STM32U5xx_HAL_Driver/Release_Notes.html"><strong>release notes</strong></a> for details)</li>
 <li>Update USB HAL and LL drivers for STM32U535xx and STM32U545xx devices</li>
 <li>General updates to fix known defects and implementation enhancements</li>
 <li>The HAL and LL drivers provided within this package are MISRA-C and CodeSonar compliant, and have been reviewed with a static analysis tool to eliminate possible run-time errors</li>
 </ul>
-<h3 id="bsp-drivers-updates-3"><strong>BSP Drivers</strong> updates</h3>
+<h3 id="bsp-drivers-updates-4"><strong>BSP Drivers</strong> updates</h3>
 <ul>
 <li>Add STM32U5x9J-DK BSP Driver to support STM32U5x9J-DK board for STM32U599xx and STM32U5A9xx devices</li>
 <li>Update STM32U5xx_Nucleo BSP Driver to support NUCLEO-U545RE-Q board for STM32U535xx and STM32U545xx devices</li>
@@ -1713,16 +2236,16 @@
 <li>Add mx25um51245g BSP Component</li>
 <li>Add sitronix BSP Component</li>
 </ul>
-<h3 id="middlewares-updates-1"><strong>Middlewares</strong> updates</h3>
+<h3 id="middlewares-updates-2"><strong>Middlewares</strong> updates</h3>
 <ul>
 <li>Major update in AzureRTOS Middlewares (new version V6.2.0)</li>
 <li>Major update in mbed-crypto Middleware</li>
 </ul>
-<h3 id="utilities-updates-2"><strong>Utilities</strong> updates</h3>
+<h3 id="utilities-updates-3"><strong>Utilities</strong> updates</h3>
 <ul>
 <li><strong>LPBAM</strong>: Add the support of stm32U535xx, stm32U545xx, stm32U595xx, stm32U5A5xx, stm32U599xx and stm32U5A9xx devices.</li>
 </ul>
-<h3 id="projects-updates-3"><strong>Projects</strong> updates</h3>
+<h3 id="projects-updates-4"><strong>Projects</strong> updates</h3>
 <ul>
 <li>Add <strong>45 new projects</strong> with EWARM, MDK-ARM and STM32CubeIDE toolchains. Detailed list is in the Project’s <a href="Projects/Release_Notes.html"><strong>release notes</strong></a>:</li>
 <li>Add <strong>25 new projects</strong> on NUCLEO-U545RE-Q board:
@@ -1763,7 +2286,7 @@
 </ul></li>
 <li>TFM and SBSFU Applications runs on STM32U585xx devices and it is possible to tailor the applications for STM32U5A5xx or STM32U545xx devices (details are provided in the applications readme files)</li>
 </ul>
-<h3 id="section-3"></h3>
+<h3 id="section-4"></h3>
 <p>The <strong>STM32CubeU5</strong> Firmware package comes with template running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains The exhaustive list of projects is provided in this table <a href="Projects/STM32CubeProjectsList.html"><strong>STM32CubeProjectsList.html</strong></a></p>
 <table>
 <thead>
@@ -1803,7 +2326,7 @@
 <li>The MicroLIB option should be enabled to display messages in HyperTerminal in the <strong>MDK-ARM</strong> projects. Detailed list is in the Project’s <a href="Projects/Release_Notes.html">release notes</a>.</li>
 <li>The user should unplug then Plug STLINK connection on Slave Board to perform a power-on-reset when running I2C_WakeUpFromStop example on NUCLEO-U575ZI-Q board.</li>
 </ul>
-<h3 id="components-3"><strong>Components</strong></h3>
+<h3 id="components-4"><strong>Components</strong></h3>
 <p><small>The components flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <table>
 <caption><strong>Drivers</strong></caption>
@@ -2096,7 +2619,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="development-toolchains-and-compilers-3">Development toolchains and compilers</h2>
+<h2 id="development-toolchains-and-compilers-4">Development toolchains and compilers</h2>
 <ul>
 <li>IAR Embedded Workbench for ARM (EWARM) toolchain <strong>V8.50.9</strong> + ST-LINK, patches available here:
 <ul>
@@ -2114,7 +2637,7 @@
 </ul></li>
 <li>STM32CubeIDE <strong>V1.12.0</strong> (gcc10.3-2021.10)</li>
 </ul>
-<h2 id="supported-devices-and-boards-3">Supported Devices and boards</h2>
+<h2 id="supported-devices-and-boards-4">Supported Devices and boards</h2>
 <ul>
 <li>STM32U575/STM32U585 devices</li>
 <li>STM32U595/STM32U5A5/STM32U599/STM32U5A9 devices</li>
@@ -2126,7 +2649,7 @@
 <li>NUCLEO-U5A5ZJ-Q Nucleo board rev.C</li>
 <li>STM32U5x9J-DK Discovery board rev.B</li>
 </ul>
-<h2 id="dependencies-3">Dependencies</h2>
+<h2 id="dependencies-4">Dependencies</h2>
 <ul>
 <li>This software release is compatible with:
 <ul>
@@ -2140,7 +2663,7 @@
 <li>The IOT_HTTP_WebServer demonstration uses an updated version of STM32CubeU5_Demo_U585I-IOT02A_v1.2.hex binaries. To upgrade your B-U585I-IOT02A Discovery board with the required version V1.2, please visit <a href="https://www.st.com/en/evaluation-tools/b-u585i-iot02a.html#documentation">B-U585I-IOT02A compiled demo binary</a></li>
 <li>The EVAL Demonstration requires to have STM32CubeU5_Demo_STM32U575I-EV.hex binaries on your STM32U575I-EV Evaluation board with the required version V1.0, please visit <a href="https://www.st.com/en/evaluation-tools/stm32u575i-ev.html#documentation">STM32U575I-EV compiled demo binary</a></li>
 </ul>
-<h2 id="known-limitations-3">Known Limitations</h2>
+<h2 id="known-limitations-4">Known Limitations</h2>
 <ul>
 <li>Some project are not generated with STM32CubeMX tool for the exhaustive list please refer to this table <a href="Projects/STM32CubeProjectsList.html"><strong>STM32CubeProjectsList.html</strong></a></li>
 <li>The component “USBX/CoreSystem” must be selected alongside either “USBX/UX Host CoreStack” or “USBX/UX Device CoreStack”</li>
@@ -2152,7 +2675,7 @@
 <li>NUCLEO-U575ZI-Q\Examples\FLASH\FLASH_SwapBanks STM32CubeIDE support will be provided in the next release v1.3.0</li>
 <li>B-U585I-IOT02A\Demonstrations\IOT_HTTP_WebServer with MDK-ARM and STM32CubeIDE toolchains will be reworked for the next release v1.3.0</li>
 </ul>
-<h2 id="backward-compatibility-3">Backward compatibility</h2>
+<h2 id="backward-compatibility-4">Backward compatibility</h2>
 <ul>
 <li>m24lr64 BSP is replaced by m24256 BSP component in B-U585I-IOT02A and STM32U575I-EV projects</li>
 </ul>
@@ -2161,13 +2684,13 @@
 <div class="collapse">
 <input type="checkbox" id="collapse-section5" aria-hidden="true"> <label for="collapse-section5" checked aria-hidden="true"><strong>V1.1.1 / 27-May-2022</strong></label>
 <div>
-<h2 id="main-changes-4">Main Changes</h2>
+<h2 id="main-changes-5">Main Changes</h2>
 <p>Patch release of <span style="font-weight: bold;">STM32CubeU5</span> Firmware Package</p>
 <ul>
 <li>Update of ThreadX and NetDuoX Middlewares to new version V6.1.10</li>
 <li>Add LPBAM application <strong>LPBAM_ADC_TempSense</strong> on NUCLEO-U575ZI-Q board</li>
 </ul>
-<h2 id="contents-4">Contents</h2>
+<h2 id="contents-5">Contents</h2>
 <h3 id="middlewares-drivers-updates"><strong>Middlewares Drivers</strong> updates</h3>
 <ul>
 <li>Update of ThreadX and NetDuoX Middlewares to new version V6.1.10</li>
@@ -2176,7 +2699,7 @@
 <ul>
 <li>Update of LPBAM Utility to new version V1.1.1</li>
 </ul>
-<h3 id="projects-updates-4"><strong>Projects</strong> updates</h3>
+<h3 id="projects-updates-5"><strong>Projects</strong> updates</h3>
 <ul>
 <li>Add LPBAM application <strong>LPBAM_ADC_TempSense</strong> on NUCLEO-U575ZI-Q board in STM32CubeMX V6.5.0 supported with IAR, MDK-ARM and STM32CubeIDE toolchains</li>
 </ul>
@@ -2196,7 +2719,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="section-4"></h3>
+<h3 id="section-5"></h3>
 <p>The <strong>STM32CubeU5</strong> Firmware package comes with template running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains The exhaustive list of projects is provided in this table <a href="Projects/STM32CubeProjectsList.html">STM32CubeProjectsList.html</a></p>
 <table>
 <thead>
@@ -2261,7 +2784,7 @@
 </ul></li>
 <li>The user should unplug then Plug STLINK connection on Slave Board to perform a power-on-reset when running I2C_WakeUpFromStop example on NUCLEO-U575ZI-Q board</li>
 </ul>
-<h3 id="components-4"><strong>Components</strong></h3>
+<h3 id="components-5"><strong>Components</strong></h3>
 <p><small>The components flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <table>
 <caption><strong>Drivers</strong></caption>
@@ -2534,7 +3057,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="development-toolchains-and-compilers-4">Development toolchains and compilers</h2>
+<h2 id="development-toolchains-and-compilers-5">Development toolchains and compilers</h2>
 <ul>
 <li>IAR Embedded Workbench for ARM (EWARM) toolchain <strong>V8.50.9</strong> + ST-LINK, patches available here:
 <ul>
@@ -2552,7 +3075,7 @@
 </ul></li>
 <li>STM32CubeIDE <strong>V1.9.0</strong> (10.3-2021.10)</li>
 </ul>
-<h2 id="supported-devices-and-boards-4">Supported Devices and Boards</h2>
+<h2 id="supported-devices-and-boards-5">Supported Devices and Boards</h2>
 <ul>
 <li>STM32U575/STM32U585 devices</li>
 <li>STM32U595/STM32U5A5/STM32U599/STM32U5A9 devices</li>
@@ -2560,7 +3083,7 @@
 <li>STM32U575I-EV Evaluation board rev.C</li>
 <li>B-U585I-IOT02A Discovery board rev.C</li>
 </ul>
-<h2 id="dependencies-4">Dependencies</h2>
+<h2 id="dependencies-5">Dependencies</h2>
 <ul>
 <li>This software release is compatible with:
 <ul>
@@ -2571,7 +3094,7 @@
 <li>The EMW3080B MXCHIP Wi-Fi module firmware used version is V2.1.11 and the way to update your board with it are available at <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">x-wifi-emw3080b</a></li>
 <li>The BLE_AT_Client application requires to have Flash BLE_AT_Server module application using STM32CubeProgrammer: file BLE_AT_Server_reference.hex present in .\STM32Cube_FW_WB_V1.x.x\Projects\P-NUCLEO-WB55.Nucleo\Applications\BLE\BLE_AT_Server\Binary\BLE_AT_Server_reference.hex</li>
 </ul>
-<h2 id="known-limitations-4">Known limitations</h2>
+<h2 id="known-limitations-5">Known limitations</h2>
 <ul>
 <li>BSP MXCHIP: Access point mode with the TCP/IP mode on STM32 host is not functional. It works when TCP/IP runs on the EMW3080B module</li>
 <li>Some project are not generated with STM32CubeMX tool for the exhaustive list please refer to this table <a href="Projects/STM32CubeProjectsList.html">STM32CubeProjectsList.html</a></li>
@@ -2599,14 +3122,14 @@
 <li>Nx_MDNS</li>
 </ul></li>
 </ul>
-<h2 id="backward-compatibility-4">Backward compatibility</h2>
+<h2 id="backward-compatibility-5">Backward compatibility</h2>
 <p>This release is compatible with the previous versions</p>
 </div>
 </div>
 <div class="collapse">
 <input type="checkbox" id="collapse-section4" aria-hidden="true"> <label for="collapse-section4" checked aria-hidden="true"><strong>V1.1.0 / 16-February-2022</strong></label>
 <div>
-<h2 id="main-changes-5">Main Changes</h2>
+<h2 id="main-changes-6">Main Changes</h2>
 <ul>
 <li>Maintenance Release of <span style="font-weight: bold;">STM32CubeU5</span> Firmware Package</li>
 </ul>
@@ -2635,7 +3158,7 @@
 <li>Add TIM3 and TIM4 are missing in IS_TIM_32B_COUNTER_INSTANCE macro definition</li>
 </ul></li>
 </ul>
-<h3 id="halll-drivers-updates-4"><strong>HAL/LL Drivers</strong> updates</h3>
+<h3 id="halll-drivers-updates-5"><strong>HAL/LL Drivers</strong> updates</h3>
 <ul>
 <li><strong>HAL and LL drivers</strong> Maintenance Release for STM32U575xx / STM32U585xx devices and new support of STM32U595xx, STM32U5A5xx, STM32U599xx and STM32U5A9xx devices (Please Refer to the <a href="Drivers/STM32U5xx_HAL_Driver/Release_Notes.html">release notes</a> for details)</li>
 <li>Add <strong>New LTDC, GFXMMU, DSI, GPU2D HAL drivers</strong> highlighting the graphics aspect of STM32U595/STM32U5A5/STM32U599/STM32U5A9 devices</li>
@@ -2865,13 +3388,13 @@
 <li>Add support of data provisioning</li>
 </ul></li>
 </ul>
-<h3 id="bsp-drivers-updates-4"><strong>BSP Drivers</strong> updates</h3>
+<h3 id="bsp-drivers-updates-5"><strong>BSP Drivers</strong> updates</h3>
 <ul>
 <li>Rework Audio BSP driver on B-U585I-IOT02A board</li>
 <li>Add New ranging sensor BSP driver on B-U585I-IOT02A board</li>
 <li>Add New VL53L5CX BSP component driver</li>
 </ul>
-<h2 id="contents-5">Contents</h2>
+<h2 id="contents-6">Contents</h2>
 <h3 id="projects"><strong>Projects</strong></h3>
 <p>The <strong>STM32CubeU5</strong> Firmware package comes with template running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains The exhaustive list of projects is provided in this table <a href="Projects/STM32CubeProjectsList.html">STM32CubeProjectsList.html</a></p>
 <p>This release contains all HAL drivers, LL drivers, BSP drivers, templates, projects, demonstrations and examples</p>
@@ -2965,7 +3488,7 @@
 </ul></li>
 <li>The user should unplug then Plug STLINK connection on Slave Board to perform a power-on-reset when running I2C_WakeUpFromStop example on NUCLEO-U575ZI-Q board</li>
 </ul>
-<h3 id="components-5"><strong>Components</strong></h3>
+<h3 id="components-6"><strong>Components</strong></h3>
 <p><small>The components flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <table>
 <caption><strong>Drivers</strong></caption>
@@ -3238,7 +3761,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="development-toolchains-and-compilers-5">Development Toolchains and Compilers</h2>
+<h2 id="development-toolchains-and-compilers-6">Development Toolchains and Compilers</h2>
 <ul>
 <li>IAR Embedded Workbench for ARM (EWARM) toolchain <strong>V8.50.9</strong> + ST-LINK, patches available here:
 <ul>
@@ -3256,7 +3779,7 @@
 </ul></li>
 <li>STM32CubeIDE <strong>V1.9.0</strong> (10.3-2021.10)</li>
 </ul>
-<h2 id="supported-devices-and-boards-5">Supported Devices and boards</h2>
+<h2 id="supported-devices-and-boards-6">Supported Devices and boards</h2>
 <ul>
 <li><strong>STM32U575/STM32U585</strong> devices</li>
 <li><strong>STM32U595/STM32U5A5/STM32U599/STM32U5A9</strong> devices</li>
@@ -3264,13 +3787,13 @@
 <li>STM32U575I-EV Evaluation board rev.C</li>
 <li>B-U585I-IOT02A Discovery board rev.C</li>
 </ul>
-<h2 id="dependencies-5">Dependencies</h2>
+<h2 id="dependencies-6">Dependencies</h2>
 <ul>
 <li>STM32CubeMX Version: Projects are generated using STM32CubeMX V6.5.0</li>
 <li>The EMW3080B MXCHIP Wi-Fi module firmware used version is V2.1.11 and the way to update your board with it are available at <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">x-wifi-emw3080b</a></li>
 <li>The BLE_AT_Client application requires to have Flash BLE_AT_Server module application using STM32CubeProgrammer: file BLE_AT_Server_reference.hex present in .\STM32Cube_FW_WB_V1.x.x\Projects\P-NUCLEO-WB55.Nucleo\Applications\BLE\BLE_AT_Server\Binary\BLE_AT_Server_reference.hex</li>
 </ul>
-<h2 id="known-limitations-5">Known Limitations</h2>
+<h2 id="known-limitations-6">Known Limitations</h2>
 <ul>
 <li>BSP MXCHIP: Access point mode with the TCP/IP mode on STM32 host is not functional. It works when TCP/IP runs on the EMW3080B module</li>
 <li>Some project are not generated with STM32CubeMX tool for the exhaustive list please refer to this table <a href="Projects/STM32CubeProjectsList.html">STM32CubeProjectsList.html</a></li>
@@ -3299,7 +3822,7 @@
 <li>Nx_MDNS</li>
 </ul></li>
 </ul>
-<h2 id="backward-compatibility-5">Backward Compatibility</h2>
+<h2 id="backward-compatibility-6">Backward Compatibility</h2>
 <ul>
 <li><strong>HAL RCC</strong> driver: Rename Clk48ClockSelection to IclkClockSelection in RCC_PeriphCLKInitTypeDef</li>
 </ul>
@@ -3308,11 +3831,11 @@
 <div class="collapse">
 <input type="checkbox" id="collapse-section3" aria-hidden="true"> <label for="collapse-section3" checked aria-hidden="true"><strong>V1.0.2 / 14-October-2021</strong></label>
 <div>
-<h2 id="main-changes-6">Main Changes</h2>
+<h2 id="main-changes-7">Main Changes</h2>
 <ul>
 <li>Patch Release of <span style="font-weight: bold;">STM32CubeU5</span> Firmware Package</li>
 </ul>
-<h3 id="halll-drivers-updates-5"><strong>HAL/LL Drivers</strong> updates</h3>
+<h3 id="halll-drivers-updates-6"><strong>HAL/LL Drivers</strong> updates</h3>
 <ul>
 <li><strong>LL Drivers</strong> updates
 <ul>
@@ -3327,7 +3850,7 @@
 </ul></li>
 <li>Backward compatibility ensured by legacy defines</li>
 </ul>
-<h2 id="contents-6">Contents</h2>
+<h2 id="contents-7">Contents</h2>
 <h3 id="projects-1"><strong>Projects</strong></h3>
 <p>The <strong>STM32CubeU5</strong> Firmware package comes with template running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains. The exhaustive list of projects is provided in this table <a href="Projects/STM32CubeProjectsList.html">STM32CubeProjectsList.html</a></p>
 <p>This release contains all HAL drivers, LL drivers, BSP drivers, templates, projects and examples.</p>
@@ -3368,7 +3891,7 @@
 </ul></li>
 </ul>
 <p>Please refer to AN5347 for more details.</p>
-<h3 id="components-6"><strong>Components</strong></h3>
+<h3 id="components-7"><strong>Components</strong></h3>
 <p><small>The components flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <table>
 <caption><strong>Drivers</strong></caption>
@@ -3621,7 +4144,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="development-toolchains-and-compilers-6">Development Toolchains and Compilers</h2>
+<h2 id="development-toolchains-and-compilers-7">Development Toolchains and Compilers</h2>
 <ul>
 <li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.50.6 + ST-LINK, patch available here:
 <ul>
@@ -3635,14 +4158,14 @@
 </ul></li>
 <li>STM32CubeIDE v1.7.0 (gcc9_2020_q2_update)</li>
 </ul>
-<h2 id="supported-devices-and-boards-6">Supported Devices and boards</h2>
+<h2 id="supported-devices-and-boards-7">Supported Devices and boards</h2>
 <ul>
 <li>STM32U575/STM32U585 devices</li>
 <li>NUCLEO-U575ZI-Q Nucleo board rev.C</li>
 <li>STM32U575I-EV Evaluation board rev.C</li>
 <li>B-U585I-IOT02A Discovery board rev.C</li>
 </ul>
-<h2 id="dependencies-6">Dependencies</h2>
+<h2 id="dependencies-7">Dependencies</h2>
 <ul>
 <li>STM32CubeMX V6.3.0
 <ul>
@@ -3651,7 +4174,7 @@
 <li>The EMW3080B MXCHIP Wi-Fi module firmware used version is V2.1.11 and the way to update your board with it are available at <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">x-wifi-emw3080b</a>.</li>
 <li>The BLE_AT_Client application requires to have Flash BLE_AT_Server module application using STM32CubeProgrammer: file BLE_AT_Server.hex is present in the BLE_AT_Client application under Module Binary folder.</li>
 </ul>
-<h2 id="known-limitations-6">Known Limitations</h2>
+<h2 id="known-limitations-7">Known Limitations</h2>
 <ul>
 <li>The ThreadX “tx_queue_create” API is not correctly used in some Azure RTOS applications leading to potential instabilities. These limitations will be fixed in future releases.</li>
 <li>BSP MXCHIP: Access point mode with the TCP/IP mode on STM32 host is not functional. It works when TCP/IP runs on the EMW3080B module.</li>
@@ -3665,7 +4188,7 @@
 <li>Remove Audio IN functionality from B-U585I-IOT02A BSP example.</li>
 <li>The SMPS regulator configuration in all projects is not supported by STM32CubeMX V6.3.0 (will be provided in next releases).</li>
 </ul>
-<h2 id="backward-compatibility-6">Backward Compatibility</h2>
+<h2 id="backward-compatibility-7">Backward Compatibility</h2>
 <ul>
 <li>LPBAM Utility : This version breaks the compatibility with previous version for DAC, LPTIM, I2C and SPI modules.</li>
 </ul>
@@ -3674,7 +4197,7 @@
 <div class="collapse">
 <input type="checkbox" id="collapse-section2" aria-hidden="true"> <label for="collapse-section2" checked aria-hidden="true"><strong>V1.0.1 / 06-October-2021</strong></label>
 <div>
-<h2 id="main-changes-7">Main Changes</h2>
+<h2 id="main-changes-8">Main Changes</h2>
 <ul>
 <li>Patch Release of <span style="font-weight: bold;">STM32CubeU5</span> Firmware Package</li>
 </ul>
@@ -3688,7 +4211,7 @@
 <li>Fix wrong IRQn name in partition_stm32u5xx.h</li>
 </ul></li>
 </ul>
-<h3 id="halll-drivers-updates-6"><strong>HAL/LL Drivers</strong> updates</h3>
+<h3 id="halll-drivers-updates-7"><strong>HAL/LL Drivers</strong> updates</h3>
 <ul>
 <li><strong>HAL and LL drivers</strong> Patch Release for STM32U575xx / STM32U585xx devices (Please Refer to the <a href="Drivers/STM32U5xx_HAL_Driver/Release_Notes.html">release notes</a> for details)</li>
 <li><strong>HAL Drivers</strong>
@@ -3731,7 +4254,7 @@
 </ul></li>
 </ul></li>
 </ul>
-<h3 id="bsp-drivers-updates-5"><strong>BSP Drivers</strong> updates</h3>
+<h3 id="bsp-drivers-updates-6"><strong>BSP Drivers</strong> updates</h3>
 <ul>
 <li><strong>B-U585I-IOT02A BSP Drivers</strong> Updated version of B-U585I-IOT02A BSP drivers
 <ul>
@@ -3756,7 +4279,7 @@
 <li>Update all projects to support SMPS regulator configuration to enhance power consumption</li>
 <li>Add veml6030 and ism330dhcx new BSP components to B-U585I-IOT02A Templates and BSP example</li>
 </ul>
-<h2 id="contents-7">Contents</h2>
+<h2 id="contents-8">Contents</h2>
 <h3 id="projects-3"><strong>Projects</strong></h3>
 <p>The <strong>STM32CubeU5</strong> Firmware package comes with template running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains. The exhaustive list of projects is provided in this table <a href="Projects/STM32CubeProjectsList.html">STM32CubeProjectsList.html</a></p>
 <p>This release contains all HAL drivers, LL drivers, BSP drivers, templates, projects and examples.</p>
@@ -3797,7 +4320,7 @@
 </ul></li>
 </ul>
 <p>Please refer to AN5347 for more details.</p>
-<h3 id="components-7"><strong>Components</strong></h3>
+<h3 id="components-8"><strong>Components</strong></h3>
 <p><small>The components flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <table>
 <caption><strong>Drivers</strong></caption>
@@ -4050,7 +4573,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="development-toolchains-and-compilers-7">Development Toolchains and Compilers</h2>
+<h2 id="development-toolchains-and-compilers-8">Development Toolchains and Compilers</h2>
 <ul>
 <li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.50.6 + ST-LINK, patch available here:
 <ul>
@@ -4064,14 +4587,14 @@
 </ul></li>
 <li>STM32CubeIDE v1.7.0 (gcc9_2020_q2_update)</li>
 </ul>
-<h2 id="supported-devices-and-boards-7">Supported Devices and boards</h2>
+<h2 id="supported-devices-and-boards-8">Supported Devices and boards</h2>
 <ul>
 <li>STM32U575/STM32U585 devices</li>
 <li>NUCLEO-U575ZI-Q Nucleo board rev.C</li>
 <li>STM32U575I-EV Evaluation board rev.C</li>
 <li>B-U585I-IOT02A Discovery board rev.C</li>
 </ul>
-<h2 id="dependencies-7">Dependencies</h2>
+<h2 id="dependencies-8">Dependencies</h2>
 <ul>
 <li>STM32CubeMX V6.3.0
 <ul>
@@ -4080,7 +4603,7 @@
 <li>The EMW3080B MXCHIP Wi-Fi module firmware used version is V2.1.11 and the way to update your board with it are available at <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">x-wifi-emw3080b</a>.</li>
 <li>The BLE_AT_Client application requires to have Flash BLE_AT_Server module application using STM32CubeProgrammer: file BLE_AT_Server.hex is present in the BLE_AT_Client application under Module Binary folder.</li>
 </ul>
-<h2 id="known-limitations-7">Known Limitations</h2>
+<h2 id="known-limitations-8">Known Limitations</h2>
 <ul>
 <li>The ThreadX “tx_queue_create” API is not correctly used in some Azure RTOS applications leading to potential instabilities. These limitations will be fixed in future releases.</li>
 <li>BSP MXCHIP: Access point mode with the TCP/IP mode on STM32 host is not functional. It works when TCP/IP runs on the EMW3080B module.</li>
@@ -4094,7 +4617,7 @@
 <li>Remove Audio IN functionality from B-U585I-IOT02A BSP example.</li>
 <li>The SMPS regulator configuration in all projects is not supported by STM32CubeMX V6.3.0 (will be provided in next releases).</li>
 </ul>
-<h2 id="backward-compatibility-7">Backward Compatibility</h2>
+<h2 id="backward-compatibility-8">Backward Compatibility</h2>
 <ul>
 <li>LPBAM Utility : This version breaks the compatibility with previous version for DAC, LPTIM, I2C and SPI modules.</li>
 </ul>
@@ -4103,11 +4626,11 @@
 <div class="collapse">
 <input type="checkbox" id="collapse-section1" aria-hidden="true"> <label for="collapse-section1" checked aria-hidden="true"><strong>V1.0.0 / 28-June-2021</strong></label>
 <div>
-<h2 id="main-changes-8">Main Changes</h2>
+<h2 id="main-changes-9">Main Changes</h2>
 <ul>
 <li>First Official Release of <span style="font-weight: bold;">STM32CubeU5</span> Firmware Package</li>
 </ul>
-<h2 id="contents-8">Contents</h2>
+<h2 id="contents-9">Contents</h2>
 <h3 id="projects-4"><strong>Projects</strong></h3>
 <p>The <strong>STM32CubeU5</strong> Firmware package comes with template running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains. The exhaustive list of projects is provided in this table <a href="Projects/STM32CubeProjectsList.html">STM32CubeProjectsList.html</a></p>
 <p>This release contains almost HAL drivers, LL drivers, BSP drivers, templates, projects and examples.</p>
@@ -4148,7 +4671,7 @@
 </ul></li>
 </ul>
 <p>Please refer to AN5347 for more details.</p>
-<h3 id="components-8"><strong>Components</strong></h3>
+<h3 id="components-9"><strong>Components</strong></h3>
 <p><small>The components flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
 <table>
 <caption><strong>Drivers</strong></caption>
@@ -4396,7 +4919,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="development-toolchains-and-compilers-8">Development Toolchains and Compilers</h2>
+<h2 id="development-toolchains-and-compilers-9">Development Toolchains and Compilers</h2>
 <ul>
 <li>IAR Embedded Workbench for ARM (EWARM) toolchain V8.50.6 + ST-LINK, patch available here:
 <ul>
@@ -4410,14 +4933,14 @@
 </ul></li>
 <li>STM32CubeIDE v1.7.0</li>
 </ul>
-<h2 id="supported-devices-and-boards-8">Supported Devices and boards</h2>
+<h2 id="supported-devices-and-boards-9">Supported Devices and boards</h2>
 <ul>
 <li>STM32U575/STM32U585 devices</li>
 <li>NUCLEO-U575ZI-Q Nucleo board rev.C</li>
 <li>STM32U575I-EV Evaluation board rev.C</li>
 <li>B-U585I-IOT02A Discovery board rev.C</li>
 </ul>
-<h2 id="dependencies-8">Dependencies</h2>
+<h2 id="dependencies-9">Dependencies</h2>
 <ul>
 <li>STM32CubeMX V6.3.0
 <ul>
@@ -4425,7 +4948,7 @@
 </ul></li>
 <li>The EMW3080B MXCHIP Wi-Fi module firmware and the way to update your board with it are available at <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">https://www.st.com/en/development-tools/x-wifi-emw3080b.html</a>. Before using the projects with Wi-Fi connectivity, you shall update your B-U585I-IOT02A RevC board with the EMW3080B firmware version 2.1.11. To achieve this, follow the instructions given at the above link, using the EMW3080updateV2.1.11RevC.bin flasher under the V2.1.11/SPI folder.</li>
 </ul>
-<h2 id="known-limitations-8">Known Limitations</h2>
+<h2 id="known-limitations-9">Known Limitations</h2>
 <ul>
 <li>BSP MXCHIP: Access point mode with the TCP/IP mode on STM32 host is not functional. It works when TCP/IP runs on the EMW3080B module.</li>
 <li>When using STM32CubeIDE v1.7.0 with an STM32U575-EV Evaluation board, the user should either use ST-LINK(OpenOCD) or set the SWD frequency to 1MHz or 8 MHz manually if using STLINK(GDB server).</li>
@@ -4474,7 +4997,7 @@
 <li>All AzureRTOS Applications are not provided with MDK-ARM</li>
 </ul></li>
 </ul>
-<h2 id="backward-compatibility-8">Backward Compatibility</h2>
+<h2 id="backward-compatibility-9">Backward Compatibility</h2>
 <ul>
 <li>Not applicable</li>
 </ul>

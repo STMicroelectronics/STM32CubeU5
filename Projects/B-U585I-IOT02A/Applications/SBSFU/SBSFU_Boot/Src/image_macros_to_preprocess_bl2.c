@@ -16,6 +16,7 @@
 
 enum image_attributes
 {
+  RE_FLASH_AREA_SCRATCH_SIZE = FLASH_AREA_SCRATCH_SIZE,
 /* area for preparing images */
   RE_IMAGE_FLASH_SECURE_IMAGE_SIZE = (SECURE_IMAGE_MAX_SIZE),
 #if MCUBOOT_APP_IMAGE_NUMBER == 2

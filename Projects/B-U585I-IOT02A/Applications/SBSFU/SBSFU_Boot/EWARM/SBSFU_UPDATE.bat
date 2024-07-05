@@ -1,5 +1,5 @@
 echo SBSFU_UPDATE started
-set stm32programmercli="C:\Program Files\STMicroelectronics\STM32Cube\STM32CubeProgrammer\bin\STM32_Programmer_CLI.exe"
+call ..\..\env.bat
 set connect_no_reset=-c port=SWD mode=UR
 set connect=-c port=SWD mode=UR --hardRst
 set slot0=

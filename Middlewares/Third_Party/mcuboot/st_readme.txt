@@ -16,6 +16,21 @@
   ******************************************************************************
   @endverbatim
 
+### 18-March-2024 ###
+========================
+    + Improvement of primary only mode
+
+### 14-February-2024 ###
+========================
+    + Add MCUBOOT_FLASH_HOMOGENOUS to optimize trailer use
+    + Restore some files
+    + Update log of bootloader version
+
+### 1-February-2024 ###
+========================
+    + Update log of bootloader version
+    + Remove imgtool script presence
+
 ### 30-January-2024 ###
 ========================
     + Add log for validation of primary slot(s)
@@ -154,6 +169,7 @@
 ### 11-June-2020 ###
 ==========================
     + fix to accept TLV DEPENDENCY in during TLV verification
+
 ### 02-June-2020 ###
 ==========================
     + mcuboot release v1.5.0

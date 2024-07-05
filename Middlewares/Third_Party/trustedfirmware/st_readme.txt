@@ -17,10 +17,34 @@
   ******************************************************************************
   @endverbatim
 
+### 11-Mars-2024 ###
+========================
+    Alignment with mbed-tls-v2.28.8_20240419 :
+      + Remove deprecated definitions in interface/include/psa/crypto_compat.h
+      + Replace deprecated definitions by new ones in interface/include/psa/crypto_sizes.h
+          -> PSA_HASH_SIZE                         => PSA_HASH_LENGTH
+          -> PSA_ALG_TLS12_PSK_TO_MS_MAX_PSK_LEN   => PSA_TLS12_PSK_TO_MS_PSK_MAX_SIZE
+          -> PSA_MAX_BLOCK_CIPHER_BLOCK_SIZE       => PSA_TLS12_PSK_TO_MS_PSK_MAX_SIZE
+          -> PSA_MAC_FINAL_SIZE                    => PSA_MAC_LENGTH
+          -> PSA_KEY_EXPORT_MAX_SIZE               => PSA_EXPORT_KEY_OUTPUT_SIZE
+
+      + Add new PSA_KEY_USAGE_SIGN_MESSAGE definition in interface/include/psa/crypto_values.h
+      + Remove deprecated callbacks in interface/src/tfm_crypto_ipc.c
+          -> psa_asymmetric_sign   (psa_sign_hash)
+          -> psa_asymmetric_verify (psa_verify_hash)
+
+      + Remove compatibility switching to new _HASH definition : 
+          -> PSA_KEY_USAGE_VERIFY => PSA_KEY_USAGE_VERIFY_HASH
+          -> PSA_KEY_USAGE_SIGN   => PSA_KEY_USAGE_SIGN_HASH
+          -> PSA_HASH_SIZE        => PSA_HASH_LENGTH
+
+      + Update implementation with _MESSAGE new definition :
+          -> PSA_KEY_USAGE_VERIFY_MESSAGE / PSA_KEY_USAGE_VERIFY_HASH / PSA_HASH_LENGTH
+
 ### 01-January-2024 ###
 ========================
     + Synchronize secure_fw/partitions/crypto/crypto_spe.h with mbed-crypto/tests/include/spe/crypto_spe.h (mbed-tls-v2.28.5_20240108)
-	
+
 ### 16-December-2022 ###
 ========================
     + Fix Keil and STM32CubeIDE compilation errors and warnings

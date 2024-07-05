@@ -882,7 +882,7 @@ psa_status_t psa_se_st_export(psa_drv_se_context_t *drv_context,
       {
         keys[1].alg = PSA_ALG_ECDSA(PSA_ALG_ANY_HASH);
         keys[1].lifetime = PSA_SE_ST_LIFETIME_DEFAULT;
-        keys[1].usage = PSA_KEY_USAGE_SIGN | PSA_KEY_USAGE_EXPORT;
+        keys[1].usage = PSA_KEY_USAGE_SIGN_HASH | PSA_KEY_USAGE_EXPORT;
         keys[1].id = SE_ST_ID_TO_PSA_ID(SE_ST_PRIV_SLOT_1);
         keys[1].bits = key_size * 8;
         keys[1].type = PSA_KEY_TYPE_ECC_KEY_PAIR(SE_TO_PSA_CURVE(curve));
@@ -894,7 +894,7 @@ psa_status_t psa_se_st_export(psa_drv_se_context_t *drv_context,
       {
         keys[0].alg = PSA_ALG_ECDSA(PSA_ALG_ANY_HASH);
         keys[0].lifetime = PSA_SE_ST_LIFETIME_READ_ONLY;
-        keys[0].usage = PSA_KEY_USAGE_SIGN | PSA_KEY_USAGE_EXPORT;
+        keys[0].usage = PSA_KEY_USAGE_SIGN_HASH | PSA_KEY_USAGE_EXPORT;
         keys[0].id = SE_ST_ID_TO_PSA_ID(SE_ST_PRIV_SLOT_0);
         keys[0].bits = key_size * 8;
         keys[0].type = PSA_KEY_TYPE_ECC_KEY_PAIR(SE_TO_PSA_CURVE(curve));

@@ -19,6 +19,10 @@
 /* Includes ----------------------------------------------------------------------------------------------------------*/
 #include "console.h"
 
+#if defined(__ICCARM__)
+#include <LowLevelIOInterface.h>
+#endif /* __ICCARM__ */
+
 /** @addtogroup STM32U5xx_Demonstration
   * @{
   */
@@ -201,9 +205,29 @@ WebServer_StatusTypeDef webserver_console_get_password(ap_t *net_wifi_registred_
 }
 
 /**
+  * @brief  Retargets the C library __write function to the IAR function iar_fputc.
+  * @param  file: file descriptor.
+  * @param  ptr: pointer to the buffer where the data is stored.
+  * @param  len: length of the data to write in bytes.
+  * @retval length of the written data in bytes.
+  */
+#if defined(__ICCARM__)
+size_t __write(int file, unsigned char const *ptr, size_t len)
+{
+  size_t idx;
+  unsigned char const *pdata = ptr;
+
+  for (idx = 0; idx < len; idx++)
+  {
+    iar_fputc((int)*pdata);
+    pdata++;
+  }
+  return len;
+}
+#endif /* __ICCARM__ */
+
+/**
   * @brief  Retargets the C library printf function to the USART.
-  * @param  None
-  * @retval None
   */
 PUTCHAR_PROTOTYPE
 {

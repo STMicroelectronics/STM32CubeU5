@@ -333,6 +333,13 @@ static void MX_I2C2_SMBUS_Init(void)
     Error_Handler();
   }
 
+  /** Configure Digital filter
+  */
+  if (HAL_SMBUS_ConfigDigitalFilter(&hsmbus2, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
   /** Configure Autonomous Mode
   */
   sConfigI2C2.TriggerState = SMBUS_AUTO_MODE_ENABLE;

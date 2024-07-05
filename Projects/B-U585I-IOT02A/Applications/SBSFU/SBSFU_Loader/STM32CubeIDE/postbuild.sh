@@ -13,26 +13,26 @@ loader_ns_size=
 loader_s_size=
 current_directory=`pwd`
 echo $current_directory
-cd $projectdir"/../../../../../../../../Middlewares/Third_Party/mcuboot"
-basedir=`pwd`
+cd $projectdir/../../
+envdir=`pwd`
 cd $current_directory
 #Make sure we have a Binary sub-folder in UserApp folder
 if [ ! -e $binarydir ]; then
 echo "create Binary dir"
 mkdir $binarydir
 fi
-imgtool=$basedir"/scripts/dist/imgtool/imgtool.exe"
-uname | grep -i -e windows -e mingw
-if [ $? == 0 ] && [   -e "$imgtool" ]; then
-#line for window executable
-echo Postbuild with windows executable
-cmd=""
-else
-#line for python
-echo Postbuild with python script
-imgtool=$basedir"/scripts/imgtool/main.py"
-cmd="python "
-python3 --version >& /dev/null && cmd="python3 "
+
+source $envdir/../../env.sh
+
+if [ ! -e "$imgtool" ];then
+  echo ""
+  echo "!!! WARNING : imgtool has not been found on your installation."
+  echo ""
+  echo "  Install CubeProgrammer on your machine in default path : ~/STMicroelectronics/STM32Cube/STM32CubeProgrammer"
+  echo "  or "
+  echo "  Update your $envdir/env.sh with the proper path."
+  echo ""
+  exit 0
 fi
 
 if [ $operation == "secure" ]; then
@@ -43,14 +43,14 @@ filesize=$(stat -c%s "$secure_nsc")
 
 if [ $filesize -ge $maxbytesize ]; then
 echo "loader with secure part (MCUBOOT_PRIMARY_ONLY defined)" >> $projectdir/output.txt
-command=$cmd" "$imgtool" ass -f "$loader_s" -o "$loader_s_size" -i "$loader_ns_size" "$loader_ns" "$loader
-$command  >> $projectdir"/output.txt"
+command=" ass -f "$loader_s" -o "$loader_s_size" -i "$loader_ns_size" "$loader_ns" "$loader
+"$imgtool" $command  >> $projectdir"/output.txt"
 ret=$?
 else
 #loader without secure part
 echo "loader without secure part (MCUBOOT_PRIMARY_ONLY not defined)" >> $projectdir/output.txt
-command=$cmd" "$imgtool" ass  -i "$loader_ns_size" "$loader_ns" "$loader
-$command  >> $projectdir"/output.txt"
+command=" ass  -i "$loader_ns_size" "$loader_ns" "$loader
+"$imgtool" $command  >> $projectdir"/output.txt"
 ret=$?
 fi
 fi

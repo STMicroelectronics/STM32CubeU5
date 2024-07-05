@@ -1,8 +1,8 @@
 echo regression script started
-set stm32programmercli="C:\Program Files\STMicroelectronics\STM32Cube\STM32CubeProgrammer\bin\STM32_Programmer_CLI.exe"
+call ..\..\env.bat
 set secbootadd0=
 set flashsectnbr=
-set connect=-c port=SWD mode=UR --hardRst
+set connect=-c port=SWD mode=UR
 set connect_no_reset=-c port=SWD mode=HotPlug
 set rdp_0=-ob RDP=0xAA TZEN=1 UNLOCK_1A=1 UNLOCK_1B=1 UNLOCK_2A=1 UNLOCK_2B=1
 set remove_bank1_protect=-ob SECWM1_PSTRT=%flashsectnbr% SECWM1_PEND=0 WRP1A_PSTRT=%flashsectnbr% WRP1A_PEND=0 WRP1B_PSTRT=%flashsectnbr% WRP1B_PEND=0

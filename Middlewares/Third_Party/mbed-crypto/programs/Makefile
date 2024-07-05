@@ -27,6 +27,10 @@ endif
 include ../3rdparty/Makefile.inc
 LOCAL_CFLAGS+=$(THIRDPARTY_INCLUDES)
 
+ifdef RECORD_PSA_STATUS_COVERAGE_LOG
+LOCAL_CFLAGS += -Werror -DRECORD_PSA_STATUS_COVERAGE_LOG
+endif
+
 ifndef SHARED
 MBEDLIBS=../library/libmbedcrypto.a ../library/libmbedx509.a ../library/libmbedtls.a
 else
@@ -114,6 +118,7 @@ APPS = \
 	ssl/ssl_server$(EXEXT) \
 	ssl/ssl_server2$(EXEXT) \
 	test/benchmark$(EXEXT) \
+	test/metatest$(EXEXT) \
 	test/query_compile_time_config$(EXEXT) \
 	test/selftest$(EXEXT) \
 	test/udp_proxy$(EXEXT) \
@@ -348,6 +353,10 @@ test/dlopen$(EXEXT): test/dlopen.c $(DEP)
 # purpose of testing dynamic loading).
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) test/dlopen.c $(LDFLAGS) $(DLOPEN_LDFLAGS) -o $@
 endif
+
+test/metatest$(EXEXT): test/metatest.c $(DEP)
+	echo "  CC    test/metatest.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) -I ../library test/metatest.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
 
 test/query_config.o: test/query_config.c test/query_config.h $(DEP)
 	echo "  CC    test/query_config.c"

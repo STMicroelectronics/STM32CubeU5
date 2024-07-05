@@ -387,7 +387,7 @@ static const psa_algorithm_t hash_alg[] = {
     PSA_ALG_SHA_512,
 };
 
-static const uint8_t hash_val[][PSA_HASH_SIZE(PSA_ALG_SHA_512)] = {
+static const uint8_t hash_val[][PSA_HASH_LENGTH(PSA_ALG_SHA_512)] = {
     {0x00, 0xD2, 0x90, 0xE2, 0x0E, 0x4E, 0xC1, 0x7E, /*!< SHA-224 */
      0x7A, 0x95, 0xF5, 0x10, 0x5C, 0x76, 0x74, 0x04,
      0x6E, 0xB5, 0x56, 0x5E, 0xE5, 0xE7, 0xBA, 0x15,
@@ -452,7 +452,7 @@ void psa_hash_test(const psa_algorithm_t alg,
     for (idx=0; hash_alg[idx] != alg; idx++);
 
     /* Finalise and verify that the hash is as expected */
-    status = psa_hash_verify(&handle, &(hash_val[idx][0]), PSA_HASH_SIZE(alg));
+    status = psa_hash_verify(&handle, &(hash_val[idx][0]), PSA_HASH_LENGTH(alg));
     if (status != PSA_SUCCESS) {
         TEST_FAIL("Error verifying the hash operation object");
         return;
@@ -474,7 +474,7 @@ void psa_unsupported_mac_test(const psa_key_type_t key_type,
     ret->val = TEST_PASSED;
 
     /* Setup the key policy */
-    psa_set_key_usage_flags(&key_attributes, PSA_KEY_USAGE_VERIFY_MESSAGE);
+    psa_set_key_usage_flags(&key_attributes, PSA_KEY_USAGE_VERIFY_HASH | PSA_KEY_USAGE_VERIFY_MESSAGE);
     psa_set_key_algorithm(&key_attributes, alg);
     psa_set_key_type(&key_attributes, key_type);
 
@@ -499,7 +499,7 @@ void psa_unsupported_mac_test(const psa_key_type_t key_type,
     }
 }
 
-static const uint8_t hmac_val[][PSA_HASH_SIZE(PSA_ALG_SHA_512)] = {
+static const uint8_t hmac_val[][PSA_HASH_LENGTH(PSA_ALG_SHA_512)] = {
     {0xc1, 0x9f, 0x19, 0xac, 0x05, 0x65, 0x5f, 0x02, /*!< SHA-224 */
      0x1b, 0x64, 0x32, 0xd9, 0xb1, 0x49, 0xba, 0x75,
      0x05, 0x60, 0x52, 0x4e, 0x78, 0xfa, 0x61, 0xc9,
@@ -524,7 +524,7 @@ static const uint8_t hmac_val[][PSA_HASH_SIZE(PSA_ALG_SHA_512)] = {
      0xa9, 0x6a, 0x5d, 0xb2, 0x81, 0xe1, 0x6f, 0x1f},
 };
 
-static const uint8_t long_key_hmac_val[PSA_HASH_SIZE(PSA_ALG_SHA_224)] = {
+static const uint8_t long_key_hmac_val[PSA_HASH_LENGTH(PSA_ALG_SHA_224)] = {
     0x47, 0xa3, 0x42, 0xb1, 0x2f, 0x52, 0xd3, 0x8f, /*!< SHA-224 */
     0x1e, 0x02, 0x4a, 0x46, 0x73, 0x0b, 0x77, 0xc1,
     0x5e, 0x93, 0x31, 0xa9, 0x3e, 0xc2, 0x81, 0xb5,
@@ -550,7 +550,7 @@ void psa_mac_test(const psa_algorithm_t alg,
     psa_mac_operation_t handle = psa_mac_operation_init();
     psa_key_attributes_t key_attributes = psa_key_attributes_init();
     psa_key_attributes_t retrieved_attributes = psa_key_attributes_init();
-    psa_key_usage_t usage = PSA_KEY_USAGE_VERIFY_MESSAGE;
+    psa_key_usage_t usage = PSA_KEY_USAGE_VERIFY_HASH | PSA_KEY_USAGE_VERIFY_MESSAGE;
 
     ret->val = TEST_PASSED;
 
@@ -627,12 +627,12 @@ void psa_mac_test(const psa_algorithm_t alg,
         status = psa_mac_verify_finish(
                                      &handle,
                                      &(long_key_hmac_val[0]),
-                                     PSA_HASH_SIZE(PSA_ALG_HMAC_GET_HASH(alg)));
+                                     PSA_HASH_LENGTH(PSA_ALG_HMAC_GET_HASH(alg)));
     } else {
         status = psa_mac_verify_finish(
                                      &handle,
                                      &(hmac_val[idx][0]),
-                                     PSA_HASH_SIZE(PSA_ALG_HMAC_GET_HASH(alg)));
+                                     PSA_HASH_LENGTH(PSA_ALG_HMAC_GET_HASH(alg)));
     }
     if (status != PSA_SUCCESS) {
         TEST_FAIL("Error during finalising the mac operation");
