@@ -71,6 +71,7 @@ LPBAM_Status_t LPBAM_ADC_FillNodeConfig(LPBAM_ADC_ConfNode_t const *const  pConf
   pDMANodeConfig->Init.SrcDataWidth                   = DMA_SRC_DATAWIDTH_WORD;
   pDMANodeConfig->Init.DestDataWidth                  = DMA_DEST_DATAWIDTH_WORD;
   pDMANodeConfig->Init.Priority                       = DMA_HIGH_PRIORITY;
+  pDMANodeConfig->Init.Mode                           = DMA_NORMAL;
   if ((pDMANodeConfig->NodeType & DMA_CHANNEL_TYPE_GPDMA) == DMA_CHANNEL_TYPE_GPDMA)
   {
     /* Set node source and destination burst length parameters */

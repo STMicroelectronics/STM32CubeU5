@@ -72,6 +72,7 @@ LPBAM_Status_t LPBAM_VREFBUF_FillNodeConfig(LPBAM_VREFBUF_ConfNode_t const *cons
   pDMANodeConfig->Init.SrcDataWidth                   = DMA_SRC_DATAWIDTH_WORD;
   pDMANodeConfig->Init.DestDataWidth                  = DMA_DEST_DATAWIDTH_WORD;
   pDMANodeConfig->Init.Priority                       = DMA_HIGH_PRIORITY;
+  pDMANodeConfig->Init.Mode                           = DMA_NORMAL;
   if ((pDMANodeConfig->NodeType & DMA_CHANNEL_TYPE_GPDMA) == DMA_CHANNEL_TYPE_GPDMA)
   {
     pDMANodeConfig->Init.SrcBurstLength               = 1U;

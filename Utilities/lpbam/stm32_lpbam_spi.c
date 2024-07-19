@@ -71,7 +71,7 @@ LPBAM_Status_t LPBAM_SPI_FillNodeConfig(LPBAM_SPI_ConfNode_t const *const pConfN
   pDMANodeConfig->Init.SrcDataWidth                   = DMA_SRC_DATAWIDTH_WORD;
   pDMANodeConfig->Init.DestDataWidth                  = DMA_DEST_DATAWIDTH_WORD;
   pDMANodeConfig->Init.Priority                       = DMA_HIGH_PRIORITY;
-
+  pDMANodeConfig->Init.Mode                           = DMA_NORMAL;
   /* Check node type */
   if ((pDMANodeConfig->NodeType & DMA_CHANNEL_TYPE_GPDMA) == DMA_CHANNEL_TYPE_GPDMA)
   {

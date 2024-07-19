@@ -71,6 +71,7 @@ LPBAM_Status_t LPBAM_I2C_FillNodeConfig(LPBAM_I2C_ConfNode_t const *const pConfN
   pDMANodeConfig->Init.DestInc                        = DMA_DINC_FIXED;
   pDMANodeConfig->Init.SrcDataWidth                   = DMA_SRC_DATAWIDTH_WORD;
   pDMANodeConfig->Init.DestDataWidth                  = DMA_DEST_DATAWIDTH_WORD;
+  pDMANodeConfig->Init.Mode                           = DMA_NORMAL;
   if ((pDMANodeConfig->NodeType & DMA_CHANNEL_TYPE_GPDMA) == DMA_CHANNEL_TYPE_GPDMA)
   {
     pDMANodeConfig->Init.SrcBurstLength               = 1U;

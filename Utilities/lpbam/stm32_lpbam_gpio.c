@@ -71,6 +71,7 @@ LPBAM_Status_t LPBAM_GPIO_FillNodeConfig(LPBAM_GPIO_ConfNode_t const *const pCon
   pDMANodeConfig->Init.SrcDataWidth                   = DMA_SRC_DATAWIDTH_WORD;
   pDMANodeConfig->Init.DestDataWidth                  = DMA_DEST_DATAWIDTH_WORD;
   pDMANodeConfig->Init.Priority                       = DMA_HIGH_PRIORITY;
+  pDMANodeConfig->Init.Mode                           = DMA_NORMAL;
   if ((pDMANodeConfig->NodeType & DMA_CHANNEL_TYPE_GPDMA) == DMA_CHANNEL_TYPE_GPDMA)
   {
     pDMANodeConfig->Init.SrcBurstLength               = 1U;

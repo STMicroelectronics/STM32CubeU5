@@ -71,6 +71,7 @@ LPBAM_Status_t LPBAM_LPTIM_FillNodeConfig(LPBAM_LPTIM_ConfNode_t const *const  p
   pDMANodeConfig->Init.SrcDataWidth                   = DMA_SRC_DATAWIDTH_WORD;
   pDMANodeConfig->Init.DestDataWidth                  = DMA_DEST_DATAWIDTH_WORD;
   pDMANodeConfig->Init.Priority                       = DMA_HIGH_PRIORITY;
+  pDMANodeConfig->Init.Mode                           = DMA_NORMAL;
   if ((pDMANodeConfig->NodeType & DMA_GPDMA_LINEAR_NODE) == DMA_GPDMA_LINEAR_NODE)
   {
     pDMANodeConfig->Init.SrcBurstLength               = 1U;
