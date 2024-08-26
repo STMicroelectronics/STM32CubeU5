@@ -26,3 +26,107 @@
 	path = Drivers/BSP/STM32U5xx_Nucleo
 	url = https://github.com/STMicroelectronics/stm32u5xx-nucleo-bsp.git
 	branch = main
+[submodule "Drivers/BSP/Components/aps512xx"]
+	path = Drivers/BSP/Components/aps512xx
+	url = https://github.com/STMicroelectronics/stm32-aps512
+	branch = main
+[submodule "Drivers/BSP/Components/Common"]
+	path = Drivers/BSP/Components/Common
+	url = https://github.com/STMicroelectronics/stm32-bsp-Common
+	branch = main
+[submodule "Drivers/BSP/Components/cs42l51"]
+	path = Drivers/BSP/Components/cs42l51
+	url = https://github.com/STMicroelectronics/stm32-cs42l51
+	branch = main
+[submodule "Drivers/BSP/Components/gt911"]
+	path = Drivers/BSP/Components/gt911
+	url = https://github.com/STMicroelectronics/stm32-gt911
+	branch = main
+[submodule "Drivers/BSP/Components/hts221"]
+	path = Drivers/BSP/Components/hts221
+	url = https://github.com/STMicroelectronics/stm32-hts221
+	branch = main
+[submodule "Drivers/BSP/Components/hx8347i"]
+	path = Drivers/BSP/Components/hx8347i
+	url = https://github.com/STMicroelectronics/stm32-hx8347i
+	branch = main
+[submodule "Drivers/BSP/Components/iis2mdc"]
+	path = Drivers/BSP/Components/iis2mdc
+	url = https://github.com/STMicroelectronics/stm32-iis2mdc
+	branch = main
+[submodule "Drivers/BSP/Components/ism330dhcx"]
+	path = Drivers/BSP/Components/ism330dhcx
+	url = https://github.com/STMicroelectronics/stm32-ism330dhcx
+	branch = main
+[submodule "Drivers/BSP/Components/lps22hh"]
+	path = Drivers/BSP/Components/lps22hh
+	url = https://github.com/STMicroelectronics/stm32-lps22hh
+	branch = main
+[submodule "Drivers/BSP/Components/lsm6dso"]
+	path = Drivers/BSP/Components/lsm6dso
+	url = https://github.com/STMicroelectronics/stm32-lsm6dso
+	branch = main
+[submodule "Drivers/BSP/Components/m24256"]
+	path = Drivers/BSP/Components/m24256
+	url = https://github.com/STMicroelectronics/stm32-m24256
+	branch = main
+[submodule "Drivers/BSP/Components/mfxstm32l152"]
+	path = Drivers/BSP/Components/mfxstm32l152
+	url = https://github.com/STMicroelectronics/stm32-mfxstm32l152
+	branch = main
+[submodule "Drivers/BSP/Components/mx_wifi"]
+	path = Drivers/BSP/Components/mx_wifi
+	url = https://github.com/STMicroelectronics/mx_wifi.git
+	branch = main
+[submodule "Drivers/BSP/Components/mx25lm51245g"]
+	path = Drivers/BSP/Components/mx25lm51245g
+	url = https://github.com/STMicroelectronics/stm32-mx25lm51245g
+	branch = main
+[submodule "Drivers/BSP/Components/mx25um51245g"]
+	path = Drivers/BSP/Components/mx25um51245g
+	url = https://github.com/STMicroelectronics/stm32-mx25um51245g
+	branch = main
+[submodule "Drivers/BSP/Components/mx66uw1g45g"]
+	path = Drivers/BSP/Components/mx66uw1g45g
+	url = https://github.com/STMicroelectronics/stm32-mx66uw1g45g
+	branch = main
+[submodule "Drivers/BSP/Components/ov5640"]
+	path = Drivers/BSP/Components/ov5640
+	url = https://github.com/STMicroelectronics/stm32-ov5640
+	branch = main
+[submodule "Drivers/BSP/Components/rk050hr18"]
+	path = Drivers/BSP/Components/rk050hr18
+	url = https://github.com/STMicroelectronics/stm32-rk050hr18
+	branch = main
+[submodule "Drivers/BSP/Components/sitronix"]
+	path = Drivers/BSP/Components/sitronix
+	url = https://github.com/STMicroelectronics/stm32-sitronix
+	branch = main
+[submodule "Drivers/BSP/Components/stm32wb_at"]
+	path = Drivers/BSP/Components/stm32wb_at
+	url = https://github.com/STMicroelectronics/stm32-wb-at
+	branch = main
+[submodule "Drivers/BSP/Components/stts22h"]
+	path = Drivers/BSP/Components/stts22h
+	url = https://github.com/STMicroelectronics/stm32-stts22h
+	branch = main
+[submodule "Drivers/BSP/Components/sx8651"]
+	path = Drivers/BSP/Components/sx8651
+	url = https://github.com/STMicroelectronics/stm32-sx8651
+	branch = main
+[submodule "Drivers/BSP/Components/tcpp0203"]
+	path = Drivers/BSP/Components/tcpp0203
+	url = https://github.com/STMicroelectronics/stm32-tcpp0203
+	branch = main
+[submodule "Drivers/BSP/Components/veml3235"]
+	path = Drivers/BSP/Components/veml3235
+	url = https://github.com/STMicroelectronics/stm32-veml3235
+	branch = main
+[submodule "Drivers/BSP/Components/vl53l5cx"]
+	path = Drivers/BSP/Components/vl53l5cx
+	url = https://github.com/STMicroelectronics/stm32-vl53l5cx
+	branch = main
+[submodule "Drivers/BSP/Components/aps6408"]
+	path = Drivers/BSP/Components/aps6408
+	url = https://github.com/STMicroelectronics/stm32-aps6408
+	branch = main
