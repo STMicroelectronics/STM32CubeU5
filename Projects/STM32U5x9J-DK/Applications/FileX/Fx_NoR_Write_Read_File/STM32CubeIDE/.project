@@ -39,6 +39,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Fx_NoR_Write_Read_File.ioc</locationURI>
 		</link>
 		<link>
+			<name>Doc/README.md</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/README.md</locationURI>
+		</link>
+		<link>
 			<name>Drivers/CMSIS/system_stm32u5xx.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/system_stm32u5xx.c</locationURI>

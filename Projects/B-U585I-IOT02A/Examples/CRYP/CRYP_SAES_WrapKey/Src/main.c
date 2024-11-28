@@ -346,6 +346,7 @@ static void MX_SAES_AES_Init(void)
   hcryp.Init.DataType = CRYP_NO_SWAP;
   hcryp.Init.KeySize = CRYP_KEYSIZE_256B;
   hcryp.Init.Algorithm = CRYP_AES_ECB;
+  hcryp.Init.DataWidthUnit = CRYP_DATAWIDTHUNIT_WORD;
   hcryp.Init.KeyIVConfigSkip = CRYP_KEYIVCONFIG_ALWAYS;
   hcryp.Init.KeyMode = CRYP_KEYMODE_WRAPPED;
   hcryp.Init.KeySelect = CRYP_KEYSEL_HW;

@@ -63,9 +63,9 @@ static void LEDThread_Entry(void *argument);
 UINT App_TX_FreeRTOS_Init(void)
 {
   UINT ret = TX_SUCCESS;
-  /* USER CODE BEGIN  App_TX_FreeRTOS_Init */
+  /* USER CODE BEGIN App_TX_FreeRTOS_Init */
   tx_kernel_enter();
-  /* USER CODE END  App_TX_FreeRTOS_Init */
+  /* USER CODE END App_TX_FreeRTOS_Init */
   return ret;
 }
 
@@ -76,20 +76,20 @@ UINT App_TX_FreeRTOS_Init(void)
   */
 VOID tx_application_define(VOID *first_unused_memory)
 {
-  /* USER CODE BEGIN  tx_application_define */
+  /* USER CODE BEGIN tx_application_define */
   /* Initialize the adaptation layer with 64KiB of internal heap.*/
   if(tx_freertos_init() != TX_SUCCESS)
   {
     Error_Handler();
   }
-  /* Create LEDThread.  */
+  /* Create LEDThread. */
   if (xTaskCreate(LEDThread_Entry, "LED Thread",
                   APP_STACK_SIZE, NULL, LED_THREAD_PRIO,
                   &LEDThread) != pdPASS)
   {
     Error_Handler();
   }
-  /* USER CODE END  tx_application_define */
+  /* USER CODE END tx_application_define */
 }
 
 /* Private user code ---------------------------------------------------------*/

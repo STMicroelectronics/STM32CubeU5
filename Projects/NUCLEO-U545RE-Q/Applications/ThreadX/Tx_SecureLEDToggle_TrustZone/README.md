@@ -32,7 +32,7 @@ LED_GREEN toggles every 1s
 
 #### <b>Error behaviors</b>
 
-LED_RED toggles every 1 second if any error occurs.
+On failure, an error message is printed to the serial port.
 
 #### <b>Assumptions if any</b>
 None
@@ -66,19 +66,19 @@ Please refer to AN5347 for more details.
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
-   This require changes in the linker files to expose this memory location.
+   This requires changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
-	 place in RAM_region    { last section FREE_MEM };
-	 ```
+     place in RAM_region    { last section FREE_MEM };
+     ```
     + For MDK-ARM:
-	```
+    ```
     either define the RW_IRAM1 region in the ".sct" file
     or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
-	```
+    ```
     + For STM32CubeIDE add the following section into the .ld file:
-	```
+    ```
     ._threadx_heap :
       {
          . = ALIGN(8);
@@ -86,7 +86,7 @@ Please refer to AN5347 for more details.
          . = . + 64K;
          . = ALIGN(8);
        } >RAM_D1 AT> RAM_D1
-	```
+    ```
 
        The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
        In the example above the ThreadX heap size is set to 64KBytes.
@@ -105,9 +105,8 @@ RTOS, ThreadX, Threading, TrustZone, TZEN
 
   - This example runs on STM32U545xx devices with security enabled (TZEN=1).
 
-  - This example has been tested with STMicroelectronics NUCLEO-U545ZI-Q (MB1841)
-    board and can be easily tailored to any other supported device
-    and development board.
+  - This example has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision: MB1841-A02
+    and can be easily tailored to any other supported device and development board.
 
   - User Option Bytes requirement (with STM32CubeProgrammer tool)
 

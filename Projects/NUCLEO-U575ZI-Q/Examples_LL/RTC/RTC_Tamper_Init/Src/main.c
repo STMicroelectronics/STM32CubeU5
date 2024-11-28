@@ -310,6 +310,7 @@ static void MX_RTC_Init(void)
   /* Peripheral clock enable */
   LL_RCC_EnableRTC();
   LL_APB3_GRP1_EnableClock(LL_APB3_GRP1_PERIPH_RTCAPB);
+  LL_SRDAMR_GRP1_EnableAutonomousClock(LL_SRDAMR_GRP1_PERIPH_RTCAPBAMEN);
 
   /* USER CODE BEGIN RTC_Init 1 */
 

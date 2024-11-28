@@ -76,7 +76,6 @@ extern "C" {
 #define UCPDDMA_INSTANCE0_LL_CHANNEL_TX   LL_DMA_CHANNEL_3
 
 #define UCPDDMA_INSTANCE0_CHANNEL_TX   GPDMA1_Channel3
-
 /* defined used to configure  USBPD_HW_SetFRSSignalling */
 #define UCPDFRS_INSTANCE0_FRSCC1
 #define UCPDFRS_INSTANCE0_FRSCC2

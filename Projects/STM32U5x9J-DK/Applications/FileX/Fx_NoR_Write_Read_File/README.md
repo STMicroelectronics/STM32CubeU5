@@ -1,7 +1,6 @@
-
 ## <b>Fx_NoR_Write_Read_File Application Description</b>
 
-This application provides an example of Azure RTOS FileX and LevelX stacks usage on STM32U5A9J-DK board, it demonstrates how to create
+This application provides an example of Azure RTOS FileX and LevelX stacks usage on STM32U5G9J-DK1 board, it demonstrates how to create
 
 a Fat File system on the NOR flash using FileX alongside LevelX. The application is designed to execute file operations on the MX25LM51245G
 
@@ -61,19 +60,19 @@ None
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
-   This require changes in the linker files to expose this memory location.
+   This requires changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
-	 place in RAM_region    { last section FREE_MEM };
-	 ```
+     place in RAM_region    { last section FREE_MEM };
+     ```
     + For MDK-ARM:
-	```
+    ```
     either define the RW_IRAM1 region in the ".sct" file
     or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
-	```
+    ```
     + For STM32CubeIDE add the following section into the .ld file:
-	```
+    ```
     ._threadx_heap :
       {
          . = ALIGN(8);
@@ -81,7 +80,7 @@ None
          . = . + 64K;
          . = ALIGN(8);
        } >RAM_D1 AT> RAM_D1
-	```
+    ```
 
        The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
        In the example above the ThreadX heap size is set to 64KBytes.
@@ -103,11 +102,11 @@ RTOS, ThreadX, FileX, LevelX, File System, NOR, OCTOSPI, FAT32
 
 ### <b>Hardware and Software environment</b>
 
-  - This application runs on STM32U5A9xx devices.
-  - This application has been tested with STMicroelectronics STM32U5A9J-DK boards Revision: MB1829-A01.
+  - This application runs on STM32U5xx devices.
+  - This application has been tested with STMicroelectronics STM32U5G9J-DK1 boards revision: MB1829-U5G9NJQ-B01
     and can be easily tailored to any other supported device and development board.
 
-  - This application uses USART& to display logs, the hyperterminal configuration is as follows:
+  - This application uses USART1 to display logs, the hyperterminal configuration is as follows:
 
       - BaudRate = 115200 baud
       - Word Length = 8 Bits

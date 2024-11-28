@@ -37,7 +37,7 @@ This application may be used with a Smartphone or PC server (more detailed setup
 
 #### <b>Error behaviors</b>
 
-- Failure message is shown and the red LED is toggling to indicate the download failed.
+- An error message is displayed over the USART1 console.
 
 #### <b>Assumptions if any</b>
 

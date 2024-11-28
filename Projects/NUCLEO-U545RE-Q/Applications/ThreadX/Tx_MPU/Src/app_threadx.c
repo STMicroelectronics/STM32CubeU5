@@ -41,15 +41,15 @@ PROCESSING_FINISHED       = 44
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define DEFAULT_STACK_SIZE         3*1024
-#define MODULE_DATA_SIZE           32*1024
-#define OBJECT_MEM_SIZE            16*1024
+#define DEFAULT_STACK_SIZE   3*1024
+#define MODULE_DATA_SIZE     32*1024
+#define OBJECT_MEM_SIZE      16*1024
 
-#define READONLY_REGION            0x20010000
-#define READWRITE_REGION           0x20010100
-#define SHARED_MEM_SIZE            0xFF
+#define READONLY_REGION      0x20010000
+#define READWRITE_REGION     0x20010100
+#define SHARED_MEM_SIZE      0xFF
 
-#define MODULE_FLASH_ADDRESS       0x08020000
+#define MODULE_FLASH_ADDRESS 0x08020000
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -142,22 +142,22 @@ VOID tx_application_define(VOID *first_unused_memory)
   */
 void MX_ThreadX_Init(void)
 {
-  /* USER CODE BEGIN  Before_Kernel_Start */
+  /* USER CODE BEGIN Before_Kernel_Start */
 
-  /* USER CODE END  Before_Kernel_Start */
+  /* USER CODE END Before_Kernel_Start */
 
   tx_kernel_enter();
 
-  /* USER CODE BEGIN  Kernel_Start_Error */
+  /* USER CODE BEGIN Kernel_Start_Error */
 
-  /* USER CODE END  Kernel_Start_Error */
+  /* USER CODE END Kernel_Start_Error */
 }
 
-/* USER CODE BEGIN  1 */
+/* USER CODE BEGIN 1 */
 /**
   * @brief  Module Manager main thread.
   * @param  thread_input: thread id
-  * @retval none
+  * @retval None
   */
 VOID ModuleManager_Entry(ULONG thread_input)
 {
@@ -287,7 +287,7 @@ VOID ModuleManager_Entry(ULONG thread_input)
 
 VOID module_fault_handler(TX_THREAD *thread, TXM_MODULE_INSTANCE *module)
 {
-    /* Just increment the fault counter.   */
+    /* Just increment the fault counter. */
     memory_faults++;
 }
 
@@ -318,5 +318,5 @@ VOID pretty_msg(char *p_msg, ULONG r_msg)
   }
 }
 
-/* USER CODE END  1 */
+/* USER CODE END 1 */
 

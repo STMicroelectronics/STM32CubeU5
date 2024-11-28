@@ -40,18 +40,34 @@
 <li>Information regarding the module processing progress printed to the serial port.</li>
 </ul>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
-<p>On failure,an error message is printed to the serial port while the green LED is switched OFF.</p>
+<p>On failure, an error message is printed to the serial port while the LED_GREEN switched OFF.</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
 <p>None</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
 <p>None</p>
 <h4 id="threadx-usage-hints"><b>ThreadX usage hints</b></h4>
 <ul>
-<li>ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.</li>
-<li>ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the “tx_user.h”, the “TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in “tx_initialize_low_level.S” file too.</li>
-<li>ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.</li>
-<li>ThreadX offers the “tx_application_define()” function, that is automatically called by the tx_kernel_enter() API. It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools…) but it should not in any way contain a system API call (HAL or BSP).</li>
-<li>Using dynamic memory allocation requires to apply some changes to the linker file. ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function, using the “first_unused_memory” argument. This require changes in the linker files to expose this memory location.
+<li>ThreadX uses the Systick as time base, thus it is mandatory that the
+HAL uses a separate time base through the TIM IPs.</li>
+<li>ThreadX is configured with 100 ticks/sec by default, this should be
+taken into account when using delays or timeouts at application. It is
+always possible to reconfigure it in the “tx_user.h”, the
+“TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in
+“tx_initialize_low_level.S” file too.</li>
+<li>ThreadX is disabling all interrupts during kernel start-up to avoid
+any unexpected behavior, therefore all system related calls (HAL, BSP)
+should be done either at the beginning of the application or inside the
+thread entry functions.</li>
+<li>ThreadX offers the “tx_application_define()” function, that is
+automatically called by the tx_kernel_enter() API. It is highly
+recommended to use it to create all applications ThreadX related
+resources (threads, semaphores, memory pools…) but it should not in any
+way contain a system API call (HAL or BSP).</li>
+<li>Using dynamic memory allocation requires to apply some changes to
+the linker file. ThreadX needs to pass a pointer to the first free
+memory location in RAM to the tx_application_define() function, using
+the “first_unused_memory” argument. This require changes in the linker
+files to expose this memory location.
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
 </ul>
@@ -78,15 +94,16 @@ The ._threadx_heap must be located between the .bss and the ._user_heap_stack se
 Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
 Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code></pre>
 <ul>
-<li>The “tx_initialize_low_level.S” should be also modified to enable the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
+<li>The “tx_initialize_low_level.S” should be also modified to enable
+the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 </ul></li>
 </ul>
 <h3 id="keywords"><b>Keywords</b></h3>
 <p>RTOS, ThreadX, Threading, Message Queue, Module Manager, Module, MPU</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
-<li>This example runs on STM32U545xx devices</li>
-<li>This example has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision: MB1549-B03. and can be easily tailored to any other supported device and development board.</li>
+<li>This application runs on STM32U545xx devices</li>
+<li>This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards revision: MB1549-B03 and can be easily tailored to any other supported device and development board.</li>
 <li>A virtual COM port appears in the HyperTerminal:
 <ul>
 <li>Hyperterminal configuration:
@@ -107,7 +124,7 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <li>Rebuild Tx_Module_Manager project</li>
 <li>Flash the Tx_Module binary at address defined by MODULE_FLASH_ADDRESS</li>
 <li>Set the “Tx_Module_Manager” as active application (Set as Active)</li>
-<li>Run the example</li>
+<li>Run the application</li>
 </ul>
 </div>
 </div>

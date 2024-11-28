@@ -20,10 +20,10 @@
 <div class="row">
 <div class="col-sm-12 col-lg-8">
 <h2 id="ux_device_cdc_acm-application-description"><b>Ux_Device_CDC_ACM Application Description</b></h2>
-<p>This application provides an example of Azure RTOS USBX stack usage on NUCLEO-U575ZI-Q board, it shows how to develop USB Device communication Class “CDC_ACM” based application. The application is designed to emulate an USB-to-UART bridge following the Virtual COM Port (VCP) implementation, the code provides all required device descriptors framework and associated Class descriptor report to build a compliant USB CDC_ACM device. At the beginning ThreadX call the entry function tx_application_define(), at this stage, all USBx resources are initialized, the CDC_ACM Class driver is registered and the application creates 3 threads with the same priorities :</p>
+<p>This application provides an example of Azure RTOS USBX stack usage on NUCLEO-U575ZI-Q board, it shows how to develop USB device communication class “CDC_ACM” based application. The application is designed to emulate an USB-to-UART bridge following the Virtual COM Port (VCP) implementation, the code provides all required device descriptors framework and associated class descriptor report to build a compliant USB CDC_ACM device. At the beginning ThreadX call the entry function tx_application_define(), at this stage, all USBx resources are initialized, the CDC_ACM Class driver is registered and the application creates 3 threads with the same priorities :</p>
 <ul>
-<li>app_ux_device_thread_entry (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver and start the device.</li>
-<li>usbx_cdc_acm_read_thread_entry (Prio : 20; PreemptionPrio : 20) used to Read the received data from Virtual COM Port.</li>
+<li>app_ux_device_thread_entry      (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver and start the device.</li>
+<li>usbx_cdc_acm_read_thread_entry  (Prio : 20; PreemptionPrio : 20) used to Read the received data from Virtual COM Port.</li>
 <li>usbx_cdc_acm_write_thread_entry (Prio : 20; PreemptionPrio : 20) used to send the received data over UART .</li>
 </ul>
 <p>The thread app_ux_device_thread_entry is responsible to start or stop the USB device. At Run mode the thread will be waiting on message queue form USB_PD interface, when the USB device is plugged to host PC a callback in USB_PD interface will send a message to app_ux_device_thread_entry to start the USB device. By the same way when the USB device is unplug a callback in USB_PD interface will send a message to app_ux_device_thread_entry to stop the USB device.</p>
@@ -38,15 +38,15 @@
 <ul>
 <li><p>Receiving data over UART is handled by interrupt while transmitting is handled by DMA allowing hence the application to receive data at the same time it is transmitting another data (full- duplex feature). The support of the VCP interface is managed through the ST Virtual COM Port driver available for download from www.st.com.</p></li>
 <li><p>CDC ACM non-blocking transmission by default disabled, to enable non-blocking transmission UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE must be disabled and 2048 additional in USBX byte pool and USBX_MEMORY_SIZE should be added.</p></li>
-<li><p>The user has to check the list of the COM ports in Device Manager to find out the COM port number that have been assigned (by OS) to the VCP interface.</p></li>
+<li><p>The user has to check the list of the COM ports in device Manager to find out the COM port number that have been assigned (by OS) to the VCP interface.</p></li>
 </ul>
 <h4 id="expected-success-behavior"><b>Expected success behavior</b></h4>
-<p>When plugged to PC host, the NUCLEO-U575ZI-Q must be properly enumerated as an USB Serial device and an STlink Com port. During the enumeration phase, the device must provide host with the requested descriptors (Device descriptor, configuration descriptor, string descriptors). Those descriptors are used by host driver to identify the device capabilities. Once NUCLEO-U575ZI-Q USB device successfully completed the enumeration phase, Open two hyperterminals (USB com port and UART com port(USB STLink VCP)) to send/receive data to/from host from/to device.</p>
+<p>When plugged to PC host, the NUCLEO-U575ZI-Q must be properly enumerated as an USB Serial device and an STlink COM port. During the enumeration phase, the device must provide host with the requested descriptors (device descriptor, configuration descriptor, string descriptors). Those descriptors are used by host driver to identify the device capabilities. Once NUCLEO-U575ZI-Q USB device successfully completed the enumeration phase, open two hyperterminals (USB COM port and UART COM port(USB STLink VCP)) to send/receive data to/from host from/to device.</p>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
-<p>Host PC shows that USB device does not operate as designed (CDC Device enumeration failed, PC and Device can not communicate over VCP ports).</p>
+<p>Host PC shows that USB device does not operate as designed (CDC device enumeration failed, PC and device can not communicate over VCP ports).</p>
 <p>The Red LED is toggling to indicate any error that has occurred.</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
-<p>User is familiar with USB 2.0 “Universal Serial BUS” Specification and CDC_ACM class Specification.</p>
+<p>User is familiar with USB 2.0 “Universal Serial BUS” specification and CDC_ACM class specification.</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
 <p>The remote wakeup feature is not yet implemented (used to bring the USB suspended bus back to the active condition).</p>
 <h3 id="notes"><b>Notes</b></h3>
@@ -91,10 +91,10 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <p>RTOS, ThreadX, USBXDevice, USB_OTG, Full Speed, CDC, VCP, USART, DMA, Mouse, USBPD.</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
-<li>This example runs on NUCLEO-U575ZI-Q devices.</li>
-<li>This example has been tested with STMicroelectronics NUCLEO-U575ZI-Q boards Revision MB1549-U575ZIQ-C01 and can be easily tailored to any other supported device and development board.</li>
-<li>NUCLEO-U575ZI-Q Set-up</li>
-<li>Connect the NUCLEO-U575ZI-Q board CN15 to the PC through “MICRO-USB” to “Standard A” cable.</li>
+<li>This application runs on NUCLEO-U575ZI-Q devices.</li>
+<li>This application has been tested with STMicroelectronics NUCLEO-U575ZI-Q boards revision MB1549-U575ZIQ-C01 and can be easily tailored to any other supported device and development board.</li>
+<li>NUCLEO-U575ZI-Q Set-up :</li>
+<li>Connect the NUCLEO-U575ZI-Q board CN1 to the PC through “MICRO-USB” to “Standard A” cable.</li>
 <li>For VCP the configuration is dynamic for example it can be :
 <ul>
 <li>BaudRate = 115200 baud</li>

@@ -450,7 +450,7 @@
 //   <o.27> SPI1_IRQn             <0=> Secure state
 //   <o.28> SPI2_IRQn             <0=> Secure state
 //   <o.29> USART1_IRQn           <0=> Secure state
-//   <o.30> USART2_IRQn           <0=> Secure state
+
 //   <o.31> USART3_IRQn           <0=> Secure state
 */
 
@@ -476,8 +476,9 @@
 //   <o.6>  TIM16_IRQn            <0=> Secure state
 //   <o.7>  TIM17_IRQn            <0=> Secure state
 //   <o.8>  COMP_IRQn             <0=> Secure state
+//   <o.9>  USB_IRQn              <0=> Secure state
 //   <o.10> CRS_IRQn              <0=> Secure state
-//   <o.11> FMC_IRQn              <0=> Secure state
+
 //   <o.12> OCTOSPI1_IRQn         <0=> Secure state
 //   <o.13> PWR_S3WU_IRQn         <0=> Secure state
 

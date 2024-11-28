@@ -3,9 +3,9 @@
   ******************************************************************************
   * @file    ux_device_cdc_acm.h
   * @author  MCD Application Team
-  * @brief   USBX Device CDC ACM interface header file
+  * @brief   USBX Device CDC ACM applicative header file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
@@ -32,7 +32,6 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "main.h"
-#include "app_usbx_device.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

@@ -23,7 +23,7 @@
 #define __APP_THREADX_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -60,9 +60,9 @@ void MX_ThreadX_Process(void);
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TX_APP_MEM_POOL_SIZE                               10*1024
-#define MODULE_MANAGER_THREAD_PRIO                         4
-#define MODULE_MANAGER_THREAD_PREEMPTION_THRESHOLD         MODULE_MANAGER_THREAD_PRIO
+#define TX_APP_MEM_POOL_SIZE                       10*1024
+#define MODULE_MANAGER_THREAD_PRIO                 4
+#define MODULE_MANAGER_THREAD_PREEMPTION_THRESHOLD MODULE_MANAGER_THREAD_PRIO
 /* USER CODE END PD */
 
 /* USER CODE BEGIN 1 */
@@ -72,4 +72,4 @@ void MX_ThreadX_Process(void);
 #ifdef __cplusplus
 }
 #endif
-#endif /* __APP_THREADX_H__ */
+#endif /* __APP_THREADX_H */

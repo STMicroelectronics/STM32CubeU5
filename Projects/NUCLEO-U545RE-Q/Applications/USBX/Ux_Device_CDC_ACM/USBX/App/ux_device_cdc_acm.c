@@ -3,7 +3,7 @@
   ******************************************************************************
   * @file    ux_device_cdc_acm.c
   * @author  MCD Application Team
-  * @brief   USBX Device applicative file
+  * @brief   USBX Device CDC ACM applicative source file
   ******************************************************************************
   * @attention
   *
@@ -60,8 +60,9 @@
 
 UX_SLAVE_CLASS_CDC_ACM  *cdc_acm;
 
-/* Data to send over USB CDC are stored in this buffer   */
+/* Received Data over USB are stored in this buffer */
 uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
+/* Received Data over UART are stored in this buffer */
 uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
 
 uint32_t UserTxBufPtrIn;
@@ -197,10 +198,10 @@ VOID USBD_CDC_ACM_ParameterChange(VOID *cdc_acm_instance)
   UX_SLAVE_TRANSFER *transfer_request;
   UX_SLAVE_DEVICE *device;
 
-  /* Get the pointer to the device.  */
+  /* Get the pointer to the device */
   device = &_ux_system_slave -> ux_system_slave_device;
 
-  /* Get the pointer to the transfer request associated with the control endpoint. */
+  /* Get the pointer to the transfer request associated with the control endpoint */
   transfer_request = &device -> ux_slave_device_control_endpoint.ux_slave_endpoint_transfer_request;
 
   request = *(transfer_request -> ux_slave_transfer_request_setup + UX_SETUP_REQUEST);
@@ -537,7 +538,7 @@ static VOID USBD_CDC_VCP_Config(UX_SLAVE_CLASS_CDC_ACM_LINE_CODING_PARAMETER
       break;
   }
 
-  /* Get the UART baudrate from vcp */
+  /* Get the UART baudrate from VCP */
   uart_handler->Init.BaudRate = CDC_VCP_LineCoding->ux_slave_class_cdc_acm_parameter_baudrate;
 
   /* Set the UART Hw flow control to none */

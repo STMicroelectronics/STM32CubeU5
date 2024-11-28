@@ -3,9 +3,9 @@
   ******************************************************************************
   * @file    ux_host_mouse.c
   * @author  MCD Application Team
-  * @brief   USBX Host Mouse applicative source file
+  * @brief   USBX Host HID Mouse applicative source file
   ******************************************************************************
-   * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.

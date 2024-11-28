@@ -5,7 +5,7 @@ This application provides an example of Azure RTOS FileX stack usage on STM32U57
 
 The application starts by calling the ThreadX's initialization routine which creates multithreaded environment for starting the concurrent FileX's two main threads that handle file operations. At this stage, all FileX resources are created, the SDIO driver is initialized and the application creates 3 threads with the same priorities:
 
-  - fx_app_thread (Prio : 10; PreemptionPrio : 10) used to initialize the SD card driver and opening it as a FileX Media.
+  - fx_app_thread  (Prio : 10; PreemptionPrio : 10) used to initialize the SD card driver and opening it as a FileX Media.
   - fx_thread_one  (Prio : 10; PreemptionPrio : 10) used to create, write and read operations for file fx_file_one.
   - fx_thread_two  (Prio : 10; PreemptionPrio : 10) used to create, write and read operations for file fx_file_two.
 
@@ -14,7 +14,7 @@ A FAT32 compatible SD card is expected to be used with this example. The program
 
 #### <b>Expected success behavior</b>
 
-When an SD card is inserted into the STM32U575I-EV  SD card reader and the board is powered up, the application starts file operations.
+When an SD card is inserted into the STM32U575I-EV SD card reader and the board is powered up, the application starts file operations.
 
 During the start phase, the main thread starts by opening the SD card using FileX media open service. Upon successful opening of the media and its underlying FAT32 file
 
@@ -51,19 +51,19 @@ No SD card insertion/removal mechanisms are implemented.
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
-   This require changes in the linker files to expose this memory location.
+   This requires changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
-	 place in RAM_region    { last section FREE_MEM };
-	 ```
+     place in RAM_region    { last section FREE_MEM };
+     ```
     + For MDK-ARM:
-	```
+    ```
     either define the RW_IRAM1 region in the ".sct" file
     or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
-	```
+        ```
     + For STM32CubeIDE add the following section into the .ld file:
-	```
+        ```
     ._threadx_heap :
       {
          . = ALIGN(8);
@@ -71,7 +71,7 @@ No SD card insertion/removal mechanisms are implemented.
          . = . + 64K;
          . = ALIGN(8);
        } >RAM_D1 AT> RAM_D1
-	```
+    ```
 
        The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
        In the example above the ThreadX heap size is set to 64KBytes.
@@ -80,7 +80,6 @@ No SD card insertion/removal mechanisms are implemented.
        Read more in STM32CubeIDE User Guide, chapter: "Linker script".
 
     + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
-
 
 #### <b>FileX/LevelX usage hints</b>
 
@@ -94,8 +93,8 @@ RTOS, ThreadX, FileX, File system, SDMMC, SDIO, FAT32
 
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on STM32U575/85xx devices.
-  - This example has been tested with STMicroelectronics STM32U575I-EV  boards Revision: MB1550-U575AIQ-A03.
+  - This application runs on STM32U575xx devices.
+  - This application has been tested with STMicroelectronics STM32U575I-EV boards revision: MB1550-U575AIQ-C02
     and can be easily tailored to any other supported device and development board.
 
 ### <b>How to use it ?</b>

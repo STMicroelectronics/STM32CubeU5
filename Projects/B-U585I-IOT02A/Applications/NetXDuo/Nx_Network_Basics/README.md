@@ -25,7 +25,6 @@ This application demonstrates WiFi connectivity on MXCHIP EMW3080 module for the
 
 - The application is using the DHCP to acquire IP address, thus a DHCP server should be reachable by the board in the LAN used to test the application.
 
-
 #### <b>ThreadX usage hints</b>
 
 - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.

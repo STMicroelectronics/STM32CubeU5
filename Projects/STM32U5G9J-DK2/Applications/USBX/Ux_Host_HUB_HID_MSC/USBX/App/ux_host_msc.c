@@ -3,9 +3,9 @@
   ******************************************************************************
   * @file    ux_host_msc.c
   * @author  MCD Application Team
-  * @brief   USBX host applicative file
+  * @brief   USBX Host MSC applicative source file
   ******************************************************************************
-   * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.

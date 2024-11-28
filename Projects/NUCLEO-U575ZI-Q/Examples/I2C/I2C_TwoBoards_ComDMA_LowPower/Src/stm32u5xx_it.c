@@ -201,7 +201,7 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles I2C3 event interrupt.
+  * @brief This function handles I2C3 Event interrupt.
   */
 void I2C3_EV_IRQHandler(void)
 {
@@ -215,7 +215,7 @@ void I2C3_EV_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles I2C3 error interrupt.
+  * @brief This function handles I2C3 Error interrupt.
   */
 void I2C3_ER_IRQHandler(void)
 {

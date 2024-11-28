@@ -93,7 +93,7 @@ static void MX_ICACHE_Init(void);
 int main(void)
 {
   /* SAU/IDAU, FPU and interrupts secure/non-secure allocation setup done */
-/* in SystemInit() based on partition_stm32u575xx.h file's definitions. */
+  /* in SystemInit() based on partition_stm32u575xx.h file's definitions. */
   /* USER CODE BEGIN 1 */
   uint32_t i, read_value;
  /* Enable SecureFault handler (HardFault is default) */

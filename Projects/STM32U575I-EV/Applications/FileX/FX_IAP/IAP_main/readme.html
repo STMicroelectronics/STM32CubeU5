@@ -23,7 +23,7 @@
 <div class="col-sm-12 col-lg-8">
 <h2 id="iap_main-application-description"><b>IAP_main Application Description</b></h2>
 <p>This application provides an example of Azure RTOS FileX stack usage on STM32U575I-EV board, it implements an In-Application programming (IAP) demonstrating FileX’s SD file access capabilities. The application is designed to erase and write to on-chip flash memory, it provides all required software code for handling SD card and flash memory I/O operations.</p>
-<p>This is a typical application on how to use the STM32U575/85 SD card peripheral for firmware upgrade application or IAP, allowing user to erase and write to on-chip flash memory.</p>
+<p>This is a typical application on how to use the STM32U575 SD card peripheral for firmware upgrade application or IAP, allowing user to erase and write to on-chip flash memory.</p>
 <p>The application starts by checking the state of the user button (BUTTON_USER), and depending on its state the application will enter one of the two startup sequences:</p>
 <h4 id="programming-new-software-sequence"><b>Programming new software sequence</b></h4>
 <p>If the user button is pressed at application start-up, the program try to flash a new software, loaded from the SD card, to the flash memory using <strong>fx_thread</strong> (Priority : 10; Preemption Priority : 10) as below:</p>
@@ -118,8 +118,8 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <p>RTOS, ThreadX, FileX, File system, SDMMC, SDIO, FAT32</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
-<li>This application runs on STM32U575/85xx devices.</li>
-<li>This application has been tested with STMicroelectronics STM32U575I-EV boards Revision: MB1550-U575AIQ-A03. and can be easily tailored to any other supported device and development board.</li>
+<li>This application runs on STM32U575xx devices.</li>
+<li>This application has been tested with STMicroelectronics STM32U575I-EV boards revision: MB1550-U575AIQ-C02 and can be easily tailored to any other supported device and development board.</li>
 <li>This application uses USART1 to display logs, the hyperterminal configuration is as follows:
 <ul>
 <li>BaudRate = 115200 baud</li>

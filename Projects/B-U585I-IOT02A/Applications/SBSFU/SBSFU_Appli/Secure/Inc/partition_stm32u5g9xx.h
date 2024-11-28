@@ -13,7 +13,7 @@
   *
   ******************************************************************************
   * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
-  * Copyright (c) 2023 STMicroelectronics. All rights reserved.  
+  * Copyright (c) 2023 STMicroelectronics. All rights reserved.
   *
   * SPDX-License-Identifier: Apache-2.0
   *
@@ -81,12 +81,12 @@
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START0     S_CODE_START      /* start address of SAU region 0 */
+#define SAU_INIT_START0     CMSE_VENEER_REGION_START      /* start address of SAU region 0 */
 
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END0       (S_CODE_START+IMAGE_S_CODE_SIZE)       /* end address of SAU region 0 */
+#define SAU_INIT_END0       (CMSE_VENEER_REGION_START+CMSE_VENEER_REGION_SIZE)       /* end address of SAU region 0 */
 
 /*
 //     <o>Region is
@@ -233,17 +233,17 @@
 //   <e>Initialize SAU Region 6
 //   <i> Setup SAU Region 6 memory attributes
 */
-#define SAU_INIT_REGION6    0
+#define SAU_INIT_REGION6    1
 
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START6     0x00000000      /* start address of SAU region 6 */
+#define SAU_INIT_START6     0x0BFA0000      /* start address of SAU region 6 */
 
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END6       0x00000000      /* end address of SAU region 6 */
+#define SAU_INIT_END6       0x0BFA01FF      /* end address of SAU region 6 */
 
 /*
 //     <o>Region is
@@ -548,10 +548,6 @@
 */
 #define NVIC_INIT_ITNS3_VAL      0xFFFFFFFF
 
-#if defined (STM32U595xx) || defined (STM32U599xx) \
- || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
- || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
- || defined (STM32U5G7xx)
 /*
 //   <e>Initialize ITNS 4 (Interrupts 109..138)
 */
@@ -573,7 +569,6 @@
 /*
 // </h>
 */
-#endif
 
 /*
 //   </e>
@@ -684,14 +679,10 @@ __STATIC_INLINE void TZ_SAU_Setup (void)
   #if defined (NVIC_INIT_ITNS3) && (NVIC_INIT_ITNS3 == 1U)
     NVIC->ITNS[3] = NVIC_INIT_ITNS3_VAL;
   #endif
-#if defined (STM32U595xx) || defined (STM32U599xx) \
- || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
- || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
- || defined (STM32U5G7xx)
+
   #if defined (NVIC_INIT_ITNS4) && (NVIC_INIT_ITNS4 == 1U)
     NVIC->ITNS[4] = NVIC_INIT_ITNS4_VAL;
   #endif
-#endif
 }
 
 #endif  /* PARTITION_STM32U5XXXX_H */

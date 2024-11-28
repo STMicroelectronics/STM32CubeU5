@@ -61,6 +61,10 @@ void Error_Handler(void);
 #define LED_RED_GPIO_Port GPIOG
 #define LED_GREEN_Pin GPIO_PIN_7
 #define LED_GREEN_GPIO_Port GPIOC
+#define USART1_TX_Pin GPIO_PIN_9
+#define USART1_TX_GPIO_Port GPIOA
+#define USART1_RX_Pin GPIO_PIN_10
+#define USART1_RX_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 

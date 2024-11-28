@@ -42,8 +42,11 @@ the module manager dynamically at runtime.</li>
 </ul>
 <p>At the module manager stage, the main entry function
 tx_application_define() is called by ThreadX during kernel start, the
-application creates 1 thread and 1 message queue: - ModuleManager (Prio
-: 4; Preemption Threshold : 4) - ResidentQueue (Size : 16 * ULONG)</p>
+application creates 1 thread and 1 message queue:</p>
+<ul>
+<li>ModuleManager (Prio : 4; Preemption Threshold : 4)</li>
+<li>ResidentQueue (Size : 16 * ULONG)</li>
+</ul>
 <p>ModuleManager thread uses the ThreadX Module Manager APIs to
 configure, load and start the expected module. ResidentQueue is used to
 synchronize operations between Module Manager and the loaded Module.</p>
@@ -62,7 +65,7 @@ the module and the module manager continues to run correctly.</p>
 serial port.</li>
 </ul>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
-<p>LED_RED toggles every 1 second if any error occurs.</p>
+<p>On failure, an error message is printed to the serial port while the LED_RED toggles every 1 second and LED_GREEN switched OFF.</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
 <p>None</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
@@ -187,8 +190,8 @@ or modify the line below in &quot;tx_initialize_low_level.S to match the memory 
    } &gt;RAM_D1 AT&gt; RAM_D1</code></pre>
 <pre><code>The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
 In the example above the ThreadX heap size is set to 64KBytes.
-The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.  
-Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).  
+The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
+Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
 Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code></pre>
 <ul>
 <li>The “tx_initialize_low_level.S” should be also modified to enable
@@ -201,9 +204,9 @@ MPU</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
-<li>This example runs on STM32U5g9xx devices</li>
-<li>This example has been tested with STMicroelectronics STM32U5G9J-DK2
-boards Revision: MB1829-A01. and can be easily tailored to any other
+<li>This application runs on STM32U5G9xx devices</li>
+<li>This application has been tested with STMicroelectronics STM32U5G9J-DK2
+boards revision: MB1829-B01 and can be easily tailored to any other
 supported device and development board.</li>
 <li>A virtual COM port appears in the HyperTerminal:
 <ul>
@@ -227,7 +230,7 @@ supported device and development board.</li>
 MODULE_FLASH_ADDRESS</li>
 <li>Set the “Tx_Module_Manager” as active application (Set as
 Active)</li>
-<li>Run the example</li>
+<li>Run the application</li>
 </ul>
 </section>
 </div>

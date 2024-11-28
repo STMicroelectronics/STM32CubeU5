@@ -69,9 +69,7 @@ VOID hid_keyboard_thread_entry(ULONG thread_input)
   ULONG keyboard_state;
   while (1)
   {
-    tx_thread_sleep(MS_TO_TICK(10));
-
-    /* Start if the hid client is a keyboard and connected */
+    /* Start if the HID client is a keyboard and connected */
     if ((keyboard != NULL) &&
         (keyboard->ux_host_class_hid_keyboard_state == (ULONG) UX_HOST_CLASS_INSTANCE_LIVE))
     {

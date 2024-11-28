@@ -103,20 +103,18 @@ int main(void)
   /* Call PreOsInit function */
   USBPD_PreInitOs();
   /* USER CODE BEGIN 2 */
-  /* Configure User push-button */
-  BSP_PB_Init(BUTTON_USER, BUTTON_MODE_GPIO);
 
-    /* Check if the User push-button is pressed */
-  if (BSP_PB_GetState(BUTTON_USER) != BUTTON_PRESSED)
+  /* Check if the User push-button is pressed */
+  if (!HAL_GPIO_ReadPin(User_Button_GPIO_Port, User_Button_Pin))
   {
     /* Test if user code is programmed starting from address 0x08020000 */
     if (((*(__IO uint32_t *) USBD_DFU_APP_DEFAULT_ADDR) & USBD_DFU_APP_MASK) ==
         USBD_DFU_APP_START_ADDR)
     {
-      /*  Disable interrupts for timers */
+      /* Disable interrupts for timers */
       HAL_NVIC_DisableIRQ(TIM6_IRQn);
 
-      /*  Disable ICACHE */
+      /* Disable ICACHE */
       HAL_ICACHE_DeInit();
 
       /* Jump to user application */
@@ -448,11 +446,17 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOH, LED_RED_Pin|LED_GREEN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOH, LED_RED_Pin|LED_GREEN_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin : User_Button_Pin */
+  GPIO_InitStruct.Pin = User_Button_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(User_Button_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED_RED_Pin LED_GREEN_Pin */
   GPIO_InitStruct.Pin = LED_RED_Pin|LED_GREEN_Pin;
@@ -462,7 +466,6 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
-  HAL_GPIO_WritePin(GPIOH, LED_RED_Pin|LED_GREEN_Pin, GPIO_PIN_SET);
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
@@ -501,8 +504,6 @@ void Error_Handler(void)
   /* User can add his own implementation to report the HAL error return state */
   while (1)
   {
-    HAL_GPIO_TogglePin(LED_RED_GPIO_Port, (uint16_t)LED_RED_Pin);
-    HAL_Delay(200);
   }
   /* USER CODE END Error_Handler_Debug */
 }
@@ -520,6 +521,11 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+
+  /* Infinite loop */
+  while (1)
+  {
+  }
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

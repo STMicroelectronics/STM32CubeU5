@@ -4,38 +4,37 @@
 This application provides an example of Azure RTOS USBX stack usage .
 
 The application is designed to behave as an USB CDC_ACM Host, the code provides required requests to properly enumerate
-CDC devices , CDC_ACM Class APIs to send or receive data and display data on uart HyperTerminal.
+CDC devices , CDC_ACM class APIs to send or receive data and display data on UART HyperTerminal.
 
 The main entry function tx_application_define() is then called by ThreadX during kernel start, at this stage, all USBx resources
 are initialized.
 The application creates 3 threads with different priorities :
 
-  - usbx_app_thread_entry            (Priority : 10; Preemption threshold : 10) used to initialize USB OTG HAL HCD driver and start the Host.
+  - app_ux_host_thread_entry         (Priority : 10; Preemption threshold : 10) used to initialize USB OTG HAL HCD driver and start the Host.
   - cdc_acm_send_app_thread_entry    (Priority : 30; Preemption threshold : 30) used to send data from host to device.
   - cdc_acm_recieve_app_thread_entry (Priority : 30; Preemption threshold : 30) used to receive data from the device.
 
 #### <b> Expected success behavior</b>
 
-- When a cdc device is plugged to STM32U5G9J-DK2 board, a Message will be displayed on the uart HyperTerminal (STlink VCP) showing
+- When a CDC device is plugged to STM32U5G9J-DK2 board, a message will be displayed on the UART HyperTerminal (STlink VCP) showing
 the Vendor ID and Product ID of the attached device. The host must be able to properly decode CDC_ACM class request data sent by the device.
 After enumeration phase, a message will indicates that the device is ready for use.
 
-- The Sent/received data are displayed on respective Hyperterminals.
+- The sent/received data are displayed on respective Hyperterminals.
 
 #### <b>Error behaviors</b>
 
-Errors are detected such as (Unsupported device, Enumeration Fail) and the corresponding message is displayed on the HyperTerminal.
+Errors are detected (such as unsupported device, enumeration fail) and the corresponding message is displayed on the HyperTerminal.
 
 #### <b>Assumptions if any</b>
 
-User is familiar with USB 2.0 "Universal Serial BUS" Specification and CDC_ACM class Specification.
+User is familiar with USB 2.0 "Universal Serial BUS" specification and CDC_ACM class specification.
 
 #### <b>Known limitations</b>
 
 None
 
 ### <b>Notes</b>
-
 
 #### <b>ThreadX usage hints</b>
 
@@ -79,21 +78,19 @@ None
 
 #### <b>USBX usage hints</b>
 
-
 ### <b>Keywords</b>
 
-Connectivity, USBX Host, ThreadX, USB, CDC_ACM, UART, USART,
-
+Connectivity, USBX Host, ThreadX, USB, CDC_ACM, UART, USART
 
 ### <b>Hardware and Software environment</b>
 
-  - This application runs on STM32U5G9xx devices
-  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 MB1918-U5G9ZJQ_S-A01.
+  - This application runs on STM32U5Gxx devices
+  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 revision MB1918-U5G9ZJQ-B01
     and can be easily tailored to any other supported device and development board.
 
 - STM32U5G9J-DK2 Set-up
     - Plug the USB CDC_ACM device into the STM32U5G9J-DK2 board through 'Type C  to A-Female' cable to the connector:
-      - CN5 : to use USB High Speed OTG IP (HS)
+      - CN2 : to use USB High Speed OTG IP (HS)
     - Connect ST-Link cable to the PC USB port to display data on the HyperTerminal.
 
     A virtual COM port will then appear in the HyperTerminal:
@@ -133,6 +130,5 @@ In order to make the program work, you must do the following :
 
 <b>Note</b>
 
-The user has to check the list of the COM ports in Device Manager to find out the number
-of the COM ports that have been assigned (by OS) to the Stlink VCP.
-The application uses the external HSE clock as USB source clock.
+ - The user has to check the list of the COM ports in Device Manager to find out the number of the COM ports that have been assigned (by OS) to the Stlink VCP.
+ - The application uses the external HSE clock as USB source clock.

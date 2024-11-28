@@ -55,7 +55,6 @@ extern "C" {
 /* USER CODE BEGIN ET */
 
 /* USER CODE END ET */
-
 /* Enum Class Type */
 typedef enum
 {

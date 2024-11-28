@@ -103,9 +103,10 @@ media is printed to the serial port(USART1).</li>
 </ul></li>
 </ul>
 <h4 id="error-behaviors"><b> Error behaviors</b></h4>
-<pre><code>  - On failure, the red led should start blinking and green led is off.
-  - Error handler is called at the spot where the error occurred.
-  </code></pre>
+<ul>
+<li>On failure, the red led should start blinking and green led is off.</li>
+<li>Error handler is called at the spot where the error occurred.</li>
+</ul>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
 <ul>
 <li>The SD card should be plugged prior to run the application.</li>
@@ -141,7 +142,7 @@ way contain a system API call (HAL).</li>
 <li>Using dynamic memory allocation requires to apply some changes to
 the linker file. ThreadX needs to pass a pointer to the first free
 memory location in RAM to the tx_application_define() function, using
-the “first_unused_memory” argument. This require changes in the linker
+the “first_unused_memory” argument. This requires changes in the linker
 files to expose this memory location.
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
@@ -187,9 +188,9 @@ FAT32</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
-<li><p>This example runs on STM32U575/85xx devices.</p></li>
-<li><p>This example has been tested with STMicroelectronics
-STM32U575I-EV boards Revision: MB1550-U575AIQ-C01 and can be easily
+<li><p>This application runs on STM32U575xx devices.</p></li>
+<li><p>This application has been tested with STMicroelectronics
+STM32U575I-EV boards revision: MB1550-U575AIQ-C02 and can be easily
 tailored to any other supported device and development board.</p></li>
 <li><p>This application uses USART1 to display logs, the hyperterminal
 configuration is as follows:</p>

@@ -1,8 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
+  * @file    ThreadX/Tx_SecureLEDToggle_TrustZone/Secure/Src/main.c
+  * @author  MCD Application Team
+  * @brief   Main program body
   ******************************************************************************
   * @attention
   *
@@ -72,7 +73,7 @@ static void MX_ICACHE_Init(void);
 int main(void)
 {
   /* SAU/IDAU, FPU and interrupts secure/non-secure allocation setup done */
-/* in SystemInit() based on partition_stm32u5a5xx.h file's definitions. */
+  /* in SystemInit() based on partition_stm32u5a5xx.h file's definitions. */
 
   /* USER CODE BEGIN 1 */
 
@@ -118,14 +119,13 @@ int main(void)
   HAL_GPIO_ConfigPinAttributes(GPIOF, GPIO_PIN_ALL, GPIO_PIN_NSEC);
   HAL_GPIO_ConfigPinAttributes(GPIOG, GPIO_PIN_ALL, GPIO_PIN_NSEC);
   HAL_GPIO_ConfigPinAttributes(GPIOH, GPIO_PIN_ALL, GPIO_PIN_NSEC);
-  
-   /* Leave the GPIO clocks enabled to let non-secure having I/Os control */
 
-  
-   /* Secure SysTick should rather be suspended before calling non-secure  */
+   /* Leave the GPIO clocks enabled to let non-secure having I/Os control */
+   
+  /* Secure SysTick should rather be suspended before calling non-secure  */
   /* in order to avoid wake-up from sleep mode entered by non-secure      */
   /* The Secure SysTick shall be resumed on non-secure callable functions */
-  HAL_SuspendTick(); 
+  HAL_SuspendTick();
   /* USER CODE END 2 */
 
   /*************** Setup and jump to non-secure *******************************/

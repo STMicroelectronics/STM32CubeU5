@@ -29,7 +29,7 @@ MainThread is expected to execute data read and write operations to/from user-de
 
 #### <b>Error behaviors</b>
 
-LED_RED toggles every 1 second if any error occurs.
+On failure, an error message is printed to the serial port while the LED_RED toggles every 1 second and LED_GREEN switched OFF.
 
 #### <b>Assumptions if any</b>
 None
@@ -85,8 +85,8 @@ RTOS, ThreadX, Threading, Message Queue, Module Manager, Module, MPU
 
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on STM32U575xx devices
-  - This example has been tested with STMicroelectronics NUCLEO-U575ZI-Q boards Revision: MB1549-B03.
+  - This application runs on STM32U575xx devices
+  - This application has been tested with STMicroelectronics NUCLEO-U575ZI-Q boards revision: MB1549-C01
     and can be easily tailored to any other supported device and development board.
   - A virtual COM port appears in the HyperTerminal:
       - Hyperterminal configuration:
@@ -105,4 +105,4 @@ In order to make the program work, you must do the following :
  - Rebuild Tx_Module_Manager project
  - Flash the Tx_Module binary at address defined by MODULE_FLASH_ADDRESS
  - Set the "Tx_Module_Manager" as active application (Set as Active)
- - Run the example
+ - Run the application

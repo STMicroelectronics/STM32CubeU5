@@ -16,8 +16,8 @@
         <TargetCommonOption>
           <Device>STM32U5G9ZJTxQ</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32U5Fx-5Gx_DFP.0.0.1</PackID>
-          <PackURL>http://www.keil.com/pack</PackURL>
+          <PackID>Keil.STM32U5xx_DFP.2.2.4</PackID>
+          <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x0C0000) IRAM2(0x30000000,0x0C0000) IROM(0x08000000,0x00400000) IROM2(0x0C000000,0x00400000) CPUTYPE("Cortex-M33") FPU3(SFPU) DSP TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -2833,8 +2833,8 @@
         <TargetCommonOption>
           <Device>STM32U5G9ZJTxQ</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32U5Fx-5Gx_DFP.0.0.1</PackID>
-          <PackURL>http://www.keil.com/pack</PackURL>
+          <PackID>Keil.STM32U5xx_DFP.2.2.4</PackID>
+          <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x0C0000) IRAM2(0x30000000,0x0C0000) IROM(0x08000000,0x00400000) IROM2(0x0C000000,0x00400000) CPUTYPE("Cortex-M33") FPU3(SFPU) DSP TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -3157,7 +3157,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32U5F9xx,TX_SINGLE_MODE_NON_SECURE,TXM_MODULE_INCLUDE_USER_DEFINE_FILE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../Common/Inc;../../../../../../Middlewares/ST/threadx/common/inc/;../../../../../../Middlewares/ST/threadx/common_modules/inc/;../../../../../../Middlewares/ST/threadx/common_modules/module_manager/inc/;../../../../../../Middlewares/ST/threadx/ports_module/cortex_m33/ac6/inc/;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/BSP/STM32U5x9J-DK</IncludePath>
+              <IncludePath>../Inc;../Common/Inc;../../../../../../Middlewares/ST/threadx/common/inc/;../../../../../../Middlewares/ST/threadx/common_modules/inc/;../../../../../../Middlewares/ST/threadx/common_modules/module_manager/inc/;../../../../../../Middlewares/ST/threadx/ports_module/cortex_m33/ac6/inc/;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

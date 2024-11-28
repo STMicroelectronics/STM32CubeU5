@@ -152,7 +152,7 @@ OpenBootloader, USART, FDCAN, I2C, SPI, USB
     - Connect CAN-H and CAN-L of the external FDCAN transceiver to your FDCAN Host adapter
 
   - B-U585I-IOT02A Rev C set-up to use USART:
-    - To use the USART3 for communication you have to connect:
+    - To use the USART1 for communication you have to connect:
       - Tx pin of your host adapter to PA9 pin of the B-U585I-IOT02A Rev C board
       - Rx pin of your host adapter to PA10 pin of the B-U585I-IOT02A Rev C board
 	- If STLINK-V3SET is used as host adapter, please use Tx,Rx pins from STLINK-V3SET CN8 connector

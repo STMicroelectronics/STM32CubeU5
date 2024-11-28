@@ -9,7 +9,6 @@ The application's main calls the MX_FileX_Init() function in order to Initialize
 
 Upon successful opening of the created SRAM-Disk media, FileX continues with creating a file called "STM32.TXT" into the root directory by calling MX_FileX_Process(VOID *arg) function, then writes into it some predefined data. The file is re-opened in read only mode and content is checked.
 
-
 As stated earlier, the present application runs in standalone mode without ThreadX, for this reason, the standalone variant of fileX is used, plus the following flags need to be set in fx_user.h:
   #define FX_SINGLE_THREAD
   #define FX_STANDALONE_ENABLE
@@ -31,7 +30,7 @@ None
 None
 
 ### <b>Notes</b>
- 1. The created SRAM-Disk, is placed in SRAM3(512 KB) starting from the(SRAM3_BASE=@0x20040000). 
+ 1. The created SRAM-Disk, is placed in SRAM3(512 KB) starting from the(SRAM3_BASE=@0x20040000).
  2. User can change the location of the SRAM-Disk by modifying FX_SRAM_DISK_BASE_ADDRESS.
 
 #### <b>FileX/LevelX usage hints</b>
@@ -44,16 +43,16 @@ FileX, File System, FAT32, SRAM
 
 ### <b>Hardware and Software environment</b>
 
-  - This application runs on STM32U5G9xx devices.
-  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards Revision MB1918-U5G9ZJQ_S-A01.
+  - This application runs on STM32U5Gxx devices.
+  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision MB1918-U5G9ZJQ-B01
     and can be easily tailored to any other supported device and development board.
 
-  - This application uses USART1 to display logs, the hyperterminal configuration is as follows:
+  - This application uses USART1 to display logs, the hyperterminal configuration is as follows :
 
       - BaudRate = 115200 baud
       - Word Length = 8 Bits
       - Stop Bit = 1
-      - Parity = none
+      - Parity = None
       - Flow control = None
 
 
@@ -64,4 +63,3 @@ In order to make the program work, you must do the following :
  - Open your preferred toolchain
  - Rebuild all files and load your image into target memory
  - Run the application
- 

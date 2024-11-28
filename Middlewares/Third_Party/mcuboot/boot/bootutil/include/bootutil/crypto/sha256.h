@@ -32,6 +32,9 @@
     #include <mbedtls/sha256.h>
     #define BOOTUTIL_CRYPTO_SHA256_BLOCK_SIZE (64)
     #define BOOTUTIL_CRYPTO_SHA256_DIGEST_SIZE (32)
+#if MBEDTLS_VERSION_NUMBER >= 0x03000000
+    #include <mbedtls/compat-2.x.h>
+#endif
 #endif /* MCUBOOT_USE_MBED_TLS */
 
 #if defined(MCUBOOT_USE_TINYCRYPT)

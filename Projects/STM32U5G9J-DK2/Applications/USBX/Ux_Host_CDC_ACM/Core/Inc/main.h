@@ -58,6 +58,9 @@ void MX_USB_OTG_HS_HCD_Init(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define BUTTON_USER_Pin GPIO_PIN_13
+#define BUTTON_USER_GPIO_Port GPIOC
+#define BUTTON_USER_EXTI_IRQn EXTI13_IRQn
 
 /* USER CODE BEGIN Private defines */
 

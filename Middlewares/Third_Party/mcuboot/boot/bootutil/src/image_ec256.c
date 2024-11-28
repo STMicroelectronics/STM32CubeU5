@@ -37,6 +37,12 @@
 
 #include "bootutil/sign_key.h"
 
+#if !defined(MBEDTLS_CONFIG_FILE)
+#include "mbedtls/mbedtls_config.h"
+#else
+#include MBEDTLS_CONFIG_FILE
+#endif
+
 #include "mbedtls/oid.h"
 #include "mbedtls/asn1.h"
 #include "bootutil/crypto/ecdsa_p256.h"

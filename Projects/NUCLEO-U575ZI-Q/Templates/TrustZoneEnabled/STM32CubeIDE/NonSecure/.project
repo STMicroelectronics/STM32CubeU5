@@ -2,9 +2,7 @@
 <projectDescription>
 	<name>TrustZoneEnabled_NonSecure</name>
 	<comment></comment>
-	<projects>
-		<project>TrustZoneEnabled_Secure</project>
-	</projects>
+
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>

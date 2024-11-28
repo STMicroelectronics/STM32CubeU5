@@ -2,9 +2,7 @@
 <projectDescription>
 	<name>Tx_SecureLEDToggle_TrustZone_NonSecure</name>
 	<comment></comment>
-	<projects>
-		<project>Tx_SecureLEDToggle_TrustZone_Secure</project>
-	</projects>
+
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
@@ -31,6 +29,11 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
 	<linkedResources>
+		<link>
+			<name>Doc/README.md</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/README.md</locationURI>
+		</link>
 		<link>
 			<name>Application/User/app_azure_rtos.c</name>
 			<type>1</type>

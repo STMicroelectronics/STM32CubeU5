@@ -379,7 +379,7 @@ void HAL_GPIO_EXTI_Falling_Callback(uint16_t GPIO_Pin)
     /* Communication with TS is done via I2C.
     Often the sw requires ISRs (interrupt service routines) to be quick while communication
     with I2C can be considered relatively long (depending on SW requirements).
-    Considering that the TS feature don’t need immediate reaction,
+    Considering that the TS feature don't need immediate reaction,
 	it is suggested to use polling mode instead of EXTI mode,
     in order to avoid blocking I2C communication on interrupt service routines */
 

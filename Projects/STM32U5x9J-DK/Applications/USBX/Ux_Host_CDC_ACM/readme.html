@@ -49,7 +49,7 @@ threshold : 30) used to receive data from the device.</li>
 <h4 id="expected-success-behavior"><b> Expected success
 behavior</b></h4>
 <ul>
-<li><p>When a cdc device is plugged to STM32U599J-DK board, a Message
+<li><p>When a cdc device is plugged to STM32U5G9J-DK1 board, a Message
 will be displayed on the uart HyperTerminal (STlink VCP) showing the
 Vendor ID and Product ID of the attached device. The host must be able
 to properly decode CDC_ACM class request data sent by the device. After
@@ -88,7 +88,7 @@ way contain a system API call (HAL or BSP).</li>
 <li>Using dynamic memory allocation requires to apply some changes to
 the linker file. ThreadX needs to pass a pointer to the first free
 memory location in RAM to the tx_application_define() function, using
-the “first_unused_memory” argument. This require changes in the linker
+the “first_unused_memory” argument. This requires changes in the linker
 files to expose this memory location.
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
@@ -126,16 +126,16 @@ the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
-<li><p>This application runs on STM32U599xx devices</p></li>
+<li><p>This application runs on STM32U5xx devices</p></li>
 <li><p>This application has been tested with STMicroelectronics
-STM32U599J-DK MB1829-U599 NJQ-B01. and can be easily tailored to any
+STM32U5G9J-DK1 boards revision: MB1829-U5G9NJQ-B01 and can be easily tailored to any
 other supported device and development board.</p></li>
-<li><p>STM32U599J-DK Set-up</p>
+<li><p>STM32U5G9J-DK1 Set-up</p>
 <ul>
-<li>Plug the USB CDC_ACM device into the STM32U599J-DK board through
+<li>Plug the USB CDC_ACM device into the STM32U5G9J-DK1 board through
 ‘Type C to A-Female’ cable to the connector:
 <ul>
-<li>CN5 : to use USB High Speed OTG IP (HS)</li>
+<li>CN4 : to use USB High Speed OTG IP (HS)</li>
 </ul></li>
 <li>Connect ST-Link cable to the PC USB port to display data on the
 HyperTerminal.</li>

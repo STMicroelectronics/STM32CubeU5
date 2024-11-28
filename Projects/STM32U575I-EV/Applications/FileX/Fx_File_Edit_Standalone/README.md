@@ -19,10 +19,11 @@ As stated earlier, the present application runs in standalone mode without Threa
 
 - A file named STM32.TXT should be visible in the root directory of the SD card.
 - A blinking green LED light marks the success of the file operations.
+- An information regarding executing operation on the SRAM-Disk is printed to the serial port.
 
 #### <b>Error behaviors</b>
 
-- On failure, the red LED should start blinking.
+- On failure, the red LED should start blinking and green LED is off.
 - Error handler is called at the spot where the error occurred.
 
 #### <b>Assumptions if any</b>
@@ -46,7 +47,7 @@ FileX, File System, FAT32, SDMMC
 ### <b>Hardware and Software environment</b>
 
   - This application runs on  STM32U575xx devices.
-  - This application has been tested with STMicroelectronics STM32U575I-EV boards Revision: MB1550-U575AIQ-A03.
+  - This application has been tested with STMicroelectronics STM32U575I-EV boards revision: MB1550-U575AIQ-C02
     and can be easily tailored to any other supported device and development board.
 
 
@@ -54,7 +55,6 @@ FileX, File System, FAT32, SDMMC
 
 In order to make the program work, you must do the following :
 
- - Open your preferred toolchain
- - Rebuild all files and load your image into target memory
- - Run the application
- 
+  - Open your preferred toolchain
+  - Rebuild all files and load your image into target memory
+  - Run the application

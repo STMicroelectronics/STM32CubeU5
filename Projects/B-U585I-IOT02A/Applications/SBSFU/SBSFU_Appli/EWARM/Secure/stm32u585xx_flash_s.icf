@@ -15,8 +15,8 @@ define symbol __ICFEDIT_size_cstack__ = 0x400;
 define symbol __ICFEDIT_size_heap__ = 0x200;
 /**** End of ICF editor section. ###ICF###*/
 
-define symbol __region_ROM_NSC_start__   = S_CODE_START;
-define symbol __region_ROM_NSC_end__     = S_CODE_LIMIT;
+define symbol __region_ROM_NSC_start__   = CMSE_VENEER_REGION_START;
+define symbol __region_ROM_NSC_end__     = CMSE_VENEER_REGION_LIMIT;
 define symbol __region_SRAM1_start__     = S_DATA_START;
 define symbol __region_SRAM1_end__       = S_DATA_LIMIT;
 define symbol __region_SRAM2_start__     = 0;

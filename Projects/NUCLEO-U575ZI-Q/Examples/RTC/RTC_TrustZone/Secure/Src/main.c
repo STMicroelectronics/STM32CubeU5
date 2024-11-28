@@ -77,7 +77,7 @@ static void RTC_TestBackUpRegisters(void);
 int main(void)
 {
   /* SAU/IDAU, FPU and interrupts secure/non-secure allocation setup done */
-/* in SystemInit() based on partition_stm32u575xx.h file's definitions. */
+  /* in SystemInit() based on partition_stm32u575xx.h file's definitions. */
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */

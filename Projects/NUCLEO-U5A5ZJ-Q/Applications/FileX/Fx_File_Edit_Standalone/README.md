@@ -1,7 +1,7 @@
 
 ## <b>Fx_File_Edit_Standalone Application Description</b>
 
-This application provides an example of FileX stack usage on NUCLEO-U5A5ZI-Q board, running in standalone mode (without ThreadX). It demonstrates how to create a Fat File system on the internal SRAM memory using FileX API.
+This application provides an example of FileX stack usage on NUCLEO-U5A5ZJ-Q board, running in standalone mode (without ThreadX). It demonstrates how to create a Fat File system on the internal SRAM memory using FileX API.
 
 The application is designed to execute file operations on the SRAM-Disk device, it provides all required software code for properly managing it.
 
@@ -16,13 +16,13 @@ As stated earlier, the present application runs in standalone mode without Threa
 
 #### <b>Expected success behavior</b>
 
-Successful operation is marked by a toggling green led light.
+Successful operation is marked by a toggling green LED light.
 
 Also, information regarding executing operation on the SRAM-Disk is printed to the serial port.
 
 #### <b>Error behaviors</b>
 
-On failure, the red led starts toggling while the green led is switched off.
+On failure, the red LED starts toggling while the green LED is switched off.
 
 #### <b>Assumptions if any</b>
 None
@@ -31,7 +31,7 @@ None
 None
 
 ### <b>Notes</b>
- 1. The created SRAM-Disk, is placed in SRAM3(512 KB) starting from the(SRAM3_BASE=@0x20040000). 
+ 1. The created SRAM-Disk, is placed in SRAM3(512 KB) starting from the(SRAM3_BASE=@0x20040000).
  2. User can change the location of the SRAM-Disk by modifying FX_SRAM_DISK_BASE_ADDRESS.
 
 #### <b>FileX/LevelX usage hints</b>
@@ -45,7 +45,7 @@ FileX, File System, FAT32, SRAM
 ### <b>Hardware and Software environment</b>
 
   - This application runs on STM32U5A5xx devices.
-  - This application has been tested with STMicroelectronics NUCLEO-U5A5ZJ-Q boards Revision MB1549-U5A5JQ-C02.
+  - This application has been tested with STMicroelectronics NUCLEO-U5A5ZJ-Q boards revision MB1549-U5A5ZJQ-C04
     and can be easily tailored to any other supported device and development board.
 
   - This application uses USART1 to display logs, the hyperterminal configuration is as follows:
@@ -64,4 +64,3 @@ In order to make the program work, you must do the following :
  - Open your preferred toolchain
  - Rebuild all files and load your image into target memory
  - Run the application
- 

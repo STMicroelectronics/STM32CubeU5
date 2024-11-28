@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "app_azure_rtos.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,16 +44,16 @@
 /* Private variables ---------------------------------------------------------*/
 TX_THREAD tx_app_thread;
 /* USER CODE BEGIN PV */
-  TX_THREAD ThreadTwo;
-  APP_SYNC_TYPE SyncObject;
-  extern UART_HandleTypeDef huart1;
+TX_THREAD ThreadTwo;
+APP_SYNC_TYPE SyncObject;
+extern UART_HandleTypeDef huart1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-  VOID ThreadTwo_Entry(ULONG thread_input);
-  static VOID Led_Toggle(uint16_t led_pin, GPIO_TypeDef *led_port, UINT iter);
-  static VOID App_Delay(ULONG Delay);
+VOID ThreadTwo_Entry(ULONG thread_input);
+static VOID Led_Toggle(uint16_t led_pin, GPIO_TypeDef *led_port, UINT iter);
+static VOID App_Delay(ULONG Delay);
 /* USER CODE END PFP */
 
 /**
@@ -77,7 +77,7 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   {
     return TX_POOL_ERROR;
   }
-  /* Create Thread One.  */
+  /* Create Thread One. */
   if (tx_thread_create(&tx_app_thread, "Thread One", ThreadOne_Entry, 0, pointer,
                        TX_APP_STACK_SIZE, TX_APP_THREAD_PRIO, TX_APP_THREAD_PREEMPTION_THRESHOLD,
                        TX_APP_THREAD_TIME_SLICE, TX_APP_THREAD_AUTO_START) != TX_SUCCESS)
@@ -87,23 +87,23 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
 
   /* USER CODE BEGIN App_ThreadX_Init */
 
-  /* Allocate the stack for ThreadTwo.  */
+  /* Allocate the stack for ThreadTwo. */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer,  TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
   {
-    ret = TX_POOL_ERROR;
+    return TX_POOL_ERROR;
   }
 
-  /* Create ThreadTwo.  */
+  /* Create ThreadTwo. */
   if (tx_thread_create(&ThreadTwo, "Thread Two", ThreadTwo_Entry, 0, pointer,  TX_APP_STACK_SIZE, TX_APP_THREAD_PRIO,
-		  TX_APP_THREAD_PREEMPTION_THRESHOLD, TX_APP_THREAD_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
+                       TX_APP_THREAD_PREEMPTION_THRESHOLD, TX_APP_THREAD_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
   {
-    ret = TX_THREAD_ERROR;
+    return TX_THREAD_ERROR;
   }
 
-  /* Create the Synchronization API used by ThreadOne and ThreadTwo.*/
+  /* Create the Synchronization API used by Thread One and Thread Two. */
   if (APP_SYNC_CREATE(&SyncObject) != TX_SUCCESS)
   {
-    ret = TX_SYNC_ERROR;
+    return TX_SYNC_ERROR;
   }
 
   /* USER CODE END App_ThreadX_Init */
@@ -118,37 +118,36 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
 void ThreadOne_Entry(ULONG thread_input)
 {
   /* USER CODE BEGIN ThreadOne_Entry */
-	UNUSED(thread_input);
-	  ULONG iteration = 0;
+  UNUSED(thread_input);
+  ULONG iteration = 0;
 
-	  /* Infinite loop */
-	  while(1)
-	  {
-	    /* try to acquire the sync object without waiting */
-	    if (APP_SYNC_GET(&SyncObject, TX_NO_WAIT) == TX_SUCCESS)
-	    {
-	      printf("** ThreadOne : SyncObject acquired ** \n");
+  /* Infinite loop */
+  while(1)
+  {
+    /* Try to acquire the sync object without waiting */
+    if (APP_SYNC_GET(&SyncObject, TX_NO_WAIT) == TX_SUCCESS)
+    {
+      printf("** ThreadOne : SyncObject acquired ** \n");
 
-	      /*sync object acquired, toggle the LED_GREEN each 500ms for 5s */
-	      Led_Toggle(LED1_Pin, LED1_GPIO_Port, 10);
+      /* Sync object acquired, toggle the LED_GREEN each 500ms for 5s */
+      Led_Toggle(LED1_Pin, LED1_GPIO_Port, 10);
+      /* Release the sync object */
+      APP_SYNC_PUT(&SyncObject);
 
-	      /*release the sync object */
-	      APP_SYNC_PUT(&SyncObject);
+      printf("** ThreadOne : SyncObject released ** \n");
 
-	      printf("** ThreadOne : SyncObject released ** \n");
+      tx_thread_sleep(1);
+    }
+    else
+    {
 
-	      tx_thread_sleep(1);
-	    }
-	    else
-	    {
-
-	      if ((iteration % 2000000) == 0)
-	      {
-	        printf("** ThreadOne : waiting for SyncObject !! **\n");
-	      }
-	    }
-	    iteration++;
-	  }
+      if ((iteration % 2000000) == 0)
+      {
+        printf("** ThreadOne : waiting for SyncObject !! **\n");
+      }
+    }
+    iteration++;
+  }
   /* USER CODE END ThreadOne_Entry */
 }
 
@@ -159,19 +158,18 @@ void ThreadOne_Entry(ULONG thread_input)
   */
 void MX_ThreadX_Init(void)
 {
-  /* USER CODE BEGIN  Before_Kernel_Start */
+  /* USER CODE BEGIN Before_Kernel_Start */
 
-  /* USER CODE END  Before_Kernel_Start */
+  /* USER CODE END Before_Kernel_Start */
 
   tx_kernel_enter();
 
-  /* USER CODE BEGIN  Kernel_Start_Error */
+  /* USER CODE BEGIN Kernel_Start_Error */
 
-  /* USER CODE END  Kernel_Start_Error */
+  /* USER CODE END Kernel_Start_Error */
 }
 
 /* USER CODE BEGIN 1 */
-
 /**
   * @brief  Function implementing the ThreadTwo thread.
   * @param  thread_input: Not used
@@ -185,15 +183,15 @@ void ThreadTwo_Entry(ULONG thread_input)
   /* Infinite loop */
   while(1)
   {
-    /* try to acquire the sync object without waiting */
+    /* Try to acquire the sync object without waiting */
     if (APP_SYNC_GET(&SyncObject, TX_NO_WAIT) == TX_SUCCESS)
     {
       printf("** ThreadTwo : SyncObject acquired ** \n");
 
-      /*Sync object acquired toggle the LED_RED each 500ms for 5s*/
+      /* Sync object acquired toggle the LED_RED each 500ms for 5s */
       Led_Toggle(LED3_Pin, LED3_GPIO_Port, 10);
 
-      /*release the sync object*/
+      /* Release the sync object */
       APP_SYNC_PUT(&SyncObject);
 
       printf("** ThreadTwo : SyncObject released ** \n");

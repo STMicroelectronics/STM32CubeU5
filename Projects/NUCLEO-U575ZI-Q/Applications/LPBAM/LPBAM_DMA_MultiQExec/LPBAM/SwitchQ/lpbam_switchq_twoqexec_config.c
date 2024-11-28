@@ -341,6 +341,9 @@ static void MX_LPDMA1_Init(void)
 
   /* USER CODE END LPDMA1_Init 0 */
 
+  /* Peripheral clock enable */
+  __HAL_RCC_LPDMA1_CLK_ENABLE();
+
   /* USER CODE BEGIN LPDMA1_Init 1 */
 
   /* USER CODE END LPDMA1_Init 1 */

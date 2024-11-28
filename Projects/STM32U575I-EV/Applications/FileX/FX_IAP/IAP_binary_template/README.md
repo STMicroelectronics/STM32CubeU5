@@ -19,7 +19,7 @@ The name for the binary should also be specified there as defined by **FW_NAME_S
 IAP_binary_template should toggle both leds.
 
 ### <b>Error behaviour:</b>
-On failure, red led should toggle.
+On failure, the red LED starts toggling while the green LED is switched OFF.
 
 ### <b>Note</b>
 This application can be debugged using IAR by going into **Project** menu and click **Attach to Running Target**.

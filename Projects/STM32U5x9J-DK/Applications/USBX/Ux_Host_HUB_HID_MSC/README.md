@@ -26,11 +26,11 @@ The application creates 4 threads with different priorities :
 
 #### <b>Expected success behavior</b>
 
-When a hub device plugged to STM32U599J-DK board, a Message will be displayed on the uart HyperTerminal showing
+When a hub device plugged to STM32U5G9J-DK1 board, a Message will be displayed on the uart HyperTerminal showing
 the Vendor ID and Product ID of the attached device.
 After enumeration phase, a message will indicates that the device is ready for use and start connecting other devices through the hub.
 
-When a hid device plugged to STM32U599J-DK board, a Message will be displayed on the uart HyperTerminal showing
+When a hid device plugged to STM32U5G9J-DK1 board, a Message will be displayed on the uart HyperTerminal showing
 the Vendor ID and Product ID of the attached device.
 After enumeration phase, a message will indicates that the device is ready for use.
 The host must be able to properly decode HID reports sent by the corresponding device and display those information on the HyperTerminal.
@@ -47,15 +47,15 @@ in case of a keyboard:
 
  - Pressed key
 
-When an usb flash disk is plugged to STM32U599J-DK board, a Message will be displayed on the uart HyperTerminal showing  the Vendor ID and the Product ID of the attached device.
+When an usb flash disk is plugged to STM32U5G9J-DK1 board, a Message will be displayed on the uart HyperTerminal showing  the Vendor ID and the Product ID of the attached device.
 After enumeration phase , the host proceed to file operations :
 
   - Create a "Test.txt" file.
   - Write  a small text in the created file.
-  - Read the written text and check data integrity
-  - Close the File
+  - Read the written text and check data integrity.
+  - Close the File.
 
-During the file operations process a message will be displayed on the HyperTerminal to indicates the outcome of each operation  (Create/Write/Read/Close) .
+During the file operations process a message will be displayed on the HyperTerminal to indicates the outcome of each operation (Create/Write/Read/Close).
 If all operations were successful a message will be displayed on the HyperTerminal to indicates the end of operations.
 
 <b>Note</b>
@@ -76,7 +76,6 @@ None
 
 ### <b>Notes</b>
 
-
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
@@ -87,7 +86,7 @@ None
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
-   This require changes in the linker files to expose this memory location.
+   This requires changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
      place in RAM_region    { last section FREE_MEM };
@@ -119,21 +118,19 @@ None
 
 #### <b>USBX usage hints</b>
 
-
 ### <b>Keywords</b>
 
-Connectivity, USBXHost,HUB, FILEX, ThreadX, HID, Mouse, Keyboard, MSC, Mass Storage, BOT, SCSI, Removable drive, UART/USART
-
+Connectivity, USBX Host,HUB, FILEX, ThreadX, HID, Mouse, Keyboard, MSC, Mass Storage, BOT, SCSI, Removable drive, UART/USART
 
 ### <b>Hardware and Software environment</b>
 
-  - This application runs on STM32U599xx devices
-  - This application has been tested with STMicroelectronics STM32U599J-DK MB1829-U599 NJQ-B01.
+  - This application runs on STM32U5xx devices
+  - This application has been tested with STMicroelectronics STM32U5G9J-DK1 boards revision: MB1829-U5G9NJQ-B01
     and can be easily tailored to any other supported device and development board.
 
-- STM32U599J-DK Set-up
-    - Plug the USB Hub device into the STM32U599J-DK board through 'Type C  to A-Female' cable to the connector:
-      - CN5 : to use USB High Speed OTG IP (HS)
+- STM32U5G9J-DK1 Set-up
+    - Plug the USB Hub device into the STM32U5G9J-DK1 board through 'Type C  to A-Female' cable to the connector:
+      - CN4 : to use USB High Speed OTG IP (HS)
     - Connect ST-Link cable to the PC USB port to display data on the HyperTerminal.
 
     A virtual COM port will then appear in the HyperTerminal:

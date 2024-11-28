@@ -32,14 +32,14 @@ vertical-align: middle;
 .</p>
 <p>The application is designed to behave as an USB CDC_ACM Host, the
 code provides required requests to properly enumerate CDC devices ,
-CDC_ACM Class APIs to send or receive data and display data on uart
+CDC_ACM class APIs to send or receive data and display data on UART
 HyperTerminal.</p>
 <p>The main entry function tx_application_define() is then called by
 ThreadX during kernel start, at this stage, all USBx resources are
 initialized. The application creates 3 threads with different priorities
 :</p>
 <ul>
-<li>usbx_app_thread_entry (Priority : 10; Preemption threshold : 10)
+<li>app_ux_host_thread_entry (Priority : 10; Preemption threshold : 10)
 used to initialize USB OTG HAL HCD driver and start the Host.</li>
 <li>cdc_acm_send_app_thread_entry (Priority : 30; Preemption threshold :
 30) used to send data from host to device.</li>
@@ -49,21 +49,21 @@ threshold : 30) used to receive data from the device.</li>
 <h4 id="expected-success-behavior"><b> Expected success
 behavior</b></h4>
 <ul>
-<li><p>When a cdc device is plugged to STM32U5G9J-DK2 board, a Message
-will be displayed on the uart HyperTerminal (STlink VCP) showing the
+<li><p>When a CDC device is plugged to STM32U5G9J-DK2 board, a message
+will be displayed on the UART HyperTerminal (STlink VCP) showing the
 Vendor ID and Product ID of the attached device. The host must be able
 to properly decode CDC_ACM class request data sent by the device. After
 enumeration phase, a message will indicates that the device is ready for
 use.</p></li>
-<li><p>The Sent/received data are displayed on respective
+<li><p>The sent/received data are displayed on respective
 Hyperterminals.</p></li>
 </ul>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
-<p>Errors are detected such as (Unsupported device, Enumeration Fail)
+<p>Errors are detected (such as unsupported device, enumeration fail)
 and the corresponding message is displayed on the HyperTerminal.</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
-<p>User is familiar with USB 2.0 “Universal Serial BUS” Specification
-and CDC_ACM class Specification.</p>
+<p>User is familiar with USB 2.0 “Universal Serial BUS” specification
+and CDC_ACM class specification.</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
 <p>None</p>
 <h3 id="notes"><b>Notes</b></h3>
@@ -122,20 +122,20 @@ the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 </ul>
 <h4 id="usbx-usage-hints"><b>USBX usage hints</b></h4>
 <h3 id="keywords"><b>Keywords</b></h3>
-<p>Connectivity, USBX Host, ThreadX, USB, CDC_ACM, UART, USART,</p>
+<p>Connectivity, USBX Host, ThreadX, USB, CDC_ACM, UART, USART</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
-<li><p>This application runs on STM32U5G9xx devices</p></li>
+<li><p>This application runs on STM32U5Gxx devices</p></li>
 <li><p>This application has been tested with STMicroelectronics
-STM32U5G9J-DK2 MB1918-U5G9ZJQ_S-A01. and can be easily tailored to any
+STM32U5G9J-DK2 revision MB1918-U5G9ZJQ-B01 and can be easily tailored to any
 other supported device and development board.</p></li>
 <li><p>STM32U5G9J-DK2 Set-up</p>
 <ul>
 <li>Plug the USB CDC_ACM device into the STM32U5G9J-DK2 board through
 ‘Type C to A-Female’ cable to the connector:
 <ul>
-<li>CN5 : to use USB High Speed OTG IP (HS)</li>
+<li>CN2 : to use USB High Speed OTG IP (HS)</li>
 </ul></li>
 <li>Connect ST-Link cable to the PC USB port to display data on the
 HyperTerminal.</li>
@@ -164,7 +164,7 @@ plugging the device:</p>
 </ul></li>
 <li>To send data from the USB CDC_ACM Host use the user push-button and
 data will be received and displayed in the hyperterminal connected to
-the CDC ACM Device.</li>
+the CDC ACM device.</li>
 </ul></li>
 </ul>
 <p><b>Note</b></p>

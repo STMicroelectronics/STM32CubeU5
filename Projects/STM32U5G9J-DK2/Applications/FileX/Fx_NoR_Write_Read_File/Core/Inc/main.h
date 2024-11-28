@@ -51,7 +51,6 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-void MX_HSPI1_Init(void);
 
 /* USER CODE BEGIN EFP */
 

@@ -36,16 +36,17 @@ the LowPower feature. The main entry function tx_application_define() is
 then called by ThreadX during kernel start, at this stage, the
 application creates 1 thread and 1 semaphore:</p>
 <ul>
-<li><p>tx_app_thread (Prio : 10; Preemption Threshold : 10)</p></li>
-<li><p>tx_app_semaphore</p></li>
-<li><p>‘tx_app_thread’:</p>
+<li><p>MainThread (Prio : 10; Preemption Threshold : 10)</p></li>
+<li><p>Semaphore (Initial count = 0 to prevent its acquisition by the
+MainThread, on the application start)</p></li>
+<li><p>‘MainThread’:</p>
 <ul>
-<li>try to acquire the ‘tx_app_semaphore’ immediately.</li>
+<li>Main thread tries to acquire the ‘Semaphore’</li>
 <li>On Success toggle the ‘LED_GREEN’ each 500ms for 5 seconds.</li>
-<li>repeat the steps above</li>
+<li>The steps above are repeated indefinitely.</li>
 </ul></li>
 </ul>
-<p>The tx_app_semaphore is released each time user press the user
+<p>The 'Semaphore' is released each time user press the user
 button.</p>
 <p>The TX_LOW_POWER_USER_ENTER is defined as
 App_ThreadX_LowPower_Enter(), that is called to make the system enter in
@@ -64,7 +65,7 @@ Peripheral Clock. - Reconfigure the system clock. - Initialize LEDs.</p>
 <p>LED_GREEN toggles every 500ms for 5 seconds each time user press the
 user button.</p>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
-<p>LED_RED toggles every 1 second if any error occurs.</p>
+<p>LED_RED toggles every 1 second if any error occurs while the LED_GREEN is turned OFF.</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
 <p>None</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
@@ -83,9 +84,9 @@ debugging features are disabled.</p></li>
 HAL uses a separate time base through the TIM IPs.</li>
 <li>ThreadX is configured with 100 ticks/sec by default, this should be
 taken into account when using delays or timeouts at application. It is
-always possible to reconfigure it in the “tx_user.h”, the
-“TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in
-“tx_initialize_low_level.S” file too.</li>
+always possible to reconfigure it, by updating the
+“TX_TIMER_TICKS_PER_SECOND” define in the “tx_user.h” file. The update
+should be reflected in “tx_initialize_low_level.S” file too.</li>
 <li>ThreadX is disabling all interrupts during kernel start-up to avoid
 any unexpected behavior, therefore all system related calls (HAL, BSP)
 should be done either at the beginning of the application or inside the
@@ -98,7 +99,7 @@ way contain a system API call (HAL or BSP).</li>
 <li>Using dynamic memory allocation requires to apply some changes to
 the linker file. ThreadX needs to pass a pointer to the first free
 memory location in RAM to the tx_application_define() function, using
-the “first_unused_memory” argument. This require changes in the linker
+the “first_unused_memory” argument. This requires changes in the linker
 files to expose this memory location.
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
@@ -122,8 +123,8 @@ or modify the line below in &quot;tx_initialize_low_level.S to match the memory 
    } &gt;RAM_D1 AT&gt; RAM_D1</code></pre>
 <pre><code>The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
 In the example above the ThreadX heap size is set to 64KBytes.
-The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.  
-Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).  
+The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
+Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
 Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code></pre>
 <ul>
 <li>The “tx_initialize_low_level.S” should be also modified to enable
@@ -135,9 +136,9 @@ the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
-<li>This example runs on STM32U5G9ZJT6Q devices</li>
-<li>This example has been tested with STMicroelectronics STM32U5G9J-DK2
-boards Revision MB1918-U5G9ZJQ-A02 and can be easily tailored to any
+<li>This application runs on STM32U5Gxx devices</li>
+<li>This application has been tested with STMicroelectronics STM32U5G9J-DK2
+boards revision MB1918-U5G9ZJQ-B01 and can be easily tailored to any
 other supported device and development board. and can be easily tailored
 to any other supported device and development board.</li>
 </ul>

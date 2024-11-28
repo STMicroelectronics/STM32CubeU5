@@ -28,19 +28,19 @@ vertical-align: middle;
 <div class="row">
 <section id="ux_host_hid-application-description" class="col-sm-12 col-lg-8">
 <h2><b>Ux_Host_HID Application Description</b></h2>
-<p>This application provides an example of Azure RTOS USBX stack usage .
-It shows how to develop USB Host Human Interface “HID” able to enumerate
-and communicates with a mouse or a keyboard.</p>
+<p>This application provides an example of Azure RTOS USBX stack usage.
+It shows how to develop an USB Host Human Interface “HID” able to enumerate
+and communicate with a mouse or a keyboard.</p>
 <p>The application is designed to behave as an USB HID Host, the code
-provides required requests to properly enumerate HID devices , HID Class
+provides required requests to properly enumerate HID devices , HID class
 APIs to decode HID reports received from a mouse or a keyboard and
-display data on uart HyperTerminal.</p>
+display data on UART HyperTerminal.</p>
 <p>The main entry function tx_application_define() is then called by
 ThreadX during kernel start, at this stage, all USBx resources are
-initialized, the HID Class driver and HID clients are registered. The
+initialized, the HID class driver and HID clients are registered. The
 application creates 3 threads with different priorities :</p>
 <ul>
-<li>usbx_app_thread_entry (Priority : 10; Preemption threshold : 10)
+<li>app_ux_host_thread_entry (Priority : 10; Preemption threshold : 10)
 used to initialize USB DRD HAL HCD driver.</li>
 <li>hid_mouse_thread_entry (Priority : 30; Preemption threshold : 30)
 used to decode HID reports received from a mouse.</li>
@@ -48,22 +48,31 @@ used to decode HID reports received from a mouse.</li>
 used to decode HID reports received from a keyboard.</li>
 </ul>
 <h4 id="expected-success-behavior"><b>Expected success behavior</b></h4>
-<p>When a hid device is plugged to NUCLEO-U545RE-Q board, a Message will
-be displayed on the uart HyperTerminal showing the Vendor ID and Product
+<p>When an HID device is plugged to NUCLEO-U545RE-Q board, a message will
+be displayed on the UART HyperTerminal showing the Vendor ID and Product
 ID of the attached device. After enumeration phase, a message will
 indicates that the device is ready for use. The host must be able to
 properly decode HID reports sent by the corresponding device and display
 those information on the HyperTerminal.</p>
-<p>The received HID reports are used by host to identify: in case of a
-mouse - (x,y) mouse position - Wheel position - Pressed mouse
-buttons</p>
-<p>in case of a keyboard - Pressed key</p>
+<p>The received HID reports are used by host to identify:</p>
+<ul>
+<li>In case of a mouse
+<ul>
+<li>(x,y) mouse position</li>
+<li>Wheel position</li>
+<li>Pressed mouse</li>
+</ul></li>
+<li>In case of a keyboard
+<ul>
+<li>Pressed key</li>
+</ul></li>
+</ul>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
-<p>Errors are detected such as (Unsupported device, Enumeration Fail)
+<p>Errors are detected (such as unsupported device, enumeration fail)
 and the corresponding message is displayed on the HyperTerminal.</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
-<p>User is familiar with USB 2.0 “Universal Serial BUS” Specification
-and HID class Specification.</p>
+<p>User is familiar with USB 2.0 “Universal Serial BUS” specification
+and HID class specification.</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
 <p>None</p>
 <h3 id="notes"><b>Notes</b></h3>
@@ -73,9 +82,9 @@ and HID class Specification.</p>
 HAL uses a separate time base through the TIM IPs.</li>
 <li>ThreadX is configured with 100 ticks/sec by default, this should be
 taken into account when using delays or timeouts at application. It is
-always possible to reconfigure it in the “tx_user.h”, the
-“TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in
-“tx_initialize_low_level.S” file too.</li>
+always possible to reconfigure it, by updating the
+“TX_TIMER_TICKS_PER_SECOND” define in the “tx_user.h” file. The update
+should be reflected in “tx_initialize_low_level.S” file too.</li>
 <li>ThreadX is disabling all interrupts during kernel start-up to avoid
 any unexpected behavior, therefore all system related calls (HAL, BSP)
 should be done either at the beginning of the application or inside the
@@ -88,7 +97,7 @@ way contain a system API call (HAL or BSP).</li>
 <li>Using dynamic memory allocation requires to apply some changes to
 the linker file. ThreadX needs to pass a pointer to the first free
 memory location in RAM to the tx_application_define() function, using
-the “first_unused_memory” argument. This require changes in the linker
+the “first_unused_memory” argument. This requires changes in the linker
 files to expose this memory location.
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
@@ -120,15 +129,16 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 </ul></li>
 </ul>
+<h4 id="usbx-usage-hints"><b>USBX usage hints</b></h4>
 <h3 id="keywords"><b>Keywords</b></h3>
-<p>Connectivity, USBX Host, USBPD, ThreadX, USB, HID, Mouse, Keyboard,
-UART, USART,</p>
+<p>Connectivity, USBX Host, ThreadX, USB, HID, Mouse, Keyboard, UART,
+USART,</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
 <li><p>This application runs on STM32U545xx devices</p></li>
 <li><p>This application has been tested with STMicroelectronics
-NUCLEO-U545RE-Q boards Revision: MB1841-A02 and can be easily tailored
+NUCLEO-U545RE-Q boards revision: MB1841-A02 and can be easily tailored
 to any other supported device and development board.</p></li>
 <li><p>NUCLEO-U545RE-Q Set-up :</p>
 <ul>

@@ -49,6 +49,8 @@ TX_THREAD             cdc_acm_recieve_thread;
 TX_EVENT_FLAGS_GROUP  ux_app_EventFlag;
 UX_HOST_CLASS_CDC_ACM *cdc_acm;
 
+extern uint16_t                        RxSzeIdx;
+extern UX_HOST_CLASS_CDC_ACM_RECEPTION cdc_acm_reception;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -249,6 +251,10 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *cur
       {
         /* Clear cdc instance */
         cdc_acm = UX_NULL;
+
+        /* Reinitialize reception block size index */
+        RxSzeIdx = 0;
+
         USBH_UsrLog("\nUSB CDC ACM Device Removal");
 
         /* Set NEW_RECEIVED_DATA flag */

@@ -48,7 +48,7 @@
 FX_MEDIA        sdio_disk;
 FX_FILE         fx_file;
 
-uint32_t media_memory[512 / sizeof(uint32_t)];
+uint32_t media_memory[FX_STM32_SD_DEFAULT_SECTOR_SIZE / sizeof(uint32_t)];
 
 /* USER CODE END PV */
 
@@ -59,7 +59,7 @@ void Error_Handler(void);
 /* USER CODE END PFP */
 /**
   * @brief  Application FileX Initialization.
-  * @param memory_ptr: memory pointer
+  * @param  None
   * @retval int
   */
 UINT MX_FileX_Init(void)
@@ -67,10 +67,12 @@ UINT MX_FileX_Init(void)
   UINT ret = FX_SUCCESS;
   /* USER CODE BEGIN MX_FileX_Init */
   UINT status;
+  /* USER CODE END MX_FileX_Init */
 
   /* Initialize FileX.  */
   fx_system_initialize();
 
+  /* USER CODE BEGIN MX_FileX_Init 1*/
   /* Start application */
   /* Open the sdio_disk driver. */
   status =  fx_media_open(&sdio_disk, "STM32_SDIO_DISK", fx_stm32_sd_driver, 0, (VOID *) media_memory, sizeof(media_memory));
@@ -80,14 +82,6 @@ UINT MX_FileX_Init(void)
   {
     Error_Handler();
   }
-
-  /* USER CODE END MX_FileX_Init */
-
-/* Initialize FileX.  */
-  fx_system_initialize();
-
-  /* USER CODE BEGIN MX_FileX_Init 1*/
-
   /* USER CODE END MX_FileX_Init 1*/
 
   return ret;
@@ -100,6 +94,9 @@ VOID MX_FileX_Process(void)
   ULONG bytes_read;
   CHAR read_buffer[32];
   CHAR data[] = "This is FileX working on STM32";
+
+  /* Start application */
+  printf("FileX SD Standalone Application Start.\n");
 
   /* Create a file called STM32.TXT in the root directory.  */
   status =  fx_file_create(&sdio_disk, "STM32.TXT");
@@ -135,6 +132,9 @@ VOID MX_FileX_Process(void)
     /* Error performing file seek, call error handler.  */
     Error_Handler();
   }
+
+  /* Write data into the file */
+  printf("Writing data into the file. \n");
 
   /* Write a string to the test file.  */
   status =  fx_file_write(&fx_file, data, sizeof(data));
@@ -214,6 +214,9 @@ VOID MX_FileX_Process(void)
     /* Error closing the media, call error handler.  */
     Error_Handler();
   }
+
+  /* Data successfully written */
+  printf("Data successfully written.\n");
 
   /* Infinite loop */
   while (1)

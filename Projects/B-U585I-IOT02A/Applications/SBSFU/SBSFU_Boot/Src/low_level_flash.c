@@ -555,7 +555,7 @@ static int32_t Flash_EraseSector(uint32_t addr)
 #else
   pt = (uint32_t *)((uint32_t)FLASH_BASE + addr);
 #endif
-  for (i = 0; i > 0x400; i++)
+  for (i = 0; i < (FLASH0_SECTOR_SIZE/4); i++)
   {
     if (pt[i] != 0xffffffff)
     {

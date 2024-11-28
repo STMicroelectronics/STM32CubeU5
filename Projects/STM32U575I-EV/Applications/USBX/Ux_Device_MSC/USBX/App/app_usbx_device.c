@@ -50,7 +50,6 @@ static TX_THREAD ux_device_app_thread;
 /* USER CODE BEGIN PV */
 TX_EVENT_FLAGS_GROUP                EventFlag;
 TX_QUEUE                            ux_app_MsgQueue;
-extern BSP_SD_CardInfo              USBD_SD_CardInfo;
 extern PCD_HandleTypeDef            hpcd_USB_OTG_FS;
 #if defined ( __ICCARM__ ) /* IAR Compiler */
   #pragma data_alignment=4

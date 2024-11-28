@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   USBX host applicative file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
@@ -214,7 +214,7 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *cur
 
   /* USER CODE BEGIN ux_host_event_callback0 */
 
-  /* Get current Hid Client */
+  /* Get current HID Client */
   UX_HOST_CLASS_HID_CLIENT *client  = (UX_HOST_CLASS_HID_CLIENT *)current_instance;
 
   /* USER CODE END ux_host_event_callback0 */
@@ -225,12 +225,12 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *cur
 
       /* USER CODE BEGIN UX_DEVICE_INSERTION */
 
-       /* Get current Hid Class */
+       /* Get current HID class */
       if (current_class -> ux_host_class_entry_function == ux_host_class_hid_entry)
       {
         if (hid_instance == UX_NULL)
         {
-          /* Get current Hid Instance */
+          /* Get current HID instance */
           hid_instance = (UX_HOST_CLASS_HID *)current_instance;
         }
       }
@@ -243,7 +243,7 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *cur
 
       /* USER CODE BEGIN UX_DEVICE_REMOVAL */
 
-      /* Free HID Instance */
+      /* Free HID instance */
       if ((VOID*)hid_instance == current_instance)
       {
         hid_instance = UX_NULL;
@@ -262,7 +262,7 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *cur
       /* Check the HID_client if this is a HID keyboard device */
       if (client -> ux_host_class_hid_client_handler == ux_host_class_hid_keyboard_entry)
       {
-        /* Get current Hid Client */
+        /* Get current HID client */
         if (keyboard == UX_NULL)
         {
           keyboard = client -> ux_host_class_hid_client_local_instance;
@@ -278,7 +278,7 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *cur
       /* Check the HID_client if this is a HID mouse device */
       if (client -> ux_host_class_hid_client_handler == ux_host_class_hid_mouse_entry)
       {
-        /* Get current Hid Client */
+        /* Get current HID client */
         if (mouse == UX_NULL)
         {
           mouse = client -> ux_host_class_hid_client_local_instance;
@@ -299,10 +299,10 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *cur
 
       /* USER CODE BEGIN UX_HID_CLIENT_REMOVAL */
 
-      /* Clear hid client local instance */
+      /* Clear HID client local instance */
       if ((VOID*)keyboard == client -> ux_host_class_hid_client_local_instance)
       {
-        /* Clear hid keyboard instance */
+        /* Clear HID keyboard instance */
         keyboard = UX_NULL;
 
         USBH_UsrLog("\nHID Client Keyboard Unplugged");
@@ -310,7 +310,7 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *cur
 
       if ((VOID*)mouse == client -> ux_host_class_hid_client_local_instance)
       {
-        /* Clear hid mouse instance */
+        /* Clear HID mouse instance */
         mouse = UX_NULL;
 
         USBH_UsrLog("\nHID Client Mouse Unplugged");

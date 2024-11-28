@@ -8,6 +8,13 @@
 
 #include "mcuboot_config/mcuboot_config.h"
 #include "bootutil/bootutil_log.h"
+
+#if !defined(MBEDTLS_CONFIG_FILE)
+#include "mbedtls/mbedtls_config.h"
+#else
+#include MBEDTLS_CONFIG_FILE
+#endif
+
 #if defined(MCUBOOT_ENC_IMAGES)
 #include <stddef.h>
 #include <inttypes.h>
@@ -451,6 +458,24 @@ _Static_assert(EC_CIPHERKEY_INDEX + 16 == EXPECTED_ENC_LEN,
 _Static_assert(EC_CIPHERKEY_INDEX + 16 == EXPECTED_ENC_LEN,
         "Please fix ECIES-X25519 component indexes");
 #endif
+
+#if ( (defined(MCUBOOT_ENCRYPT_RSA) && defined(MCUBOOT_USE_MBED_TLS) && !defined(MCUBOOT_USE_PSA_CRYPTO)) || \
+      (defined(MCUBOOT_ENCRYPT_EC256) && defined(MCUBOOT_USE_MBED_TLS)) )
+#if MBEDTLS_VERSION_NUMBER >= 0x03000000
+static int fake_rng(void *p_rng, unsigned char *output, size_t len)
+{
+    size_t i;
+
+    (void)p_rng;
+    for (i = 0; i < len; i++) {
+        output[i] = (char)i;
+    }
+
+    return 0;
+}
+#endif /* MBEDTLS_VERSION_NUMBER */
+#endif /* (MCUBOOT_ENCRYPT_RSA && MCUBOOT_USE_MBED_TLS && !MCUBOOT_USE_PSA_CRYPTO) ||
+          (MCUBOOT_ENCRYPT_EC256 && MCUBOOT_USE_MBED_TLS) */
 
 /*
  * Decrypt an encryption key TLV.

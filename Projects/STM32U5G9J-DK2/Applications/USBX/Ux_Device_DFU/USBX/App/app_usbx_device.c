@@ -358,17 +358,20 @@ VOID USBX_APP_Device_Init(VOID)
   MX_USB_OTG_HS_PCD_Init();
 
   /* USER CODE BEGIN USB_Device_Init_PreTreatment_1 */
+  /* Set Rx FIFO */
   HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_HS, 0x200);
+  /* Set Tx FIFO */
   HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_HS, 0, USBD_MAX_EP0_SIZE / 4);
   /* USER CODE END USB_Device_Init_PreTreatment_1 */
 
   /* initialize the device controller driver*/
   _ux_dcd_stm32_initialize((ULONG)USB_OTG_HS, (ULONG)&hpcd_USB_OTG_HS);
 
-  /* Start device USB */
+  /* Start the USB device */
   HAL_PCD_Start(&hpcd_USB_OTG_HS);
 
   /* USER CODE BEGIN USB_Device_Init_PostTreatment */
+
   /* USER CODE END USB_Device_Init_PostTreatment */
 }
 

@@ -16,6 +16,10 @@
   ******************************************************************************
   @endverbatim
 
+### 12-June-2024 ###
+========================
+    + Enable compatibility with Mbedtls >= v3.0.0
+
 ### 18-March-2024 ###
 ========================
     + Improvement of primary only mode

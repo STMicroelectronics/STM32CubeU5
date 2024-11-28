@@ -67,7 +67,7 @@ client disconnected from server
 
 #### <b>Error behaviors</b>
 
-+ The red LED is toggling to indicate any error that has occurred.
++ The red LED is toggling to indicate any error that has occurred while the green LED is turned OFF.
 
 #### <b>Assumptions if any</b>
 None
@@ -87,7 +87,7 @@ None
       - convert certificate downloaded by executing the following cmd from the file downloaded path : 
  
                       xxd.exe -i mosquitto.org.der > mosquitto.cert.h
-        
+
       - add the converted file under the application : NetXDuo/Nx_MQTT_Client/NetXDuo/App
 
       - configure MOSQUITTO_CERT_FILE with your certificate name.
@@ -106,20 +106,20 @@ None
  - Using dynamic memory allocation requires to apply some changes to the linker file.
 
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function, using the "first_unused_memory" argument.
-   This require changes in the linker files to expose this memory location.
+   This requires changes in the linker files to expose this memory location.
 
     + For EWARM add the following section into the .icf file:
      ```
-	 place in RAM_region    { last section FREE_MEM };
-	 ```
+     place in RAM_region    { last section FREE_MEM };
+     ```
     + For MDK-ARM:
-	```
+    ```
     either define the RW_IRAM1 region in the ".sct" file
     or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
-	```
+    ```
     + For STM32CubeIDE add the following section into the .ld file:
-	``` 
+    ``` 
     ._threadx_heap :
       {
          . = ALIGN(8);
@@ -127,20 +127,19 @@ None
          . = . + 64K;
          . = ALIGN(8);
        } >RAM_D1 AT> RAM_D1
-	``` 
-	
+    ```
+
        The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
        In the example above the ThreadX heap size is set to 64KBytes.
-       The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.	 
-       Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).	 
+       The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
+       Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
        Read more in STM32CubeIDE User Guide, chapter: "Linker script".
-	  
+
     + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
-         
+
 ### <b>Keywords</b>
 
 RTOS, Network, ThreadX, NetXDuo, WIFI, MQTT, DNS, TLS, MXCHIP, UART
-
 
 ### <b>Hardware and Software environment</b>
 
@@ -150,7 +149,7 @@ RTOS, Network, ThreadX, NetXDuo, WIFI, MQTT, DNS, TLS, MXCHIP, UART
 
  - This application uses an updated version of the EMW3080B MXCHIP Wi-Fi module driver V2.3.4.
 
- - The B-U585I-IOT02A Discovery board Revision C is delivered with the EMW3080B MXCHIP Wi-Fi module firmware V2.1.11;
+ - The B-U585I-IOT02A Discovery board Revision D is delivered with the EMW3080B MXCHIP Wi-Fi module firmware V2.1.11;
    to upgrade your board with the required version V2.3.4, please visit [X-WIFI-EMW3080B](https://www.st.com/en/development-tools/x-wifi-emw3080b.html),
    using the `EMW3080update_B-U585I-IOT02A-RevC_V2.3.4_SPI.bin` file under the V2.3.4/SPI folder.
 
@@ -161,7 +160,7 @@ RTOS, Network, ThreadX, NetXDuo, WIFI, MQTT, DNS, TLS, MXCHIP, UART
    thanks to refer to the release notes of each SW package to know the recommended module firmware's version which can be retrieved from this page
    [X-WIFI-EMW3080B](https://www.st.com/en/development-tools/x-wifi-emw3080b.html).
 
- - This application has been tested with B-U585I-IOT02A (MB1551-U585AI) boards Revision: RevC and can be easily tailored to any other supported device and development board.
+ - This application has been tested with B-U585I-IOT02A (MB1551-U585AI) boards Revision: Rev D01 and can be easily tailored to any other supported device and development board.
 
  - This application uses USART1 to display logs, the hyperterminal configuration is as follows:
       - BaudRate = 115200 baud

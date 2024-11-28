@@ -7,6 +7,22 @@
 
   ******************************************************************************
   */
+### V1.3.3 / 10-September-2024 ###
+=================================
+Main changes
+-------------
+- avoid NULL pointer access to dcd_stm32 struct during deInit
+
+### V1.3.2 / 24-March-2023 ###
+=================================
+Main changes
+-------------
+- Add check on HAL transfer abort APIs in _ux_dcd_stm32_transfer_abort function.
+
+Dependencies:
+-------------
+- Azure RTOS USBX V6.1.10 or higher
+- STM32Cube PCD HAL drivers
 
 ### V1.3.1 / 23-December-2022 ###
 =================================

@@ -112,7 +112,7 @@ uint32_t PORT0_PDO_ListSNK[USBPD_MAX_NB_PDO] =
     USBPD_PDO_TYPE_FIXED                 | /* Fixed supply PDO            */
 
     USBPD_PDO_SNK_FIXED_SET_VOLTAGE(5000U)         | /* Voltage in mV               */
-    USBPD_PDO_SNK_FIXED_SET_OP_CURRENT(0U)     | /* Operating current in  mA            */
+    USBPD_PDO_SNK_FIXED_SET_OP_CURRENT(300U)     | /* Operating current in  mA            */
 
     /* Common definitions applicable to all PDOs, defined only in PDO 1 */
     USBPD_PDO_SNK_FIXED_FRS_NOT_SUPPORTED          | /* Fast Role Swap				 */

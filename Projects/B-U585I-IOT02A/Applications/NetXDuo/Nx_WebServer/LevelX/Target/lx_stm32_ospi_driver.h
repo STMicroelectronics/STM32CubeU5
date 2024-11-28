@@ -39,6 +39,11 @@ extern TX_SEMAPHORE ospi_tx_semaphore;
 /* the OctoSPI instance, default value set to 0 */
 #define LX_STM32_OSPI_INSTANCE                           1
 
+/* define an offset from which to start accessing the NOR Flash memory.
+ * It must be a multiple of LX_STM32_OSPI_SECTOR_SIZE, default value set to 0.
+ */
+#define LX_STM32_OSPI_BASE_ADDRESS                       0
+
 #define LX_STM32_OSPI_DEFAULT_TIMEOUT                    10 * TX_TIMER_TICKS_PER_SECOND
 
 #define LX_STM32_DEFAULT_SECTOR_SIZE                     LX_STM32_OSPI_SECTOR_SIZE
@@ -47,7 +52,7 @@ extern TX_SEMAPHORE ospi_tx_semaphore;
 /* when set to 1 LevelX is initializing the OctoSPI memory,
  * otherwise it is the up to the application to perform it.
  */
-#define LX_STM32_OSPI_INIT                               1
+#define LX_STM32_OSPI_INIT                               0
 
 /* allow the driver to fully erase the OctoSPI chip. This should be used carefully.
  * the call is blocking and takes a while. by default it is set to 0.

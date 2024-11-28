@@ -6,7 +6,7 @@
   * @author  MCD Application Team
   * @brief   FileX applicative header file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
@@ -29,10 +29,9 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "fx_api.h"
 #include "fx_stm32_levelx_nor_driver.h"
-#include "lx_stm32_nor_custom_driver.h"
+#include "lx_stm32_xspi_driver.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
 #include "main.h"
 /* USER CODE END Includes */
 

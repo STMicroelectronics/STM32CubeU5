@@ -16,14 +16,14 @@ As stated earlier, the present application runs in standalone mode without Threa
 
 #### <b>Expected success behavior</b>
 
-Successful operation is marked by a toggling green led light.
+Successful operation is marked by a toggling green LED light.
 
 Also, information regarding executing operation on the SRAM-Disk is printed to the serial port.
 
 
 #### <b>Error behaviors</b>
 
-On failure,an error message is printed to the serial port while the green LED is switched OFF.
+On failure, an error message is printed to the serial port while the green LED is switched OFF.
 
 #### <b>Assumptions if any</b>
 None
@@ -45,8 +45,8 @@ FileX, File System, FAT32, SRAM
 
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on STM32U545xx devices
-  - This example has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision: MB1841-A02.
+  - This application runs on STM32U545xx devices
+  - This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards revision: MB1841-A02
     and can be easily tailored to any other supported device and development board.
 
   - This application uses USART1 to display logs, the hyperterminal configuration is as follows:

@@ -16,7 +16,7 @@ The application creates 3 threads with different priorities :
 
 #### <b> Expected success behavior</b>
 
-- When a cdc device is plugged to STM32U599J-DK board, a Message will be displayed on the uart HyperTerminal (STlink VCP) showing
+- When a cdc device is plugged to STM32U5G9J-DK1 board, a Message will be displayed on the uart HyperTerminal (STlink VCP) showing
 the Vendor ID and Product ID of the attached device. The host must be able to properly decode CDC_ACM class request data sent by the device.
 After enumeration phase, a message will indicates that the device is ready for use.
 
@@ -47,7 +47,7 @@ None
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
-   This require changes in the linker files to expose this memory location.
+   This requires changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
      place in RAM_region    { last section FREE_MEM };
@@ -87,13 +87,13 @@ Connectivity, USBX Host, ThreadX, USB, CDC_ACM, UART, USART,
 
 ### <b>Hardware and Software environment</b>
 
-  - This application runs on STM32U599xx devices
-  - This application has been tested with STMicroelectronics STM32U599J-DK MB1829-U599 NJQ-B01.
+  - This application runs on STM32U5xx devices
+  - This application has been tested with STMicroelectronics STM32U5G9J-DK1 boards revision: MB1829-U5G9NJQ-B01
     and can be easily tailored to any other supported device and development board.
 
-- STM32U599J-DK Set-up
-    - Plug the USB CDC_ACM device into the STM32U599J-DK board through 'Type C  to A-Female' cable to the connector:
-      - CN5 : to use USB High Speed OTG IP (HS)
+- STM32U5G9J-DK1 Set-up
+    - Plug the USB CDC_ACM device into the STM32U5G9J-DK1 board through 'Type C  to A-Female' cable to the connector:
+      - CN4 : to use USB High Speed OTG IP (HS)
     - Connect ST-Link cable to the PC USB port to display data on the HyperTerminal.
 
     A virtual COM port will then appear in the HyperTerminal:

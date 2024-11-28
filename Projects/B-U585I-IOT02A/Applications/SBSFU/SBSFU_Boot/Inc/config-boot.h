@@ -105,11 +105,6 @@
 #define MBEDTLS_MPI_MAX_SIZE              384
 
 
-#define MBEDTLS_SSL_MAX_CONTENT_LEN 1024
-
-/* Save ROM and a few bytes of RAM by specifying our own ciphersuite list */
-#define MBEDTLS_SSL_CIPHERSUITES MBEDTLS_TLS_ECJPAKE_WITH_AES_128_CCM_8
-
 /* Target and application specific configurations */
 #if defined(BL2_HW_ACCEL_ENABLE)
 

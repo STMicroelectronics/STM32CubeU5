@@ -46,6 +46,9 @@
 extern "C" {
 #endif
 #if defined(MCUBOOT_USE_MBED_TLS)
+#if MBEDTLS_VERSION_NUMBER >= 0x03000000
+static int fake_rng(void *p_rng, unsigned char *output, size_t len);
+#endif
 typedef mbedtls_ecdh_context bootutil_ecdh_p256_context;
 static inline void bootutil_ecdh_p256_init(bootutil_ecdh_p256_context *ctx)
 {
@@ -83,7 +86,11 @@ static inline int bootutil_ecdh_p256_shared_secret(bootutil_ecdh_p256_context *c
     rc = mbedtls_ecdh_calc_secret( ctx,
                                    &olen, z,
                                    NUM_ECC_BYTES,
+#if MBEDTLS_VERSION_NUMBER >= 0x03000000
+                                   fake_rng,
+#else
                                    NULL,
+#endif
                                    NULL);
     if (rc) {
 	return -3;

@@ -3,9 +3,9 @@
   ******************************************************************************
   * @file    ux_host_mouse.c
   * @author  MCD Application Team
-  * @brief   USBX Host Mouse applicative source file
+  * @brief   USBX Host HID Mouse applicative source file
   ******************************************************************************
-   * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
@@ -76,14 +76,13 @@ VOID hid_mouse_thread_entry(ULONG thread_input)
 
   while (1)
   {
-    tx_thread_sleep(MS_TO_TICK(10));
-
-    /* Start if the hid client is a mouse and connected */
+    /* Start if the HID client is a mouse and connected */
     if ((mouse != NULL) &&
         (mouse -> ux_host_class_hid_mouse_state == (ULONG) UX_HOST_CLASS_INSTANCE_LIVE))
     {
+
       /* Get Mouse position */
-      if (ux_host_class_hid_mouse_position_get(mouse, &actual_Pos_x, &actual_Pos_y) == UX_SUCCESS)
+      if ((mouse != NULL) &&(ux_host_class_hid_mouse_position_get(mouse, &actual_Pos_x, &actual_Pos_y) == UX_SUCCESS))
       {
         if (((actual_Pos_x != old_Pos_x) || (actual_Pos_y != old_Pos_y)) &&
             (actual_Pos_x != 0) && (actual_Pos_y != 0))
@@ -101,7 +100,7 @@ VOID hid_mouse_thread_entry(ULONG thread_input)
       }
 
       /* Get Mouse buttons value */
-      if (ux_host_class_hid_mouse_buttons_get(mouse, &actual_mouse_buttons) == UX_SUCCESS)
+      if ((mouse != NULL) && (ux_host_class_hid_mouse_buttons_get(mouse, &actual_mouse_buttons) == UX_SUCCESS) )
       {
         if (actual_mouse_buttons != old_mouse_buttons)
         {
@@ -130,8 +129,8 @@ VOID hid_mouse_thread_entry(ULONG thread_input)
         tx_thread_sleep(MS_TO_TICK(10));
       }
 
-      /* Get hid wheel mouse position */
-      if (ux_host_class_hid_mouse_wheel_get(mouse, &actual_mouse_wheel) == UX_SUCCESS)
+      /* Get HID wheel mouse position */
+      if ((mouse != NULL) && (ux_host_class_hid_mouse_wheel_get(mouse, &actual_mouse_wheel) == UX_SUCCESS) )
       {
         if ((actual_mouse_wheel != old_mouse_wheel) && (actual_mouse_wheel != 0))
         {

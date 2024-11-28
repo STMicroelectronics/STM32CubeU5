@@ -41,15 +41,15 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* Using static memory allocation via threadX Byte memory pools */
 
-#define USE_STATIC_ALLOCATION                1
+#define USE_STATIC_ALLOCATION                        1
 
-#define TX_APP_MEM_POOL_SIZE                     1024
+#define TX_APP_MEM_POOL_SIZE                         1024
 
-#define FX_APP_MEM_POOL_SIZE                     1024
+#define FX_APP_MEM_POOL_SIZE                         1024
 
-#define UX_HOST_APP_MEM_POOL_SIZE                26624
+#define UX_HOST_APP_MEM_POOL_SIZE                    26624
 
-#define USBPD_DEVICE_APP_MEM_POOL_SIZE              5000
+#define USBPD_DEVICE_APP_MEM_POOL_SIZE               5000
 
 #define GUI_INTERFACE_APP_MEM_POOL_SIZE              5000
 

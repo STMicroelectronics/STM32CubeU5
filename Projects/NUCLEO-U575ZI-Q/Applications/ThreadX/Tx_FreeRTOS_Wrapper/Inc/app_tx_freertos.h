@@ -58,8 +58,8 @@ UINT App_TX_FreeRTOS_Init(void);
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN Private defines */
-#define APP_STACK_SIZE                   512
-#define LED_THREAD_PRIO                  5
+#define APP_STACK_SIZE  512
+#define LED_THREAD_PRIO 5
 /* USER CODE END Private defines */
 
 /* USER CODE BEGIN 1 */

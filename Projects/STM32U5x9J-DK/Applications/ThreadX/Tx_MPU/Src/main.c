@@ -337,7 +337,7 @@ PUTCHAR_PROTOTYPE
 
 /* USER CODE END 4 */
 
- /**
+/**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM6 interrupt took place, inside
   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
@@ -365,7 +365,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  printf(" Error \n");
   HAL_GPIO_WritePin(GPIOE, LED_GREEN_Pin, GPIO_PIN_RESET);
   while(1)
   {
@@ -392,7 +391,7 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* Infinite loop */
   while (1)
   {
-  }  
+  }
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

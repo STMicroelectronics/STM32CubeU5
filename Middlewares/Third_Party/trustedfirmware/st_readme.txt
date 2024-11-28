@@ -17,7 +17,15 @@
   ******************************************************************************
   @endverbatim
 
-### 11-Mars-2024 ###
+### 18-October-2024 ###
+========================
+    + Remove test FWU 012
+    
+### 12-September-2024 ###
+========================
+    + Add TFM_PARTITION_QCBOR flag to disable QCBOR tests
+
+### 11-March-2024 ###
 ========================
     Alignment with mbed-tls-v2.28.8_20240419 :
       + Remove deprecated definitions in interface/include/psa/crypto_compat.h

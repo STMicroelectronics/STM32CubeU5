@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   app_azure_rtos application implementation file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.
@@ -70,7 +70,7 @@ static TX_BYTE_POOL NETXDUO_MEM_POOL_VAR_NAME;
 
 /* USER CODE END PFP */
 
-  /**
+/**
   * @brief  Define the initial system.
   * @param  first_unused_memory : Pointer to the first unused memory
   * @retval None
@@ -139,6 +139,7 @@ VOID tx_application_define(VOID *first_unused_memory)
     /* USER CODE END MX_NetXDuo_Init_Success */
 
   }
+
 #else
 /*
  * Using dynamic memory allocation requires to apply some changes to the linker file.

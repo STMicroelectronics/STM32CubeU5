@@ -3,7 +3,7 @@
   ******************************************************************************
   * @file    ux_device_cdc_acm.c
   * @author  MCD Application Team
-  * @brief   USBX Device applicative file
+  * @brief   USBX Device CDC ACM applicative source file
   ******************************************************************************
   * @attention
   *
@@ -60,11 +60,17 @@
 
 UX_SLAVE_CLASS_CDC_ACM  *cdc_acm;
 
-/* Data to send over USB CDC are stored in this buffer   */
+/* Data received over UART are stored in this buffer */
 uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
+/* Data received over USB are stored in this buffer */
 uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
 
+/* Increment this pointer or roll it back to
+start address when data are received over USART */
 uint32_t UserTxBufPtrIn;
+
+/* Increment this pointer or roll it back to
+start address when data are sent over USB */
 uint32_t UserTxBufPtrOut;
 
 UART_HandleTypeDef *uart_handler;

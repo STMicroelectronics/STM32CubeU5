@@ -1,9 +1,10 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
+  * @file    ThreadX/Tx_MPU/Inc/main.h
+  * @author  MCD Application Team
+  * @brief   This file contains all the functions prototypes for the main.c
+  *          file.
   ******************************************************************************
   * @attention
   *
@@ -61,6 +62,10 @@ void Error_Handler(void);
 #define LED_RED_Port GPIOG
 #define LED_GREEN GPIO_PIN_7
 #define LED_GREEN_Port GPIOC
+#define USART1_TX_Pin GPIO_PIN_9
+#define USART1_TX_GPIO_Port GPIOA
+#define USART1_RX_Pin GPIO_PIN_10
+#define USART1_RX_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

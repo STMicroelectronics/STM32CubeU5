@@ -33,10 +33,11 @@
 <ul>
 <li>A file named STM32.TXT should be visible in the root directory of the SD card.</li>
 <li>A blinking green LED light marks the success of the file operations.</li>
+<li>An information regarding executing operation on the SRAM-Disk is printed to the serial port.</li>
 </ul>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
 <ul>
-<li>On failure, the red LED should start blinking.</li>
+<li>On failure, the red LED should start blinking and green led is off.</li>
 <li>Error handler is called at the spot where the error occurred.</li>
 </ul>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
@@ -56,7 +57,7 @@
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
 <li>This application runs on STM32U575xx devices.</li>
-<li>This application has been tested with STMicroelectronics STM32U575I-EV boards Revision: MB1550-U575AIQ-A03. and can be easily tailored to any other supported device and development board.</li>
+<li>This application has been tested with STMicroelectronics STM32U575I-EV boards revision: MB1550-U575AIQ-C02 and can be easily tailored to any other supported device and development board.</li>
 </ul>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>
 <p>In order to make the program work, you must do the following :</p>

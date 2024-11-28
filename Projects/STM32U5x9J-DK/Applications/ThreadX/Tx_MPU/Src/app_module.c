@@ -61,7 +61,7 @@ PROCESSING_FINISHED       = 44
 
 /* Define the pool space in the bss section of the module. ULONG is used to
    get word alignment. */
-#if defined(__GNUC__) || defined(__CC_ARM)
+#if defined(__GNUC__) || defined(__CC_ARM) || defined(__ARMCC_VERSION)
 ULONG  default_module_pool_space[DEFAULT_BYTE_POOL_SIZE / 4] __attribute__ ((aligned(32)));
 #else /* __ICCARM__ */
 _Pragma("data_alignment=32") ULONG  default_module_pool_space[DEFAULT_BYTE_POOL_SIZE / 4];

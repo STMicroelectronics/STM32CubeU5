@@ -187,7 +187,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../NonSecure/Src/com.c</PathWithFileName>
+      <PathWithFileName>../../NonSecure/Src/com.c</PathWithFileName>
       <FilenameWithoutPath>com.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -199,7 +199,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../NonSecure/Src/common.c</PathWithFileName>
+      <PathWithFileName>../../NonSecure/Src/common.c</PathWithFileName>
       <FilenameWithoutPath>common.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -211,7 +211,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../NonSecure/Src/fw_update_app.c</PathWithFileName>
+      <PathWithFileName>../../NonSecure/Src/fw_update_app.c</PathWithFileName>
       <FilenameWithoutPath>fw_update_app.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -223,7 +223,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../NonSecure/Src/low_level_device.c</PathWithFileName>
+      <PathWithFileName>../../NonSecure/Src/low_level_device.c</PathWithFileName>
       <FilenameWithoutPath>low_level_device.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -235,7 +235,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../NonSecure/Src/low_level_flash.c</PathWithFileName>
+      <PathWithFileName>../../NonSecure/Src/low_level_flash.c</PathWithFileName>
       <FilenameWithoutPath>low_level_flash.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -247,7 +247,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../NonSecure/Src/main.c</PathWithFileName>
+      <PathWithFileName>../../NonSecure/Src/main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -259,7 +259,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../NonSecure/Src/mpu_armv8m_drv.c</PathWithFileName>
+      <PathWithFileName>../../NonSecure/Src/mpu_armv8m_drv.c</PathWithFileName>
       <FilenameWithoutPath>mpu_armv8m_drv.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -271,8 +271,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../NonSecure/Src/stm32u5xx_it.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_it.c</FilenameWithoutPath>
+      <PathWithFileName>../../NonSecure/Src/ns_data.c</PathWithFileName>
+      <FilenameWithoutPath>ns_data.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -283,8 +283,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../NonSecure/Src/test_protections.c</PathWithFileName>
-      <FilenameWithoutPath>test_protections.c</FilenameWithoutPath>
+      <PathWithFileName>../../NonSecure/Src/stm32u5xx_it.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_it.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -295,8 +295,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../NonSecure/Src/ymodem.c</PathWithFileName>
-      <FilenameWithoutPath>ymodem.c</FilenameWithoutPath>
+      <PathWithFileName>../../NonSecure/Src/test_protections.c</PathWithFileName>
+      <FilenameWithoutPath>test_protections.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -307,7 +307,19 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\NonSecure\Src\startup_stm32u5xx.c</PathWithFileName>
+      <PathWithFileName>../../NonSecure/Src/ymodem.c</PathWithFileName>
+      <FilenameWithoutPath>ymodem.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>1</GroupNumber>
+      <FileNumber>12</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>../../NonSecure/Src/startup_stm32u5xx.c</PathWithFileName>
       <FilenameWithoutPath>startup_stm32u5xx.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -322,12 +334,12 @@
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>2</GroupNumber>
-      <FileNumber>12</FileNumber>
+      <FileNumber>13</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../NonSecure/Src/system_stm32u5xx.c</PathWithFileName>
+      <PathWithFileName>../../NonSecure/Src/system_stm32u5xx.c</PathWithFileName>
       <FilenameWithoutPath>system_stm32u5xx.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -342,25 +354,13 @@
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>3</GroupNumber>
-      <FileNumber>13</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>3</GroupNumber>
       <FileNumber>14</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_cortex.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_cortex.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -371,8 +371,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_crc.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_crc.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_cortex.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_cortex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -383,8 +383,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_crc_ex.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_crc_ex.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_crc.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_crc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -395,8 +395,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_dma.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_dma.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_crc_ex.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_crc_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -407,8 +407,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_dma_ex.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_dma_ex.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_dma.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_dma.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -419,8 +419,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_exti.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_exti.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_dma_ex.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_dma_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -431,8 +431,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_flash.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_flash.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_exti.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_exti.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -443,8 +443,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_flash_ex.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_flash_ex.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_flash.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_flash.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -455,8 +455,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_gpio.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_gpio.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_flash_ex.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_flash_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -467,8 +467,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_pwr.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_gpio.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_gpio.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -479,8 +479,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr_ex.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_pwr_ex.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_pwr.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -491,8 +491,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_rcc.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr_ex.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_pwr_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -503,8 +503,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc_ex.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_rcc_ex.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_rcc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -515,8 +515,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_uart.c</PathWithFileName>
-      <FilenameWithoutPath>stm32u5xx_hal_uart.c</FilenameWithoutPath>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc_ex.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_rcc_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -527,7 +527,19 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_uart_ex.c</PathWithFileName>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_uart.c</PathWithFileName>
+      <FilenameWithoutPath>stm32u5xx_hal_uart.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>3</GroupNumber>
+      <FileNumber>29</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>../../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_uart_ex.c</PathWithFileName>
       <FilenameWithoutPath>stm32u5xx_hal_uart_ex.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>

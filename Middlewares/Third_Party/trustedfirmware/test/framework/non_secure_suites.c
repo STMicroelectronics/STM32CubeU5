@@ -69,9 +69,10 @@ static struct test_suite_t test_suites[] = {
 #if defined(TFM_PARTITION_INITIAL_ATTESTATION) || defined(FORWARD_PROT_MSG)
     /* Non-secure initial attestation service test cases */
     {&register_testsuite_ns_attestation_interface, 0, 0, 0},
-
+#if defined(TFM_PARTITION_QCBOR)
     /* Non-secure QCBOR library test cases */
     {&register_testsuite_ns_qcbor, 0, 0, 0},
+#endif
 #endif
 
 #ifdef TFM_PARTITION_AUDIT_LOG

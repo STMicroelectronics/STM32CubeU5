@@ -21,12 +21,12 @@ After enumeration phase , the host proceed to file operations :
   - Read the written text and check data integrity
   - Close the File
 
-During the file operations process a message will be displayed on the HyperTerminal to indicates the outcome of each operation  (Create/Write/Read/Close) .
+During the file operations process a message will be displayed on the HyperTerminal to indicates the outcome of each operation  (Create/Write/Read/Close).
 If all operations were successful a message will be displayed on the HyperTerminal to indicates the end of operations.
 
 #### <b>Error behaviors</b>
 
-Errors are detected such as (Unsupported device, Enumeration Fail, File operations fail)and the corresponding message is displayed on the HyperTerminal .
+Errors are detected such as (Unsupported device, Enumeration Fail, File operations fail)and the corresponding message is displayed on the HyperTerminal.
 
 #### <b>Assumptions if any</b>
 
@@ -36,7 +36,6 @@ User is familiar with USB 2.0 "Universal Serial BUS" Specification and Mass stor
 None.
 
 ### <b>Notes</b>
-
 
 #### <b>ThreadX usage hints</b>
 
@@ -48,7 +47,7 @@ None.
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
-   This require changes in the linker files to expose this memory location.
+   This requires changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
      place in RAM_region    { last section FREE_MEM };
@@ -87,7 +86,7 @@ Connectivity, USBXHost, USBPD, FILEX, ThreadX, MSC, Mass Storage, BOT, SCSI, Rem
 ### <b>Hardware and Software environment</b>
 
   - This application runs on STM32U575xx devices
-  - This application has been tested with STMicroelectronics STM32U575I-EV MB1550-U575AIQ-C01.
+  - This application has been tested with STMicroelectronics STM32U575I-EV boards revision: MB1550-U575AIQ-C02
     and can be easily tailored to any other supported device and development board.
 
 - STM32U575I-EV Set-up
@@ -107,9 +106,9 @@ Connectivity, USBXHost, USBPD, FILEX, ThreadX, MSC, Mass Storage, BOT, SCSI, Rem
 <b>Note</b>
 It is mandatory to check that the Jumpers below are fitted:
     JP25           : UCPD_5V Jumper is fitted in order to provide Vbus 5V.
-    JP6 (UCPD_SRC) : This application initialize the type C port in source mode with only one PDO at 5V.
+    JP8 (UCPD_SRC) : This application initialize the type C port in source mode with only one PDO at 5V.
     JP14 and JP15  : To ensure the correct functionality of TCPP03(Protection IC).
-	
+
 ### <b>How to use it ?</b>
 
 In order to make the program work, you must do the following:
@@ -121,6 +120,6 @@ In order to make the program work, you must do the following:
 
 <b>Note</b>
 
-   The user has to check the list of the COM ports in Device Manager to find out the number of the
-   COM ports that have been assigned (by OS) to the Stlink VCP.
-   The application uses the external HSE clock as USB source clock.
+ - The user has to check the list of the COM ports in Device Manager to find out the number of the
+ - COM ports that have been assigned (by OS) to the Stlink VCP.
+ - The application uses the external HSE clock as USB source clock.

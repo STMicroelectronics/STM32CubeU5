@@ -417,6 +417,25 @@
 #define NX_SECURE_TLS_SERVER_DISABLED
 */
 
+/* NX_SECURE_TLS_MASTER_SIZE defines the size of master secret.
+   The default value is 48. */
+/*
+#define NX_SECURE_TLS_MASTER_SIZE 48
+*/
+
+/* NX_SECURE_TLS_KEY_MATERIAL_SIZE defines the size of key material.
+   The default value is (2 * (NX_SECURE_TLS_MAX_HASH_SIZE + NX_SECURE_TLS_MAX_KEY_SIZE + NX_SECURE_TLS_MAX_IV_SIZE)). */
+/*
+#define NX_SECURE_TLS_KEY_MATERIAL_SIZE (2 * (NX_SECURE_TLS_MAX_HASH_SIZE + NX_SECURE_TLS_MAX_KEY_SIZE + NX_SECURE_TLS_MAX_IV_SIZE))
+*/
+
+/* NX_SECURE_CUSTOM_SECRET_GENERATION enables the user to pass pointers of customized secret generation functions to
+   TLS in the user defined nx_secure_custom_secret_generation_init function. This will allow TLS to use customized
+   secret generation functions. */
+/*
+#define NX_SECURE_CUSTOM_SECRET_GENERATION
+*/
+
 /* When defined the AES Tabled are  moved to RAM. */
 /*
 #define NX_CRYPTO_AES_USE_RAM_TABLES

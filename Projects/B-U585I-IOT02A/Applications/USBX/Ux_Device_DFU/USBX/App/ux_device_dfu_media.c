@@ -3,9 +3,9 @@
   ******************************************************************************
   * @file    ux_device_dfu_media.c
   * @author  MCD Application Team
-  * @brief   USBX Device applicative file
+  * @brief   USBX Device DFU applicative source file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.
@@ -24,9 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "main.h"
-#include "tx_api.h"
-#include "app_usbx_device.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -419,7 +417,7 @@ VOID usbx_dfu_download_thread_entry(ULONG thread_input)
             else
             {
               /* Set DFU status OK */
-              dfu_status =  UX_SLAVE_CLASS_DFU_MEDIA_STATUS_OK;
+              dfu_status = UX_SLAVE_CLASS_DFU_MEDIA_STATUS_OK;
               dfu_status += UX_SLAVE_CLASS_DFU_STATUS_OK << 4;
             }
 

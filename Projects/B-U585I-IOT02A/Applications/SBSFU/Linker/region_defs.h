@@ -87,7 +87,7 @@
 #elif defined (STM32U595xx) || defined (STM32U599xx) \
    || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
    || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
-   || defined (STM32U5G7xx)
+   || defined (STM32U5G7xx) || defined (STM32U5F7xx)
 #define _SRAM2_TOP              (0xD0000) /* 832Kbytes */
 #define _SRAM1_SIZE_MAX         (0xC0000)  /*!< SRAM1=768k*/
 #define _SRAM2_SIZE_MAX         (0x10000)  /*!< SRAM2=64k*/
@@ -199,6 +199,7 @@
 
 /* CMSE Veneers region */
 #define CMSE_VENEER_REGION_START            (S_CODE_LIMIT + 1)
+#define CMSE_VENEER_REGION_LIMIT            (CMSE_VENEER_REGION_START + CMSE_VENEER_REGION_SIZE - 1)
 /* Non-secure regions */
 
 /* Secure regions , the end of secure regions must be aligned on page size for dual bank 0x800*/
@@ -210,14 +211,14 @@
 #define NS_CODE_SIZE                        (IMAGE_NS_CODE_SIZE)
 #define NS_CODE_LIMIT                       (NS_CODE_START + NS_CODE_SIZE - 1)
 #define NS_DATA_START                       (_SRAM1_BASE_NS)
-#ifdef SRAM3_BASE
+#ifdef _SRAM3_BASE_NS
 #define NS_DATA_START_2                     (_SRAM3_BASE_NS + SRAM3_S_SIZE)
 #else
 #define NS_DATA_START_2                     (_SRAM4_BASE_NS)
 #endif
 #define NS_NO_INIT_DATA_SIZE                (0x100)
 #define NS_DATA_SIZE                        (_SRAM1_SIZE_MAX)
-#ifdef SRAM3_BASE
+#ifdef _SRAM3_BASE_NS
 #define NS_DATA_SIZE_2                      (_SRAM3_SIZE_MAX - SRAM3_S_SIZE)
 #else
 #define NS_DATA_SIZE_2                      (_SRAM4_SIZE_MAX)

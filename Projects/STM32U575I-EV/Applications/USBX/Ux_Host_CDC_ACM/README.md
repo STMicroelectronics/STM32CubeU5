@@ -85,7 +85,7 @@ Connectivity, USBXHost, USBPD, ThreadX, USB, CDC_ACM, UART, USART,
 ### <b>Hardware and Software environment</b>
 
   - This application runs on STM32U575xx devices
-  - This application has been tested with STMicroelectronics STM32U575I-EV MB1550-U575AIQ-C01.
+  - This application has been tested with STMicroelectronics STM32U575I-EV boards revision: MB1550-U575AIQ-C02
     and can be easily tailored to any other supported device and development board.
 
 - STM32U575I-EV Set-up
@@ -112,7 +112,7 @@ Connectivity, USBXHost, USBPD, ThreadX, USB, CDC_ACM, UART, USART,
 <b>Note</b>
 It is mandatory to check that the Jumpers below are fitted:
     JP25           : UCPD_5V Jumper is fitted in order to provide Vbus 5V.
-    JP6 (UCPD_SRC) : This application initialize the type C port in source mode with only one PDO at 5V.
+    JP8 (UCPD_SRC) : This application initialize the type C port in source mode with only one PDO at 5V.
     JP14 and JP15  : To ensure the correct functionality of TCPP03(Protection IC).
 
 ### <b>How to use it ?</b>

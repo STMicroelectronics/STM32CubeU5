@@ -36,16 +36,17 @@ the LowPower feature. The main entry function tx_application_define() is
 then called by ThreadX during kernel start, at this stage, the
 application creates 1 thread and 1 semaphore:</p>
 <ul>
-<li><p>tx_app_thread (Prio : 10; Preemption Threshold : 10)</p></li>
-<li><p>tx_app_semaphore</p></li>
-<li><p>‘tx_app_thread’:</p>
+<li><p>MainThread (Prio : 10; Preemption Threshold : 10)</p></li>
+<li><p>Semaphore (Initial count = 0 to prevent its acquisition by the
+MainThread, on the application start)</p></li>
+<li><p>‘MainThread’:</p>
 <ul>
-<li>try to acquire the ‘tx_app_semaphore’ immediately.</li>
+<li>Main thread tries to acquire the ‘Semaphore’</li>
 <li>On Success toggle the ‘LED_GREEN’ each 500ms for 5 seconds.</li>
-<li>repeat the steps above</li>
+<li>The steps above are repeated indefinitely.</li>
 </ul></li>
 </ul>
-<p>The tx_app_semaphore is released each time user press the user
+<p>The 'Semaphore' is released each time user press the user
 button.</p>
 <p>The TX_LOW_POWER_USER_ENTER is defined as
 App_ThreadX_LowPower_Enter(), that is called to make the system enter in
@@ -84,9 +85,9 @@ debugging features are disabled.</p></li>
 HAL uses a separate time base through the TIM IPs.</li>
 <li>ThreadX is configured with 100 ticks/sec by default, this should be
 taken into account when using delays or timeouts at application. It is
-always possible to reconfigure it in the “tx_user.h”, the
-“TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in
-“tx_initialize_low_level.S” file too.</li>
+always possible to reconfigure it, by updating the
+“TX_TIMER_TICKS_PER_SECOND” define in the “tx_user.h” file. The update
+should be reflected in “tx_initialize_low_level.S” file too.</li>
 <li>ThreadX is disabling all interrupts during kernel start-up to avoid
 any unexpected behavior, therefore all system related calls (HAL, BSP)
 should be done either at the beginning of the application or inside the
@@ -99,7 +100,7 @@ way contain a system API call (HAL or BSP).</li>
 <li>Using dynamic memory allocation requires to apply some changes to
 the linker file. ThreadX needs to pass a pointer to the first free
 memory location in RAM to the tx_application_define() function, using
-the “first_unused_memory” argument. This require changes in the linker
+the “first_unused_memory” argument. This requires changes in the linker
 files to expose this memory location.
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
@@ -132,13 +133,13 @@ the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 </ul></li>
 </ul>
 <h3 id="keywords"><b>Keywords</b></h3>
-<p>RTOS, ThreadX, Threading, semaphore, LowPower, Tickless</p>
+<p>RTOS, ThreadX, Threading, Semaphore, LowPower, Tickless</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
-<li><p>This example runs on STM32U545xx devices</p></li>
-<li><p>This example has been tested with STMicroelectronics
-NUCLEO-U545RE-Q boards Revision: MB1841-A02. and can be easily tailored
+<li><p>This application runs on STM32U545xx devices</p></li>
+<li><p>This application has been tested with STMicroelectronics
+NUCLEO-U545RE-Q boards revision: MB1841-A02 and can be easily tailored
 to any other supported device and development board.</p></li>
 <li><p>This application uses USART1 to display logs, the hyperterminal
 configuration is as follows:</p>

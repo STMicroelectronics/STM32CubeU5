@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   USBX host applicative file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
@@ -49,6 +49,7 @@ TX_THREAD             cdc_acm_recieve_thread;
 TX_EVENT_FLAGS_GROUP  ux_app_EventFlag;
 UX_HOST_CLASS_CDC_ACM *cdc_acm;
 
+extern uint16_t       RxSzeIdx;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -249,6 +250,10 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *cur
       {
         /* Clear cdc instance */
         cdc_acm = UX_NULL;
+
+        /* Reinitialize reception block size index */
+        RxSzeIdx = 0;
+
         USBH_UsrLog("\nUSB CDC ACM Device Removal");
 
         /* Set NEW_RECEIVED_DATA flag */
@@ -390,7 +395,7 @@ VOID USBX_APP_Host_Init(VOID)
   */
 void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
 {
-  if (GPIO_Pin == GPIO_PIN_13)
+  if (GPIO_Pin == BUTTON_USER_Pin)
   {
     /* Set NEW_DATA_TO_SEND flag */
     if (tx_event_flags_set(&ux_app_EventFlag, NEW_DATA_TO_SEND, TX_OR) != TX_SUCCESS)

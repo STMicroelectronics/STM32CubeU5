@@ -29,7 +29,7 @@ MainThread is expected to execute data read and write operations to/from user-de
 
 #### <b>Error behaviors</b>
 
-On failure,an error message is printed to the serial port while the green LED is switched OFF.
+On failure, an error message is printed to the serial port while the LED_GREEN switched OFF.
 
 #### <b>Assumptions if any</b>
 None
@@ -51,16 +51,16 @@ None
    This require changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
-	 place in RAM_region    { last section FREE_MEM };
-	 ```
+     place in RAM_region    { last section FREE_MEM };
+     ```
     + For MDK-ARM:
-	```
+    ```
     either define the RW_IRAM1 region in the ".sct" file
     or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
-	```
+    ```
     + For STM32CubeIDE add the following section into the .ld file:
-	```
+    ```
     ._threadx_heap :
       {
          . = ALIGN(8);
@@ -68,7 +68,7 @@ None
          . = . + 64K;
          . = ALIGN(8);
        } >RAM_D1 AT> RAM_D1
-	```
+    ```
 
        The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
        In the example above the ThreadX heap size is set to 64KBytes.
@@ -85,8 +85,8 @@ RTOS, ThreadX, Threading, Message Queue, Module Manager, Module, MPU
 
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on STM32U545xx devices
-  - This example has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision: MB1549-B03.
+  - This application runs on STM32U545xx devices
+  - This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards revision MB1549-B03
     and can be easily tailored to any other supported device and development board.
   - A virtual COM port appears in the HyperTerminal:
       - Hyperterminal configuration:
@@ -105,4 +105,4 @@ In order to make the program work, you must do the following :
  - Rebuild Tx_Module_Manager project
  - Flash the Tx_Module binary at address defined by MODULE_FLASH_ADDRESS
  - Set the "Tx_Module_Manager" as active application (Set as Active)
- - Run the example
+ - Run the application

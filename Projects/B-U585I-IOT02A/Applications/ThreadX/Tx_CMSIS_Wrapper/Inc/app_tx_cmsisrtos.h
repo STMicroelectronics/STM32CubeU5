@@ -65,25 +65,23 @@ uint32_t App_TX_CmsisRTOS_Init(void);
 
 #ifdef USE_TX_MUTEX
 /* Use osMutexId_t as sync object */
-#define APP_SYNC_TYPE                        osMutexId_t
+#define APP_SYNC_TYPE          osMutexId_t
 
-#define APP_SYNC_GET                         osMutexAcquire
-#define APP_SYNC_PUT                         osMutexRelease
-#define APP_SYNC_CREATE()                    osMutexNew(NULL)
+#define APP_SYNC_GET           osMutexAcquire
+#define APP_SYNC_PUT           osMutexRelease
+#define APP_SYNC_CREATE()      osMutexNew(NULL)
 
 #else
 /* define osSemaphoreId_t  as sync object*/
-#define APP_SYNC_TYPE                        osSemaphoreId_t
+#define APP_SYNC_TYPE          osSemaphoreId_t
 
-#define APP_SYNC_GET                         osSemaphoreAcquire
-#define APP_SYNC_PUT                         osSemaphoreRelease
-#define APP_SYNC_CREATE()                    osSemaphoreNew(0, 1, NULL)
+#define APP_SYNC_GET           osSemaphoreAcquire
+#define APP_SYNC_PUT           osSemaphoreRelease
+#define APP_SYNC_CREATE()      osSemaphoreNew(0, 1, NULL)
 #endif
 
-#define DEFAULT_WAIT_TIME                   5
-
-
-#define APP_THREAD_STACK_SIZE    2*256
+#define DEFAULT_WAIT_TIME      5
+#define APP_THREAD_STACK_SIZE  2*256
 /* USER CODE END Private defines */
 
 /* USER CODE BEGIN 1 */

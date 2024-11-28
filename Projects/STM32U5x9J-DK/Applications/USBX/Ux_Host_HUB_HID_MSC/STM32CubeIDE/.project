@@ -34,11 +34,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>Ux_Host_HUB_HID_MSC.ioc</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Ux_Host_HUB_HID_MSC.ioc</locationURI>
-		</link>
-		<link>
 			<name>Doc/README.md</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/README.md</locationURI>
@@ -2279,6 +2274,16 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_memory_allocate_mulv_safe.c</locationURI>
 		</link>
 		<link>
+			<name>Middlewares/USBX/Core System/ux_utility_memory_byte_pool_create.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_memory_byte_pool_create.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/USBX/Core System/ux_utility_memory_byte_pool_search.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_memory_byte_pool_search.c</locationURI>
+		</link>
+		<link>
 			<name>Middlewares/USBX/Core System/ux_utility_memory_compare.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_memory_compare.c</locationURI>
@@ -2292,11 +2297,6 @@
 			<name>Middlewares/USBX/Core System/ux_utility_memory_free.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_memory_free.c</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/USBX/Core System/ux_utility_memory_free_block_best_get.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_memory_free_block_best_get.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/USBX/Core System/ux_utility_memory_set.c</name>
@@ -2322,21 +2322,6 @@
 			<name>Middlewares/USBX/Core System/ux_utility_mutex_on.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_mutex_on.c</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/USBX/Core System/ux_utility_pci_class_scan.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_pci_class_scan.c</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/USBX/Core System/ux_utility_pci_read.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_pci_read.c</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/USBX/Core System/ux_utility_pci_write.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_pci_write.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/USBX/Core System/ux_utility_physical_address.c</name>

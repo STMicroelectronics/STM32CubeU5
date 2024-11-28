@@ -213,7 +213,7 @@ UINT MX_FileX_Init(VOID *memory_ptr)
 
   /* block here waiting for concurrent threads to finish processing */
   sd_status = tx_event_flags_get(&finish_flag, 0x11, TX_AND_CLEAR,
-  	&event_flags, TX_WAIT_FOREVER);
+                                 &event_flags, TX_WAIT_FOREVER);
 
   /* Check the sd_status.  */
   if (sd_status != TX_SUCCESS)

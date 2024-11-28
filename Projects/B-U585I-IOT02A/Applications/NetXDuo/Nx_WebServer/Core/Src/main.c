@@ -153,6 +153,7 @@ int main(void)
   MX_GPDMA1_Init();
   MX_DCACHE1_Init();
   MX_ICACHE_Init();
+  MX_OCTOSPI2_Init();
   MX_SPI2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */

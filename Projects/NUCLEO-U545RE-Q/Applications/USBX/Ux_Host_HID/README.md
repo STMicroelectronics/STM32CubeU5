@@ -1,45 +1,46 @@
 
 ## <b>Ux_Host_HID Application Description</b>
 
-This application provides an example of Azure RTOS USBX stack usage .
-It shows how to develop USB Host Human Interface "HID" able to enumerate and communicates with a mouse or a keyboard.
+This application provides an example of Azure RTOS USBX stack usage.
+It shows how to develop an USB Host Human Interface "HID" able to enumerate and communicate with a mouse or a keyboard.
 
 The application is designed to behave as an USB HID Host, the code provides required requests to properly enumerate
-HID devices , HID Class APIs to decode HID reports received from a mouse or a keyboard and display data on uart HyperTerminal.
+HID devices , HID class APIs to decode HID reports received from a mouse or a keyboard and display data on UART HyperTerminal.
 
 The main entry function tx_application_define() is then called by ThreadX during kernel start, at this stage, all USBx resources
-are initialized, the HID Class driver and HID clients are registered.
+are initialized, the HID class driver and HID clients are registered.
 The application creates 3 threads with different priorities :
 
-  - usbx_app_thread_entry     (Priority : 10; Preemption threshold : 10) used to initialize USB DRD HAL HCD driver.
+  - app_ux_host_thread_entry     (Priority : 10; Preemption threshold : 10) used to initialize USB DRD HAL HCD driver.
   - hid_mouse_thread_entry    (Priority : 30; Preemption threshold : 30) used to decode HID reports received  from a mouse.
   - hid_keyboard_thread_entry (Priority : 30; Preemption threshold : 30) used to decode HID reports received  from a keyboard.
 
 #### <b>Expected success behavior</b>
 
-When a hid device is plugged to NUCLEO-U545RE-Q board, a Message will be displayed on the uart HyperTerminal showing
+When an HID device is plugged to NUCLEO-U545RE-Q board, a message will be displayed on the UART HyperTerminal showing
 the Vendor ID and Product ID of the attached device.
-After enumeration phase, a message will indicates that the device is ready for use.
+After enumeration phase, a message will indicate that the device is ready for use.
 The host must be able to properly decode HID reports sent by the corresponding device and display those information on the HyperTerminal.
 
 The received HID reports are used by host to identify:
-in case of a mouse
+- In case of a mouse
    - (x,y) mouse position
    - Wheel position
    - Pressed mouse buttons
 
-in case of a keyboard
- - Pressed key
+- In case of a keyboard
+   - Pressed key
 
 #### <b>Error behaviors</b>
 
-Errors are detected such as (Unsupported device, Enumeration Fail) and the corresponding message is displayed on the HyperTerminal.
+Errors are detected (such as unsupported device, enumeration fail) and the corresponding message is displayed on the HyperTerminal.
 
 #### <b>Assumptions if any</b>
 
-User is familiar with USB 2.0 "Universal Serial BUS" Specification and HID class Specification.
+User is familiar with USB 2.0 "Universal Serial BUS" specification and HID class specification.
 
 #### <b>Known limitations</b>
+
 None
 
 ### <b>Notes</b>
@@ -48,14 +49,14 @@ None
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it, by updating the "TX_TIMER_TICKS_PER_SECOND" define in the "tx_user.h" file. The update should be reflected in "tx_initialize_low_level.S" file too.
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
    It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL or BSP).
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
-   This require changes in the linker files to expose this memory location.
+   This requires changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
      place in RAM_region    { last section FREE_MEM };
@@ -85,16 +86,18 @@ None
 
     + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
 
+#### <b>USBX usage hints</b>
+
 
 ### <b>Keywords</b>
 
-Connectivity, USBX Host, USBPD, ThreadX, USB, HID, Mouse, Keyboard, UART, USART,
+Connectivity, USBX Host, ThreadX, USB, HID, Mouse, Keyboard, UART, USART,
 
 
 ### <b>Hardware and Software environment</b>
 
   - This application runs on STM32U545xx devices
-  - This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision: MB1841-A02
+  - This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards revision: MB1841-A02
     and can be easily tailored to any other supported device and development board.
 
 - NUCLEO-U545RE-Q Set-up :
@@ -117,7 +120,6 @@ User should ensure to inject 5V on USB Vbus pin to get the example working.
 
 It is mandatory to check that the Jumpers below are fitted:
     JP3           : 5V_UCPD Jumper is fitted in order to provide Vbus 5V.
-
 
 ### <b>How to use it ?</b>
 

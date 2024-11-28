@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   ThreadX applicative file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.
@@ -44,16 +44,16 @@
 /* Private variables ---------------------------------------------------------*/
 TX_THREAD tx_app_thread;
 /* USER CODE BEGIN PV */
-  TX_THREAD ThreadOne;
-  TX_THREAD ThreadTwo;
-  TX_EVENT_FLAGS_GROUP EventFlag;
+TX_THREAD ThreadOne;
+TX_THREAD ThreadTwo;
+TX_EVENT_FLAGS_GROUP EventFlag;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-  void ThreadOne_Entry(ULONG thread_input);
-  void ThreadTwo_Entry(ULONG thread_input);
-  void App_Delay(uint32_t Delay);
+void ThreadOne_Entry(ULONG thread_input);
+void ThreadTwo_Entry(ULONG thread_input);
+void App_Delay(uint32_t Delay);
 /* USER CODE END PFP */
 
 /**
@@ -77,7 +77,7 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   {
     return TX_POOL_ERROR;
   }
-  /* Create Main Thread.  */
+  /* Create Main Thread. */
   if (tx_thread_create(&tx_app_thread, "Main Thread", MainThread_Entry, 0, pointer,
                        TX_APP_STACK_SIZE, TX_APP_THREAD_PRIO, TX_APP_THREAD_PREEMPTION_THRESHOLD,
                        TX_APP_THREAD_TIME_SLICE, TX_APP_THREAD_AUTO_START) != TX_SUCCESS)
@@ -86,39 +86,37 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   }
 
   /* USER CODE BEGIN App_ThreadX_Init */
-   /* Allocate the stack for ThreadOne.  */
+  /* Allocate the stack for ThreadOne. */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
-                        TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
+                       TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
   {
     ret = TX_POOL_ERROR;
   }
 
-  /* Create ThreadOne.  */
-  if (tx_thread_create(&ThreadOne, "Thread One", ThreadOne_Entry, 0,
-                       pointer,  TX_APP_STACK_SIZE,
-                       THREAD_ONE_PRIO, THREAD_ONE_PREEMPTION_THRESHOLD,
-                       TX_NO_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
-  {  
-    ret = TX_THREAD_ERROR;
-  }
-
-  /* Allocate the stack for ThreadTwo.  */
-  if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
-                        TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
-  {
-    ret = TX_POOL_ERROR;
-  }
-
-  /* Create ThreadTwo.  */
-  if (tx_thread_create(&ThreadTwo, "Thread Two", ThreadTwo_Entry, 0,
-                       pointer,  TX_APP_STACK_SIZE,
-                       THREAD_TWO_PRIO, THREAD_TWO_PREEMPTION_THRESHOLD,
+  /* Create ThreadOne. */
+  if (tx_thread_create(&ThreadOne, "Thread One", ThreadOne_Entry, 0, pointer,
+                       TX_APP_STACK_SIZE, THREAD_ONE_PRIO, THREAD_ONE_PREEMPTION_THRESHOLD,
                        TX_NO_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
   {
     ret = TX_THREAD_ERROR;
   }
 
-  /* Create the event flags group.  */
+  /* Allocate the stack for ThreadTwo. */
+  if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
+                       TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
+  {
+    ret = TX_POOL_ERROR;
+  }
+
+  /* Create ThreadTwo. */
+  if (tx_thread_create(&ThreadTwo, "Thread Two", ThreadTwo_Entry, 0, pointer,
+                       TX_APP_STACK_SIZE, THREAD_TWO_PRIO, THREAD_TWO_PREEMPTION_THRESHOLD,
+                       TX_NO_TIME_SLICE, TX_AUTO_START) != TX_SUCCESS)
+  {
+    ret = TX_THREAD_ERROR;
+  }
+
+  /* Create the event flags group. */
   if (tx_event_flags_create(&EventFlag, "Event Flag") != TX_SUCCESS)
   {
     ret = TX_GROUP_ERROR;
@@ -191,15 +189,15 @@ void MainThread_Entry(ULONG thread_input)
   */
 void MX_ThreadX_Init(void)
 {
-  /* USER CODE BEGIN  Before_Kernel_Start */
+  /* USER CODE BEGIN Before_Kernel_Start */
 
-  /* USER CODE END  Before_Kernel_Start */
+  /* USER CODE END Before_Kernel_Start */
 
   tx_kernel_enter();
 
-  /* USER CODE BEGIN  Kernel_Start_Error */
+  /* USER CODE BEGIN Kernel_Start_Error */
 
-  /* USER CODE END  Kernel_Start_Error */
+  /* USER CODE END Kernel_Start_Error */
 }
 
 /* USER CODE BEGIN 1 */
@@ -209,7 +207,7 @@ void MX_ThreadX_Init(void)
   * @retval None
   */
 void ThreadOne_Entry(ULONG thread_input)
-{ 
+{
   (void) thread_input;
   uint8_t count = 0;
   /* Infinite loop */

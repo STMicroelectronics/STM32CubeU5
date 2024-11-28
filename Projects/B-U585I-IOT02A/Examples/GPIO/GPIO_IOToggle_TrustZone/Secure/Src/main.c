@@ -146,6 +146,7 @@ int main(void)
 
   /* USER CODE END 2 */
 
+
   /*************** Setup and jump to non-secure *******************************/
 
   NonSecure_Init();

@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   USBX Host HID Mouse applicative header file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.

@@ -59,7 +59,7 @@ void Error_Handler(void);
 /* USER CODE END PFP */
 /**
   * @brief  Application FileX Initialization.
-  * @param memory_ptr: memory pointer
+  * @param  None
   * @retval int
   */
 UINT MX_FileX_Init(void)
@@ -69,7 +69,7 @@ UINT MX_FileX_Init(void)
 
   /* USER CODE END MX_FileX_Init */
 
-/* Initialize FileX.  */
+  /* Initialize FileX.  */
   fx_system_initialize();
 
   /* USER CODE BEGIN MX_FileX_Init 1*/
@@ -101,7 +101,7 @@ VOID MX_FileX_Process(void)
                             32,                           // Directory Entries
                             0,                            // Hidden sectors
                             FX_SRAM_DISK_SIZE /
-							DEFAULT_SECTOR_SIZE,		  // Total sectors
+                            DEFAULT_SECTOR_SIZE,          // Total sectors
                             DEFAULT_SECTOR_SIZE,          // Sector size
                             8,                            // Sectors per cluster
                             1,                            // Heads
@@ -124,14 +124,14 @@ VOID MX_FileX_Process(void)
 
   printf("SRAM Disk successfully formatted and opened.\n");
 
-  /* Create a file called STM32.TXT in the root directory.  */
+  /* Create a file called STM32.TXT in the root directory. */
   status =  fx_file_create(&sram_disk, "STM32.TXT");
 
-  /* Check the create status.  */
+  /* Check the create status. */
   if (status != FX_SUCCESS)
   {
     /* Check for an already created status. This is expected on the
-    second pass of this loop!  */
+    second pass of this loop! */
     if (status != FX_ALREADY_CREATED)
     {
       /* Create error, call error handler.  */
@@ -139,82 +139,33 @@ VOID MX_FileX_Process(void)
     }
   }
 
-  /* Open the test file.  */
+  /* Open the test file. */
   status =  fx_file_open(&sram_disk, &fx_file, "STM32.TXT", FX_OPEN_FOR_WRITE);
 
-  /* Check the file open status.  */
+  /* Check the file open status. */
   if (status != FX_SUCCESS)
   {
-    /* Error opening file, call error handler.  */
+    /* Error opening file, call error handler. */
     Error_Handler();
   }
 
-  /* Seek to the beginning of the test file.  */
+  /* Seek to the beginning of the test file. */
   status =  fx_file_seek(&fx_file, 0);
 
-  /* Check the file seek status.  */
+  /* Check the file seek status. */
   if (status != FX_SUCCESS)
   {
-    /* Error performing file seek, call error handler.  */
+    /* Error performing file seek, call error handler. */
     Error_Handler();
   }
 
   /* Write a string to the test file.  */
   status =  fx_file_write(&fx_file, data, sizeof(data));
 
-  /* Check the file write status.  */
+  /* Check the file write status. */
   if (status != FX_SUCCESS)
   {
-    /* Error writing to a file, call error handler.  */
-    Error_Handler();
-  }
-
-  /* Close the test file.  */
-  status =  fx_file_close(&fx_file);
-
-  /* Check the file close status.  */
-  if (status != FX_SUCCESS)
-  {
-    /* Error closing the file, call error handler.  */
-    Error_Handler();
-  }
-
-  status = fx_media_flush(&sram_disk);
-
-  /* Check the media flush  status.  */
-  if (status != FX_SUCCESS)
-  {
-    /* Error closing the file, call error handler.  */
-    Error_Handler();
-  }
-
-  /* Open the test file.  */
-  status =  fx_file_open(&sram_disk, &fx_file, "STM32.TXT", FX_OPEN_FOR_READ);
-
-  /* Check the file open status.  */
-  if (status != FX_SUCCESS)
-  {
-    /* Error opening file, call error handler.  */
-    Error_Handler();
-  }
-
-  /* Seek to the beginning of the test file.  */
-  status =  fx_file_seek(&fx_file, 0);
-
-  /* Check the file seek status.  */
-  if (status != FX_SUCCESS)
-  {
-    /* Error performing file seek, call error handler.  */
-    Error_Handler();
-  }
-
-  /* Read the first 28 bytes of the test file.  */
-  status =  fx_file_read(&fx_file, read_buffer, sizeof(data), &bytes_read);
-
-  /* Check the file read status.  */
-  if ((status != FX_SUCCESS) || (bytes_read != sizeof(data)))
-  {
-    /* Error reading file, call error handler.  */
+    /* Error writing to a file, call error handler. */
     Error_Handler();
   }
 
@@ -228,13 +179,62 @@ VOID MX_FileX_Process(void)
     Error_Handler();
   }
 
-  /* Close the media.  */
-  status =  fx_media_close(&sram_disk);
+  status = fx_media_flush(&sram_disk);
 
-  /* Check the media close status.  */
+  /* Check the media flush  status. */
   if (status != FX_SUCCESS)
   {
-    /* Error closing the media, call error handler.  */
+    /* Error closing the file, call error handler. */
+    Error_Handler();
+  }
+
+  /* Open the test file. */
+  status =  fx_file_open(&sram_disk, &fx_file, "STM32.TXT", FX_OPEN_FOR_READ);
+
+  /* Check the file open status. */
+  if (status != FX_SUCCESS)
+  {
+    /* Error opening file, call error handler. */
+    Error_Handler();
+  }
+
+  /* Seek to the beginning of the test file. */
+  status =  fx_file_seek(&fx_file, 0);
+
+  /* Check the file seek status. */
+  if (status != FX_SUCCESS)
+  {
+    /* Error performing file seek, call error handler. */
+    Error_Handler();
+  }
+
+  /* Read the first 28 bytes of the test file. */
+  status =  fx_file_read(&fx_file, read_buffer, sizeof(data), &bytes_read);
+
+  /* Check the file read status. */
+  if ((status != FX_SUCCESS) || (bytes_read != sizeof(data)))
+  {
+    /* Error reading file, call error handler. */
+    Error_Handler();
+  }
+
+  /* Close the test file. */
+  status =  fx_file_close(&fx_file);
+
+  /* Check the file close status. */
+  if (status != FX_SUCCESS)
+  {
+    /* Error closing the file, call error handler. */
+    Error_Handler();
+  }
+
+  /* Close the media. */
+  status =  fx_media_close(&sram_disk);
+
+  /* Check the media close status. */
+  if (status != FX_SUCCESS)
+  {
+    /* Error closing the media, call error handler. */
     Error_Handler();
   }
 

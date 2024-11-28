@@ -3,7 +3,7 @@
   ******************************************************************************
   * @file    ux_device_msc.c
   * @author  MCD Application Team
-  * @brief   USBX Device applicative file
+  * @brief   USBX Device MSC applicative source file
   ******************************************************************************
   * @attention
   *
@@ -48,7 +48,8 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 extern TX_EVENT_FLAGS_GROUP EventFlag;
-extern BSP_SD_CardInfo USBD_SD_CardInfo;
+extern HAL_SD_CardInfoTypeDef USBD_SD_CardInfo;
+extern SD_HandleTypeDef hsd1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -84,9 +85,9 @@ VOID USBD_STORAGE_Activate(VOID *storage_instance)
   */
 VOID USBD_STORAGE_Deactivate(VOID *storage_instance)
 {
-  /* USER CODE BEGIN USBD_STORAGE_Activate */
+  /* USER CODE BEGIN USBD_STORAGE_Deactivate  */
   UX_PARAMETER_NOT_USED(storage_instance);
-  /* USER CODE END USBD_STORAGE_Activate */
+  /* USER CODE END USBD_STORAGE_Deactivate */
 
   return;
 }
@@ -116,18 +117,17 @@ UINT USBD_STORAGE_Read(VOID *storage_instance, ULONG lun, UCHAR *data_pointer,
   ULONG ReadFlags = 0U;
 
   /* Check if the SD card is present */
-  if (BSP_SD_IsDetected(SD_INSTANCE) != SD_NOT_PRESENT)
+  if (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_0) == GPIO_PIN_SET)
   {
     /* Check id SD card is ready */
-    if(check_sd_status() != BSP_ERROR_NONE)
+    if(check_sd_status() != HAL_OK)
     {
       Error_Handler();
     }
 
     /* Start the Dma write */
-    status =  BSP_SD_ReadBlocks_DMA(SD_INSTANCE,(uint32_t *) data_pointer, lba, number_blocks);
-
-    if(status != BSP_ERROR_NONE)
+    status =  HAL_SD_ReadBlocks_DMA(&hsd1, data_pointer, lba, number_blocks);
+    if(status != HAL_OK)
     {
       Error_Handler();
     }
@@ -170,18 +170,18 @@ UINT USBD_STORAGE_Write(VOID *storage_instance, ULONG lun, UCHAR *data_pointer,
   ULONG WriteFlags = 0U;
 
   /* Check if the SD card is present */
-  if (BSP_SD_IsDetected(SD_INSTANCE) != SD_NOT_PRESENT)
+  if (HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_0) == GPIO_PIN_SET)
   {
     /* Check id SD card is ready */
-    if(check_sd_status() != BSP_ERROR_NONE)
+    if(check_sd_status() != HAL_OK)
     {
       Error_Handler();
     }
 
     /* Start the Dma write */
-    status = BSP_SD_WriteBlocks_DMA(SD_INSTANCE,(uint32_t *) data_pointer, lba, number_blocks);
+    status = HAL_SD_WriteBlocks_DMA(&hsd1, data_pointer, lba, number_blocks);
 
-    if(status != BSP_ERROR_NONE)
+    if(status != HAL_OK)
     {
       Error_Handler();
     }
@@ -319,14 +319,13 @@ ULONG USBD_STORAGE_GetMediaBlocklength(VOID)
 }
 
 /* USER CODE BEGIN 1 */
-
 /**
   * @brief  BSP_SD_WriteCpltCallback
   *         BSP Tx Transfer completed callbacks
   * @param  Instance
   * @retval none
   */
-void BSP_SD_WriteCpltCallback(uint32_t Instance)
+void HAL_SD_TxCpltCallback(SD_HandleTypeDef *hsd)
 {
   if (tx_event_flags_set(&EventFlag, SD_WRITE_FLAG, TX_OR) != TX_SUCCESS)
   {
@@ -340,7 +339,7 @@ void BSP_SD_WriteCpltCallback(uint32_t Instance)
   * @param  Instance
   * @retval None
   */
-void BSP_SD_ReadCpltCallback(uint32_t Instance)
+void HAL_SD_RxCpltCallback(SD_HandleTypeDef *hsd)
 {
   if (tx_event_flags_set(&EventFlag, SD_READ_FLAG, TX_OR) != TX_SUCCESS)
   {
@@ -360,13 +359,13 @@ static int32_t check_sd_status(VOID)
 
   while (tx_time_get() - start < SD_TIMEOUT)
   {
-    if (BSP_SD_GetCardState(SD_INSTANCE) == SD_TRANSFER_OK)
+    if (HAL_SD_GetCardState(&hsd1) == HAL_SD_CARD_TRANSFER)
     {
-      return BSP_ERROR_NONE;
+      return HAL_OK;
     }
   }
 
-  return BSP_ERROR_BUSY;
+  return HAL_ERROR;
 }
 
 /* USER CODE END 1 */

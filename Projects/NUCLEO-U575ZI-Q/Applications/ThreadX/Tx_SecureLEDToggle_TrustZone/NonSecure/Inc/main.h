@@ -1,9 +1,10 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
+  * @file    ThreadX/Tx_SecureLEDToggle_TrustZone/NonSecure/Inc/main.h
+  * @author  MCD Application Team
+  * @brief   This file contains all the functions prototypes for the main.c
+  *          file.
   ******************************************************************************
   * @attention
   *

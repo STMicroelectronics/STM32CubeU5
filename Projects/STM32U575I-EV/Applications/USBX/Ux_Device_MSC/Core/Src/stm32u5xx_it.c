@@ -57,6 +57,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern SD_HandleTypeDef hsd1;
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 extern TIM_HandleTypeDef htim6;
 
@@ -219,6 +220,20 @@ void OTG_FS_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles SDMMC1 global interrupt.
+  */
+void SDMMC1_IRQHandler(void)
+{
+  /* USER CODE BEGIN SDMMC1_IRQn 0 */
+
+  /* USER CODE END SDMMC1_IRQn 0 */
+  HAL_SD_IRQHandler(&hsd1);
+  /* USER CODE BEGIN SDMMC1_IRQn 1 */
+
+  /* USER CODE END SDMMC1_IRQn 1 */
+}
+
+/**
   * @brief This function handles UCPD1 global interrupt.
   */
 void UCPD1_IRQHandler(void)
@@ -235,19 +250,14 @@ void UCPD1_IRQHandler(void)
 
 /* USER CODE BEGIN 1 */
 
-void SDMMC1_IRQHandler(void)
-{
-    BSP_SD_IRQHandler(SD_INSTANCE);
-}
-
 #if defined(TCPP0203_SUPPORT)
+
 /**
   * @brief  This function handles external line interrupt request.
   *         (Associated to FLGn line in case of TCPP0203 management)
   * @retval None
   */
 void EXTI8_IRQHandler(void)
-
 {
 
   /* Manage Flags */

@@ -48,8 +48,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 CRYP_HandleTypeDef hcryp;
-uint32_t pKeyAES[4] = {0x00000000,0x00000000,0x00000000,0x00000000};
-uint32_t pInitVectAES[4] = {0x00000000,0x00000000,0x00000000,0x00000000};
+__ALIGN_BEGIN static const uint32_t pKeyAES[4] __ALIGN_END = {
+                            0x00000000,0x00000000,0x00000000,0x00000000};
+__ALIGN_BEGIN static const uint32_t pInitVectAES[4] __ALIGN_END = {
+                            0x00000000,0x00000000,0x00000000,0x00000000};
 
 DCACHE_HandleTypeDef hdcache1;
 

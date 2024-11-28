@@ -65,7 +65,7 @@ the module and the module manager continues to run correctly.</p>
 serial port.</li>
 </ul>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
-<p>LED_RED toggles every 1 second if any error occurs.</p>
+<p>On failure, an error message is printed to the serial port while the LED_RED toggles every 1 second and LED_GREEN switched OFF.</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
 <p>None</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
@@ -129,9 +129,9 @@ MPU</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
-<li>This example runs on STM32U575xx devices</li>
-<li>This example has been tested with STMicroelectronics NUCLEO-U575ZI-Q
-boards Revision: MB1549-B03. and can be easily tailored to any other
+<li>This application runs on STM32U575xx devices</li>
+<li>This application has been tested with STMicroelectronics NUCLEO-U575ZI-Q
+boards revision: MB1549-C01 and can be easily tailored to any other
 supported device and development board.</li>
 <li>A virtual COM port appears in the HyperTerminal:
 <ul>
@@ -155,7 +155,7 @@ supported device and development board.</li>
 MODULE_FLASH_ADDRESS</li>
 <li>Set the “Tx_Module_Manager” as active application (Set as
 Active)</li>
-<li>Run the example</li>
+<li>Run the application</li>
 </ul>
 </section>
 </div>

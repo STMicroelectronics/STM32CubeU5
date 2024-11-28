@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   USBX Host HID Keyboard applicative header file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.

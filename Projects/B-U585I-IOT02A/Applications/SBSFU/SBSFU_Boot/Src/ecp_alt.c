@@ -1850,6 +1850,8 @@ static int ecp_check_pubkey_sw( const mbedtls_ecp_group *grp, const mbedtls_ecp_
     uint8_t *pt_binary;
     PKA_HandleTypeDef hpka = {0};
     PKA_PointCheckInTypeDef ECC_PointCheck = {0};
+    PKA_MontgomeryParamInTypeDef inp = {0};
+    uint8_t *pt_montgomery = NULL;
 
     /* pt coordinates must be normalized for our checks */
     if( mbedtls_mpi_cmp_int( &pt->X, 0 ) < 0 ||
@@ -1865,11 +1867,12 @@ static int ecp_check_pubkey_sw( const mbedtls_ecp_group *grp, const mbedtls_ecp_
     ECC_PointCheck.coefA       = grp->st_a_abs;
     ECC_PointCheck.coefB       = grp->st_b;
 
-    ECC_PointCheck.pMontgomeryParam = NULL;
-
     /* Set HW peripheral input parameter: coordinates of point to check */
     pt_binary = mbedtls_calloc(( 2U * grp->st_modulus_size ) + 1U, sizeof( uint8_t ));
     MBEDTLS_MPI_CHK((pt_binary == NULL) ? MBEDTLS_ERR_ECP_ALLOC_FAILED : 0);
+
+    pt_montgomery = mbedtls_calloc(grp->st_modulus_size, sizeof( uint8_t ));
+    MBEDTLS_MPI_CHK((pt_montgomery == NULL) ? MBEDTLS_ERR_ECP_ALLOC_FAILED : 0);
 
     MBEDTLS_MPI_CHK( mbedtls_ecp_point_write_binary( grp, pt, MBEDTLS_ECP_PF_UNCOMPRESSED, &olen, pt_binary, ( 2U * grp->st_modulus_size ) + 1U ) );
 
@@ -1885,6 +1888,17 @@ static int ecp_check_pubkey_sw( const mbedtls_ecp_group *grp, const mbedtls_ecp_
 
     /* Reset PKA RAM */
     HAL_PKA_RAMReset(&hpka);
+
+    /* Set Montgomery R2 input parameters */
+    inp.size = grp->st_modulus_size;
+    inp.pOp1 = grp->st_p;
+
+    /* Launch the processing */
+    MBEDTLS_MPI_CHK((HAL_PKA_MontgomeryParam(&hpka, &inp, ST_ECP_TIMEOUT) != HAL_OK) ? MBEDTLS_ERR_PLATFORM_HW_ACCEL_FAILED : 0);
+
+    /* Get Montgomery R2 parameters */
+    HAL_PKA_MontgomeryParam_GetResult(&hpka, (uint32_t*)pt_montgomery);
+    ECC_PointCheck.pMontgomeryParam = (uint32_t*)pt_montgomery;
 
     /* Launch the point check */
     MBEDTLS_MPI_CHK((HAL_PKA_PointCheck(&hpka, &ECC_PointCheck, ST_ECP_TIMEOUT) != HAL_OK) ? MBEDTLS_ERR_PLATFORM_HW_ACCEL_FAILED : 0);
@@ -1905,6 +1919,12 @@ cleanup:
     {
         mbedtls_platform_zeroize(pt_binary, ( 2U * grp->st_modulus_size ) + 1U );
         mbedtls_free(pt_binary);
+    }
+
+    if (pt_montgomery != NULL)
+    {
+        mbedtls_platform_zeroize(pt_montgomery, grp->st_modulus_size);
+        mbedtls_free(pt_montgomery);
     }
 
     return ret;

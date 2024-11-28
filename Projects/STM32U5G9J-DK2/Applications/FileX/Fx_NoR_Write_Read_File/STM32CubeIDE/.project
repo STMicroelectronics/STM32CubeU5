@@ -1444,6 +1444,11 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/levelx/common/src/lx_nor_flash_system_error.c</locationURI>
 		</link>
 		<link>
+			<name>Middlewares/LevelX/XSPI memory interface/lx_stm32_xspi_driver.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/levelx/common/drivers/lx_stm32_xspi_driver.c</locationURI>
+		</link>
+		<link>
 			<name>Middlewares/ThreadX/Core/tx_block_allocate.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/threadx/common/src/tx_block_allocate.c</locationURI>
@@ -2279,9 +2284,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/FileX/App/app_filex.c</locationURI>
 		</link>
 		<link>
-			<name>Application/User/LevelX/Target/lx_stm32_nor_custom_driver.c</name>
+			<name>Application/User/LevelX/Target/lx_stm32_xspi_driver_glue.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/LevelX/Target/lx_stm32_nor_custom_driver.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/LevelX/Target/lx_stm32_xspi_driver_glue.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

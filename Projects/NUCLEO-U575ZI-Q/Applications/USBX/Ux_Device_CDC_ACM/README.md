@@ -1,14 +1,13 @@
-
 ## <b>Ux_Device_CDC_ACM Application Description</b>
 
 This application provides an example of Azure RTOS USBX stack usage on NUCLEO-U575ZI-Q board, it shows how to develop USB Device communication Class "CDC_ACM" based application.
 The application is designed to emulate an USB-to-UART bridge following the Virtual COM Port (VCP) implementation, the code provides all required device descriptors framework
 and associated Class descriptor report to build a compliant USB CDC_ACM device.
-At the beginning ThreadX call the entry function tx_application_define(), at this stage, all USBx resources are initialized, the CDC_ACM Class driver is registered and
+At the beginning ThreadX call the entry function tx_application_define(), at this stage, all USBx resources are initialized, the CDC_ACM class driver is registered and
 the application creates 3 threads with the same priorities :
 
-  - app_ux_device_thread_entry (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver and start the device.
-  - usbx_cdc_acm_read_thread_entry (Prio : 20; PreemptionPrio : 20) used to Read the received data from Virtual COM Port.
+  - app_ux_device_thread_entry      (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver and start the device.
+  - usbx_cdc_acm_read_thread_entry  (Prio : 20; PreemptionPrio : 20) used to Read the received data from Virtual COM Port.
   - usbx_cdc_acm_write_thread_entry (Prio : 20; PreemptionPrio : 20) used to send the received data over UART .
 
 The thread app_ux_device_thread_entry is responsible to start or stop the USB device.
@@ -31,8 +30,8 @@ During enumeration phase, three communication pipes "endpoints" are declared in 
    When control setup is received, the corresponding request is executed in ux_app_parameters_change().
 
 In CDC_ACM application, two requests are implemented:
-    - Set line: Set the bit rate, number of Stop bits, parity, and number of data bits
-    - Get line: Get the bit rate, number of Stop bits, parity, and number of data bits
+    - Set line: set the bit rate, number of stop bits, parity, and number of data bits
+    - Get line: get the bit rate, number of stop bits, parity, and number of data bits
    The other requests (send break, control line state) are not implemented.
 
 <b>Notes</b>
@@ -43,24 +42,24 @@ The support of the VCP interface is managed through the ST Virtual COM Port driv
 - CDC ACM non-blocking transmission by default disabled, to enable non-blocking transmission UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE must be disabled
   and 2048 additional in USBX byte pool and USBX_MEMORY_SIZE should be added.
 
-- The user has to check the list of the COM ports in Device Manager to find out the COM port number that have been assigned (by OS) to the VCP interface.
+- The user has to check the list of the COM ports in device Manager to find out the COM port number that have been assigned (by OS) to the VCP interface.
 
 #### <b>Expected success behavior</b>
 
 When plugged to PC host, the NUCLEO-U575ZI-Q must be properly enumerated as an USB Serial device and an STlink Com port.
 During the enumeration phase, the device must provide host with the requested descriptors (Device descriptor, configuration descriptor, string descriptors).
 Those descriptors are used by host driver to identify the device capabilities. Once NUCLEO-U575ZI-Q USB device successfully completed the enumeration phase,
-Open two hyperterminals (USB com port and UART com port(USB STLink VCP)) to send/receive data to/from host from/to device.
+open two hyperterminals (USB COM port and UART COM port(USB STLink VCP)) to send/receive data to/from host from/to device.
 
 #### <b>Error behaviors</b>
 
-Host PC shows that USB device does not operate as designed (CDC Device enumeration failed, PC and Device can not communicate over VCP ports).
+Host PC shows that USB device does not operate as designed (CDC device enumeration failed, PC and device can not communicate over VCP ports).
 
 The Red LED is toggling to indicate any error that has occurred.
 
 #### <b>Assumptions if any</b>
 
-User is familiar with USB 2.0 "Universal Serial BUS" Specification and CDC_ACM class Specification.
+User is familiar with USB 2.0 "Universal Serial BUS" specification and CDC_ACM class specification.
 
 #### <b>Known limitations</b>
 
@@ -114,19 +113,18 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
 
 RTOS, ThreadX, USBXDevice, USB_OTG, Full Speed, CDC, VCP, USART, DMA, Mouse, USBPD.
 
-
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on NUCLEO-U575ZI-Q devices.
-  - This example has been tested with STMicroelectronics NUCLEO-U575ZI-Q boards Revision MB1549-U575ZIQ-C01 and can be easily tailored to any other supported device and development board.
-  - NUCLEO-U575ZI-Q Set-up
-  - Connect the NUCLEO-U575ZI-Q board CN15 to the PC through "MICRO-USB" to "Standard A" cable.
-  - For VCP the configuration is dynamic for example it can be :
-    - BaudRate = 115200 baud
-    - Word Length = 8 Bits
-    - Stop Bit = 1
-    - Parity = None
-    - Flow control = None
+  - This application runs on NUCLEO-U575ZI-Q devices.
+  - This application has been tested with STMicroelectronics NUCLEO-U575ZI-Q boards revision MB1549-U575ZIQ-C01 and can be easily tailored to any other supported device and development board.
+  - NUCLEO-U575ZI-Q Set-up :
+    - Connect the NUCLEO-U575ZI-Q board CN1 to the PC through "MICRO-USB" to "Standard A" cable.
+    - For VCP the configuration is dynamic for example it can be :
+       - BaudRate = 115200 baud
+       - Word Length = 8 Bits
+       - Stop Bit = 1
+       - Parity = None
+       - Flow control = None
 
   - The USART1 interface available on PA9 and PA10 of the microcontroller are
   connected to ST-LINK MCU.

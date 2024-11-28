@@ -45,8 +45,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 CRYP_HandleTypeDef hcryp;
-uint32_t pKeyAES[4] = {0xC939CC13,0x397C1D37,0xDE6AE0E1,0xCB7C423C};
-uint32_t pInitVectAES[4] = {0xB3D8CC01,0x7CBB89B3,0x9E0F67E2,0x00000002};
+__ALIGN_BEGIN static const uint32_t pKeyAES[4] __ALIGN_END = {
+                            0xC939CC13,0x397C1D37,0xDE6AE0E1,0xCB7C423C};
+__ALIGN_BEGIN static const uint32_t pInitVectAES[4] __ALIGN_END = {
+                            0xB3D8CC01,0x7CBB89B3,0x9E0F67E2,0x00000002};
 __ALIGN_BEGIN static const uint32_t HeaderAES[4] __ALIGN_END = {
                             0x24825602,0xbd12a984,0xe0092d3e,0x448eda5f};
 

@@ -50,7 +50,7 @@
 #elif defined (STM32U595xx) || defined (STM32U599xx) \
    || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
    || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
-   || defined (STM32U5G7xx)
+   || defined (STM32U5G7xx) || defined (STM32U5F7xx)
 #define PAGE_MAX_NUMBER_IN_BANK 255
 #endif
 
@@ -344,6 +344,21 @@ const struct mpu_armv8m_region_cfg_t region_cfg_appli_ns[] __attribute__((sectio
                FLOW_CTRL_MPU_NS_A_EN_R5,
                FLOW_STEP_MPU_NS_A_CH_R5,
                FLOW_CTRL_MPU_NS_A_CH_R5,
+#endif  /* FLOW_CONTROL */
+           },
+           {
+               6,
+               FLASH_OTP_BASE,
+               FLASH_OTP_BASE + FLASH_OTP_SIZE - 1,
+               MPU_ARMV8M_MAIR_ATTR_DATA_IDX,
+               MPU_ARMV8M_XN_EXEC_NEVER,
+               MPU_ARMV8M_AP_RW_PRIV_ONLY,
+               MPU_ARMV8M_SH_NONE,
+#ifdef FLOW_CONTROL
+               FLOW_STEP_MPU_NS_A_EN_R6,
+               FLOW_CTRL_MPU_NS_A_EN_R6,
+               FLOW_STEP_MPU_NS_A_CH_R6,
+               FLOW_CTRL_MPU_NS_A_CH_R6,
 #endif  /* FLOW_CONTROL */
            }
 };
@@ -1044,7 +1059,7 @@ static void secure_internal_flash(uint32_t offset_start, uint32_t offset_end)
 #elif defined (STM32U595xx) || defined (STM32U599xx) \
    || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
    || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
-   || defined (STM32U5G7xx)
+   || defined (STM32U5G7xx) || defined (STM32U5F7xx)
     volatile uint32_t *SecBB[16] = {&FLASH_S->SECBB1R1, &FLASH_S->SECBB1R2, &FLASH_S->SECBB1R3, &FLASH_S->SECBB1R4,
                                     &FLASH_S->SECBB1R5, &FLASH_S->SECBB1R6, &FLASH_S->SECBB1R7, &FLASH_S->SECBB1R8,
                                     &FLASH_S->SECBB2R1, &FLASH_S->SECBB2R2, &FLASH_S->SECBB2R3, &FLASH_S->SECBB2R4,

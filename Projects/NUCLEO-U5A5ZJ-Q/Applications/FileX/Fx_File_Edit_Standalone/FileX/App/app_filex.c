@@ -57,11 +57,11 @@ uint32_t media_memory[DEFAULT_SECTOR_SIZE / sizeof(uint32_t)];
 /* Private function prototypes -----------------------------------------------*/
 
 /* USER CODE BEGIN PFP */
-void Error_Handler(void);
+
 /* USER CODE END PFP */
 /**
   * @brief  Application FileX Initialization.
-  * @param memory_ptr: memory pointer
+  * @param  None
   * @retval int
   */
 UINT MX_FileX_Init(void)
@@ -71,7 +71,7 @@ UINT MX_FileX_Init(void)
 
   /* USER CODE END MX_FileX_Init */
 
-/* Initialize FileX.  */
+  /* Initialize FileX. */
   fx_system_initialize();
 
   /* USER CODE BEGIN MX_FileX_Init 1*/

@@ -55,6 +55,9 @@ UX_HOST_CLASS_HID_MOUSE       *mouse;
 UX_HOST_CLASS_HID_KEYBOARD    *keyboard;
 TX_QUEUE                      ux_app_MsgQueue_UCPD;
 
+extern uint16_t                        RxSzeIdx;
+extern UX_HOST_CLASS_CDC_ACM_RECEPTION cdc_acm_reception;
+
 #if defined ( __ICCARM__ ) /* IAR Compiler */
   #pragma data_alignment=4
 #endif /* defined ( __ICCARM__ ) */
@@ -364,6 +367,10 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *cur
       {
         /* Clear cdc instance */
         cdc_acm = UX_NULL;
+
+
+        /* Reinitialize reception block size index */
+        RxSzeIdx=0;
 
         USBH_UsrLog("\nUSB CDC ACM Device Removal");
 

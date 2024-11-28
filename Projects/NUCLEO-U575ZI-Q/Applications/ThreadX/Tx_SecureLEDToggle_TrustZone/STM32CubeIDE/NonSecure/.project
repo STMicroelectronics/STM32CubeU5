@@ -2,9 +2,7 @@
 <projectDescription>
 	<name>Tx_SecureLEDToggle_TrustZone_NonSecure</name>
 	<comment></comment>
-	<projects>
-		<project>Tx_SecureLEDToggle_TrustZone_Secure</project>
-	</projects>
+
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>

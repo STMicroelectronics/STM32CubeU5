@@ -71,7 +71,7 @@ client disconnected from server</code></pre>
 </ul>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
 <ul>
-<li>The red LED is toggling to indicate any error that has occurred.</li>
+<li>The red LED is toggling to indicate any error that has occurred while the green LED is turned OFF.</li>
 </ul>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
 <p>None</p>
@@ -98,7 +98,7 @@ client disconnected from server</code></pre>
 <li><p>ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.</p></li>
 <li><p>ThreadX offers the “tx_application_define()” function, that is automatically called by the tx_kernel_enter() API. It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools…) but it should not in any way contain a system API call (HAL or BSP).</p></li>
 <li><p>Using dynamic memory allocation requires to apply some changes to the linker file.</p>
-<p>ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function, using the “first_unused_memory” argument. This require changes in the linker files to expose this memory location.</p>
+<p>ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function, using the “first_unused_memory” argument. This requires changes in the linker files to expose this memory location.</p>
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
 </ul>
@@ -138,11 +138,11 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <li>The module firmware running on the EMW3080B Wi-Fi module</li>
 </ol></li>
 <li><p>This application uses an updated version of the EMW3080B MXCHIP Wi-Fi module driver V2.3.4.</p></li>
-<li><p>The B-U585I-IOT02A Discovery board Revision C is delivered with the EMW3080B MXCHIP Wi-Fi module firmware V2.1.11; to upgrade your board with the required version V2.3.4, please visit <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">X-WIFI-EMW3080B</a>, using the <code>EMW3080update_B-U585I-IOT02A-RevC_V2.3.4_SPI.bin</code> file under the V2.3.4/SPI folder.</p></li>
+<li><p>The B-U585I-IOT02A Discovery board Revision D is delivered with the EMW3080B MXCHIP Wi-Fi module firmware V2.1.11; to upgrade your board with the required version V2.3.4, please visit <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">X-WIFI-EMW3080B</a>, using the <code>EMW3080update_B-U585I-IOT02A-RevC_V2.3.4_SPI.bin</code> file under the V2.3.4/SPI folder.</p></li>
 <li><p>Please note that module firmware version V2.1.11 is not backwards compatible with the driver V2.3.4 (the V2.1.11 module firmware is compatible with the driver versions from V2.1.11 to V2.1.13).</p></li>
 <li><p>The module driver is available under <a href="../../../../../Drivers/BSP/Components/mx_wifi/">/Drivers/BSP/Components/mx_wifi</a>, and its version is indicated in the <a href="../../../../../Drivers/BSP/Components/mx_wifi/Release_Notes.html">Release_Notes.html</a> file.</p></li>
 <li><p>Be aware that some STM32U5 SW packages (for examples X-CUBE-AZURE and X-CUBE-AWS) may continue to use older version of the EMW3080B MXCHIP module firmware; thanks to refer to the release notes of each SW package to know the recommended module firmware’s version which can be retrieved from this page <a href="https://www.st.com/en/development-tools/x-wifi-emw3080b.html">X-WIFI-EMW3080B</a>.</p></li>
-<li><p>This application has been tested with B-U585I-IOT02A (MB1551-U585AI) boards Revision: RevC and can be easily tailored to any other supported device and development board.</p></li>
+<li><p>This application has been tested with B-U585I-IOT02A (MB1551-U585AI) boards Revision: Rev D01 and can be easily tailored to any other supported device and development board.</p></li>
 <li>This application uses USART1 to display logs, the hyperterminal configuration is as follows:
 <ul>
 <li>BaudRate = 115200 baud</li>

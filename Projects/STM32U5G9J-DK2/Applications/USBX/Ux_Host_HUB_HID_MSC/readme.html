@@ -30,26 +30,26 @@ vertical-align: middle;
 <h2><b>Ux_Host_HUB_HID_MSC Application Description</b></h2>
 <p>This application provides an example of Azure RTOS USBX stack usage.
 This application demonstrates the ability of USB Host Stack to interact
-with more than one USB Mass Storage and HID Devices through a Hub. It
-shows how to develop an USB Host Hub application supporting Human
+with more than one USB Mass Storage and HID Devices through a HUB. It
+shows how to develop an USB Host HUB application supporting Human
 Interface “HID” and Mass Storage “MSC” class drivers to be able to
-enumerate and communicates with: - An USB hub. - A mouse. - A keyboard.
+enumerate and communicates with: - An USB HUB. - A mouse. - A keyboard.
 - An USB removable flash disk.</p>
 <p>The application is designed to behave as an:</p>
 <ul>
 <li>USB HUB Host, the code provides all required features to enumerate
-HUB device, the USBX initialize the host hub class and display the
-device information through uart HyperTerminal.</li>
+HUB device, the USBX initialize the host HUB class and display the
+device information through UART HyperTerminal.</li>
 <li>USB HID Host, the code provides required requests to properly
-enumerate HID devices , HID Class APIs to decode HID reports received
-from a mouse or a keyboard and display data on uart HyperTerminal.</li>
+enumerate HID devices , HID class APIs to decode HID reports received
+from a mouse or a keyboard and display data on UART HyperTerminal.</li>
 <li>USB MSC Host able to operate with an USB flash disk using the Bulk
 Only Transfer (BOT) and Small Computer System Interface (SCSI)
 transparent commands combined with a file system AzureRTOS FILEX.</li>
 </ul>
 <p>The main entry function tx_application_define() is then called by
 ThreadX during kernel start, at this stage, all USBx resources are
-initialized, the HUB, the MSC and the HID Class drivers are registered.
+initialized, the HUB, the MSC and the HID class drivers are registered.
 The application creates 4 threads with different priorities :</p>
 <ul>
 <li>app_ux_host_thread_entry (Priority : 10; Preemption threshold : 10)
@@ -64,13 +64,13 @@ used to decode HID reports received from a keyboard.</li>
 used to proceed to file operations.</li>
 </ul>
 <h4 id="expected-success-behavior"><b>Expected success behavior</b></h4>
-<p>When a hub device plugged to STM32U5G9J-DK2 board, a Message will be
-displayed on the uart HyperTerminal showing the Vendor ID and Product ID
+<p>When a HUB device plugged to STM32U5G9J-DK2 board, a message will be
+displayed on the UART HyperTerminal showing the Vendor ID and Product ID
 of the attached device. After enumeration phase, a message will
 indicates that the device is ready for use and start connecting other
-devices through the hub.</p>
-<p>When a hid device plugged to STM32U5G9J-DK2 board, a Message will be
-displayed on the uart HyperTerminal showing the Vendor ID and Product ID
+devices through the HUB.</p>
+<p>When a HID device plugged to STM32U5G9J-DK2 board, a message will be
+displayed on the UART HyperTerminal showing the Vendor ID and Product ID
 of the attached device. After enumeration phase, a message will
 indicates that the device is ready for use. The host must be able to
 properly decode HID reports sent by the corresponding device and display
@@ -86,15 +86,15 @@ those information on the HyperTerminal.</p>
 <ul>
 <li>Pressed key</li>
 </ul>
-<p>When an usb flash disk is plugged to STM32U5G9J-DK2 board, a Message
-will be displayed on the uart HyperTerminal showing the Vendor ID and
+<p>When an usb flash disk is plugged to STM32U5G9J-DK2 board, a message
+will be displayed on the UART HyperTerminal showing the Vendor ID and
 the Product ID of the attached device. After enumeration phase , the
 host proceed to file operations :</p>
 <ul>
 <li>Create a “Test.txt” file.</li>
 <li>Write a small text in the created file.</li>
 <li>Read the written text and check data integrity</li>
-<li>Close the File</li>
+<li>Close the file</li>
 </ul>
 <p>During the file operations process a message will be displayed on the
 HyperTerminal to indicates the outcome of each operation
@@ -106,11 +106,11 @@ operations.</p>
 and two instances for Mass Storage devices to enumerate and communicate
 with.</p>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
-<p>Errors are detected such as (Unsupported device, Enumeration Fail)
+<p>Errors are detected (such as unsupported device, enumeration fail)
 and the corresponding message is displayed on the HyperTerminal.</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
-<p>User is familiar with USB 2.0 “Universal Serial BUS” Specification,
-HUB, HID and Mass storage class Specification.</p>
+<p>User is familiar with USB 2.0 “Universal Serial BUS” specification,
+HUB, HID and Mass storage class specification.</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
 <p>None</p>
 <h3 id="notes"><b>Notes</b></h3>
@@ -118,11 +118,7 @@ HUB, HID and Mass storage class Specification.</p>
 <ul>
 <li>ThreadX uses the Systick as time base, thus it is mandatory that the
 HAL uses a separate time base through the TIM IPs.</li>
-<li>ThreadX is configured with 100 ticks/sec by default, this should be
-taken into account when using delays or timeouts at application. It is
-always possible to reconfigure it in the “tx_user.h”, the
-“TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in
-“tx_initialize_low_level.S” file too.</li>
+<li>ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it, by updating the "TX_TIMER_TICKS_PER_SECOND" define in the "tx_user.h" file. The update should be reflected in "tx_initialize_low_level.S" file too.</li>
 <li>ThreadX is disabling all interrupts during kernel start-up to avoid
 any unexpected behavior, therefore all system related calls (HAL, BSP)
 should be done either at the beginning of the application or inside the
@@ -135,7 +131,7 @@ way contain a system API call (HAL or BSP).</li>
 <li>Using dynamic memory allocation requires to apply some changes to
 the linker file. ThreadX needs to pass a pointer to the first free
 memory location in RAM to the tx_application_define() function, using
-the “first_unused_memory” argument. This require changes in the linker
+the “first_unused_memory” argument. This requires changes in the linker
 files to expose this memory location.
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
@@ -174,16 +170,16 @@ MSC, Mass Storage, BOT, SCSI, Removable drive, UART/USART</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
-<li><p>This application runs on STM32U5G9xx devices</p></li>
+<li><p>This application runs on STM32U5Gxx devices</p></li>
 <li><p>This application has been tested with STMicroelectronics
-STM32U5G9J-DK2 MB1918-U5G9ZJQ-A02. and can be easily tailored to any
+STM32U5G9J-DK2 revision MB1918-U5G9ZJQ-B01 and can be easily tailored to any
 other supported device and development board.</p></li>
 <li><p>STM32U5G9J-DK2 Set-up</p>
 <ul>
-<li>Plug the USB Hub device into the STM32U5G9J-DK2 board through ‘Type C
+<li>Plug the USB HUB device into the STM32U5G9J-DK2 board through ‘Type C
 to A-Female’ cable to the connector:
 <ul>
-<li>CN5 : to use USB High Speed OTG IP (HS)</li>
+<li>CN2 : to use USB High Speed OTG IP (HS)</li>
 </ul></li>
 <li>Connect ST-Link cable to the PC USB port to display data on the
 HyperTerminal.</li>
@@ -203,7 +199,7 @@ HyperTerminal.</li>
 <p><b>Note</b></p>
 <p>The USB_TYPE_C CONNECTOR in STM32U5G9ZJT6Q Discovery is SINK ONLY
 (Vbus drive not supported), therefore this example can only be used as a
-reference to show how to enable hub functionality. User should ensure to
+reference to show how to enable HUB functionality. User should ensure to
 inject 5V on USB Vbus pin to get the example working.</p>
 <p>It is mandatory to check that the Jumpers below are fitted: JP4 :
 USBC_5V Jumper is fitted in order to provide Vbus 5V.</p>

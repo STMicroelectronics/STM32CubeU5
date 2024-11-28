@@ -16,8 +16,8 @@
         <TargetCommonOption>
           <Device>STM32U5G9ZJTxQ</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32U5Fx-5Gx_DFP.0.0.1</PackID>
-          <PackURL>http://www.keil.com/pack</PackURL>
+          <PackID>Keil.STM32U5xx_DFP.2.2.4</PackID>
+          <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x002F0000) IRAM2(0x24000000,0x01000000) IROM(0x08000000,0x00400000) XRAM(0x28000000,0x00004000) CPUTYPE("Cortex-M33") FPU3(SFPU) DSP TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -440,9 +440,9 @@
           <GroupName>Application/User/LevelX/Target</GroupName>
           <Files>
             <File>
-              <FileName>lx_stm32_nor_custom_driver.c</FileName>
+              <FileName>lx_stm32_xspi_driver_glue.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../LevelX/Target/lx_stm32_nor_custom_driver.c</FilePath>
+              <FilePath>..\LevelX\Target\lx_stm32_xspi_driver_glue.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -469,6 +469,16 @@
         <Group>
           <GroupName>Drivers/STM32U5xx_HAL_Driver</GroupName>
           <Files>
+            <File>
+              <FileName>stm32u5xx_hal_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32u5xx_hal_tim_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_tim_ex.c</FilePath>
+            </File>
             <File>
               <FileName>stm32u5xx_hal_cortex.c</FileName>
               <FileType>1</FileType>
@@ -558,16 +568,6 @@
               <FileName>stm32u5xx_ll_dlyb.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_dlyb.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32u5xx_hal_tim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_tim.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32u5xx_hal_tim_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_tim_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32u5xx_hal_uart.c</FileName>
@@ -2692,6 +2692,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Middlewares/LevelX/XSPI memory interface</GroupName>
+          <Files>
+            <File>
+              <FileName>lx_stm32_xspi_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Middlewares\ST\levelx\common\drivers\lx_stm32_xspi_driver.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
@@ -2701,8 +2711,8 @@
   <RTE>
     <apis/>
     <components>
-      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="4.3.0" condition="CMSIS Core">
-        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="4.5.0"/>
+      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.6.0" condition="ARMv6_7_8-M Device">
+        <package name="CMSIS" schemaVersion="1.7.7" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/>
         <targetInfos>
           <targetInfo name="Fx_NoR_Write_Read_File"/>
         </targetInfos>

@@ -26,10 +26,10 @@
 <p>Upon successful opening of the created SRAM-Disk media, FileX continues with creating a file called “STM32.TXT” into the root directory by calling MX_FileX_Process(VOID *arg) function, then writes into it some predefined data. The file is re-opened in read only mode and content is checked.</p>
 <p>As stated earlier, the present application runs in standalone mode without ThreadX, for this reason, the standalone variant of fileX is used, plus the following flags need to be set in fx_user.h: #define FX_SINGLE_THREAD #define FX_STANDALONE_ENABLE</p>
 <h4 id="expected-success-behavior"><b>Expected success behavior</b></h4>
-<p>Successful operation is marked by a toggling green led light.</p>
+<p>Successful operation is marked by a toggling green LED light.</p>
 <p>Also, information regarding executing operation on the SRAM-Disk is printed to the serial port.</p>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
-<p>On failure,an error message is printed to the serial port while the green LED is switched OFF.</p>
+<p>On failure, an error message is printed to the serial port while the green LED is switched OFF.</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
 <p>None</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
@@ -47,8 +47,8 @@
 <p>FileX, File System, FAT32, SRAM</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
-<li>This example runs on STM32U545xx devices</li>
-<li>This example has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision: MB1841-A02. and can be easily tailored to any other supported device and development board.</li>
+<li>This application runs on STM32U545xx devices</li>
+<li>This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards revision: MB1841-A02 and can be easily tailored to any other supported device and development board.</li>
 <li><p>This application uses USART1 to display logs, the hyperterminal configuration is as follows:</p>
 <ul>
 <li>BaudRate = 115200 baud</li>

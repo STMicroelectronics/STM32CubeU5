@@ -69,6 +69,7 @@ void HAL_MspInit(void)
   /* USER CODE END MspInit 0 */
 
   __HAL_RCC_PWR_CLK_ENABLE();
+  HAL_PWREx_EnableVddIO2();
 
   /* System interrupt init*/
 
@@ -95,6 +96,7 @@ void HAL_DCACHE_MspInit(DCACHE_HandleTypeDef* hdcache)
   /* USER CODE BEGIN DCACHE1_MspInit 1 */
 
   /* USER CODE END DCACHE1_MspInit 1 */
+
   }
 
 }
@@ -222,6 +224,7 @@ void HAL_OSPI_MspInit(OSPI_HandleTypeDef* hospi)
   /* USER CODE BEGIN OCTOSPI2_MspInit 1 */
 
   /* USER CODE END OCTOSPI2_MspInit 1 */
+
   }
 
 }
@@ -319,6 +322,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
   /* USER CODE BEGIN SPI2_MspInit 1 */
 
   /* USER CODE END SPI2_MspInit 1 */
+
   }
 
 }
@@ -399,6 +403,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
   /* USER CODE BEGIN USART1_MspInit 1 */
 
   /* USER CODE END USART1_MspInit 1 */
+
   }
 
 }

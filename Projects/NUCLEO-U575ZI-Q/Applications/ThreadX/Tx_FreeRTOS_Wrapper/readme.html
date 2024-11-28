@@ -38,7 +38,7 @@ during kernel start, at this stage, the application creates 1 thread :
 <h4 id="expected-success-behavior"><b>Expected success behavior</b></h4>
 <p>‘LED_GREEN’ toggles every 500ms.</p>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
-<p>‘LED_RED’ toggles every 1 second if any error occurs.</p>
+<p>On failure, 'LED_GREEN' switched OFF and 'LED_RED' toggles every 1 second if any error occurs.</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
 <p>None</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
@@ -88,8 +88,8 @@ or modify the line below in &quot;tx_initialize_low_level.S to match the memory 
    } &gt;RAM_D1 AT&gt; RAM_D1</code></pre>
 <pre><code>The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
 In the example above the ThreadX heap size is set to 64KBytes.
-The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.  
-Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).  
+The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
+Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
 Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code></pre>
 <ul>
 <li>The “tx_initialize_low_level.S” should be also modified to enable
@@ -101,9 +101,9 @@ the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
-<li>This example runs on STM32U575xx devices</li>
-<li>This example has been tested with STMicroelectronics NUCLEO-U575ZI-Q
-boards Revision: MB1549-B03. and can be easily tailored to any other
+<li>This application runs on STM32U575xx devices</li>
+<li>This application has been tested with STMicroelectronics NUCLEO-U575ZI-Q
+boards revision: MB1549-C01 and can be easily tailored to any other
 supported device and development board.</li>
 </ul>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>

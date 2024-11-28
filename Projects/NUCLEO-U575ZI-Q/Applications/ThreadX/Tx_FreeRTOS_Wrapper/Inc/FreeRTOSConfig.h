@@ -52,7 +52,7 @@
 /* #define configUSE_PORT_OPTIMISED_TASK_SELECTION  0 */
 
 /* #define configMESSAGE_BUFFER_LENGTH_TYPE         size_t */
-#define configSTACK_DEPTH_TYPE                     uint32_t
+#define configSTACK_DEPTH_TYPE                      uint32_t
 
 /* #define configUSE_CO_ROUTINES                    0   */
 /* #define configMAX_CO_ROUTINE_PRIORITIES          (2) */
@@ -88,14 +88,5 @@
 
 /* Set to 1 to support auto initialization, see documentation for details. */
 #define TX_FREERTOS_AUTO_INIT 0
-
-/* define interrupts enable/disable*/
-#if defined(__clang__)  /* CC ARM Compiler */
-#define portDISABLE_INTERRUPTS()  __disable_irq()
-#define portENABLE_INTERRUPTS()	  __enable_irq()
-#elif defined ( __GNUC__ ) /* GNU Compiler */
-#define portDISABLE_INTERRUPTS() __disable_interrupts()
-#define portENABLE_INTERRUPTS()	 __enable_interrupts()
-#endif
 
 #endif /* #ifndef FREERTOS_CONFIG_H */

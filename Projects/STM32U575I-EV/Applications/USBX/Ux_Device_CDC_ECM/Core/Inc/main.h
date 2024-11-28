@@ -77,6 +77,10 @@ void MX_I2C2_Init(void);
 #define LED_GREEN_GPIO_Port GPIOB
 #define LED_RED_Pin GPIO_PIN_7
 #define LED_RED_GPIO_Port GPIOH
+#define USART1_RX_Pin GPIO_PIN_10
+#define USART1_RX_GPIO_Port GPIOA
+#define USART1_TX_Pin GPIO_PIN_9
+#define USART1_TX_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 

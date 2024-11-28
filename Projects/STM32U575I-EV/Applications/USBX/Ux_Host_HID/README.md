@@ -1,17 +1,17 @@
 
 ## <b>Ux_Host_HID Application Description</b>
 
-This application provides an example of Azure RTOS USBX stack usage .
+This application provides an example of Azure RTOS USBX stack usage.
 It shows how to develop USB Host Human Interface "HID" able to enumerate and communicates with a mouse or a keyboard.
 
 The application is designed to behave as an USB HID Host, the code provides required requests to properly enumerate
-HID devices , HID Class APIs to decode HID reports received from a mouse or a keyboard and display data on uart HyperTerminal.
+HID devices, HID Class APIs to decode HID reports received from a mouse or a keyboard and display data on uart HyperTerminal.
 
 The main entry function tx_application_define() is then called by ThreadX during kernel start, at this stage, all USBx resources
 are initialized, the HID Class driver and HID clients are registered.
 The application creates 3 threads with different priorities :
 
-  - usbx_app_thread_entry     (Priority : 10; Preemption threshold : 10) used to initialize USB DRD HAL HCD driver.
+  - app_ux_host_thread_entry  (Priority : 10; Preemption threshold : 10) used to initialize USB DRD HAL HCD driver.
   - hid_mouse_thread_entry    (Priority : 30; Preemption threshold : 30) used to decode HID reports received  from a mouse.
   - hid_keyboard_thread_entry (Priority : 30; Preemption threshold : 30) used to decode HID reports received  from a keyboard.
 
@@ -56,7 +56,7 @@ When Using a keyboard with multiple interfaces user must increase the size of US
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
-   This require changes in the linker files to expose this memory location.
+   This requires changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
      place in RAM_region    { last section FREE_MEM };
@@ -86,16 +86,14 @@ When Using a keyboard with multiple interfaces user must increase the size of US
 
     + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
 
-
 ### <b>Keywords</b>
 
-Connectivity, USBX Host, USBPD, ThreadX, USB, HID, Mouse, Keyboard, UART, USART,
-
+Connectivity, USBX Host, USBPD, ThreadX, USB, HID, Mouse, Keyboard, UART, USART
 
 ### <b>Hardware and Software environment</b>
 
   - This application runs on STM32U575xx devices
-  - This application has been tested with STMicroelectronics STM32U575I-EV MB1550-U575AIQ-C01.
+  - This application has been tested with STMicroelectronics STM32U575I-EV boards revision: MB1550-U575AIQ-C02
     and can be easily tailored to any other supported device and development board.
 
 - STM32U575I-EV Set-up
@@ -114,9 +112,8 @@ Connectivity, USBX Host, USBPD, ThreadX, USB, HID, Mouse, Keyboard, UART, USART,
 <b>Note</b>
 It is mandatory to check that the Jumpers below are fitted:
     JP25           : UCPD_5V Jumper is fitted in order to provide Vbus 5V.
-    JP6 (UCPD_SRC) : This application initialize the type C port in source mode with only one PDO at 5V.
-    JP14 and JP15  : To ensure the correct functionality of TCPP03(Protection IC).  
-
+    JP8 (UCPD_SRC) : This application initialize the type C port in source mode with only one PDO at 5V.
+    JP14 and JP15  : To ensure the correct functionality of TCPP03(Protection IC).
 
 ### <b>How to use it ?</b>
 
@@ -128,6 +125,5 @@ In order to make the program work, you must do the following :
 
 <b>Note</b>
 
-The user has to check the list of the COM ports in Device Manager to find out the number 
-of the COM ports that have been assigned (by OS) to the Stlink VCP.
-The application uses the external HSE clock as USB source clock.
+ - The user has to check the list of the COM ports in Device Manager to find out the number of the COM ports that have been assigned (by OS) to the Stlink VCP.
+ - The application uses the external HSE clock as USB source clock.

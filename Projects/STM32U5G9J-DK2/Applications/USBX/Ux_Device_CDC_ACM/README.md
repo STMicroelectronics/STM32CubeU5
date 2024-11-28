@@ -1,17 +1,16 @@
-
 ## <b>Ux_Device_CDC_ACM Application Description</b>
 
 This application provides an example of Azure RTOS USBX stack usage on STM32U5G9J-DK2 board,
-it shows how to develop USB Device communication Class "CDC_ACM" based application.
+it shows how to develop USB device communication class "CDC_ACM" based application.
 
 The application is designed to emulate an USB-to-UART bridge following the Virtual COM Port (VCP) implementation, the code provides all required device descriptors framework
-and associated Class descriptor report to build a compliant USB CDC_ACM device.
-At the beginning ThreadX call the entry function tx_application_define(), at this stage, all USBx resources are initialized, the CDC_ACM Class driver is registered and
+and associated class descriptor report to build a compliant USB CDC_ACM device.
+At the beginning ThreadX call the entry function tx_application_define(), at this stage, all USBx resources are initialized, the CDC_ACM class driver is registered and
 the application creates 3 threads with the same priorities :
 
-  - app_ux_device_thread_entry (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver and start the device.
-  - usbx_cdc_acm_read_thread_entry (Prio : 20; PreemptionPrio : 20) used to Read the received data from Virtual COM Port.
-  - usbx_cdc_acm_write_thread_entry (Prio : 20; PreemptionPrio : 20) used to send the received data over UART .
+  - app_ux_device_thread_entry      (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver and start the device.
+  - usbx_cdc_acm_read_thread_entry  (Prio : 20; PreemptionPrio : 20) used to read the received data from Virtual COM Port.
+  - usbx_cdc_acm_write_thread_entry (Prio : 20; PreemptionPrio : 20) used to send the received data over UART.
 
 The thread app_ux_device_thread_entry is responsible to start or stop the USB device.
 At Run mode the thread will be waiting on message queue form USB_PD interface, when the USB device is plugged to host PC
@@ -33,8 +32,8 @@ During enumeration phase, three communication pipes "endpoints" are declared in 
    When control setup is received, the corresponding request is executed in ux_app_parameters_change().
 
 In CDC_ACM application, two requests are implemented:
-    - Set line: Set the bit rate, number of Stop bits, parity, and number of data bits
-    - Get line: Get the bit rate, number of Stop bits, parity, and number of data bits
+    - Set line: set the bit rate, number of stop bits, parity, and number of data bits
+    - Get line: get the bit rate, number of stop bits, parity, and number of data bits
    The other requests (send break, control line state) are not implemented.
 
 <b>Notes</b>
@@ -50,19 +49,19 @@ The support of the VCP interface is managed through the ST Virtual COM Port driv
 #### <b>Expected success behavior</b>
 
 When plugged to PC host, the STM32U5G9J-DK2 must be properly enumerated as an USB Serial device and an STlink Com port.
-During the enumeration phase, the device must provide host with the requested descriptors (Device descriptor, configuration descriptor, string descriptors).
+During the enumeration phase, the device must provide host with the requested descriptors (device descriptor, configuration descriptor, string descriptors).
 Those descriptors are used by host driver to identify the device capabilities. Once STM32U5G9J-DK2 USB device successfully completed the enumeration phase,
-Open two hyperterminals (USB com port and UART com port(USB STLink VCP)) to send/receive data to/from host from/to device.
+open two hyperterminals (USB COM port and UART COM port(USB STLink VCP)) to send/receive data to/from host from/to device.
 
 #### <b>Error behaviors</b>
 
-Host PC shows that USB device does not operate as designed (CDC Device enumeration failed, PC and Device can not communicate over VCP ports).
+Host PC shows that USB device does not operate as designed (CDC device enumeration failed, PC and device can not communicate over VCP ports).
 
 The Red LED is toggling to indicate any error that has occurred.
 
 #### <b>Assumptions if any</b>
 
-User is familiar with USB 2.0 "Universal Serial BUS" Specification and CDC_ACM class Specification.
+User is familiar with USB 2.0 "Universal Serial BUS" specification and CDC_ACM class specification.
 
 #### <b>Known limitations</b>
 
@@ -73,14 +72,14 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it, by updating the "TX_TIMER_TICKS_PER_SECOND" define in the "tx_user.h" file. The update should be reflected in "tx_initialize_low_level.S" file too.
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
    It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL or BSP).
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
-   This require changes in the linker files to expose this memory location.
+   This requires changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
      place in RAM_region    { last section FREE_MEM };
@@ -114,15 +113,14 @@ The remote wakeup feature is not yet implemented (used to bring the USB suspende
 
 ### <b>Keywords</b>
 
-RTOS, ThreadX, USBXDevice, USB_OTG, Full Speed, CDC, VCP, USART, DMA, USBPD.
-
+RTOS, ThreadX, USBX Device, USB_OTG, Full Speed, CDC, VCP, USART, DMA, USBPD.
 
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on STM32U5G9xx devices.
-  - This example has been tested with STMicroelectronics STM32U5G9J-DK2 boards Revision MB1918-U5G9ZJQ_S-A01 and can be easily tailored to any other supported device and development board.
+  - This application runs on STM32U5Gxx devices.
+  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision MB1918-U5G9ZJQ-B01 and can be easily tailored to any other supported device and development board.
   - STM32U5G9J-DK2 Set-up
-  - Connect the STM32U5G9J-DK2 board CN15 to the PC through "TYPE-C" to "Standard A" cable.
+  - Connect the STM32U5G9J-DK2 board CN8 to the PC through "TYPE-C" to "Standard A" cable.
   - For VCP the configuration is dynamic for example it can be :
     - BaudRate = 115200 baud
     - Word Length = 8 Bits

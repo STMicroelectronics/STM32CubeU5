@@ -78,7 +78,7 @@
 #elif defined (STM32U595xx) || defined (STM32U599xx) \
    || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
    || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
-   || defined (STM32U5G7xx)
+   || defined (STM32U5G7xx) || defined (STM32U5F7xx)
 #define FLASH_B_SIZE                    (0x200000)   /* 2 MBytes*/
 #else
 #error "No STM32U5 version Defined"
@@ -179,7 +179,7 @@
 #elif defined (STM32U595xx) || defined (STM32U599xx) \
    || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
    || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
-   || defined (STM32U5G7xx)
+   || defined (STM32U5G7xx) || defined (STM32U5F7xx)
 #define FLASH_NS_PARTITION_SIZE         (0x128000) /* 1184 KB for NS partition */
 #endif
 #else
@@ -190,7 +190,7 @@
 #elif defined (STM32U595xx) || defined (STM32U599xx) \
    || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
    || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
-   || defined (STM32U5G7xx)
+   || defined (STM32U5G7xx) || defined (STM32U5F7xx)
 #define FLASH_NS_PARTITION_SIZE         (0x2F0000) /* 3,08 MB for NS partition */
 #endif
 

@@ -85,17 +85,17 @@ UINT MX_FileX_Init(VOID *memory_ptr);
 
 /* fx nor_ospi number of bytes per sector */
 #ifndef FX_NOR_OSPI_SECTOR_SIZE
-  #define FX_NOR_OSPI_SECTOR_SIZE         512
+  #define FX_NOR_OSPI_SECTOR_SIZE       512
 #endif
 
 /* fx nor_ospi number of FATs */
 #ifndef FX_NOR_OSPI_NUMBER_OF_FATS
-  #define FX_NOR_OSPI_NUMBER_OF_FATS        1
+  #define FX_NOR_OSPI_NUMBER_OF_FATS    1
 #endif
 
 /* fx nor_ospi Hidden sectors */
 #ifndef FX_NOR_OSPI_HIDDEN_SECTORS
-  #define FX_NOR_OSPI_HIDDEN_SECTORS        0
+  #define FX_NOR_OSPI_HIDDEN_SECTORS    0
 #endif
 
 /* USER CODE BEGIN PD */

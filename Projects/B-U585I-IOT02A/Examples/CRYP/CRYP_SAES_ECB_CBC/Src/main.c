@@ -43,7 +43,8 @@
 RNG_HandleTypeDef hrng;
 
 CRYP_HandleTypeDef hcryp;
-uint32_t pKeySAES[4] = {0x2B7E1516,0x28AED2A6,0xABF71588,0x09CF4F3C};
+__ALIGN_BEGIN static const uint32_t pKeySAES[4] __ALIGN_END = {
+                            0x2B7E1516,0x28AED2A6,0xABF71588,0x09CF4F3C};
 
 /* USER CODE BEGIN PV */
 
@@ -376,6 +377,7 @@ static void MX_SAES_AES_Init(void)
   hcryp.Init.KeySize = CRYP_KEYSIZE_128B;
   hcryp.Init.pKey = (uint32_t *)pKeySAES;
   hcryp.Init.Algorithm = CRYP_AES_ECB;
+  hcryp.Init.DataWidthUnit = CRYP_DATAWIDTHUNIT_WORD;
   hcryp.Init.KeyIVConfigSkip = CRYP_KEYIVCONFIG_ALWAYS;
   hcryp.Init.KeyMode = CRYP_KEYMODE_NORMAL;
   hcryp.Init.KeySelect = CRYP_KEYSEL_NORMAL;

@@ -397,7 +397,6 @@
 //   <o.25> EXTI14_IRQn           <0=> Secure state
 //   <o.26> EXTI15_IRQn           <0=> Secure state
 //   <o.27> IWDG_IRQn             <0=> Secure state
-//   <o.28> SAES_IRQn             <0=> Secure state
 //   <o.29> GPDMA1_Channel0_IRQn  <0=> Secure state
 //   <o.30> GPDMA1_Channel1_IRQn  <0=> Secure state
 //   <o.31> GPDMA1_Channel2_IRQn  <0=> Secure state
@@ -492,7 +491,6 @@
 //   <o.26> SAI1_IRQn             <0=> Secure state
 //   <o.27> SAI2_IRQn             <0=> Secure state
 //   <o.28> TSC_IRQn              <0=> Secure state
-//   <o.29> AES_IRQn              <0=> Secure state
 
 //   <o.30> RNG_IRQn              <0=> Secure state
 //   <o.31> FPU_IRQn              <0=> Secure state

@@ -388,6 +388,10 @@ static void MX_OPAMP1_Init(void)
   hopamp1.Init.NonInvertingInput = OPAMP_NONINVERTINGINPUT_IO0;
   hopamp1.Init.PowerMode = OPAMP_POWERMODE_NORMALPOWER_NORMALSPEED;
   hopamp1.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
+  hopamp1.Init.TrimmingValueP = 16;
+  hopamp1.Init.TrimmingValueN = 16;
+  hopamp1.Init.TrimmingValuePLowPower = 16;
+  hopamp1.Init.TrimmingValueNLowPower = 16;
   if (HAL_OPAMP_Init(&hopamp1) != HAL_OK)
   {
     Error_Handler();

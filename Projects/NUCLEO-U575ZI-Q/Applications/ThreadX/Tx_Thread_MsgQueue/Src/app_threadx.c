@@ -1,21 +1,21 @@
 /* USER CODE BEGIN Header */
 /**
-******************************************************************************
-* @file    app_threadx.c
-* @author  MCD Application Team
-* @brief   ThreadX applicative file
-******************************************************************************
-* @attention
-*
-* Copyright (c) 2021 STMicroelectronics.
-* All rights reserved.
-*
-* This software is licensed under terms that can be found in the LICENSE file
-* in the root directory of this software component.
-* If no LICENSE file comes with this software, it is provided AS-IS.
-*
-******************************************************************************
-*/
+  ******************************************************************************
+  * @file    app_threadx.c
+  * @author  MCD Application Team
+  * @brief   ThreadX applicative file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
@@ -45,15 +45,15 @@
 TX_THREAD tx_app_thread;
 TX_QUEUE tx_app_msg_queue;
 /* USER CODE BEGIN PV */
-  TX_THREAD              MsgReceiverThread;
-  TX_THREAD              MsgSenderThreadTwo;
-  TX_QUEUE               MsgQueueTwo;
+TX_THREAD MsgReceiverThread;
+TX_THREAD MsgSenderThreadTwo;
+TX_QUEUE  MsgQueueTwo;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-void   MsgSenderThreadTwo_Entry(ULONG thread_input);
-void   MsgReceiverThread_Entry(ULONG thread_input);
+void MsgSenderThreadTwo_Entry(ULONG thread_input);
+void MsgReceiverThread_Entry(ULONG thread_input);
 /* USER CODE END PFP */
 
 /**
@@ -98,14 +98,15 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   }
 
   /* USER CODE BEGIN App_ThreadX_Init */
-  /* Allocate the stack for MsgSenderThreadTwo.  */
+
+  /* Allocate the stack for Message Queue Sender Thread Two. */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
                        TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
   {
     ret = TX_POOL_ERROR;
   }
   
-  /* Create MsgSenderThreadTwo.  */
+  /* Create Message Queue Sender Thread Two. */
   if (tx_thread_create(&MsgSenderThreadTwo, "Message Queue Sender Thread Two",
                        MsgSenderThreadTwo_Entry, 0, pointer, TX_APP_STACK_SIZE,
                        TX_APP_THREAD_PRIO, TX_APP_THREAD_PREEMPTION_THRESHOLD,
@@ -113,14 +114,14 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   {
     ret = TX_THREAD_ERROR;
   }
-  /* Allocate the stack for MsgReceiverThread.  */
+  /* Allocate the stack for MsgReceiverThread. */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
                        TX_APP_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
   {
     ret = TX_POOL_ERROR;
   }
   
-  /* Create MsgReceiverThread.  */
+  /* Create Message Queue Receiver Thread. */
   if (tx_thread_create(&MsgReceiverThread, "Message Queue Receiver Thread",
                        MsgReceiverThread_Entry, 0, pointer, TX_APP_STACK_SIZE,
                        RECEIVER_THREAD_PRIO, RECEIVER_THREAD_PREEMPTION_THRESHOLD,
@@ -129,14 +130,14 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
     ret = TX_THREAD_ERROR;
   }
   
-  /* Allocate the MsgQueueTwo.  */
+  /* Allocate the Message Queue Two. */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
                        TX_APP_MSG_QUEUE_FULL_SIZE *sizeof(ULONG), TX_NO_WAIT) != TX_SUCCESS)
   {
     ret = TX_POOL_ERROR;
   }
   
-  /* Create the MsgQueueTwo shared by MsgSenderThreadTwo and MsgReceiverThread.  */
+  /* Create the Message Queue Two shared by Message Queue Sender Thread Two and Message Queue Receiver Thread. */
   if (tx_queue_create(&MsgQueueTwo, "Message Queue Two", TX_1_ULONG,
                       pointer, TX_APP_MSG_QUEUE_FULL_SIZE *sizeof(ULONG)) != TX_SUCCESS)
   {
@@ -159,7 +160,7 @@ void MsgSenderThreadOne_Entry(ULONG thread_input)
   /* Infinite loop */
   while(1)
   {
-    /* Send message to MsgQueueOne.  */
+    /* Send message to Message Queue One. */
     if (tx_queue_send(&tx_app_msg_queue, &Msg, TX_WAIT_FOREVER) != TX_SUCCESS)
     {
       Error_Handler();
@@ -190,10 +191,10 @@ void MX_ThreadX_Init(void)
 
 /* USER CODE BEGIN 1 */
 /**
-* @brief  Function implementing the MsgSenderThreadTwo thread.
-* @param  thread_input: Not used
-* @retval None
-*/
+  * @brief  Function implementing the MsgSenderThreadTwo thread.
+  * @param  thread_input: Not used
+  * @retval None
+  */
 void MsgSenderThreadTwo_Entry(ULONG thread_input)
 {
   ULONG Msg = TOGGLE_LED;
@@ -212,10 +213,10 @@ void MsgSenderThreadTwo_Entry(ULONG thread_input)
 }
 
 /**
-* @brief  Function implementing the MsgReceiverThread thread.
-* @param  thread_input: Not used
-* @retval None
-*/
+  * @brief  Function implementing the MsgReceiverThread thread.
+  * @param  thread_input: Not used
+  * @retval None
+  */
 void MsgReceiverThread_Entry(ULONG thread_input)
 {
   ULONG RMsg = 0;

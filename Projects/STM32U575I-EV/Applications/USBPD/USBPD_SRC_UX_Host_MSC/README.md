@@ -3,17 +3,18 @@
 
 This application is a USBPD type C Provider and USB Host using Azure RTOS USBX stack. It shows how to develop a USBPD type C Provider in the case of an USB host application based on Mass Storage "MSC" which is able to enumerate and communicates with a removable usb flash disk.
 
-        USB MSC : The application is designed to behave as an USB MSC Host able to operate with an USB flash disk using the Bulk Only Transfer (BOT) and Small Computer System Interface (SCSI) transparent commands combined with a file system Azure RTOS FileX.
+  - USB MSC : The application is designed to behave as an USB MSC Host able to operate with an USB flash disk using the Bulk Only Transfer (BOT) and Small Computer System Interface (SCSI) transparent commands combined with a file system Azure RTOS FileX.
 
-                The main entry function tx_application_define() is then called by ThreadX during kernel start, at this stage, all USBx resources are initialized, the MSC Class driver is registered.
-                The application creates two threads :
+    The main entry function tx_application_define() is then called by ThreadX during kernel start, at this stage, all USBx resources are initialized, the MSC Class driver is registered.
+    The application creates two threads :
 
-                        - usbx_app_thread_entry    (Priority : 10; Preemption threshold : 10) used to initialize USB OTG HAL HCD driver.
-                        - msc_process_thread_entry (Priority : 30; Preemption threshold : 30) used to proceed to file operations once the device is properly enumerated.
+    - app_ux_host_thread_entry (Priority : 10; Preemption threshold : 10) used to initialize USB OTG HAL HCD driver.
+    - msc_process_thread_entry (Priority : 30; Preemption threshold : 30) used to proceed to file operations once the device is properly enumerated.
 
-        USBPD Provider: This application initialize the type C port 1 in source mode with only one PDO at 5V.
+  - USBPD Provider: This application initialize the type C port 1 in source mode with only one PDO at 5V.
 
 ####  <b>Expected success behavior</b>
+
 Connect UCPD cube Monitor on the VCP associated to our board (only available if USB cable is connected)
 The UCPD Cube Monitor will be used to trace all the messages exchange between the ports partner.
 
@@ -25,14 +26,12 @@ After enumeration phase , the host proceed to file operations :
   - Read the written text and check data integrity
   - Close the File
 
-During the file operations process a message will be displayed on the UCPD Cube Monitor to indicates the outcome of each operation  (Create/Write/Read/Close) .
+During the file operations process a message will be displayed on the UCPD Cube Monitor to indicates the outcome of each operation (Create/Write/Read/Close).
 If all operations were successful a message will be displayed on the UCPD Cube Monitor to indicates the end of operations.
-
-
 
 #### <b>Error behaviors</b>
 
-Errors are detected such as (Unsupported device, Enumeration Fail, File operations fail)and the corresponding message is displayed on the UCPD Cube Monitor .
+Errors are detected such as (Unsupported device, Enumeration Fail, File operations fail)and the corresponding message is displayed on the UCPD Cube Monitor.
 
 #### <b>Assumptions if any</b>
 
@@ -86,13 +85,13 @@ None.
 
 ### <b>Keywords</b>
 
-Connectivity, USBXHost, USBPD, FILEX, ThreadX, MSC, Mass Storage, BOT, SCSI, Removable drive, UART/USART
-USB_PD_Lib, UCPD, Type C, USBPD
+Connectivity, USBX Host, USBPD, FILEX, ThreadX, MSC, Mass Storage, BOT, SCSI, Removable drive, UART/USART
+USB_PD_Lib, UCPD, Type C
 
 ### <b>Hardware and Software environment</b>
 
   - This application runs on STM32U575xx devices
-  - This application has been tested with STMicroelectronics STM32U575I-EV MB1550-U575AIQ-C01.
+  - This application has been tested with STMicroelectronics STM32U575I-EV boards revision: MB1550-U575AIQ-C02
     and can be easily tailored to any other supported device and development board.
 
 - STM32U575I-EV Set-up
@@ -119,4 +118,4 @@ In order to make the program work, you must do the following :
 
 <b>Note</b>
 
-   The application uses the external HSE clock as USB source clock.
+ - The application uses the external HSE clock as USB source clock.

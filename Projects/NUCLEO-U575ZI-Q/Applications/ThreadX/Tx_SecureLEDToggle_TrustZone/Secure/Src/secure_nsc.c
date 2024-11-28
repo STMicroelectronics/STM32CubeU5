@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   This file contains the non-secure callable APIs (secure world)
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.

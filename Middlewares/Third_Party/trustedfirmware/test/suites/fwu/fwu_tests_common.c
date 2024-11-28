@@ -358,20 +358,6 @@ void tfm_fwu_test_common_011(struct test_result_t *ret)
     ret->val = TEST_PASSED;
 }
 
-void tfm_fwu_test_common_012(struct test_result_t *ret)
-{
-    psa_status_t status;
-
-    /* Accept the running image. */
-    status = psa_fwu_accept();
-    if (status != PSA_SUCCESS) {
-        TEST_FAIL("Accept should not fail");
-        return;
-    }
-
-    ret->val = TEST_PASSED;
-}
-
 #ifdef TFM_FWU_TEST_REQUEST_REBOOT
 void tfm_fwu_test_common_013(struct test_result_t *ret)
 {

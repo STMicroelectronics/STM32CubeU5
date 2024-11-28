@@ -11,7 +11,7 @@ It performs mDNS services announce and deannounce functions using the NetxDuo st
 
 #### <b>Error behaviors</b>
 
-None
+- An error message is displayed over the USART1 console.
 
 #### <b>Assumptions if any</b>
 
@@ -99,7 +99,6 @@ RTOS, Network, ThreadX, NetXDuo, WIFI, mDNS, Station mode, MXCHIP, SPI
 
   - Development PC with the Bonjour SDK installed and connected to the same WiFi access point as the board.
     - This is used to verify the services being announced/deannounced.
-
 
 ### <b>How to use it?</b>
 

@@ -3,9 +3,9 @@
   ******************************************************************************
   * @file    ux_host_cdc_acm.c
   * @author  MCD Application Team
-  * @brief   USBX Host applicative file
+  * @brief   USBX Host CDC ACM applicative source file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
@@ -55,7 +55,7 @@ UX_HOST_CLASS_CDC_ACM_RECEPTION cdc_acm_reception;
 ULONG                           block_reception_count;
 uint8_t                         block_reception_size[APP_RX_DATA_SIZE / BLOCK_SIZE];
 uint16_t                        RxSzeIdx;
-static UCHAR 					UserRxBuffer[APP_RX_DATA_SIZE];
+static UCHAR                    UserRxBuffer[APP_RX_DATA_SIZE];
 
 /* USER CODE END PV */
 
@@ -88,26 +88,27 @@ VOID cdc_acm_send_app_thread_entry(ULONG thread_input)
         (cdc_acm -> ux_host_class_cdc_acm_state ==  UX_HOST_CLASS_INSTANCE_LIVE))
     {
       /* Wait until the requested flag NEW_DATA_TO_SEND is received */
-      if (tx_event_flags_get(&ux_app_EventFlag, NEW_DATA_TO_SEND, TX_OR_CLEAR,
-                             &send_dataflag, TX_WAIT_FOREVER) != TX_SUCCESS)
+      if ((cdc_acm != NULL) && (tx_event_flags_get(&ux_app_EventFlag, NEW_DATA_TO_SEND, TX_OR_CLEAR,
+                                &send_dataflag, TX_WAIT_FOREVER) != TX_SUCCESS))
       {
         Error_Handler();
       }
 
-      if (cdc_acm != NULL)
+      if ((cdc_acm != NULL))
       {
         /* Start sending data */
         status = _ux_host_class_cdc_acm_write(cdc_acm, UserTxBuffer,
                                               ux_utility_string_length_get(UserTxBuffer),
                                               &tx_actual_length);
-        if (status == UX_SUCCESS)
-        {
-          USBH_UsrLog("Data sent successfully");
-        }
-        else
-        {
-          USBH_ErrLog("Unable to send data");
-        }
+      }
+
+      if ((status == UX_SUCCESS) && (cdc_acm != NULL))
+      {
+        USBH_UsrLog("Data sent successfully");
+      }
+      else
+      {
+        USBH_ErrLog("Unable to send data");
       }
 
     }
@@ -211,6 +212,13 @@ VOID cdc_acm_recieve_app_thread_entry(ULONG thread_inputg)
     }
     else
     {
+      if (cdc_acm_reception.ux_host_class_cdc_acm_reception_state == UX_HOST_CLASS_CDC_ACM_RECEPTION_STATE_STOPPED)
+      {
+        read_data_pointer = cdc_acm_reception.ux_host_class_cdc_acm_reception_data_buffer;
+
+        /* Reinitialize block reception size index */
+        read_data_block_count = 0;
+      }
       tx_thread_sleep(MS_TO_TICK(10));
     }
   }

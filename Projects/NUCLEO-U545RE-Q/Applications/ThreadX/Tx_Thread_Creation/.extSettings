@@ -1,2 +1,6 @@
+[ProjectFiles]
+[Others]
+Define=
+HALModule=
+[Groups]
 Doc=../README.md;
-

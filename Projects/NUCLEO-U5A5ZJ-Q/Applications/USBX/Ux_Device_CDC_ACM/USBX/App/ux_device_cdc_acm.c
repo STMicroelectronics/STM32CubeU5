@@ -3,7 +3,7 @@
   ******************************************************************************
   * @file    ux_device_cdc_acm.c
   * @author  MCD Application Team
-  * @brief   USBX Device applicative file
+  * @brief   USBX Device CDC ACM applicative source file
   ******************************************************************************
   * @attention
   *

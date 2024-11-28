@@ -70,7 +70,7 @@ static TX_BYTE_POOL FILEX_MEM_POOL_VAR_NAME;
 
 /* USER CODE END PFP */
 
-  /**
+/**
   * @brief  Define the initial system.
   * @param  first_unused_memory : Pointer to the first unused memory
   * @retval None

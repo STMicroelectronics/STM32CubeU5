@@ -3,7 +3,7 @@
   ******************************************************************************
   * @file    ux_device_dfu_media.h
   * @author  MCD Application Team
-  * @brief   USBX Device DFU interface header file
+  * @brief   USBX Device DFU applicative header file
   ******************************************************************************
   * @attention
   *
@@ -32,8 +32,6 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "main.h"
-#include "tx_api.h"
-#include "app_usbx_device.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

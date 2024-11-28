@@ -3,7 +3,7 @@
   ******************************************************************************
   * @file    ux_device_mouse.h
   * @author  MCD Application Team
-  * @brief   USBX Device Mouse header file
+  * @brief   USBX Device HID Mouse applicative header file
   ******************************************************************************
   * @attention
   *

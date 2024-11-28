@@ -1,3 +1,4 @@
+
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
@@ -69,6 +70,7 @@ void HAL_MspInit(void)
 
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_RCC_GTZC1_CLK_ENABLE();
+  HAL_PWREx_EnableVddIO2();
 
   /* System interrupt init*/
 

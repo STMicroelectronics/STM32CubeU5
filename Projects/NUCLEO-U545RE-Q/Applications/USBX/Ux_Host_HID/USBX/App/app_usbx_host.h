@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   USBX Host applicative header file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2022 STMicroelectronics.
   * All rights reserved.
@@ -33,9 +33,6 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ux_hcd_stm32.h"
-#if defined(_TRACE)
-#include "usbpd_trace.h"
-#endif /* _TRACE */
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -55,34 +52,12 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#if defined(_TRACE)
-#define DPM_USER_DEBUG_TRACE_SIZE       50u
-
-#define USBH_UsrLog(...)  do {                                                             \
-    char _str[DPM_USER_DEBUG_TRACE_SIZE];                                                  \
-    uint8_t _size = snprintf(_str, DPM_USER_DEBUG_TRACE_SIZE, __VA_ARGS__);                \
-    if (_size < DPM_USER_DEBUG_TRACE_SIZE)                                                 \
-      USBPD_TRACE_Add(USBPD_TRACE_DEBUG, 0, 0, (uint8_t*)_str, strlen(_str));              \
-    else                                                                                   \
-      USBPD_TRACE_Add(USBPD_TRACE_DEBUG, 0, 0, (uint8_t*)_str, DPM_USER_DEBUG_TRACE_SIZE); \
-  } while(0)
-
-#define  USBH_ErrLog(...)   do {                                                           \
-    char _str[DPM_USER_DEBUG_TRACE_SIZE];                                                  \
-    uint8_t _size = snprintf(_str, DPM_USER_DEBUG_TRACE_SIZE, __VA_ARGS__);                \
-    if (_size < DPM_USER_DEBUG_TRACE_SIZE)                                                 \
-      USBPD_TRACE_Add(USBPD_TRACE_DEBUG, 0, 0, (uint8_t*)_str, strlen(_str));              \
-    else                                                                                   \
-      USBPD_TRACE_Add(USBPD_TRACE_DEBUG, 0, 0, (uint8_t*)_str, DPM_USER_DEBUG_TRACE_SIZE); \
-  } while(0)
-#else
 #define USBH_UsrLog(...)   printf(__VA_ARGS__);\
                            printf("\n");
 
 #define USBH_ErrLog(...)   printf("ERROR: ") ;\
                            printf(__VA_ARGS__);\
                            printf("\n");
-#endif /* _TRACE */
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -115,11 +90,7 @@ VOID USBX_APP_Host_Init(VOID);
 #endif
 
 /* USER CODE BEGIN 1 */
-typedef enum
-{
-  STOP_USB_HOST = 1,
-  START_USB_HOST,
-} USB_MODE_STATE;
+
 /* USER CODE END 1 */
 
 #ifdef __cplusplus

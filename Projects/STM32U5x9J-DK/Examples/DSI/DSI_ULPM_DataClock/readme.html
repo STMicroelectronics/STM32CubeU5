@@ -21,55 +21,38 @@
 <div class="col-sm-12 col-lg-8">
 <h2 id="dsi_ulpm_dataclock-example-description"><b>DSI_ULPM_DataClock Example Description</b></h2>
 <ul>
-<li><p>This example provides a description of how to use the embedded LCD DSI controller (using IPs LTDC and DSI Host) to drive the <strong>J025FlCN0201W (480x480)</strong><br />
-display mounted on MB1892 board and manage entry and exit in DSI ULPM mode on data lane and clock lane.<br />
-<br />
-</p>
+<li><p>This example provides a description of how to utilize the embedded LCD DSI (Display Serial Interface) controller (using LTDC and DSI Host IPs) to drive the <strong>J025FlCN0201W (480x480)</strong> display mounted on the MB1892 board. It demonstrates the management of entering and exiting DSI ULPM (Ultra-Low Power Mode) on the data lane and clock lane.</p>
 <pre>
-In this mode, the DSI PHY state machine is entering a low power state on data lane and clock lane.  
-The DSI clock should be derived from the clock tree PLL3.PLLP (ck_plldsi) with a 62.5 MHz clock for instance  
-to allow a switch-off of the PLL DPHY to save power during the ULPM phase.  
-When exiting from ULPM, the PLL DPHY is first switched back on and locked, then the DSI DPHY will exit  
-power down and display again as before.</pre>
-<p><br />
-</p></li>
-<li><p>In this example a picture (320x240) is displayed on LCD in <strong>DSI_ULPM_DataClock</strong>.</p>
+In ULPM mode, the DSI PHY state machine is entering a low power state on data lane and clock lane.  
+The DSI clock should be derived from the clock tree PLL3.PLLP (ck_plldsi), 62.5 MHz for instance, to allow a switch-off of the PLL DPHY to save power during the ULPM phase.  
+When exiting from ULPM, the PLL DPHY is first switched back on and locked, then the DSI DPHY will exit power down and display again as before.</pre></li>
+<li><p>In this example a picture of size 320x240 is displayed on LCD in <strong>DSI_ULPM_DataClock</strong>.</p>
 <ul>
-<li><p>At the beginning of the main program, the HAL_Init() function is called to reset all the peripherals, initialize the Flash interface and the systick.<br />
-The SystemClock_Config() function is used to configure the system clock (SYSCLK) to run at 160 Mhz.<br />
-</p></li>
-<li><p>The project calls also CACHE_Enable() function in order to enable the Instruction Caches.<br />
-This function is provided in order to enhance the performance.<br />
-</p></li>
+<li>At the beginning of the main program, the HAL_Init() function is called to reset all the peripherals, initialize the Flash interface and the systick.<br />
+The SystemClock_Config() function is used to configure the system clock (SYSCLK) to run at 160 Mhz.</li>
+<li>In addition, the project also calls the CACHE_Enable() function to enable instruction caches.<br />
+This function is provided to further enhance performance.</li>
 <li><p>On a <strong>User button press</strong> from the user, the LCD display will be switched off. two seconds later, the DSI PHY Data and clock lane will enter ULPM mode.<br />
 DphyClk is derived from PLL3.PLLP, then DPHY PLL is switched Off.</p></li>
 <li><p>After 6 seconds in Off mode, The PLL DPHY is switched back on and locked, then the ULPM on data and clock lanes will be exited in DPHY DSI state machine.<br />
-The LCD will then be switched back on and display the same image as before with a <span style="color: green"> text notifying that the exit from ULPM was successful </span>.<br />
-<br />
-</p></li>
+The LCD will then be switched back on and display the same image as before with a <span style="color: green"> text notifying that the exit from ULPM was successful</span>.</p></li>
 </ul>
-<p>The image_320x240_argb8888 is of format ARGB8888 and is initially copied from Flash to LCD Frame Buffer (GFXMMU_VIRTUAL_BUFFER0_BASE).<br />
-The LTDC is reading continuously the LCD Frame buffer from LCD Frame Buffer, sent it to DSI Host which sends it in burst mode (DCS commands)<br />
-via the DSI DPHY to the the display that decodes DSI packets and refresh its internal Graphic RAM to display.<br />
-</p>
-<p>The Frame number display is managed by Line Event callback in which the Frame number is incremented each time a line event occurs.<br />
-When entering to ULPM, The Frame number is unchanged until the exit from this mode.<br />
-</p></li>
+<p>The image_320x240_argb8888 is of format ARGB8888 and is initially copied from Flash to LCD Frame Buffer located at the address GFXMMU_VIRTUAL_BUFFER0_BASE.<br />
+The LTDC (LCD TFT Display Controller) continuously reads the LCD frame buffer and sends it to the DSI (Display Serial Interface) host. The DSI host then transmits the data in burst mode (DCS commands) via the DSI DPHY (Display Serial interface Data Physical Layer) to the display. The display decodes the DSI packets and refreshes its internal graphic RAM to update the display output.</p>
+<p>The displayed frame number (Frame Nb) refers to the number assigned to each frame that is being displayed on the screen. This frame number is typically managed and updated though the Line Event callback. Whenever a line event occurs, the frame number is incremented.<br />
+However, it’s important to note that when entering ULMP (Ultra-Low Power Mode), the frame number remains unchanged until the device exits from this mode resumes normal display operations.</p></li>
 </ul>
-<p><br />
-</p>
 <p><em><span style="color: blue"> Discovery-U5x9NJ’s LEDs can be used to monitor the status:</span></em></p>
-<p><strong><span style="color: green"> GREEN LED </span> ON </strong>: DSI PHY Data and clock lane in ULPM mode<br />
-<strong><span style="color: green"> GREEN LED </span> OFF</strong>: DSI PHY Data and clock lane in run mode<br />
-<strong><span style="color: red"> RED LED </span> ON </strong>: an error occurred<br />
-</p>
+<p><strong><span style="color: green"> GREEN LED </span> ON</strong>: DSI PHY Data and clock lane in ULPM mode<br />
+<span style="color: green"> GREEN LED </span> OFF: DSI PHY Data and clock lane in run mode<br />
+<strong><span style="color: red"> Red LED </span> ON</strong>: an error occurred</p>
 <h4 id="notes"><b>Notes</b></h4>
 <ol type="1">
-<li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise the caller ISR process will be blocked. To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>
+<li><p>Care must be taken when using HAL_Delay(), this function provides accurate delay (in milliseconds) based on variable incremented in SysTick ISR. This implies that if HAL_Delay() is called from a peripheral ISR process, then the SysTick interrupt must have higher priority (numerically lower) than the peripheral interrupt. Otherwise, the caller ISR process will be blocked. To change the SysTick interrupt priority you have to use HAL_NVIC_SetPriority() function.</p></li>
 <li><p>The application needs to ensure that the SysTick time base is always set to 1 millisecond to have correct HAL operation.</p></li>
 </ol>
 <h3 id="keywords"><b>Keywords</b></h3>
-<p>Graphics, Display, LCD, LTDC, DMA2D, DSI, MIPI Alliance, Ultra low power mode, Mode Video Burst, WVGA, ARGB8888, SRAM, Data lane, clock lane</p>
+<p>Graphics, Display, LCD, LTDC, DMA2D, DSI, MIPI Alliance, Ultra Low Power Mode, Mode Video Burst, WVGA, ARGB8888, SRAM, Data lane, clock lane</p>
 <h3 id="directory-contents"><b>Directory contents</b></h3>
 <ul>
 <li>DSI/DSI_ULPM_DataClock/Inc/stm32u5xx_hal_conf.h        HAL configuration file for Cortex-M33</li>
@@ -93,7 +76,7 @@ and development board.</p></li>
 </ul>
 <h3 id="how-to-use-it"><b>How to use it ?</b></h3>
 <ul>
-<li>In order to make the program work, you must do the following :
+<li>In order to make the program work, you must do the following:
 <ul>
 <li>Open your preferred toolchain</li>
 <li>Rebuild all files and load your image into target memory</li>

@@ -34,7 +34,7 @@ synchronization APIs. The main entry function tx_application_define() is
 called by ThreadX during kernel start, at this stage, the application
 creates 2 threads with the same priorities :</p>
 <ul>
-<li>‘tx_app_thread’ (Priority : 10; Preemption Threshold : 10)</li>
+<li>‘ThreadOne’ (Priority : 10; Preemption Threshold : 10)</li>
 <li>‘ThreadTwo’ (Priority : 10; Preemption Threshold : 10)</li>
 </ul>
 <p>The function “Led_Toggle()” is the entry function for both threads to
@@ -42,24 +42,24 @@ toggle the leds.Therefore it is considered as a “critical section” that
 needs protection with a ‘SyncObject’ flag in the file “app_threadx.h”
 Each thread is running in an infinite loop as following:</p>
 <ul>
-<li>‘tx_app_thread’:
+<li>‘ThreadOne’:
 <ul>
-<li>try to acquire the ‘SyncObject’ immediately.</li>
-<li>On Success toggle the ‘LED_GREEN’ each 500ms for 5 seconds.</li>
+<li>Try to acquire the ‘SyncObject’ immediately.</li>
+<li>On success toggle the ‘LED_GREEN’ each 500ms for 5 seconds.</li>
 <li>Release the ‘SyncObject’</li>
 <li>Sleep for 10ms.</li>
 <li>repeat the steps above</li>
 </ul></li>
 <li>‘ThreadTwo’:
 <ul>
-<li>try to acquire the ‘SyncObject’ immediately.</li>
-<li>On Success toggle the ‘LED_RED’ each 500ms for 5 seconds.</li>
+<li>Try to acquire the ‘SyncObject’ immediately.</li>
+<li>On success toggle the ‘LED_RED’ each 500ms for 5 seconds.</li>
 <li>Release the ‘SyncObject’</li>
 <li>Sleep for 10ms.</li>
 <li>Repeat the steps above.</li>
 </ul></li>
 </ul>
-<p>By default the ‘SyncObject’ is defined as “TX_MUTEX” .It is possible
+<p>By default the ‘SyncObject’ is defined as “TX_MUTEX”. It is possible
 to use a binany “TX_SEMAPHORE” by tuning the compile flags in the file
 “app_threadx.h”.</p>
 <h4 id="expected-success-behavior"><b>Expected success behavior</b></h4>
@@ -77,7 +77,7 @@ the SyncObject.</li>
 </ul></li>
 </ul>
 <h4 id="error-behaviors"><b>Error behaviors</b></h4>
-<p>‘LED_RED’ toggles every 1 second if any error occurs.</p>
+<p>‘LED_RED’ toggles every 1 second if any error occurs and LED_GREEN switched OFF.</p>
 <h4 id="assumptions-if-any"><b>Assumptions if any</b></h4>
 <p>None</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
@@ -88,9 +88,9 @@ the SyncObject.</li>
 HAL uses a separate time base through the TIM IPs.</li>
 <li>ThreadX is configured with 100 ticks/sec by default, this should be
 taken into account when using delays or timeouts at application. It is
-always possible to reconfigure it in the “tx_user.h”, the
-“TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in
-“tx_initialize_low_level.S” file too.</li>
+always possible to reconfigure it, by updating the
+“TX_TIMER_TICKS_PER_SECOND” define in the “tx_user.h” file. The update
+should be reflected in “tx_initialize_low_level.S” file too.</li>
 <li>ThreadX is disabling all interrupts during kernel start-up to avoid
 any unexpected behavior, therefore all system related calls (HAL, BSP)
 should be done either at the beginning of the application or inside the
@@ -103,7 +103,7 @@ way contain a system API call (HAL or BSP).</li>
 <li>Using dynamic memory allocation requires to apply some changes to
 the linker file. ThreadX needs to pass a pointer to the first free
 memory location in RAM to the tx_application_define() function, using
-the “first_unused_memory” argument. This require changes in the linker
+the “first_unused_memory” argument. This requires changes in the linker
 files to expose this memory location.
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
@@ -127,8 +127,8 @@ or modify the line below in &quot;tx_initialize_low_level.S to match the memory 
    } &gt;RAM_D1 AT&gt; RAM_D1</code></pre>
 <pre><code>The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
 In the example above the ThreadX heap size is set to 64KBytes.
-The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.  
-Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).  
+The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
+Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
 Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code></pre>
 <ul>
 <li>The “tx_initialize_low_level.S” should be also modified to enable
@@ -140,9 +140,9 @@ the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
-<li>This example runs on STM32U575xx devices</li>
-<li>This example has been tested with STMicroelectronics NUCLEO-U575ZI-Q
-boards Revision: MB1549-B03. and can be easily tailored to any other
+<li>This application runs on STM32U575xx devices</li>
+<li>This application has been tested with STMicroelectronics NUCLEO-U575ZI-Q
+boards revision: MB1549-C01 and can be easily tailored to any other
 supported device and development board.</li>
 <li>A virtual COM port appears in the HyperTerminal:
 <ul>

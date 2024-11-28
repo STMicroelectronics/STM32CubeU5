@@ -35,10 +35,10 @@
 __IO uint32_t TransferCompleteDetected = 0U, TransferErrorDetected = 0U;
 
 /* Source buffer */
-static const uint8_t aSRC_Buffer[BUFFER_SIZE] = {0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7};
+__ALIGNED(32) static const uint8_t aSRC_Buffer[BUFFER_SIZE] = {0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7};
 
 /* Destination buffer */
-static uint8_t aDEST_Buffer[BUFFER_SIZE * 2U];
+__ALIGNED(32) static uint8_t aDEST_Buffer[BUFFER_SIZE * 2U];
 
 /* Right aligned zero padding data expected result buffer */
 static const uint8_t aRightAlign_ZeroPadding_ExpectedResult_Buffer[BUFFER_SIZE * 2U] = {0xB0, 0x00, 0xB1, 0x00, 0xB2, 0x00, 0xB3, 0x00, 0xB4, 0x00, 0xB5, 0x00, 0xB6, 0x00, 0xB7, 0x00};

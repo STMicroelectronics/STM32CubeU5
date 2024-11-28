@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   This file contains the non-secure callable APIs (secure world)
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
@@ -22,6 +22,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "secure_nsc.h"
+
 /** @addtogroup STM32U5xx_HAL_Examples
   * @{
   */
@@ -65,6 +66,7 @@ CMSE_NS_ENTRY void SECURE_RegisterCallback(SECURE_CallbackIDTypeDef CallbackId, 
     }
   }
 }
+
 /**
   * @brief  Secure treatment of non-secure push button interrupt.
   * @retval None
@@ -73,6 +75,7 @@ CMSE_NS_ENTRY void SECURE_LEDToggle(void)
 {
   HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
 }
+
 /**
   * @}
   */

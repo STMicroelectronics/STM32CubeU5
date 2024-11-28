@@ -109,7 +109,7 @@ way contain a system API call (HAL or BSP).</li>
 <li>Using dynamic memory allocation requires to apply some changes to
 the linker file. ThreadX needs to pass a pointer to the first free
 memory location in RAM to the tx_application_define() function, using
-the “first_unused_memory” argument. This require changes in the linker
+the “first_unused_memory” argument. This requires changes in the linker
 files to expose this memory location.
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
@@ -146,10 +146,9 @@ the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
-<li><p>This example runs on STM32U5G9xx devices with security enabled
+<li><p>This application runs on STM32U5G9xx devices with security enabled
 (TZEN=1).</p></li>
-<li><p>This example has been tested with STMicroelectronics
-STM32U5G9J-DK2 (MB1918A) board and can be easily tailored to any other
+<li><p>This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision: MB1918-B01 and can be easily tailored to any other
 supported device and development board.</p></li>
 <li><p>User Option Bytes requirement (with STM32CubeProgrammer tool)</p>
 <ul>
@@ -175,7 +174,7 @@ set as secure, hence Bank2 non-secure</li>
 <li>Rebuild xxxxx_NS project</li>
 <li>Load the secure and non-secures images into target memory (Ctrl +
 D)</li>
-<li>Run the example</li>
+<li>Run the application</li>
 </ul>
 <p>MDK-ARM</p>
 <ul>
@@ -193,12 +192,12 @@ Project)</li>
 Project)</li>
 <li>Load the secure binary (F8) (this shall download the -ARM_s_s.axf to
 flash memory)</li>
-<li>Run the example</li>
+<li>Run the application</li>
 </ul>
 <p>STM32CubeIDE</p>
 <ul>
 <li>Open STM32CubeIDE</li>
-<li>File &gt; Import. Point to the STM32CubeIDE folder of the example
+<li>File &gt; Import. Point to the STM32CubeIDE folder of the application
 project. Click Finish.</li>
 <li>Build configuration: Set the same active build configuration: Debug
 (default) or Release for both projects xxxxx_S &amp; xxxxx_NS</li>
@@ -213,7 +212,7 @@ configuration” in function of the active build configuration
 <li>Select the xxxxx_NS project</li>
 </ul></li>
 </ul></li>
-<li>Click Debug/Run to debug/run the example</li>
+<li>Click Debug/Run to debug/run the application</li>
 </ul>
 </section>
 </div>

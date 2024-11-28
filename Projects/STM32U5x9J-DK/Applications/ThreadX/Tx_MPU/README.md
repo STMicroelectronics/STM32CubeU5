@@ -2,7 +2,7 @@
 ## <b>Tx_MPU Application Description</b>
 
 This application provides an example of Azure RTOS ThreadX stack usage, it shows how to develop an application using the ThreadX Module feature.
-It demonstrates how to load, start and unload modules. In addition, it shows how ThreadX memory protection on modules using the Memory Protection Unit (MPU). 
+It demonstrates how to load, start and unload modules. In addition, it shows how ThreadX memory protection on modules using the Memory Protection Unit (MPU).
 
 This project is composed of two sub-projects:
 
@@ -28,7 +28,7 @@ MainThread is expected to execute data read and write operations to/from user-de
 
 #### <b>Error behaviors</b>
 
-LED_RED toggles every 1 second if any error occurs.
+On failure, the red led starts toggling while the green led is switched off.
 
 #### <b>Assumptions if any</b>
 None
@@ -97,19 +97,19 @@ The above configuration results in an attributes word equals 0x00000007
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
-   This require changes in the linker files to expose this memory location.
+   This requires changes in the linker files to expose this memory location.
     + For EWARM add the following section into the .icf file:
      ```
-	 place in RAM_region    { last section FREE_MEM };
-	 ```
+     place in RAM_region    { last section FREE_MEM };
+     ```
     + For MDK-ARM:
-	```
+    ```
     either define the RW_IRAM1 region in the ".sct" file
     or modify the line below in "tx_initialize_low_level.S to match the memory region being used
         LDR r1, =|Image$$RW_IRAM1$$ZI$$Limit|
-	```
+    ```
     + For STM32CubeIDE add the following section into the .ld file:
-	```
+    ```
     ._threadx_heap :
       {
          . = ALIGN(8);
@@ -117,12 +117,12 @@ The above configuration results in an attributes word equals 0x00000007
          . = . + 64K;
          . = ALIGN(8);
        } >RAM_D1 AT> RAM_D1
-	```
+    ```
 
        The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
        In the example above the ThreadX heap size is set to 64KBytes.
-       The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.	 
-       Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).	 
+       The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
+       Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
        Read more in STM32CubeIDE User Guide, chapter: "Linker script".
 
     + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
@@ -131,11 +131,10 @@ The above configuration results in an attributes word equals 0x00000007
 
 RTOS, ThreadX, Threading, Message Queue, Module Manager, Module, MPU
 
-
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on STM32U599xx devices
-  - This example has been tested with STMicroelectronics STM32U5A9J_DK boards Revision: MB1829-A01.
+  - This application runs on STM32U5xx devices
+  - This application has been tested with STMicroelectronics STM32U5G9J-DK1 boards revision: MB1829-U5G9NJQ-B01
     and can be easily tailored to any other supported device and development board.
   - A virtual COM port appears in the HyperTerminal:
       - Hyperterminal configuration:
@@ -154,4 +153,4 @@ In order to make the program work, you must do the following :
  - Rebuild Tx_Module_Manager project
  - Flash the Tx_Module binary at address defined by MODULE_FLASH_ADDRESS
  - Set the "Tx_Module_Manager" as active application (Set as Active)
- - Run the example
+ - Run the application

@@ -93,7 +93,7 @@ VOID module_fault_handler(TX_THREAD *thread, TXM_MODULE_INSTANCE *module);
 VOID tx_application_define(VOID *first_unused_memory)
 {
   CHAR *pointer;
-  
+
   if (tx_byte_pool_create(&ModuleManagerBytePool, "Module Manager Byte Pool", tx_byte_pool_buffer, TX_APP_MEM_POOL_SIZE) != TX_SUCCESS)
   {
     /* USER CODE BEGIN TX_Byte_Pool_Error */
@@ -102,14 +102,14 @@ VOID tx_application_define(VOID *first_unused_memory)
   }
   else
   {
-    
+
     /* Allocate the stack for Module Manager Thread.  */
     if (tx_byte_allocate(&ModuleManagerBytePool, (VOID **) &pointer,
                          DEFAULT_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
     {
       Error_Handler();
     }
-    
+
     /* Create Module Manager Thread.  */
     if (tx_thread_create(&ModuleManager, "Module Manager Thread", ModuleManager_Entry, 0,
                          pointer, DEFAULT_STACK_SIZE,
@@ -118,14 +118,14 @@ VOID tx_application_define(VOID *first_unused_memory)
     {
       Error_Handler();
     }
-    
+
     /* Allocate the stack for ResidentQueue.  */
     if (tx_byte_allocate(&ModuleManagerBytePool, (VOID **) &pointer,
                          16 * sizeof(ULONG), TX_NO_WAIT) != TX_SUCCESS)
     {
       Error_Handler();
     }
-    
+
     /* Create the ResidentQueue */
     if (tx_queue_create(&ResidentQueue, "Resident Queue",TX_1_ULONG,
                         pointer, 16 * sizeof(ULONG)) != TX_SUCCESS)

@@ -72,6 +72,8 @@ void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define User_Button_Pin GPIO_PIN_13
+#define User_Button_GPIO_Port GPIOC
 #define LED_RED_Pin GPIO_PIN_6
 #define LED_RED_GPIO_Port GPIOH
 #define LED_GREEN_Pin GPIO_PIN_7

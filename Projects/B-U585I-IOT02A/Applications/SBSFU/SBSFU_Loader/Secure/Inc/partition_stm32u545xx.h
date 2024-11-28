@@ -548,33 +548,6 @@
 */
 #define NVIC_INIT_ITNS3_VAL      0xFFFFFFFF
 
-#if defined (STM32U595xx) || defined (STM32U599xx) \
- || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
- || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
- || defined (STM32U5G7xx)
-/*
-//   <e>Initialize ITNS 4 (Interrupts 109..138)
-*/
-#define NVIC_INIT_ITNS4    1
-
-/*
-// Interrupts 96..138
-//   <o.0>  I2C5_EV_IRQn          <0=> Secure state <1=> Non-Secure state
-//   <o.1>  I2C6_ER_IRQn          <0=> Secure state <1=> Non-Secure state
-//   <o.2>  I2C6_EV_IRQn          <0=> Secure state <1=> Non-Secure state
-//   <o.3>  HSPI1_IRQn            <0=> Secure state <1=> Non-Secure state
-*/
-#define NVIC_INIT_ITNS4_VAL      0xFFFFFFFF
-
-/*
-//   </e>
-*/
-
-/*
-// </h>
-*/
-#endif
-
 /*
 //   </e>
 */
@@ -684,14 +657,6 @@ __STATIC_INLINE void TZ_SAU_Setup (void)
   #if defined (NVIC_INIT_ITNS3) && (NVIC_INIT_ITNS3 == 1U)
     NVIC->ITNS[3] = NVIC_INIT_ITNS3_VAL;
   #endif
-#if defined (STM32U595xx) || defined (STM32U599xx) \
- || defined (STM32U5A5xx) || defined (STM32U5A9xx) \
- || defined (STM32U5F9xx) || defined (STM32U5G9xx) \
- || defined (STM32U5G7xx)
-  #if defined (NVIC_INIT_ITNS4) && (NVIC_INIT_ITNS4 == 1U)
-    NVIC->ITNS[4] = NVIC_INIT_ITNS4_VAL;
-  #endif
-#endif
 }
 
 #endif  /* PARTITION_STM32U5XXXX_H */

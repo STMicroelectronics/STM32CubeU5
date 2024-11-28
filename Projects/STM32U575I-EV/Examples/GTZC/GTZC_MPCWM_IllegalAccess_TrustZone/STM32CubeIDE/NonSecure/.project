@@ -2,9 +2,7 @@
 <projectDescription>
 	<name>GTZC_MPCWM_IllegalAccess_TrustZone_NonSecure</name>
 	<comment></comment>
-	<projects>
-		<project>GTZC_MPCWM_IllegalAccess_TrustZone_Secure</project>
-	</projects>
+
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>

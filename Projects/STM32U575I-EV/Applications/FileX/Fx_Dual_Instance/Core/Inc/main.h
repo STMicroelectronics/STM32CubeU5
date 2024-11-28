@@ -65,6 +65,10 @@ void MX_SDMMC1_SD_Init(void);
 #define LED1_GPIO_Port GPIOB
 #define LED2_Pin GPIO_PIN_7
 #define LED2_GPIO_Port GPIOH
+#define USART1_RX_Pin GPIO_PIN_10
+#define USART1_RX_GPIO_Port GPIOA
+#define USART1_TX_Pin GPIO_PIN_9
+#define USART1_TX_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 

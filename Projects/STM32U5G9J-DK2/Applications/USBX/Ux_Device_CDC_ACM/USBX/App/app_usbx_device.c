@@ -282,7 +282,7 @@ VOID USBX_APP_Device_Init(VOID)
   /* initialize the device controller driver*/
   _ux_dcd_stm32_initialize((ULONG)USB_OTG_HS, (ULONG)&hpcd_USB_OTG_HS);
 
-  /* Start device USB */
+  /* Start the USB device */
   HAL_PCD_Start(&hpcd_USB_OTG_HS);
 
   /* USER CODE BEGIN USB_Device_Init_PostTreatment */
