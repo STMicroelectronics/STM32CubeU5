@@ -26,7 +26,7 @@ if [ $ret != 0 ]; then
   fi
 fi
 echo "Provision default OEM2 key"
-"$stm32programmercli" $connect $oem_passwd2
+"$stm32programmercli" $connect $oem_lock2
 ret=$?
 if [ $ret != 0 ]; then
   if [ "$1" != "AUTO" ]; then read -p "regression script failed, press a key" -n1 -s; fi
