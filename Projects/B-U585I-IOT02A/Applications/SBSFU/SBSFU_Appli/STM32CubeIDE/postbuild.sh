@@ -97,6 +97,9 @@ if [ ! -e "$imgtool" ];then
   echo ""
   exit 0
 fi
+if [ $crypto_scheme == 3  ]; then
+mode="rsa4096"
+fi
 
 #sign mode
 if [ $crypto_scheme == 0  ]; then
@@ -133,6 +136,11 @@ fi
 if [ $primary_only == "1" ]; then
 option=$option" --primary-only"
 encrypt=""
+fi
+if [ $mode == "rsa4096" ]; then
+    key_s=$sbsfu_key_dir"/root-rsa-4096.pem"
+    key_ns=$sbsfu_key_dir"/root-rsa-4096_1.pem"
+    key_enc_pub=$sbsfu_key_dir"/enc-rsa4096-pub.pem"
 fi
 
 if [ $over_write == "1" ]; then
