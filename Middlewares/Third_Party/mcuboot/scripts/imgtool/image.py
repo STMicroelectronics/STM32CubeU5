@@ -18,15 +18,15 @@
 Image signing and management.
 """
 
-import version as versmod
-from boot_record import create_sw_component_data
+import imgtool.version as versmod
+from imgtool.boot_record import create_sw_component_data
 import click
 from enum import Enum
 from intelhex import IntelHex
 import hashlib
 import struct
 import os.path
-from keys import rsa, ecdsa, x25519
+from imgtool.keys import rsa, ecdsa, x25519
 from cryptography.hazmat.primitives.asymmetric import ec, padding
 from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes

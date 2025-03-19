@@ -15,17 +15,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from imgtool import imgtool_version
 import re
 import click
 import getpass
-import keys
+import imgtool.keys as keys
 import sys
-import macro_parser
-import image
-from version import decode_version
+import imgtool.macro_parser as macro_parser
+import imgtool.image as image
+from imgtool.version import decode_version
 import fileinput
 from struct import pack
-from keys import (
+from imgtool.keys import (
     RSAUsageError, ECDSAUsageError, Ed25519UsageError, X25519UsageError)
 
 MIN_PYTHON_VERSION = (3, 6)
