@@ -85,23 +85,23 @@ def load(path, passwd=None):
          return SYMKEY(pk,extension,priv_name)
     if isinstance(pk, RSAPrivateKey):
         if pk.key_size not in RSA_KEY_SIZES:
-            raise Exception("Unsupported RSA key size: " + pk.key_size)
+            raise Exception("Unsupported RSA key size: " + str(pk.key_size))
         return RSA(pk,extension,priv_name)
     elif isinstance(pk, RSAPublicKey):
         if pk.key_size not in RSA_KEY_SIZES:
-            raise Exception("Unsupported RSA key size: " + pk.key_size)
+            raise Exception("Unsupported RSA key size: " + str(pk.key_size))
         return RSAPublic(pk,extension,priv_name)
     elif isinstance(pk, EllipticCurvePrivateKey):
         if pk.curve.name != 'secp256r1':
             raise Exception("Unsupported EC curve: " + pk.curve.name)
         if pk.key_size != 256:
-            raise Exception("Unsupported EC size: " + pk.key_size)
+            raise Exception("Unsupported EC size: " + str(pk.key_size))
         return ECDSA256P1(pk,extension,priv_name)
     elif isinstance(pk, EllipticCurvePublicKey):
         if pk.curve.name != 'secp256r1':
             raise Exception("Unsupported EC curve: " + pk.curve.name)
         if pk.key_size != 256:
-            raise Exception("Unsupported EC size: " + pk.key_size)
+            raise Exception("Unsupported EC size: " + str(pk.key_size))
         return ECDSA256P1Public(pk,extension,priv_name)
     elif isinstance(pk, Ed25519PrivateKey):
         return Ed25519(pk)
