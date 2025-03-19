@@ -66,6 +66,11 @@ def gen_sym_32(keyfile, passwd, export):
 def gen_ecdsa_p224(keyfile, passwd):
     print("TODO: p-224 not yet implemented")
 
+def gen_rsa4096(keyfile, passwd, export):
+    new_key=keys.RSA.generate(key_size=4096)
+    new_key.export_private(path=keyfile,passwd=passwd)
+    if export:
+      new_key.export_public(path=export)
 
 def gen_ed25519(keyfile, passwd):
     keys.Ed25519.generate().export_private(path=keyfile, passwd=passwd)
@@ -79,6 +84,7 @@ valid_langs = ['c', 'rust']
 keygens = {
     'rsa-2048':   gen_rsa2048,
     'rsa-3072':   gen_rsa3072,
+    'rsa-4096':   gen_rsa4096,
     'ecdsa-p256': gen_ecdsa_p256,
     'ecdsa-p224': gen_ecdsa_p224,
     'ed25519':    gen_ed25519,

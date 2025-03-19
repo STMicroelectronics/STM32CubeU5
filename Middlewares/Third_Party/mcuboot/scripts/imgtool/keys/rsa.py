@@ -12,7 +12,7 @@ from .general import KeyClass
 
 
 # Sizes that bootutil will recognize
-RSA_KEY_SIZES = [2048, 3072]
+RSA_KEY_SIZES = [2048, 3072, 4096]
 
 
 class RSAUsageError(Exception):
