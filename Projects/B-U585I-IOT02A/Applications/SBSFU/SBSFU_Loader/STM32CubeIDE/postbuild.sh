@@ -14,7 +14,7 @@ loader_s_size=
 current_directory=`pwd`
 echo $current_directory
 cd $projectdir/../../
-envdir=`pwd`
+envdir=`pwd`"/../.."
 cd $current_directory
 #Make sure we have a Binary sub-folder in UserApp folder
 if [ ! -e $binarydir ]; then
@@ -22,7 +22,7 @@ echo "create Binary dir"
 mkdir $binarydir
 fi
 
-source $envdir/../../env.sh
+source $envdir/env.sh
 
 if [ ! -e "$imgtool" ];then
   echo ""
