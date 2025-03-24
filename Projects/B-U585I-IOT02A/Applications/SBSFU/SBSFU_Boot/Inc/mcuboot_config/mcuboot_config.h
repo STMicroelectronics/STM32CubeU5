@@ -43,20 +43,23 @@ extern "C" {
                                         AES-CTR-128 encryption with key RSA-OAEP encrypted */
 #define CRYPTO_SCHEME_EC256      0x2 /* ECDSA-256 signature,
                                         AES-CTR-128 encryption with key ECIES-P256 encrypted */
-
+#define CRYPTO_SCHEME_RSA4096    0x3 /* RSA-4096 signature,
+                                        AES-CTR-128 encryption with key RSA-OAEP encrypted */
 /* Crypto scheme selection : begin */
 #define CRYPTO_SCHEME            CRYPTO_SCHEME_RSA2048  /* Select one of available crypto schemes */
 /* Crypto scheme selection : end */
 
 
-#if (CRYPTO_SCHEME == CRYPTO_SCHEME_RSA2048) || (CRYPTO_SCHEME == CRYPTO_SCHEME_RSA3072)
+#if (CRYPTO_SCHEME == CRYPTO_SCHEME_RSA2048) || (CRYPTO_SCHEME == CRYPTO_SCHEME_RSA3072) || (CRYPTO_SCHEME == CRYPTO_SCHEME_RSA4096)
 /* RSA configuration */
 #define MCUBOOT_SIGN_RSA
 #define MCUBOOT_ENCRYPT_RSA
 #if (CRYPTO_SCHEME == CRYPTO_SCHEME_RSA2048)
 #define MCUBOOT_SIGN_RSA_LEN     2048
-#else
+#elif (CRYPTO_SCHEME == CRYPTO_SCHEME_RSA3072)
 #define MCUBOOT_SIGN_RSA_LEN     3072
+#else
+#define MCUBOOT_SIGN_RSA_LEN     4096
 #endif /* (CRYPTO_SCHEME == CRYPTO_SCHEME_RSA2048) */
 #else
 /* ECC config */

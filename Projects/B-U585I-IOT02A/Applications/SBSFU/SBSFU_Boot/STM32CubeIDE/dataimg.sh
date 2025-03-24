@@ -101,6 +101,9 @@ fi
 if [ $crypto_scheme == 2 ]; then
     mode="ec256"
 fi
+if [ $crypto_scheme == 3 ]; then
+    mode="rsa4096"
+fi
 
 #keys selection
 if [ $mode == "rsa2048" ]; then
@@ -117,6 +120,11 @@ if [ $mode == "ec256" ]; then
     key_s=$sbsfu_key_dir"/root-ec-p256.pem"
     key_ns=$sbsfu_key_dir"/root-ec-p256_1.pem"
     key_enc_pub=$sbsfu_key_dir"/enc-ec256-pub.pem"
+fi
+if [ $mode == "rsa4096" ]; then
+    key_s=$sbsfu_key_dir"/root-rsa-4096.pem"
+    key_ns=$sbsfu_key_dir"/root-rsa-4096_1.pem"
+    key_enc_pub=$sbsfu_key_dir"/enc-rsa4096-pub.pem"
 fi
 
 sbsfu_s=$projectdir"/../Src/s_data.bin"
