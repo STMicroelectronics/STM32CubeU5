@@ -46,7 +46,7 @@ extern "C" {
 #define CRYPTO_SCHEME_RSA4096    0x3 /* RSA-4096 signature,
                                         AES-CTR-128 encryption with key RSA-OAEP encrypted */
 /* Crypto scheme selection : begin */
-#define CRYPTO_SCHEME            CRYPTO_SCHEME_RSA2048  /* Select one of available crypto schemes */
+#define CRYPTO_SCHEME            CRYPTO_SCHEME_RSA4096  /* Select one of available crypto schemes */
 /* Crypto scheme selection : end */
 
 
