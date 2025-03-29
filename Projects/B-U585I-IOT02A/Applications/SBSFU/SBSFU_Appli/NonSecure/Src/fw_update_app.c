@@ -43,8 +43,7 @@ extern ARM_DRIVER_FLASH LOADER_FLASH_DEV_NAME;
   * @{
   */
 static uint32_t m_uFileSizeYmodem = 0U;    /* !< Ymodem File size*/
-static uint32_t m_uNbrBlocksYmodem = 0U;   /* !< Ymodem Number of blocks*/
-static uint32_t m_uPacketsReceived = 0U;   /* !< Ymodem packets received*/
+static uint32_t m_uRemainData = 0U;    /* !< Ymodem File size*/
 static uint32_t m_uFlashSectorSize = 0U;   /* !< Flash Sector Size */
 static uint32_t m_uFlashMinWriteSize = 0U; /* !< FLash Min Write access*/
 /** @defgroup  FW_UPDATE_Private_Const Private Const
@@ -605,14 +604,10 @@ HAL_StatusTypeDef Ymodem_HeaderPktRxCpltCallback(uint32_t uFlashDestination, uin
 {
   /*Reset of the ymodem variables */
   m_uFileSizeYmodem = 0U;
-  m_uPacketsReceived = 0U;
-  m_uNbrBlocksYmodem = 0U;
 
   /*Filesize information is stored*/
   m_uFileSizeYmodem = uFileSize;
-
-  /* compute the number of 1K blocks */
-  m_uNbrBlocksYmodem = (m_uFileSizeYmodem + (PACKET_1K_SIZE - 1U)) / PACKET_1K_SIZE;
+  m_uRemainData = m_uFileSizeYmodem;
 
   /* NOTE : delay inserted for Ymodem protocol*/
   HAL_Delay(1000);
@@ -629,25 +624,11 @@ extern uint32_t total_size_received;
 HAL_StatusTypeDef Ymodem_DataPktRxCpltCallback(uint8_t *pData, uint32_t uFlashDestination, uint32_t uSize)
 {
   int32_t ret;
-  m_uPacketsReceived++;
 
-  /*Increase the number of received packets*/
-  if (m_uPacketsReceived == m_uNbrBlocksYmodem) /*Last Packet*/
-  {
-    /*Extracting actual payload from last packet*/
-    if (0 == (m_uFileSizeYmodem % PACKET_1K_SIZE))
-    {
-      /* The last packet must be fully considered */
-      uSize = PACKET_1K_SIZE;
-    }
-    else
-    {
-      /* The last packet is not full, drop the extra bytes */
-      uSize = m_uFileSizeYmodem - ((uint32_t)(m_uFileSizeYmodem / PACKET_1K_SIZE) * PACKET_1K_SIZE);
-    }
+  if (m_uRemainData - uSize < 1)
+	  uSize = m_uRemainData;
+  m_uRemainData -= uSize;
 
-    m_uPacketsReceived = 0U;
-  }
   /*Adjust dimension to 64-bit length */
   if (uSize %  m_uFlashMinWriteSize != 0U)
   {
@@ -669,8 +650,7 @@ HAL_StatusTypeDef Ymodem_DataPktRxCpltCallback(uint8_t *pData, uint32_t uFlashDe
   {
     /*Reset of the ymodem variables */
     m_uFileSizeYmodem = 0U;
-    m_uPacketsReceived = 0U;
-    m_uNbrBlocksYmodem = 0U;
+    m_uRemainData = 0U;
     return HAL_ERROR;
   }
   else
