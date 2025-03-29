@@ -138,6 +138,41 @@ echo $command_key" : failed" >> $projectdir"/output.txt"
 exit 1
 fi
 
+#rsa 4096 auth key
+key_rsa_2_s=$sbsfu_key_dir"/root-rsa-4096.pem"
+command_key=" keygen -k "$key_rsa_2_s" -t rsa-4096"
+"$imgtool" $command_key
+ret=$?
+if [ $ret != 0 ]; then
+echo $command_key" : failed" >> $projectdir"/output.txt"
+exit 1
+fi
+command_key=" getpub -k "$key_rsa_2_s
+"$imgtool" $command_key  >> $sbsfu_keys
+
+ret=$?
+if [ $ret != 0 ]; then
+echo $command_key" : failed" >> $projectdir"/output.txt"
+exit 1
+fi
+
+key_rsa_2_ns=$sbsfu_key_dir"/root-rsa-4096_1.pem"
+command_key=" keygen -k "$key_rsa_2_ns" -t rsa-4096"
+"$imgtool" $command_key
+ret=$?
+if [ $ret != 0 ]; then
+echo $command_key" : failed" >> $projectdir"/output.txt"
+exit 1
+fi
+
+command_key=" getpub -k "$key_rsa_2_ns
+"$imgtool" $command_key  >> $sbsfu_keys
+ret=$?
+if [ $ret != 0 ]; then
+echo $command_key" : failed" >> $projectdir"/output.txt"
+exit 1
+fi
+
 #ecc 256 auth key
 key_ecc_s=$sbsfu_key_dir"/root-ec-p256.pem"
 command_key=" keygen -k "$key_ecc_s" -t ecdsa-p256"
