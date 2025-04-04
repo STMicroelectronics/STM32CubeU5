@@ -102,7 +102,7 @@
 #define MBEDTLS_ECP_MAX_BITS             2048
 
 
-#define MBEDTLS_MPI_MAX_SIZE              384
+#define MBEDTLS_MPI_MAX_SIZE              512
 
 
 /* Target and application specific configurations */
