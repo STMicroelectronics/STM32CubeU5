@@ -66,7 +66,7 @@ const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"
     },
 #endif
 };
-#else
+#elif MCUBOOT_SIGN_RSA_LEN == 3072
 extern const unsigned int rsa3072_pub_key_len;
 extern const unsigned char rsa3072_pub_key[];
 #if (MCUBOOT_APP_IMAGE_NUMBER == 2) || (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
@@ -97,6 +97,40 @@ const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"
     {
         .key = rsa3072_pub_key_1,
         .len = &rsa3072_pub_key_len_1,
+    },
+#endif
+};
+#else
+extern const unsigned int rsa4096_pub_key_len;
+extern const unsigned char rsa4096_pub_key[];
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2) || (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
+extern const unsigned int rsa4096_pub_key_len_1;
+extern const unsigned char rsa4096_pub_key_1[];
+#endif
+#if defined(__ICCARM__)
+#pragma location=".bootutil_key"
+#endif /* __ICCARM__ */
+const struct bootutil_key bootutil_keys[] __attribute__((section(".bootutil_key"))) = {
+    {
+        .key = rsa4096_pub_key,
+        .len = &rsa4096_pub_key_len,
+    },
+#if (MCUBOOT_APP_IMAGE_NUMBER == 2)
+    {
+        .key = rsa4096_pub_key_1,
+        .len = &rsa4096_pub_key_len_1,
+    },
+#endif
+#if (MCUBOOT_S_DATA_IMAGE_NUMBER == 1)
+    {
+        .key = rsa4096_pub_key,
+        .len = &rsa4096_pub_key_len,
+    },
+#endif
+#if (MCUBOOT_NS_DATA_IMAGE_NUMBER == 1)
+    {
+        .key = rsa4096_pub_key_1,
+        .len = &rsa4096_pub_key_len_1,
     },
 #endif
 };	

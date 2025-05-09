@@ -210,6 +210,8 @@ bootutil_img_hash(struct enc_key_data *enc_state, int image_index,
 #        define EXPECTED_SIG_TLV IMAGE_TLV_RSA2048_PSS
 #    elif MCUBOOT_SIGN_RSA_LEN == 3072
 #        define EXPECTED_SIG_TLV IMAGE_TLV_RSA3072_PSS
+#    elif MCUBOOT_SIGN_RSA_LEN == 4096
+#        define EXPECTED_SIG_TLV IMAGE_TLV_RSA4096_PSS
 #    else
 #        error "Unsupported RSA signature length"
 #    endif
