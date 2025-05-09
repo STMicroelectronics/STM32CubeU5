@@ -35,7 +35,6 @@
 #include "main.h"
 
 /* Private const -------------------------------------------------------------*/
-const char BACK_SLASH_POINT[]="\b.";
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -357,8 +356,6 @@ COM_StatusTypeDef Ymodem_Receive(uint32_t *puSize, uint32_t uFlashDestination)
           else
           {
             Serial_PutByte(CRC16); /* Ask for a packet */
-            /* Replace C char by . on display console */
-            COM_Transmit_Y((uint8_t *)BACK_SLASH_POINT, sizeof(BACK_SLASH_POINT)-1, TX_TIMEOUT);
           }
           break;
       }
