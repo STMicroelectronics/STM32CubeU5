@@ -23,7 +23,7 @@
 
 #define USE_DYNAMIC_MEMORY_ALLOCATION
 
-#if defined (__clang__)
+#if defined(__ARMCC_VERSION)  /* For arm compiler 5 & 6 */
 /**************************************************************************/
 /*                                                                        */
 /*       Copyright (c) Microsoft Corporation. All rights reserved.        */
@@ -435,7 +435,7 @@ __tx_DBGHandler:
     END
 #endif
 
-#if (defined(__GNUC__) && !defined(__clang__))
+#if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
 /**************************************************************************/
 /*                                                                        */
 /*       Copyright (c) Microsoft Corporation. All rights reserved.        */

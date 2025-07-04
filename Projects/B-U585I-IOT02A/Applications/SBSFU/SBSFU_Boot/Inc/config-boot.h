@@ -23,7 +23,7 @@
 /*
  * Minimal configuration for using TLS in the bootloader
  *
- * - RSA or ECDSA signature verification
+ * - ECDSA signature verification
  */
 
 #ifndef MBEDTLS_CONFIG_BOOT_H
@@ -52,7 +52,11 @@
 #undef MBEDTLS_ECP_NIST_OPTIM
 #define MBEDTLS_PLATFORM_ENTROPY
 #define MBEDTLS_ENTROPY_C
+#if defined(BL2_HW_ACCEL_ENABLE)
 #define MBEDTLS_CTR_DRBG_C
+#else
+#define MBEDTLS_HMAC_DRBG_C
+#endif /* BL2_HW_ACCEL_ENABLE */
 #define MBEDTLS_ENTROPY_HARDWARE_ALT
 
 
@@ -67,7 +71,6 @@
 #define MBEDTLS_HAVE_ASM
 #endif
 
-#define MBEDTLS_RSA_C
 #define MBEDTLS_ECP_DP_SECP256R1_ENABLED
 #if !defined(BL2_HW_ACCEL_ENABLE)
 #define MBEDTLS_ECP_NIST_OPTIM
@@ -85,7 +88,6 @@
 #define MBEDTLS_AES_ALT
 #define MBEDTLS_ECDSA_VERIFY_ALT
 #define MBEDTLS_ECP_ALT
-#define MBEDTLS_RSA_ALT
 #endif /* BL2_HW_ACCEL_ENABLE */
 
 /* mbed TLS modules */
@@ -99,9 +101,6 @@
 #define MBEDTLS_AES_C
 #define MBEDTLS_CIPHER_C
 /* Save RAM by adjusting to our exact needs */
-#define MBEDTLS_ECP_MAX_BITS             2048
-
-
 #define MBEDTLS_MPI_MAX_SIZE              384
 
 
@@ -117,6 +116,8 @@
 
 #endif /* BL2_HW_ACCEL_ENABLE */
 
-#include "mbedtls/check_config.h"
+/* mbedtls >3.6 compatibility */
+#define MBEDTLS_ALLOW_PRIVATE_ACCESS
+#define MBEDTLS_DEPRECATED_REMOVED
 
 #endif /* MBEDTLS_CONFIG_BOOT_H */

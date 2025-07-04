@@ -171,7 +171,7 @@
 
 #define FX_SINGLE_THREAD
 
-/* Defined, Filex will be used in standalone mode (without ThreadX) */
+/* Defined, FileX will be used in standalone mode (without ThreadX) */
 
 #define FX_STANDALONE_ENABLE
 
@@ -218,8 +218,8 @@
 /* #define FX_DISABLE_CONSECUTIVE_DETECT */
 
 /* Define bitmap cache size for exFAT. Size should be minimum one sector size and maximum 4096.
-For applications using multiple media devices with varying sector size, the value should be :
-set to the size of largest sector size. */
+   For applications using multiple media devices with varying sector size, the value should be set to the
+   size of largest sector size. */
 
 /* #define FX_EXFAT_MAX_CACHE_SIZE         512 */
 

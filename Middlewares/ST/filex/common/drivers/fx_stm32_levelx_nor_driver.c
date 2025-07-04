@@ -126,7 +126,7 @@ static struct fx_lx_nor_driver_instance  fx_lx_nor_drivers[MAX_LX_NOR_DRIVERS] =
       .extended_nor_cache_size = sizeof(lx_stm32_nor_simulator_extended_cache_memory),
       #endif
       #endif
-    }
+    },
 #endif
 
 #ifdef LX_NOR_OSPI_DRIVER
@@ -139,7 +139,7 @@ static struct fx_lx_nor_driver_instance  fx_lx_nor_drivers[MAX_LX_NOR_DRIVERS] =
       .extended_nor_cache_size = sizeof(lx_stm32_nor_ospi_extended_cache_memory),
       #endif
       #endif
-    }
+    },
 #endif
 
 #ifdef LX_NOR_QSPI_DRIVER
@@ -152,7 +152,7 @@ static struct fx_lx_nor_driver_instance  fx_lx_nor_drivers[MAX_LX_NOR_DRIVERS] =
       .extended_nor_cache_size = sizeof(lx_stm32_nor_qspi_extended_cache_memory),
       #endif
       #endif
-    }
+    },
 #endif
 
 #ifdef LX_NOR_XSPI_DRIVER

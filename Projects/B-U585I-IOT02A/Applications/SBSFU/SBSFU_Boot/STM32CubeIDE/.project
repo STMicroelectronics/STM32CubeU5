@@ -103,11 +103,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Src/mpu_armv8m_drv.c</locationURI>
 		</link>
 		<link>
-			<name>Application/User/rsa_alt.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Src/rsa_alt.c</locationURI>
-		</link>
-		<link>
 			<name>Application/User/sha256_alt.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Src/sha256_alt.c</locationURI>
@@ -273,6 +268,11 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbed-crypto/library/bignum.c</locationURI>
 		</link>
 		<link>
+			<name>Middlewares/mbed-crypto/bignum_core.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbed-crypto/library/bignum_core.c</locationURI>
+		</link>
+		<link>
 			<name>Middlewares/mbed-crypto/cipher.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbed-crypto/library/cipher.c</locationURI>
@@ -286,6 +286,11 @@
 			<name>Middlewares/mbed-crypto/ctr_drbg.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbed-crypto/library/ctr_drbg.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/mbed-crypto/hmac_drbg.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbed-crypto/library/hmac_drbg.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/mbed-crypto/ecdh.c</name>
@@ -338,16 +343,6 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbed-crypto/library/platform_util.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/mbed-crypto/rsa.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbed-crypto/library/rsa.c</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/mbed-crypto/rsa_internal.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbed-crypto/library/rsa_internal.c</locationURI>
-		</link>
-		<link>
 			<name>Middlewares/mbed-crypto/sha256.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mbed-crypto/library/sha256.c</locationURI>
@@ -386,11 +381,6 @@
 			<name>Middlewares/mcuboot/image_ec256.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mcuboot/boot/bootutil/src/image_ec256.c</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/mcuboot/image_rsa.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/Third_Party/mcuboot/boot/bootutil/src/image_rsa.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/mcuboot/image_validate.c</name>

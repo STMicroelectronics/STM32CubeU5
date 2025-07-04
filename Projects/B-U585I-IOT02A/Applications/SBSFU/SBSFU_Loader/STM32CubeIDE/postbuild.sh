@@ -1,4 +1,25 @@
 #!/bin/bash -
+#=================================================================================================
+# Managing HOST OS diversity : begin 
+#=================================================================================================
+OS=$(uname)
+
+echo ${OS} | grep -i -e windows -e mingw >/dev/null
+if [[ $? == 0 ]]; then
+  echo "HOST OS : Windows detected"
+  OS="Windows_NT"
+elif [[ "$OS" == "Linux" ]]; then
+  echo "HOST OS : Linux detected"
+elif [[ "$OS" == "Darwin" ]]; then
+  echo "HOST OS : MacOS detected"
+else
+  echo "!!!HOST OS not supported : >$OS<!!!"
+  exit 1
+fi
+
+#=================================================================================================
+# Managing HOST OS diversity : end 
+#=================================================================================================
 # arg1 is the build directory
 # arg2 is operation
 projectdir=$1
@@ -39,7 +60,13 @@ if [ $operation == "secure" ]; then
 ret=0
 elif [ $operation == "nonsecure" ]; then
 #according to secure_nsclib.o size select build with or without MCUBOOT_PRIMARY_ONLY
-filesize=$(stat -c%s "$secure_nsc")
+
+# Get Absolute path to this script use "readlink" for linux/windows and "stat" for Mac OS
+if [[ "${OS}" == "Darwin" ]]; then
+  filesize=$(ls -nl   "$secure_nsc" | awk '{print $5}')
+else
+  filesize=$(stat -c%s "$secure_nsc")
+fi
 
 if [ $filesize -ge $maxbytesize ]; then
 echo "loader with secure part (MCUBOOT_PRIMARY_ONLY defined)" >> $projectdir/output.txt

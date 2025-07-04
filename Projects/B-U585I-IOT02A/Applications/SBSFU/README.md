@@ -21,13 +21,13 @@ versions, adding new features and correcting potential issues. The update proces
 updates and access to confidential on-device data:
 
 -   The Secure Boot (Root of Trust services) is an immutable code, always executed after a system reset, that checks STM32 static protections,
-activates STM32 runtime protections and then verifies the authenticity (RSA or ECDSA signature) and integrity (SHA256) of the application code
-before execution in order to ensure that invalid or malicious code cannot be run. The default asymmetric key (RSA or ECDSA) is taken from
+activates STM32 runtime protections and then verifies the authenticity (ECDSA signature) and integrity (SHA256) of the application code
+before execution in order to ensure that invalid or malicious code cannot be run. The default asymmetric key (ECDSA) is taken from
  SBSFU_Boot\\Src\\keys.c and is embedded in the provisioned data area in the secure boot and secure firmware update binary.
 
 -   The Secure Firmware Update application is an immutable code that detects that a new firmware image is available, and that checks its
 authenticity and integrity. It also decrypts it (AES-CTR) during installation, if image is installed in internal flash. The AES-CTR key is
-encrypted (RSA-OAEP or ECIES-P256) and provided in the firmware image itself. The default asymmetric key (RSA or ECDSA) used to encrypt the
+encrypted (ECIES-P256) and provided in the firmware image itself. The default asymmetric key (ECDSA) used to encrypt the
 AES-CTR key is distinct from the signature key, but also taken from SBSFU_Boot\\Src\\keys.c. The firmware update can be done either on the
 secure part of firmware image and/or on the non-secure part of the firmware image.
 
@@ -320,15 +320,11 @@ verified, decrypted (if needed) and installed, then executed, by SBSFU_Boot.
 
    *  **Crypto-scheme**
 
-      By default, the crypto scheme is RSA-2048 signature, and AES-CTR-128 image encryption with key RSA-OAEP encrypted. It is possible
-to select another crypto-scheme, with CRYPTO_SCHEME define in SBSFU_Boot\\Inc\\mcuboot_config\\mcuboot_config.h.
+      By default, the crypto scheme is ECDSA-256 signature, and AES-CTR-128 image encryption with key ECIES-P256 encrypted,
+      with CRYPTO_SCHEME define in SBSFU_Boot\Inc\mcuboot_config\mcuboot_config.h.
 
-      ```
-      #define CRYPTO_SCHEME_RSA2048    0x0 /* RSA-2048 signature, AES-CTR-128 encryption with key RSA-OAEP encrypted */
-      #define CRYPTO_SCHEME_RSA3072    0x1 /* RSA-3072 signature, AES-CTR-128 encryption with key RSA-OAEP encrypted */
       #define CRYPTO_SCHEME_EC256      0x2 /* ECDSA-256 signature, AES-CTR-128 encryption with key ECIES-P256 encrypted */
-      #define CRYPTO_SCHEME            CRYPTO_SCHEME_RSA2048  /* Select one of available crypto schemes */
-      ```
+      #define CRYPTO_SCHEME            CRYPTO_SCHEME_EC256  /* Default crypto scheme */
 
    *  **HW accelerated cryptography**
 

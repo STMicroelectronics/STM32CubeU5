@@ -62,6 +62,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -76,20 +77,20 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief DAC MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hdac: DAC handle pointer
-* @retval None
-*/
+  * @brief DAC MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hdac: DAC handle pointer
+  * @retval None
+  */
 void HAL_DAC_MspInit(DAC_HandleTypeDef* hdac)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
   if(hdac->Instance==DAC1)
   {
-  /* USER CODE BEGIN DAC1_MspInit 0 */
+    /* USER CODE BEGIN DAC1_MspInit 0 */
 
-  /* USER CODE END DAC1_MspInit 0 */
+    /* USER CODE END DAC1_MspInit 0 */
 
   /** Initializes the peripherals clock
   */
@@ -113,26 +114,27 @@ void HAL_DAC_MspInit(DAC_HandleTypeDef* hdac)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN DAC1_MspInit 1 */
+    /* USER CODE BEGIN DAC1_MspInit 1 */
 
-  /* USER CODE END DAC1_MspInit 1 */
+    /* USER CODE END DAC1_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief DAC MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hdac: DAC handle pointer
-* @retval None
-*/
+  * @brief DAC MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hdac: DAC handle pointer
+  * @retval None
+  */
 void HAL_DAC_MspDeInit(DAC_HandleTypeDef* hdac)
 {
   if(hdac->Instance==DAC1)
   {
-  /* USER CODE BEGIN DAC1_MspDeInit 0 */
+    /* USER CODE BEGIN DAC1_MspDeInit 0 */
 
-  /* USER CODE END DAC1_MspDeInit 0 */
+    /* USER CODE END DAC1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_DAC1_CLK_DISABLE();
 
@@ -141,9 +143,9 @@ void HAL_DAC_MspDeInit(DAC_HandleTypeDef* hdac)
     */
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4);
 
-  /* USER CODE BEGIN DAC1_MspDeInit 1 */
+    /* USER CODE BEGIN DAC1_MspDeInit 1 */
   
-  /* USER CODE END DAC1_MspDeInit 1 */
+    /* USER CODE END DAC1_MspDeInit 1 */
   }
 
 }

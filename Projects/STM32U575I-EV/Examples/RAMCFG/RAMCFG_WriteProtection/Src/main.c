@@ -90,6 +90,7 @@ static void TransferError(DMA_HandleTypeDef *hdma);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
   /* STM32U5xx HAL library initialization:
        - Configure the Flash prefetch
@@ -108,11 +109,11 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
   /* Configure the System Power */
   SystemPower_Config();
+
+  /* Configure the system clock */
+  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
   /* Initialize LED5 and LED6 */

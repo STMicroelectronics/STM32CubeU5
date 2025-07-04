@@ -94,14 +94,14 @@ int main(void)
 
   /* USER CODE END Init */
 
+  /* Configure the System Power */
+  SystemPower_Config();
+
   /* Configure the system clock */
   SystemClock_Config();
 
-  /* Configure the System Power */
-  SystemPower_Config();
-  
   /* USER CODE BEGIN SysInit */
-  
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -350,7 +350,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 0 */
 
   /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM6) {
+  if (htim->Instance == TIM6)
+  {
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */

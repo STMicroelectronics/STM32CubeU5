@@ -62,6 +62,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -76,19 +77,19 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief DCMI MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hdcmi: DCMI handle pointer
-* @retval None
-*/
+  * @brief DCMI MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hdcmi: DCMI handle pointer
+  * @retval None
+  */
 void HAL_DCMI_MspInit(DCMI_HandleTypeDef* hdcmi)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   if(hdcmi->Instance==DCMI)
   {
-  /* USER CODE BEGIN DCMI_MspInit 0 */
+    /* USER CODE BEGIN DCMI_MspInit 0 */
 
-  /* USER CODE END DCMI_MspInit 0 */
+    /* USER CODE END DCMI_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_DCMI_PSSI_CLK_ENABLE();
 
@@ -123,26 +124,27 @@ void HAL_DCMI_MspInit(DCMI_HandleTypeDef* hdcmi)
     /* DCMI interrupt Init */
     HAL_NVIC_SetPriority(DCMI_PSSI_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(DCMI_PSSI_IRQn);
-  /* USER CODE BEGIN DCMI_MspInit 1 */
+    /* USER CODE BEGIN DCMI_MspInit 1 */
 
-  /* USER CODE END DCMI_MspInit 1 */
+    /* USER CODE END DCMI_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief DCMI MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hdcmi: DCMI handle pointer
-* @retval None
-*/
+  * @brief DCMI MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hdcmi: DCMI handle pointer
+  * @retval None
+  */
 void HAL_DCMI_MspDeInit(DCMI_HandleTypeDef* hdcmi)
 {
   if(hdcmi->Instance==DCMI)
   {
-  /* USER CODE BEGIN DCMI_MspDeInit 0 */
+    /* USER CODE BEGIN DCMI_MspDeInit 0 */
 
-  /* USER CODE END DCMI_MspDeInit 0 */
+    /* USER CODE END DCMI_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_DCMI_PSSI_CLK_DISABLE();
 
@@ -164,9 +166,9 @@ void HAL_DCMI_MspDeInit(DCMI_HandleTypeDef* hdcmi)
 
     /* DCMI interrupt DeInit */
     HAL_NVIC_DisableIRQ(DCMI_PSSI_IRQn);
-  /* USER CODE BEGIN DCMI_MspDeInit 1 */
+    /* USER CODE BEGIN DCMI_MspDeInit 1 */
 
-  /* USER CODE END DCMI_MspDeInit 1 */
+    /* USER CODE END DCMI_MspDeInit 1 */
   }
 
 }

@@ -11,54 +11,6 @@
 
 #include "lx_stm32_xspi_driver.h"
 
-/* Private includes ----------------------------------------------------------*/
-
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-/* USER CODE BEGIN PV */
-
-/* USER CODE BEGIN SECTOR_BUFFER */
-ULONG xspi_sector_buffer[LX_STM32_XSPI_SECTOR_SIZE / sizeof(ULONG)];
-/* USER CODE END SECTOR_BUFFER */
-
-/* The following semaphore is being to notify about RX/TX completion.
-It needs to be released in the transfer callbacks */
-TX_SEMAPHORE xspi_rx_semaphore;
-TX_SEMAPHORE xspi_tx_semaphore;
-
-extern XSPI_HandleTypeDef hxspi1;
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
-/* USER CODE BEGIN PFP */
-#if (LX_STM32_XSPI_INIT == 1)
-extern void MX_HSPI1_Init(void);
-#endif
-
-static uint8_t xspi_memory_reset            (XSPI_HandleTypeDef *hxspi);
-static uint8_t xspi_set_write_enable        (XSPI_HandleTypeDef *hxspi);
-static uint8_t xspi_auto_polling_ready      (XSPI_HandleTypeDef *hxspi, uint32_t timeout);
-static uint8_t xspi_set_octal_mode          (XSPI_HandleTypeDef *hxspi);
-/* USER CODE END PFP */
-
 /* HAL DMA API implementation for HSPI component MX66UW1G45G
  * The present implementation assumes the following settings are set:
 
@@ -76,10 +28,28 @@ static uint8_t xspi_set_octal_mode          (XSPI_HandleTypeDef *hxspi);
   ChipSelectBoundary    = 0
   DelayBlockBypass      = used
  */
+extern XSPI_HandleTypeDef hxspi1;
+
+#if (LX_STM32_XSPI_INIT == 1)
+extern void MX_HSPI1_Init(void);
+#endif
+
+static uint8_t xspi_memory_reset            (XSPI_HandleTypeDef *hxspi);
+static uint8_t xspi_set_write_enable        (XSPI_HandleTypeDef *hxspi);
+static uint8_t xspi_auto_polling_ready      (XSPI_HandleTypeDef *hxspi, uint32_t timeout);
+static uint8_t xspi_set_octal_mode          (XSPI_HandleTypeDef *hxspi);
+
+/* USER CODE BEGIN SECTOR_BUFFER */
+ULONG xspi_sector_buffer[LX_STM32_XSPI_SECTOR_SIZE / sizeof(ULONG)];
+/* USER CODE END SECTOR_BUFFER */
+
+TX_SEMAPHORE xspi_rx_semaphore;
+TX_SEMAPHORE xspi_tx_semaphore;
 
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
+
 /**
 * @brief system init for xspi levelx driver
 * @param UINT instance XSPI instance to initialize
@@ -229,12 +199,17 @@ INT lx_stm32_xspi_get_info(UINT instance, ULONG *block_size, ULONG *total_blocks
 {
   INT status = 0;
 
-  UNUSED(instance);
+  /* USER CODE BEGIN PRE_XSPI_GET_INFO */
+
+  /* USER CODE END PRE_XSPI_GET_INFO */
 
   *block_size = LX_STM32_XSPI_SECTOR_SIZE;
 
   *total_blocks = (LX_STM32_XSPI_FLASH_SIZE / LX_STM32_XSPI_SECTOR_SIZE);
 
+  /* USER CODE BEGIN POST_XSPI_GET_INFO */
+
+  /* USER CODE END POST_XSPI_GET_INFO */
   return status;
 }
 
@@ -278,6 +253,10 @@ INT lx_stm32_xspi_read(UINT instance, ULONG *address, ULONG *buffer, ULONG words
   s_command.DataDTRMode           = HAL_XSPI_DATA_DTR_ENABLE;
   s_command.DQSMode               = HAL_XSPI_DQS_ENABLE;
 
+  /* USER CODE BEGIN XSPI_READ_CMD */
+
+  /* USER CODE END XSPI_READ_CMD */
+
   /* Configure the command */
   if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
@@ -298,13 +277,13 @@ INT lx_stm32_xspi_read(UINT instance, ULONG *address, ULONG *buffer, ULONG words
 }
 
 /**
-  * @brief write a data buffer into the XSPI memory
-  * @param UINT instance XSPI instance
-  * @param ULONG * address the start address to write into
-  * @param ULONG * buffer the data source buffer
-  * @param ULONG words the total number of words to be written
-  * @retval 0 on Success 1 on Failure
-  */
+* @brief write a data buffer into the XSPI memory
+* @param UINT instance XSPI instance
+* @param ULONG * address the start address to write into
+* @param ULONG * buffer the data source buffer
+* @param ULONG words the total number of words to be written
+* @retval 0 on Success 1 on Failure
+*/
 INT lx_stm32_xspi_write(UINT instance, ULONG *address, ULONG *buffer, ULONG words)
 {
   INT status = 0;
@@ -386,7 +365,7 @@ INT lx_stm32_xspi_write(UINT instance, ULONG *address, ULONG *buffer, ULONG word
     /* Check success of the transmission of the data */
     if(tx_semaphore_get(&xspi_tx_semaphore, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != TX_SUCCESS)
     {
-      return 1;
+     return 1;
     }
 
     /* Configure automatic polling mode to wait for end of program */
@@ -413,13 +392,13 @@ INT lx_stm32_xspi_write(UINT instance, ULONG *address, ULONG *buffer, ULONG word
 }
 
 /**
-  * @brief Erase the whole flash or a single block
-  * @param UINT instance XSPI instance
-  * @param ULONG  block the block to be erased
-  * @param ULONG  erase_count the number of times the block was erased
-  * @param UINT full_chip_erase if set to 0 a single block is erased otherwise the whole flash is erased
-  * @retval 0 on Success 1 on Failure
-  */
+* @brief Erase the whole flash or a single block
+* @param UINT instance XSPI instance
+* @param ULONG  block the block to be erased
+* @param ULONG  erase_count the number of times the block was erased
+* @param UINT full_chip_erase if set to 0 a single block is erased otherwise the whole flash is erased
+* @retval 0 on Success 1 on Failure
+*/
 INT lx_stm32_xspi_erase(UINT instance, ULONG block, ULONG erase_count, UINT full_chip_erase)
 {
   INT status = 0;
@@ -489,11 +468,11 @@ INT lx_stm32_xspi_erase(UINT instance, ULONG block, ULONG erase_count, UINT full
 }
 
 /**
-  * @brief Check that a block was actually erased
-  * @param UINT instance XSPI instance
-  * @param ULONG  block the block to be checked
-  * @retval 0 on Success 1 on Failure
-  */
+* @brief Check that a block was actually erased
+* @param UINT instance XSPI instance
+* @param ULONG  block the block to be checked
+* @retval 0 on Success 1 on Failure
+*/
 INT lx_stm32_xspi_is_block_erased(UINT instance, ULONG block)
 {
   INT status = 0;
@@ -506,10 +485,10 @@ INT lx_stm32_xspi_is_block_erased(UINT instance, ULONG block)
 }
 
 /**
-  * @brief Handle levelx system errors
-  * @param UINT error_code Code of the concerned error.
-  * @retval UINT error code.
-  */
+* @brief Handle levelx system errors
+* @param UINT error_code Code of the concerned error.
+* @retval UINT error code.
+*/
 
 UINT  lx_xspi_driver_system_error(UINT error_code)
 {
@@ -535,6 +514,7 @@ static uint8_t xspi_memory_reset(XSPI_HandleTypeDef *hxspi)
   XSPI_AutoPollingTypeDef s_config;
 
   /* Initialize the reset enable command */
+
   s_command.OperationType         = HAL_XSPI_OPTYPE_COMMON_CFG;
   s_command.IOSelect              = HAL_XSPI_SELECT_IO_7_0;
   s_command.Instruction           = LX_STM32_XSPI_RESET_ENABLE_CMD;
@@ -549,19 +529,20 @@ static uint8_t xspi_memory_reset(XSPI_HandleTypeDef *hxspi)
   s_command.SIOOMode              = HAL_XSPI_SIOO_INST_EVERY_CMD;
 
   /* Send the command */
-  if (HAL_XSPI_Command(hxspi, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
 
   /* Send the reset memory command */
   s_command.Instruction = LX_STM32_XSPI_RESET_MEMORY_CMD;
-  if (HAL_XSPI_Command(hxspi, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
 
   /* Configure automatic polling mode to wait the memory is ready */
+
   s_command.Instruction  = LX_STM32_XSPI_READ_STATUS_REG_CMD;
   s_command.DataMode     = HAL_XSPI_DATA_1_LINE;
   s_command.DataLength   = 1;
@@ -573,12 +554,12 @@ static uint8_t xspi_memory_reset(XSPI_HandleTypeDef *hxspi)
   s_config.IntervalTime  = 0x10;
   s_config.AutomaticStop = HAL_XSPI_AUTOMATIC_STOP_ENABLE;
 
-  if (HAL_XSPI_Command(hxspi, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
 
-  if (HAL_XSPI_AutoPolling(hxspi, &s_config, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_AutoPolling(&hxspi1, &s_config, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
@@ -602,6 +583,7 @@ static uint8_t xspi_set_write_enable(XSPI_HandleTypeDef *hxspi)
   XSPI_RegularCmdTypeDef  s_command;
 
   /* Enable write operations */
+
   s_command.OperationType         = HAL_XSPI_OPTYPE_COMMON_CFG;
   s_command.IOSelect              = HAL_XSPI_SELECT_IO_7_0;
   s_command.Instruction           = LX_STM32_XSPI_OCTAL_WRITE_ENABLE_CMD;
@@ -617,7 +599,7 @@ static uint8_t xspi_set_write_enable(XSPI_HandleTypeDef *hxspi)
   /* DTR mode is enabled */
   s_command.InstructionDTRMode    = HAL_XSPI_INSTRUCTION_DTR_ENABLE;
 
-  if (HAL_XSPI_Command(hxspi, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
@@ -650,6 +632,7 @@ static uint8_t xspi_auto_polling_ready(XSPI_HandleTypeDef *hxspi, uint32_t timeo
   uint32_t start = LX_STM32_XSPI_CURRENT_TIME();
 
   /* Configure automatic polling mode to wait for memory ready */
+
   s_command.OperationType         = HAL_XSPI_OPTYPE_COMMON_CFG;
   s_command.IOSelect              = HAL_XSPI_SELECT_IO_7_0;
   s_command.Instruction           = LX_STM32_XSPI_OCTAL_READ_STATUS_REG_CMD;
@@ -675,13 +658,13 @@ static uint8_t xspi_auto_polling_ready(XSPI_HandleTypeDef *hxspi, uint32_t timeo
 
   while( LX_STM32_XSPI_CURRENT_TIME() - start < timeout)
   {
-     if (HAL_XSPI_Command(hxspi, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+     if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
     {
       status = 1;
       break;
     }
 
-    if (HAL_XSPI_Receive(hxspi, reg, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+    if (HAL_XSPI_Receive(&hxspi1, reg, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
     {
       status = 1;
       break;
@@ -734,15 +717,17 @@ static uint8_t xspi_set_octal_mode(XSPI_HandleTypeDef *hxspi)
   s_command.AddressMode      = HAL_XSPI_ADDRESS_NONE;
   s_command.DataMode         = HAL_XSPI_DATA_NONE;
   s_command.DummyCycles      = 0U;
+
   /* Add a short delay to let the IP settle before starting the command */
   HAL_Delay(1);
 
-  if (HAL_XSPI_Command(hxspi, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
 
   /* Configure automatic polling mode to wait for write enabling */
+
   s_config.MatchValue = LX_STM32_XSPI_SR_WEL;
   s_config.MatchMask  = LX_STM32_XSPI_SR_WEL;
 
@@ -750,12 +735,12 @@ static uint8_t xspi_set_octal_mode(XSPI_HandleTypeDef *hxspi)
   s_command.DataMode    = HAL_XSPI_DATA_1_LINE;
   s_command.DataLength  = 1;
 
-  if (HAL_XSPI_Command(hxspi, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
 
-  if (HAL_XSPI_AutoPolling(hxspi, &s_config, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_AutoPolling(&hxspi1, &s_config, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
@@ -768,12 +753,12 @@ static uint8_t xspi_set_octal_mode(XSPI_HandleTypeDef *hxspi)
 
   reg[0] = LX_STM32_XSPI_DUMMY_CYCLES_CR_CFG;
 
-  if (HAL_XSPI_Command(hxspi, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
 
-  if (HAL_XSPI_Transmit(hxspi, reg, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Transmit(&hxspi1, reg, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
@@ -784,7 +769,7 @@ static uint8_t xspi_set_octal_mode(XSPI_HandleTypeDef *hxspi)
   s_command.AddressMode = HAL_XSPI_ADDRESS_NONE;
   s_command.DataMode    = HAL_XSPI_DATA_NONE;
 
-  if (HAL_XSPI_Command(hxspi, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
@@ -794,12 +779,12 @@ static uint8_t xspi_set_octal_mode(XSPI_HandleTypeDef *hxspi)
   s_command.Instruction = LX_STM32_XSPI_READ_STATUS_REG_CMD;
   s_command.DataMode    = HAL_XSPI_DATA_1_LINE;
 
-  if (HAL_XSPI_Command(hxspi, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
 
-  if (HAL_XSPI_AutoPolling(hxspi, &s_config, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_AutoPolling(&hxspi1, &s_config, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
@@ -814,22 +799,23 @@ static uint8_t xspi_set_octal_mode(XSPI_HandleTypeDef *hxspi)
 
   reg[0] = LX_STM32_XSPI_CR2_DOPI;
 
-  if (HAL_XSPI_Command(hxspi, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
 
-  if (HAL_XSPI_Transmit(hxspi, reg, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Transmit(&hxspi1, reg, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
 
-  if (xspi_auto_polling_ready(hxspi, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != 0)
+  if (xspi_auto_polling_ready(&hxspi1, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != 0)
   {
     return 1;
   }
 
   /* Check the configuration has been correctly done */
+
   s_command.Instruction      = LX_STM32_XSPI_OCTAL_READ_CFG_REG2_CMD;
   s_command.InstructionMode  = HAL_XSPI_INSTRUCTION_8_LINES;
   s_command.InstructionWidth = HAL_XSPI_INSTRUCTION_16_BITS;
@@ -844,12 +830,12 @@ static uint8_t xspi_set_octal_mode(XSPI_HandleTypeDef *hxspi)
   s_command.DataDTRMode        = HAL_XSPI_DATA_DTR_ENABLE;
   s_command.DQSMode            = HAL_XSPI_DQS_ENABLE;
 
-  if (HAL_XSPI_Command(hxspi, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Command(&hxspi1, &s_command, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }
 
-  if (HAL_XSPI_Receive(hxspi, reg, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  if (HAL_XSPI_Receive(&hxspi1, reg, HAL_XSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
     return 1;
   }

@@ -80,6 +80,7 @@ static void MX_OCTOSPI1_Init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 #if defined(__GNUC__) && !defined(__ARMCC_VERSION)
   initialise_monitor_handles();	/*rtt*/
@@ -104,11 +105,11 @@ int main(void)
   OSPI_RegularCmdTypeDef sCommand = {0};
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
   /* Configure the System Power */
   SystemPower_Config();
+
+  /* Configure the system clock */
+  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
   /* Configure LED6, LED7 */
@@ -431,8 +432,8 @@ static void MX_OCTOSPI1_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOI_CLK_ENABLE();
@@ -443,8 +444,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

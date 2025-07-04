@@ -115,6 +115,11 @@
 
 /* #define LX_NOR_SECTOR_SIZE         (512/sizeof(ULONG)) */
 
+/* By default this value is 4, which represents a maximum of 4 blocks that
+   can be allocated for metadata.
+*/
+/* #define LX_NAND_FLASH_MAX_METADATA_BLOCKS         4 */
+
 /* Defined, this makes LevelX thread-safe by using a ThreadX mutex object
    throughout the API.
 */

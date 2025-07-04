@@ -62,6 +62,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -76,18 +77,18 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief I2C MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hi2c: I2C handle pointer
-* @retval None
-*/
+  * @brief I2C MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hi2c: I2C handle pointer
+  * @retval None
+  */
 void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
   if(hi2c->Instance==I2C3)
   {
-  /* USER CODE BEGIN I2C3_MspInit 0 */
+    /* USER CODE BEGIN I2C3_MspInit 0 */
     /* Enable I2Cx clocks */
     I2Cx_CLKAM_ENABLE();
     I2Cx_CLK_SLEEP_ENABLE();
@@ -96,7 +97,7 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
     SRAMx_CLK_ENABLE();
     SRAMx_CLKAM_ENABLE();
     SRAMx_CLK_SLEEP_ENABLE();
-  /* USER CODE END I2C3_MspInit 0 */
+    /* USER CODE END I2C3_MspInit 0 */
 
   /** Initializes the peripherals clock
   */
@@ -126,26 +127,27 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
     HAL_NVIC_EnableIRQ(I2C3_EV_IRQn);
     HAL_NVIC_SetPriority(I2C3_ER_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(I2C3_ER_IRQn);
-  /* USER CODE BEGIN I2C3_MspInit 1 */
+    /* USER CODE BEGIN I2C3_MspInit 1 */
 
-  /* USER CODE END I2C3_MspInit 1 */
+    /* USER CODE END I2C3_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief I2C MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hi2c: I2C handle pointer
-* @retval None
-*/
+  * @brief I2C MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hi2c: I2C handle pointer
+  * @retval None
+  */
 void HAL_I2C_MspDeInit(I2C_HandleTypeDef* hi2c)
 {
   if(hi2c->Instance==I2C3)
   {
-  /* USER CODE BEGIN I2C3_MspDeInit 0 */
+    /* USER CODE BEGIN I2C3_MspDeInit 0 */
 
-  /* USER CODE END I2C3_MspDeInit 0 */
+    /* USER CODE END I2C3_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_I2C3_CLK_DISABLE();
 
@@ -160,9 +162,9 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* hi2c)
     /* I2C3 interrupt DeInit */
     HAL_NVIC_DisableIRQ(I2C3_EV_IRQn);
     HAL_NVIC_DisableIRQ(I2C3_ER_IRQn);
-  /* USER CODE BEGIN I2C3_MspDeInit 1 */
+    /* USER CODE BEGIN I2C3_MspDeInit 1 */
 
-  /* USER CODE END I2C3_MspDeInit 1 */
+    /* USER CODE END I2C3_MspDeInit 1 */
   }
 
 }

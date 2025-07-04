@@ -1,4 +1,25 @@
 #!/bin/bash -
+#=================================================================================================
+# Managing HOST OS diversity : begin 
+#=================================================================================================
+OS=$(uname)
+
+echo ${OS} | grep -i -e windows -e mingw >/dev/null
+if [[ $? == 0 ]]; then
+  echo "HOST OS : Windows detected"
+  OS="Windows_NT"
+elif [[ "$OS" == "Linux" ]]; then
+  echo "HOST OS : Linux detected"
+elif [[ "$OS" == "Darwin" ]]; then
+  echo "HOST OS : MacOS detected"
+else
+  echo "!!!HOST OS not supported : >$OS<!!!"
+  exit 1
+fi
+
+#=================================================================================================
+# Managing HOST OS diversity : end 
+#=================================================================================================
 # arg1 is the build directory
 # arg2 is the version
 # arg3 is the binary type (1 nonsecure, 2 secure)
@@ -10,8 +31,13 @@
 # arg6 is to force python execution
 # "python" : execute with python script
 
-# Absolute path to this script
-SCRIPT=$(readlink -f $0)
+# Get Absolute path to this script use "readlink" for linux/windows and "stat" for Mac OS
+if [[ "$OS" == "Darwin" ]]; then
+  SCRIPT=$(stat -f $0)
+else
+  SCRIPT=$(readlink -f $0)
+fi
+
 projectdir=`dirname $SCRIPT`
 
 version=$2
@@ -99,26 +125,10 @@ if [ ! -e "$imgtool" ];then
 fi
 
 #sign mode
-if [ $crypto_scheme == 0  ]; then
-mode="rsa2048"
-fi
-if [ $crypto_scheme == 1  ]; then
-mode="rsa3072"
-fi
 if [ $crypto_scheme == 2  ]; then
 mode="ec256"
 fi
 #keys selection
-if [ $mode == "rsa2048" ]; then
-key_s=$sbsfu_key_dir"/root-rsa-2048.pem"
-key_ns=$sbsfu_key_dir"/root-rsa-2048_1.pem"
-key_enc_pub=$sbsfu_key_dir"/enc-rsa2048-pub.pem"
-fi
-if [ $mode == "rsa3072" ]; then
-key_s=$sbsfu_key_dir"/root-rsa-3072.pem"
-key_ns=$sbsfu_key_dir"/root-rsa-3072_1.pem"
-key_enc_pub=$sbsfu_key_dir"/enc-rsa2048-pub.pem"
-fi
 if [ $mode == "ec256" ]; then
 key_s=$sbsfu_key_dir"/root-ec-p256.pem"
 key_ns=$sbsfu_key_dir"/root-ec-p256_1.pem"

@@ -74,6 +74,7 @@ static void OSPI_OctalModeCfg(OSPI_HandleTypeDef *hospi);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
   OSPI_RegularCmdTypeDef sCommand = {0};
   OSPI_MemoryMappedTypeDef sMemMappedCfg = {0};
@@ -99,11 +100,11 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
   /* Configure the System Power */
   SystemPower_Config();
+
+  /* Configure the system clock */
+  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
   BSP_LED_Init(LED_GREEN);
@@ -372,7 +373,6 @@ static void MX_OCTOSPI2_Init(void)
   /* USER CODE END OCTOSPI2_Init 0 */
 
   OSPIM_CfgTypeDef sOspiManagerCfg = {0};
-  HAL_OSPI_DLYB_CfgTypeDef HAL_OSPI_DLYB_Cfg_Struct = {0};
 
   /* USER CODE BEGIN OCTOSPI2_Init 1 */
 
@@ -407,12 +407,6 @@ static void MX_OCTOSPI2_Init(void)
   {
     Error_Handler();
   }
-  HAL_OSPI_DLYB_Cfg_Struct.Units = 0;
-  HAL_OSPI_DLYB_Cfg_Struct.PhaseSel = 0;
-  if (HAL_OSPI_DLYB_SetConfig(&hospi2, &HAL_OSPI_DLYB_Cfg_Struct) != HAL_OK)
-  {
-    Error_Handler();
-  }
   /* USER CODE BEGIN OCTOSPI2_Init 2 */
 
   /* USER CODE END OCTOSPI2_Init 2 */
@@ -426,15 +420,15 @@ static void MX_OCTOSPI2_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOI_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -465,8 +459,8 @@ void HAL_OSPI_ErrorCallback(OSPI_HandleTypeDef *hospi)
   */
 static void OSPI_WriteEnable(OSPI_HandleTypeDef *hospi)
 {
-  OSPI_RegularCmdTypeDef  sCommand;
-  OSPI_AutoPollingTypeDef sConfig;
+  OSPI_RegularCmdTypeDef  sCommand = {0};
+  OSPI_AutoPollingTypeDef sConfig  = {0};
 
   /* Enable write operations ------------------------------------------ */
   sCommand.OperationType      = HAL_OSPI_OPTYPE_COMMON_CFG;
@@ -522,8 +516,8 @@ static void OSPI_WriteEnable(OSPI_HandleTypeDef *hospi)
   */
 static void OSPI_AutoPollingMemReady(OSPI_HandleTypeDef *hospi)
 {
-  OSPI_RegularCmdTypeDef  sCommand;
-  OSPI_AutoPollingTypeDef sConfig;
+  OSPI_RegularCmdTypeDef  sCommand = {0};
+  OSPI_AutoPollingTypeDef sConfig  = {0};
 
 
   /* Configure automatic polling mode to wait for memory ready ------ */
@@ -569,8 +563,8 @@ static void OSPI_AutoPollingMemReady(OSPI_HandleTypeDef *hospi)
   */
 static void OSPI_OctalModeCfg(OSPI_HandleTypeDef *hospi)
 {
-  OSPI_RegularCmdTypeDef  sCommand;
-  OSPI_AutoPollingTypeDef sConfig;
+  OSPI_RegularCmdTypeDef  sCommand = {0};
+  OSPI_AutoPollingTypeDef sConfig  = {0};
   uint8_t reg;
 
   /* Enable write operations ---------------------------------------- */

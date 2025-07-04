@@ -357,18 +357,6 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>15</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>../Src/rsa_alt.c</PathWithFileName>
-      <FilenameWithoutPath>rsa_alt.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>1</GroupNumber>
       <FileNumber>16</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
@@ -789,6 +777,18 @@
     </File>
     <File>
       <GroupNumber>4</GroupNumber>
+      <FileNumber>48</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>../../../../../../Middlewares/Third_Party/mbed-crypto/library/bignum_core.c</PathWithFileName>
+      <FilenameWithoutPath>bignum_core.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>4</GroupNumber>
       <FileNumber>49</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
@@ -808,6 +808,18 @@
       <bDave2>0</bDave2>
       <PathWithFileName>../../../../../../Middlewares/Third_Party/mbed-crypto/library/ctr_drbg.c</PathWithFileName>
       <FilenameWithoutPath>ctr_drbg.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>4</GroupNumber>
+      <FileNumber>50</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>../../../../../../Middlewares/Third_Party/mbed-crypto/library/hmac_drbg.c</PathWithFileName>
+      <FilenameWithoutPath>hmac_drbg.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -928,30 +940,6 @@
       <bDave2>0</bDave2>
       <PathWithFileName>../../../../../../Middlewares/Third_Party/mbed-crypto/library/platform_util.c</PathWithFileName>
       <FilenameWithoutPath>platform_util.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>4</GroupNumber>
-      <FileNumber>61</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Middlewares/Third_Party/mbed-crypto/library/rsa.c</PathWithFileName>
-      <FilenameWithoutPath>rsa.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>4</GroupNumber>
-      <FileNumber>62</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Middlewares/Third_Party/mbed-crypto/library/rsa_internal.c</PathWithFileName>
-      <FilenameWithoutPath>rsa_internal.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1080,18 +1068,6 @@
       <bDave2>0</bDave2>
       <PathWithFileName>../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/src/image_ec256.c</PathWithFileName>
       <FilenameWithoutPath>image_ec256.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>5</GroupNumber>
-      <FileNumber>73</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/src/image_rsa.c</PathWithFileName>
-      <FilenameWithoutPath>image_rsa.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

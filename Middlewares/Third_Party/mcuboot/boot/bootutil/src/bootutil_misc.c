@@ -357,7 +357,13 @@ boot_read_swap_state(const struct flash_area *fap,
 {
     uint32_t magic[BOOT_MAGIC_ARR_SZ];
     uint32_t off;
+#ifdef MCUBOOT_USE_MCE
+    uint8_t swap_info[BOOT_MAX_ALIGN];
+    uint8_t copy_done[BOOT_MAX_ALIGN];
+    uint8_t image_ok[BOOT_MAX_ALIGN];
+#else
     uint8_t swap_info;
+#endif /* MCUBOOT_USE_MCE */
     int rc;
 
     off = boot_magic_off(fap);
@@ -376,17 +382,26 @@ boot_read_swap_state(const struct flash_area *fap,
     }
 
     off = boot_swap_info_off(fap);
+#ifdef MCUBOOT_USE_MCE
+    rc = flash_area_read(fap, off, swap_info, sizeof swap_info);
+#else
     rc = flash_area_read(fap, off, &swap_info, sizeof swap_info);
+#endif /* MCUBOOT_USE_MCE */
     if (rc < 0) {
         return BOOT_EFLASH;
     }
 
     /* Extract the swap type and image number */
+#ifdef MCUBOOT_USE_MCE
+    state->swap_type = BOOT_GET_SWAP_TYPE(swap_info[0]);
+    state->image_num = BOOT_GET_IMAGE_NUM(swap_info[0]);
+#else
     state->swap_type = BOOT_GET_SWAP_TYPE(swap_info);
     state->image_num = BOOT_GET_IMAGE_NUM(swap_info);
+#endif /* MCUBOOT_USE_MCE */
 
 #ifdef MCUBOOT_USE_MCE
-    if (bootutil_buffer_is_erased(fap->fa_off + off, fap, &swap_info, sizeof swap_info) ||
+    if (bootutil_buffer_is_erased(fap->fa_off + off, fap, swap_info, sizeof swap_info) ||
 #else /* not MCUBOOT_USE_MCE */
     if (bootutil_buffer_is_erased(fap, &swap_info, sizeof swap_info) ||
 #endif /* MCUBOOT_USE_MCE */
@@ -396,14 +411,20 @@ boot_read_swap_state(const struct flash_area *fap,
     }
 
     off = boot_copy_done_off(fap);
+#ifdef MCUBOOT_USE_MCE
+    rc = flash_area_read(fap, off, copy_done, sizeof copy_done);
+    state->copy_done = copy_done[0];
+#else
     rc = flash_area_read(fap, off, &state->copy_done, sizeof state->copy_done);
+#endif /* MCUBOOT_USE_MCE */
     if (rc < 0) {
         return BOOT_EFLASH;
     }
+
 #ifdef MCUBOOT_USE_MCE
     if (bootutil_buffer_is_erased(fap->fa_off + off,
-                                  fap, &state->copy_done,
-                                  sizeof state->copy_done)) {
+                                  fap, copy_done,
+                                  sizeof copy_done)) {
 #else /* not MCUBOOT_USE_MCE */
     if (bootutil_buffer_is_erased(fap, &state->copy_done,
                 sizeof state->copy_done)) {
@@ -414,14 +435,19 @@ boot_read_swap_state(const struct flash_area *fap,
     }
 
     off = boot_image_ok_off(fap);
+#ifdef MCUBOOT_USE_MCE
+    rc = flash_area_read(fap, off, image_ok, sizeof image_ok);
+    state->image_ok = image_ok[0];
+#else
     rc = flash_area_read(fap, off, &state->image_ok, sizeof state->image_ok);
+#endif /* MCUBOOT_USE_MCE */
     if (rc < 0) {
         return BOOT_EFLASH;
     }
 #ifdef MCUBOOT_USE_MCE
     if (bootutil_buffer_is_erased(fap->fa_off + off,
-                                  fap, &state->image_ok,
-                                  sizeof state->image_ok)) {
+                                  fap, image_ok,
+                                  sizeof image_ok)) {
 #else /* MCUBOOT_USE_MCE */
     if (bootutil_buffer_is_erased(fap, &state->image_ok,
                 sizeof state->image_ok)) {

@@ -32,11 +32,20 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+#if defined (USE_B_U585I_IOT02A_U585AI_REVD)
+static float IntegrationTime_800[4]     = {.0036, .0072, .0288, .0576};
+static float IntegrationTime_400[4]     = {.0072, .0144, .0576, .1152};
+static float IntegrationTime_200[4]     = {.0144, .0288, .1152, .2304};
+static float IntegrationTime_100[4]     = {.0288, .0576, .2304, .4608};
+static float IntegrationTime_50[4]      = {.0576, .1152, .4608, .9216};
+static float IntegrationTime_25[4]      = {.1152, .2304, .9216, 1.8432};
+#else
 static float IntegrationTime_800[3]     = {0.00426, 0.00852, 0.01704};
 static float IntegrationTime_400[3]     = {0.00852, 0.01704, 0.03408};
 static float IntegrationTime_200[3]     = {0.01704, 0.03408, 0.06816};
 static float IntegrationTime_100[3]     = {0.03408, 0.06816, 0.13632};
 static float IntegrationTime_50[3]      = {0.06816, 0.13632, 0.27264};
+#endif /* USE_B_U585I_IOT02A_U585AI_REVD */
 
 int32_t  result  = 0;
 LIGHT_SENSOR_Capabilities_t Capabilities;
@@ -135,7 +144,11 @@ static uint32_t LIGHT_SENSOR_LuxCompensation(uint32_t Value)
   */
 static int32_t LIGHT_SENSOR_ConvertToLUX(uint32_t Instance, uint32_t Value, uint32_t *LuxLevel)
 {
+#if defined (USE_B_U585I_IOT02A_U585AI_REVD)
+  int32_t ret = VEML6030_OK;
+#else
   int32_t ret = VEML3235_OK;
+#endif /* USE_B_U585I_IOT02A_U585AI_REVD */
   float luxConv = 0;
   uint8_t convPos = 0;
   uint32_t pGain;
@@ -149,6 +162,24 @@ static int32_t LIGHT_SENSOR_ConvertToLUX(uint32_t Instance, uint32_t Value, uint
   }
   else
   {
+#if defined (USE_B_U585I_IOT02A_U585AI_REVD)
+    if (pGain == VEML6030_CONF_GAIN_2)
+    {
+      convPos = 0;
+    }
+    else if (pGain == VEML6030_CONF_GAIN_1)
+    {
+      convPos = 1;
+    }
+    else if (pGain == VEML6030_CONF_GAIN_1_4)
+    {
+      convPos = 2;
+    }
+    else if (pGain == VEML6030_CONF_GAIN_1_8)
+    {
+      convPos = 3;
+    }
+#else
     if (pGain == VEML3235_CONF_GAIN_1)
     {
       convPos = 2;
@@ -161,6 +192,7 @@ static int32_t LIGHT_SENSOR_ConvertToLUX(uint32_t Instance, uint32_t Value, uint
     {
       convPos = 0;
     }
+#endif /* USE_B_U585I_IOT02A_U585AI_REVD */
     else
     {
       ret = BSP_ERROR_WRONG_PARAM;
@@ -169,6 +201,36 @@ static int32_t LIGHT_SENSOR_ConvertToLUX(uint32_t Instance, uint32_t Value, uint
 
   if(ret == BSP_ERROR_NONE)
   {
+#if defined (USE_B_U585I_IOT02A_U585AI_REVD)
+    if(pExposureTime == VEML6030_CONF_IT800)
+    {
+      luxConv = IntegrationTime_800[convPos];
+    }
+    else if(pExposureTime == VEML6030_CONF_IT400)
+    {
+      luxConv = IntegrationTime_400[convPos];
+    }
+    else if(pExposureTime == VEML6030_CONF_IT200)
+    {
+      luxConv = IntegrationTime_200[convPos];
+    }
+    else if(pExposureTime == VEML6030_CONF_IT100)
+    {
+      luxConv = IntegrationTime_100[convPos];
+    }
+    else if(pExposureTime == VEML6030_CONF_IT50)
+    {
+      luxConv = IntegrationTime_50[convPos];
+    }
+    else if(pExposureTime == VEML6030_CONF_IT25)
+    {
+      luxConv = IntegrationTime_25[convPos];
+    }
+    else
+    {
+      ret = VEML6030_INVALID_PARAM;
+    }
+#else
     if(pExposureTime == VEML3235_CONF_IT800)
     {
       luxConv = IntegrationTime_800[convPos];
@@ -193,8 +255,8 @@ static int32_t LIGHT_SENSOR_ConvertToLUX(uint32_t Instance, uint32_t Value, uint
     {
       ret = VEML3235_INVALID_PARAM;
     }
+#endif /* USE_B_U585I_IOT02A_U585AI_REVD */
   }
-
   *LuxLevel =(uint32_t)(luxConv * Value);
 
   return ret;

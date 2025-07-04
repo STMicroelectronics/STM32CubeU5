@@ -1,8 +1,34 @@
 #!/bin/bash -
-# Absolute path to this script
-SCRIPT=$(readlink -f $0)
+#=================================================================================================
+# Managing HOST OS diversity : begin 
+#=================================================================================================
+OS=$(uname)
+
+echo ${OS} | grep -i -e windows -e mingw >/dev/null
+if [[ $? == 0 ]]; then
+  echo "HOST OS : Windows detected"
+  OS="Windows_NT"
+elif [[ "$OS" == "Linux" ]]; then
+  echo "HOST OS : Linux detected"
+elif [[ "$OS" == "Darwin" ]]; then
+  echo "HOST OS : MacOS detected"
+else
+  echo "!!!HOST OS not supported : >$OS<!!!"
+  exit 1
+fi
+
+#=================================================================================================
+# Managing HOST OS diversity : end 
+#=================================================================================================
+
+# Get Absolute path to this script use "readlink" for linux/windows and "stat" for Mac OS
+if [[ "$OS" == "Darwin" ]]; then
+  SCRIPT=$(stat -f $0)
+else
+  SCRIPT=$(readlink -f $0)
+fi
 SCRIPT_PATH=`dirname $SCRIPT`
-# Absolute path this script
+
 projectdir=${SCRIPT_PATH}
 cube_fw_path=${SCRIPT_PATH}/../../../../../../
 source $projectdir/../../env.sh

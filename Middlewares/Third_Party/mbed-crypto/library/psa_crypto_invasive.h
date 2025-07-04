@@ -10,20 +10,22 @@
  */
 /*
  *  Copyright The Mbed TLS Contributors
- *  Portions Copyright (C) STMicroelectronics, All Rights Reserved
  *  SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef PSA_CRYPTO_INVASIVE_H
 #define PSA_CRYPTO_INVASIVE_H
 
-#if defined(MBEDTLS_CONFIG_FILE)
-#include MBEDTLS_CONFIG_FILE
-#else
-#include "mbedtls/config.h"
-#endif
+/*
+ * Include the build-time configuration information header. Here, we do not
+ * include `"mbedtls/build_info.h"` directly but `"psa/build_info.h"`, which
+ * is basically just an alias to it. This is to ease the maintenance of the
+ * TF-PSA-Crypto repository which has a different build system and
+ * configuration.
+ */
+#include "psa/build_info.h"
 
-#include "crypto.h"
+#include "psa/crypto.h"
 #include "common.h"
 
 #include "mbedtls/entropy.h"

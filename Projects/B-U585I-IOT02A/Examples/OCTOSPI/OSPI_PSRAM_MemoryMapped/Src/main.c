@@ -79,6 +79,7 @@ uint32_t APS6408_ReadReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Val
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
   OSPI_RegularCmdTypeDef sCommand = {0};
   uint32_t index, index_K;
@@ -100,11 +101,11 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
   /* Configure the System Power */
   SystemPower_Config();
+
+  /* Configure the system clock */
+  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
   /* Configure LED6, LED7 */
@@ -448,8 +449,8 @@ static void MX_OCTOSPI1_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOI_CLK_ENABLE();
@@ -460,8 +461,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -569,7 +570,7 @@ uint32_t APS6408_WriteReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Va
   */
 uint32_t APS6408_ReadReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Value, uint32_t LatencyCode)
 {
-  OSPI_RegularCmdTypeDef sCommand;
+  OSPI_RegularCmdTypeDef sCommand = {0};
 
   /* Initialize the read register command */
   sCommand.OperationType      = HAL_OSPI_OPTYPE_COMMON_CFG;

@@ -34,6 +34,7 @@
 <h4 id="known-limitations"><b>Known limitations</b></h4>
 <p>Hotplug is not implemented for this example, that is, the SD card is expected to be inserted before application running. The remote wakeup feature is not yet implemented (used to bring the USB suspended bus back to the active condition).</p>
 <h3 id="notes"><b>Notes</b></h3>
+<p>None</p>
 <h4 id="threadx-usage-hints"><b>ThreadX usage hints</b></h4>
 <ul>
 <li>ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.</li>
@@ -70,6 +71,8 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <li>The “tx_initialize_low_level.S” should be also modified to enable the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 </ul></li>
 </ul>
+<h4 id="usbx-usage-hints"><b>USBX usage hints</b></h4>
+<p>None</p>
 <h4 id="filexlevelx-usage-hints"><b>FileX/LevelX usage hints</b></h4>
 <ul>
 <li>FileX sd driver is using the DMA, thus the DTCM (0x20000000) memory should not be used by the application, as it is not accessible by the SD DMA.</li>

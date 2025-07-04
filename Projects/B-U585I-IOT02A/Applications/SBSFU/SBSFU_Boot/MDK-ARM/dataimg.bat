@@ -89,26 +89,10 @@ goto dataimg
 
 
 ::sign mode
-if "%crypto_scheme%" == "0" (
-set "mode=rsa2048"
-)
-if "%crypto_scheme%" == "1" (
-set "mode=rsa3072"
-)
 if "%crypto_scheme%" == "2" (
 set "mode=ec256"
 )
 ::keys selection
-if  "%mode%" == "rsa2048" (
-set "key_s=%sbsfu_key_dir%\root-rsa-2048.pem"
-set "key_ns=%sbsfu_key_dir%\root-rsa-2048_1.pem"
-set "key_enc_pub=%sbsfu_key_dir%\enc-rsa2048-pub.pem"
-)
-if  "%mode%" == "rsa3072" (
-set "key_s=%sbsfu_key_dir%\root-rsa-3072.pem"
-set "key_ns=%sbsfu_key_dir%\root-rsa-3072_1.pem"
-set "key_enc_pub=%sbsfu_key_dir%\enc-rsa2048-pub.pem"
-)
 if  "%mode%" == "ec256" (
 set "key_s=%sbsfu_key_dir%\root-ec-p256.pem"
 set "key_ns=%sbsfu_key_dir%\root-ec-p256_1.pem"

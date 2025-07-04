@@ -87,7 +87,7 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_s[] = {
                FLASH_BASE_S + FLASH_AREA_BL2_NOHDP_OFFSET + FLASH_AREA_BL2_NOHDP_SIZE - 1,
                MPU_ARMV8M_MAIR_ATTR_CODE_IDX,
                MPU_ARMV8M_XN_EXEC_OK,
-               MPU_ARMV8M_AP_RW_PRIV_ONLY,
+               MPU_ARMV8M_AP_RO_PRIV_ONLY,
                MPU_ARMV8M_SH_NONE,
 #ifdef FLOW_CONTROL
                FLOW_STEP_MPU_S_I_EN_R1,
@@ -184,7 +184,7 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_s[] = {
                FLASH_BASE_S + FLASH_AREA_LOADER_OFFSET + LOADER_IMAGE_S_CODE_SIZE - 1,
                MPU_ARMV8M_MAIR_ATTR_DATANOCACHE_IDX,
                MPU_ARMV8M_XN_EXEC_OK,
-               MPU_ARMV8M_AP_RW_PRIV_ONLY,
+               MPU_ARMV8M_AP_RO_PRIV_ONLY,
                MPU_ARMV8M_SH_NONE,
 #ifdef FLOW_CONTROL
                FLOW_STEP_MPU_S_I_EN_R7,
@@ -223,7 +223,7 @@ const struct mpu_armv8m_region_cfg_t region_cfg_init_ns[] = {
                FLASH_BASE_NS + FLASH_TOTAL_SIZE - 1,
                MPU_ARMV8M_MAIR_ATTR_DATANOCACHE_IDX,
                MPU_ARMV8M_XN_EXEC_OK,
-               MPU_ARMV8M_AP_RW_PRIV_ONLY,
+               MPU_ARMV8M_AP_RO_PRIV_ONLY,
                MPU_ARMV8M_SH_NONE,
 #ifdef FLOW_CONTROL
                FLOW_STEP_MPU_NS_I_EN_R1,

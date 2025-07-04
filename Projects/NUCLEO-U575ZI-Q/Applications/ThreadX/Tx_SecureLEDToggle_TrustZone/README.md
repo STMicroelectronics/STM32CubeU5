@@ -43,6 +43,7 @@ None
 #### <b>Note</b>
 
 The following sequence is needed to disable TrustZone:
+
   -	Boot from user Flash memory:
     1. Make sure that secure and non-secure applications are well loaded and executed (jump done on non-secure application).
     2. If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution.

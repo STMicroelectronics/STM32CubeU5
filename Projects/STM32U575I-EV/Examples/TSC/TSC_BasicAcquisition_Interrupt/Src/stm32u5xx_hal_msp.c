@@ -62,6 +62,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -76,19 +77,19 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief TSC MSP Initialization
-* This function configures the hardware resources used in this example
-* @param htsc: TSC handle pointer
-* @retval None
-*/
+  * @brief TSC MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param htsc: TSC handle pointer
+  * @retval None
+  */
 void HAL_TSC_MspInit(TSC_HandleTypeDef* htsc)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   if(htsc->Instance==TSC)
   {
-  /* USER CODE BEGIN TSC_MspInit 0 */
+    /* USER CODE BEGIN TSC_MspInit 0 */
 
-  /* USER CODE END TSC_MspInit 0 */
+    /* USER CODE END TSC_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_TSC_CLK_ENABLE();
 
@@ -131,26 +132,27 @@ void HAL_TSC_MspInit(TSC_HandleTypeDef* htsc)
     /* TSC interrupt Init */
     HAL_NVIC_SetPriority(TSC_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(TSC_IRQn);
-  /* USER CODE BEGIN TSC_MspInit 1 */
+    /* USER CODE BEGIN TSC_MspInit 1 */
 
-  /* USER CODE END TSC_MspInit 1 */
+    /* USER CODE END TSC_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief TSC MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param htsc: TSC handle pointer
-* @retval None
-*/
+  * @brief TSC MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param htsc: TSC handle pointer
+  * @retval None
+  */
 void HAL_TSC_MspDeInit(TSC_HandleTypeDef* htsc)
 {
   if(htsc->Instance==TSC)
   {
-  /* USER CODE BEGIN TSC_MspDeInit 0 */
+    /* USER CODE BEGIN TSC_MspDeInit 0 */
 
-  /* USER CODE END TSC_MspDeInit 0 */
+    /* USER CODE END TSC_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_TSC_CLK_DISABLE();
 
@@ -166,9 +168,9 @@ void HAL_TSC_MspDeInit(TSC_HandleTypeDef* htsc)
 
     /* TSC interrupt DeInit */
     HAL_NVIC_DisableIRQ(TSC_IRQn);
-  /* USER CODE BEGIN TSC_MspDeInit 1 */
+    /* USER CODE BEGIN TSC_MspDeInit 1 */
 
-  /* USER CODE END TSC_MspDeInit 1 */
+    /* USER CODE END TSC_MspDeInit 1 */
   }
 
 }

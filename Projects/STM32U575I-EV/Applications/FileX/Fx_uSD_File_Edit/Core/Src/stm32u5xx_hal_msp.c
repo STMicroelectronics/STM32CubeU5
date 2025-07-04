@@ -1,4 +1,3 @@
-
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
@@ -78,20 +77,20 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief SD MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hsd: SD handle pointer
-* @retval None
-*/
+  * @brief SD MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hsd: SD handle pointer
+  * @retval None
+  */
 void HAL_SD_MspInit(SD_HandleTypeDef* hsd)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
   if(hsd->Instance==SDMMC1)
   {
-  /* USER CODE BEGIN SDMMC1_MspInit 0 */
+    /* USER CODE BEGIN SDMMC1_MspInit 0 */
 
-  /* USER CODE END SDMMC1_MspInit 0 */
+    /* USER CODE END SDMMC1_MspInit 0 */
 
   /** Initializes the peripherals clock
   */
@@ -133,27 +132,27 @@ void HAL_SD_MspInit(SD_HandleTypeDef* hsd)
     /* SDMMC1 interrupt Init */
     HAL_NVIC_SetPriority(SDMMC1_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(SDMMC1_IRQn);
-  /* USER CODE BEGIN SDMMC1_MspInit 1 */
+    /* USER CODE BEGIN SDMMC1_MspInit 1 */
 
-  /* USER CODE END SDMMC1_MspInit 1 */
+    /* USER CODE END SDMMC1_MspInit 1 */
 
   }
 
 }
 
 /**
-* @brief SD MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hsd: SD handle pointer
-* @retval None
-*/
+  * @brief SD MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hsd: SD handle pointer
+  * @retval None
+  */
 void HAL_SD_MspDeInit(SD_HandleTypeDef* hsd)
 {
   if(hsd->Instance==SDMMC1)
   {
-  /* USER CODE BEGIN SDMMC1_MspDeInit 0 */
+    /* USER CODE BEGIN SDMMC1_MspDeInit 0 */
 
-  /* USER CODE END SDMMC1_MspDeInit 0 */
+    /* USER CODE END SDMMC1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_SDMMC1_CLK_DISABLE();
 
@@ -172,9 +171,9 @@ void HAL_SD_MspDeInit(SD_HandleTypeDef* hsd)
 
     /* SDMMC1 interrupt DeInit */
     HAL_NVIC_DisableIRQ(SDMMC1_IRQn);
-  /* USER CODE BEGIN SDMMC1_MspDeInit 1 */
+    /* USER CODE BEGIN SDMMC1_MspDeInit 1 */
 
-  /* USER CODE END SDMMC1_MspDeInit 1 */
+    /* USER CODE END SDMMC1_MspDeInit 1 */
   }
 
 }

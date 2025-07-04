@@ -4,6 +4,7 @@
 
 
 
+
   
     
     <style>
@@ -125,7 +126,7 @@ projects are manually created to demonstrate the product features.</div>
         <li><a href="https://www.st.com/resource/en/user_manual/um2852-stm32u585xx-security-guidance-for-psa-certified-level-3-with-sesip-profile-stmicroelectronics.pdf" target="_blank">UM2852</a>: STM32U585xx security guidance for PSA Certifiedâ&#8222;¢ Level 3 with SESIP Profile.</li>
       </ul>
     
-		<table bgcolor="#f0f0ff" border="1">
+		<table style="background-color: rgb(240, 240, 255);" border="1">
 			<tbody><tr style="background-repeat: no-repeat; background-position: right center; background-color: rgb(57, 169, 220); color: rgb(255, 255, 255);" align="center">
 				<td><b>Level</b></td>
 				<td><b>Module Name</b></td>
@@ -206,7 +207,7 @@ to build any firmware application when TrustZone security is activated **(Option
         <td>1</td>
       </tr>
       <tr align="center">
-        <td style="background-repeat: no-repeat; background-position: right center; background-color: rgb(57, 169, 220); color: rgb(255, 255, 255);" rowspan="135"><p id="Examples">Examples</p></td>
+        <td style="background-repeat: no-repeat; background-position: right center; background-color: rgb(57, 169, 220); color: rgb(255, 255, 255);" rowspan="137"><p id="Examples">Examples</p></td>
         <td rowspan="1" align="left"><p id="-">-</p></td>
         <td align="left"><p id="BSP">BSP</p></td>
         <td align="left">
@@ -754,7 +755,7 @@ Use of a GFXTIM peripheral to generate interrupts for specific absolute lines.
         <td>-</td>
       </tr>
       <tr align="center">
-        <td rowspan="3" align="left"><p id="GPIO">GPIO</p></td>
+        <td colspan="1" rowspan="4" align="left"><p id="GPIO">GPIO</p></td>
         <td align="left"><p id="GPIO_EXTI">GPIO_EXTI</p></td>
         <td align="left">
 How to configure external interrupt lines.
@@ -793,7 +794,24 @@ How to use HAL GPIO to toggle secure and unsecure IOs when TrustZone security is
         <td>-</td>
         <td><font color="green" size="5">CubeMx</font></td>
       </tr>
-      <tr align="center">
+      <tr>
+      <td style="vertical-align: middle;">GPIO_Demo<br>
+      </td>
+      <td style="vertical-align: middle;">How to configure and use GPIOs through the HAL API.<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: middle; text-align: center;"><font color="green" size="5">CubeMx</font></td>
+      <td style="vertical-align: top; text-align: center;"><font color="green" size="5">CubeMx</font></td>
+      <td style="vertical-align: top; text-align: center;"><font color="green" size="5">CubeMx</font></td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+<tr align="center">
         <td rowspan="2" align="left"><p id="GTZC">GTZC</p></td>
         <td align="left"><p id="GTZC_MPCWM_IllegalAccess_TrustZone">GTZC_MPCWM_IllegalAccess_TrustZone</p></td>
         <td align="left">
@@ -1338,7 +1356,7 @@ This project is targeted to run on STM32U585AIIxQ devices on B-U585I-IOT02A boar
         <td><font color="green" size="5">CubeMx</font></td>
       </tr>
       <tr align="center">
-        <td rowspan="4" align="left"><p id="PWR">PWR</p></td>
+        <td colspan="1" rowspan="5" align="left"><p id="PWR">PWR</p></td>
         <td align="left"><p id="PWR_LPMODE_RTC">PWR_LPMODE_RTC</p></td>
         <td align="left">
 -   How to enter the system to different available low power modes and wake up from
@@ -1391,7 +1409,26 @@ these modes by using an interrupt from RTC wakeup timer.
         <td><font color="green" size="5">CubeMx</font></td>
         <td><font color="green" size="5">CubeMx</font></td>
       </tr>
-      <tr align="center">
+      <tr>
+      <td style="vertical-align: middle;">PWR_GPIO_RETENTION<br>
+      </td>
+      <td style="vertical-align: middle;">How to configure GPIO pull-up and pull-down settings during standby mode and after wakeup on an STM32 board using the HAL API.<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: middle; text-align: center;"><font color="green" size="5">CubeMx</font></td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+<tr align="center">
         <td rowspan="2" align="left"><p id="RAMCFG">RAMCFG</p></td>
         <td align="left"><p id="RAMCFG_ECC_Error_Generation">RAMCFG_ECC_Error_Generation</p></td>
         <td align="left">
@@ -2793,8 +2830,8 @@ Use of the TIM peripheral to measure an external signal frequency and duty cycle
         <td>0</td>
       </tr>
       <tr align="center">
-        <td style="background-repeat: no-repeat; background-position: right center; background-color: rgb(57, 169, 220); color: rgb(255, 255, 255);" rowspan="53"><p id="Applications">Applications</p></td>
-        <td rowspan="3" align="left"><p id="-">-</p></td>
+        <td style="background-repeat: no-repeat; background-position: right center; background-color: rgb(57, 169, 220); color: rgb(255, 255, 255);" rowspan="52"><p id="Applications">Applications</p></td>
+        <td rowspan="2" align="left"><p id="-">-</p></td>
         <td align="left"><p id="OpenBootloader">OpenBootloader</p></td>
         <td align="left">
 This application exploits OpenBootloader Middleware to demonstrate how to develop an IAP application
@@ -2825,23 +2862,7 @@ but can be used by the non-secure application at run-time.
         <td>-</td>
         <td><font color="green" size="5">X</font></td>
       </tr>
-      <tr align="center">
-        <td align="left"><p id="TFM">TFM</p></td>
-        <td align="left">The
-TFM provides a Root of Trust solution including Secure Boot and Secure
-Firmware Update functionalities that is used before executing
-the application and provides TFM secure services that are isolated from
-the non-secure application but can be used by the non-secure
-application at run-time.
-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td><font color="green" size="5">X</font></td>
-      </tr>
+      
       <tr align="center">
         <td rowspan="1" align="left"><p id="BLE">BLE</p></td>
         <td align="left"><p id="BLE_AT_Client">BLE_AT_Client</p></td>
@@ -2914,8 +2935,8 @@ application is designed to execute file operations on the MX25LM51245G
 NOR flash device, the code provides all required software code for
 properly managing it.
 </td>
-        <td><font color="green" size="5">X</font></td>
-        <td><font color="green" size="5">X</font></td>
+        <td><font color="green" size="5">CubeMx</font></td>
+        <td><font color="green" size="5">CubeMx</font></td>
         <td>-</td>
         <td>-</td>
         <td>-</td>
@@ -3079,7 +3100,7 @@ This application provides an example of Azure RTOS NetX/NetXDuo stack usage.
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <td><font color="green" size="5">X</font></td>
+        <td><font color="green" size="5">CubeMx</font></td>
       </tr>
       <tr align="center">
         <td align="left"><p id="Nx_IAP_Client">Nx_IAP_Client</p></td>
@@ -3092,7 +3113,7 @@ This application provides an example of Azure RTOS NetX/NetXDuo stack usage.
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <td><font color="green" size="5">X</font></td>
+        <td><font color="green" size="5">CubeMx</font></td>
       </tr>
       <tr align="center">
         <td align="left"><p id="Nx_MDNS">Nx_MDNS</p></td>
@@ -3105,7 +3126,7 @@ This application demonstrates mDNS on MXCHIP EMW3080 module for the STM32U585AII
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <td><font color="green" size="5">X</font></td>
+        <td><font color="green" size="5">CubeMx</font></td>
       </tr>
       <tr align="center">
         <td align="left"><p id="Nx_MQTT_Client">Nx_MQTT_Client</p></td>
@@ -3131,7 +3152,7 @@ This application demonstrates WiFi connectivity on MXCHIP EMW3080 module for the
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <td><font color="green" size="5">X</font></td>
+        <td><font color="green" size="5">CubeMx</font></td>
       </tr>
       <tr align="center">
         <td align="left"><p id="Nx_SNTP_Client">Nx_SNTP_Client</p></td>
@@ -3144,7 +3165,7 @@ This application provides an example of Azure RTOS NetX/NetXDuo stack usage.
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <td><font color="green" size="5">X</font></td>
+        <td><font color="green" size="5">CubeMx</font></td>
       </tr>
       <tr align="center">
         <td align="left"><p id="Nx_TCP_Echo_Client">Nx_TCP_Echo_Client</p></td>
@@ -3157,7 +3178,7 @@ This application provides an example of Azure RTOS NetX/NetXDuo stack usage.
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <td><font color="green" size="5">X</font></td>
+        <td><font color="green" size="5">CubeMx</font></td>
       </tr>
       <tr align="center">
         <td align="left"><p id="Nx_TCP_Echo_Server">Nx_TCP_Echo_Server</p></td>
@@ -3170,7 +3191,7 @@ This application provides an example of Azure RTOS NetX/NetXDuo stack usage .
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <td><font color="green" size="5">X</font></td>
+        <td><font color="green" size="5">CubeMx</font></td>
       </tr>
       <tr align="center">
         <td align="left"><p id="Nx_UDP_Echo_Client">Nx_UDP_Echo_Client</p></td>
@@ -3183,7 +3204,7 @@ This application provides an example of Azure RTOS NetX/NetXDuo stack usage.
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <td><font color="green" size="5">X</font></td>
+        <td><font color="green" size="5">CubeMx</font></td>
       </tr>
       <tr align="center">
         <td align="left"><p id="Nx_UDP_Echo_Server">Nx_UDP_Echo_Server</p></td>
@@ -3196,7 +3217,7 @@ This application provides an example of Azure RTOS NetX/NetXDuo stack usage .
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <td><font color="green" size="5">X</font></td>
+        <td><font color="green" size="5">CubeMx</font></td>
       </tr>
       <tr align="center">
         <td align="left"><p id="Nx_WebServer">Nx_WebServer</p></td>

@@ -1,2 +1,0 @@
-purpose to create an SST asset;
-set sst uid 104 data "Very simple test" expect pass;

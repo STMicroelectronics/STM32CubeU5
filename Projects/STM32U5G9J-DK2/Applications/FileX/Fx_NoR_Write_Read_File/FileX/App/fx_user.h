@@ -133,6 +133,7 @@
    The minimum value is 13 and the maximum value is 256.  */
 
 /* #define FX_MAX_LAST_NAME_LEN         256 */
+
 /* #define FX_MAX_LONG_NAME_LEN         256 */
 
 /* Defines the maximum number of logical sectors that can be cached by FileX. The cache memory
@@ -171,7 +172,7 @@
 
 /* #define FX_SINGLE_THREAD */
 
-/* Defined, Filex will be used in standalone mode (without ThreadX) */
+/* Defined, FileX will be used in standalone mode (without ThreadX) */
 
 /* #define FX_STANDALONE_ENABLE */
 
@@ -218,13 +219,13 @@
 /* #define FX_DISABLE_CONSECUTIVE_DETECT */
 
 /* Define bitmap cache size for exFAT. Size should be minimum one sector size and maximum 4096.
-For applications using multiple media devices with varying sector size, the value should be :
-set to the size of largest sector size. */
+   For applications using multiple media devices with varying sector size, the value should be set to the
+   size of largest sector size. */
 
 /* #define FX_EXFAT_MAX_CACHE_SIZE         512 */
 
 /* Define the size of fault tolerant cache, which is used when freeing FAT chain.
-The FX_FAULT_TOLERANT_CACHE_SIZE is 2 power of FX_FAULT_TOLERANT_CACHE_SIZE_NB_SIZE. */
+   The FX_FAULT_TOLERANT_CACHE_SIZE is 2 power of FX_FAULT_TOLERANT_CACHE_SIZE_NB_SIZE. */
 
 /* #define FX_FAULT_TOLERANT_CACHE_SIZE         1024 */
 

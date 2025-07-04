@@ -367,6 +367,7 @@
           <state>$PROJ_DIR$\..\..\..\..\..\..\Drivers\CMSIS\Device\ST\STM32U5xx\Include</state>
           <state>$PROJ_DIR$\..\..\Linker</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include</state>
+          <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include\mbedtls</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\include\psa</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library</state>
           <state>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mcuboot</state>
@@ -1180,9 +1181,6 @@
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mcuboot\boot\bootutil\src\image_ec256.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mcuboot\boot\bootutil\src\image_rsa.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mcuboot\boot\bootutil\src\image_validate.c</name>
       </file>
       <file>
@@ -1237,10 +1235,16 @@
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\bignum.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\bignum_core.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\cipher.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\ctr_drbg.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\hmac_drbg.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\ecdh.c</name>
@@ -1268,12 +1272,6 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\platform_util.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\rsa.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\rsa_internal.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\Third_Party\mbed-crypto\library\sha256.c</name>
@@ -1337,9 +1335,6 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\Src\ecp_curves_alt.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\Src\rsa_alt.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\Src\sha256_alt.c</name>

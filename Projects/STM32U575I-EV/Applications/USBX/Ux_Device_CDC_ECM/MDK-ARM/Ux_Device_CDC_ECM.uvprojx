@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>TCPP0203_SUPPORT,USE_FULL_LL_DRIVER,FX_INCLUDE_USER_DEFINE_FILE,NX_INCLUDE_USER_DEFINE_FILE,TX_INCLUDE_USER_DEFINE_FILE,TX_SINGLE_MODE_NON_SECURE=1,USBPD_PORT_COUNT=1,USBPD_THREADX,_SNK,USBPDCORE_LIB_NO_PD,UX_INCLUDE_USER_DEFINE_FILE,USE_HAL_DRIVER,STM32U575xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../FileX/App;../FileX/Target;../NetXDuo/App;../Core/Inc;../AZURE_RTOS/App;../USBPD/App;../USBPD/Target;../USBX/App;../USBX/Target;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Middlewares/ST/netxduo/addons/dhcp;../../../../../../Middlewares/ST/netxduo/addons/web;../../../../../../Middlewares/ST/threadx/common/inc;../../../../../../Middlewares/ST/STM32_USBPD_Library/Core/inc;../../../../../../Middlewares/ST/STM32_USBPD_Library/Devices/STM32U5XX/inc;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Middlewares/ST/filex/common/inc;../../../../../../Middlewares/ST/filex/ports/generic/inc;../../../../../../Middlewares/ST/netxduo/common/inc;../../../../../../Middlewares/ST/netxduo/ports/cortex_m33/ac5/inc;../../../../../../Middlewares/ST/threadx/ports/cortex_m33/ac6/inc;../../../../../../Middlewares/ST/usbx/common/core/inc;../../../../../../Middlewares/ST/usbx/ports/generic/inc;../../../../../../Middlewares/ST/usbx/common/usbx_network/inc;../../../../../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers;../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/BSP/STM32U575I-EV</IncludePath>
+              <IncludePath>../FileX/App;../FileX/Target;../NetXDuo/App;../Core/Inc;../AZURE_RTOS/App;../USBPD/App;../USBPD/Target;../USBX/App;../USBX/Target;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Middlewares/ST/netxduo/addons/dhcp;../../../../../../Middlewares/ST/netxduo/addons/web;../../../../../../Middlewares/ST/threadx/common/inc;../../../../../../Middlewares/ST/STM32_USBPD_Library/Core/inc;../../../../../../Middlewares/ST/STM32_USBPD_Library/Devices/STM32U5XX/inc;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Middlewares/ST/filex/common/inc;../../../../../../Middlewares/ST/filex/ports/generic/inc;../../../../../../Middlewares/ST/netxduo/common/inc;../../../../../../Middlewares/ST/threadx/ports/cortex_m33/ac6/inc;../../../../../../Middlewares/ST/usbx/common/core/inc;../../../../../../Middlewares/ST/usbx/ports/generic/inc;../../../../../../Middlewares/ST/usbx/common/usbx_network/inc;../../../../../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers;../../../../../../Middlewares/ST/usbx/common/usbx_device_classes/inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/BSP/STM32U575I-EV;../../../../../../Middlewares/ST/netxduo/ports/cortex_m33/ac6/inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -703,6 +703,21 @@
               <FileName>stm32u5xx_hal_sd_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_sd_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32u5xx_hal_mmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_mmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32u5xx_hal_mmc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_mmc_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32u5xx_hal_sdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_sdio.c</FilePath>
             </File>
             <File>
               <FileName>stm32u5xx_ll_ucpd.c</FileName>
@@ -3935,6 +3950,36 @@
               <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nxe_udp_socket_unbind.c</FilePath>
             </File>
             <File>
+              <FileName>nxe_udp_socket_vlan_priority_set.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nxe_udp_socket_vlan_priority_set.c</FilePath>
+            </File>
+            <File>
+              <FileName>nxe_tcp_socket_vlan_priority_set.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nxe_tcp_socket_vlan_priority_set.c</FilePath>
+            </File>
+            <File>
+              <FileName>nxe_packet_vlan_priority_set.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nxe_packet_vlan_priority_set.c</FilePath>
+            </File>
+            <File>
+              <FileName>nx_udp_socket_vlan_priority_set.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_udp_socket_vlan_priority_set.c</FilePath>
+            </File>
+            <File>
+              <FileName>nx_tcp_socket_vlan_priority_set.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_socket_vlan_priority_set.c</FilePath>
+            </File>
+            <File>
+              <FileName>nx_packet_vlan_priority_set.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_packet_vlan_priority_set.c</FilePath>
+            </File>
+            <File>
               <FileName>nxe_udp_source_extract.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nxe_udp_source_extract.c</FilePath>
@@ -4338,6 +4383,11 @@
               <FileName>nxde_ipv6_stateless_address_autoconfig_enable.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nxde_ipv6_stateless_address_autoconfig_enable.c</FilePath>
+            </File>
+            <File>
+              <FileName>nx_link.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/netxduo/common/src/nx_link.c</FilePath>
             </File>
             <File>
               <FileName>nxd_nd_cache_entry_delete.c</FileName>
@@ -5440,6 +5490,16 @@
               <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_free.c</FilePath>
             </File>
             <File>
+              <FileName>ux_utility_memory_byte_pool_create.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_create.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_utility_memory_byte_pool_search.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_search.c</FilePath>
+            </File>
+            <File>
               <FileName>ux_utility_memory_set.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_set.c</FilePath>
@@ -5603,16 +5663,6 @@
               <FileName>ux_system_uninitialize.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_system_uninitialize.c</FilePath>
-            </File>
-            <File>
-              <FileName>ux_utility_memory_byte_pool_create.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_create.c</FilePath>
-            </File>
-            <File>
-              <FileName>ux_utility_memory_byte_pool_search.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_search.c</FilePath>
             </File>
           </Files>
         </Group>

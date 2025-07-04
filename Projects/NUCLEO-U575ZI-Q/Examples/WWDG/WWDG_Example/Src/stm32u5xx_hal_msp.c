@@ -60,6 +60,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -74,23 +75,24 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief WWDG MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hwwdg: WWDG handle pointer
-* @retval None
-*/
+  * @brief WWDG MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hwwdg: WWDG handle pointer
+  * @retval None
+  */
 void HAL_WWDG_MspInit(WWDG_HandleTypeDef* hwwdg)
 {
   if(hwwdg->Instance==WWDG)
   {
-  /* USER CODE BEGIN WWDG_MspInit 0 */
+    /* USER CODE BEGIN WWDG_MspInit 0 */
 
-  /* USER CODE END WWDG_MspInit 0 */
+    /* USER CODE END WWDG_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_WWDG_CLK_ENABLE();
-  /* USER CODE BEGIN WWDG_MspInit 1 */
+    /* USER CODE BEGIN WWDG_MspInit 1 */
 
-  /* USER CODE END WWDG_MspInit 1 */
+    /* USER CODE END WWDG_MspInit 1 */
+
   }
 
 }

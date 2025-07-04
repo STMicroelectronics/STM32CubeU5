@@ -43,6 +43,7 @@ None
 #### <b>Note</b>
 
 The following sequence is needed to disable TrustZone:
+
   -	Boot from user Flash memory:
     1. Make sure that secure and non-secure applications are well loaded and executed (jump done on non-secure application).
     2. If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then only Hotplug connection is possible during non-secure application execution.
@@ -59,10 +60,10 @@ Please refer to AN5347 for more details.
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it, by updating the "TX_TIMER_TICKS_PER_SECOND" define in the "tx_user.h" file. The update should be reflected in "tx_initialize_low_level.S" file too.
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
-   It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL or BSP).
+   It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...) but it should not in any way contain a system API call (HAL or BSP).
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
@@ -88,11 +89,11 @@ Please refer to AN5347 for more details.
        } >RAM_D1 AT> RAM_D1
     ```
 
-       The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
-       In the example above the ThreadX heap size is set to 64KBytes.
-       The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
-       Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
-       Read more in STM32CubeIDE User Guide, chapter: "Linker script".
+    The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
+    In the example above the ThreadX heap size is set to 64KBytes.
+    The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
+    Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
+    Read more in STM32CubeIDE User Guide, chapter: "Linker script".
 
     + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
 
@@ -103,16 +104,16 @@ RTOS, ThreadX, Threading, TrustZone, TZEN
 
 ### <b>Hardware and Software environment</b>
 
-  - This example runs on STM32U545xx devices with security enabled (TZEN=1).
+  - This application runs on STM32U545xx devices with security enabled (TZEN=1).
 
-  - This example has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision: MB1841-A02
+  - This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards Revision: MB1841-D01
     and can be easily tailored to any other supported device and development board.
 
   - User Option Bytes requirement (with STM32CubeProgrammer tool)
 
-      - TZEN = 1                            System with TrustZone-M enabled
-      - SECWM1_PSTRT=0x0  SECWM1_PEND=0x1F  All 32 pages of internal Flash Bank1 set as secure
-      - SECWM2_PSTRT=0x1  SECWM2_PEND=0x0   No page of internal Flash Bank2 set as secure, hence Bank2 non-secure
+    - TZEN = 1                            System with TrustZone-M enabled
+    - SECWM1_PSTRT=0x0  SECWM1_PEND=0x1F  All 32 pages of internal Flash Bank1 set as secure
+    - SECWM2_PSTRT=0x1  SECWM2_PEND=0x0   No page of internal Flash Bank2 set as secure, hence Bank2 non-secure
 
 ###  <b>How to use it ?</b>
 
@@ -128,7 +129,7 @@ EWARM
  - Rebuild xxxxx_S project
  - Rebuild xxxxx_NS project
  - Load the secure and non-secures images into target memory (Ctrl + D)
- - Run the example
+ - Run the application
 
 MDK-ARM
 
@@ -143,16 +144,16 @@ MDK-ARM
  - Select the xxxxx_S project as Active Project (Set as Active Project)
  - Load the secure binary (F8)
    (this shall download the \MDK-ARM\xxxxx_s\Exe\Project_s.axf to flash memory)
- - Run the example
+ - Run the application
 
 STM32CubeIDE
 
  - Open STM32CubeIDE
- - File > Import. Point to the STM32CubeIDE folder of the example project. Click Finish.
+ - File > Import. Point to the STM32CubeIDE folder of the application project. Click Finish.
  - Build configuration: Set the same active build configuration: Debug (default) or Release for both projects xxxxx_S & xxxxx_NS
  - Select and build the xxxxx_NS project, this will automatically trigger the build of xxxxx_S project
  - Select the xxxxx_S project and select "Debug configuration" or "Run configuration" in function of the active build configuration
    - Double click on “STM32 Cortex-M C/C++ Application”
    - Select  “Startup” >  “Add” >
      - Select the xxxxx_NS project
- - Click Debug/Run to debug/run the example
+ - Click Debug/Run to debug/run the application

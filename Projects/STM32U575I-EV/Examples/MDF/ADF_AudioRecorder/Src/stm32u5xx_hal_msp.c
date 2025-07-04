@@ -62,6 +62,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -76,20 +77,20 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief MDF MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hmdf: MDF handle pointer
-* @retval None
-*/
+  * @brief MDF MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hmdf: MDF handle pointer
+  * @retval None
+  */
 void HAL_MDF_MspInit(MDF_HandleTypeDef* hmdf)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
   if(IS_ADF_INSTANCE(hmdf->Instance))
   {
-  /* USER CODE BEGIN ADF1_MspInit 0 */
+    /* USER CODE BEGIN ADF1_MspInit 0 */
 
-  /* USER CODE END ADF1_MspInit 0 */
+    /* USER CODE END ADF1_MspInit 0 */
 
   /** Initializes the peripherals clock
   */
@@ -115,26 +116,27 @@ void HAL_MDF_MspInit(MDF_HandleTypeDef* hmdf)
     GPIO_InitStruct.Alternate = GPIO_AF3_ADF1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN ADF1_MspInit 1 */
+    /* USER CODE BEGIN ADF1_MspInit 1 */
 
-  /* USER CODE END ADF1_MspInit 1 */
+    /* USER CODE END ADF1_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief MDF MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hmdf: MDF handle pointer
-* @retval None
-*/
+  * @brief MDF MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hmdf: MDF handle pointer
+  * @retval None
+  */
 void HAL_MDF_MspDeInit(MDF_HandleTypeDef* hmdf)
 {
   if(IS_ADF_INSTANCE(hmdf->Instance))
   {
-  /* USER CODE BEGIN ADF1_MspDeInit 0 */
+    /* USER CODE BEGIN ADF1_MspDeInit 0 */
 
-  /* USER CODE END ADF1_MspDeInit 0 */
+    /* USER CODE END ADF1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_ADF1_CLK_DISABLE();
 
@@ -144,9 +146,9 @@ void HAL_MDF_MspDeInit(MDF_HandleTypeDef* hmdf)
     */
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_4|GPIO_PIN_3);
 
-  /* USER CODE BEGIN ADF1_MspDeInit 1 */
+    /* USER CODE BEGIN ADF1_MspDeInit 1 */
 
-  /* USER CODE END ADF1_MspDeInit 1 */
+    /* USER CODE END ADF1_MspDeInit 1 */
   }
 
 }

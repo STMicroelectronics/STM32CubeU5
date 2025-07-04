@@ -29,7 +29,6 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "fx_api.h"
 #include "fx_stm32_levelx_nor_driver.h"
-#include "lx_stm32_xspi_driver.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "main.h"
@@ -76,6 +75,26 @@ UINT MX_FileX_Init(VOID *memory_ptr);
 /* Main thread preemption threshold */
 #ifndef FX_APP_PREEMPTION_THRESHOLD
   #define FX_APP_PREEMPTION_THRESHOLD FX_APP_THREAD_PRIO
+#endif
+
+/* fx nor_xspi volume name */
+#ifndef FX_NOR_XSPI_VOLUME_NAME
+  #define FX_NOR_XSPI_VOLUME_NAME "STM32_NOR_XSPI_FLASH_DISK"
+#endif
+
+/* fx nor_xspi number of bytes per sector */
+#ifndef FX_NOR_XSPI_SECTOR_SIZE
+  #define FX_NOR_XSPI_SECTOR_SIZE         512
+#endif
+
+/* fx nor_xspi number of FATs */
+#ifndef FX_NOR_XSPI_NUMBER_OF_FATS
+  #define FX_NOR_XSPI_NUMBER_OF_FATS        1
+#endif
+
+/* fx nor_xspi Hidden sectors */
+#ifndef FX_NOR_XSPI_HIDDEN_SECTORS
+  #define FX_NOR_XSPI_HIDDEN_SECTORS        0
 #endif
 
 /* USER CODE BEGIN PD */

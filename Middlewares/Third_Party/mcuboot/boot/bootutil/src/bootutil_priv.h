@@ -297,6 +297,7 @@ struct boot_loader_state {
 #if (BOOT_IMAGE_NUMBER > 1)
     uint8_t curr_img_idx;
 #endif
+    uint32_t install_status[BOOT_IMAGE_NUMBER];
 };
 
 fih_int bootutil_verify_sig(uint8_t *hash, uint32_t hlen, uint8_t *sig,
@@ -411,6 +412,12 @@ static inline bool boot_u16_safe_add(uint16_t *dest, uint16_t a, uint16_t b)
 #define BOOT_WRITE_SZ(state) ((state)->write_sz)
 #define BOOT_SWAP_TYPE(state) ((state)->swap_type[BOOT_CURR_IMG(state)])
 #define BOOT_TLV_OFF(hdr) ((hdr)->ih_hdr_size + (hdr)->ih_img_size)
+
+#define IMAGE_INSTALL_SET        (0x004c88e3U)
+#define IMAGE_INSTALL_RESET      (0x0U)
+
+#define BOOT_SET_INSTALL_STATUS(state, index)       (state->install_status[index] = IMAGE_INSTALL_SET)
+#define BOOT_IS_INSTALL_STATUS(state, index)        (state->install_status[index] == IMAGE_INSTALL_SET)
 
 #define BOOT_IS_UPGRADE(swap_type)             \
     (((swap_type) == BOOT_SWAP_TYPE_TEST) ||   \

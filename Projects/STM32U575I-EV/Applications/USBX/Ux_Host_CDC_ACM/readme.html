@@ -67,15 +67,16 @@ and CDC_ACM class Specification.</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
 <p>None</p>
 <h3 id="notes"><b>Notes</b></h3>
+<p>None</p>
 <h4 id="threadx-usage-hints"><b>ThreadX usage hints</b></h4>
 <ul>
 <li>ThreadX uses the Systick as time base, thus it is mandatory that the
 HAL uses a separate time base through the TIM IPs.</li>
 <li>ThreadX is configured with 100 ticks/sec by default, this should be
 taken into account when using delays or timeouts at application. It is
-always possible to reconfigure it in the “tx_user.h”, the
-“TX_TIMER_TICKS_PER_SECOND” define,but this should be reflected in
-“tx_initialize_low_level.S” file too.</li>
+always possible to reconfigure it, by updating the "TX_TIMER_TICKS_PER_SECOND" define
+in the "tx_user.h" file.The update should be reflected in "tx_initialize_low_level.S"
+file too.</li>
 <li>ThreadX is disabling all interrupts during kernel start-up to avoid
 any unexpected behavior, therefore all system related calls (HAL, BSP)
 should be done either at the beginning of the application or inside the
@@ -88,7 +89,7 @@ way contain a system API call (HAL or BSP).</li>
 <li>Using dynamic memory allocation requires to apply some changes to
 the linker file. ThreadX needs to pass a pointer to the first free
 memory location in RAM to the tx_application_define() function, using
-the “first_unused_memory” argument. This require changes in the linker
+the “first_unused_memory” argument. This requires changes in the linker
 files to expose this memory location.
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
@@ -120,9 +121,10 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 </ul></li>
 </ul>
+<h4 id="usbx-usage-hints"><b>USBX usage hints</b></h4>
+<p>None</p>
 <h3 id="keywords"><b>Keywords</b></h3>
-<p>Connectivity, USBXHost, USBPD, ThreadX, USB, CDC_ACM, UART,
-USART,</p>
+<p>Connectivity, USBXHost, USBPD, ThreadX, USB, CDC_ACM, UART, USART</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>

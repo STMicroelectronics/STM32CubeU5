@@ -1,0 +1,29 @@
+{
+    "prefix":       "mbedtls_kwe",
+    "type":         "opaque",
+    "location":     "PSA_CRYPTO_KWE_DRIVER_LOCATION",
+    "mbedtls/h_condition":   "defined(PSA_KWE_DRIVER_ENABLED)",
+    "headers":      ["../../../ST/key_wrap_engine/interface/kwe_psa_driver_interface.h"],
+    "capabilities": [
+        {
+            "_comment":     "The STM32 KWE opaque driver supports symmetric and asymmetric wraped key operations; import, export, export_public",
+            "mbedtls/c_condition":    "defined(PSA_KWE_DRIVER_ENABLED)",
+            "entry_points": ["import_key", "generate_key", "export_public_key", "get_key_buffer_size", "get_key_buffer_size_from_key_data"]
+        },
+        {
+            "_comment":     "The STM32 KWE opaque driver supports signature operations",
+            "mbedtls/c_condition":    "defined(PSA_KWE_DRIVER_ENABLED)",
+            "entry_points": ["signature_sign_message", "signature_sign_hash"]
+        },
+        {
+            "_comment":     "The STM32 KWE opaque driver supports cipher operations",
+            "mbedtls/c_condition":    "defined(PSA_KWE_DRIVER_ENABLED)",
+            "entry_points": ["cipher_encrypt", "cipher_decrypt", "aead_encrypt", "aead_decrypt"]
+        },
+        {
+            "_comment":     "The STM32 KWE opaque driver supports asymmetric decryption and ECCC key agreement",
+            "mbedtls/c_condition":    "defined(PSA_KWE_DRIVER_ENABLED)",
+            "entry_points": ["key_agreement", "asymmetric_decrypt"]
+        }
+     ]
+}

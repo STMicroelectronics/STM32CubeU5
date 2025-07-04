@@ -76,6 +76,7 @@ static void OSPI_OctalDtrModeCfg(OSPI_HandleTypeDef *hospi);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
   OSPI_RegularCmdTypeDef sCommand = {0};
   uint16_t index, errorBuffer = 0;
@@ -97,11 +98,11 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
   /* Configure the System Power */
   SystemPower_Config();
+
+  /* Configure the system clock */
+  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
   BSP_LED_Init(LED6);
@@ -127,7 +128,7 @@ int main(void)
 
   /* Erasing Sequence ----------------------------------------------- */
   OSPI_WriteEnable(&hospi2);
-  
+
   sCommand.FlashId            = HAL_OSPI_FLASH_ID_1;
   sCommand.OperationType      = HAL_OSPI_OPTYPE_COMMON_CFG;
   sCommand.Instruction        = OCTAL_SECTOR_ERASE_CMD;
@@ -423,16 +424,16 @@ static void MX_OCTOSPI2_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOI_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOF_CLK_ENABLE();
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -453,7 +454,7 @@ void HAL_OSPI_ErrorCallback(OSPI_HandleTypeDef *hospi)
   */
 static void OSPI_WriteEnable(OSPI_HandleTypeDef *hospi)
 {
-  OSPI_RegularCmdTypeDef  sCommand;
+  OSPI_RegularCmdTypeDef  sCommand = {0};
   uint8_t reg[2];
 
   /* Enable write operations ------------------------------------------ */
@@ -508,7 +509,7 @@ static void OSPI_WriteEnable(OSPI_HandleTypeDef *hospi)
   */
 static void OSPI_AutoPollingMemReady(OSPI_HandleTypeDef *hospi)
 {
-  OSPI_RegularCmdTypeDef  sCommand;
+  OSPI_RegularCmdTypeDef  sCommand = {0};
   uint8_t reg[2];
 
   /* Configure automatic polling mode to wait for memory ready ------ */
@@ -552,8 +553,8 @@ static void OSPI_AutoPollingMemReady(OSPI_HandleTypeDef *hospi)
 static void OSPI_OctalDtrModeCfg(OSPI_HandleTypeDef *hospi)
 {
   uint8_t reg;
-  OSPI_RegularCmdTypeDef  sCommand;
-  OSPI_AutoPollingTypeDef sConfig;
+  OSPI_RegularCmdTypeDef  sCommand = {0};
+  OSPI_AutoPollingTypeDef sConfig  = {0};
 
   sCommand.OperationType      = HAL_OSPI_OPTYPE_COMMON_CFG;
   sCommand.FlashId            = HAL_OSPI_FLASH_ID_1;

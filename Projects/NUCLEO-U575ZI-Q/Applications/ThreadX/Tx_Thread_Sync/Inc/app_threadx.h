@@ -49,7 +49,7 @@ extern "C" {
 #define TX_APP_THREAD_PRIO                      10
 
 /* USER CODE BEGIN PD */
-
+#define TX_APP_THREAD_TIME_SLICE                5
 /* USER CODE END PD */
 
 /* Main thread defines -------------------------------------------------------*/
@@ -96,8 +96,6 @@ extern "C" {
 #define APP_SYNC_CREATE(a)                   tx_semaphore_create((a),"App Binary Semaphore", 1)
 #endif
 
-
-#define DEFAULT_TIME_SLICE                   5
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

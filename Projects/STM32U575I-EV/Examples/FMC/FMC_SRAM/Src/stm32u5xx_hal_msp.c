@@ -62,6 +62,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -78,45 +79,46 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief DCACHE MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hdcache: DCACHE handle pointer
-* @retval None
-*/
+  * @brief DCACHE MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hdcache: DCACHE handle pointer
+  * @retval None
+  */
 void HAL_DCACHE_MspInit(DCACHE_HandleTypeDef* hdcache)
 {
   if(hdcache->Instance==DCACHE1)
   {
-  /* USER CODE BEGIN DCACHE1_MspInit 0 */
+    /* USER CODE BEGIN DCACHE1_MspInit 0 */
 
-  /* USER CODE END DCACHE1_MspInit 0 */
+    /* USER CODE END DCACHE1_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_DCACHE1_CLK_ENABLE();
-  /* USER CODE BEGIN DCACHE1_MspInit 1 */
+    /* USER CODE BEGIN DCACHE1_MspInit 1 */
 
-  /* USER CODE END DCACHE1_MspInit 1 */
+    /* USER CODE END DCACHE1_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief DCACHE MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hdcache: DCACHE handle pointer
-* @retval None
-*/
+  * @brief DCACHE MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hdcache: DCACHE handle pointer
+  * @retval None
+  */
 void HAL_DCACHE_MspDeInit(DCACHE_HandleTypeDef* hdcache)
 {
   if(hdcache->Instance==DCACHE1)
   {
-  /* USER CODE BEGIN DCACHE1_MspDeInit 0 */
+    /* USER CODE BEGIN DCACHE1_MspDeInit 0 */
 
-  /* USER CODE END DCACHE1_MspDeInit 0 */
+    /* USER CODE END DCACHE1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_DCACHE1_CLK_DISABLE();
-  /* USER CODE BEGIN DCACHE1_MspDeInit 1 */
+    /* USER CODE BEGIN DCACHE1_MspDeInit 1 */
 
-  /* USER CODE END DCACHE1_MspDeInit 1 */
+    /* USER CODE END DCACHE1_MspDeInit 1 */
   }
 
 }

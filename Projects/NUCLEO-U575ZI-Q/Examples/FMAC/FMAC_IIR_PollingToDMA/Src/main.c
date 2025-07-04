@@ -160,6 +160,7 @@ static void MX_FMAC_Init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
   /* STM32U5xx HAL library initialization:
        - Configure the Flash prefetch
@@ -178,11 +179,11 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
   /* Configure the System Power */
   SystemPower_Config();
+
+  /* Configure the system clock */
+  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
   /* Configure LED1 */

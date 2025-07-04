@@ -9,7 +9,6 @@ The application's main calls the MX_FileX_Init() function in order to Initialize
 
 Upon successful opening of the created SRAM-Disk media, FileX continues with creating a file called "STM32.TXT" into the root directory by calling MX_FileX_Process(VOID *arg) function, then writes into it some predefined data. The file is re-opened in read only mode and content is checked.
 
-
 As stated earlier, the present application runs in standalone mode without ThreadX, for this reason, the standalone variant of fileX is used, plus the following flags need to be set in fx_user.h:
   #define FX_SINGLE_THREAD
   #define FX_STANDALONE_ENABLE
@@ -20,18 +19,20 @@ Successful operation is marked by a toggling green LED light.
 
 Also, information regarding executing operation on the SRAM-Disk is printed to the serial port.
 
-
 #### <b>Error behaviors</b>
 
 On failure, an error message is printed to the serial port while the green LED is switched OFF.
 
 #### <b>Assumptions if any</b>
+
 None
 
 #### <b>Known limitations</b>
+
 None
 
 ### <b>Notes</b>
+
  1. The created SRAM-Disk, is placed in SRAM4(16 KB) starting from the(SRAM4_BASE=@0x28000000).
  2. User can change the location of the SRAM-Disk by modifying FX_SRAM_DISK_BASE_ADDRESS.
 
@@ -46,17 +47,16 @@ FileX, File System, FAT32, SRAM
 ### <b>Hardware and Software environment</b>
 
   - This application runs on STM32U545xx devices
-  - This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards revision: MB1841-A02
+  - This application has been tested with STMicroelectronics NUCLEO-U545RE-Q boards revision: MB1841-D01
     and can be easily tailored to any other supported device and development board.
 
   - This application uses USART1 to display logs, the hyperterminal configuration is as follows:
 
-      - BaudRate = 115200 baud
-      - Word Length = 8 Bits
-      - Stop Bit = 1
-      - Parity = none
-      - Flow control = None
-
+    - BaudRate = 115200 baud
+    - Word Length = 8 Bits
+    - Stop Bit = 1
+    - Parity = none
+    - Flow control = None
 
 ### <b>How to use it ?</b>
 

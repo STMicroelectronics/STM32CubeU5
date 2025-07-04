@@ -146,12 +146,12 @@ int main(void)
 
   /* USER CODE END 2 */
 
-
   /*************** Setup and jump to non-secure *******************************/
 
   NonSecure_Init();
 
   /* Non-secure software does not return, this code is not executed */
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -342,8 +342,8 @@ static void MX_ICACHE_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
@@ -361,8 +361,8 @@ static void MX_GPIO_Init(void)
   /*IO attributes management functions */
   HAL_GPIO_ConfigPinAttributes(LED7_GPIO_Port, LED7_Pin, GPIO_PIN_NSEC);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

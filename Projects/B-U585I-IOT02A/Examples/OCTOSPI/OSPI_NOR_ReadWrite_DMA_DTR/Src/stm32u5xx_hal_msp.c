@@ -63,6 +63,7 @@ extern DMA_HandleTypeDef handle_GPDMA1_Channel12;
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -77,64 +78,65 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief DCACHE MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hdcache: DCACHE handle pointer
-* @retval None
-*/
+  * @brief DCACHE MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hdcache: DCACHE handle pointer
+  * @retval None
+  */
 void HAL_DCACHE_MspInit(DCACHE_HandleTypeDef* hdcache)
 {
   if(hdcache->Instance==DCACHE1)
   {
-  /* USER CODE BEGIN DCACHE1_MspInit 0 */
+    /* USER CODE BEGIN DCACHE1_MspInit 0 */
 
-  /* USER CODE END DCACHE1_MspInit 0 */
+    /* USER CODE END DCACHE1_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_DCACHE1_CLK_ENABLE();
-  /* USER CODE BEGIN DCACHE1_MspInit 1 */
+    /* USER CODE BEGIN DCACHE1_MspInit 1 */
 
-  /* USER CODE END DCACHE1_MspInit 1 */
+    /* USER CODE END DCACHE1_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief DCACHE MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hdcache: DCACHE handle pointer
-* @retval None
-*/
+  * @brief DCACHE MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hdcache: DCACHE handle pointer
+  * @retval None
+  */
 void HAL_DCACHE_MspDeInit(DCACHE_HandleTypeDef* hdcache)
 {
   if(hdcache->Instance==DCACHE1)
   {
-  /* USER CODE BEGIN DCACHE1_MspDeInit 0 */
+    /* USER CODE BEGIN DCACHE1_MspDeInit 0 */
 
-  /* USER CODE END DCACHE1_MspDeInit 0 */
+    /* USER CODE END DCACHE1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_DCACHE1_CLK_DISABLE();
-  /* USER CODE BEGIN DCACHE1_MspDeInit 1 */
+    /* USER CODE BEGIN DCACHE1_MspDeInit 1 */
 
-  /* USER CODE END DCACHE1_MspDeInit 1 */
+    /* USER CODE END DCACHE1_MspDeInit 1 */
   }
 
 }
 
 /**
-* @brief OSPI MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hospi: OSPI handle pointer
-* @retval None
-*/
+  * @brief OSPI MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hospi: OSPI handle pointer
+  * @retval None
+  */
 void HAL_OSPI_MspInit(OSPI_HandleTypeDef* hospi)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
   if(hospi->Instance==OCTOSPI2)
   {
-  /* USER CODE BEGIN OCTOSPI2_MspInit 0 */
+    /* USER CODE BEGIN OCTOSPI2_MspInit 0 */
 
-  /* USER CODE END OCTOSPI2_MspInit 0 */
+    /* USER CODE END OCTOSPI2_MspInit 0 */
 
   /** Initializes the peripherals clock
   */
@@ -218,26 +220,27 @@ void HAL_OSPI_MspInit(OSPI_HandleTypeDef* hospi)
     /* OCTOSPI2 interrupt Init */
     HAL_NVIC_SetPriority(OCTOSPI2_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(OCTOSPI2_IRQn);
-  /* USER CODE BEGIN OCTOSPI2_MspInit 1 */
+    /* USER CODE BEGIN OCTOSPI2_MspInit 1 */
 
-  /* USER CODE END OCTOSPI2_MspInit 1 */
+    /* USER CODE END OCTOSPI2_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief OSPI MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hospi: OSPI handle pointer
-* @retval None
-*/
+  * @brief OSPI MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hospi: OSPI handle pointer
+  * @retval None
+  */
 void HAL_OSPI_MspDeInit(OSPI_HandleTypeDef* hospi)
 {
   if(hospi->Instance==OCTOSPI2)
   {
-  /* USER CODE BEGIN OCTOSPI2_MspDeInit 0 */
+    /* USER CODE BEGIN OCTOSPI2_MspDeInit 0 */
 
-  /* USER CODE END OCTOSPI2_MspDeInit 0 */
+    /* USER CODE END OCTOSPI2_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_OSPIM_CLK_DISABLE();
     __HAL_RCC_OSPI2_CLK_DISABLE();
@@ -267,9 +270,9 @@ void HAL_OSPI_MspDeInit(OSPI_HandleTypeDef* hospi)
 
     /* OCTOSPI2 interrupt DeInit */
     HAL_NVIC_DisableIRQ(OCTOSPI2_IRQn);
-  /* USER CODE BEGIN OCTOSPI2_MspDeInit 1 */
+    /* USER CODE BEGIN OCTOSPI2_MspDeInit 1 */
 
-  /* USER CODE END OCTOSPI2_MspDeInit 1 */
+    /* USER CODE END OCTOSPI2_MspDeInit 1 */
   }
 
 }

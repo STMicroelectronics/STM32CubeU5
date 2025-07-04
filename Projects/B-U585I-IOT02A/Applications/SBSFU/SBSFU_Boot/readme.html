@@ -28,7 +28,7 @@
 <h3 id="keywords"><b>Keywords</b></h3>
 <p>Security, SBSFU, TFM, mcuboot, mbedCrypto, AES, CRYP, FLASH, GTZC, HASH, PKA,
 ICACHE, Secure boot, Firmware update, Authentication,
-Integrity, Confidentiality, cipher, Signature, ECDSA verification, RSA,
+Integrity, Confidentiality, cipher, Signature, ECDSA verification,
 Option bytes, TrustZone</p>
 <h3 id="directory-contents"><b>Directory contents</b></h3>
 <ul>
@@ -43,7 +43,6 @@ Option bytes, TrustZone</p>
 <li><p>SBSFU_Boot/Inc/ecp_alt.h Header file for ecp_alt.c</p></li>
 <li><p>SBSFU_Boot/Inc/low_level_flash.h Header file for low_level_flash.c</p></li>
 <li><p>SBSFU_Boot/Inc/mpu_armv8m_drv.h Header file for mpu_armv8m_drv.c</p></li>
-<li><p>SBSFU_Boot/Inc/rsa_alt.h Header file for rsa_alt.c</p></li>
 <li><p>SBSFU_Boot/Inc/sha256_alt.h Header file for sha256_alt.c</p></li>
 <li><p>SBSFU_Boot/Inc/stm32u5xx_hal_conf.h HAL driver configuration file</p></li>
 <li><p>SBSFU_Boot/Inc/target_cfg.h Header file for target start up</p></li>
@@ -62,7 +61,6 @@ Option bytes, TrustZone</p>
 <li><p>SBSFU_Boot/Src/low_level_device.c Flash Low level device configuration</p></li>
 <li><p>SBSFU_Boot/Src/low_level_flash.c Flash Low level interface</p></li>
 <li><p>SBSFU_Boot/Src/mpu_armv8m_drv.c Mpu low level interface</p></li>
-<li><p>SBSFU_Boot/Src/rsa_alt.c RSA HW crypto interface</p></li>
 <li><p>SBSFU_Boot/Src/sha256_alt.c SHA256 HW crypto interface</p></li>
 <li><p>SBSFU_Boot/Src/startup_stm32u5xx.c Startup file in c</p></li>
 <li><p>SBSFU_Boot/Src/system_stm32u5xx.c System Init file</p></li>
@@ -70,14 +68,8 @@ Option bytes, TrustZone</p>
 <li><p>SBSFU_Boot/Src/tick.c HAL Tick implementation</p></li>
 <li><p>SBSFU_Boot/Src/enc-ec256-priv.pem ecdsa private key for decrypting FW keys</p></li>
 <li><p>SBSFU_Boot/Src/enc-ec256-pub.pem ecdsa public key for encrypting FW keys</p></li>
-<li><p>SBSFU_Boot/Src/enc-rsa2048-priv.pem rsa private key for decrypting FW keys</p></li>
-<li><p>SBSFU_Boot/Src/enc-rsa2048-pub.pem rsa public key for encrypting FW keys</p></li>
 <li><p>SBSFU_Boot/Src/root-ec-p256.pem ecdsa private key for signing FW image</p></li>
 <li><p>SBSFU_Boot/Src/root-ec-p256_1.pem ecdsa private key for signing FW image</p></li>
-<li><p>SBSFU_Boot/Src/root-rsa-2048.pem rsa private key for signing FW image</p></li>
-<li><p>SBSFU_Boot/Src/root-rsa-2048_1.pem rsa private key for signing FW image</p></li>
-<li><p>SBSFU_Boot/Src/root-rsa-3072.pem rsa private key for signing FW image</p></li>
-<li><p>SBSFU_Boot/Src/root-rsa-3072_1.pem rsa private key for signing FW image</p></li>
 <li><p>Linker/flash_layout.h Flash mapping</p></li>
 <li><p>Linker/region_defs.h RAM and FLASH regions definitions</p></li>
 </ul>

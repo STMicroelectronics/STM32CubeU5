@@ -38,59 +38,12 @@ goto Keygen
 
 
 :keygen
-set "key_rsa_s=%sbsfu_key_dir%\root-rsa-2048.pem"
-set "command_key=%imgtool% keygen -k %key_rsa_s% -t rsa-2048"
-%command_key%
-IF %ERRORLEVEL% NEQ 0 goto :error_key
-
-set "command_key=%imgtool% getpub -k %key_rsa_s%  > %sbsfu_keys%"
-%command_key%
-IF %ERRORLEVEL% NEQ 0 goto :error_key
-
-set "key_rsa_ns=%sbsfu_key_dir%\root-rsa-2048_1.pem"
-set "command_key=%imgtool% keygen -k %key_rsa_ns% -t rsa-2048"
-%command_key%
-IF %ERRORLEVEL% NEQ 0 goto :error_key
-
-set "command_key=%imgtool% getpub -k %key_rsa_ns%  >> %sbsfu_keys%"
-%command_key%
-IF %ERRORLEVEL% NEQ 0 goto :error_key
-
-@set cnt=0
-:rsa_key_construction
-:: priv key to encode images
-set "key_rsa_enc_priv=%sbsfu_key_dir%\enc-rsa2048-priv.pem"
-set "key_rsa_enc_pub=%sbsfu_key_dir%\enc-rsa2048-pub.pem"
-set "command_key=%imgtool% keygen -k %key_rsa_enc_priv% -t rsa-2048 -e %key_rsa_enc_pub%"
-%command_key%
-IF %ERRORLEVEL% NEQ 0 goto :error_key
-set "command_key=%imgtool%  getpriv  --minimal -k %key_rsa_enc_priv%  >> %sbsfu_keys%"
-%command_key%
-IF %ERRORLEVEL% NEQ 0 goto :rsa_key_error
-
-::rsa 3072 auth key
-set "key_rsa_2_s=%sbsfu_key_dir%\root-rsa-3072.pem"
-set "command_key=%imgtool% keygen -k %key_rsa_2_s% -t rsa-3072"
-%command_key%
-IF %ERRORLEVEL% NEQ 0 goto :error_key
-set "command_key=%imgtool% getpub -k %key_rsa_2_s%  >> %sbsfu_keys%"
-%command_key%
-IF %ERRORLEVEL% NEQ 0 goto :error_key
-
-set "key_rsa_2_ns=%sbsfu_key_dir%\root-rsa-3072_1.pem"
-set "command_key=%imgtool% keygen -k %key_rsa_2_ns% -t rsa-3072"
-%command_key%
-IF %ERRORLEVEL% NEQ 0 goto :error_key
-set "command_key=%imgtool% getpub -k %key_rsa_2_ns%  >> %sbsfu_keys%"
-%command_key%
-IF %ERRORLEVEL% NEQ 0 goto :error_key
-
 ::ecc 256 auth key
 set "key_ecc_s=%sbsfu_key_dir%\root-ec-p256.pem"
 set "command_key=%imgtool% keygen -k %key_ecc_s% -t ecdsa-p256"
 %command_key%
 IF %ERRORLEVEL% NEQ 0 goto :error_key
-set "command_key=%imgtool% getpub -k %key_ecc_s%  >> %sbsfu_keys%"
+set "command_key=%imgtool% getpub -k %key_ecc_s%  > %sbsfu_keys%"
 %command_key%
 IF %ERRORLEVEL% NEQ 0 goto :error_key
 
@@ -117,7 +70,3 @@ exit 0
 :error_key
 echo "%command_key% : failed" >> %projectdir%\\output.txt
 exit 1
-
-:rsa_key_error
-@set /a "cnt=%cnt%+1"
-IF %cnt% GEQ 2 (goto :error_key) else (goto :rsa_key_construction)

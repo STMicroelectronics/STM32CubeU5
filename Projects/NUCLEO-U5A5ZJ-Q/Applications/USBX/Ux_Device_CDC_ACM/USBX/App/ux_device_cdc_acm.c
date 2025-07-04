@@ -284,7 +284,7 @@ VOID usbx_cdc_acm_read_thread_entry(ULONG thread_input)
 #endif /* UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE */
 
       /* Read the received data in blocking mode */
-      ux_device_class_cdc_acm_read(cdc_acm, (UCHAR *)UserRxBufferFS, 64,
+      ux_device_class_cdc_acm_read(cdc_acm, (UCHAR *)UserRxBufferFS, 512,
                                    &actual_length);
       if (actual_length != 0)
       {

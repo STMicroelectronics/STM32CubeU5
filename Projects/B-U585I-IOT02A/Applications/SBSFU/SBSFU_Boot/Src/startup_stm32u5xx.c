@@ -509,6 +509,9 @@ void Reset_Handler(void)
   __HAL_RCC_RTC_ENABLE();
 
   __HAL_RCC_RTCAPB_CLK_ENABLE();
+  /* Release reset of back-up domain in case it is set, to avoid blocking the device (system reset
+  does not release it) */
+  __HAL_RCC_BACKUPRESET_RELEASE();
    /* Get tamper status */
   if (READ_REG(TAMP->SR))
   {

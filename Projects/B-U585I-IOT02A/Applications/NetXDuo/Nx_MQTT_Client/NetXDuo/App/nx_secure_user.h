@@ -24,7 +24,7 @@
 /*  PORT SPECIFIC C INFORMATION                            RELEASE        */
 /*                                                                        */
 /*    nx_secure_user.h                                    PORTABLE C      */
-/*                                                           6.1.9        */
+/*                                                           6.2.0        */
 /*                                                                        */
 /*  AUTHOR                                                                */
 /*                                                                        */
@@ -53,6 +53,9 @@
 /*                                            initiated renegotiation for */
 /*                                            TLS server instances,       */
 /*                                            resulting in version 6.1.9  */
+/*  10-31-2022     Yanwu Cai                Modified comment(s), added    */
+/*                                            macro to custom secret size,*/
+/*                                            resulting in version 6.2.0  */
 /*                                                                        */
 /**************************************************************************/
 
@@ -214,9 +217,7 @@
 
 /* This option defines the maximum DTLS retransmit rate. The default value is
    60 * NX_IP_PERIODIC_RATE. */
-/*
-#define NX_SECURE_DTLS_MAXIMUM_RETRANSMIT_TIMEOUT         (60 * NX_IP_PERIODIC_RATE)
-*/
+#define NX_SECURE_DTLS_MAXIMUM_RETRANSMIT_TIMEOUT         60000
 
 /* This option defines how the retransmit timeout period changes between
    successive retries.   If this value is 0, the initial retransmit timeout
@@ -227,9 +228,7 @@
 */
 
 /* This option defines the initial DTLS retransmit rate. */
-/*
-#define NX_SECURE_DTLS_RETRANSMIT_TIMEOUT        NX_IP_PERIODIC_RATE
-*/
+#define NX_SECURE_DTLS_RETRANSMIT_TIMEOUT         1000
 
 /* Defined, this option enables AEAD ciphersuites. */
 /*

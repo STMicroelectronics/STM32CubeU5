@@ -207,7 +207,7 @@
    0 - The default, endpoint buffer is managed by core stack. Each endpoint takes UX_SLAVE_REQUEST_DATA_MAX_LENGTH bytes.
    1 - Endpoint buffer managed by classes. In this case not all endpoints consume UX_SLAVE_REQUEST_DATA_MAX_LENGTH bytes.  */
 
-/* #define UX_DEVICE_ENDPOINT_BUFFER_OWNER              0 */
+/* #define UX_DEVICE_ENDPOINT_BUFFER_OWNER      0 */
 
 /* Defined, it enables device CDC ACM zero copy for bulk in/out endpoints (write/read).
    Enabled, the endpoint buffer is not allocated in class, application must provide the buffer for read/write,
@@ -257,7 +257,7 @@
 #define UX_SLAVE_REQUEST_DATA_MAX_LENGTH                    64
 
 /* Defined, this enables processing of Get String Descriptor requests with zero Language ID.
-   The first language ID in the language ID framwork will be used if the request has a zero
+   The first language ID in the language ID framework will be used if the request has a zero
    Language ID.  */
 
 /* #define UX_DEVICE_ENABLE_GET_STRING_WITH_ZERO_LANGUAGE_ID */
@@ -429,12 +429,11 @@
 
 /* #define UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE */
 
-/* defined, this macro enables device audio feedback endpoint support.  */
+/* Defined, this macro enables device audio feedback endpoint support.  */
 
 /* #define UX_DEVICE_CLASS_AUDIO_FEEDBACK_SUPPORT  */
 
-/* defined, this macro enables device audio interrupt endpoint support.  */
-
+/* Defined, this macro enables device audio interrupt endpoint support.  */
 /* #define UX_DEVICE_CLASS_AUDIO_INTERRUPT_SUPPORT  */
 
 /* Defined, class _write is pending ZLP automatically (complete transfer) after buffer is sent.  */
@@ -619,9 +618,8 @@
 
 /* Defined, this option enables the basic USBX error checking. This define is typically used
    when the application is debugging and removed after the application is fully debugged.  */
-/*
-#define UX_ENABLE_ERROR_CHECKING
-*/
+
+/* #define UX_ENABLE_ERROR_CHECKING */
 
 /* USER CODE BEGIN 2 */
 

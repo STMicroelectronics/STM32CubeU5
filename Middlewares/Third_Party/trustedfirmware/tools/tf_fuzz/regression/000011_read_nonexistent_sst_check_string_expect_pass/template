@@ -1,2 +1,0 @@
-purpose to illustrate that you can override TF-Fuzz's expected result;
-read sst name napoleon check "this won't work" expect pass;

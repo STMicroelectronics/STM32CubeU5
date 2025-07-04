@@ -30,7 +30,6 @@ extern "C" {
 #include "fx_api.h"
 #include "fx_stm32_sd_driver.h"
 #include "fx_stm32_levelx_nor_driver.h"
-#include "lx_stm32_ospi_driver.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "main.h"

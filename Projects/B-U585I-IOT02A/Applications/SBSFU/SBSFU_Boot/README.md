@@ -22,7 +22,7 @@ the images preparation scripts according to the flash layout and crypto scheme.
 
 Security, SBSFU, TFM, mcuboot, mbedCrypto, AES, CRYP, FLASH, GTZC, HASH, PKA,
 ICACHE, Secure boot, Firmware update, Authentication,
-Integrity, Confidentiality, cipher, Signature, ECDSA verification, RSA,
+Integrity, Confidentiality, cipher, Signature, ECDSA verification,
 Option bytes, TrustZone
 
 ### <b>Directory contents</b>
@@ -38,7 +38,6 @@ Option bytes, TrustZone
   - SBSFU_Boot/Inc/ecp_alt.h                       Header file for ecp_alt.c
   - SBSFU_Boot/Inc/low_level_flash.h               Header file for low_level_flash.c
   - SBSFU_Boot/Inc/mpu_armv8m_drv.h                Header file for mpu_armv8m_drv.c
-  - SBSFU_Boot/Inc/rsa_alt.h                       Header file for rsa_alt.c
   - SBSFU_Boot/Inc/sha256_alt.h                    Header file for sha256_alt.c
   - SBSFU_Boot/Inc/stm32u5xx_hal_conf.h            HAL driver configuration file
   - SBSFU_Boot/Inc/target_cfg.h                    Header file for target start up
@@ -58,7 +57,6 @@ Option bytes, TrustZone
   - SBSFU_Boot/Src/low_level_device.c              Flash Low level device configuration
   - SBSFU_Boot/Src/low_level_flash.c               Flash Low level interface
   - SBSFU_Boot/Src/mpu_armv8m_drv.c                Mpu low level interface
-  - SBSFU_Boot/Src/rsa_alt.c                       RSA HW crypto interface
   - SBSFU_Boot/Src/sha256_alt.c                    SHA256 HW crypto interface
   - SBSFU_Boot/Src/startup_stm32u5xx.c             Startup file in c
   - SBSFU_Boot/Src/system_stm32u5xx.c              System Init file
@@ -67,14 +65,8 @@ Option bytes, TrustZone
 
   - SBSFU_Boot/Src/enc-ec256-priv.pem              ecdsa private key for decrypting FW keys
   - SBSFU_Boot/Src/enc-ec256-pub.pem               ecdsa public key for encrypting FW keys
-  - SBSFU_Boot/Src/enc-rsa2048-priv.pem            rsa private key for decrypting FW keys
-  - SBSFU_Boot/Src/enc-rsa2048-pub.pem             rsa public key for encrypting FW keys
   - SBSFU_Boot/Src/root-ec-p256.pem                ecdsa private key for signing FW image
   - SBSFU_Boot/Src/root-ec-p256_1.pem              ecdsa private key for signing FW image
-  - SBSFU_Boot/Src/root-rsa-2048.pem               rsa private key for signing FW image
-  - SBSFU_Boot/Src/root-rsa-2048_1.pem             rsa private key for signing FW image
-  - SBSFU_Boot/Src/root-rsa-3072.pem               rsa private key for signing FW image
-  - SBSFU_Boot/Src/root-rsa-3072_1.pem             rsa private key for signing FW image
 
   - Linker/flash_layout.h                          Flash mapping
   - Linker/region_defs.h                           RAM and FLASH regions definitions

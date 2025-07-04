@@ -637,7 +637,21 @@
         </option>
         <option>
           <name>AUserIncludes</name>
-          <state></state>
+          <state>$PROJ_DIR$/../NetXDuo/App</state>
+          <state>$PROJ_DIR$/../Core/Inc</state>
+          <state>$PROJ_DIR$/../AZURE_RTOS/App</state>
+          <state>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc</state>
+          <state>$PROJ_DIR$/../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy</state>
+          <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/addons/dhcp</state>
+          <state>$PROJ_DIR$/../../../../../../Middlewares/ST/threadx/common/inc</state>
+          <state>$PROJ_DIR$/../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include</state>
+          <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/inc</state>
+          <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/ports/cortex_m33/iar/inc</state>
+          <state>$PROJ_DIR$/../../../../../../Middlewares/ST/threadx/ports/cortex_m33/iar/inc</state>
+          <state>$PROJ_DIR$/../../../../../../Drivers/CMSIS/Include</state>
+          <state>$PROJ_DIR$/../../../../../../Drivers/BSP/Components/mx_wifi</state>
+          <state>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/drivers/wifi/mxchip</state>
+          <state>$PROJ_DIR$/../NetXDuo/Target</state>
         </option>
         <option>
           <name>AExtraOptionsCheckV2</name>
@@ -1181,6 +1195,12 @@
     <group>
       <name>STM32U5xx_HAL_Driver</name>
       <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim_ex.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_cortex.c</name>
       </file>
       <file>
@@ -1233,12 +1253,6 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_spi_ex.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_tim_ex.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\..\..\..\Drivers\STM32U5xx_HAL_Driver\Src\stm32u5xx_hal_uart.c</name>
@@ -2464,6 +2478,24 @@
           <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\netxduo\common\src\nxe_udp_socket_unbind.c</name>
         </file>
         <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nxe_udp_socket_vlan_priority_set.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nxe_tcp_socket_vlan_priority_set.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nxe_packet_vlan_priority_set.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_udp_socket_vlan_priority_set.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_tcp_socket_vlan_priority_set.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_packet_vlan_priority_set.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\netxduo\common\src\nxe_udp_source_extract.c</name>
         </file>
         <file>
@@ -2705,6 +2737,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\netxduo\common\src\nxde_ipv6_stateless_address_autoconfig_enable.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$/../../../../../../Middlewares/ST/netxduo/common/src/nx_link.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\..\..\..\Middlewares\ST\netxduo\common\src\nxd_nd_cache_entry_delete.c</name>

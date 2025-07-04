@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>STM32U585xx,USE_HAL_DRIVER,NDEBUG,MCUBOOT_TARGET_CONFIG=&lt;flash_layout.h&gt;,MBEDTLS_CONFIG_FILE=&lt;config-boot.h&gt;,MCUBOOT_DOUBLE_SIGN_VERIF,FLOW_CONTROL,BL2,DEFAULT_UART_BAUDRATE=115200,TFM_DEV_MODE,BOOT_MAX_ALIGN=16</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/BSP/B-U585I-IOT02A;../../../../../../Drivers/BSP/Components/Common;../../Linker;../../../../../../Middlewares/Third_Party/mbed-crypto/include;../../../../../../Middlewares/Third_Party/mbed-crypto/library;../../../../../../Middlewares/Third_Party/mcuboot;../../../../../../Middlewares/Third_Party/mcuboot/platform/include;../../../../../../Middlewares/Third_Party/mcuboot/platform/ext/common;../../../../../../Middlewares/Third_Party/mcuboot/platform/ext/driver;../../../../../../Middlewares/Third_Party/mcuboot/bl2/include;../../../../../../Middlewares/Third_Party/mcuboot/bl2/ext/mcuboot;../../../../../../Middlewares/Third_Party/mcuboot/bl2/ext/mcuboot/include;../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/include;../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/src;../../../../../../Middlewares/Third_Party/mcuboot/ext/tinycrypt/lib/include</IncludePath>
+              <IncludePath>../Inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/BSP/B-U585I-IOT02A;../../../../../../Drivers/BSP/Components/Common;../../Linker;../../../../../../Middlewares/Third_Party/mbed-crypto/include;../../../../../../Middlewares/Third_Party/mbed-crypto/include/mbedtls;../../../../../../Middlewares/Third_Party/mbed-crypto/library;../../../../../../Middlewares/Third_Party/mcuboot;../../../../../../Middlewares/Third_Party/mcuboot/platform/include;../../../../../../Middlewares/Third_Party/mcuboot/platform/ext/common;../../../../../../Middlewares/Third_Party/mcuboot/platform/ext/driver;../../../../../../Middlewares/Third_Party/mcuboot/bl2/include;../../../../../../Middlewares/Third_Party/mcuboot/bl2/ext/mcuboot;../../../../../../Middlewares/Third_Party/mcuboot/bl2/ext/mcuboot/include;../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/include;../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/src;../../../../../../Middlewares/Third_Party/mcuboot/ext/tinycrypt/lib/include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -458,11 +458,6 @@
               <FileName>mpu_armv8m_drv.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/mpu_armv8m_drv.c</FilePath>
-            </File>
-            <File>
-              <FileName>rsa_alt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Src/rsa_alt.c</FilePath>
             </File>
             <File>
               <FileName>sha256_alt.c</FileName>
@@ -645,6 +640,11 @@
               <FilePath>../../../../../../Middlewares/Third_Party/mbed-crypto/library/bignum.c</FilePath>
             </File>
             <File>
+              <FileName>bignum_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/Third_Party/mbed-crypto/library/bignum_core.c</FilePath>
+            </File>
+            <File>
               <FileName>constant_time.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/Third_Party/mbed-crypto/library/constant_time.c</FilePath>
@@ -653,6 +653,11 @@
               <FileName>ctr_drbg.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/Third_Party/mbed-crypto/library/ctr_drbg.c</FilePath>
+            </File>
+            <File>
+              <FileName>hmac_drbg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/Third_Party/mbed-crypto/library/hmac_drbg.c</FilePath>
             </File>
             <File>
               <FileName>ecdh.c</FileName>
@@ -703,16 +708,6 @@
               <FileName>platform_util.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/Third_Party/mbed-crypto/library/platform_util.c</FilePath>
-            </File>
-            <File>
-              <FileName>rsa.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/Third_Party/mbed-crypto/library/rsa.c</FilePath>
-            </File>
-            <File>
-              <FileName>rsa_internal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/Third_Party/mbed-crypto/library/rsa_internal.c</FilePath>
             </File>
             <File>
               <FileName>sha256.c</FileName>
@@ -768,11 +763,6 @@
               <FileName>image_ec256.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/src/image_ec256.c</FilePath>
-            </File>
-            <File>
-              <FileName>image_rsa.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../../../../../../Middlewares/Third_Party/mcuboot/boot/bootutil/src/image_rsa.c</FilePath>
             </File>
             <File>
               <FileName>image_validate.c</FileName>

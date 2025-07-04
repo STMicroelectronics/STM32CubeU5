@@ -139,7 +139,7 @@
 
 /* Defined, this value represents minimal allocated memory alignment in number of bytes.
    The default is UX_ALIGN_8 (0x07) to align allocated memory to 8 bytes.  */
-#define UX_ALIGN_MIN                         UX_ALIGN_16
+/* #define UX_ALIGN_MIN                      UX_ALIGN_8 */
 
 /* Defined, this value represents how many ticks per seconds for a specific hardware platform.
    The default is 1000 indicating 1 tick per millisecond.  */
@@ -159,7 +159,6 @@
    particular implementation of USBX needs the hub class, the printer class, and the storage
    class, then the UX_MAX_CLASSES value can be set to 3 regardless of the number of devices
    that belong to these classes.  */
-
 #define UX_MAX_CLASSES       6
 
 #define UX_MAX_CLASS_DRIVER       7
@@ -167,7 +166,7 @@
 /* Defined, this value is the maximum number of classes in the device stack that can be loaded by
    USBX.  */
 
-#define UX_MAX_SLAVE_CLASS_DRIVER    2
+#define UX_MAX_SLAVE_CLASS_DRIVER    1
 
 /* Defined, this value represents the number of different host controllers available in the system.
    For USB 1.1 support, this value will usually be 1. For USB 2.0 support, this value can be more
@@ -207,7 +206,7 @@
    0 - The default, endpoint buffer is managed by core stack. Each endpoint takes UX_SLAVE_REQUEST_DATA_MAX_LENGTH bytes.
    1 - Endpoint buffer managed by classes. In this case not all endpoints consume UX_SLAVE_REQUEST_DATA_MAX_LENGTH bytes.  */
 
-/* #define UX_DEVICE_ENDPOINT_BUFFER_OWNER              0 */
+/* #define UX_DEVICE_ENDPOINT_BUFFER_OWNER      0 */
 
 /* Defined, it enables device CDC ACM zero copy for bulk in/out endpoints (write/read).
    Enabled, the endpoint buffer is not allocated in class, application must provide the buffer for read/write,
@@ -251,13 +250,13 @@
 
 /* Defined, this value represents the maximum number of bytes that can be received or transmitted
    on any endpoint. This value cannot be less than the maximum packet size of any endpoint. The default
-   is 4096 bytes but can be reduced in memory constrained environments. For cd-rom support in the storage
+   is 2048 bytes but can be reduced in memory constrained environments. For cd-rom support in the storage
    class, this value cannot be less than 2048.  */
 
 #define UX_SLAVE_REQUEST_DATA_MAX_LENGTH                    512
 
 /* Defined, this enables processing of Get String Descriptor requests with zero Language ID.
-   The first language ID in the language ID framwork will be used if the request has a zero
+   The first language ID in the language ID framework will be used if the request has a zero
    Language ID.  */
 
 /* #define UX_DEVICE_ENABLE_GET_STRING_WITH_ZERO_LANGUAGE_ID */
@@ -429,12 +428,11 @@
 
 /* #define UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE */
 
-/* defined, this macro enables device audio feedback endpoint support.  */
+/* Defined, this macro enables device audio feedback endpoint support.  */
 
 /* #define UX_DEVICE_CLASS_AUDIO_FEEDBACK_SUPPORT  */
 
-/* defined, this macro enables device audio interrupt endpoint support.  */
-
+/* Defined, this macro enables device audio interrupt endpoint support.  */
 /* #define UX_DEVICE_CLASS_AUDIO_INTERRUPT_SUPPORT  */
 
 /* Defined, class _write is pending ZLP automatically (complete transfer) after buffer is sent.  */
@@ -619,13 +617,11 @@
 
 /* Defined, this option enables the basic USBX error checking. This define is typically used
    when the application is debugging and removed after the application is fully debugged.  */
-/*
-#define UX_ENABLE_ERROR_CHECKING
-*/
+
+/* #define UX_ENABLE_ERROR_CHECKING */
 
 /* USER CODE BEGIN 2 */
 
 /* USER CODE END 2 */
 
 #endif
-

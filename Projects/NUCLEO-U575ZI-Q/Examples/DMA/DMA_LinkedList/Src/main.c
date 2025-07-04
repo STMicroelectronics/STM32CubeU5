@@ -81,6 +81,7 @@ __IO uint32_t TransferCompleteDetected = 0U, TransferErrorDetected = 0U;
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
   /* STM32U5xx HAL library initialization:
        - Configure the Flash prefetch
@@ -99,11 +100,11 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
   /* Configure the System Power */
   SystemPower_Config();
+
+  /* Configure the system clock */
+  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
   /* Initialize LED1 and LED3 */

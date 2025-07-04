@@ -84,6 +84,7 @@ USB_0483&amp;PID_DF11&amp;MI_00</li>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
 <p>Only Dfuse is supported. CubeProgrammer is not yet supported. The remote wakeup feature is not yet implemented (used to bring the USB suspended bus back to the active condition).</p>
 <h3 id="notes"><b>Notes</b></h3>
+<p>None</p>
 <h4 id="threadx-usage-hints"><b>ThreadX usage hints</b></h4>
 <ul>
 <li>ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.</li>
@@ -94,7 +95,7 @@ always possible to reconfigure it, by updating the
 should be reflected in “tx_initialize_low_level.S” file too.</li>
 <li>ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.</li>
 <li>ThreadX offers the “tx_application_define()” function, that is automatically called by the tx_kernel_enter() API. It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools…) but it should not in any way contain a system API call (HAL or BSP).</li>
-<li>Using dynamic memory allocation requires to apply some changes to the linker file. ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function, using the “first_unused_memory” argument. This require changes in the linker files to expose this memory location.
+<li>Using dynamic memory allocation requires to apply some changes to the linker file. ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function, using the “first_unused_memory” argument. This requires changes in the linker files to expose this memory location.
 <ul>
 <li>For EWARM add the following section into the .icf file:</li>
 </ul>
@@ -125,6 +126,7 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 </ul></li>
 </ul>
 <h4 id="usbx-usage-hints"><b>USBX usage hints</b></h4>
+<p>None</p>
 <h3 id="keywords"><b>Keywords</b></h3>
 <p>RTOS, ThreadX, USBXDevice, USB_OTG, Full Speed, DFU, USBPD, Firmware upgrade</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>

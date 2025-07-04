@@ -72,21 +72,33 @@ configuration.</p>
 <h4 id="known-limitations"><b>Known limitations</b></h4>
 <p>None</p>
 <h4 id="note"><b>Note</b></h4>
-<p>The following sequence is needed to disable TrustZone: - Boot from
-user Flash memory: 1. Make sure that secure and non-secure applications
-are well loaded and executed (jump done on non-secure application). 2.
-If not yet done, set RDP to level 1 through STM32CubeProgrammer. Then
-only Hotplug connection is possible during non-secure application
-execution. 3. Use a power supply different from ST-LINK in order to be
-able to connect to the target. 4. Uncheck the TZEN box and set RDP to
-level 0 (option byte value 0xAA), then click on Apply. - Boot from RSS:
-1. Make sure to apply a high level on BOOT0 pin (make sure that nSWBOOT0
-Option Byte is checked). 2. If not yet done, set RDP to level 1 through
-STM32CubeProgrammer. Then only Hotplug connection is possible during
-non-secure application execution. 3. Use a power supply different from
-ST-LINK in order to be able to connect to the target. 4. Uncheck the
-TZEN box and set RDP to level 0 (option byte value 0xAA), then click on
-Apply.</p>
+<p>The following sequence is needed to disable TrustZone:</p>
+<ul>
+<li>Boot from user Flash memory:
+<ol type="1">
+<li>Make sure that secure and non-secure applications are well loaded
+and executed (jump done on non-secure application).</li>
+<li>If not yet done, set RDP to level 1 through STM32CubeProgrammer.
+Then only Hotplug connection is possible during non-secure application
+execution.</li>
+<li>Use a power supply different from ST-LINK in order to be able to
+connect to the target.</li>
+<li>Uncheck the TZEN box and set RDP to level 0 (option byte value
+0xAA), then click on Apply.</li>
+</ol></li>
+<li>Boot from RSS:
+<ol type="1">
+<li>Make sure to apply a high level on BOOT0 pin (make sure that
+nSWBOOT0 Option Byte is checked).</li>
+<li>If not yet done, set RDP to level 1 through STM32CubeProgrammer.
+Then only Hotplug connection is possible during non-secure application
+execution.</li>
+<li>Use a power supply different from ST-LINK in order to be able to
+connect to the target.</li>
+<li>Uncheck the TZEN box and set RDP to level 0 (option byte value
+0xAA), then click on Apply.</li>
+</ol></li>
+</ul>
 <p>Please refer to AN5347 for more details.</p>
 <h4 id="threadx-usage-hints"><b>ThreadX usage hints</b></h4>
 <ul>
@@ -133,8 +145,8 @@ or modify the line below in &quot;tx_initialize_low_level.S to match the memory 
    } &gt;RAM_D1 AT&gt; RAM_D1</code></pre>
 <pre><code>The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
 In the example above the ThreadX heap size is set to 64KBytes.
-The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.  
-Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).  
+The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
+Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
 Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code></pre>
 <ul>
 <li>The “tx_initialize_low_level.S” should be also modified to enable
@@ -146,10 +158,11 @@ the “USE_DYNAMIC_MEMORY_ALLOCATION” flag.</li>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software
 environment</b></h3>
 <ul>
-<li><p>This application runs on STM32U5G9xx devices with security enabled
-(TZEN=1).</p></li>
-<li><p>This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision: MB1918-B01 and can be easily tailored to any other
-supported device and development board.</p></li>
+<li><p>This application runs on STM32U5G9xx devices with security
+enabled (TZEN=1).</p></li>
+<li><p>This application has been tested with STMicroelectronics
+STM32U5G9J-DK2 boards revision: MB1918-B01 and can be easily tailored to
+any other supported device and development board.</p></li>
 <li><p>User Option Bytes requirement (with STM32CubeProgrammer tool)</p>
 <ul>
 <li>TZEN = 1 System with TrustZone-M enabled</li>
@@ -197,8 +210,8 @@ flash memory)</li>
 <p>STM32CubeIDE</p>
 <ul>
 <li>Open STM32CubeIDE</li>
-<li>File &gt; Import. Point to the STM32CubeIDE folder of the application
-project. Click Finish.</li>
+<li>File &gt; Import. Point to the STM32CubeIDE folder of the
+application project. Click Finish.</li>
 <li>Build configuration: Set the same active build configuration: Debug
 (default) or Release for both projects xxxxx_S &amp; xxxxx_NS</li>
 <li>Select and build the xxxxx_NS project, this will automatically

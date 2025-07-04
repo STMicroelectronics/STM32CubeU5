@@ -62,6 +62,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -76,46 +77,46 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief RAMCFG MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hramcfg: RAMCFG handle pointer
-* @retval None
-*/
+  * @brief RAMCFG MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hramcfg: RAMCFG handle pointer
+  * @retval None
+  */
 void HAL_RAMCFG_MspInit(RAMCFG_HandleTypeDef* hramcfg)
 {
-  /* USER CODE BEGIN RAMCFG_MspInit 0 */
+    /* USER CODE BEGIN RAMCFG_MspInit 0 */
 
-  /* USER CODE END RAMCFG_MspInit 0 */
+    /* USER CODE END RAMCFG_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_RAMCFG_CLK_ENABLE();
     /* RAMCFG interrupt Init */
     HAL_NVIC_SetPriority(RAMCFG_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(RAMCFG_IRQn);
-  /* USER CODE BEGIN RAMCFG_MspInit 1 */
+    /* USER CODE BEGIN RAMCFG_MspInit 1 */
 
-  /* USER CODE END RAMCFG_MspInit 1 */
+    /* USER CODE END RAMCFG_MspInit 1 */
 
 }
 
 /**
-* @brief RAMCFG MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hramcfg: RAMCFG handle pointer
-* @retval None
-*/
+  * @brief RAMCFG MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hramcfg: RAMCFG handle pointer
+  * @retval None
+  */
 void HAL_RAMCFG_MspDeInit(RAMCFG_HandleTypeDef* hramcfg)
 {
-  /* USER CODE BEGIN RAMCFG_MspDeInit 0 */
+    /* USER CODE BEGIN RAMCFG_MspDeInit 0 */
 
-  /* USER CODE END RAMCFG_MspDeInit 0 */
+    /* USER CODE END RAMCFG_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_RAMCFG_CLK_DISABLE();
 
     /* RAMCFG interrupt DeInit */
     HAL_NVIC_DisableIRQ(RAMCFG_IRQn);
-  /* USER CODE BEGIN RAMCFG_MspDeInit 1 */
+    /* USER CODE BEGIN RAMCFG_MspDeInit 1 */
 
-  /* USER CODE END RAMCFG_MspDeInit 1 */
+    /* USER CODE END RAMCFG_MspDeInit 1 */
 
 }
 

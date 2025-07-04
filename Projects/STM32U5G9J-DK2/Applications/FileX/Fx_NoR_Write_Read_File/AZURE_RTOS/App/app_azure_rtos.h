@@ -67,4 +67,3 @@ extern "C" {
 }
 #endif
 #endif /* APP_AZURE_RTOS_H */
-

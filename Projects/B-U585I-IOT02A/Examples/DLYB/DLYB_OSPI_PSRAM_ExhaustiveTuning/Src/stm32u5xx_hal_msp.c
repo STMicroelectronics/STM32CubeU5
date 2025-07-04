@@ -54,6 +54,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
   /* USER CODE END MspInit 0 */
 
@@ -66,19 +67,19 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief OSPI MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hospi: OSPI handle pointer
-* @retval None
-*/
+  * @brief OSPI MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hospi: OSPI handle pointer
+  * @retval None
+  */
 void HAL_OSPI_MspInit(OSPI_HandleTypeDef* hospi)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
   if(hospi->Instance==OCTOSPI1)
   {
-  /* USER CODE BEGIN OCTOSPI1_MspInit 0 */
-  /* USER CODE END OCTOSPI1_MspInit 0 */
+    /* USER CODE BEGIN OCTOSPI1_MspInit 0 */
+    /* USER CODE END OCTOSPI1_MspInit 0 */
 
   /** Initializes the peripherals clock
   */
@@ -165,24 +166,25 @@ void HAL_OSPI_MspInit(OSPI_HandleTypeDef* hospi)
     /* OCTOSPI1 interrupt Init */
     HAL_NVIC_SetPriority(OCTOSPI1_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(OCTOSPI1_IRQn);
-  /* USER CODE BEGIN OCTOSPI1_MspInit 1 */
-  /* USER CODE END OCTOSPI1_MspInit 1 */
+    /* USER CODE BEGIN OCTOSPI1_MspInit 1 */
+    /* USER CODE END OCTOSPI1_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief OSPI MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hospi: OSPI handle pointer
-* @retval None
-*/
+  * @brief OSPI MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hospi: OSPI handle pointer
+  * @retval None
+  */
 void HAL_OSPI_MspDeInit(OSPI_HandleTypeDef* hospi)
 {
   if(hospi->Instance==OCTOSPI1)
   {
-  /* USER CODE BEGIN OCTOSPI1_MspDeInit 0 */
-  /* USER CODE END OCTOSPI1_MspDeInit 0 */
+    /* USER CODE BEGIN OCTOSPI1_MspDeInit 0 */
+    /* USER CODE END OCTOSPI1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_OSPIM_CLK_DISABLE();
     __HAL_RCC_OSPI1_CLK_DISABLE();
@@ -216,8 +218,8 @@ void HAL_OSPI_MspDeInit(OSPI_HandleTypeDef* hospi)
 
     /* OCTOSPI1 interrupt DeInit */
     HAL_NVIC_DisableIRQ(OCTOSPI1_IRQn);
-  /* USER CODE BEGIN OCTOSPI1_MspDeInit 1 */
-  /* USER CODE END OCTOSPI1_MspDeInit 1 */
+    /* USER CODE BEGIN OCTOSPI1_MspDeInit 1 */
+    /* USER CODE END OCTOSPI1_MspDeInit 1 */
   }
 
 }

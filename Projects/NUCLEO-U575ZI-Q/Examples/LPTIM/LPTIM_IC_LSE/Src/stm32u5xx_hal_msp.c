@@ -63,6 +63,7 @@ extern DMA_HandleTypeDef handle_LPDMA1_Channel0;
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -77,18 +78,18 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief LPTIM MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hlptim: LPTIM handle pointer
-* @retval None
-*/
+  * @brief LPTIM MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hlptim: LPTIM handle pointer
+  * @retval None
+  */
 void HAL_LPTIM_MspInit(LPTIM_HandleTypeDef* hlptim)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
   if(hlptim->Instance==LPTIM1)
   {
-  /* USER CODE BEGIN LPTIM1_MspInit 0 */
+    /* USER CODE BEGIN LPTIM1_MspInit 0 */
   /* Enable LPTIM clock */
   __HAL_RCC_LPTIM1_CLK_ENABLE();
 
@@ -97,7 +98,7 @@ void HAL_LPTIM_MspInit(LPTIM_HandleTypeDef* hlptim)
 
   /* Release the LPTIM Periheral Clock Reset */
   __HAL_RCC_LPTIM1_RELEASE_RESET();
-  /* USER CODE END LPTIM1_MspInit 0 */
+    /* USER CODE END LPTIM1_MspInit 0 */
 
   /** Initializes the peripherals clock
   */
@@ -147,26 +148,27 @@ void HAL_LPTIM_MspInit(LPTIM_HandleTypeDef* hlptim)
       Error_Handler();
     }
 
-  /* USER CODE BEGIN LPTIM1_MspInit 1 */
+    /* USER CODE BEGIN LPTIM1_MspInit 1 */
 
-  /* USER CODE END LPTIM1_MspInit 1 */
+    /* USER CODE END LPTIM1_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief LPTIM MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hlptim: LPTIM handle pointer
-* @retval None
-*/
+  * @brief LPTIM MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hlptim: LPTIM handle pointer
+  * @retval None
+  */
 void HAL_LPTIM_MspDeInit(LPTIM_HandleTypeDef* hlptim)
 {
   if(hlptim->Instance==LPTIM1)
   {
-  /* USER CODE BEGIN LPTIM1_MspDeInit 0 */
+    /* USER CODE BEGIN LPTIM1_MspDeInit 0 */
 
-  /* USER CODE END LPTIM1_MspDeInit 0 */
+    /* USER CODE END LPTIM1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_LPTIM1_CLK_DISABLE();
 
@@ -177,9 +179,9 @@ void HAL_LPTIM_MspDeInit(LPTIM_HandleTypeDef* hlptim)
 
     /* LPTIM1 DMA DeInit */
     HAL_DMA_DeInit(hlptim->hdma[LPTIM_DMA_ID_CC1]);
-  /* USER CODE BEGIN LPTIM1_MspDeInit 1 */
+    /* USER CODE BEGIN LPTIM1_MspDeInit 1 */
 
-  /* USER CODE END LPTIM1_MspDeInit 1 */
+    /* USER CODE END LPTIM1_MspDeInit 1 */
   }
 
 }

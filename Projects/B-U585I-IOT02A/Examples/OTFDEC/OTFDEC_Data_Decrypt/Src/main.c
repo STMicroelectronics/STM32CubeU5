@@ -114,6 +114,7 @@ static uint32_t OSPI_Erase(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
   /* STM32U5xx HAL library initialization:
        - Configure the Flash prefetch
@@ -133,11 +134,11 @@ int main(void)
   __IO uint32_t *mem_addr_32;
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
   /* Configure the System Power */
   SystemPower_Config();
+
+  /* Configure the system clock */
+  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
   /* Configure LED6, LED7 */
@@ -525,16 +526,16 @@ static void MX_OTFDEC2_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOI_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOF_CLK_ENABLE();
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -544,8 +545,8 @@ static void MX_GPIO_Init(void)
 
 static uint32_t OSPI_Write(uint32_t * pBuffer, uint32_t FlashAddress, uint32_t Size)
 {
-  OSPI_RegularCmdTypeDef  sCommand;
-  OSPI_AutoPollingTypeDef sConfig;
+  OSPI_RegularCmdTypeDef  sCommand = {0};
+  OSPI_AutoPollingTypeDef sConfig  = {0};
 
   if (Size == 0)
   {
@@ -661,8 +662,8 @@ static uint32_t OSPI_Write(uint32_t * pBuffer, uint32_t FlashAddress, uint32_t S
 static uint32_t OSPI_MemoryMap(void)
 {
 
-  OSPI_RegularCmdTypeDef   sCommand;
-  OSPI_MemoryMappedTypeDef sMemMappedCfg;
+  OSPI_RegularCmdTypeDef   sCommand      = {0};
+  OSPI_MemoryMappedTypeDef sMemMappedCfg = {0};
 
   /* Initialize the command */
   sCommand.OperationType         = HAL_OSPI_OPTYPE_COMMON_CFG;
@@ -728,7 +729,7 @@ static uint32_t OSPI_MemoryMap(void)
 */
 static void OSPI_ResetMemory(void)
 {
-  OSPI_RegularCmdTypeDef  sCommand;
+  OSPI_RegularCmdTypeDef  sCommand = {0};
 
   /* Initialize the reset enable command */
   sCommand.OperationType         = HAL_OSPI_OPTYPE_COMMON_CFG;
@@ -764,8 +765,8 @@ static void OSPI_ResetMemory(void)
 
 static uint32_t OSPI_Erase(void)
 {
-  OSPI_RegularCmdTypeDef  sCommand;
-  OSPI_AutoPollingTypeDef sConfig;
+  OSPI_RegularCmdTypeDef  sCommand = {0};
+  OSPI_AutoPollingTypeDef sConfig  = {0};
 
   sConfig.MatchMode              = HAL_OSPI_MATCH_MODE_AND;
   sConfig.AutomaticStop          = HAL_OSPI_AUTOMATIC_STOP_ENABLE;

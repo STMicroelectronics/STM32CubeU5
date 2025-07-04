@@ -62,6 +62,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -76,23 +77,23 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief COMP MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hcomp: COMP handle pointer
-* @retval None
-*/
+  * @brief COMP MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hcomp: COMP handle pointer
+  * @retval None
+  */
 void HAL_COMP_MspInit(COMP_HandleTypeDef* hcomp)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   if(hcomp->Instance==COMP1)
   {
-  /* USER CODE BEGIN COMP1_MspInit 0 */
+    /* USER CODE BEGIN COMP1_MspInit 0 */
   /* Enable COMP clock */
   __HAL_RCC_COMP12_CLKAM_ENABLE();
   __HAL_RCC_COMP_CLK_SLEEP_ENABLE();
   __HAL_RCC_SYSCFG_CLK_ENABLE();
 
-  /* USER CODE END COMP1_MspInit 0 */
+    /* USER CODE END COMP1_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_COMP_CLK_ENABLE();
 
@@ -108,26 +109,27 @@ void HAL_COMP_MspInit(COMP_HandleTypeDef* hcomp)
     /* COMP1 interrupt Init */
     HAL_NVIC_SetPriority(COMP_IRQn, 3, 0);
     HAL_NVIC_EnableIRQ(COMP_IRQn);
-  /* USER CODE BEGIN COMP1_MspInit 1 */
+    /* USER CODE BEGIN COMP1_MspInit 1 */
 
-  /* USER CODE END COMP1_MspInit 1 */
+    /* USER CODE END COMP1_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief COMP MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hcomp: COMP handle pointer
-* @retval None
-*/
+  * @brief COMP MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hcomp: COMP handle pointer
+  * @retval None
+  */
 void HAL_COMP_MspDeInit(COMP_HandleTypeDef* hcomp)
 {
   if(hcomp->Instance==COMP1)
   {
-  /* USER CODE BEGIN COMP1_MspDeInit 0 */
+    /* USER CODE BEGIN COMP1_MspDeInit 0 */
 
-  /* USER CODE END COMP1_MspDeInit 0 */
+    /* USER CODE END COMP1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_COMP_CLK_DISABLE();
 
@@ -138,9 +140,9 @@ void HAL_COMP_MspDeInit(COMP_HandleTypeDef* hcomp)
 
     /* COMP1 interrupt DeInit */
     HAL_NVIC_DisableIRQ(COMP_IRQn);
-  /* USER CODE BEGIN COMP1_MspDeInit 1 */
+    /* USER CODE BEGIN COMP1_MspDeInit 1 */
 
-  /* USER CODE END COMP1_MspDeInit 1 */
+    /* USER CODE END COMP1_MspDeInit 1 */
   }
 
 }

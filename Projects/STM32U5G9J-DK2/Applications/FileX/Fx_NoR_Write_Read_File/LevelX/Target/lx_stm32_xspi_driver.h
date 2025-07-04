@@ -18,10 +18,11 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "lx_api.h"
-
-/* USER CODE BEGIN Includes */
 #include "stm32u5xx_hal.h"
 #include "mx66uw1g45g.h"
+
+/* USER CODE BEGIN Includes */
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -29,13 +30,11 @@ extern "C" {
 
 /* USER CODE END ET */
 
-/* The following semaphore is being to notify about RX/TX completion.
-It needs to be released in the transfer callbacks */
+/* The following semaphore is being to notify about RX/TX completion. It needs to be released in the transfer callbacks */
 extern TX_SEMAPHORE xspi_rx_semaphore;
 extern TX_SEMAPHORE xspi_tx_semaphore;
 
 /* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
 
 /* the XSPI instance, default value set to 0 */
 #define LX_STM32_XSPI_INSTANCE                           0
@@ -51,15 +50,20 @@ extern TX_SEMAPHORE xspi_tx_semaphore;
  */
 #define LX_STM32_XSPI_INIT                               0
 
-/* allow the driver to fully erase the OctoSPI chip. This should be used carefully.
+/* allow the driver to fully erase the XSPI chip. This should be used carefully.
  * the call is blocking and takes a while. by default it is set to 0.
  */
 #define LX_STM32_XSPI_ERASE                              0
+
+/* USER CODE BEGIN EC */
 
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+
+/* USER CODE END EM */
+
 #define LX_STM32_XSPI_CURRENT_TIME                              tx_time_get
 
 /* Macro called after initializing the XSPI driver
@@ -141,17 +145,17 @@ extern TX_SEMAPHORE xspi_tx_semaphore;
 
 #define LX_STM32_XSPI_POST_WRITE_TRANSFER(__status__)
 
-/* USER CODE END LX_STM32_OSPI_POST_WRITE_TRANSFER */
+/* USER CODE END LX_STM32_XSPI_POST_WRITE_TRANSFER */
 
 /* Macro for write error handling */
 
+/* USER CODE BEGIN LX_STM32_XSPI_WRITE_TRANSFER_ERROR */
+
 #define LX_STM32_XSPI_WRITE_TRANSFER_ERROR(__status__)
 
-/* USER CODE END EM */
+/* USER CODE END LX_STM32_XSPI_WRITE_TRANSFER_ERROR */
 
 /* Exported functions prototypes ---------------------------------------------*/
-
-/* USER CODE BEGIN EFP */
 INT lx_stm32_xspi_lowlevel_init(UINT instance);
 INT lx_stm32_xspi_lowlevel_deinit(UINT instance);
 
@@ -167,10 +171,15 @@ INT lx_stm32_xspi_is_block_erased(UINT instance, ULONG block);
 UINT lx_xspi_driver_system_error(UINT error_code);
 
 UINT lx_stm32_xspi_initialize(LX_NOR_FLASH *nor_flash);
+
+/* USER CODE BEGIN EFP */
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
 
 #define LX_STM32_XSPI_DUMMY_CYCLES_READ_OCTAL     20
 #define LX_STM32_XSPI_DUMMY_CYCLES_CR_CFG         MX66UW1G45G_CR2_DC_6_CYCLES
@@ -210,13 +219,11 @@ UINT lx_stm32_xspi_initialize(LX_NOR_FLASH *nor_flash);
 #define LX_STM32_XSPI_CR2_SOPI                    MX66UW1G45G_CR2_SOPI
 #define LX_STM32_XSPI_CR2_DOPI                    MX66UW1G45G_CR2_DOPI
 
-/* USER CODE END PD */
-
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
+
 #ifdef __cplusplus
 }
 #endif
 #endif /* LX_STM32_XSPI_DRIVER_H */
-

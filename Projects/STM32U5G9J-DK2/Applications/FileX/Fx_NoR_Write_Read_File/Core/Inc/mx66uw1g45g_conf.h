@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    mx66uw1g45g_conf.h
   * @author  MCD Application Team
-  * @brief   MX66UW1G45G OctoSPI memory configuration file.
+  * @brief   MX66UW1G45G XSPI memory configuration file.
   ******************************************************************************
   * @attention
   *

@@ -358,7 +358,7 @@
               <MiscControls></MiscControls>
               <Define>TX_SINGLE_MODE_NON_SECURE=1</Define>
               <Undefine></Undefine>
-              <IncludePath></IncludePath>
+              <IncludePath>../../../../../../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Aads>
           <LDads>

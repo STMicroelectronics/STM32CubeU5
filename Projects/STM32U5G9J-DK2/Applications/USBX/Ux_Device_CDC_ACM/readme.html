@@ -38,7 +38,8 @@
 <p><b>Notes</b></p>
 <ul>
 <li><p>Receiving data over UART is handled by interrupt while transmitting is handled by DMA allowing hence the application to receive data at the same time it is transmitting another data (full- duplex feature). The support of the VCP interface is managed through the ST Virtual COM Port driver available for download from www.st.com.</p></li>
-<li><p>CDC ACM non-blocking transmission by default disabled, to enable non-blocking transmission UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE must be disabled and 2048 additional in USBX byte pool and USBX_MEMORY_SIZE should be added.</p></li>
+<li><p>CDC ACM non-blocking transmission is disabled by default. To enable non-blocking transmission, the UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE must be disabled.</p></li>
+<li><p>Additionally, 2048 bytes should be added to the USBX byte pool to accommodate the non-blocking transmission buffers. This can be achieved by increasing the USBX_DEVICE_MEMORY_STACK_SIZE and UX_DEVICE_APP_MEM_POOL_SIZE by 2048 bytes each.</p></li>
 <li><p>The user has to check the list of the COM ports in Device Manager to find out the COM port number that have been assigned (by OS) to the VCP interface.</p></li>
 </ul>
 <h4 id="expected-success-behavior"><b>Expected success behavior</b></h4>
@@ -50,6 +51,7 @@
 <h4 id="known-limitations"><b>Known limitations</b></h4>
 <p>The remote wakeup feature is not yet implemented (used to bring the USB suspended bus back to the active condition).</p>
 <h3 id="notes"><b>Notes</b></h3>
+<p>None</p>
 <h4 id="threadx-usage-hints"><b>ThreadX usage hints</b></h4>
 <ul>
 <li>ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.</li>
@@ -91,6 +93,7 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 </ul></li>
 </ul>
 <h4 id="usbx-usage-hints"><b>USBX usage hints</b></h4>
+<p>None</p>
 <h3 id="keywords"><b>Keywords</b></h3>
 <p>RTOS, ThreadX, USBX Device, USB_OTG, Full Speed, CDC, VCP, USART, DMA, USBPD.</p>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>

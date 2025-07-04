@@ -20,7 +20,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -63,6 +62,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -77,51 +77,52 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief GFXTIM MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hgfxtim: GFXTIM handle pointer
-* @retval None
-*/
+  * @brief GFXTIM MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hgfxtim: GFXTIM handle pointer
+  * @retval None
+  */
 void HAL_GFXTIM_MspInit(GFXTIM_HandleTypeDef* hgfxtim)
 {
   if(hgfxtim->Instance==GFXTIM)
   {
-  /* USER CODE BEGIN GFXTIM_MspInit 0 */
+    /* USER CODE BEGIN GFXTIM_MspInit 0 */
 
-  /* USER CODE END GFXTIM_MspInit 0 */
+    /* USER CODE END GFXTIM_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_GFXTIM_CLK_ENABLE();
     /* GFXTIM interrupt Init */
     HAL_NVIC_SetPriority(GFXTIM_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(GFXTIM_IRQn);
-  /* USER CODE BEGIN GFXTIM_MspInit 1 */
+    /* USER CODE BEGIN GFXTIM_MspInit 1 */
 
-  /* USER CODE END GFXTIM_MspInit 1 */
+    /* USER CODE END GFXTIM_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief GFXTIM MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hgfxtim: GFXTIM handle pointer
-* @retval None
-*/
+  * @brief GFXTIM MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hgfxtim: GFXTIM handle pointer
+  * @retval None
+  */
 void HAL_GFXTIM_MspDeInit(GFXTIM_HandleTypeDef* hgfxtim)
 {
   if(hgfxtim->Instance==GFXTIM)
   {
-  /* USER CODE BEGIN GFXTIM_MspDeInit 0 */
+    /* USER CODE BEGIN GFXTIM_MspDeInit 0 */
 
-  /* USER CODE END GFXTIM_MspDeInit 0 */
+    /* USER CODE END GFXTIM_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_GFXTIM_CLK_DISABLE();
 
     /* GFXTIM interrupt DeInit */
     HAL_NVIC_DisableIRQ(GFXTIM_IRQn);
-  /* USER CODE BEGIN GFXTIM_MspDeInit 1 */
+    /* USER CODE BEGIN GFXTIM_MspDeInit 1 */
 
-  /* USER CODE END GFXTIM_MspDeInit 1 */
+    /* USER CODE END GFXTIM_MspDeInit 1 */
   }
 
 }

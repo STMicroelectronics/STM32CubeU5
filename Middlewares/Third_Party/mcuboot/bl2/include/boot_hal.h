@@ -15,6 +15,8 @@
 extern "C" {
 #endif
 
+#include "bootutil/fault_injection_hardening.h"
+
 struct boot_arm_vector_table {
     uint32_t msp;
     uint32_t reset;
@@ -56,12 +58,20 @@ void boot_jump_to_next_image(uint32_t boot_jump_addr, uint32_t reset_handler_add
 int32_t boot_platform_init(void);
 
 /**
+  * \brief This function checks if system wakes-up from low-power mode:
+  *        Stand-by mode and shut down mode (depending on HW capability)
+  *
+  * \return FIH_SUCCESS in case of wake-up
+  */
+fih_int boot_platform_wakeup(void);
+
+/**
  * \brief Platform operation to start secure image.
  *        Can be overridden for platform specific initialization.
  *
  * \param[in] vt  pointer to secure application vector table descriptor
  */
-void boot_platform_quit(struct boot_arm_vector_table *vt) __NO_RETURN;
+__NO_RETURN void boot_platform_quit(struct boot_arm_vector_table *vt);
 
 
 /**
@@ -69,7 +79,7 @@ void boot_platform_quit(struct boot_arm_vector_table *vt) __NO_RETURN;
  *        Can be overridden for platform specific initialization.
  *
  */
-void boot_platform_noimage(void) __NO_RETURN;
+__NO_RETURN void boot_platform_noimage(void);
 
 #ifdef __cplusplus
 }

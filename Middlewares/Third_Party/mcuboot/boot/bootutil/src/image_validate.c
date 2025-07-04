@@ -223,6 +223,7 @@ bootutil_img_hash(struct enc_key_data *enc_state, int image_index,
 #    define EXPECTED_SIG_TLV IMAGE_TLV_ECDSA256
 #    define SIG_BUF_SIZE 128
 #    define EXPECTED_SIG_LEN(x) ((x) <= 72) /* (tbc) 64 bytes for sign + 8 bytes for asn1 */
+#    define KEY_LEN 91
 #elif defined(MCUBOOT_SIGN_ED25519)
 #    define EXPECTED_SIG_TLV IMAGE_TLV_ED25519
 #    define SIG_BUF_SIZE 64
@@ -485,7 +486,7 @@ bootutil_img_validate(struct enc_key_data *enc_state, int image_index,
             /*
              * Determine which key we should be checking.
              */
-            if ((len > sizeof(key_buf)) || (len > sizeof(pubkey))) {
+            if ((len > sizeof(key_buf)) || (len != KEY_LEN)) {
                 rc = -1;
                 goto out;
             }

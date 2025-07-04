@@ -3,20 +3,22 @@
  */
 /*
  *  Copyright The Mbed TLS Contributors
- *  Portions Copyright (C) STMicroelectronics, All Rights Reserved
  *  SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef PSA_CRYPTO_SE_H
 #define PSA_CRYPTO_SE_H
 
-#if !defined(MBEDTLS_CONFIG_FILE)
-#include "mbedtls/config.h"
-#else
-#include MBEDTLS_CONFIG_FILE
-#endif
+/*
+ * Include the build-time configuration information header. Here, we do not
+ * include `"mbedtls/build_info.h"` directly but `"psa/build_info.h"`, which
+ * is basically just an alias to it. This is to ease the maintenance of the
+ * TF-PSA-Crypto repository which has a different build system and
+ * configuration.
+ */
+#include "psa/build_info.h"
 
-#include "crypto.h"
+#include "psa/crypto.h"
 #include "psa/crypto_se_driver.h"
 
 /** The maximum location value that this implementation supports

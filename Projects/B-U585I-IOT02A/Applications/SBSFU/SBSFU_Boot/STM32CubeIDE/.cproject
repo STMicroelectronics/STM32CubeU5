@@ -57,6 +57,7 @@
 									<listOptionValue builtIn="false" value="../../../../../../../Drivers/BSP/Components/Common"/>
 									<listOptionValue builtIn="false" value="../../../Linker"/>
 									<listOptionValue builtIn="false" value="../../../../../../../Middlewares/Third_Party/mbed-crypto/include"/>
+									<listOptionValue builtIn="false" value="../../../../../../../Middlewares/Third_Party/mbed-crypto/include/mbedtls"/>
 									<listOptionValue builtIn="false" value="../../../../../../../Middlewares/Third_Party/mbed-crypto/include/psa"/>
 									<listOptionValue builtIn="false" value="../../../../../../../Middlewares/Third_Party/mbed-crypto/library"/>
 									<listOptionValue builtIn="false" value="../../../../../../../Middlewares/Third_Party/mcuboot"/>

@@ -1,2 +1,0 @@
-purpose to more-specifically override TF-Fuzz's expected result;
-read sst name napoleon check "this won't work" expect PSA_ERROR_GENERIC_ERROR;

@@ -30,7 +30,7 @@
 #include "flash_map_backend/flash_map_backend.h"
 #include "boot_hal.h"
 #include "uart_stdout.h"
-#include "boot_hal.h"
+#include "boot_hal_cfg.h"
 
 /* Avoids the semihosting issue */
 #if defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
@@ -76,7 +76,7 @@ static void do_boot(struct boot_rsp *rsp)
                                          rsp->br_hdr->ih_hdr_size);
     }
 
-#if MCUBOOT_LOG_LEVEL > MCUBOOT_LOG_LEVEL_OFF
+#if defined(MCUBOOT_HAVE_LOGGING)
     stdio_uninit();
 #endif
 
@@ -90,6 +90,9 @@ int main(void)
 {
     struct boot_rsp rsp;
     fih_int fih_rc = FIH_FAILURE;
+#if defined(OEMIROT_FAST_WAKE_UP)
+    struct boot_arm_vector_table *vt;
+#endif
 
 #if !defined (MCUBOOT_USE_HAL)
     /* Initialise the mbedtls static memory allocator so that mbedtls allocates
@@ -98,7 +101,7 @@ int main(void)
     mbedtls_memory_buffer_alloc_init(mbedtls_mem_buf, BL2_MBEDTLS_MEM_BUF_LEN);
 #endif /* MCUBOOT_USE_HAL */
 
-#if MCUBOOT_LOG_LEVEL > MCUBOOT_LOG_LEVEL_OFF
+#if defined(MCUBOOT_HAVE_LOGGING)
     stdio_init();
 #endif
 
@@ -107,14 +110,14 @@ int main(void)
         BOOT_LOG_ERR("Platform init failed");
         FIH_PANIC;
     }
-#if defined(OEMUROT_ENABLE) && defined(FLASH_BASE_S)
-    struct image_header *hdr = (struct image_header *)(FLASH_BASE_S + FLASH_AREA_BL2_OFFSET);
+#if defined(OEMUROT_ENABLE)
+#if defined(BOOTROM_FORMAT)
+    uint32_t *version = (uint32_t*)(BL2_CODE_START - BOOTROM_HEADER_SIZE + BOOTROM_VERSION_OFFSET);
+    BOOT_LOG_INF("Starting bootloader OEMuROT %08x", (unsigned int)*version);
+#else
+    struct image_header *hdr = (struct image_header *)(FLASH_BASE + FLASH_AREA_BL2_OFFSET);
     BOOT_LOG_INF("Starting bootloader OEMuROT %x.%x.%x",hdr->ih_ver.iv_major, hdr->ih_ver.iv_minor, hdr->ih_ver.iv_revision);
-#elif defined(OEMUROT_ENABLE) && defined(BL2_RAM_BASE)
-    struct image_header *hdr = (struct image_header *)(BL2_RAM_BASE);
-    BOOT_LOG_INF("Starting bootloader OEMuROT %x.%x.%x",hdr->ih_ver.iv_major, hdr->ih_ver.iv_minor, hdr->ih_ver.iv_revision);
-#elif defined(OEMUROT_ENABLE)
-    BOOT_LOG_INF("Starting bootloader OEMuROT");
+#endif /* BOOTROM_FORMAT */
 #else
     BOOT_LOG_INF("Starting bootloader OEMiROT");
 #endif
@@ -124,6 +127,15 @@ int main(void)
         BOOT_LOG_ERR("Error while initializing the security counter");
         FIH_PANIC;
     }
+
+#if defined(OEMIROT_FAST_WAKE_UP)
+    FIH_CALL(boot_platform_wakeup, fih_rc);
+    if (fih_eq(fih_rc, FIH_SUCCESS)) {
+        BOOT_LOG_INF("Fast wake-up from low-power mode");
+        vt = (struct boot_arm_vector_table *)(S_CODE_START);
+        boot_platform_quit(vt);
+    }
+#endif
 
     FIH_CALL(boot_go, fih_rc, &rsp);
     if (fih_not_eq(fih_rc, FIH_SUCCESS)) {

@@ -6,6 +6,13 @@
   *          FileX low level drivers for STM32 devices.
   ******************************************************************************
   */
+### V3.3.1 / 14-February-2025 ###
+=================================
+Main changes
+-------------
+- Fix compiler issue when selecting multiple NOR interfaces
+  + fx_stm32_levelx_nor_driver.c
+
 ### V3.3.0 / 09-September-2024 ###
 =================================
 Main changes

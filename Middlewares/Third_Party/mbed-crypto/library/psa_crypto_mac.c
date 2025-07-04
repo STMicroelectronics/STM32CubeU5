@@ -3,7 +3,6 @@
  */
 /*
  *  Copyright The Mbed TLS Contributors
- *  Portions Copyright (C) STMicroelectronics, All Rights Reserved
  *  SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,13 +10,14 @@
 
 #if defined(MBEDTLS_PSA_CRYPTO_C)
 
-#include "crypto.h"
+#include <psa/crypto.h>
 #include "psa_crypto_core.h"
 #include "psa_crypto_cipher.h"
 #include "psa_crypto_mac.h"
 #include <mbedtls/md.h>
 
 #include <mbedtls/error.h>
+#include "mbedtls/constant_time.h"
 #include <string.h>
 
 #if defined(MBEDTLS_PSA_BUILTIN_ALG_HMAC)
@@ -442,7 +442,7 @@ psa_status_t mbedtls_psa_mac_verify_finish(
         goto cleanup;
     }
 
-    if (mbedtls_psa_safer_memcmp(mac, actual_mac, mac_length) != 0) {
+    if (mbedtls_ct_memcmp(mac, actual_mac, mac_length) != 0) {
         status = PSA_ERROR_INVALID_SIGNATURE;
     }
 

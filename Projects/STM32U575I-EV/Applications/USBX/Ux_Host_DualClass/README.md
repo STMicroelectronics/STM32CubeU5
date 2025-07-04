@@ -51,23 +51,27 @@ During the file operations process a message will be displayed on the HyperTermi
 If all operations were successful a message will be displayed on the HyperTerminal to indicates the end of operations.
 
 #### <b>Error behaviors</b>
+
 Errors are detected such as (Unsupported device, Enumeration Fail, File operations fail) and the corresponding message is displayed on the HyperTerminal .
 
 #### <b>Assumptions if any</b>
 User is familiar with USB 2.0 "Universal Serial BUS" Specification , HID and Mass storage class Specification.
 
 #### <b>Known limitations</b>
-None.
+
+None
 
 ### <b>Notes</b>
+
+None
 
 #### <b>ThreadX usage hints</b>
 
  - ThreadX uses the Systick as time base, thus it is mandatory that the HAL uses a separate time base through the TIM IPs.
- - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it in the "tx_user.h", the "TX_TIMER_TICKS_PER_SECOND" define,but this should be reflected in "tx_initialize_low_level.S" file too.
+ - ThreadX is configured with 100 ticks/sec by default, this should be taken into account when using delays or timeouts at application. It is always possible to reconfigure it, by updating the "TX_TIMER_TICKS_PER_SECOND" define in the "tx_user.h" file. The update should be reflected in "tx_initialize_low_level.S" file too.
  - ThreadX is disabling all interrupts during kernel start-up to avoid any unexpected behavior, therefore all system related calls (HAL, BSP) should be done either at the beginning of the application or inside the thread entry functions.
  - ThreadX offers the "tx_application_define()" function, that is automatically called by the tx_kernel_enter() API.
-   It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...)  but it should not in any way contain a system API call (HAL or BSP).
+   It is highly recommended to use it to create all applications ThreadX related resources (threads, semaphores, memory pools...) but it should not in any way contain a system API call (HAL or BSP).
  - Using dynamic memory allocation requires to apply some changes to the linker file.
    ThreadX needs to pass a pointer to the first free memory location in RAM to the tx_application_define() function,
    using the "first_unused_memory" argument.
@@ -93,15 +97,17 @@ None.
        } >RAM_D1 AT> RAM_D1
     ```
 
-       The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
-       In the example above the ThreadX heap size is set to 64KBytes.
-       The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
-       Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
-       Read more in STM32CubeIDE User Guide, chapter: "Linker script".
+    The simplest way to provide memory for ThreadX is to define a new section, see ._threadx_heap above.
+    In the example above the ThreadX heap size is set to 64KBytes.
+    The ._threadx_heap must be located between the .bss and the ._user_heap_stack sections in the linker script.
+    Caution: Make sure that ThreadX does not need more than the provided heap memory (64KBytes in this example).
+    Read more in STM32CubeIDE User Guide, chapter: "Linker script".
 
     + The "tx_initialize_low_level.S" should be also modified to enable the "USE_DYNAMIC_MEMORY_ALLOCATION" flag.
 
 #### <b>USBX usage hints</b>
+
+None
 
 ### <b>Keywords</b>
 
@@ -119,14 +125,15 @@ Connectivity, USBXHost, USBPD, FILEX, ThreadX, HID, Mouse, Keyboard, MSC, Mass S
     - Connect ST-Link cable to the PC USB port to display data on the HyperTerminal.
 
     A virtual COM port will then appear in the HyperTerminal:
-     - Hyperterminal configuration
-       - Data Length = 8 Bits
-       - One Stop Bit
-       - No parity
-       - BaudRate = 115200 baud
-       - Flow control: None
+    - Hyperterminal configuration
+      - Data Length = 8 Bits
+      - One Stop Bit
+      - No parity
+      - BaudRate = 115200 baud
+      - Flow control: None
 
 <b>Note</b>
+
 It is mandatory to check that the Jumpers below are fitted:
     JP25           : UCPD_5V Jumper is fitted in order to provide Vbus 5V.
     JP8 (UCPD_SRC) : This application initialize the type C port in source mode with only one PDO at 5V.

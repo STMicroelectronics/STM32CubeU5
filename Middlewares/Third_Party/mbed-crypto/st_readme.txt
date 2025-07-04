@@ -2,13 +2,13 @@
   @verbatim
   ******************************************************************************
   *
-  * Portions Copyright (C) 2016-2023 STMicroelectronics, All Rights Reserved
-  * Copyright (C) 2006-2023, ARM Limited, All Rights Reserved
+  * Portions Copyright (C) 2016-2024 STMicroelectronics, All Rights Reserved
+  * Copyright (C) 2006-2024, ARM Limited, All Rights Reserved
   *
   * @file    st_readme.txt
   * @author  MCD Application Team
   * @brief   This file lists the main modification done by STMicroelectronics on
-  *          mbed-TLS for integration with STM32Cube solution.
+  *          Mbed-TLS for integration with STM32Cube solution.
   ******************************************************************************
   *
   * Original licensing conditions
@@ -17,19 +17,72 @@
   ******************************************************************************
   @endverbatim
 
-### 19-April-2024 ###
+  @Note Mbed-TLS release
+   For additional information on the Mbed-TLS release, consult the changelog file.
+
+### 14-April-2025 ###
 ========================
-    + Move to Mbed-TLS V2.28.8 under only the Apache-2.0 license.
+    + Move to Mbed-TLS V3.6.3 to get fix for CVE-2025-27809 and CVE-2025-27810.
+    + Keep ST patchs from Mbed TLS V3.6.2
     + Update st_readme.txt
 
-### 07-February-2023 ###
+### 04-February-2025 ###
+========================
+    + Replace the Mbed TLS contribution file with the ST contribution file.
+    + Replace the Mbed TLS security file with the ST security file (PSIRT).
+    + Solve warning in pk.c : 'key_bits' may be used uninitialized.
+    + Update st_readme.txt.
+
+### 24-January-2025 ###
+========================
+    + Add CODE_OF_CONDUCT.md
+    + Renamed README.md to MBEDTLS_README.md
+    + Add ST README.md
+    + Add HUK feature to allow cipher operation using the hardware unique key on STM32
+    + Set MBEDTLS_PRIVATE for pk in mbedtls_pk_get_ec_group_id
+    + Update st_readme.txt
+
+### 25-November-2024 ###
+========================
+    + Move to Mbed-TLS V3.6.2 to get fix for CVE-2024-49195
+    + Keep ST patchs from Mbed TLS V3.6.1
+    + Update st_readme.txt
+
+### 10-september-2024 ###
+========================
+    + Move to Mbed-TLS V3.6.1
+    + Remove dual license, STMicroelectronics provides the Mbed-TLS middleware
+      under only the Apache-2.0 license.
+    + FIx IDE warnings :
+      Add MBEDTLS_RSA_C in psa_crypto_driver_wrappers.h file.
+      Add MBEDTLS_MD_C in md.c and config_adjust_psa_from_legacy.h files.
+      Add AT_LEAST_ONE_BUILTIN_KDF, PSA_WANT_ALG_GCM, and PSA_WANT_ALG_CCM to psa_crypto.c file.
+      Add MBEDTLS_PK_HAVE_ECC_KEYS to pk.c file.
+    + Enable constant time API to be used by RSA ALT in constant_time files.
+    + Add double signature check, with single signature computation in ecdsa.c file.
+    + Improve self-test for nist_kw and gcm.
+    + Add STM32 Key Wrap Engine opaque driver to Mbed TLS and improve Jinja driver templates.
+    + Export rsa_rsassa_pkcs1_v15_encode and mgf_mask functions to be used by Key Wrap driver.
+    + Replace include psa/error by mbedtls/error in psa_crypto_se.c and psa_crypto_storage.c files.
+    + Add ITS ALT support in psa_crypto_storage.c file.
+    + Update st_readme.txt
+
+### 29-March-2024 ###
+========================
+    + Move to Mbed-TLS V3.6.0 LTS
+    + Remove dual license, STMicroelectronics provides the Mbed-TLS middleware
+      under only the Apache-2.0 license.
+    + Update st_readme.txt
+
+### 07-February-2024 ###
 ========================
     + Move to Mbed-TLS V2.28.7
-    + Removed dual license, STMicroelectronics provides the Mbed-TLS middleware
+    + Remove dual license, STMicroelectronics provides the Mbed-TLS middleware
       under only the Apache-2.0 license.
     + Fixed IAR Warning[Pe546]: transfer of control bypasses initialization
       variable : padding
     + Update st_readme.txt
+
 
 ### 08-December-2023 ###
 ========================
@@ -69,7 +122,7 @@
 ### 17-August-2023 ###
 ========================
     Move to Mbed-TLS v2.28.4
-
+ 
 ### 25-May-2023 ###
 ========================
     Move to Mbed-TLS v2.28.3

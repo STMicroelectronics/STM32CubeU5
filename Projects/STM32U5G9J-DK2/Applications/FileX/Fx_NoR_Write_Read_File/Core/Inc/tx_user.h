@@ -183,7 +183,7 @@
 
 #define TX_DISABLE_NOTIFY_CALLBACKS
 
-/* Defined, the basic parameter error checking is disabled.*/
+/* Defined, the basic parameter error checking is disabled. */
 
 /*#define TX_DISABLE_ERROR_CHECKING*/
 
@@ -273,4 +273,3 @@
 /* USER CODE END 2 */
 
 #endif
-

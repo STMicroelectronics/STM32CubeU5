@@ -62,6 +62,7 @@
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -76,18 +77,18 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief MDF MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hmdf: MDF handle pointer
-* @retval None
-*/
+  * @brief MDF MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hmdf: MDF handle pointer
+  * @retval None
+  */
 void HAL_MDF_MspInit(MDF_HandleTypeDef* hmdf)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
   if(IS_ADF_INSTANCE(hmdf->Instance))
   {
-  /* USER CODE BEGIN ADF1_MspInit 0 */
+    /* USER CODE BEGIN ADF1_MspInit 0 */
   __HAL_RCC_ADF1_CLKAM_ENABLE();
   __HAL_RCC_LPDMA1_CLKAM_ENABLE();
   __HAL_RCC_LPGPIO1_CLKAM_ENABLE();
@@ -96,7 +97,7 @@ void HAL_MDF_MspInit(MDF_HandleTypeDef* hmdf)
   HAL_PWREx_EnableVddIO2();
   HAL_PWREx_EnableVddA();
   
-  /* USER CODE END ADF1_MspInit 0 */
+    /* USER CODE END ADF1_MspInit 0 */
 
   /** Initializes the peripherals clock
   */
@@ -125,26 +126,27 @@ void HAL_MDF_MspInit(MDF_HandleTypeDef* hmdf)
     /* ADF1 interrupt Init */
     HAL_NVIC_SetPriority(ADF1_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(ADF1_IRQn);
-  /* USER CODE BEGIN ADF1_MspInit 1 */
+    /* USER CODE BEGIN ADF1_MspInit 1 */
 
-  /* USER CODE END ADF1_MspInit 1 */
+    /* USER CODE END ADF1_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief MDF MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hmdf: MDF handle pointer
-* @retval None
-*/
+  * @brief MDF MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hmdf: MDF handle pointer
+  * @retval None
+  */
 void HAL_MDF_MspDeInit(MDF_HandleTypeDef* hmdf)
 {
   if(IS_ADF_INSTANCE(hmdf->Instance))
   {
-  /* USER CODE BEGIN ADF1_MspDeInit 0 */
+    /* USER CODE BEGIN ADF1_MspDeInit 0 */
 
-  /* USER CODE END ADF1_MspDeInit 0 */
+    /* USER CODE END ADF1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_ADF1_CLK_DISABLE();
 
@@ -156,9 +158,9 @@ void HAL_MDF_MspDeInit(MDF_HandleTypeDef* hmdf)
 
     /* ADF1 interrupt DeInit */
     HAL_NVIC_DisableIRQ(ADF1_IRQn);
-  /* USER CODE BEGIN ADF1_MspDeInit 1 */
+    /* USER CODE BEGIN ADF1_MspDeInit 1 */
 
-  /* USER CODE END ADF1_MspDeInit 1 */
+    /* USER CODE END ADF1_MspDeInit 1 */
   }
 
 }

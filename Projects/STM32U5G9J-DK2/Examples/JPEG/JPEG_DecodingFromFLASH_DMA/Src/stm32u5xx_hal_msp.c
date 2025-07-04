@@ -20,7 +20,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
 #include "jpeg_utils_conf.h"
 /* USER CODE BEGIN Includes */
 
@@ -67,6 +66,7 @@ extern DMA_HandleTypeDef handle_GPDMA1_Channel0;
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
@@ -81,18 +81,18 @@ void HAL_MspInit(void)
 }
 
 /**
-* @brief JPEG MSP Initialization
-* This function configures the hardware resources used in this example
-* @param hjpeg: JPEG handle pointer
-* @retval None
-*/
+  * @brief JPEG MSP Initialization
+  * This function configures the hardware resources used in this example
+  * @param hjpeg: JPEG handle pointer
+  * @retval None
+  */
 void HAL_JPEG_MspInit(JPEG_HandleTypeDef* hjpeg)
 {
   if(hjpeg->Instance==JPEG)
   {
-  /* USER CODE BEGIN JPEG_MspInit 0 */
+    /* USER CODE BEGIN JPEG_MspInit 0 */
 
-  /* USER CODE END JPEG_MspInit 0 */
+    /* USER CODE END JPEG_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_JPEG_CLK_ENABLE();
 
@@ -154,26 +154,27 @@ void HAL_JPEG_MspInit(JPEG_HandleTypeDef* hjpeg)
     /* JPEG interrupt Init */
     HAL_NVIC_SetPriority(JPEG_IRQn, 8, 0);
     HAL_NVIC_EnableIRQ(JPEG_IRQn);
-  /* USER CODE BEGIN JPEG_MspInit 1 */
+    /* USER CODE BEGIN JPEG_MspInit 1 */
 
-  /* USER CODE END JPEG_MspInit 1 */
+    /* USER CODE END JPEG_MspInit 1 */
+
   }
 
 }
 
 /**
-* @brief JPEG MSP De-Initialization
-* This function freeze the hardware resources used in this example
-* @param hjpeg: JPEG handle pointer
-* @retval None
-*/
+  * @brief JPEG MSP De-Initialization
+  * This function freeze the hardware resources used in this example
+  * @param hjpeg: JPEG handle pointer
+  * @retval None
+  */
 void HAL_JPEG_MspDeInit(JPEG_HandleTypeDef* hjpeg)
 {
   if(hjpeg->Instance==JPEG)
   {
-  /* USER CODE BEGIN JPEG_MspDeInit 0 */
+    /* USER CODE BEGIN JPEG_MspDeInit 0 */
 
-  /* USER CODE END JPEG_MspDeInit 0 */
+    /* USER CODE END JPEG_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_JPEG_CLK_DISABLE();
 
@@ -183,9 +184,9 @@ void HAL_JPEG_MspDeInit(JPEG_HandleTypeDef* hjpeg)
 
     /* JPEG interrupt DeInit */
     HAL_NVIC_DisableIRQ(JPEG_IRQn);
-  /* USER CODE BEGIN JPEG_MspDeInit 1 */
+    /* USER CODE BEGIN JPEG_MspDeInit 1 */
 
-  /* USER CODE END JPEG_MspDeInit 1 */
+    /* USER CODE END JPEG_MspDeInit 1 */
   }
 
 }

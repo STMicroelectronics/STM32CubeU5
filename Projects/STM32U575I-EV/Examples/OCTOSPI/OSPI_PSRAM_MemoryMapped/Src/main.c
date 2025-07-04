@@ -79,6 +79,7 @@ uint32_t APS6408_ReadReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Val
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
   OSPI_RegularCmdTypeDef sCommand = {0};
   uint32_t index, index_K;
@@ -100,11 +101,11 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
   /* Configure the System Power */
   SystemPower_Config();
+
+  /* Configure the system clock */
+  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
 
@@ -151,7 +152,7 @@ int main(void)
   sCommand.Instruction        = WRITE_CMD;
   sCommand.InstructionMode    = HAL_OSPI_INSTRUCTION_8_LINES;
   sCommand.InstructionSize    = HAL_OSPI_INSTRUCTION_16_BITS;
-  sCommand.InstructionDtrMode = HAL_OSPI_INSTRUCTION_DTR_ENABLE; 
+  sCommand.InstructionDtrMode = HAL_OSPI_INSTRUCTION_DTR_ENABLE;
   sCommand.AddressMode        = HAL_OSPI_ADDRESS_8_LINES;
   sCommand.AddressSize        = HAL_OSPI_ADDRESS_32_BITS;
   sCommand.AddressDtrMode     = HAL_OSPI_ADDRESS_DTR_ENABLE;
@@ -453,8 +454,8 @@ static void MX_OCTOSPI1_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -469,8 +470,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF10_OCTOSPI1;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -578,7 +579,7 @@ uint32_t APS6408_WriteReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Va
   */
 uint32_t APS6408_ReadReg(OSPI_HandleTypeDef *Ctx, uint32_t Address, uint8_t *Value, uint32_t LatencyCode)
 {
-  OSPI_RegularCmdTypeDef sCommand;
+  OSPI_RegularCmdTypeDef sCommand = {0};
 
   /* Initialize the read register command */
   sCommand.OperationType      = HAL_OSPI_OPTYPE_COMMON_CFG;

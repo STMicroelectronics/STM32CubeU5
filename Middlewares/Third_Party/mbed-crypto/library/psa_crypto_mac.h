@@ -3,14 +3,13 @@
  */
 /*
  *  Copyright The Mbed TLS Contributors
- *  Portions Copyright (C) STMicroelectronics, All Rights Reserved
  *  SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef PSA_CRYPTO_MAC_H
 #define PSA_CRYPTO_MAC_H
 
-#include "crypto.h"
+#include <psa/crypto.h>
 
 /** Calculate the MAC (message authentication code) of a message using Mbed TLS.
  *

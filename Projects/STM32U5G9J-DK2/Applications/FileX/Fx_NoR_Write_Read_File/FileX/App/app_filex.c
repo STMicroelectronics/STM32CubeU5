@@ -33,7 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* Main thread stack size */
-#define FX_APP_THREAD_STACK_SIZE         (2 * 1024)
+#define FX_APP_THREAD_STACK_SIZE         2 * 1024
 /* Main thread priority */
 #define FX_APP_THREAD_PRIO               10
 /* USER CODE BEGIN PD */
@@ -54,11 +54,12 @@
 /* Main thread global data structures.  */
 TX_THREAD       fx_app_thread;
 
-/* USER CODE BEGIN PV */
 /* Buffer for FileX FX_MEDIA sector cache. */
 ALIGN_32BYTES (uint32_t fx_nor_xspi_media_memory[FX_NOR_XSPI_SECTOR_SIZE / sizeof(uint32_t)]);
 /* Define FileX global data structures.  */
 FX_MEDIA        nor_xspi_flash_disk;
+
+/* USER CODE BEGIN PV */
 
 /* Define FileX global data structures.  */
 FX_FILE         fx_file;
@@ -79,50 +80,50 @@ void fx_app_thread_entry(ULONG thread_input);
   * @brief  Application FileX Initialization.
   * @param memory_ptr: memory pointer
   * @retval int
-  */
+*/
 UINT MX_FileX_Init(VOID *memory_ptr)
 {
   UINT ret = FX_SUCCESS;
   TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
   VOID *pointer;
 
-  /* USER CODE BEGIN MX_FileX_MEM_POOL */
+/* USER CODE BEGIN MX_FileX_MEM_POOL */
   (void)byte_pool;
-  /* USER CODE END MX_FileX_MEM_POOL */
+/* USER CODE END MX_FileX_MEM_POOL */
 
-  /* USER CODE BEGIN 0 */
+/* USER CODE BEGIN 0 */
 
-  /* USER CODE END 0 */
+/* USER CODE END 0 */
 
-  /*Allocate memory for the main thread's stack */
+/*Allocate memory for the main thread's stack*/
   ret = tx_byte_allocate(byte_pool, &pointer, FX_APP_THREAD_STACK_SIZE, TX_NO_WAIT);
 
-  /* Check FX_APP_THREAD_STACK_SIZE allocation */
-  if (ret != TX_SUCCESS)
+/* Check FX_APP_THREAD_STACK_SIZE allocation*/
+  if (ret != FX_SUCCESS)
   {
     return TX_POOL_ERROR;
   }
 
-  /* Create the main thread. */
+/* Create the main thread.  */
   ret = tx_thread_create(&fx_app_thread, FX_APP_THREAD_NAME, fx_app_thread_entry, 0, pointer, FX_APP_THREAD_STACK_SIZE,
                          FX_APP_THREAD_PRIO, FX_APP_PREEMPTION_THRESHOLD, FX_APP_THREAD_TIME_SLICE, FX_APP_THREAD_AUTO_START);
 
-  /* Check main thread creation */
-  if (ret != TX_SUCCESS)
+/* Check main thread creation */
+  if (ret != FX_SUCCESS)
   {
     return TX_THREAD_ERROR;
   }
 
-  /* USER CODE BEGIN MX_FileX_Init */
+/* USER CODE BEGIN MX_FileX_Init */
 
-  /* USER CODE END MX_FileX_Init */
+/* USER CODE END MX_FileX_Init */
 
-  /* Initialize FileX.  */
+/* Initialize FileX.  */
   fx_system_initialize();
 
-  /* USER CODE BEGIN MX_FileX_Init 1*/
+/* USER CODE BEGIN MX_FileX_Init 1*/
 
-  /* USER CODE END MX_FileX_Init 1*/
+/* USER CODE END MX_FileX_Init 1*/
 
   return ret;
 }
@@ -131,12 +132,13 @@ UINT MX_FileX_Init(VOID *memory_ptr)
  * @brief  Main thread entry.
  * @param thread_input: ULONG user argument used by the thread entry
  * @retval none
- */
+*/
  void fx_app_thread_entry(ULONG thread_input)
  {
 
-  /* USER CODE BEGIN fx_app_thread_entry 0 */
   UINT nor_xspi_status = FX_SUCCESS;
+
+/* USER CODE BEGIN fx_app_thread_entry 0*/
   ULONG bytes_read;
   ULONG available_space_pre;
   ULONG available_space_post;
@@ -147,9 +149,7 @@ UINT MX_FileX_Init(VOID *memory_ptr)
 
   /* Print the absolute size of the NOR chip */
   printf("Total NOR Flash Chip size is: %lu bytes.\n", (unsigned long)LX_STM32_XSPI_FLASH_SIZE);
-  /* USER CODE END fx_app_thread_entry 0 */
-
-  /* USER CODE BEGIN fx_app_thread_entry 1 */
+/* USER CODE END fx_app_thread_entry 0*/
 
 /* Format the XSPI NOR flash as FAT */
   nor_xspi_status =  fx_media_format(&nor_xspi_flash_disk,                                                            // nor_xspi_flash_disk pointer
@@ -166,11 +166,12 @@ UINT MX_FileX_Init(VOID *memory_ptr)
                                      8,                                                                               // Sectors per cluster
                                      1,                                                                               // Heads
                                      1);                                                                              // Sectors per track
-
   /* Check the format nor_xspi_status */
   if (nor_xspi_status != FX_SUCCESS)
   {
+    /* USER CODE BEGIN XSPI NOR format error */
     Error_Handler();
+    /* USER CODE END XSPI NOR format error */
   }
 
   /* Open the XSPI NOR driver */
@@ -179,8 +180,12 @@ UINT MX_FileX_Init(VOID *memory_ptr)
   /* Check the media open nor_xspi_status */
   if (nor_xspi_status != FX_SUCCESS)
   {
-    Error_Handler();
+   /* USER CODE BEGIN XSPI NOR open error */
+   Error_Handler();
+   /* USER CODE END XSPI NOR open error */
   }
+/* USER CODE BEGIN fx_app_thread_entry 1*/
+
   /* Get the available usable space */
   nor_xspi_status =  fx_media_space_available(&nor_xspi_flash_disk, &available_space_pre);
 
