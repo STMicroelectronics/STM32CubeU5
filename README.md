@@ -29,7 +29,7 @@ The **STM32CubeU5 MCU Package** projects are directly running on the STM32U5 ser
 > * `./Middlewares/ST/SE_STSAFEA_API`
 > * `./Middlewares/ST/STSAFE_A1xx`
 > 
-> If needed, they can be found inside the full firmware package available on our website `st.com` and downloadable from [here](https://www.st.com/content/st_com/en/products/embedded-software/mcu-mpu-embedded-software/stm32-embedded-software/stm32cube-mcu-mpu-packages/stm32cubeu5.html#get-software). You will be prompted to login or to register in case you have no account.
+> If needed, they can be found inside the full firmware package available on our website `st.com` and downloadable from [here](https://www.st.com/en/embedded-software/stm32cubeu5.html#get-software). You will be prompted to login or to register in case you have no account.
 
 ## Release note
 
