@@ -130,3 +130,51 @@
 	path = Drivers/BSP/Components/aps6408
 	url = https://github.com/STMicroelectronics/stm32-aps6408
 	branch = main
+[submodule "Middlewares/Third_Party/mcuboot"]
+	path = Middlewares/Third_Party/mcuboot
+	url = https://github.com/STMicroelectronics/stm32-mw-mcuboot
+	branch = main
+[submodule "Middlewares/Third_Party/mbed-crypto"]
+	path = Middlewares/Third_Party/mbed-crypto
+	url = https://github.com/STMicroelectronics/stm32-mw-mbedtls
+	branch = main
+[submodule "Middlewares/ST/OpenBootloader"]
+	path = Middlewares/ST/OpenBootloader
+	url = https://github.com/STMicroelectronics/stm32-mw-openbl
+	branch = main
+[submodule "Middlewares/ST/STM32_TouchSensing_Library"]
+	path = Middlewares/ST/STM32_TouchSensing_Library
+	url = https://github.com/STMicroelectronics/stm32-mw-touchsensing
+	branch = main
+[submodule "Middlewares/ST/cmsis_rtos_threadx"]
+	path = Middlewares/ST/cmsis_rtos_threadx
+	url = https://github.com/STMicroelectronics/stm32-mw-cmsis-rtos-tx
+	branch = main
+[submodule "Middlewares/ST/filex"]
+	path = Middlewares/ST/filex
+	url = https://github.com/STMicroelectronics/stm32-mw-filex
+	branch = main
+[submodule "Middlewares/ST/levelx"]
+	path = Middlewares/ST/levelx
+	url = https://github.com/STMicroelectronics/stm32-mw-levelx
+	branch = main
+[submodule "Middlewares/ST/threadx"]
+	path = Middlewares/ST/threadx
+	url = https://github.com/STMicroelectronics/stm32-mw-threadx
+	branch = main
+[submodule "Middlewares/ST/usbx"]
+	path = Middlewares/ST/usbx
+	url = https://github.com/STMicroelectronics/stm32-mw-usbx
+	branch = main
+[submodule "Middlewares/ST/netxduo"]
+	path = Middlewares/ST/netxduo
+	url = https://github.com/STMicroelectronics/stm32-mw-netxduo
+	branch = main
+[submodule "Middlewares/ST/STM32_USBPD_Library/Core"]
+	path = Middlewares/ST/STM32_USBPD_Library/Core
+	url = https://github.com/STMicroelectronics/stm32-mw-usbpd-core
+	branch = main
+[submodule "Middlewares/ST/STM32_USBPD_Library/Devices/STM32U5XX"]
+	path = Middlewares/ST/STM32_USBPD_Library/Devices/STM32U5XX
+	url = https://github.com/STMicroelectronics/stm32-mw-usbpd-device-u5
+	branch = main
