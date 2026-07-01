@@ -185,7 +185,6 @@ void GPDMA1_Channel3_IRQHandler(void)
   /* USER CODE BEGIN GPDMA1_Channel3_IRQn 0 */
 
   /* USER CODE END GPDMA1_Channel3_IRQn 0 */
-
   /* USER CODE BEGIN GPDMA1_Channel3_IRQn 1 */
 
   /* USER CODE END GPDMA1_Channel3_IRQn 1 */
@@ -199,7 +198,6 @@ void GPDMA1_Channel5_IRQHandler(void)
   /* USER CODE BEGIN GPDMA1_Channel5_IRQn 0 */
 
   /* USER CODE END GPDMA1_Channel5_IRQn 0 */
-
   /* USER CODE BEGIN GPDMA1_Channel5_IRQn 1 */
 
   /* USER CODE END GPDMA1_Channel5_IRQn 1 */

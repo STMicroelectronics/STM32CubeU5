@@ -423,6 +423,7 @@ void MX_LPUART1_UART_Init(void)
   hlpuart1.Init.Mode = UART_MODE_TX_RX;
   hlpuart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   hlpuart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  hlpuart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
   hlpuart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_RXOVERRUNDISABLE_INIT|UART_ADVFEATURE_DMADISABLEONERROR_INIT;
   hlpuart1.AdvancedInit.OverrunDisable = UART_ADVFEATURE_OVERRUN_DISABLE;
   hlpuart1.AdvancedInit.DMADisableonRxError = UART_ADVFEATURE_DMA_DISABLEONRXERROR;
@@ -627,6 +628,7 @@ void BSP_PB_Callback(Button_TypeDef Button)
 
 /**
   * @brief  This function is executed in case of error occurrence.
+  * @param  None
   * @retval None
   */
 void Error_Handler(void)
@@ -643,8 +645,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

@@ -163,6 +163,15 @@ SECTIONS
     } > RAM
 	Image$$ER_CODE$$Base = __Vectors ;
     Image$$HDP_CODE$$Limit = __hdp_end__;
+
+    /* Uninitialized data not overwriten at startup. section into "RAM" Ram type memory */
+    .bss.NoInit (NOLOAD) :
+    {
+        . = ALIGN(4);
+        *(.bss.NoInit*)
+        . = ALIGN(4);
+    } > RAM
+
     .bss :
     {
         . = ALIGN(4);

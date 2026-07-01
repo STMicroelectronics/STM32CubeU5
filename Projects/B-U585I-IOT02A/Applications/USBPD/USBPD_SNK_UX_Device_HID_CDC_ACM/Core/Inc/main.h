@@ -43,7 +43,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "ux_device_descriptors.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

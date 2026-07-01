@@ -48,15 +48,11 @@
    ADDR_FLASH_LAST_PAGE : Flash address value of beginning of USBPD settings page
    ADDR_FLASH_PAGE_END : Flash address value of end of USBPD settings page
 */
-#if defined(STM32L552xx) || defined(STM32L562xx)
-#define INDEX_PAGE              (FLASH_PAGE_NB - 1U)                           /* Index of latest page     */
-#else
 #if defined (FLASH_OPTR_DBANK) || defined(FLASH_DBANK_SUPPORT)
 #define INDEX_PAGE              ((FLASH_PAGE_NB * 2U) - 1U)                    /* Index of latest page     */
 #else
 #define INDEX_PAGE              (FLASH_PAGE_NB - 1U)                           /* Index of latest page     */
 #endif /* FLASH_OPTR_DBANK || FLASH_DBANK_SUPPORT */
-#endif /* STM32L552xx || STM32L562xx */
 #define ADDR_FLASH_LAST_PAGE    (FLASH_BASE + (INDEX_PAGE * FLASH_PAGE_SIZE))  /* Base @ of latest page */
 #define ADDR_FLASH_PAGE_END     (ADDR_FLASH_LAST_PAGE + FLASH_PAGE_SIZE - 1U)
 

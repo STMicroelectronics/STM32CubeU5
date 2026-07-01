@@ -291,7 +291,7 @@ static void MX_ADF1_Init(void)
   AdfHandle0.Init.CommonParam.ProcClockDivider = 1;
   AdfHandle0.Init.CommonParam.OutputClock.Activation = ENABLE;
   AdfHandle0.Init.CommonParam.OutputClock.Pins = MDF_OUTPUT_CLOCK_0;
-  AdfHandle0.Init.CommonParam.OutputClock.Divider = 4;
+  AdfHandle0.Init.CommonParam.OutputClock.Divider = 5;
   AdfHandle0.Init.CommonParam.OutputClock.Trigger.Activation = DISABLE;
   AdfHandle0.Init.SerialInterface.Activation = ENABLE;
   AdfHandle0.Init.SerialInterface.Mode = MDF_SITF_NORMAL_SPI_MODE;
@@ -311,7 +311,7 @@ static void MX_ADF1_Init(void)
   AdfFilterConfig0.DataSource = MDF_DATA_SOURCE_BSMX;
   AdfFilterConfig0.Delay = 0;
   AdfFilterConfig0.CicMode = MDF_ONE_FILTER_SINC4;
-  AdfFilterConfig0.DecimationRatio = 64;
+  AdfFilterConfig0.DecimationRatio = 51;
   AdfFilterConfig0.Gain = 0;
   AdfFilterConfig0.ReshapeFilter.Activation = DISABLE;
   AdfFilterConfig0.HighPassFilter.Activation = DISABLE;
@@ -613,6 +613,7 @@ void HAL_MDF_AcqCpltCallback(MDF_HandleTypeDef *hmdf)
 
 /**
   * @brief  This function is executed in case of error occurrence.
+  * @param  None
   * @retval None
   */
 void Error_Handler(void)
@@ -625,8 +626,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

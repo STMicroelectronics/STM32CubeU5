@@ -383,8 +383,7 @@
 /* Defined, this value represents the the maximum length of HID reports on the
    device.
  */
-
-/* #define UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH          64 */
+/* #define UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH          32 */
 
 /* Defined, this value represents the the maximum number of HID events/reports
    that can be queued at once.

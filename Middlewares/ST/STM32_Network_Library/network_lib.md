@@ -38,6 +38,18 @@ Different WIFI modules are supported from third party vendors.
 
 ::: {.collapse}
 <input type="checkbox" id="collapse-section10" checked aria-hidden="false">
+<label for="collapse-section11" aria-hidden="false">V2.3.1 / 2026-May-20</label>
+<div>
+
+## Main changes
+
+Add SW_Security_Level.md file
+
+</div>
+:::
+
+::: {.collapse}
+<input type="checkbox" id="collapse-section10" checked aria-hidden="false">
 <label for="collapse-section10" aria-hidden="false">V2.3.0 / 2022-December-12</label>
 <div>
 

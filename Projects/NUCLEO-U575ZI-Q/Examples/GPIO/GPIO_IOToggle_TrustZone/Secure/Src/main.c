@@ -77,6 +77,7 @@ int main(void)
 {
   /* SAU/IDAU, FPU and interrupts secure/non-secure allocation setup done */
   /* in SystemInit() based on partition_stm32u575xx.h file's definitions. */
+
   /* USER CODE BEGIN 1 */
 
   /* Enable SecureFault handler (HardFault is default) */
@@ -150,6 +151,7 @@ int main(void)
   NonSecure_Init();
 
   /* Non-secure software does not return, this code is not executed */
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -340,8 +342,8 @@ static void MX_ICACHE_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -360,8 +362,8 @@ static void MX_GPIO_Init(void)
   /*IO attributes management functions */
   HAL_GPIO_ConfigPinAttributes(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_NSEC);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -387,6 +389,7 @@ void HAL_SYSTICK_Callback(void)
 
 /**
   * @brief  This function is executed in case of error occurrence.
+  * @param  None
   * @retval None
   */
 void Error_Handler(void)
@@ -408,8 +411,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

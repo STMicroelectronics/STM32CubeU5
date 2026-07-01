@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   USBX Host applicative header file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
@@ -32,9 +32,11 @@ extern "C" {
 #include "ux_host_mouse.h"
 #include "ux_host_keyboard.h"
 #include "ux_host_msc.h"
+#include "ux_hcd_stm32.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "ux_hcd_stm32.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -43,11 +45,9 @@ extern "C" {
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
-#define USBX_HOST_MEMORY_STACK_SIZE     1024 * 110
 
 #define UX_HOST_APP_THREAD_STACK_SIZE   1024
 #define UX_HOST_APP_THREAD_PRIO         10
-
 /* USER CODE BEGIN EC */
 
 /* USER CODE END EC */
@@ -64,9 +64,10 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 UINT MX_USBX_Host_Init(VOID *memory_ptr);
+UINT MX_USBX_Host_Stack_Init(VOID);
+UINT MX_USBX_Host_Stack_DeInit(VOID);
 
 /* USER CODE BEGIN EFP */
-VOID USBX_APP_Host_Init(VOID);
 
 /* USER CODE END EFP */
 

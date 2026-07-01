@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   app_azure_rtos application header file
   ******************************************************************************
-   * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
@@ -22,7 +22,7 @@
 #ifndef APP_AZURE_RTOS_H
 #define APP_AZURE_RTOS_H
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -31,7 +31,7 @@
 #include "stm32u5xx_hal.h"
 #include "app_azure_rtos_config.h"
 
-#include "app_usbx_host.h"
+#include "app_usbx.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

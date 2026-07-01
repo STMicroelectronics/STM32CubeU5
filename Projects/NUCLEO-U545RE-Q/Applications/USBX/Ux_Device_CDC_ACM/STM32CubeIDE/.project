@@ -54,6 +54,16 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal.c</locationURI>
 		</link>
 		<link>
+			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_adc.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_adc.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_adc_ex.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_adc_ex.c</locationURI>
+		</link>
+		<link>
 			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_hal_cortex.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_cortex.c</locationURI>
@@ -1552,6 +1562,11 @@
 			<name>Application/User/AZURE_RTOS/App/app_azure_rtos.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/AZURE_RTOS/App/app_azure_rtos.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/USBX/App/app_usbx.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/USBX/App/app_usbx.c</locationURI>
 		</link>
 		<link>
 			<name>Application/User/USBX/App/app_usbx_device.c</name>

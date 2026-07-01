@@ -159,7 +159,6 @@
    particular implementation of USBX needs the hub class, the printer class, and the storage
    class, then the UX_MAX_CLASSES value can be set to 3 regardless of the number of devices
    that belong to these classes.  */
-
 /* #define UX_MAX_CLASSES    2 */
 
 /* #define UX_MAX_CLASS_DRIVER    3 */
@@ -384,8 +383,7 @@
 /* Defined, this value represents the the maximum length of HID reports on the
    device.
  */
-
-/* #define UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH          64 */
+/* #define UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH          32 */
 
 /* Defined, this value represents the the maximum number of HID events/reports
    that can be queued at once.
@@ -507,7 +505,6 @@
 /* #define UX_NAME_REFERENCED_BY_POINTER  */
 
 /* Defined, this value will only enable the host side of usbx.  */
-
 /* #define UX_HOST_SIDE_ONLY */
 
 /* Defined, this value will only enable the device side of usbx.  */
@@ -515,12 +512,9 @@
 
 /* Defined, this value will include the OTG polling thread. OTG can only be active if both host/device are present.
 */
-
 #ifndef UX_HOST_SIDE_ONLY
 #ifndef UX_DEVICE_SIDE_ONLY
-
 /* #define UX_OTG_SUPPORT */
-
 #endif
 #endif
 

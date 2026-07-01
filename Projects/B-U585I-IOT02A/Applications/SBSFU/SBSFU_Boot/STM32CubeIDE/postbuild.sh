@@ -40,19 +40,19 @@ postbuild_appli=$projectdir/../../SBSFU_Appli/STM32CubeIDE/postbuild.sh
 postbuild_loader=$projectdir/../../SBSFU_Loader/STM32CubeIDE/postbuild.sh
 data_img_gen=$projectdir/dataimg.sh
 
-applicfg="$cube_fw_path/Utilities/PC_Software/ROT_AppliConfig/dist/AppliCfg.exe"
-uname | grep -i -e windows -e mingw
-if [ $? == 0 ] && [ -e "$applicfg" ]; then
-  #line for window executable
-  echo "AppliCfg with windows executable"
-  python=""
-else
-  # line for python
-  echo "AppliCfg with python script"
-  applicfg="$cube_fw_path/Utilities/PC_Software/ROT_AppliConfig/AppliCfg.py"
-  #determine/check python version command
+python3 --version >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+  python --version >/dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    echo "Python installation missing. Refer to Utilities/PC_Software/ROT_AppliConfig/README.md"
+    exit 1
+  fi
   python="python "
+else
+  python="python3 "
 fi
+
+applicfg="$cube_fw_path/Utilities/PC_Software/ROT_AppliConfig/AppliCfg.py"
 
 page_size=0x2000
 

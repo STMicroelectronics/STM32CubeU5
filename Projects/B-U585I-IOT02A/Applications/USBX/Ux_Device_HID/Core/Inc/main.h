@@ -44,6 +44,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "b_u585i_iot02a.h"
+#include "ux_device_descriptors.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -64,8 +65,6 @@ extern "C" {
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 void MX_USB_OTG_FS_PCD_Init(void);
-void MX_ADC1_Init(void);
-void MX_I2C1_Init(void);
 
 /* USER CODE BEGIN EFP */
 

@@ -29,9 +29,11 @@ extern "C" {
 #include "ux_api.h"
 #include "main.h"
 #include "ux_host_cdc_acm.h"
+#include "ux_hcd_stm32.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "ux_hcd_stm32.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -40,11 +42,9 @@ extern "C" {
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
-#define USBX_HOST_MEMORY_STACK_SIZE     1024 * 14
 
 #define UX_HOST_APP_THREAD_STACK_SIZE   1024
 #define UX_HOST_APP_THREAD_PRIO         10
-
 /* USER CODE BEGIN EC */
 
 /* USER CODE END EC */
@@ -61,9 +61,10 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 UINT MX_USBX_Host_Init(VOID *memory_ptr);
+UINT MX_USBX_Host_Stack_Init(VOID);
+UINT MX_USBX_Host_Stack_DeInit(VOID);
 
 /* USER CODE BEGIN EFP */
-VOID USBX_APP_Host_Init(VOID);
 void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin);
 /* USER CODE END EFP */
 

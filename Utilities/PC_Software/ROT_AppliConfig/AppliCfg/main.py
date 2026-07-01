@@ -23,7 +23,7 @@ from struct import pack
 from AppliCfg import ACutils
 from AppliCfg import xml_parser
 
-SOURCE_VERSION = "1.1.3"
+SOURCE_VERSION = "1.1.4.rc2"
 
 MIN_PYTHON_VERSION = (3, 10)
 AppliCfgLog=ACutils.LOG(False,True)
@@ -116,7 +116,6 @@ def linker(infile, xml, xml_name, layout, macro, name, expression, constants, vb
         if "cons" in expression and not constants :
             logs.error("Expressions needs constants values")
         value = ACutils.compute_expression(expression, values, constants, logs)
-
     # For linker project the final value is required en hex format. The value
     # will be formatted
     logs.info("Value to be used %s" %hex(value))
@@ -135,7 +134,7 @@ def linker(infile, xml, xml_name, layout, macro, name, expression, constants, vb
               help='Location of the file that contains preprocessed macros')
 @click.option('-m', '--macro', default="",
               help='macro symbol to search in the preprocessed file')
-@click.option('-e', '--enable', default="", type=BasedIntAllParamType(AppliCfgLog),
+@click.option('-e', '--enable', default=0, type=BasedIntAllParamType(AppliCfgLog),
               help='Define xml enable status 0 for disable or 1 for enable')
 @click.option('-n', '--name', default="",
               help='Tag <Name> content in the xml file. This will allow to '
@@ -167,11 +166,10 @@ def xmlen(infile, layout, macro, enable, name, command, vb):
         macrofile=ACutils.SCRIPT_APPLI(layout, logs)
         param_en_status = macrofile.get_macro_value(macro)
     else:
-        if enable:
+        if enable is not None:
             param_en_status = enable
         else:
             logs.error("Enable option or layout were not defined")
-
     # If value is equals to zero the parameter will be disable otherwise it will
     # be enabled
     param_en_status = "0" if param_en_status == 0 else "1"
@@ -185,7 +183,6 @@ def xmlen(infile, layout, macro, enable, name, command, vb):
     xml_obj = xml_parser.XML_APPLI(infile, logs)
     xml_obj.get_items("Enable")
     xml_obj.get_filter_list(element_name)
-
     # Enable or disable the options
     if not xml_obj.modify_value(element_content, element_name, "Enable", param_en_status):
         tag_structure = "<%s>" % element_name + \
@@ -241,7 +238,7 @@ def xmlparam(infile, layout, macro, name, type, link, value, command, enable,
         logs=AppliCfgLog
     logs.begin("xmlparam")
     logs.array(sys.argv)
-    if os.path.isfile(layout):
+    if layout and os.path.isfile(layout):
         if not macro:
             logs.error("--macro argument was not defined")
         # if layout is defined, the tag to be add/rm will
@@ -249,11 +246,14 @@ def xmlparam(infile, layout, macro, name, type, link, value, command, enable,
         macrofile=ACutils.SCRIPT_APPLI(layout, logs)
         macro_value = macrofile.get_macro_value(macro)
         param_option = "add" if macro_value > 0 else "rm"
-    else:
+    elif not layout:
         if option:
             param_option = option
         else:
-            logs.error("Option or layout file were not defined")
+            logs.error("Option is not defined")
+    else:
+        logs.error("layout file is not defined")
+    logs.info(f"option {param_option}")
     if param_option == "rm":
         xml_obj = xml_parser.XML_APPLI(infile, logs)
         if not name and not command:
@@ -286,7 +286,6 @@ def xmlparam(infile, layout, macro, name, type, link, value, command, enable,
             parameter_content["Tooltip"] = tooltip
         if not default is None:
             parameter_content["Default"] = default
-
         if "Name" in parameter_content or "Command" in parameter_content:
             # Item to verify if Parameter already exists
             tag = "Command" if "Command" in parameter_content else "Name"
@@ -405,7 +404,6 @@ def xmlval(infile, xml, xml_name, layout, macro, second_macro, value, binary_fil
                 v.set(x)
                 if int(last_value)==int(v):
                     found=True
-            
             # if macro arguments are defined, it is necessary to verify witch value use
             if found:
                 logs.info("Value present, choosing second_macro instead")
@@ -438,24 +436,19 @@ def xmlval(infile, xml, xml_name, layout, macro, second_macro, value, binary_fil
         layout_config_index.set(readvalue)
         if layout_config_index.is_none():
             logs.error("No value found for '%s'" %readvalue)
-
         # Get the started index of the element
         binary_element_offset = int(binary_element_size * int(layout_config_index))
-
         # Read binary file and get element configuration
         with open(binary_file, 'rb') as f:
             data = f.read()
-
         if binary_element_offset + binary_element_size > len(data):
             logs.error("Binary element configuration is bigger than binary file size")
         binary_conf_element = data[binary_element_offset : binary_element_offset + binary_element_size]
-
         if binary_element_index >= len(binary_conf_element):
             logs.error("The index value is bigger than the element size")
         if binary_data_size % 8 != 0 :
             logs.error("Bits size not available")
         bytes_to_recover=binary_data_size//8
-        
         start_idx = binary_element_index
         end_idx = binary_element_index + bytes_to_recover
         if end_idx > len(binary_conf_element) :
@@ -678,7 +671,6 @@ def obscript(infile, xml, begin, option_byte, secure_pattern, code_size, code_of
                 break
     if not found:
         logs.error("Invalid option byte (%s)" % option_byte)
-
     # Initialize xml object
     replace_val = {}
     xml_obj = xml_parser.XML_APPLI(xml, logs)
@@ -693,7 +685,6 @@ def obscript(infile, xml, begin, option_byte, secure_pattern, code_size, code_of
             found=True
     if not found:
         logs.error("Not value found for '%s'" % secure_pattern)
-   
     if "WRPS" in option_byte:
         if not code_offset:
             logs.error("Tag <Name> content to get the code offset was not defined")
@@ -701,7 +692,6 @@ def obscript(infile, xml, begin, option_byte, secure_pattern, code_size, code_of
             logs.error("Tag <Name> content to get the code size was not defined")
         logs.info("Search code_offset")
         code_offset = xml_obj.get_value(code_offset, "Value")
-
         ## If the firmware is full secure, it this necessary to get the size
         ## of "Firmware area size" instead the "Size of the secure area"
         if division is None:
@@ -712,7 +702,6 @@ def obscript(infile, xml, begin, option_byte, secure_pattern, code_size, code_of
             replace_val["WRPS"] = stirot_compute_wrps(code_offset, code_size, division, bank_size, logs)
         else :
             logs.error("Code primary offset or secure value size are empty")
-        
     elif "SECWM" in option_byte:
       try:
         if not code_offset:
@@ -787,7 +776,6 @@ def obscript(infile, xml, begin, option_byte, secure_pattern, code_size, code_of
            replace_val["ECC_ON_SRAM"] = "0"
         except Exception as e: 
           raise ACutils.AppliCFGException("ECC_ON_SRAM error, "+str(e))
-
     ret = False
     protections_error = []
     # Routine that allows to replace all the values contained in the dictionary
@@ -798,7 +786,6 @@ def obscript(infile, xml, begin, option_byte, secure_pattern, code_size, code_of
         begin=fr"^\s*\"?\${begin}\"?[\s+[\$\w\-=]*]*"
     else:
         logs.error("file type error")
-    
     for opt in replace_val:
         pattern=fr"{begin}\s+{opt}\s*="
         # There are several places where the variables to be replaced are defined,
@@ -852,40 +839,32 @@ def sectorerase(infile, xml, slot, begin_xml, size_xml, memory, division, vb):
         logs.error("Slot '%s' not supported" % slot)
     if not memory.startswith("ext_nvm"):
         logs.error("Memory type '%s' not supported" % memory)
-
     start_value=ACutils.StringValue(logs)
     size_value=ACutils.StringValue(logs)
     erase = {"start": begin_xml,
              "size": size_xml}
     logs.info("Obtaining the input values to calculate the sectors to erase '%s' area" %slot)
     logs.info("Searching for '%s' area" %erase["start"])
-
     if not os.path.isfile(xml): # Recover values from xml file
         logs.error("xml or layout file were not defined")
-
     xml_obj = xml_parser.XML_APPLI(xml, logs)
     xml_obj.get_items("Name")
     logs.info("Search begin_xml")
     xml_obj.get_value(begin_xml, "Value")
     start_value.set(xml_obj.get_value(erase["start"], "Value"))
     size_value.set(xml_obj.get_value(erase["size"], "Value"))
-
     if start_value.is_none():
         logs.error("Variable (%s) not found or not computed" % erase["start"])
     if start_value.is_none():
         logs.error("Variable (%s) not found or not computed" % erase["size"])
-
     # When using .bat files the variable needs to be set
     erase_line_start=f"{memory}_{slot}_start"
     pattern_start=output.pattern(erase_line_start,"=")
     erase_line_stop=f"{memory}_{slot}_stop"
     pattern_stop=output.pattern(erase_line_stop,"=")
-    
     erase_slots_area  = ACutils.compute_sector_area( int(start_value), int(size_value), logs, int(division))
-    
     op1=output.modify_file_value(pattern_start, None, str(erase_slots_area[0]))
     op2=output.modify_file_value(pattern_stop, None, str(erase_slots_area[1]))
-
     if not op1:
         logs.error("Initial pattern (%s) not found" % begin_line)
     else:
@@ -984,7 +963,6 @@ def definevalue(infile, layout, macro, xml, value, xml_name, name, parenthesis, 
         data=ACutils.StringValue(logs)
         data.set(value)
         values.append(data)
-
     # Different input values are only accepted when the expression argument is used
     # otherwise the last value of values list will be used
     if len(values) > 1 and not expression:
@@ -992,19 +970,16 @@ def definevalue(infile, layout, macro, xml, value, xml_name, name, parenthesis, 
             logs.info("Using the value of the last content recovered %s" %data.getInt())
         else:
             logs.info("Using the value of the last content recovered %s" %data.getHex())
-    
     # If expression is declared, the expression will be computed
     if expression :
         if "cons" in expression and not constants :
             logs.error("Expressions needs constants values")
         data.set(ACutils.compute_expression(expression, values, constants, logs))
     # For xml file the final value is required en hex format. The value will be formatted
-
     if decimal:
         choosenvalue=data.getInt()
     else:
         choosenvalue=data.getHex()
-
     # Select the way to obtain the value to be replaced
     # white spaces #define tests       5   /*test value*/
     # or
@@ -1016,7 +991,6 @@ def definevalue(infile, layout, macro, xml, value, xml_name, name, parenthesis, 
         pattern=output.pattern(name, "",False)
     if parenthesis:
         pattern+=r"\(\s*"
-
     oldval=output.get_file_value(pattern, occurrence=occurrence)
     ret = output.modify_file_value(pattern, oldval , choosenvalue, occurrence)
     if not ret:
@@ -1061,7 +1035,6 @@ def setdefine(infile, xml, xml_name, layout, macro, action, value, name, vb):
     xml_value=ACutils.StringValue(logs)
     macro_value=ACutils.StringValue(logs)
     output=ACutils.SCRIPT_APPLI(infile, logs)
-    
     cpt=0
     if xml:
         cpt+=1
@@ -1131,7 +1104,6 @@ def keyconfig(infile, layout, macro, name, vb):
     logs.begin("keyconfig")
     logs.array(sys.argv)
     # Verify if the input files exist
-    
     if not os.path.isfile(infile):
         logs.error("File (%s) not found" % infile)
     if not os.path.isfile(layout): # Recover value from macro_preprocessed file
@@ -1140,21 +1112,16 @@ def keyconfig(infile, layout, macro, name, vb):
     
     macrofile=ACutils.SCRIPT_APPLI(layout, logs)
     value=macrofile.get_macro_value(macro)
-
     cryptoscheme = str(value)
-
     cs = {"0": "rsa_2048", "1": "rsa_3072", "2": "ecdsa-p256"}
-
     if not cryptoscheme in cs:
         logs.error("Wrong crypto scheme value (%s)" % cryptoscheme)
-
     # Initialize xml object
     xml_obj = xml_parser.XML_APPLI(infile, logs)
     xml_obj.get_items("Name")
     ret = xml_obj.modify_value( name, "Name", "KeyType", cs[cryptoscheme])
     if not ret:
         logs.error("The key modification was not successfully performed")
-
     # Modified and save the xml modified
     xml_obj.save_file()
 
@@ -1178,7 +1145,7 @@ def keyconfig(infile, layout, macro, name, vb):
 @click.option('-d', '--division', type=BasedIntAllParamType(AppliCfgLog), default=None,
               help='divide the value')
 @click.option('--decimal', default=False, is_flag=True,
-              help='Define it if the value to be replaced es in decimal format'
+              help='Define it if the value to be replaced have to be in decimal format'
                    'by default the value to replace is in hex format')
 @click.option('-e', '--expression', default="",
               help='Expression in order to modify the value found. The --constant'
@@ -1205,7 +1172,7 @@ def flash(infile, xml, layout, macro, name, begin, save_result, division, decima
     output=ACutils.SCRIPT_APPLI(infile, logs)
     values=[]
     value=ACutils.StringValue(logs)
-    if os.path.isfile(xml): # Recover value from xml file
+    if xml is not None and os.path.isfile(xml): # Recover value from xml file
         # Initialize xml object
         xml_obj = xml_parser.XML_APPLI(xml, logs)
         xml_obj.get_items("Name")
@@ -1215,7 +1182,7 @@ def flash(infile, xml, layout, macro, name, begin, save_result, division, decima
             if value.is_none():
                 logs.error("No value found for '%s'. Output file can not be modified"% xml_name)
             values.append(int(value))
-    elif os.path.isfile(layout): # Recover value from macro_preprocessed file
+    elif layout is not None and os.path.isfile(layout): # Recover value from macro_preprocessed file
         # Compute and return value from macro file
         macrofile=ACutils.SCRIPT_APPLI(layout, logs)
         value.set(macrofile.get_macro_value(macro))
@@ -1258,7 +1225,6 @@ def flash(infile, xml, layout, macro, name, begin, save_result, division, decima
         logs.info(str_debug)
     # Choose the value format
     choosenValue=value.getInt() if decimal else value.getHex()
-
     logs.info("Value to be used %s" %choosenValue)
     # Define pattern to search
     # When using .bat files the variable needs to be set
@@ -1315,7 +1281,6 @@ def setob(infile, layout, begin, macro_start, macro_end, macro_sectors,
     ob = {"start": macro_start,
           "end": macro_end,
           "secnbr": macro_sectors}
-
     # Compute and return values from macro file
     logs.info("Obtaining the input values to calculate the protection of '%s'" %begin)
     start_value=ACutils.StringValue(logs)
@@ -1349,7 +1314,6 @@ def setob(infile, layout, begin, macro_start, macro_end, macro_sectors,
         logs.info("Flash sectors to set under WRP from %d to %d" % (wrps_str, wrps_end))
         wrps_enable = 0
         wrps_disable = 1
-        
         for i in range(wrps_group_nb):
             pattern=output.pattern(begin+ str(i), "=")
             # When using .bat files the variable needs to be set
@@ -1423,7 +1387,6 @@ def oneimage(first_bin, second_bin, input_size, optional_size, output_bin, vb):
     binary_1=ACutils.BIN_FILE(first_bin, logs, True)
     binary_2=ACutils.BIN_FILE(second_bin, logs, True)
     output=ACutils.BIN_FILE(output_bin, logs)
-
     if optional_size != 0:
         logs.info("Extra padding will be added at the end of the first binary")
         optional_binary = binary_1.data+(optional_size-len(binary_1))*pack("B", 0xff)
@@ -1434,7 +1397,6 @@ def oneimage(first_bin, second_bin, input_size, optional_size, output_bin, vb):
         binary = binary_2.data+ (input_size-len(binary_2))*pack("B", 0xff)
     else:
         binary=binary_2.data
-
     output.save(optional_binary+binary)
     logs.info("Image assembly success")
     logs.info("Final image size '%s'" % len(output))
@@ -1494,7 +1456,6 @@ def iofile(infile, layout, macro_encrypted, macro_image, xml, input_bin,
     else:
         img_enc_mode ="_sign.hex"
         enc_status = "0"
-
     input_bin_path=input_bin.replace("\\","/")
     if "Code" in xml:
         img_type = "app"
@@ -1535,7 +1496,6 @@ def iofile(infile, layout, macro_encrypted, macro_image, xml, input_bin,
                 sys.exit(0)
         else:
             logs.error("Wrong xml image")
-
    # Initialize xml object
     logs.info("Modifying input/output binaries from the xml file")
     xml_obj = xml_parser.XML_APPLI(xml, logs)
@@ -1555,7 +1515,6 @@ def iofile(infile, layout, macro_encrypted, macro_image, xml, input_bin,
             file_prefix  += "ns_"
 
     new_file_name =  file_prefix + img_type + img_enc_mode
-
     # Save xml modification
     save_modifications = False # If one value is True then the file must be saved
     if file_name != new_file_name:
@@ -1567,7 +1526,6 @@ def iofile(infile, layout, macro_encrypted, macro_image, xml, input_bin,
         save_modifications |= xml_obj.do_save_file
     else :
         logs.info("The binary output content has the correct file")
-
     logs.info("Modify Binary input path by '%s'" % input_bin_path)
     xml_obj.modify_value(input_name, "Name", "Value", input_bin_path)
     save_modifications |= xml_obj.do_save_file
@@ -1577,11 +1535,9 @@ def iofile(infile, layout, macro_encrypted, macro_image, xml, input_bin,
     if save_modifications:
         xml_obj.do_save_file = True
     xml_obj.save_file()
-
     logs.info("Modifying input binaries from the script file", logs)
     # When using .bat files the variable needs to be set
     pattern=output.pattern(begin,"=")
-
     new_value = new_file_name
     if not output.modify_file_value(pattern, None, new_value):
         logs.error("Initial pattern (%s) not found" % begin)
@@ -1619,9 +1575,7 @@ def modifyfilevalue(infile, xml, xml_name, value, variable, shift, delimiter,
     logs.begin("modifyfilevalue")
     logs.array(sys.argv)
     output=ACutils.SCRIPT_APPLI(infile, logs)
-    
     search_value=output.pattern(variable,delimiter)
-
     if str_in :
         # Define pattern to search
         # When using .bat files the variable needs to be set
@@ -1633,7 +1587,6 @@ def modifyfilevalue(infile, xml, xml_name, value, variable, shift, delimiter,
             logs.info(str_debug)
             output.save()
         sys.exit(0)
-    
     elif shift is not None:
         new_hex_value=ACutils.StringValue(logs)
         logs.info("Searching old variable %s value in file '%s'" % (variable, output.name()))
@@ -1662,7 +1615,6 @@ def modifyfilevalue(infile, xml, xml_name, value, variable, shift, delimiter,
             logs.error("No data to modify")
         choosenValue = xml_value.getHex()
         logs.info("File to update '%s'" % output.name())
-
     if not output.modify_file_value(search_value, None, choosenValue):
         logs.error("Variable (%s) not found in the file" % variable)
     else:

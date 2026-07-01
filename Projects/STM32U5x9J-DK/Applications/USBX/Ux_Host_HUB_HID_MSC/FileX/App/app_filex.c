@@ -58,7 +58,7 @@ static UCHAR Write_buffer[] = "USBX_STM32_Host_Mass_Storage";
   * @brief  Application FileX Initialization.
   * @param memory_ptr: memory pointer
   * @retval int
-*/
+  */
 UINT MX_FileX_Init(VOID *memory_ptr)
 {
   UINT ret = FX_SUCCESS;
@@ -67,17 +67,16 @@ UINT MX_FileX_Init(VOID *memory_ptr)
   /* USER CODE BEGIN MX_FileX_MEM_POOL */
   (void)byte_pool;
   /* USER CODE END MX_FileX_MEM_POOL */
+  /* USER CODE BEGIN MX_FileX_Init */
 
-/* USER CODE BEGIN MX_FileX_Init */
+  /* USER CODE END MX_FileX_Init */
 
-/* USER CODE END MX_FileX_Init */
-
-/* Initialize FileX.  */
+  /* Initialize FileX.  */
   fx_system_initialize();
 
-/* USER CODE BEGIN MX_FileX_Init 1*/
+  /* USER CODE BEGIN MX_FileX_Init 1*/
 
-/* USER CODE END MX_FileX_Init 1*/
+  /* USER CODE END MX_FileX_Init 1*/
 
   return ret;
 }
@@ -129,10 +128,10 @@ UINT App_File_Write(FX_MEDIA *fx_media)
 }
 
 /**
-* @brief  Application Read File process.
-* @param  fx_media: media pointer
-* @retval status
-*/
+  * @brief  Application Read File process.
+  * @param  fx_media: media pointer
+  * @retval status
+  */
 UINT App_File_Read(FX_MEDIA *fx_media)
 {
   FX_FILE my_file;
@@ -179,10 +178,10 @@ UINT App_File_Read(FX_MEDIA *fx_media)
 }
 
 /**
-* @brief  Application Create File process.
-* @param  fx_media: media pointer
-* @retval status
-*/
+  * @brief  Application Create File process.
+  * @param  fx_media: media pointer
+  * @retval status
+  */
 UINT App_File_Create(FX_MEDIA *fx_media)
 {
   UINT status;

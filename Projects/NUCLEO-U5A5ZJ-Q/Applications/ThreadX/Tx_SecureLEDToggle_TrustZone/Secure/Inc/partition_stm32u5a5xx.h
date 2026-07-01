@@ -108,7 +108,7 @@
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START1       0x08100000      /* end address of SAU region 0 */
+#define SAU_INIT_START1       0x08100000      /* start address of SAU region 1 */
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
@@ -403,7 +403,7 @@
 //   <o.25> EXTI14_IRQn           <0=> Secure state
 //   <o.26> EXTI15_IRQn           <0=> Secure state
 //   <o.27> IWDG_IRQn             <0=> Secure state
-
+//   <o.28> SAES_IRQn             <0=> Secure state
 //   <o.29> GPDMA1_Channel0_IRQn  <0=> Secure state
 //   <o.30> GPDMA1_Channel1_IRQn  <0=> Secure state
 //   <o.31> GPDMA1_Channel2_IRQn  <0=> Secure state
@@ -498,7 +498,7 @@
 //   <o.26> SAI1_IRQn             <0=> Secure state
 //   <o.27> SAI2_IRQn             <0=> Secure state
 //   <o.28> TSC_IRQn              <0=> Secure state
-
+//   <o.29> AES_IRQn              <0=> Secure state
 //   <o.30> RNG_IRQn              <0=> Secure state
 //   <o.31> FPU_IRQn              <0=> Secure state
 */
@@ -565,10 +565,10 @@
 
 /*
 // Interrupts 96..138
-//   <o.0>  I2C5_EV_IRQn          <0=> Secure state <1=> Non-Secure state
-//   <o.1>  I2C6_ER_IRQn          <0=> Secure state <1=> Non-Secure state
-//   <o.2>  I2C6_EV_IRQn          <0=> Secure state <1=> Non-Secure state
-//   <o.3>  HSPI1_IRQn            <0=> Secure state <1=> Non-Secure state
+//   <o.0>  I2C5_EV_IRQn          <0=> Secure state
+//   <o.1>  I2C6_ER_IRQn          <0=> Secure state
+//   <o.2>  I2C6_EV_IRQn          <0=> Secure state
+//   <o.3>  HSPI1_IRQn            <0=> Secure state
 */
 #define NVIC_INIT_ITNS4_VAL      0x00000000
 

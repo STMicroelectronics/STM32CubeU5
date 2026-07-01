@@ -133,6 +133,7 @@
    The minimum value is 13 and the maximum value is 256.  */
 
 /* #define FX_MAX_LAST_NAME_LEN         256 */
+
 /* #define FX_MAX_LONG_NAME_LEN         256 */
 
 /* Defines the maximum number of logical sectors that can be cached by FileX. The cache memory

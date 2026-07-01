@@ -57,6 +57,9 @@ extern UX_HOST_CLASS_CDC_ACM_RECEPTION cdc_acm_reception;
 static VOID app_ux_host_thread_entry(ULONG thread_input);
 static UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *current_instance);
 static VOID ux_host_error_callback(UINT system_level, UINT system_context, UINT error_code);
+
+extern HCD_HandleTypeDef hhcd_USB_OTG_HS;
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -76,42 +79,9 @@ UINT MX_USBX_Host_Init(VOID *memory_ptr)
 
   /* USER CODE END MX_USBX_Host_Init0 */
 
-  /* Allocate the stack for USBX Memory */
-  if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
-                       USBX_HOST_MEMORY_STACK_SIZE, TX_NO_WAIT) != TX_SUCCESS)
-  {
-    /* USER CODE BEGIN USBX_ALLOCATE_STACK_ERROR */
-    return TX_POOL_ERROR;
-    /* USER CODE END USBX_ALLOCATE_STACK_ERROR */
-  }
+  /* USER CODE BEGIN MX_USBX_Host_Init 1 */
 
-  /* Initialize USBX Memory */
-  if (ux_system_initialize(pointer, USBX_HOST_MEMORY_STACK_SIZE, UX_NULL, 0) != UX_SUCCESS)
-  {
-    /* USER CODE BEGIN USBX_SYSTEM_INITIALIZE_ERROR */
-    return UX_ERROR;
-    /* USER CODE END USBX_SYSTEM_INITIALIZE_ERROR */
-  }
-
-  /* Install the host portion of USBX */
-  if (ux_host_stack_initialize(ux_host_event_callback) != UX_SUCCESS)
-  {
-    /* USER CODE BEGIN USBX_HOST_INITIALIZE_ERROR */
-    return UX_ERROR;
-    /* USER CODE END USBX_HOST_INITIALIZE_ERROR */
-  }
-
-  /* Register a callback error function */
-  ux_utility_error_callback_register(&ux_host_error_callback);
-
-  /* Initialize the host cdc acm class */
-  if ((ux_host_stack_class_register(_ux_system_host_class_cdc_acm_name,
-                                    ux_host_class_cdc_acm_entry)) != UX_SUCCESS)
-  {
-    /* USER CODE BEGIN USBX_HOST_CDC_ACM_REGISTER_ERROR */
-    return UX_ERROR;
-    /* USER CODE END USBX_HOST_CDC_ACM_REGISTER_ERROR */
-  }
+  /* USER CODE END MX_USBX_Host_Init 1 */
 
   /* Allocate the stack for host application main thread */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer, UX_HOST_APP_THREAD_STACK_SIZE,
@@ -133,8 +103,7 @@ UINT MX_USBX_Host_Init(VOID *memory_ptr)
     /* USER CODE END MAIN_THREAD_CREATE_ERROR */
   }
 
-  /* USER CODE BEGIN MX_USBX_Host_Init1 */
-
+  /* USER CODE BEGIN MX_USBX_Host_Init 2 */
 
   /* Allocate the stack for cdc_acm receive thread */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
@@ -174,7 +143,7 @@ UINT MX_USBX_Host_Init(VOID *memory_ptr)
     return TX_GROUP_ERROR;
   }
 
-  /* USER CODE END MX_USBX_Host_Init1 */
+  /* USER CODE END MX_USBX_Host_Init 2 */
 
   return ret;
 }
@@ -187,9 +156,27 @@ UINT MX_USBX_Host_Init(VOID *memory_ptr)
 static VOID app_ux_host_thread_entry(ULONG thread_input)
 {
   /* USER CODE BEGIN app_ux_host_thread_entry */
+  /* Start Application Message */
+  USBH_UsrLog("**** USB OTG HS in HS CDC ACM Host **** \n");
+  USBH_UsrLog("USB Host library started.\n");
 
-  /* Initialization of USB host */
-  USBX_APP_Host_Init();
+  /* Wait for Device to be attached */
+  USBH_UsrLog("Starting CDC ACM Application");
+  USBH_UsrLog("Connect your CDC ACM Device");
+
+  /* USB_OTG_HS init function */
+  MX_USB_OTG_HS_HCD_Init();
+
+  /* Initialize the Stack Host USB*/
+  if (MX_USBX_Host_Stack_Init() != UX_SUCCESS)
+  {
+    /* USER CODE BEGIN MAIN_INITIALIZE_STACK_ERROR */
+    Error_Handler();
+    /* USER CODE END MAIN_INITIALIZE_STACK_ERROR */
+  }
+
+  /* Start USB Host */
+  HAL_HCD_Start(&hhcd_USB_OTG_HS);
 
   /* USER CODE END app_ux_host_thread_entry */
 }
@@ -301,12 +288,12 @@ UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *cur
 }
 
 /**
-  * @brief ux_host_error_callback
+  * @brief  ux_host_error_callback
   *         This callback is invoked to notify application of error changes.
   * @param  system_level: system level parameter.
   * @param  system_context: system context code.
   * @param  error_code: error event code.
-  * @retval Status
+  * @retval None
   */
 VOID ux_host_error_callback(UINT system_level, UINT system_context, UINT error_code)
 {
@@ -350,44 +337,96 @@ VOID ux_host_error_callback(UINT system_level, UINT system_context, UINT error_c
   /* USER CODE END ux_host_error_callback1 */
 }
 
-/* USER CODE BEGIN 1 */
 /**
-  * @brief  USBX_APP_Host_Init
-  *         Initialization of USB host.
-  * @param  none
-  * @retval none
+  * @brief  MX_USBX_Host_Stack_Init
+  *         Initialization of USB host stack.
+  *         Init USB Host stack, add register the host class stack
+  * @retval ret
   */
-VOID USBX_APP_Host_Init(VOID)
+UINT MX_USBX_Host_Stack_Init(void)
 {
-  /* USER CODE BEGIN USB_Host_Init_PreTreatment_0 */
+  UINT ret = UX_SUCCESS;
+  /* USER CODE BEGIN MX_USBX_Host_Stack_Init_PreTreatment_0 */
+  /* USER CODE END MX_USBX_Host_Stack_Init_PreTreatment_0 */
 
-  /* USER CODE END USB_Host_Init_PreTreatment_0 */
+  /* The code below is required for installing the host portion of USBX.  */
+  if (ux_host_stack_initialize(ux_host_event_callback) != UX_SUCCESS)
+  {
+    return UX_ERROR;
+  }
 
-  /* Initialize the LL driver */
-  MX_USB_OTG_HS_HCD_Init();
+  /* Register a callback error function */
+  ux_utility_error_callback_register(&ux_host_error_callback);
 
-  /* Initialize the host controller driver */
-  ux_host_stack_hcd_register(_ux_system_host_hcd_stm32_name,
-                             _ux_hcd_stm32_initialize, (ULONG)USB_OTG_HS,
-                             (ULONG)&hhcd_USB_OTG_HS);
+  /* Initialize the host cdc acm class */
+  if ((ux_host_stack_class_register(_ux_system_host_class_cdc_acm_name,
+                                    ux_host_class_cdc_acm_entry)) != UX_SUCCESS)
+  {
+    /* USER CODE BEGIN USBX_HOST_CDC_ACM_REGISTER_ERROR */
+    return UX_ERROR;
+    /* USER CODE END USBX_HOST_CDC_ACM_REGISTER_ERROR */
+  }
 
-  /* Enable USB Global Interrupt*/
-  HAL_HCD_Start(&hhcd_USB_OTG_HS);
+  /* Register all the USB host controllers available in this system. */
+  if (ux_host_stack_hcd_register(_ux_system_host_hcd_stm32_name,
+                             _ux_hcd_stm32_initialize, USB_OTG_HS_BASE,
+                             (ULONG)&hhcd_USB_OTG_HS)!= UX_SUCCESS)
+  {
+    /* USER CODE BEGIN USBX_HOST_STACK_HCD_REGISTER_ERROR */
+    return UX_ERROR;
+    /* USER CODE END USBX_HOST_STACK_HCD_REGISTER_ERROR */
+  }
+  /* USER CODE BEGIN MX_USBX_Host_Stack_Init_PreTreatment_1 */
+  /* USER CODE END MX_USBX_Host_Stack_Init_PreTreatment_1 */
 
-  /* USER CODE BEGIN USB_Host_Init_PostTreatment1 */
-
-  /* Start Application Message */
-  USBH_UsrLog("**** USB OTG HS in HS CDC ACM Host **** \n");
-  USBH_UsrLog("USB Host library started.\n");
-
-  /* Wait for Device to be attached */
-  USBH_UsrLog("Starting CDC ACM Application");
-  USBH_UsrLog("Connect your CDC ACM Device");
-
-  /* USER CODE END USB_Host_Init_PostTreatment1 */
-
+  /* USER CODE BEGIN MX_USBX_Host_Stack_Init_PostTreatment */
+  /* USER CODE END MX_USBX_Host_Stack_Init_PostTreatment */
+  return ret ;
 }
 
+/**
+  * @brief  MX_USBX_Host_Stack_DeInit
+  *         Uninitialize of USB Host stack.
+  *         Uninitialize the host stack, unregister of host class stack and
+  *         unregister of the usb host controllers
+  * @retval ret
+  */
+UINT MX_USBX_Host_Stack_DeInit(void)
+{
+  UINT ret = UX_SUCCESS;
+
+  /* USER CODE BEGIN MX_USBX_Host_Stack_DeInit_PreTreatment_0 */
+
+  /* USER CODE END MX_USBX_Host_Stack_DeInit_PreTreatment_0 */
+
+  /* Unregister all the USB host controllers available in this system. */
+    if (ux_host_stack_hcd_unregister(_ux_system_host_hcd_stm32_name,
+                               USB_OTG_HS_BASE,
+                               (ULONG)&hhcd_USB_OTG_HS)!= UX_SUCCESS)
+  {
+    return UX_ERROR;
+  }
+
+  /* Unregister the host cdc acm class */
+  if (ux_host_stack_class_unregister(ux_host_class_cdc_acm_entry) != UX_SUCCESS)
+  {
+    return UX_ERROR;
+  }
+
+  /* The code below is required for uninstalling the host portion of USBX.  */
+  if (ux_host_stack_uninitialize() != UX_SUCCESS)
+  {
+    return UX_ERROR;
+  }
+
+  /* USER CODE BEGIN MX_USBX_Host_Stack_DeInit_PreTreatment_1 */
+  /* USER CODE END MX_USBX_Host_Stack_DeInit_PreTreatment_1 */
+
+  /* USER CODE BEGIN MX_USBX_Host_Stack_DeInit_PostTreatment */
+  /* USER CODE END MX_USBX_Host_Stack_DeInit_PostTreatment */
+  return ret ;
+}
+/* USER CODE BEGIN 1 */
 /**
   * @brief  GPIO EXTI Callback function
   *         Handle Sending data through key button

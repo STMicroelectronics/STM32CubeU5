@@ -101,7 +101,7 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM_SetInitConfig(void)
 {
   MPCWM_ConfigTypeDef MPCWM_Desc;
   /* protect this SAU/MPCWM2 setup section from any fault interrupt occurrence */
-  __disable_fault_irq();
+  __set_FAULTMASK(1U);
 
   /* Set first half of memory as non-secure, second half as secure */
 
@@ -130,7 +130,7 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM_SetInitConfig(void)
   }
 
   /* re-enable fault interrupt occurrences after this SAU/MPCWM2 setup section */
-  __enable_fault_irq();
+  __set_FAULTMASK(0U);
 }
 
 /**
@@ -144,7 +144,7 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM_SetSecureFaultConfig(void)
   MPCWM_ConfigTypeDef MPCWM_Desc;
 
   /* protect this SAU/MPCWM2 setup section from any fault interrupt occurrence */
-  __disable_fault_irq();
+  __set_FAULTMASK(1U);
 
   /* Here, with initial configuration, a non-secure access has already been done
   * in the secure area and the Secure Fault interrupt occurred. This function
@@ -177,7 +177,7 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM_SetSecureFaultConfig(void)
   }
 
   /* re-enable fault interrupt occurrences after this SAU/MPCWM2 setup section */
-  __enable_fault_irq();
+  __set_FAULTMASK(0U);
 }
 
 /**
@@ -191,7 +191,7 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM_SetIllegalAccessConfig(void)
 {
   MPCWM_ConfigTypeDef MPCWM_Desc;
   /* protect this SAU/MPCWM2 setup section from any fault interrupt occurrence */
-  __disable_fault_irq();
+  __set_FAULTMASK(1U);
 
   /* Here the objective is to provoke a GTZC_IRQn occurrence.
   * We will do a non-secure access in the secure area, but before that, we need
@@ -222,7 +222,7 @@ CMSE_NS_ENTRY void SECURE_SAU_MPCWM_SetIllegalAccessConfig(void)
     while(1);
   }
   /* re-enable fault interrupt occurrences after this SAU/MPCWM2 setup section */
-  __enable_fault_irq();
+  __set_FAULTMASK(0U);
 }
 /**
   * @}

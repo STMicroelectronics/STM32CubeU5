@@ -46,7 +46,6 @@ extern "C" {
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
-#define USBX_DEVICE_MEMORY_STACK_SIZE     4*1024
 
 #define UX_DEVICE_APP_THREAD_STACK_SIZE   1024
 #define UX_DEVICE_APP_THREAD_PRIO         10
@@ -62,14 +61,16 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 UINT MX_USBX_Device_Init(VOID *memory_ptr);
+UINT MX_USBX_Device_Stack_Init(void);
+UINT MX_USBX_Device_Stack_DeInit(void);
 
 /* USER CODE BEGIN EFP */
-VOID USBX_APP_Device_Init(VOID);
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define APP_QUEUE_SIZE          1
+#define APP_QUEUE_SIZE 1
 /* USER CODE END PD */
 
 #ifndef UX_DEVICE_APP_THREAD_NAME

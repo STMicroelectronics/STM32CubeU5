@@ -46,7 +46,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-#define MOSQUITTO_CERT_FILE         "mosquitto.cert.h"
+#define MQTT_TLS_CA_CERT_FILE       "starfield_services_root_ca_g2.cert.h"
 
   /* Threads configuration */
 #define PAYLOAD_SIZE                1544
@@ -70,7 +70,7 @@ extern "C" {
 #define TOPIC_NAME                  "Temperature"
 #define NB_MESSAGE                  10                    /*  if NB_MESSAGE = 0, client will publish messages infinitely */
 
-#define MQTT_BROKER_NAME            "test.mosquitto.org" /* MQTT Server */
+#define MQTT_BROKER_NAME            "broker.hivemq.com"   /* MQTT public broker hostname */
 
 #define MQTT_PORT                   NXD_MQTT_TLS_PORT
 

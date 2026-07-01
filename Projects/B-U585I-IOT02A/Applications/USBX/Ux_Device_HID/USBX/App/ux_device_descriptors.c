@@ -206,6 +206,7 @@ uint8_t *USBD_Get_Device_Framework_Speed(uint8_t Speed, ULONG *Length)
 
   if (USBD_FULL_SPEED == Speed)
   {
+    _ux_utility_memory_set(&USBD_Device_FS, 0U, sizeof(USBD_Device_FS));
     USBD_Device_Framework_Builder(&USBD_Device_FS, pDevFrameWorkDesc_FS,
                                   UserClassInstance, Speed);
 
@@ -216,6 +217,7 @@ uint8_t *USBD_Get_Device_Framework_Speed(uint8_t Speed, ULONG *Length)
   }
   else
   {
+    _ux_utility_memory_set(&USBD_Device_HS, 0U, sizeof(USBD_Device_HS));
     USBD_Device_Framework_Builder(&USBD_Device_HS, pDevFrameWorkDesc_HS,
                                   UserClassInstance, Speed);
 
@@ -693,6 +695,7 @@ uint8_t  USBD_FrameWork_AddToConfDesc(USBD_DevClassHandleTypeDef *pdev, uint8_t 
 
       break;
 #endif /* USBD_HID_CLASS_ACTIVATED == 1U */
+
     /* USER CODE BEGIN FrameWork_AddToConfDesc_1 */
 
     /* USER CODE END FrameWork_AddToConfDesc_1 */

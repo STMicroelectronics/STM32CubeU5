@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   USBX STM32 config header file
   ******************************************************************************
-    * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.

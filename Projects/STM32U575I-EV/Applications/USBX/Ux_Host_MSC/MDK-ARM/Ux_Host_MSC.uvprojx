@@ -18,7 +18,7 @@
           <Vendor>STMicroelectronics</Vendor>
           <PackID>Keil.STM32U5xx_DFP.2.2.4</PackID>
           <PackURL>https://www.keil.com/pack/</PackURL>
-          <Cpu>IRAM(0x20000000-0x200BFFFF) IROM(0x08000000-0x81FFFFF)  CLOCK(8000000) FPU3(SFPU) CPUTYPE("Cortex-M33") ELITTLE TZ DSP</Cpu>
+          <Cpu>IRAM(0x20000000-0x200BFFFF) IROM(0x08000000-0x81FFFFF) CLOCK(8000000) FPU3(SFPU) CPUTYPE("Cortex-M33") ELITTLE TZ DSP</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
           <FlashDriverDll></FlashDriverDll>
@@ -33,7 +33,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:STM32U575AIIx$CMSIS\SVD\STM32U5xx.svd</SFDFile>
+          <SFDFile>$$Device:STM32U575AIIx$CMSIS\SVD\STM32U575.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -358,7 +358,7 @@
               <MiscControls></MiscControls>
               <Define>TX_SINGLE_MODE_NON_SECURE=1</Define>
               <Undefine></Undefine>
-              <IncludePath></IncludePath>
+              <IncludePath>../FileX/App;../Core/Inc;../AZURE_RTOS/App;../USBPD/App;../USBPD/Target;../USBX/App;../USBX/Target;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc;../../../../../../Drivers/STM32U5xx_HAL_Driver/Inc/Legacy;../../../../../../Middlewares/ST/threadx/common/inc;../../../../../../Middlewares/ST/STM32_USBPD_Library/Core/inc;../../../../../../Middlewares/ST/STM32_USBPD_Library/Devices/STM32U5XX/inc;../../../../../../Drivers/CMSIS/Device/ST/STM32U5xx/Include;../../../../../../Middlewares/ST/filex/common/inc;../../../../../../Middlewares/ST/filex/ports/generic/inc;../../../../../../Middlewares/ST/threadx/ports/cortex_m33/ac6/inc;../../../../../../Middlewares/ST/usbx/common/core/inc;../../../../../../Middlewares/ST/usbx/ports/generic/inc;../../../../../../Middlewares/ST/usbx/common/usbx_stm32_host_controllers;../../../../../../Middlewares/ST/usbx/common/usbx_host_classes/inc;../../../../../../Drivers/CMSIS/Include;../../../../../../Drivers/BSP/STM32U575I-EV</IncludePath>
             </VariousControls>
           </Aads>
           <LDads>
@@ -475,6 +475,11 @@
               <FilePath>../USBX/App/app_usbx_host.c</FilePath>
             </File>
             <File>
+              <FileName>app_usbx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../USBX/App/app_usbx.c</FilePath>
+            </File>
+            <File>
               <FileName>ux_host_msc.c</FileName>
               <FileType>1</FileType>
               <FilePath>../USBX/App/ux_host_msc.c</FilePath>
@@ -558,6 +563,11 @@
               <FileName>stm32u5xx_ll_exti.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32u5xx_ll_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_pwr.c</FilePath>
             </File>
             <File>
               <FileName>stm32u5xx_hal_tim.c</FileName>
@@ -3170,6 +3180,16 @@
               <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_free.c</FilePath>
             </File>
             <File>
+              <FileName>ux_utility_memory_byte_pool_create.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_byte_pool_create.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_utility_memory_byte_pool_search.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_byte_pool_search.c</FilePath>
+            </File>
+            <File>
               <FileName>ux_utility_memory_set.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_set.c</FilePath>
@@ -3333,16 +3353,6 @@
               <FileName>ux_system_uninitialize.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_system_uninitialize.c</FilePath>
-            </File>
-            <File>
-              <FileName>ux_utility_memory_byte_pool_create.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_create.c</FilePath>
-            </File>
-            <File>
-              <FileName>ux_utility_memory_byte_pool_search.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_search.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3656,7 +3666,7 @@
   <RTE>
     <apis/>
     <components>
-      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.6.0" condition="ARMv6_7_8-M Device">
+      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.6.0" condition="CMSIS Core">
         <package name="CMSIS" schemaVersion="1.7.7" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/>
         <targetInfos>
           <targetInfo name="Ux_Host_MSC"/>

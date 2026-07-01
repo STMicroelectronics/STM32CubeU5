@@ -31,7 +31,7 @@ extern "C" {
 #include "stm32u5xx_hal.h"
 #include "app_azure_rtos_config.h"
 
-#include "app_usbx_device.h"
+#include "app_usbx.h"
 #include "usbpd.h"
 
 /* Private includes ----------------------------------------------------------*/

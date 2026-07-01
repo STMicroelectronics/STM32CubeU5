@@ -711,6 +711,7 @@ static void HAL_TransferError(DMA_HandleTypeDef *DMAHandle)
 
 /**
   * @brief  This function is executed in case of error occurrence.
+  * @param  None
   * @retval None
   */
 void Error_Handler(void)
@@ -723,8 +724,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

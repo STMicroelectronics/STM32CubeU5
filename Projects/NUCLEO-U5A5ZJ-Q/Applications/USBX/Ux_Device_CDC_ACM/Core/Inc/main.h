@@ -44,6 +44,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stm32u5xx_nucleo.h"
+#include "ux_device_descriptors.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

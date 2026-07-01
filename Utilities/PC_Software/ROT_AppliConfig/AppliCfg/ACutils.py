@@ -264,10 +264,8 @@ class SCRIPT_APPLI(MANAGE_FILE):
         for i, line in enumerate(self.__lines):
             # Search define with value
             pattern_in_line = reqdef1.search(line)
-
             if pattern_in_line is None:
                 pattern_in_line = reqdef2.search(line)
-
             if pattern_in_line:
                 if name in pattern_in_line.group(1):
                     str_idx, end_indx = pattern_in_line.span()
@@ -613,7 +611,10 @@ def compute_expression(expression:str, values:array, constants, logs:LOG)->int:
         for value in values:
             i +=1
             pattern = "val%s" %i
-            expression = expression.replace(pattern, value.getInt())
+            if type(value)==int:
+                expression = expression.replace(pattern, str(value))
+            else:
+                expression = expression.replace(pattern, value.getInt())
     logs.info("Expression patterns were replaced to '%s' " %expression)
     try :
         return int(eval(expression))
@@ -645,7 +646,6 @@ def stirot_compute_wm(code_primary_offset:int, secure_area_size:int,
         raise AppliCFGException("code_primary_offset is not an int, it's a %s" % type(code_primary_offset))
     page_number = (bankSize // pagesize)-1
     secure_sector_size = (secure_area_size // pagesize)-1
-
     if secure_sector_size < 0:
         logs.error("Wrong secure area size '%s'" % hex(secure_sector_size))
     # Compute WM's start and end protections
@@ -701,18 +701,15 @@ def compute_wrp_protections(wrp_address_start:int, wrp_address_end:int, wrp_sect
              " See the reference manual for more information")
     #sector_sz = int(sector_size, 16)
     # Compute the start and end sectors (with the wrp group size)
-
     wrp_start = int(wrp_address_start / wrp_sector_sz)
     wrp_end = int(wrp_address_end / wrp_sector_sz)
     # Total number of sectors group in bank 1 and 2
     wrp_group_nb = (
         int((sector_nb + 1) / int(wrp_sector_sz / sector_size)) * 2) - 1
-
     wrp = ""
     for i in range(wrp_group_nb, -1, -1):
         # 0: the group is write protected; 1: the group is not write protected
         wrp += "0" if wrp_start <= i <= wrp_end else "1"
-
     # Transform binary to dec
     wrpg1_end = int((wrp_group_nb + 1)/2)
     try:
@@ -783,7 +780,6 @@ def compute_sector_area(sector_address_start:int, area_size:int, logs:LOG, secto
         decrement = 0
     else:
         decrement = 1
-
     # Compute the start and end sectors (with the wrp group size)
     logs.info("Computing the erase slot area.")
     slot_sector_sz = sector_size

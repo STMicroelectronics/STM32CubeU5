@@ -45,7 +45,7 @@ extern "C" {
 
 #define TX_APP_MEM_POOL_SIZE                     1024
 
-#define UX_DEVICE_APP_MEM_POOL_SIZE              7168
+#define UX_APP_MEM_POOL_SIZE                     7168
 
 #define USBPD_DEVICE_APP_MEM_POOL_SIZE           5000
 
@@ -71,6 +71,4 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
 #endif /* APP_AZURE_RTOS_CONFIG_H */
-

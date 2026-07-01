@@ -70,6 +70,7 @@ static void MX_UCPD1_Init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -402,7 +403,9 @@ void MX_USB_OTG_FS_PCD_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USB_OTG_FS_Init 2 */
-
+  HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_FS, 0x80);
+  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 0, USBD_MAX_EP0_SIZE / 4);
+  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_FS, 1, USBD_HID_MOUSE_EPIN_FS_MPS / 4);
   /* USER CODE END USB_OTG_FS_Init 2 */
 
 }
@@ -415,8 +418,8 @@ void MX_USB_OTG_FS_PCD_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -444,8 +447,8 @@ static void MX_GPIO_Init(void)
   HAL_NVIC_SetPriority(EXTI13_IRQn, 7, 0);
   HAL_NVIC_EnableIRQ(EXTI13_IRQn);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -476,6 +479,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 /**
   * @brief  This function is executed in case of error occurrence.
+  * @param  None
   * @retval None
   */
 void Error_Handler(void)
@@ -487,8 +491,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

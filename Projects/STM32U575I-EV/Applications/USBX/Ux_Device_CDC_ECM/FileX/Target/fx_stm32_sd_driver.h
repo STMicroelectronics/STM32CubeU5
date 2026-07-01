@@ -174,7 +174,7 @@ extern TX_SEMAPHORE sd_rx_semaphore;
 
 #define FX_STM32_SD_WRITE_TRANSFER_ERROR(_status_)
 
-/* USER CODE END FX_STM32_SD_WRITE_TRANFSER_ERROR */
+/* USER CODE END FX_STM32_SD_WRITE_TRANSFER_ERROR */
 
 /* Exported functions prototypes ---------------------------------------------*/
 

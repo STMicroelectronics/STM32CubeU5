@@ -485,23 +485,23 @@ void HAL_FMAC_ErrorCallback(FMAC_HandleTypeDef *hfmac)
 
 /**
   * @brief  This function is executed in case of error occurrence.
+  * @param  None
   * @retval None
   */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
+  HAL_NVIC_DisableIRQ(GPDMA1_Channel1_IRQn);
   /* LED1 is blinking */
-  BSP_LED_Toggle(LED1);
-  HAL_Delay(500);
   while (1)
   {
+    BSP_LED_Toggle(LED1);
+    HAL_Delay(500);
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

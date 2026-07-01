@@ -475,6 +475,11 @@
               <FilePath>../USBX/App/app_usbx_host.c</FilePath>
             </File>
             <File>
+              <FileName>app_usbx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../USBX/App/app_usbx.c</FilePath>
+            </File>
+            <File>
               <FileName>ux_host_keyboard.c</FileName>
               <FileType>1</FileType>
               <FilePath>../USBX/App/ux_host_keyboard.c</FilePath>
@@ -558,6 +563,11 @@
               <FileName>stm32u5xx_ll_exti.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32u5xx_ll_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_pwr.c</FilePath>
             </File>
             <File>
               <FileName>stm32u5xx_hal_tim.c</FileName>
@@ -2290,6 +2300,16 @@
           <GroupName>Middlewares/USBX/UX Host Class HID Mouse</GroupName>
           <Files>
             <File>
+              <FileName>ux_utility_memory_byte_pool_create.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_create.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_utility_memory_byte_pool_search.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_search.c</FilePath>
+            </File>
+            <File>
               <FileName>ux_host_class_hid_mouse_activate.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_host_classes/src/ux_host_class_hid_mouse_activate.c</FilePath>
@@ -2323,16 +2343,6 @@
               <FileName>ux_host_class_hid_mouse_wheel_get.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/usbx/common/usbx_host_classes/src/ux_host_class_hid_mouse_wheel_get.c</FilePath>
-            </File>
-            <File>
-              <FileName>ux_utility_memory_byte_pool_create.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_create.c</FilePath>
-            </File>
-            <File>
-              <FileName>ux_utility_memory_byte_pool_search.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_search.c</FilePath>
             </File>
           </Files>
         </Group>

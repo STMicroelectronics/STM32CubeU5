@@ -23,9 +23,10 @@
 <p>This application provides an example of Azure RTOS USBX stack usage on STM32U5G9J-DK2 board, it shows how to develop USB device communication class “CDC_ACM” based application.</p>
 <p>The application is designed to emulate an USB-to-UART bridge following the Virtual COM Port (VCP) implementation, the code provides all required device descriptors framework and associated class descriptor report to build a compliant USB CDC_ACM device. At the beginning ThreadX call the entry function tx_application_define(), at this stage, all USBx resources are initialized, the CDC_ACM class driver is registered and the application creates 3 threads with the same priorities :</p>
 <ul>
-<li>app_ux_device_thread_entry      (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver and start the device.</li>
+<li>app_ux_device_thread_entry      (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver.</li>
 <li>usbx_cdc_acm_read_thread_entry  (Prio : 20; PreemptionPrio : 20) used to read the received data from Virtual COM Port.</li>
 <li>usbx_cdc_acm_write_thread_entry (Prio : 20; PreemptionPrio : 20) used to send the received data over UART.</li>
+<li>usbc_detect_thread_entry        (Prio : 20; PreemptionPrio : 20) used to start and stop the device.</li>
 </ul>
 <p>The thread app_ux_device_thread_entry is responsible to start or stop the USB device. At Run mode the thread will be waiting on message queue form USB_PD interface, when the USB device is plugged to host PC a callback in USB_PD interface will send a message to app_ux_device_thread_entry to start the USB device. By the same way when the USB device is unplug a callback in USB_PD interface will send a message to app_ux_device_thread_entry to stop the USB device.</p>
 <p>During enumeration phase, three communication pipes “endpoints” are declared in the CDC class implementation :</p>
@@ -99,7 +100,7 @@ Read more in STM32CubeIDE User Guide, chapter: &quot;Linker script&quot;.</code>
 <h3 id="hardware-and-software-environment"><b>Hardware and Software environment</b></h3>
 <ul>
 <li>This application runs on STM32U5Gxx devices.</li>
-<li>This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision MB1918-U5G9ZJQ-B01 and can be easily tailored to any other supported device and development board.</li>
+<li>This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision MB1918-U5G9ZJQ-C01 and can be easily tailored to any other supported device and development board.</li>
 <li>STM32U5G9J-DK2 Set-up</li>
 <li>Connect the STM32U5G9J-DK2 board CN8 to the PC through “TYPE-C” to “Standard A” cable.</li>
 <li>For VCP the configuration is dynamic for example it can be :

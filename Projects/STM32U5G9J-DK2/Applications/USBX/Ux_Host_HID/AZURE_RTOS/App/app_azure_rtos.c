@@ -55,13 +55,13 @@
 __ALIGN_BEGIN static UCHAR tx_byte_pool_buffer[TX_APP_MEM_POOL_SIZE] __ALIGN_END;
 static TX_BYTE_POOL tx_app_byte_pool;
 
-/* USER CODE BEGIN UX_HOST_Pool_Buffer */
-/* USER CODE END UX_HOST_Pool_Buffer */
+/* USER CODE BEGIN UX_Pool_Buffer */
+/* USER CODE END UX_Pool_Buffer */
 #if defined ( __ICCARM__ )
 #pragma data_alignment=4
 #endif
-__ALIGN_BEGIN static UCHAR  ux_host_byte_pool_buffer[UX_HOST_APP_MEM_POOL_SIZE] __ALIGN_END;
-static TX_BYTE_POOL ux_host_app_byte_pool;
+__ALIGN_BEGIN static UCHAR ux_byte_pool_buffer[UX_APP_MEM_POOL_SIZE] __ALIGN_END;
+static TX_BYTE_POOL ux_app_byte_pool;
 
 #endif
 
@@ -87,7 +87,9 @@ VOID tx_application_define(VOID *first_unused_memory)
   if (tx_byte_pool_create(&tx_app_byte_pool, "Tx App memory pool", tx_byte_pool_buffer, TX_APP_MEM_POOL_SIZE) != TX_SUCCESS)
   {
     /* USER CODE BEGIN TX_Byte_Pool_Error */
-
+    while(1)
+    {
+    }
     /* USER CODE END TX_Byte_Pool_Error */
   }
   else
@@ -112,31 +114,33 @@ VOID tx_application_define(VOID *first_unused_memory)
 
   }
 
-  if (tx_byte_pool_create(&ux_host_app_byte_pool, "Ux App memory pool", ux_host_byte_pool_buffer, UX_HOST_APP_MEM_POOL_SIZE) != TX_SUCCESS)
+  if (tx_byte_pool_create(&ux_app_byte_pool, "Ux App memory pool", ux_byte_pool_buffer, UX_APP_MEM_POOL_SIZE) != TX_SUCCESS)
   {
     /* USER CODE BEGIN UX_Byte_Pool_Error */
-
+    while(1)
+    {
+    }
     /* USER CODE END UX_Byte_Pool_Error */
   }
   else
   {
-    /* USER CODE BEGIN UX_HOST_Byte_Pool_Success */
+    /* USER CODE BEGIN UX_Byte_Pool_Success */
 
-    /* USER CODE END UX_HOST_Byte_Pool_Success */
+    /* USER CODE END UX_Byte_Pool_Success */
 
-    memory_ptr = (VOID *)&ux_host_app_byte_pool;
-    status = MX_USBX_Host_Init(memory_ptr);
+    memory_ptr = (VOID *)&ux_app_byte_pool;
+    status = MX_USBX_Init(memory_ptr);
     if (status != UX_SUCCESS)
     {
-      /* USER CODE BEGIN MX_USBX_Host_Init_Error */
+      /* USER CODE BEGIN MX_USBX_Init_Error */
       while(1)
       {
       }
-      /* USER CODE END MX_USBX_Host_Init_Error */
+      /* USER CODE END MX_USBX_Init_Error */
     }
-    /* USER CODE BEGIN MX_USBX_Host_Init_Success */
+    /* USER CODE BEGIN MX_USBX_Init_Success */
 
-    /* USER CODE END MX_USBX_Host_Init_Success */
+    /* USER CODE END MX_USBX_Init_Success */
   }
 #else
 /*

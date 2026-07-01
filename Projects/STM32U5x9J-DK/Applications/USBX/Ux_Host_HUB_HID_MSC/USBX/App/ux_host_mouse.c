@@ -5,7 +5,7 @@
   * @author  MCD Application Team
   * @brief   USBX Host Mouse applicative source file
   ******************************************************************************
-   * @attention
+  * @attention
   *
   * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.

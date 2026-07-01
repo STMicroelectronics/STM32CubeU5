@@ -105,7 +105,7 @@ RTOS, ThreadX, Threading, TrustZone, TZEN
 
   - This application runs on STM32U5G9xx devices with security enabled (TZEN=1).
 
-  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision: MB1918-B01
+  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision: MB1918-C01
     and can be easily tailored to any other supported device and development board.
 
   - User Option Bytes requirement (with STM32CubeProgrammer tool)
@@ -127,7 +127,7 @@ EWARM
  - Set the "xxxxx_S" as active application (Set as Active)
  - Rebuild xxxxx_S project
  - Rebuild xxxxx_NS project
- - Load the secure and non-secures images into target memory (Ctrl + D)
+ - Load the non-secure and secure images into target memory (Ctrl + D)
  - Run the application
 
 MDK-ARM

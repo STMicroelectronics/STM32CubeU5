@@ -227,6 +227,8 @@ __Vectors_Size  EQU   __Vectors_End - __Vectors
         PUBWEAK Reset_Handler
         SECTION .text:CODE:NOROOT:REORDER(2)
 Reset_Handler
+        LDR     R0, =sfb(CSTACK)
+        MSR     MSPLIM, R0               ; Set Stack Pointer Limit
         LDR     R0, =SystemInit
         BLX     R0
         LDR     R0, =__iar_program_start

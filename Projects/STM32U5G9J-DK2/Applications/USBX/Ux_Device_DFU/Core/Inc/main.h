@@ -31,7 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "ux_device_descriptors.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -60,6 +60,9 @@ void MX_USB_OTG_HS_PCD_Init(void);
 /* Private defines -----------------------------------------------------------*/
 #define User_Button_Pin GPIO_PIN_13
 #define User_Button_GPIO_Port GPIOC
+#define USB_DETECT_Pin GPIO_PIN_1
+#define USB_DETECT_GPIO_Port GPIOA
+#define USB_DETECT_EXTI_IRQn EXTI1_IRQn
 #define LED_RED_Pin GPIO_PIN_2
 #define LED_RED_GPIO_Port GPIOD
 

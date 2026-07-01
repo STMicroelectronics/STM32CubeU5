@@ -8,7 +8,7 @@ popd
 set "sbsfu_keys=%sbsfu_key_dir%\keys.c"
 
 ::lines for keys backup
-for /f %%# in ('wmic os get localdatetime^|findstr .') do if "%%#" neq "" set date=%%#
+for /f %%i in ('powershell -NoLogo -NoProfile -Command "Get-Date -Format yyyyMMddHHmmss"') do set date=%%i
 set date=%date:~,4%_%date:~4,2%_%date:~6,2%_%date:~8,2%_%date:~10,2%_%date:~12,2%
 set "$key_backup_dir=%sbsfu_key_dir%\%date%_keybcp"
 set "cmdcreatedir=mkdir %$key_backup_dir%

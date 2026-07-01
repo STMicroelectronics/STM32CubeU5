@@ -67,7 +67,7 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   return ret;
 }
 
-  /**
+/**
   * @brief  Function that implements the kernel's initialization.
   * @param  None
   * @retval None

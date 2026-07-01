@@ -104,7 +104,7 @@ RTOS, ThreadX, Threading, Semaphore, LowPower, Tickless
 ### <b>Hardware and Software environment</b>
 
   - This application runs on STM32U5Gxx devices
-  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision MB1918-U5G9ZJQ-B01 and can be easily tailored to any other supported device and development board.
+  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision MB1918-U5G9ZJQ-C01 and can be easily tailored to any other supported device and development board.
     and can be easily tailored to any other supported device and development board.
 
 ###  <b>How to use it ?</b>

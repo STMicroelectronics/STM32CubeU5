@@ -31,12 +31,12 @@ extern "C" {
 #include "ux_host_mouse.h"
 #include "ux_host_keyboard.h"
 #include "ux_host_msc.h"
+#include "ux_hcd_stm32.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ux_system.h"
 #include "ux_utility.h"
-#include "ux_hcd_stm32.h"
-
 #if defined(_TRACE)
 #include "usbpd_trace.h"
 #endif /* _TRACE */
@@ -48,11 +48,9 @@ extern "C" {
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
-#define USBX_HOST_MEMORY_STACK_SIZE     1024*42
 
 #define UX_HOST_APP_THREAD_STACK_SIZE   1024
 #define UX_HOST_APP_THREAD_PRIO         10
-
 /* USER CODE BEGIN EC */
 
 /* USER CODE END EC */
@@ -91,9 +89,11 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 UINT MX_USBX_Host_Init(VOID *memory_ptr);
+UINT MX_USBX_Host_Stack_Init(VOID);
+UINT MX_USBX_Host_Stack_DeInit(VOID);
 
 /* USER CODE BEGIN EFP */
-VOID USBX_APP_Host_Init(VOID);
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

@@ -22,7 +22,7 @@
 #include "stlogo.h"
 #include "rect_buff.h"
 #include "stm32_lcd.h"
-/** @addtogroup STM32L5xx_HAL_Examples
+/** @addtogroup STM32U5xx_HAL_Examples
   * @{
   */
 

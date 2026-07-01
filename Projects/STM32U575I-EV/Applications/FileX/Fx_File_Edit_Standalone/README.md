@@ -19,7 +19,7 @@ As stated earlier, the present application runs in standalone mode without Threa
 
 - A file named STM32.TXT should be visible in the root directory of the SD card.
 - A blinking green LED light marks the success of the file operations.
-- An information regarding executing operation on the SRAM-Disk is printed to the serial port.
+- An information regarding executing operation on the SD card is printed to the serial port.
 
 #### <b>Error behaviors</b>
 

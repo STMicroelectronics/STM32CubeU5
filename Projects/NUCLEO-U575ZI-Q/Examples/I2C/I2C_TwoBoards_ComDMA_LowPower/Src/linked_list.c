@@ -66,6 +66,7 @@ HAL_StatusTypeDef MX_Queue_tx_Config(void)
   pNodeConfig.Init.SrcDataWidth = DMA_SRC_DATAWIDTH_BYTE;
   pNodeConfig.Init.DestDataWidth = DMA_DEST_DATAWIDTH_BYTE;
   pNodeConfig.Init.TransferEventMode = DMA_TCEM_BLOCK_TRANSFER;
+  pNodeConfig.Init.Mode = DMA_NORMAL;
   pNodeConfig.TriggerConfig.TriggerPolarity = DMA_TRIG_POLARITY_MASKED;
   pNodeConfig.DataHandlingConfig.DataExchange = DMA_EXCHANGE_NONE;
   pNodeConfig.DataHandlingConfig.DataAlignment = DMA_DATA_RIGHTALIGN_ZEROPADDED;
@@ -103,6 +104,7 @@ HAL_StatusTypeDef MX_Queue_rx_Config(void)
   pNodeConfig.Init.SrcDataWidth = DMA_SRC_DATAWIDTH_BYTE;
   pNodeConfig.Init.DestDataWidth = DMA_DEST_DATAWIDTH_BYTE;
   pNodeConfig.Init.TransferEventMode = DMA_TCEM_BLOCK_TRANSFER;
+  pNodeConfig.Init.Mode = DMA_NORMAL;
   pNodeConfig.TriggerConfig.TriggerPolarity = DMA_TRIG_POLARITY_MASKED;
   pNodeConfig.DataHandlingConfig.DataExchange = DMA_EXCHANGE_NONE;
   pNodeConfig.DataHandlingConfig.DataAlignment = DMA_DATA_RIGHTALIGN_ZEROPADDED;

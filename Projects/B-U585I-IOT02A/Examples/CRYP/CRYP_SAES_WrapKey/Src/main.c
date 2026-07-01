@@ -91,6 +91,7 @@ static void MX_SAES_AES_Init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
   /* STM32U5xx HAL library initialization:
        - Configure the Flash prefetch
@@ -367,6 +368,7 @@ static void MX_SAES_AES_Init(void)
 
 /**
   * @brief  This function is executed in case of error occurrence.
+  * @param  None
   * @retval None
   */
 void Error_Handler(void)
@@ -381,8 +383,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

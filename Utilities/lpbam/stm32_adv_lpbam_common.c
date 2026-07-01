@@ -244,9 +244,13 @@ LPBAM_Status_t ADV_LPBAM_Q_SetDataConfig(LPBAM_COMMON_DataAdvConf_t const *const
 {
   LPBAM_COMMON_TransferConfig_t transfer_config;
   uint32_t node_addr = ((uint32_t)pDescriptor);
+  uint32_t cllr_reg;
 
   /* Calculate data node address */
   node_addr += (DataNode * sizeof(DMA_NodeTypeDef));
+
+  /* Store CLLR register value to avoid data loss after build node */
+  cllr_reg = ((DMA_NodeTypeDef *)node_addr)->LinkRegisters[NODE_CLLR_LINEAR_DEFAULT_OFFSET];
 
   /* Set transfer fields to be updated */
   transfer_config.UpdateSrcInc            = pDataConfig->UpdateSrcInc;
@@ -276,6 +280,9 @@ LPBAM_Status_t ADV_LPBAM_Q_SetDataConfig(LPBAM_COMMON_DataAdvConf_t const *const
     return LPBAM_ERROR;
   }
 
+  /* Restore CLLR register after build node */
+  ((DMA_NodeTypeDef *)node_addr)->LinkRegisters[NODE_CLLR_LINEAR_DEFAULT_OFFSET] = cllr_reg;
+
   return LPBAM_OK;
 }
 
@@ -294,9 +301,13 @@ LPBAM_Status_t ADV_LPBAM_Q_SetTransferEventGeneration(uint32_t TransferEvent,
 {
   LPBAM_COMMON_TransferConfig_t transfer_event_config;
   uint32_t node_addr = ((uint32_t)pDescriptor);
+  uint32_t cllr_reg;
 
   /* Calculate data node address */
   node_addr += (TransferEventNode * sizeof(DMA_NodeTypeDef));
+
+  /* Store CLLR register value to avoid data loss after build node */
+  cllr_reg = ((DMA_NodeTypeDef *)node_addr)->LinkRegisters[NODE_CLLR_LINEAR_DEFAULT_OFFSET];
 
   /* Set transfer fields to be updated */
   transfer_event_config.UpdateSrcInc            = DISABLE;
@@ -317,6 +328,9 @@ LPBAM_Status_t ADV_LPBAM_Q_SetTransferEventGeneration(uint32_t TransferEvent,
   {
     return LPBAM_ERROR;
   }
+
+  /* Restore CLLR register after build node */
+  ((DMA_NodeTypeDef *)node_addr)->LinkRegisters[NODE_CLLR_LINEAR_DEFAULT_OFFSET] = cllr_reg;
 
   return LPBAM_OK;
 }
@@ -339,9 +353,13 @@ LPBAM_Status_t ADV_LPBAM_Q_SetTriggerConfig(LPBAM_COMMON_TrigAdvConf_t const *co
 {
   LPBAM_COMMON_TrigConfig_t trig_conf;
   uint32_t node_addr = ((uint32_t)pDescriptor);
+  uint32_t cllr_reg;
 
   /* Calculate data node address */
   node_addr += (NodeLevel * sizeof(DMA_NodeTypeDef));
+
+  /* Store CLLR register value to avoid data loss after build node */
+  cllr_reg = ((DMA_NodeTypeDef *)node_addr)->LinkRegisters[NODE_CLLR_LINEAR_DEFAULT_OFFSET];
 
   /* Update trigger configuration */
   trig_conf.TriggerConfig.TriggerMode      = pTrigConfig->TriggerConfig.TriggerMode;
@@ -353,6 +371,9 @@ LPBAM_Status_t ADV_LPBAM_Q_SetTriggerConfig(LPBAM_COMMON_TrigAdvConf_t const *co
   {
     return LPBAM_ERROR;
   }
+
+  /* Restore CLLR register after build node */
+  ((DMA_NodeTypeDef *)node_addr)->LinkRegisters[NODE_CLLR_LINEAR_DEFAULT_OFFSET] = cllr_reg;
 
   return LPBAM_OK;
 }

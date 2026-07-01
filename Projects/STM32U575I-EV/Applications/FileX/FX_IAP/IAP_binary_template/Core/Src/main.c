@@ -73,9 +73,9 @@ int iar_fputc(int ch);
 /* USER CODE END 0 */
 
 /**
-* @brief  The application entry point.
-* @retval int
-*/
+  * @brief  The application entry point.
+  * @retval int
+  */
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -201,10 +201,10 @@ void SystemClock_Config(void)
 }
 
 /**
-* @brief ICACHE Initialization Function
-* @param None
-* @retval None
-*/
+  * @brief ICACHE Initialization Function
+  * @param None
+  * @retval None
+  */
 static void MX_ICACHE_Init(void)
 {
 
@@ -232,10 +232,10 @@ static void MX_ICACHE_Init(void)
 }
 
 /**
-* @brief USART1 Initialization Function
-* @param None
-* @retval None
-*/
+  * @brief USART1 Initialization Function
+  * @param None
+  * @retval None
+  */
 static void MX_USART1_UART_Init(void)
 {
 
@@ -280,10 +280,10 @@ static void MX_USART1_UART_Init(void)
 }
 
 /**
-* @brief GPIO Initialization Function
-* @param None
-* @retval None
-*/
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
 static void MX_GPIO_Init(void)
 {
 
@@ -329,9 +329,10 @@ PUTCHAR_PROTOTYPE
 /* USER CODE END 4 */
 
 /**
-* @brief  This function is executed in case of error occurrence.
-* @retval None
-*/
+  * @brief  This function is executed in case of error occurrence.
+  * @param  None
+  * @retval None
+  */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -347,12 +348,12 @@ void Error_Handler(void)
 
 #ifdef  USE_FULL_ASSERT
 /**
-* @brief  Reports the name of the source file and the source line number
-*         where the assert_param error has occurred.
-* @param  file: pointer to the source file name
-* @param  line: assert_param error line source number
-* @retval None
-*/
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */

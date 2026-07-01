@@ -44,6 +44,12 @@ LR_CODE PERSO_START {
         .ANY (+ZI +RW)
     }
 
+    /* Section .bss.NoInit */
+    ER_DATA_NOINIT +0 ALIGN 32 UNINIT {
+        .ANY (+ZI)
+        *(.bss.NoInit)
+    }
+
     /* MSP */
     ARM_LIB_STACK +0 ALIGN 32 EMPTY BL2_MSP_STACK_SIZE {
     }

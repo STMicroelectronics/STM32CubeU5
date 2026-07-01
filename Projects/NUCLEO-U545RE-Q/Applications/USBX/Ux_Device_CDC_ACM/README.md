@@ -8,9 +8,10 @@ and associated class descriptor report to build a compliant USB CDC_ACM device.
 At the beginning ThreadX call the entry function tx_application_define(), at this stage, all USBx resources are initialized, the CDC_ACM class driver is registered and
 the application creates 3 threads with the same priorities :
 
-  - app_ux_device_thread_entry      (Prio : 10; PreemptionPrio : 10) used to initialize USB DRD HAL PCD driver and start the device.
+  - app_ux_device_thread_entry      (Prio : 10; PreemptionPrio : 10) used to initialize USB DRD HAL PCD driver.
   - usbx_cdc_acm_read_thread_entry  (Prio : 20; PreemptionPrio : 20) used to Read the received data from Virtual COM Port.
   - usbx_cdc_acm_write_thread_entry (Prio : 20; PreemptionPrio : 20) used to send the received data over UART.
+  - vbus_monitor_thread_entry       (Prio : 20; PreemptionPrio : 20) used to start and stop the device.
 
 During enumeration phase, three communication pipes "endpoints" are declared in the CDC class implementation :
 
@@ -111,7 +112,7 @@ None
 
 ### <b>Keywords</b>
 
-RTOS, ThreadX, USBX, USBXDevice, USB_DRD, Full Speed, CDC, VCP, USART, DMA.
+RTOS, ThreadX, USBX, USBXDevice, USB_DRD, Full Speed, CDC, VCP, USART, DMA, ADC.
 
 ### <b>Hardware and Software environment</b>
 

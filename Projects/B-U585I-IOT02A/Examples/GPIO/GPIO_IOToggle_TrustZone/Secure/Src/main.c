@@ -77,6 +77,7 @@ int main(void)
 {
   /* SAU/IDAU, FPU and interrupts secure/non-secure allocation setup done */
   /* in SystemInit() based on partition_stm32u585xx.h file's definitions. */
+
   /* USER CODE BEGIN 1 */
 
   /* Enable SecureFault handler (HardFault is default) */
@@ -388,6 +389,7 @@ void HAL_SYSTICK_Callback(void)
 
 /**
   * @brief  This function is executed in case of error occurrence.
+  * @param  None
   * @retval None
   */
 void Error_Handler(void)
@@ -409,8 +411,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

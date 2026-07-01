@@ -22,7 +22,7 @@
 #ifndef __usbpd_H
 #define __usbpd_H
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/

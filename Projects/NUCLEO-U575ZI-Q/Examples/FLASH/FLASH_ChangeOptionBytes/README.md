@@ -1,6 +1,6 @@
 ## <b>FLASH_ChangeOptionBytes Example Description</b>
 
-How to configure and use the FLASH HAL API to change the STM32U5 devices Option Bytes.
+How to configure and use the FLASH HAL API to check and update the STM32U5 devices Option Bytes.
 
 This project is composed of two configurations:
 
@@ -11,11 +11,14 @@ At the beginning of the main program the HAL_Init() function is called to reset 
 Then the SystemClock_Config() function is used to configure the system clock (SYSCLK) to run at 160 MHz.
 
 After Reset, the Flash memory controller is locked. Dedicated functions are used to enable the FLASH control register access and the FLASH option bytes register access.
-The Option Bytes modification procedure is done by filling the Option Bytes init structure giving the option byte type and the option parameters.
-At this stage, the new option bytes will be programmed through the HAL FLASH OB programming API.
-Then, an OBL_Launch command is executed to start option bytes loading.
+The current Option Bytes configuration is first read and checked against the expected configuration.
+If an update is required, the Option Bytes init structure is filled with the option byte type and the option parameters.
+The new option bytes are then programmed through the HAL FLASH OB programming API.
+Finally, an OBL_Launch command is executed to start option bytes loading.
 
 Once this operation is launched, the STM32U5 device will reset and debugger connection will be lost.
+
+Note: This example is RAM-linked to safely modify and reload flash option bytes. All provided project configurations use RAM linker files, so the application must be loaded into RAM from a debug session and cannot be executed as a standalone flash image.
 
 #### <b>Notes</b>
 
@@ -54,6 +57,8 @@ Memory, Flash, Option Bytes, modification
 In order to make the program work, you must do the following :
 
  - Open your preferred toolchain
- - Rebuild all files and load your image into target memory
- - Run the example
+ - Select the configuration matching the current TrustZone setting
+ - Rebuild all files and start a debug session to load the image into RAM
+ - Run the example under the debugger
+ - After OBL_Launch resets the device, reconnect the debugger if you need to inspect the updated configuration
 

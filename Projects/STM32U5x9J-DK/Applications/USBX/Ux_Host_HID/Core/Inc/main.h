@@ -36,7 +36,7 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-extern HCD_HandleTypeDef hhcd_USB_OTG_HS;
+
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

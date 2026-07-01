@@ -10,9 +10,9 @@ The SystemClock_Config() function is used to configure the system clock for STM3
 
 - The TIM is configured in time base and to generate TRGO events as a source trigger for the DAC.
 - At each trig from timer, the DAC send a request to the DMA, then the DMA responds this request by
-  transferring data from sin_data buffer to the DAC DHR register in circular mode.
+  transferring data from data_sin buffer to the DAC DHR register in circular mode.
 - When the user press on the user push-button, the DAC change the waveform signal:
-   - Sine waveform on DAC_CHANNEL_1 using DMA3 transfer, amplitude: ~3V, frequency: order of KHz.
+   - Sine waveform on DAC_CHANNEL_1 using DMA3 transfer, amplitude: ~3V, frequency: order of hundreds Hz.
    - Escalator waveform on DAC_CHANNEL_1 using DMA3 transfer, amplitude: ~3V, frequency: order of KHz.
 
 NUCLEO-U575ZI-Q board LEDs are used to monitor the process status:

@@ -103,7 +103,7 @@ RTOS, ThreadX, FileX, LevelX, File System, NOR, HSPI, FAT32
 ### <b>Hardware and Software environment</b>
 
   - This application runs on STM32U5Gxx devices.
-  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision MB1918-B01
+  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision MB1918-C01
     and can be easily tailored to any other supported device and development board.
 
   - This application uses USART1 to display logs, the hyperterminal configuration is as follows:

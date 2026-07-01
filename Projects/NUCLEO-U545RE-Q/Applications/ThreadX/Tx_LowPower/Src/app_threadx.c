@@ -45,6 +45,7 @@
 TX_THREAD tx_app_thread;
 TX_SEMAPHORE tx_app_semaphore;
 /* USER CODE BEGIN PV */
+static volatile ULONG app_blink_in_progress = 0U;
 
 /* USER CODE END PV */
 
@@ -111,12 +112,21 @@ void MainThread_Entry(ULONG thread_input)
   {
     if (tx_semaphore_get(&tx_app_semaphore, TX_WAIT_FOREVER) == TX_SUCCESS)
     {
+      app_blink_in_progress = 1U;
+
+      /* Drop any pending token generated before gating was active. */
+      while (tx_semaphore_get(&tx_app_semaphore, TX_NO_WAIT) == TX_SUCCESS)
+      {
+      }
+
       for (i=0; i<10; i++)
       {
       /* Toggle LED to indicate status*/
       HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
       App_Delay(50);
       }
+
+      app_blink_in_progress = 0U;
     }
   }
   /* USER CODE END MainThread_Entry */
@@ -234,7 +244,7 @@ void SystemClock_Restore(void)
   */
 void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
 {
-  if (GPIO_Pin == BUTTON_USER_Pin)
+  if ((GPIO_Pin == BUTTON_USER_Pin) && (app_blink_in_progress == 0U))
   {
       /* Put the semaphore to release the MainThread and specify ceiling to 1 to avoid
       multiple semaphore puts by successively clicking on the user button */

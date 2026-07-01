@@ -25,7 +25,7 @@
 /* USER CODE BEGIN Includes */
 #include "app_azure_rtos.h"
 #include "nx_ip.h"
-#include  MOSQUITTO_CERT_FILE
+#include  MQTT_TLS_CA_CERT_FILE
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -67,8 +67,17 @@ extern const NX_SECURE_TLS_CRYPTO nx_crypto_tls_ciphers;
 static CHAR crypto_metadata_client[11600];
 /* Define the TLS packet reassembly buffer. */
 UCHAR tls_packet_buffer[4000];
-
-ULONG                    current_time;
+/* Buffer used to store and parse incoming server certificates. */
+UCHAR tls_remote_cert_buffer[8192];
+UCHAR tls_remote_cert_buffer_extra_1[4096];
+UCHAR tls_remote_cert_buffer_extra_2[4096];
+UCHAR tls_remote_cert_buffer_extra_3[4096];
+NX_SECURE_X509_CERT mqtt_remote_cert_extra_1;
+NX_SECURE_X509_CERT mqtt_remote_cert_extra_2;
+NX_SECURE_X509_CERT mqtt_remote_cert_extra_3;
+ULONG current_time;
+static NX_SECURE_X509_DNS_NAME mqtt_dns_name;
+static UINT mqtt_server_name_verified;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -94,7 +103,9 @@ static VOID App_SNTP_Thread_Entry(ULONG thread_input);
 static VOID ip_address_change_notify_callback(NX_IP *ip_instance, VOID *ptr);
 static VOID time_update_callback(NX_SNTP_TIME_MESSAGE *time_update_ptr, NX_SNTP_TIME *local_time);
 static ULONG nx_secure_tls_session_time_function(void);
+static ULONG tls_certificate_callback(NX_SECURE_TLS_SESSION *session, NX_SECURE_X509_CERT *certificate);
 static UINT dns_create(NX_DNS *dns_ptr);
+static UINT mqtt_client_create_and_configure(void);
 /* USER CODE END PFP */
 
 /**
@@ -410,6 +421,39 @@ ULONG nx_secure_tls_session_time_function(void)
   return (current_time);
 }
 
+/* Check broker DNS name against the leaf certificate CN/SAN. */
+static ULONG tls_certificate_callback(NX_SECURE_TLS_SESSION *session, NX_SECURE_X509_CERT *certificate)
+{
+  NX_PARAMETER_NOT_USED(session);
+
+  if (mqtt_server_name_verified == NX_FALSE)
+  {
+    mqtt_server_name_verified = NX_TRUE;
+    return nx_secure_x509_common_name_dns_check(certificate, (const UCHAR *)MQTT_BROKER_NAME,
+                                                 STRLEN(MQTT_BROKER_NAME));
+  }
+
+  return NX_SUCCESS;
+}
+
+static UINT mqtt_client_create_and_configure(void)
+{
+  UINT ret;
+
+  ret = nxd_mqtt_client_create(&MqttClient, "my_client", CLIENT_ID_STRING, STRLEN(CLIENT_ID_STRING),
+                               &IpInstance, &AppPool, (VOID*)mqtt_client_stack, MQTT_CLIENT_STACK_SIZE,
+                               MQTT_THREAD_PRIORTY, NX_NULL, 0);
+  if (ret != NX_SUCCESS)
+  {
+    return ret;
+  }
+
+  nxd_mqtt_client_disconnect_notify_set(&MqttClient, my_disconnect_func);
+  nxd_mqtt_client_receive_notify_set(&MqttClient, my_notify_func);
+
+  return NX_SUCCESS;
+}
+
 /* Callback to setup TLS parameters for secure MQTT connection. */
 UINT tls_setup_callback(NXD_MQTT_CLIENT *client_pt,
                         NX_SECURE_TLS_SESSION *TLS_session_ptr,
@@ -432,6 +476,26 @@ UINT tls_setup_callback(NXD_MQTT_CLIENT *client_pt,
   /* Need to allocate space for the certificate coming in from the broker. */
   memset((certificate_ptr), 0, sizeof(NX_SECURE_X509_CERT));
 
+  mqtt_server_name_verified = NX_FALSE;
+
+  ret = nx_secure_tls_session_certificate_callback_set(TLS_session_ptr, tls_certificate_callback);
+  if (ret != NX_SUCCESS)
+  {
+    Error_Handler();
+  }
+
+  ret = nx_secure_x509_dns_name_initialize(&mqtt_dns_name, (UCHAR *)MQTT_BROKER_NAME, STRLEN(MQTT_BROKER_NAME));
+  if (ret != NX_SUCCESS)
+  {
+    Error_Handler();
+  }
+
+  ret = nx_secure_tls_session_sni_extension_set(TLS_session_ptr, &mqtt_dns_name);
+  if (ret != NX_SUCCESS)
+  {
+    Error_Handler();
+  }
+
   ret = nx_secure_tls_session_time_function_set(TLS_session_ptr, nx_secure_tls_session_time_function);
 
   if (ret != TX_SUCCESS)
@@ -449,17 +513,46 @@ UINT tls_setup_callback(NXD_MQTT_CLIENT *client_pt,
 
   /* allocate space for the certificate coming in from the remote host */
   ret = nx_secure_tls_remote_certificate_allocate(TLS_session_ptr, certificate_ptr,
-                                                  tls_packet_buffer, sizeof(tls_packet_buffer));
-  if (ret != TX_SUCCESS)
+                                                  tls_remote_cert_buffer, sizeof(tls_remote_cert_buffer));
+  if (ret != NX_SUCCESS)
+  {
+    Error_Handler();
+  }
+
+  /* Allocate additional certificate slots for intermediate CA certs. */
+  memset(&mqtt_remote_cert_extra_1, 0, sizeof(mqtt_remote_cert_extra_1));
+  ret = nx_secure_tls_remote_certificate_allocate(TLS_session_ptr, &mqtt_remote_cert_extra_1,
+                                                  tls_remote_cert_buffer_extra_1,
+                                                  sizeof(tls_remote_cert_buffer_extra_1));
+  if (ret != NX_SUCCESS)
+  {
+    Error_Handler();
+  }
+
+  memset(&mqtt_remote_cert_extra_2, 0, sizeof(mqtt_remote_cert_extra_2));
+  ret = nx_secure_tls_remote_certificate_allocate(TLS_session_ptr, &mqtt_remote_cert_extra_2,
+                                                  tls_remote_cert_buffer_extra_2,
+                                                  sizeof(tls_remote_cert_buffer_extra_2));
+  if (ret != NX_SUCCESS)
+  {
+    Error_Handler();
+  }
+
+  memset(&mqtt_remote_cert_extra_3, 0, sizeof(mqtt_remote_cert_extra_3));
+  ret = nx_secure_tls_remote_certificate_allocate(TLS_session_ptr, &mqtt_remote_cert_extra_3,
+                                                  tls_remote_cert_buffer_extra_3,
+                                                  sizeof(tls_remote_cert_buffer_extra_3));
+  if (ret != NX_SUCCESS)
   {
     Error_Handler();
   }
 
   /* initialize Certificate to verify incoming server certificates. */
-  ret = nx_secure_x509_certificate_initialize(trusted_certificate_ptr, (UCHAR*)mosquitto_org_der,
-                                              mosquitto_org_der_len, NX_NULL, 0, NULL, 0,
+  ret = nx_secure_x509_certificate_initialize(trusted_certificate_ptr,
+                                              (UCHAR*)starfield_services_root_ca_g2_der,
+                                              starfield_services_root_ca_g2_der_len, NX_NULL, 0, NULL, 0,
                                               NX_SECURE_X509_KEY_TYPE_NONE);
-  if (ret != TX_SUCCESS)
+  if (ret != NX_SUCCESS)
   {
     printf("Certificate issue..\nPlease make sure that your X509_certificate is valid. \n");
     Error_Handler();
@@ -467,8 +560,9 @@ UINT tls_setup_callback(NXD_MQTT_CLIENT *client_pt,
 
   /* Add a CA Certificate to our trusted store */
   ret = nx_secure_tls_trusted_certificate_add(TLS_session_ptr, trusted_certificate_ptr);
-  if (ret != TX_SUCCESS)
+  if (ret != NX_SUCCESS)
   {
+    printf("TLS trust add failed (Starfield G2 root) ret=0x%08lx\n", (ULONG)ret);
     Error_Handler();
   }
 
@@ -595,20 +689,12 @@ static VOID App_MQTT_Client_Thread_Entry(ULONG thread_input)
 
 
   /* Create MQTT client instance. */
-  ret = nxd_mqtt_client_create(&MqttClient, "my_client", CLIENT_ID_STRING, STRLEN(CLIENT_ID_STRING),
-                               &IpInstance, &AppPool, (VOID*)mqtt_client_stack, MQTT_CLIENT_STACK_SIZE,
-                               MQTT_THREAD_PRIORTY, NX_NULL, 0);
+  ret = mqtt_client_create_and_configure();
 
   if (ret != NX_SUCCESS)
   {
     Error_Handler();
   }
-
-  /* Register the disconnect notification function. */
-  nxd_mqtt_client_disconnect_notify_set(&MqttClient, my_disconnect_func);
-
-  /* Set the receive notify function. */
-  nxd_mqtt_client_receive_notify_set(&MqttClient, my_notify_func);
 
   /* Create an MQTT flag */
   ret = tx_event_flags_create(&mqtt_app_flag, "my app event");

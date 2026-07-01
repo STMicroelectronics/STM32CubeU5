@@ -128,7 +128,7 @@ EWARM
  - Set the "xxxxx_S" as active application (Set as Active)
  - Rebuild xxxxx_S project
  - Rebuild xxxxx_NS project
- - Load the secure and non-secures images into target memory (Ctrl + D)
+ - Load the non-secure and secure images into target memory (Ctrl + D)
  - Run the example
 
 MDK-ARM

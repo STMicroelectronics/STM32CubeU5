@@ -11,7 +11,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>35</version>
+                <version>34</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -36,11 +36,11 @@
                 </option>
                 <option>
                     <name>Input description</name>
-                    <state>Full formatting, with multibyte support.</state>
+                    <state>No specifier n, no float nor long long, no scan set, no assignment suppressing, with multibyte support.</state>
                 </option>
                 <option>
                     <name>Output description</name>
-                    <state>Full formatting, with multibyte support.</state>
+                    <state>No specifier a, A, no specifier n, no float nor long long, with multibyte support.</state>
                 </option>
                 <option>
                     <name>GOutputBinary</name>
@@ -62,7 +62,7 @@
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>A complete configuration of the C/C++14 runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
+                    <state>Use the full configuration of the C/C++ runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -70,7 +70,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>9.30.1.50052</state>
+                    <state>9.20.4.46976</state>
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
@@ -98,8 +98,8 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>32</version>
-                    <state>61</state>
+                    <version>31</version>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>OGUseCmsis</name>
@@ -115,8 +115,8 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>32</version>
-                    <state>61</state>
+                    <version>31</version>
+                    <state>59</state>
                 </option>
                 <option>
                     <name>GFPUDeviceSlave</name>
@@ -138,8 +138,8 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>32</version>
-                    <state>61</state>
+                    <version>31</version>
+                    <state>59</state>
                 </option>
                 <option>
                     <name>OGCMSISPackSelectDevice</name>
@@ -202,14 +202,6 @@
                 <option>
                     <name>BuildFilesPath</name>
                     <state>TIM_InputCapture</state>
-                </option>
-                <option>
-                    <name>PointerAuthentication</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>FPU64</name>
-                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -685,7 +677,7 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>27</version>
+                <version>26</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -1044,14 +1036,6 @@
                 <option>
                     <name>IlinkWrapperFile</name>
                     <state></state>
-                </option>
-                <option>
-                    <name>IlinkProcessor</name>
-                    <state>1</state>
-                </option>
-                <option>
-                    <name>IlinkFpuProcessor</name>
-                    <state>1</state>
                 </option>
             </data>
         </settings>

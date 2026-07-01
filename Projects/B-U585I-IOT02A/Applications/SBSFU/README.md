@@ -104,16 +104,8 @@ Several steps to run SBSFU application :
 
 <b>0. Prerequisite</b>
 
-   Two versions of imgtool (used during build process) are available in mcuboot middleware: windows executable and python version. By default,
-the windows executable is selected. It is possible to switch to python version by:
-
-   - installing python (Python 3.6 or newer) with the required modules from Middlewares\\Third_Party\\mcuboot\\scripts\\requirements.txt:
-
-            pip install -r requirements.txt
-
-   - having python in execution path variable
-
-   - deleting imgtool.exe in Middlewares\\Third_Party\\mcuboot\\scripts\\dist\\imgtool
+   AppliCfg.py (located in Utilities\PC_Software\ROT_AppliConfig) is used during build process.It is needed to have python and some
+python packages installed in your environment. Refer to Utilities\PC_Software\ROT_AppliConfig\README.md for more details.
 
 <b>1. Build</b>
 

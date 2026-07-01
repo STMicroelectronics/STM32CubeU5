@@ -159,7 +159,6 @@
    particular implementation of USBX needs the hub class, the printer class, and the storage
    class, then the UX_MAX_CLASSES value can be set to 3 regardless of the number of devices
    that belong to these classes.  */
-
 /* #define UX_MAX_CLASSES    2 */
 
 /* #define UX_MAX_CLASS_DRIVER    3 */
@@ -384,8 +383,7 @@
 /* Defined, this value represents the the maximum length of HID reports on the
    device.
  */
-
-/* #define UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH          64 */
+/* #define UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH          32 */
 
 /* Defined, this value represents the the maximum number of HID events/reports
    that can be queued at once.

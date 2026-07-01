@@ -159,7 +159,6 @@
    particular implementation of USBX needs the hub class, the printer class, and the storage
    class, then the UX_MAX_CLASSES value can be set to 3 regardless of the number of devices
    that belong to these classes.  */
-
 /* #define UX_MAX_CLASSES    2 */
 
 /* #define UX_MAX_CLASS_DRIVER    3 */
@@ -384,8 +383,7 @@
 /* Defined, this value represents the the maximum length of HID reports on the
    device.
  */
-
-/* #define UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH          64 */
+/* #define UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH          32 */
 
 /* Defined, this value represents the the maximum number of HID events/reports
    that can be queued at once.
@@ -460,6 +458,7 @@
    interfaces and endpoints structures and their buffers.
    Undefined, the following two macros must be defined to initialize memory structures.
  */
+
 /* #define UX_DEVICE_INITIALIZE_FRAMEWORK_SCAN_DISABLE */
 
 /* Defined, host HID interrupt OUT transfer is supported.  */
@@ -467,6 +466,7 @@
 /* #define UX_HOST_CLASS_HID_INTERRUPT_OUT_SUPPORT  */
 
 /* Defined, this macro enables device/host PIMA MTP support.  */
+
 /* #define UX_PIMA_WITH_MTP_SUPPORT */
 
 /* Defined, this macro enables host device class code validation.
@@ -507,20 +507,15 @@
 /* #define UX_NAME_REFERENCED_BY_POINTER  */
 
 /* Defined, this value will only enable the host side of usbx.  */
-
 #define UX_HOST_SIDE_ONLY
 
 /* Defined, this value will only enable the device side of usbx.  */
 /* #define UX_DEVICE_SIDE_ONLY */
-
 /* Defined, this value will include the OTG polling thread. OTG can only be active if both host/device are present.
 */
-
 #ifndef UX_HOST_SIDE_ONLY
 #ifndef UX_DEVICE_SIDE_ONLY
-
 /* #define UX_OTG_SUPPORT */
-
 #endif
 #endif
 

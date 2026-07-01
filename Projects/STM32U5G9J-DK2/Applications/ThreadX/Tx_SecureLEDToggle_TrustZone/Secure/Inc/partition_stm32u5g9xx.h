@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    partition_
+  * @file    partition_stm32u5g9xx.h
   * @author  MCD Application Team
-  * @brief   CMSIS  Device Initial Setup for Secure / Non-Secure Zones
+  * @brief   CMSIS STM32U5G9xx Device Initial Setup for Secure / Non-Secure Zones
   *          for ARMCM33 based on CMSIS CORE partition_ARMCM33.h Template.
   *
   *          This file contains:
@@ -14,7 +14,7 @@
   *
   ******************************************************************************
   * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
-  * Copyright (c) 2023 STMicroelectronics. All rights reserved.  
+  * Copyright (c) 2023 STMicroelectronics. All rights reserved.
   *
   * SPDX-License-Identifier: Apache-2.0
   *
@@ -108,7 +108,7 @@
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START1       0x08100000      /* end address of SAU region 0 */
+#define SAU_INIT_START1       0x08100000      /* start address of SAU region 1 */
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
@@ -403,7 +403,7 @@
 //   <o.25> EXTI14_IRQn           <0=> Secure state
 //   <o.26> EXTI15_IRQn           <0=> Secure state
 //   <o.27> IWDG_IRQn             <0=> Secure state
-
+//   <o.28> SAES_IRQn             <0=> Secure state
 //   <o.29> GPDMA1_Channel0_IRQn  <0=> Secure state
 //   <o.30> GPDMA1_Channel1_IRQn  <0=> Secure state
 //   <o.31> GPDMA1_Channel2_IRQn  <0=> Secure state
@@ -476,6 +476,7 @@
 //   <o.6>  TIM16_IRQn            <0=> Secure state
 //   <o.7>  TIM17_IRQn            <0=> Secure state
 //   <o.8>  COMP_IRQn             <0=> Secure state
+//   <o.9>  OTG_HS_IRQn           <0=> Secure state
 //   <o.10> CRS_IRQn              <0=> Secure state
 //   <o.11> FMC_IRQn              <0=> Secure state
 //   <o.12> OCTOSPI1_IRQn         <0=> Secure state
@@ -497,6 +498,7 @@
 //   <o.26> SAI1_IRQn             <0=> Secure state
 //   <o.27> SAI2_IRQn             <0=> Secure state
 //   <o.28> TSC_IRQn              <0=> Secure state
+//   <o.29> AES_IRQn              <0=> Secure state
 
 //   <o.30> RNG_IRQn              <0=> Secure state
 //   <o.31> FPU_IRQn              <0=> Secure state
@@ -509,12 +511,14 @@
 */
 
 /*
+//   <e>Initialize ITNS 3 (Interrupts 96..127)
 
 */
 #define NVIC_INIT_ITNS3    1
 
 /*
 
+// Interrupts 96..127
 //   <o.0>  HASH_IRQn             <0=> Secure state
 //   <o.1>  PKA_IRQn              <0=> Secure state
 //   <o.2>  LPTIM3_IRQn           <0=> Secure state
@@ -544,10 +548,41 @@
 //   <o.26> MDF1_FLT5_IRQn        <0=> Secure state
 //   <o.27> CORDIC_IRQn           <0=> Secure state
 //   <o.28> FMAC_IRQn             <0=> Secure state
+//   <o.29> LSECSSD_IRQn          <0=> Secure state
+//   <o.30> USART6_IRQn           <0=> Secure state
+//   <o.31> I2C5_ER_IRQn          <0=> Secure state
 
 */
 
 #define NVIC_INIT_ITNS3_VAL      0x00000000
+
+/*
+//   </e>
+*/
+
+/*
+//   <e>Initialize ITNS 4 (Interrupts 128..140)
+*/
+#define NVIC_INIT_ITNS4    1
+
+/*
+// Interrupts 128..140
+//   <o.0>  I2C5_EV_IRQn          <0=> Secure state
+//   <o.1>  I2C6_ER_IRQn          <0=> Secure state
+//   <o.2>  I2C6_EV_IRQn          <0=> Secure state
+//   <o.3>  HSPI1_IRQn            <0=> Secure state
+//   <o.4>  GPU2D_IRQn            <0=> Secure state
+//   <o.5>  GPU2D_ER_IRQn         <0=> Secure state
+//   <o.6>  GFXMMU_IRQn           <0=> Secure state
+//   <o.7>  LTDC_IRQn             <0=> Secure state
+//   <o.8>  LTDC_ER_IRQn          <0=> Secure state
+//   <o.9>  DSI_IRQn              <0=> Secure state
+//   <o.10> DCACHE2_IRQn          <0=> Secure state
+//   <o.11> GFXTIM_IRQn           <0=> Secure state
+//   <o.12> JPEG_IRQn             <0=> Secure state
+*/
+
+#define NVIC_INIT_ITNS4_VAL      0x00000000
 
 /*
 //   </e>

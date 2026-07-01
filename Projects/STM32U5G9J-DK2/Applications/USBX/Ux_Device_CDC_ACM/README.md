@@ -8,9 +8,10 @@ and associated class descriptor report to build a compliant USB CDC_ACM device.
 At the beginning ThreadX call the entry function tx_application_define(), at this stage, all USBx resources are initialized, the CDC_ACM class driver is registered and
 the application creates 3 threads with the same priorities :
 
-  - app_ux_device_thread_entry      (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver and start the device.
+  - app_ux_device_thread_entry      (Prio : 10; PreemptionPrio : 10) used to initialize USB OTG HAL PCD driver.
   - usbx_cdc_acm_read_thread_entry  (Prio : 20; PreemptionPrio : 20) used to read the received data from Virtual COM Port.
   - usbx_cdc_acm_write_thread_entry (Prio : 20; PreemptionPrio : 20) used to send the received data over UART.
+  - usbc_detect_thread_entry        (Prio : 20; PreemptionPrio : 20) used to start and stop the device.
 
 The thread app_ux_device_thread_entry is responsible to start or stop the USB device.
 At Run mode the thread will be waiting on message queue form USB_PD interface, when the USB device is plugged to host PC
@@ -123,7 +124,7 @@ RTOS, ThreadX, USBX Device, USB_OTG, Full Speed, CDC, VCP, USART, DMA, USBPD.
 ### <b>Hardware and Software environment</b>
 
   - This application runs on STM32U5Gxx devices.
-  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision MB1918-U5G9ZJQ-B01 and can be easily tailored to any other supported device and development board.
+  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision MB1918-U5G9ZJQ-C01 and can be easily tailored to any other supported device and development board.
   - STM32U5G9J-DK2 Set-up
   - Connect the STM32U5G9J-DK2 board CN8 to the PC through "TYPE-C" to "Standard A" cable.
   - For VCP the configuration is dynamic for example it can be :

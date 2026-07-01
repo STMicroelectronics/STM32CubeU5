@@ -67,7 +67,7 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
 
   /* USER CODE BEGIN App_ThreadX_MEM_POOL */
-  
+
   /* USER CODE END App_ThreadX_MEM_POOL */
   CHAR *pointer;
 
@@ -105,7 +105,7 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   {
     ret = TX_POOL_ERROR;
   }
-  
+
   /* Create Message Queue Sender Thread Two. */
   if (tx_thread_create(&MsgSenderThreadTwo, "Message Queue Sender Thread Two",
                        MsgSenderThreadTwo_Entry, 0, pointer, TX_APP_STACK_SIZE,
@@ -120,7 +120,7 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   {
     ret = TX_POOL_ERROR;
   }
-  
+
   /* Create Message Queue Receiver Thread. */
   if (tx_thread_create(&MsgReceiverThread, "Message Queue Receiver Thread",
                        MsgReceiverThread_Entry, 0, pointer, TX_APP_STACK_SIZE,
@@ -129,14 +129,14 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   {
     ret = TX_THREAD_ERROR;
   }
-  
+
   /* Allocate the Message Queue Two. */
   if (tx_byte_allocate(byte_pool, (VOID **) &pointer,
                        TX_APP_MSG_QUEUE_FULL_SIZE *sizeof(ULONG), TX_NO_WAIT) != TX_SUCCESS)
   {
     ret = TX_POOL_ERROR;
   }
-  
+
   /* Create the Message Queue Two shared by Message Queue Sender Thread Two and Message Queue Receiver Thread. */
   if (tx_queue_create(&MsgQueueTwo, "Message Queue Two", TX_1_ULONG,
                       pointer, TX_APP_MSG_QUEUE_FULL_SIZE *sizeof(ULONG)) != TX_SUCCESS)
@@ -178,15 +178,15 @@ void MsgSenderThreadOne_Entry(ULONG thread_input)
   */
 void MX_ThreadX_Init(void)
 {
-  /* USER CODE BEGIN  Before_Kernel_Start */
-  
-  /* USER CODE END  Before_Kernel_Start */
+  /* USER CODE BEGIN Before_Kernel_Start */
+
+  /* USER CODE END Before_Kernel_Start */
 
   tx_kernel_enter();
 
-  /* USER CODE BEGIN  Kernel_Start_Error */
-  
-  /* USER CODE END  Kernel_Start_Error */
+  /* USER CODE BEGIN Kernel_Start_Error */
+
+  /* USER CODE END Kernel_Start_Error */
 }
 
 /* USER CODE BEGIN 1 */

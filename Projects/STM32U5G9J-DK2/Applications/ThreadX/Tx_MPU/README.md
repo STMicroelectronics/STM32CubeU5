@@ -137,7 +137,7 @@ RTOS, ThreadX, Threading, Message Queue, Module Manager, Module, MPU
 ### <b>Hardware and Software environment</b>
 
   - This application runs on STM32U5G9xx devices
-  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision: MB1918-B01
+  - This application has been tested with STMicroelectronics STM32U5G9J-DK2 boards revision: MB1918-C01
     and can be easily tailored to any other supported device and development board.
   - A virtual COM port appears in the HyperTerminal:
       - Hyperterminal configuration:

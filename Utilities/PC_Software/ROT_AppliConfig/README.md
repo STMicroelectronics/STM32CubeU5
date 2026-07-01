@@ -3,22 +3,19 @@
 AppliCfg is a tool for ROT projects, that allow to automatically configure projects files according to ROT configuration.
 
 ## Installation
-The are two modes ways to execute this tool.
-* .exe file 
-* .py project With this project, it is possible to modify the sources. In this mode is HIGH recommended to run the setup.py script in order to get all the library dependencies installed
+Python 3 is required to execute this tool. It has been tested with Python 3.11.2. This version or a more recent version can be used.
+Additionally, it is highly recommended to run the setup.py script in order to get all the python module dependencies installed.
 
   ```bash
   python setup.py install
   ```
 
-## Project execution
-There are three ways to test the tool:
-Using the python script :
-* AppliCfg.py
+## Execution
+The tool is run with python:
 
-Using the Windows exe :
-* dist/AppliCfg/AppliCfg.exe  (one dir configuration)
-* dist/AppliCfg.exe  (onefile configuration)
+  ```bash
+  python AppliCfg.py --help
+  ```
 
 ## XMl file function
 To create an image, the Trust Package Creator (TPC) external tool can be used. To do his the TPC tools will use an XML file as an input.

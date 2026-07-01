@@ -32,9 +32,9 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 #if defined(__ICCARM__)
-__root FLASH_TypeDef * const FLASH_DBG = FLASH;
+__root FLASH_TypeDef *const FLASH_DBG = FLASH;
 #elif defined(__ARMCC_VERSION)|| defined(__GNUC__)
-FLASH_TypeDef * const FLASH_DBG = FLASH;
+FLASH_TypeDef *const FLASH_DBG = FLASH;
 #endif
 FLASH_OBProgramInitTypeDef OptionsBytesInit;
 
@@ -58,52 +58,58 @@ int main(void)
        - Low Level Initialization
      */
   HAL_Init();
-  
+
   /* Enable the Instruction Cache */
   CACHE_Enable();
-  
+
   /* Configure the System clock to have a frequency of 160 MHz */
   SystemClock_Config();
 
   /* Unlock Flash Control register and Option Bytes */
   HAL_FLASH_Unlock();
   HAL_FLASH_OB_Unlock();
-  
+
   /* Example of configuration to change nRST_STDBY user option byte */
   /* -------------------------------------------------------------- */
-  
-  /* First step: Choose option byte type.
-     This field could one of the following defines: 
-     For TrustzoneDisabled IDE confiuguration: OPTIONBYTE_WRP / OPTIONBYTE_RDP / OPTIONBYTE_RDPKEY / OPTIONBYTE_USER / OPTIONBYTE_BOOTADDR
-     For TrustzoneEnabled IDE configuration:   OPTIONBYTE_WRP / OPTIONBYTE_RDP / OPTIONBYTE_RDPKEY / OPTIONBYTE_USER / OPTIONBYTE_BOOTADDR 
+
+  /* Read current option bytes before programming a new value. */
+  HAL_FLASHEx_OBGetConfig(&OptionsBytesInit);
+
+  if ((OptionsBytesInit.USERConfig & FLASH_OPTR_nRST_STDBY) != OB_STANDBY_NORST)
+  {
+    /* First step: Choose option byte type.
+       This field could one of the following defines:
+       For TrustzoneDisabled IDE confiuguration: OPTIONBYTE_WRP / OPTIONBYTE_RDP / OPTIONBYTE_RDPKEY / OPTIONBYTE_USER / OPTIONBYTE_BOOTADDR
+       For TrustzoneEnabled IDE configuration:   OPTIONBYTE_WRP / OPTIONBYTE_RDP / OPTIONBYTE_RDPKEY / OPTIONBYTE_USER / OPTIONBYTE_BOOTADDR
                                                OPTIONBYTE_WMSEC / OPTIONBYTE_BOOT_LOCK */
-  OptionsBytesInit.OptionType = OPTIONBYTE_USER;
-  
-  /* Second step: Configure option byte parameters values.
-     NOTE: These parameters depend on chosen Option Type */
-  OptionsBytesInit.USERType   = OB_USER_nRST_STDBY;
-  OptionsBytesInit.USERConfig = OB_STANDBY_NORST;
-  
-  /* Example of Option Bytes configuration to enable TrustZone */
-  /* --------------------------------------------------------- */
-  
-  /* OptionsBytesInit.OptionType = OPTIONBYTE_USER;
-     OptionsBytesInit.USERType   = OB_USER_TZEN;
-     OptionsBytesInit.USERConfig = OB_TZEN_ENABLE; */
-  
-  /* Example of Option Bytes configuration to un-secure Flash bank2 */
-  /* -------------------------------------------------------------- */
-  
-  /* OptionsBytesInit.OptionType     = OPTIONBYTE_WMSEC;
-     OptionsBytesInit.WMSecConfig    = (OB_WMSEC_AREA2 | OB_WMSEC_SECURE_AREA_CONFIG);
-     OptionsBytesInit.WMSecStartPage = 127;
-     OptionsBytesInit.WMSecEndPage   = 0; */ 
-  
-  /* Program Option Bytes */
-  HAL_FLASHEx_OBProgram(&OptionsBytesInit);
-  
-  /* Launch Option Bytes Loading */
-  HAL_FLASH_OB_Launch();
+    OptionsBytesInit.OptionType = OPTIONBYTE_USER;
+
+    /* Second step: Configure option byte parameters values.
+       NOTE: These parameters depend on chosen Option Type */
+    OptionsBytesInit.USERType   = OB_USER_nRST_STDBY;
+    OptionsBytesInit.USERConfig = OB_STANDBY_NORST;
+
+    /* Example of Option Bytes configuration to enable TrustZone */
+    /* --------------------------------------------------------- */
+
+    /* OptionsBytesInit.OptionType = OPTIONBYTE_USER;
+      OptionsBytesInit.USERType   = OB_USER_TZEN;
+      OptionsBytesInit.USERConfig = OB_TZEN_ENABLE; */
+
+    /* Example of Option Bytes configuration to un-secure Flash bank2 */
+    /* -------------------------------------------------------------- */
+
+    /* OptionsBytesInit.OptionType     = OPTIONBYTE_WMSEC;
+      OptionsBytesInit.WMSecConfig    = (OB_WMSEC_AREA2 | OB_WMSEC_SECURE_AREA_CONFIG);
+      OptionsBytesInit.WMSecStartPage = 127;
+      OptionsBytesInit.WMSecEndPage   = 0; */
+
+    /* Program Option Bytes */
+    HAL_FLASHEx_OBProgram(&OptionsBytesInit);
+
+    /* Launch Option Bytes Loading */
+    HAL_FLASH_OB_Launch();
+  }
 
   /* Infinite loop */
   while (1)
@@ -159,12 +165,12 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLR = 2;
   RCC_OscInitStruct.PLL.PLLP = 2;
   RCC_OscInitStruct.PLL.PLLQ = 2;
-  RCC_OscInitStruct.PLL.PLLFRACN= 0;
+  RCC_OscInitStruct.PLL.PLLFRACN = 0;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLLVCIRANGE_0;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     /* Initialization Error */
-    while(1);
+    while (1);
   }
 
   /* Select PLL as system clock source and configure bus clocks dividers */
@@ -175,10 +181,10 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB3CLKDivider = RCC_HCLK_DIV1;
-  if(HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
   {
     /* Initialization Error */
-    while(1);
+    while (1);
   }
 }
 

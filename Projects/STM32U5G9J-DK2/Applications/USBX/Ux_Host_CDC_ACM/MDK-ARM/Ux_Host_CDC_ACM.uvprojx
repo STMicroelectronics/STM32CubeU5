@@ -10,13 +10,13 @@
       <TargetName>Ux_Host_CDC_ACM</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6180000::V6.18::ARMCLANG</pCCUsed>
+      <pCCUsed>6210000::V6.21::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32U5G9ZJTxQ</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32U5xx_DFP.2.2.4</PackID>
+          <PackID>Keil.STM32U5xx_DFP.3.0.0</PackID>
           <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x002F0000) IRAM2(0x24000000,0x01000000) IROM(0x08000000,0x00400000) XRAM(0x28000000,0x00004000) CPUTYPE("Cortex-M33") FPU3(SFPU) DSP TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -443,6 +443,11 @@
               <FileName>app_usbx_host.c</FileName>
               <FileType>1</FileType>
               <FilePath>../USBX/App/app_usbx_host.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_usbx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../USBX/App/app_usbx.c</FilePath>
             </File>
             <File>
               <FileName>ux_host_cdc_acm.c</FileName>
@@ -1845,6 +1850,16 @@
               <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_free.c</FilePath>
             </File>
             <File>
+              <FileName>ux_utility_memory_byte_pool_create.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_create.c</FilePath>
+            </File>
+            <File>
+              <FileName>ux_utility_memory_byte_pool_search.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_search.c</FilePath>
+            </File>
+            <File>
               <FileName>ux_utility_memory_set.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_set.c</FilePath>
@@ -2008,16 +2023,6 @@
               <FileName>ux_system_uninitialize.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Middlewares/ST/usbx/common/core/src/ux_system_uninitialize.c</FilePath>
-            </File>
-            <File>
-              <FileName>ux_utility_memory_byte_pool_create.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_create.c</FilePath>
-            </File>
-            <File>
-              <FileName>ux_utility_memory_byte_pool_search.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\usbx\common\core\src\ux_utility_memory_byte_pool_search.c</FilePath>
             </File>
           </Files>
         </Group>

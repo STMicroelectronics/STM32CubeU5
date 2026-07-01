@@ -41,7 +41,7 @@ extern __IO UINT sd_tx_cplt;
 #define FX_STM32_SD_DEFAULT_TIMEOUT                           (10 * 1000)
 
 /* let the filex low-level driver initialize the SD driver */
-#define FX_STM32_SD_INIT                                      0
+#define FX_STM32_SD_INIT                                      1
 
 /* Enable the cache maintenance, needed when using SD DMA
  * and accessing buffers in cacheable area
@@ -50,10 +50,10 @@ extern __IO UINT sd_tx_cplt;
  * For STM32U5 this flag should be always set to 0 unless external
  * memories are being used.
  */
-#define FX_STM32_SD_CACHE_MAINTENANCE                    	  0
+#define FX_STM32_SD_CACHE_MAINTENANCE                         0
 
 /* Use the SD DMA API */
-#define FX_STM32_SD_DMA_API                              	  1
+#define FX_STM32_SD_DMA_API                                   1
 
 /* SDIO instance to be used by FileX */
 #define FX_STM32_SD_INSTANCE                                  0
@@ -172,7 +172,7 @@ extern __IO UINT sd_tx_cplt;
 
 #define FX_STM32_SD_WRITE_TRANSFER_ERROR				FX_STM32_SD_READ_TRANSFER_ERROR
 
-/* USER CODE END FX_STM32_SD_WRITE_TRANFSER_ERROR */
+/* USER CODE END FX_STM32_SD_WRITE_TRANSFER_ERROR */
 
 /* Exported functions prototypes ---------------------------------------------*/
 

@@ -61,7 +61,7 @@ static TX_BYTE_POOL tx_app_byte_pool;
 #pragma data_alignment=4
 #endif
 __ALIGN_BEGIN static UCHAR  fx_byte_pool_buffer[FX_APP_MEM_POOL_SIZE] __ALIGN_END;
-static TX_BYTE_POOL FILEX_MEM_POOL_VAR_NAME;
+static TX_BYTE_POOL fx_app_byte_pool;
 
 #endif
 
@@ -110,7 +110,7 @@ VOID tx_application_define(VOID *first_unused_memory)
     /* USER CODE END  App_ThreadX_Init_Success */
 
   }
-  if (tx_byte_pool_create(&FILEX_MEM_POOL_VAR_NAME, "Fx App memory pool", fx_byte_pool_buffer, FX_APP_MEM_POOL_SIZE) != TX_SUCCESS)
+  if (tx_byte_pool_create(&fx_app_byte_pool, "Fx App memory pool", fx_byte_pool_buffer, FX_APP_MEM_POOL_SIZE) != TX_SUCCESS)
   {
     /* USER CODE BEGIN FX_Byte_Pool_Error */
 
@@ -122,7 +122,7 @@ VOID tx_application_define(VOID *first_unused_memory)
 
     /* USER CODE END FX_Byte_Pool_Success */
 
-    memory_ptr = (VOID *)&FILEX_MEM_POOL_VAR_NAME;
+    memory_ptr = (VOID *)&fx_app_byte_pool;
     status = MX_FileX_Init(memory_ptr);
     if (status != FX_SUCCESS)
     {

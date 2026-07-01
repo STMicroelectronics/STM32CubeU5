@@ -47,9 +47,9 @@
 
 /* Private variables ---------------------------------------------------------*/
 #ifndef __USBPD_DPM_CORE_C
-extern USBPD_SettingsTypeDef            DPM_Settings[USBPD_PORT_COUNT];
+extern USBPD_SettingsTypeDef DPM_Settings[USBPD_PORT_COUNT];
 #else /* __USBPD_DPM_CORE_C */
-USBPD_SettingsTypeDef       DPM_Settings[USBPD_PORT_COUNT] =
+USBPD_SettingsTypeDef DPM_Settings[USBPD_PORT_COUNT] =
 {
   {
     .PE_DefaultRole = USBPD_PORTPOWERROLE_SNK,  /* Default port role                                       */

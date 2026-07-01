@@ -480,6 +480,11 @@
               <FilePath>../USBX/App/app_usbx_device.c</FilePath>
             </File>
             <File>
+              <FileName>app_usbx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../USBX/App/app_usbx.c</FilePath>
+            </File>
+            <File>
               <FileName>ux_device_cdc_ecm.c</FileName>
               <FileType>1</FileType>
               <FilePath>../USBX/App/ux_device_cdc_ecm.c</FilePath>
@@ -583,6 +588,11 @@
               <FileName>stm32u5xx_ll_exti.c</FileName>
               <FileType>1</FileType>
               <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32u5xx_ll_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../../../../../../Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_pwr.c</FilePath>
             </File>
             <File>
               <FileName>stm32u5xx_hal_tim.c</FileName>

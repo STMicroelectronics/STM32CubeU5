@@ -266,6 +266,7 @@
 /*#define TX_SAFETY_CRITICAL*/
 
 /* Define the LowPower macros and flags */
+#if defined ( __ICCARM__ ) || (defined (__GNUC__) && !defined(__ASSEMBLER__))
 
 /* Define a macro that sets up a low power clock and keep track of time */
 /*#define TX_LOW_POWER_TIMER_SETUP */
@@ -283,6 +284,8 @@ void App_ThreadX_LowPower_Exit(void);
 
 /* User's low-power macro to obtain the amount of time (in ticks) the system has been in low power mode */
 /*#define TX_LOW_POWER_USER_TIMER_ADJUST */
+
+#endif
 
 /* USER CODE BEGIN 2 */
 

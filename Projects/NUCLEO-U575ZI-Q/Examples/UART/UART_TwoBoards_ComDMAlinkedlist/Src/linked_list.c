@@ -73,6 +73,7 @@ HAL_StatusTypeDef MX_UART_Tx_Queue_Config(void)
   pNodeConfig.Init.DestBurstLength = 1;
   pNodeConfig.Init.TransferAllocatedPort = DMA_SRC_ALLOCATED_PORT0|DMA_DEST_ALLOCATED_PORT0;
   pNodeConfig.Init.TransferEventMode = DMA_TCEM_LAST_LL_ITEM_TRANSFER;
+  pNodeConfig.Init.Mode = DMA_NORMAL;
   pNodeConfig.TriggerConfig.TriggerPolarity = DMA_TRIG_POLARITY_MASKED;
   pNodeConfig.DataHandlingConfig.DataExchange = DMA_EXCHANGE_NONE;
   pNodeConfig.DataHandlingConfig.DataAlignment = DMA_DATA_RIGHTALIGN_ZEROPADDED;
@@ -133,6 +134,7 @@ HAL_StatusTypeDef MX_UART_Rx_Queue_Config(void)
   pNodeConfig.Init.DestBurstLength = 1;
   pNodeConfig.Init.TransferAllocatedPort = DMA_SRC_ALLOCATED_PORT0|DMA_DEST_ALLOCATED_PORT0;
   pNodeConfig.Init.TransferEventMode = DMA_TCEM_LAST_LL_ITEM_TRANSFER;
+  pNodeConfig.Init.Mode = DMA_NORMAL;
   pNodeConfig.TriggerConfig.TriggerPolarity = DMA_TRIG_POLARITY_MASKED;
   pNodeConfig.DataHandlingConfig.DataExchange = DMA_EXCHANGE_NONE;
   pNodeConfig.DataHandlingConfig.DataAlignment = DMA_DATA_RIGHTALIGN_ZEROPADDED;

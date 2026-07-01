@@ -134,4 +134,5 @@ In order to make the program work, you must do the following :
 
  - The user has to check the list of the COM ports in Device Manager to find out the number of the COM ports that have been assigned (by OS) to the Stlink VCP.
  - The application uses the external HSE clock as USB source clock.
+ - The board requires a hardware modification to use the EXTERNAL HSE CLK, as described in the User Manual available on ST.com (see section 7.7.2, "OSC clock supply").
  - When Using a keyboard with multiple interfaces user must increase the size of USBX stack to avoid memory insufficient, increase the value of "USBX_HOST_MEMORY_STACK_SIZE", "UX_HOST_APP_MEM_POOL_SIZE" and "UX_HOST_CLASS_HID_USAGES".

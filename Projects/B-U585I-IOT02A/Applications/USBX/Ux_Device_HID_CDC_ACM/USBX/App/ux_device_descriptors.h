@@ -40,7 +40,7 @@ extern "C" {
 #define USBD_MAX_NUM_CONFIGURATION                     1U
 #define USBD_MAX_SUPPORTED_CLASS                       3U
 #define USBD_MAX_CLASS_ENDPOINTS                       9U
-#define USBD_MAX_CLASS_INTERFACES                      11U
+#define USBD_MAX_CLASS_INTERFACES                      12U
 
 #define USBD_HID_CLASS_ACTIVATED                       1U
 #define USBD_CDC_ACM_CLASS_ACTIVATED                   1U
@@ -69,6 +69,8 @@ typedef enum
   CLASS_TYPE_VIDEO    = 8,
   CLASS_TYPE_CCID     = 9,
   CLASS_TYPE_PRINTER  = 10,
+  CLASS_TYPE_AUDIO_10 = 11,
+  CLASS_TYPE_AUDIO_20 = 12
 } USBD_CompositeClassTypeDef;
 
 /* Enum HID Interface Type */

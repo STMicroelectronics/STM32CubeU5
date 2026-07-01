@@ -159,7 +159,6 @@
    particular implementation of USBX needs the hub class, the printer class, and the storage
    class, then the UX_MAX_CLASSES value can be set to 3 regardless of the number of devices
    that belong to these classes.  */
-
 /* #define UX_MAX_CLASSES    2 */
 
 /* #define UX_MAX_CLASS_DRIVER    3 */
@@ -214,7 +213,7 @@
    and the buffer must meet device controller driver (DCD) buffer requirements (e.g., aligned and cache safe).
    It only works if  UX_DEVICE_ENDPOINT_BUFFER_OWNER is 1 (endpoint buffer managed by class).  */
 
-/* #define UX_DEVICE_CLASS_CDC_ACM_ZERO_COPY */
+/* #define UX_DEVICE_CLASS_CDC_ACM_ZERO_COPY  */
 
 /* Defined, it enables device HID zero copy and flexible queue support (works if HID owns endpoint buffer).
     Enabled, the internal queue buffer is directly used for transfer, the APIs are kept to keep
@@ -227,19 +226,19 @@
     UX_DEVICE_CLASS_HID_MAX_EVENTS_QUEUE and UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH are used to
     calculate and allocate the queue.  */
 
-/* #define UX_DEVICE_CLASS_HID_ZERO_COPY */
+/* #define UX_DEVICE_CLASS_HID_ZERO_COPY  */
 
 /* Defined, it enables device CDC_ECM zero copy support (works if CDC_ECM owns endpoint buffer).
     Enabled, it requires that the NX IP default packet pool is in cache safe area, and buffer max
     size is larger than UX_DEVICE_CLASS_CDC_ECM_ETHERNET_PACKET_SIZE (1536).  */
 
-/* #define UX_DEVICE_CLASS_CDC_ECM_ZERO_COPY */
+/* #define UX_DEVICE_CLASS_CDC_ECM_ZERO_COPY  */
 
 /* Defined, it enables device RNDIS zero copy support (works if RNDIS owns endpoint buffer).
     Enabled, it requires that the NX IP default packet pool is in cache safe area, and buffer max
     size is larger than UX_DEVICE_CLASS_RNDIS_MAX_PACKET_TRANSFER_SIZE (1600).  */
 
-/* #define UX_DEVICE_CLASS_RNDIS_ZERO_COPY */
+/* #define UX_DEVICE_CLASS_RNDIS_ZERO_COPY  */
 
 /* Defined, it enables zero copy support (works if PRINTER owns endpoint buffer).
     Defined, it enables zero copy for bulk in/out endpoints (write/read). In this case, the endpoint
@@ -247,7 +246,7 @@
     buffer must meet device controller driver (DCD) buffer requirements (e.g., aligned and cache
     safe if buffer is for DMA).  */
 
-/* #define UX_DEVICE_CLASS_PRINTER_ZERO_COPY */
+/* #define UX_DEVICE_CLASS_PRINTER_ZERO_COPY  */
 
 /* Defined, this value represents the maximum number of bytes that can be received or transmitted
    on any endpoint. This value cannot be less than the maximum packet size of any endpoint. The default
@@ -260,7 +259,7 @@
    The first language ID in the language ID framework will be used if the request has a zero
    Language ID.  */
 
-/* #define UX_DEVICE_ENABLE_GET_STRING_WITH_ZERO_LANGUAGE_ID */
+/* #define UX_DEVICE_ENABLE_GET_STRING_WITH_ZERO_LANGUAGE_ID  */
 
 /* Defined, this value includes code to handle storage Multi-Media Commands (MMC). E.g., DVD-ROM. */
 
@@ -384,8 +383,7 @@
 /* Defined, this value represents the the maximum length of HID reports on the
    device.
  */
-
-/* #define UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH          64 */
+/* #define UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH          32 */
 
 /* Defined, this value represents the the maximum number of HID events/reports
    that can be queued at once.
@@ -460,6 +458,7 @@
    interfaces and endpoints structures and their buffers.
    Undefined, the following two macros must be defined to initialize memory structures.
  */
+
 /* #define UX_DEVICE_INITIALIZE_FRAMEWORK_SCAN_DISABLE */
 
 /* Defined, host HID interrupt OUT transfer is supported.  */
@@ -467,6 +466,7 @@
 /* #define UX_HOST_CLASS_HID_INTERRUPT_OUT_SUPPORT  */
 
 /* Defined, this macro enables device/host PIMA MTP support.  */
+
 /* #define UX_PIMA_WITH_MTP_SUPPORT */
 
 /* Defined, this macro enables host device class code validation.
@@ -507,20 +507,15 @@
 /* #define UX_NAME_REFERENCED_BY_POINTER  */
 
 /* Defined, this value will only enable the host side of usbx.  */
-
 #define UX_HOST_SIDE_ONLY
 
 /* Defined, this value will only enable the device side of usbx.  */
 /* #define UX_DEVICE_SIDE_ONLY */
-
 /* Defined, this value will include the OTG polling thread. OTG can only be active if both host/device are present.
 */
-
 #ifndef UX_HOST_SIDE_ONLY
 #ifndef UX_DEVICE_SIDE_ONLY
-
 /* #define UX_OTG_SUPPORT */
-
 #endif
 #endif
 

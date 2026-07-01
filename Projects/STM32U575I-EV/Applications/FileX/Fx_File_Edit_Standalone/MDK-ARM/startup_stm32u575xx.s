@@ -215,6 +215,8 @@ Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
                 IMPORT  SystemInit
                 IMPORT  __main
+                LDR     R0, =Stack_Mem
+                MSR     MSPLIM, R0                 ; Set Stack Pointer Limit
                 LDR     R0, =SystemInit
                 BLX     R0
                 LDR     R0, =__main
@@ -531,26 +533,14 @@ LSECSSD_IRQHandler
 ;*******************************************************************************
 ; User Stack and Heap initialization
 ;*******************************************************************************
-                IF      :DEF:__MICROLIB
+                IF       :LNOT::DEF:__MICROLIB
+                IMPORT   __use_two_region_memory
+                ENDIF
 
-                EXPORT  __initial_sp
-                EXPORT  __heap_base
-                EXPORT  __heap_limit
-
-                ELSE
-
-                IMPORT  __use_two_region_memory
-                EXPORT  __user_initial_stackheap
-
-__user_initial_stackheap PROC
-                LDR     R0, =  Heap_Mem
-                LDR     R1, =(Stack_Mem + Stack_Size)
-                LDR     R2, = (Heap_Mem +  Heap_Size)
-                LDR     R3, = Stack_Mem
-                BX      LR
-                ENDP
-
-                ALIGN
+                EXPORT   __initial_sp
+                IF       Heap_Size != 0                      ; Heap is provided
+                EXPORT   __heap_base
+                EXPORT   __heap_limit
 
                 ENDIF
 

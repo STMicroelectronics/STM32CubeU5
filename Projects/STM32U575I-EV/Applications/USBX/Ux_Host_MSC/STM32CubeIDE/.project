@@ -184,6 +184,11 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_lpgpio.c</locationURI>
 		</link>
 		<link>
+			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_ll_pwr.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_pwr.c</locationURI>
+		</link>
+		<link>
 			<name>Drivers/STM32U5xx_HAL_Driver/stm32u5xx_ll_tim.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_tim.c</locationURI>
@@ -2284,16 +2289,6 @@
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_system_initialize.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/USBX/Core System/ux_utility_memory_byte_pool_create.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_memory_byte_pool_create.c</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/USBX/Core System/ux_utility_memory_byte_pool_search.c</name>
-			<type>1</type>
-			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_memory_byte_pool_search.c</locationURI>
-		</link>
-		<link>
 			<name>Middlewares/USBX/Core System/ux_system_uninitialize.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_system_uninitialize.c</locationURI>
@@ -2387,6 +2382,16 @@
 			<name>Middlewares/USBX/Core System/ux_utility_memory_allocate_mulv_safe.c</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_memory_allocate_mulv_safe.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/USBX/Core System/ux_utility_memory_byte_pool_create.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_memory_byte_pool_create.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/USBX/Core System/ux_utility_memory_byte_pool_search.c</name>
+			<type>1</type>
+			<locationURI>PARENT-6-PROJECT_LOC/Middlewares/ST/usbx/common/core/src/ux_utility_memory_byte_pool_search.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/USBX/Core System/ux_utility_memory_compare.c</name>
@@ -3192,6 +3197,11 @@
 			<name>Application/User/USBPD/Target/usbpd_pwr_user.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/USBPD/Target/usbpd_pwr_user.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/USBX/App/app_usbx.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/USBX/App/app_usbx.c</locationURI>
 		</link>
 		<link>
 			<name>Application/User/USBX/App/app_usbx_host.c</name>

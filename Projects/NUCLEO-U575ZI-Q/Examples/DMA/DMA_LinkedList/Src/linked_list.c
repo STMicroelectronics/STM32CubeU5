@@ -96,6 +96,7 @@ HAL_StatusTypeDef MX_Queue_Config(void)
   pNodeConfig.Init.DestBurstLength = 1;
   pNodeConfig.Init.TransferAllocatedPort = DMA_SRC_ALLOCATED_PORT0|DMA_DEST_ALLOCATED_PORT0;
   pNodeConfig.Init.TransferEventMode = DMA_TCEM_BLOCK_TRANSFER;
+  pNodeConfig.Init.Mode = DMA_NORMAL;
   pNodeConfig.RepeatBlockConfig.RepeatCount = 1;
   pNodeConfig.RepeatBlockConfig.SrcAddrOffset = 0;
   pNodeConfig.RepeatBlockConfig.DestAddrOffset = 0;

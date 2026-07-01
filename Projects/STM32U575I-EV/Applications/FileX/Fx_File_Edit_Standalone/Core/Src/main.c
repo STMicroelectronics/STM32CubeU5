@@ -56,7 +56,6 @@ void SystemClock_Config(void);
 static void SystemPower_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ICACHE_Init(void);
-static void MX_SDMMC1_SD_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 #if defined(__ICCARM__)
@@ -83,6 +82,7 @@ int iar_fputc(int ch);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -109,7 +109,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_ICACHE_Init();
-  MX_SDMMC1_SD_Init();
   MX_FileX_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
@@ -241,7 +240,7 @@ static void MX_ICACHE_Init(void)
   * @param None
   * @retval None
   */
-static void MX_SDMMC1_SD_Init(void)
+void MX_SDMMC1_SD_Init(void)
 {
 
   /* USER CODE BEGIN SDMMC1_Init 0 */
@@ -323,8 +322,8 @@ static void MX_USART1_UART_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -353,8 +352,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(LED2_GPIO_Port, &GPIO_InitStruct);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -395,6 +394,7 @@ PUTCHAR_PROTOTYPE
 
 /**
   * @brief  This function is executed in case of error occurrence.
+  * @param  None
   * @retval None
   */
 void Error_Handler(void)
@@ -409,8 +409,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
