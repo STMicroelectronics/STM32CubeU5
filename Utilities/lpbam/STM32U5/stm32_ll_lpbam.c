@@ -1498,6 +1498,11 @@ LPBAM_Status_t LPBAM_LPTIM_FillStructInfo(LPBAM_LPTIM_ConfNode_t const *const pC
             pDescInfo->Request = LPDMA1_REQUEST_LPTIM3_UE;
           }
         }
+        else
+        {
+          /* Set LPTIM update event request */
+          pDescInfo->Request = DMA_REQUEST_SW;
+        }
       }
 
       /* Set value to be written */
